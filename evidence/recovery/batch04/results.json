@@ -1,0 +1,47 @@
+{
+  "batch": "batch04",
+  "profile": ["/AL", "/G2", "/Gs", "/Oelw"],
+  "verified": [
+    {"symbol": "_ms_CheckKeyState", "bytes": 16, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_GetMousePos", "bytes": 16, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_MakeDiscardable", "bytes": 20, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_Flush", "bytes": 10, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_MemoryFree", "bytes": 8, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_RallocMemoryFree", "bytes": 8, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_Free", "bytes": 13, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_Lock", "bytes": 13, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_Unlock", "bytes": 13, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_Freshen", "bytes": 13, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_SysBeep", "bytes": 8, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_Beep", "bytes": 8, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_TickCount", "bytes": 17, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_RallocAge", "bytes": 18, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_RallocFreshen", "bytes": 21, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_win_GetProxEvent", "bytes": 4, "result": "FUNCTION_MATCH"},
+    {"symbol": "_ralloc_CompressMemory", "bytes": 10, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mem_Type", "bytes": 26, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_OpenMapWindow", "bytes": 12, "result": "CONFIRMED_MEMBER"}
+  ],
+  "verified_bytes": 254,
+  "failed_hypotheses": [
+    {
+      "symbols": ["_GetSRandSeed", "_SetSRandSeed", "_SeedSRand", "_SRand1", "_SRand2", "_SRand4", "_SRand8", "_SRand16", "_SRand32", "_SRand64", "_SRand128", "_SRand256"],
+      "status": "BLOCKED",
+      "reason": "The LFSR cluster reads unnamed internal DGROUP state at SIMONE_MODULE:CBF2. External declarations produce an unresolved symbol; absolute-pointer forms change C7 register/local layout. No recipe was promoted."
+    },
+    {
+      "symbol": "_mem_Size",
+      "status": "MISMATCH",
+      "reason": "GlobalSize call and branch semantics were understood, but the candidate preserves the parameter in SI while the original uses CX; the complete member comparison does not match."
+    },
+    {
+      "symbols": ["_win_Zoom", "_win_ToTop"],
+      "status": "MISMATCH",
+      "reason": "Window-handle table and USER imports were identified, but the candidate OMF data relocation does not satisfy the original indexed-address contribution."
+    }
+  ],
+  "notes": [
+    "All verified entries were rebuilt through the authentic compiler and checked independently with the relocation-aware member/function verifier.",
+    "The failed source files remain as unreferenced hypotheses for later evidence-driven revisions."
+  ]
+}
