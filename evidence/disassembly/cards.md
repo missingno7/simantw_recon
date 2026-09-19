@@ -12800,8 +12800,8 @@ Source: src/recovered/MacTickCount.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _myButton — SIMANT_MODULE:96A6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/myButton.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96A6  9a16479796               lcall 0x9697, 0x4716 ; _StillDown
@@ -18865,8 +18865,8 @@ D619  cb                       retf
 ```
 
 ## _Quit — SIMANT_MODULE:D61A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 13 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
+Source: src/recovered/Quit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 D61A  1e                       push ds
@@ -20471,8 +20471,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GTextBox — GR_MODULE:0BBC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 35 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 35 bytes.
+Source: src/recovered/GTextBox.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 0BBC  55                       push bp
@@ -27549,8 +27549,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ButtonHeldEnd — GR_MODULE:4C08
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/ButtonHeldEnd.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4C08  9a0ac26c46               lcall 0x466c, 0xc20a ; _win_FlushEvents
@@ -28490,8 +28490,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _mem_malloc — GR_MODULE:54BC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 13 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
+Source: src/recovered/mem_malloc.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 54BC  55                       push bp
@@ -28503,8 +28503,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _mem_free — GR_MODULE:54CA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 16 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 16 bytes.
+Source: src/recovered/mem_free.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 54CA  55                       push bp
@@ -28728,8 +28728,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _mem_Age — GR_MODULE:5624
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 8 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 8 bytes.
+Source: src/recovered/mem_Age.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 5624  55                       push bp
@@ -28753,8 +28753,8 @@ Source: src/recovered/mem_Freshen.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTG
 ```
 
 ## _mem_Freed — GR_MODULE:563A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 37 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 37 bytes.
+Source: src/recovered/mem_Freed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 563A  55                       push bp
@@ -28807,8 +28807,8 @@ Source: src/recovered/mem_MemoryFree.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## _mem_DebugDump — GR_MODULE:5682
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/mem_DebugDump.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 5682  cb                       retf 
@@ -28826,8 +28826,8 @@ Source: src/recovered/ralloc_CompressMemory.c. Flags: ['/AL', '/G2', '/Gs', '/Oe
 ```
 
 ## _RallocInfo — GR_MODULE:568E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 25 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 25 bytes.
+Source: src/recovered/RallocInfo.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 568E  55                       push bp
@@ -29228,8 +29228,8 @@ Source: src/recovered/RallocMemoryFree.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _RallocMemorySoft — GR_MODULE:59C8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 4 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 4 bytes.
+Source: src/recovered/RallocMemorySoft.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 59C8  33c0                     xor ax, ax
@@ -30366,8 +30366,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _hanim_PrintSet — GR_MODULE:63BC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 13 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
+Source: src/recovered/hanim_PrintSet.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 63BC  1e                       push ds
@@ -33546,8 +33546,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MusicInit — GR_MODULE:827C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 13 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
+Source: src/recovered/MusicInit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 827C  1e                       push ds
@@ -33570,8 +33570,8 @@ Source: src/recovered/SysBeep.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MO
 ```
 
 ## _myBeginSoundList — GR_MODULE:8292
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/myBeginSoundList.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8292  cb                       retf 
@@ -36682,8 +36682,8 @@ A187  90                       nop
 ```
 
 ## _mySoundIsDone — GR_MODULE:A188
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 4 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 4 bytes.
+Source: src/recovered/mySoundIsDone.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A188  b80100                   mov ax, 1
@@ -36691,8 +36691,8 @@ A18B  cb                       retf
 ```
 
 ## _myBeginSoundReverse — GR_MODULE:A18C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 19 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 19 bytes.
+Source: src/recovered/myBeginSoundReverse.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A18C  55                       push bp
@@ -36794,8 +36794,8 @@ A263  cb                       retf
 ```
 
 ## _myBeginSoundSection — GR_MODULE:A264
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/myBeginSoundSection.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A264  cb                       retf 
@@ -38195,8 +38195,8 @@ Source: src/recovered/MakeEditOpen.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _ForceUpdateEdit — ANTEDIT_MODULE:0E50
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/ForceUpdateEdit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0E50  90                       nop 
@@ -38206,8 +38206,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoEditUpdateDraw — ANTEDIT_MODULE:0E56
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/DoEditUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0E56  90                       nop 
@@ -38813,8 +38813,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _UpdateEditWindow — ANTEDIT_MODULE:1496
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/UpdateEditWindow.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 1496  90                       nop 
@@ -45258,8 +45258,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PreDrawBalloons — ANTEDIT_MODULE:57A4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/PreDrawBalloons.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 57A4  90                       nop 
@@ -76031,16 +76031,16 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetRRandSeed — SIMONE_MODULE:1518
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/SetRRandSeed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 1518  cb                       retf 
 ```
 
 ## _GetRRandSeed — SIMONE_MODULE:151A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 15 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 15 bytes.
+Source: src/recovered/GetRRandSeed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 151A  bb6c04                   mov bx, 0x46c
@@ -84392,8 +84392,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoEditAndMapUpdateDraw — SIMONE_MODULE:66D6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/DoEditAndMapUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 66D6  9a560eef63               lcall 0x63ef, 0xe56 ; _DoEditUpdateDraw
@@ -117783,8 +117783,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _db_ReleaseHandle — SIMTWO_MODULE:8416
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 15 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 15 bytes.
+Source: src/recovered/db_ReleaseHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8416  55                       push bp
@@ -123145,8 +123145,8 @@ B701  cb                       retf
 ```
 
 ## _win_DrawButtonBorder — SIMTWO_MODULE:B702
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 13 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
+Source: src/recovered/win_DrawButtonBorder.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 B702  1e                       push ds

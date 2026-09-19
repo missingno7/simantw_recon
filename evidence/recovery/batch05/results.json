@@ -1,0 +1,65 @@
+{
+  "batch": "batch05",
+  "profile": ["/AL", "/G2", "/Gs", "/Oelw"],
+  "verified": [
+    {"symbol": "_ForceUpdateEdit", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_DoEditUpdateDraw", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_UpdateEditWindow", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_PreDrawBalloons", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_DoEditAndMapUpdateDraw", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_ButtonHeldEnd", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_myButton", "bytes": 6, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_mySoundIsDone", "bytes": 4, "result": "FUNCTION_MATCH"},
+    {"symbol": "_myBeginSoundList", "bytes": 1, "result": "FUNCTION_MATCH"},
+    {"symbol": "_myBeginSoundSection", "bytes": 1, "result": "FUNCTION_MATCH"},
+    {"symbol": "_mem_Age", "bytes": 8, "result": "FUNCTION_MATCH"},
+    {"symbol": "_db_ReleaseHandle", "bytes": 15, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_myBeginSoundReverse", "bytes": 19, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_MusicInit", "bytes": 13, "result": "STRONGLY_SUPPORTED_MEMBER"},
+    {"symbol": "_Quit", "bytes": 13, "result": "STRONGLY_SUPPORTED_MEMBER"},
+    {"symbol": "_win_DrawButtonBorder", "bytes": 13, "result": "STRONGLY_SUPPORTED_MEMBER"},
+    {"symbol": "_GetRRandSeed", "bytes": 15, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_SetRRandSeed", "bytes": 1, "result": "FUNCTION_MATCH"},
+    {"symbol": "_mem_malloc", "bytes": 13, "result": "FUNCTION_MATCH"},
+    {"symbol": "_mem_free", "bytes": 16, "result": "FUNCTION_MATCH"},
+    {"symbol": "_RallocMemorySoft", "bytes": 4, "result": "FUNCTION_MATCH"},
+    {"symbol": "_mem_DebugDump", "bytes": 1, "result": "FUNCTION_MATCH"},
+    {"symbol": "_hanim_PrintSet", "bytes": 13, "result": "STRONGLY_SUPPORTED_MEMBER"},
+    {"symbol": "_RallocInfo", "bytes": 25, "result": "STRONGLY_SUPPORTED_MEMBER"},
+    {"symbol": "_mem_Freed", "bytes": 37, "result": "CONFIRMED_MEMBER"},
+    {"symbol": "_GTextBox", "bytes": 35, "result": "CONFIRMED_MEMBER"}
+  ],
+  "verified_bytes": 289,
+  "failed_hypotheses": [
+    {
+      "symbol": "_InitWater",
+      "status": "MISMATCH",
+      "reason": "The C7 optimizer strength-reduces the natural 100-iteration loop to a count-down form; the original is a count-up loop with a different complete instruction layout."
+    },
+    {
+      "symbol": "_IsSamePlane",
+      "status": "MISMATCH",
+      "reason": "The current-plane predicate is understood, but local-value scheduling and the unnamed/direct DGROUP access do not reproduce the complete original layout."
+    },
+    {
+      "symbol": "_mem_LockLevel",
+      "status": "MISMATCH",
+      "reason": "GlobalFlags semantics match, but C7 preserves the handle in a different register/local layout than the original."
+    },
+    {
+      "symbols": ["_win_IsWinOpen", "_win_IsWinZoomed"],
+      "status": "MISMATCH",
+      "reason": "The window-handle table and USER ordinals are identified, but the candidate indexed-table relocation and complete control-flow layout do not match."
+    },
+    {
+      "symbol": "_GCheckerBox",
+      "status": "MISMATCH",
+      "reason": "The GPatBox call and checker color formula are understood, but the byte-level access to the high byte of the unnamed fore-color global remains different."
+    }
+  ],
+  "notes": [
+    "All verified entries were rebuilt through the authentic compiler and checked with the independent relocation-aware verifier.",
+    "Failed source files remain unreferenced hypotheses for later evidence-driven revisions.",
+    "The Windows case-insensitive filesystem collision between _mem_Free and _mem_free was corrected with a deterministic __case2 object suffix in tools/build.py; both objects were rebuilt and independently reverified."
+  ]
+}

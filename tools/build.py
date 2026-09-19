@@ -14,13 +14,19 @@ def main():
     previous={r['symbol']:r for r in read_json(out/'manifest.json')['game_objects']} if args.only and (out/'manifest.json').exists() else {}
     selected=set(args.only.split(',')) if args.only else None
     recipes=read_json(ROOT/'src/recovery.json')['targets']
+    case_collisions={}
+    for symbol in recipes:
+        peers=sorted(name for name in recipes if name.casefold()==symbol.casefold())
+        if len(peers)>1:
+            case_collisions[symbol]=peers.index(symbol)+1
     if selected and selected-set(recipes):raise FormatError('unknown requested recovery symbol')
     for name,target in recipes.items():
         if selected is not None and name not in selected:
             if name not in previous:raise FormatError('missing prior object; run full build')
             objects.append(previous[name]);continue
         obj,receipt=compile_source(target['source'],target['flags'],target.get('compiler','msc600a'))
-        dest=out/(name+'.obj');shutil.copyfile(obj,dest)
+        suffix=('__case%d'%case_collisions[name]) if name in case_collisions and case_collisions[name]>1 else ''
+        dest=out/(name+suffix+'.obj');shutil.copyfile(obj,dest)
         objects.append(dict(symbol=name,object=dest.relative_to(ROOT).as_posix(),identity=identity(dest),receipt=receipt))
         print('Recovered C:',name,flush=True)
     runtime=[];cache={}

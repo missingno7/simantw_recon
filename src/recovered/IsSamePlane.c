@@ -1,9 +1,10 @@
-/* Byte-matched reconstruction; historical declaration spelling is uncertain. */
-extern int near MePlane;
+/* Candidate reconstruction using the named current-plane global. */
+#define MePlane (*(int near *)0xCE80)
 
-int IsSamePlane(volatile int plane)
+int IsSamePlane(int plane)
 {
-    if (plane == 0) plane = 1;
-    if (plane == MePlane) return 1;
-    return 0;
+    int test;
+    if (plane == 0) test = 1;
+    else test = plane;
+    return test == MePlane;
 }
