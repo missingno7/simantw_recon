@@ -1,12 +1,13 @@
-/* Byte-matched reconstruction; historical declaration spelling is uncertain. */
-int IsThisPebble(int kind, int value)
+int IsThisPebble(int x, int y)
 {
-    if (kind <= 1) {
-        if (kind == 1) {
-            if (value >= 0x51 && value <= 0x53) return 1;
-        }
+    if (x <= 1) {
+        if (--x)
+            return 0;
+        if (y >= 0x51 && y <= 0x53)
+            return 1;
     } else {
-        if (value >= 0x30 && value <= 0x31) return 1;
+        if (y >= 0x30 && y <= 0x31)
+            return 1;
     }
     return 0;
 }
