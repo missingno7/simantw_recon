@@ -43997,8 +43997,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _BalloonIsVisible — ANTEDIT_MODULE:48A8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
+Source: src/recovered/BalloonIsVisible.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 48A8  55                       push bp
