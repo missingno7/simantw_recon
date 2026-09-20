@@ -96960,8 +96960,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DecEatB — SIMANT1_MODULE:48F8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 50 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 50 bytes.
+Source: src/recovered/DecEatB.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 48F8  b8d746                   mov ax, 0x46d7 ; _match_position
