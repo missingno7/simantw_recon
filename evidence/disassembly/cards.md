@@ -13508,8 +13508,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DialogDone — SIMANT_MODULE:9CD4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 18 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 18 bytes.
+Source: src/recovered/DialogDone.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9CD4  ff0e0a15                 dec word ptr [0x150a]

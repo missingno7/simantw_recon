@@ -1,7 +1,7 @@
-#define dialogCount (*(int near *)0x150a)
+extern int near editMessage[];
 
 void DialogDone(void)
 {
-    --dialogCount;
-    if (dialogCount < -1) dialogCount = -1;
+    if (--editMessage[98] < -1)
+        editMessage[98] = -1;
 }
