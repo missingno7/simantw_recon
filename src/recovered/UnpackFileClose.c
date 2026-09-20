@@ -1,5 +1,5 @@
 extern int near unpackHandle;
-extern int far pascal close(int handle);
+extern void far pascal close(int handle);
 
 void UnpackFileClose(void)
 {
