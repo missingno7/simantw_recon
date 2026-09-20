@@ -117798,7 +117798,7 @@ Source: src/recovered/db_ReleaseHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 
 ## _db_ReleaseObject — SIMTWO_MODULE:8426
 Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Source: src/recovered/db_ReleaseObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8426  c8020000                 enter 2, 0
