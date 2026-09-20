@@ -130265,8 +130265,8 @@ F709  cb                       retf
 ```
 
 ## _win_IsObjSelected — SIMTWO_MODULE:F70A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 55 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 55 bytes.
+Source: src/recovered/win_IsObjSelected.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 F70A  55                       push bp
