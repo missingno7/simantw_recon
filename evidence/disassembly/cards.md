@@ -27558,8 +27558,8 @@ Source: src/recovered/ButtonHeldEnd.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _ConvColor — GR_MODULE:4C0E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 39 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 39 bytes.
+Source: src/recovered/ConvColor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4C0E  55                       push bp
