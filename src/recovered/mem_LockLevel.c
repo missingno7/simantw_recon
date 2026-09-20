@@ -1,13 +1,13 @@
-/* Candidate reconstruction of the GlobalFlags lock-level query. */
-extern unsigned int far pascal GlobalFlags(unsigned int handle);
+extern unsigned far pascal GlobalFlags(unsigned handle);
 
-int mem_LockLevel(int handle)
+int mem_LockLevel(unsigned handle)
 {
-    unsigned int flags;
-    if (handle) {
-        flags = GlobalFlags(handle);
-        if (flags & 0x100) return flags & 0xff;
+    unsigned flags;
+
+    if (!handle)
+        return 0;
+    flags = GlobalFlags(handle);
+    if (!(flags & 0x100))
         return 1;
-    }
-    return 0;
+    return (unsigned char)flags;
 }
