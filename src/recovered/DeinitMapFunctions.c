@@ -1,0 +1,1 @@
+void DeinitMapFunctions(void) {}

@@ -38857,8 +38857,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawEdit — ANTEDIT_MODULE:14EE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/DrawEdit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 14EE  cb                       retf 
@@ -50261,72 +50261,72 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _clip_SetWin — ANTEDIT_MODULE:8E44
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_SetWin.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E44  cb                       retf 
 ```
 
 ## _clip_Off — ANTEDIT_MODULE:8E46
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_Off.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E46  cb                       retf 
 ```
 
 ## _clip_KillWin — ANTEDIT_MODULE:8E48
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_KillWin.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E48  cb                       retf 
 ```
 
 ## _clip_SubInclude — ANTEDIT_MODULE:8E4A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_SubInclude.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E4A  cb                       retf 
 ```
 
 ## _clip_SubExclude — ANTEDIT_MODULE:8E4C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_SubExclude.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E4C  cb                       retf 
 ```
 
 ## _clip_Pop — ANTEDIT_MODULE:8E4E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_Pop.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E4E  cb                       retf 
 ```
 
 ## _clip_Push — ANTEDIT_MODULE:8E50
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_Push.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E50  cb                       retf 
 ```
 
 ## _clip_ToRect — ANTEDIT_MODULE:8E52
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_ToRect.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E52  cb                       retf 
 ```
 
 ## _clip_ToObj — ANTEDIT_MODULE:8E54
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/clip_ToObj.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8E54  cb                       retf 
@@ -55317,8 +55317,8 @@ C198  cb                       retf
 ```
 
 ## _DeinitMapFunctions — ANTEDIT_MODULE:C19A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/DeinitMapFunctions.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C19A  cb                       retf 
@@ -73894,8 +73894,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimAllocate — SIMONE_MODULE:0240
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/SimAllocate.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 0240  cb                       retf 
@@ -74156,8 +74156,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CreateSimPats — SIMONE_MODULE:04DC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/CreateSimPats.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 04DC  cb                       retf 
@@ -84384,8 +84384,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoMapUpdateDraw — SIMONE_MODULE:66D4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/DoMapUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 66D4  cb                       retf 
@@ -118823,8 +118823,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FlushDB — SIMTWO_MODULE:8DF6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/FlushDB.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 8DF6  cb                       retf 
@@ -128061,24 +128061,24 @@ E392  cb                       retf
 ```
 
 ## _win_SetGaugeValue — SIMTWO_MODULE:E394
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_SetGaugeValue.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E394  cb                       retf 
 ```
 
 ## _win_GetGaugeValue — SIMTWO_MODULE:E396
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_GetGaugeValue.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E396  cb                       retf 
 ```
 
 ## _win_SetGaugeUpdateHook — SIMTWO_MODULE:E398
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_SetGaugeUpdateHook.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E398  cb                       retf 
@@ -128094,8 +128094,8 @@ E39C  cb                       retf
 ```
 
 ## _win_LockInit — SIMTWO_MODULE:E39E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_LockInit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E39E  cb                       retf 
@@ -128111,24 +128111,24 @@ E3A2  cb                       retf
 ```
 
 ## _win_UnlockWin — SIMTWO_MODULE:E3A4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_UnlockWin.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E3A4  cb                       retf 
 ```
 
 ## _win_LockWinHigh — SIMTWO_MODULE:E3A6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_LockWinHigh.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E3A6  cb                       retf 
 ```
 
 ## _win_LockWin — SIMTWO_MODULE:E3A8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_LockWin.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E3A8  cb                       retf 
