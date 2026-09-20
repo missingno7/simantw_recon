@@ -27581,8 +27581,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetMenuItemState — GR_MODULE:4C36
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 53 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 53 bytes.
+Source: src/recovered/SetMenuItemState.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4C36  55                       push bp
@@ -27638,8 +27638,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetMenuOptionText — GR_MODULE:4C9E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 48 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 48 bytes.
+Source: src/recovered/SetMenuOptionText.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4C9E  55                       push bp
