@@ -100398,8 +100398,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DecEatR — SIMANT1_MODULE:6C6A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 34 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 34 bytes.
+Source: src/recovered/DecEatR.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 6C6A  b8c860                   mov ax, 0x60c8 ; _match_position
