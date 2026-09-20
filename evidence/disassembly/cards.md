@@ -12833,8 +12833,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _BootUpGame — SIMANT_MODULE:96B2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 3 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 3 bytes.
+Source: src/recovered/BootUpGame.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96B2  33c0                     xor ax, ax
@@ -128085,8 +128085,8 @@ E398  cb                       retf
 ```
 
 ## _win_NoWindowsShouldBeLocked — SIMTWO_MODULE:E39A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 3 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 3 bytes.
+Source: src/recovered/win_NoWindowsShouldBeLocked.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E39A  33c0                     xor ax, ax
@@ -128102,8 +128102,8 @@ E39E  cb                       retf
 ```
 
 ## _win_IsWinLocked — SIMTWO_MODULE:E3A0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 3 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 3 bytes.
+Source: src/recovered/win_IsWinLocked.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E3A0  33c0                     xor ax, ax
@@ -128135,8 +128135,8 @@ E3A8  cb                       retf
 ```
 
 ## _DbgPunt — SIMTWO_MODULE:E3AA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 3 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 3 bytes.
+Source: src/recovered/DbgPunt.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E3AA  33c0                     xor ax, ax
