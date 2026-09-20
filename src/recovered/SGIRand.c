@@ -1,11 +1,10 @@
-extern int far SRand1(int limit);
+extern int near SRand1(int value);
 
-int SGIRand(int limit)
+int SGIRand(int value)
 {
-    volatile int scratch;
-    int first = SRand1(limit);
-    int second = SRand1(limit);
-    if (second < first)
-        return first;
-    return second;
+    int first;
+
+    first = SRand1(value);
+    value = SRand1(value);
+    return value >= first ? value : first;
 }

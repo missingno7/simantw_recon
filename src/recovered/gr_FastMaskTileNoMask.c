@@ -1,11 +1,9 @@
-extern void far DoFastBitmap(int x, int y, int width, int height,
-                             int imageOffset, int imageSegment, int mask);
+extern void near DoFastBitmap(int a, int b, int width, int height,
+                              int x, int y, int mask);
 
-void gr_FastMaskTileNoMask(int x, int y, int imageOffset, int imageSegment)
+void gr_FastMaskTileNoMask(int source, int color, int x, int y)
 {
-    volatile int locals[2];
-    locals[0] = x;
+    int savedSource = source;
 
-    DoFastBitmap(locals[0], *((volatile int *)&y), 0x10, 0x10,
-                 imageOffset, imageSegment, 0);
+    DoFastBitmap(savedSource, color, 16, 16, x, y, 0);
 }
