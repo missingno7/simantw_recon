@@ -130302,8 +130302,8 @@ F740  cb                       retf
 ```
 
 ## _win_IsCursorInObj — SIMTWO_MODULE:F742
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 50 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 50 bytes.
+Source: src/recovered/win_IsCursorInObj.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 F742  c80c0000                 enter 0xc, 0
