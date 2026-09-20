@@ -117683,7 +117683,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _db_PurgeObject — SIMTWO_MODULE:834E
 Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Source: src/recovered/db_PurgeObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 834E  55                       push bp
