@@ -117942,8 +117942,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _db_SaveObject — SIMTWO_MODULE:8542
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
+Source: src/recovered/db_SaveObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8542  55                       push bp
