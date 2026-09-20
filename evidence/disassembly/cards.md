@@ -116604,8 +116604,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _OverlayOutsideTiles — SIMTWO_MODULE:78B2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 12 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
+Source: src/recovered/OverlayOutsideTiles.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 78B2  8e065ac6                 mov es, word ptr [0xc65a]
@@ -116614,8 +116614,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _OverlayInsideTiles — SIMTWO_MODULE:78BE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 12 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
+Source: src/recovered/OverlayInsideTiles.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 78BE  8e065ac6                 mov es, word ptr [0xc65a]
