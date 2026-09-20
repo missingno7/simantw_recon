@@ -84431,8 +84431,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EndTargetMode — SIMONE_MODULE:6726
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 29 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 29 bytes.
+Source: src/recovered/EndTargetMode.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 6726  8e0682c4                 mov es, word ptr [0xc482]
@@ -84475,8 +84475,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EndLifeTransferMode — SIMONE_MODULE:678E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 29 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 29 bytes.
+Source: src/recovered/EndLifeTransferMode.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 678E  8e0682c4                 mov es, word ptr [0xc482]
