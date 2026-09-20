@@ -13698,8 +13698,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetEditMode — SIMANT_MODULE:9E72
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 16 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 16 bytes.
+Source: src/recovered/SetEditMode.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9E72  55                       push bp
