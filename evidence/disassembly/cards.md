@@ -80389,8 +80389,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeClip — SIMONE_MODULE:3F0C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 71 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 71 bytes.
+Source: src/recovered/wf_MakeClip-d8e5dff058.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 3F0C  c8040000                 enter 4, 0
@@ -126714,8 +126714,8 @@ DCBF  cb                       retf
 ```
 
 ## _win_ObjInv — SIMTWO_MODULE:DCC0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 71 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 71 bytes.
+Source: src/recovered/wf_win_ObjInv-18e2e84ce2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 DCC0  55                       push bp
