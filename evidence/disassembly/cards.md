@@ -12632,8 +12632,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _win_MapChanged — SIMANT_MODULE:9510
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 44 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 44 bytes.
+Source: src/recovered/win_MapChanged.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9510  680001                   push 0x100
