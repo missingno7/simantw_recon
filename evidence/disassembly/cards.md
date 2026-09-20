@@ -75491,8 +75491,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetDis — SIMONE_MODULE:1122
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 57 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 57 bytes.
+Source: src/recovered/GetDis.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 1122  55                       push bp
