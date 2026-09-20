@@ -28504,7 +28504,7 @@ Source: src/recovered/mem_malloc.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR
 
 ## _mem_free — GR_MODULE:54CA
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 16 bytes.
-Source: src/recovered/mem_free.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/mem_free_wrapper.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 54CA  55                       push bp
@@ -128647,8 +128647,8 @@ EA01  cb                       retf
 ```
 
 ## _win_MakeObjSelectable — SIMTWO_MODULE:EA02
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 46 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/win_MakeObjSelectable.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EA02  55                       push bp
@@ -128679,8 +128679,8 @@ EA2F  cb                       retf
 ```
 
 ## _win_MakeObjUnselectable — SIMTWO_MODULE:EA30
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 46 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/win_MakeObjUnselectable.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EA30  55                       push bp
