@@ -52599,8 +52599,8 @@ A4AF  cb                       retf
 ```
 
 ## _ClearLastFileName — ANTEDIT_MODULE:A4B0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 11 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 11 bytes.
+Source: src/recovered/ClearLastFileName.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 A4B0  8e0670c1                 mov es, word ptr [0xc170]
