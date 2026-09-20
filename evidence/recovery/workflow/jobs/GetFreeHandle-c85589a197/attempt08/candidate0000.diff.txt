@@ -1,0 +1,40 @@
+Target | Candidate | Difference
+ | 0000 push si | instruction_shape
+0000 cmp word ptr [0xb4e2], 0 | 0001 cmp <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | memory_operand,immediate_or_binding
+0005 jne 0x21 | 0006 je 0x10 | instruction_shape
+ | 0008 mov <resolved fixup> [{'kind': 'segment', 'name': 'PACK'}] | instruction_shape
+ | 000b mov ds, ax | instruction_shape
+ | 000d jmp 0x2a | instruction_shape
+ | 000f nop  | instruction_shape
+0007 mov word ptr [0xb4e2], 1 | 0010 mov <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | memory_operand,immediate_or_binding
+000d mov bx, 0x7408 | 0016 mov bx, 0x7408 | 
+0010 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 0}] | 0019 mov <resolved fixup> [{'kind': 'segment', 'name': 'PACK'}] | immediate_or_binding
+0013 mov ds, ax | 001c mov ds, ax | 
+0015 mov byte ptr [bx], 0 | 001e mov byte ptr [bx], 0 | 
+0018 add bx, 0x7c | 0021 add bx, 0x7c | 
+001b cmp bx, 0x75f8 | 0024 cmp bx, 0x75f8 | 
+001f jb 0x15 | 0028 jb 0x1e | branch_target
+0021 xor cx, cx | 002a xor cx, cx | 
+0023 mov bx, 0x7408 | 002c mov si, 0x7408 | register_allocation
+0026 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 0}] |  | instruction_shape
+0029 mov ds, ax | 002f mov bx, si | register_allocation
+002b cmp byte ptr [bx], 0 | 0031 cmp byte ptr [si], cl | instruction_shape
+002e je 0x3e | 0033 je 0x44 | branch_target
+ | 0035 cmp bx, 0x75f8 | instruction_shape
+ | 0039 jae 0x44 | instruction_shape
+0030 inc cx | 003b inc cx | 
+0031 add bx, 0x7c | 003c add bx, 0x7c | 
+0034 cmp bx, 0x75f8 | 003f cmp byte ptr [bx], 0 | instruction_shape
+0038 jb 0x2b | 0042 jne 0x35 | instruction_shape
+003a push ss | 0044 push ss | 
+003b pop ds | 0045 pop ds | 
+003c jmp 0x44 | 0046 cmp bx, 0x75f8 | instruction_shape
+003e push ss | 004a jae 0x50 | instruction_shape
+ | 004c mov ax, cx | instruction_shape
+003f pop ds | 004e pop si | register_allocation
+0040 mov ax, cx |  | instruction_shape
+0042 retf  | 004f retf  | 
+0043 nop  |  | instruction_shape
+0044 mov ax, 0xffff | 0050 mov ax, 0xffff | 
+ | 0053 pop si | instruction_shape
+0047 retf  | 0054 retf  | 
