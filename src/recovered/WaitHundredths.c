@@ -1,13 +1,10 @@
-extern unsigned long far TickCount(void);
+extern unsigned long far pascal GetTickCount(void);
 
-void WaitHundredths(unsigned int hundredths)
+void WaitHundredths(unsigned int count)
 {
-    unsigned long target;
-    unsigned int delay;
-    target = TickCount();
-    delay = (hundredths << 2) + hundredths;
-    delay <<= 1;
-    target += delay;
-    while (TickCount() < target) {
-    }
+    unsigned long deadline;
+
+    deadline = GetTickCount() + 10L * count;
+    while (GetTickCount() < deadline)
+        ;
 }
