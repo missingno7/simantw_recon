@@ -20496,8 +20496,8 @@ Source: src/recovered/GTextBox.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_M
 ```
 
 ## _GRectChecker — GR_MODULE:0BE0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 48 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 48 bytes.
+Source: src/recovered/GRectChecker.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 0BE0  55                       push bp
