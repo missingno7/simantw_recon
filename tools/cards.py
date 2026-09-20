@@ -9,6 +9,12 @@ def main():
     raw=fixture('SIMANTW.EXE');s=mapsym.parse(fixture('SIMANTW.SYM'));n=ne.parse(raw)
     inventory=read_json(ROOT/'evidence/symbols/inventory.json')['symbols']
     recipes=read_json(ROOT/'src/recovery.json')['targets'];cards=[]
+    ledger_path=ROOT/'evidence/recovery/blockers.json'
+    ledger=read_json(ledger_path) if ledger_path.exists() else {}
+    drafts={**ledger.get('drafts',{}),**ledger.get('workflow_cases',{})}
+    cfgpath=ROOT/'evidence/disassembly/cfg-extents.json'
+    cfg=read_json(cfgpath) if cfgpath.exists() else {}
+    if cfg and (cfg['exe_sha256']!=sha256(raw) or cfg['sym_sha256']!=s['sha256']):raise ValueError('stale CFG evidence')
     runtime_path=ROOT/'layout/runtime-ownership.json'
     runtime=read_json(runtime_path)['members'] if runtime_path.exists() else []
     provenance={'exe_sha256':sha256(raw),'sym_sha256':s['sha256']}
@@ -17,6 +23,8 @@ def main():
         seg=item['segment'];ns=n['segments'][seg-1];code=raw[ns['file_offset']:ns['file_offset']+ns['logical_size']]
         start=item['offset'];limit=item['next_symbol_upper_bound']
         e=extent(code,start,limit)
+        solved=cfg.get('functions',{}).get(item['name'])
+        if solved and (solved['end'] is not None or solved['status'] in ('SHARED_TAIL','OVERLAPPING_ENTRY','AMBIGUOUS_TABLE')):e=solved.copy()
         recipe=recipes.get(item['name']);rows=disassemble(code,start,e['end'] or limit,seg,n,s)
         calls=[r for row in rows if 'call' in row['mnemonic'] for r in row['references']]
         globals_=[r for row in rows for r in row['references'] if r['kind']=='global_ds_assumed']
@@ -27,7 +35,9 @@ def main():
              'disassembly':rows,'source':recipe['source'] if recipe else None,'compiler_flags':recipe['flags'] if recipe else None,
              'known_fixups':[dict(r,sites=[p for p in r['sites'] if start<=p<limit]) for r in ns['relocations'] if any(start<=p<limit for p in r['sites'])],
              'proof':recipe.get('proof','SEMANTIC_CANDIDATE') if recipe else 'DISASSEMBLED',
-             'blockers':[] if recipe else ['source_not_recovered','original_toolchain_unresolved']+([] if e['end'] else ['extent_unresolved'])}
+             'blockers':[] if recipe else ['SOURCE_NOT_RECOVERED']+drafts.get(item['name'],{}).get('blockers',[])+([] if e['end'] else ['EXTENT_UNKNOWN'])}
+        if not recipe and item['name'] in drafts:
+            card.update(draft_source=drafts[item['name']]['source'],blocker_evidence='evidence/recovery/blockers.json')
         reuse=[m for m in runtime if any(c['segment']==seg and c['offset']<=start<c['offset']+c['size'] for c in m['code_ranges'])]
         if reuse:
             card.update(ownership='HISTORICAL_LIBRARY',ownership_confidence=reuse[0]['status'],proof='COMPLETE_MEMBER_MATCH',blockers=[],runtime_members=reuse,reconstruction_scope='EXCLUDED_REUSE_OBJECT')

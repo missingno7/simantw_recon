@@ -192,7 +192,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoUserButtonUpdate — SIMANT_MODULE:01B6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -248,7 +248,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _UpdateUserButtons — SIMANT_MODULE:023A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -363,7 +363,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetUserButton — SIMANT_MODULE:036A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -478,7 +478,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoUserButton — SIMANT_MODULE:04C4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -863,7 +863,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoBookMark — SIMANT_MODULE:08A6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 513 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -1050,7 +1050,6 @@ Source: unrecovered. Flags: unresolved.
 0AA4  5f                       pop di
 0AA5  c9                       leave 
 0AA6  cb                       retf 
-0AA7  90                       nop 
 ```
 
 ## _ClearBookmarks — SIMANT_MODULE:0AA8
@@ -1106,7 +1105,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawRibbonMessage — SIMANT_MODULE:0B26
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 156 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -1158,7 +1157,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoEvent — SIMANT_MODULE:0BC2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 548 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -1391,7 +1390,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _HelpKeyDown — SIMANT_MODULE:0DE6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 166 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -1458,7 +1457,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoKeyDown — SIMANT_MODULE:0E8C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1385 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -1976,11 +1975,10 @@ Source: unrecovered. Flags: unresolved.
 13F2  5f                       pop di
 13F3  c9                       leave 
 13F4  cb                       retf 
-13F5  90                       nop 
 ```
 
 ## _DoMouse — SIMANT_MODULE:13F6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -2426,7 +2424,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoMenuEntry — SIMANT_MODULE:1876
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 503 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -2613,11 +2611,10 @@ Source: unrecovered. Flags: unresolved.
 1A6A  5f                       pop di
 1A6B  c9                       leave 
 1A6C  cb                       retf 
-1A6D  90                       nop 
 ```
 
 ## _AdjustWndMinMax — SIMANT_MODULE:1A6E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 457 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -2792,7 +2789,6 @@ Source: unrecovered. Flags: unresolved.
 1C34  5f                       pop di
 1C35  c9                       leave 
 1C36  cb                       retf 
-1C37  90                       nop 
 ```
 
 ## MYENUMFUNC — SIMANT_MODULE:1C38
@@ -2965,7 +2961,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ProcessPost — SIMANT_MODULE:1DBF
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 672 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -3243,11 +3239,10 @@ Source: unrecovered. Flags: unresolved.
 205C  5e                       pop si
 205D  c9                       leave 
 205E  cb                       retf 
-205F  90                       nop 
 ```
 
 ## _NetworkSend — SIMANT_MODULE:2060
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 451 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -3434,11 +3429,10 @@ Source: unrecovered. Flags: unresolved.
 221C  9a707cf61d               lcall 0x1df6, 0x7c70 ; _NbHangUp
 2221  c9                       leave 
 2222  cb                       retf 
-2223  90                       nop 
 ```
 
 ## _UpdateWindows — SIMANT_MODULE:2224
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 540 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -3612,7 +3606,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## MYTIMERFUNC — SIMANT_MODULE:2440
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 973 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -3933,7 +3927,6 @@ Source: unrecovered. Flags: unresolved.
 2808  5f                       pop di
 2809  c9                       leave 
 280A  ca0a00                   retf 0xa
-280D  90                       nop 
 ```
 
 ## _LoadFancyCursor — SIMANT_MODULE:280E
@@ -3980,7 +3973,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetFancyCursor — SIMANT_MODULE:2880
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -4055,7 +4048,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## MAINWNDPROC — SIMANT_MODULE:2930
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -4156,7 +4149,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InitInstance — SIMANT_MODULE:3C8A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 325 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -4294,7 +4287,6 @@ Source: unrecovered. Flags: unresolved.
 3DCC  5f                       pop di
 3DCD  c9                       leave 
 3DCE  cb                       retf 
-3DCF  90                       nop 
 ```
 
 ## _InitApplication — SIMANT_MODULE:3DD0
@@ -4471,7 +4463,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## WINMAIN — SIMANT_MODULE:3FDA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1546 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -5059,7 +5051,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetDevicePalette — SIMANT_MODULE:45E4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 185 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -5143,11 +5135,10 @@ Source: unrecovered. Flags: unresolved.
 469A  5f                       pop di
 469B  c9                       leave 
 469C  cb                       retf 
-469D  90                       nop 
 ```
 
 ## _SetUpPalette — SIMANT_MODULE:469E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 565 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -5377,7 +5368,6 @@ Source: unrecovered. Flags: unresolved.
 48D0  5f                       pop di
 48D1  c9                       leave 
 48D2  cb                       retf 
-48D3  90                       nop 
 ```
 
 ## _MyPow — SIMANT_MODULE:48D4
@@ -5435,7 +5425,7 @@ Source: src/recovered/MyPow.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_
 ```
 
 ## _InitPalette — SIMANT_MODULE:493E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 718 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -5765,7 +5755,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PauseGame — SIMANT_MODULE:4CC2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 369 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -5898,11 +5888,10 @@ Source: unrecovered. Flags: unresolved.
 4E30  5f                       pop di
 4E31  c9                       leave 
 4E32  cb                       retf 
-4E33  90                       nop 
 ```
 
 ## _SetPause — SIMANT_MODULE:4E34
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 369 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -6035,12 +6024,11 @@ Source: unrecovered. Flags: unresolved.
 4FA2  5f                       pop di
 4FA3  c9                       leave 
 4FA4  cb                       retf 
-4FA5  90                       nop 
 ```
 
 ## _ProcMenuHelp — SIMANT_MODULE:4FA6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 27 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 27 bytes.
+Source: src/recovered/ProcMenuHelp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 4FA6  55                       push bp
@@ -6057,7 +6045,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ProcMenu — SIMANT_MODULE:4FC2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -6590,7 +6578,7 @@ Source: src/initapp.c. Flags: ['/AM', '/G2', '/Gs', '/Oe', '/NTSIMANT_MODULE'].
 ```
 
 ## _CalcScore — SIMANT_MODULE:5530
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1127 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -7010,11 +6998,10 @@ Source: unrecovered. Flags: unresolved.
 5994  5f                       pop di
 5995  c9                       leave 
 5996  cb                       retf 
-5997  90                       nop 
 ```
 
 ## _DoScenario — SIMANT_MODULE:5998
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 275 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -7127,12 +7114,11 @@ Source: unrecovered. Flags: unresolved.
 5AA8  5e                       pop si
 5AA9  c9                       leave 
 5AAA  cb                       retf 
-5AAB  90                       nop 
 ```
 
 ## _DoWinHelp — SIMANT_MODULE:5AAC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 30 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 30 bytes.
+Source: src/recovered/DoWinHelp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 5AAC  55                       push bp
@@ -7151,7 +7137,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _win_DrawScoreWindow — SIMANT_MODULE:5ACA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 480 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -7743,7 +7729,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetDefaultWindPrompt — SIMANT_MODULE:60CC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 141 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -7795,7 +7781,6 @@ Source: unrecovered. Flags: unresolved.
 6154  e86931                   call 0x92c0 ; _EditMessage
 6157  c9                       leave 
 6158  cb                       retf 
-6159  90                       nop 
 ```
 
 ## _PictStrnDialog — SIMANT_MODULE:615A
@@ -7940,7 +7925,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PictureDialog — SIMANT_MODULE:62BC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 535 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -8130,11 +8115,10 @@ Source: unrecovered. Flags: unresolved.
 64D0  5f                       pop di
 64D1  c9                       leave 
 64D2  cb                       retf 
-64D3  90                       nop 
 ```
 
 ## _win_DrawEndGameWindow — SIMANT_MODULE:64D4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 301 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -8247,11 +8231,10 @@ Source: unrecovered. Flags: unresolved.
 65FE  5f                       pop di
 65FF  c9                       leave 
 6600  cb                       retf 
-6601  90                       nop 
 ```
 
 ## _EndGameDialog — SIMANT_MODULE:6602
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 312 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -8370,7 +8353,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SpiderDialog — SIMANT_MODULE:673A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 537 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -8569,7 +8552,6 @@ Source: unrecovered. Flags: unresolved.
 6950  5f                       pop di
 6951  c9                       leave 
 6952  cb                       retf 
-6953  90                       nop 
 ```
 
 ## _CustomerIDDialog — SIMANT_MODULE:6954
@@ -8656,7 +8638,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _processEdit — SIMANT_MODULE:6A38
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1168 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -9345,7 +9327,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _processSpider — SIMANT_MODULE:7198
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 290 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -9481,7 +9463,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetGoalsY — SIMANT_MODULE:7334
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 105 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -9519,11 +9501,10 @@ Source: unrecovered. Flags: unresolved.
 7396  26891ec680               mov word ptr es:[0x80c6], bx
 739B  c9                       leave 
 739C  cb                       retf 
-739D  90                       nop 
 ```
 
 ## _YellowBirth — SIMANT_MODULE:739E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 936 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -9844,7 +9825,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowDeath — SIMANT_MODULE:7746
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -10499,7 +10480,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SpecialXfer — SIMANT_MODULE:7EB6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 490 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -10681,7 +10662,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LionDialog — SIMANT_MODULE:80A0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 449 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -10841,11 +10822,10 @@ Source: unrecovered. Flags: unresolved.
 825E  5f                       pop di
 825F  c9                       leave 
 8260  cb                       retf 
-8261  90                       nop 
 ```
 
 ## _YellowDialog — SIMANT_MODULE:8262
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 523 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11024,7 +11004,6 @@ Source: unrecovered. Flags: unresolved.
 846A  5f                       pop di
 846B  c9                       leave 
 846C  cb                       retf 
-846D  90                       nop 
 ```
 
 ## _DoTroph — SIMANT_MODULE:846E
@@ -11126,7 +11105,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowCommandKey — SIMANT_MODULE:8562
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11363,7 +11342,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowCommand — SIMANT_MODULE:87BA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11596,7 +11575,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowHelp — SIMANT_MODULE:8A2C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 62 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11636,7 +11615,7 @@ Source: src/recovered/OpenHistoryWindow.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw',
 ```
 
 ## _ProcHistoryEvent — SIMANT_MODULE:8A76
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 245 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11736,11 +11715,10 @@ Source: unrecovered. Flags: unresolved.
 8B68  5f                       pop di
 8B69  c9                       leave 
 8B6A  cb                       retf 
-8B6B  90                       nop 
 ```
 
 ## _ToggleHistButton — SIMANT_MODULE:8B6C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 400 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -12023,7 +12001,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _drawHistGraph — SIMANT_MODULE:8E78
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 777 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -12320,7 +12298,6 @@ Source: unrecovered. Flags: unresolved.
 917E  5f                       pop di
 917F  c9                       leave 
 9180  cb                       retf 
-9181  90                       nop 
 ```
 
 ## _HistUpdate — SIMANT_MODULE:9182
@@ -12424,7 +12401,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EditMessage — SIMANT_MODULE:92C0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 351 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -12543,7 +12520,6 @@ Source: unrecovered. Flags: unresolved.
 941C  5f                       pop di
 941D  c9                       leave 
 941E  cb                       retf 
-941F  90                       nop 
 ```
 
 ## _win_YardClosed — SIMANT_MODULE:9420
@@ -12592,7 +12568,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _UpdateLayQueenModeDisplay — SIMANT_MODULE:94A4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 108 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -12652,7 +12628,7 @@ Source: src/recovered/win_MapChanged.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## _SetMapTitle — SIMANT_MODULE:953C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 161 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -12703,7 +12679,6 @@ Source: unrecovered. Flags: unresolved.
 95D6  9a4e8ea794               lcall 0x94a7, 0x8e4e ; _clip_Pop
 95DB  5e                       pop si
 95DC  cb                       retf 
-95DD  90                       nop 
 ```
 
 ## _ClearMapScentButtons — SIMANT_MODULE:95DE
@@ -12922,7 +12897,7 @@ Source: src/recovered/MakeDMap.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMA
 ```
 
 ## _TileIsVisible — SIMANT_MODULE:96CA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 74 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -12986,7 +12961,7 @@ Source: src/recovered/ErrorLog.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMA
 ```
 
 ## _YardToMap — SIMANT_MODULE:972A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 493 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -13135,11 +13110,10 @@ Source: unrecovered. Flags: unresolved.
 9910  9a4e8ef095               lcall 0x95f0, 0x8e4e ; _clip_Pop
 9915  5e                       pop si
 9916  cb                       retf 
-9917  90                       nop 
 ```
 
 ## _MapToYard — SIMANT_MODULE:9918
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 529 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -13299,12 +13273,11 @@ Source: unrecovered. Flags: unresolved.
 9B22  9a4e8e3d97               lcall 0x973d, 0x8e4e ; _clip_Pop
 9B27  5e                       pop si
 9B28  cb                       retf 
-9B29  90                       nop 
 ```
 
 ## _OpenMapYard — SIMANT_MODULE:9B2A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 54 bytes.
+Source: src/recovered/wf_OpenMapYard-118a20a584.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9B2A  680001                   push 0x100
@@ -13448,7 +13421,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DialogAbort — SIMANT_MODULE:9C66
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 49 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -13471,11 +13444,10 @@ Source: unrecovered. Flags: unresolved.
 9C8E  9a83960000               lcall 0, 0x9683
 9C93  250080                   and ax, 0x8000
 9C96  cb                       retf 
-9C97  90                       nop 
 ```
 
 ## _DialogAbortOrCont — SIMANT_MODULE:9C98
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 59 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -13504,7 +13476,6 @@ Source: unrecovered. Flags: unresolved.
 9CCF  8bc6                     mov ax, si
 9CD1  5e                       pop si
 9CD2  cb                       retf 
-9CD3  90                       nop 
 ```
 
 ## _DialogDone — SIMANT_MODULE:9CD4
@@ -13540,7 +13511,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddSomeAnts — SIMANT_MODULE:9D04
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 90 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -13712,7 +13683,7 @@ Source: src/recovered/SetEditMode.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _SetMapModeAnt — SIMANT_MODULE:9E82
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 274 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -13826,7 +13797,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetYardMode — SIMANT_MODULE:9F94
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1009 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -14194,11 +14165,10 @@ A381  5e                       pop si
 A382  5f                       pop di
 A383  c9                       leave 
 A384  cb                       retf 
-A385  90                       nop 
 ```
 
 ## _SetMapPlaneLocation — SIMANT_MODULE:A386
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 419 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -14335,11 +14305,10 @@ A521  9a468eaba3               lcall 0xa3ab, 0x8e46 ; _clip_Off
 A526  5e                       pop si
 A527  c9                       leave 
 A528  cb                       retf 
-A529  90                       nop 
 ```
 
 ## _GotoMapPoint — SIMANT_MODULE:A52A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 160 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -14399,7 +14368,7 @@ A5C9  cb                       retf
 ```
 
 ## _SetMapPlane — SIMANT_MODULE:A5CA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 277 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -14495,7 +14464,6 @@ A6D5  83c402                   add sp, 2
 A6D8  9ae01149a5               lcall 0xa549, 0x11e0 ; _UpdateEdit
 A6DD  c9                       leave 
 A6DE  cb                       retf 
-A6DF  90                       nop 
 ```
 
 ## _CenterAnt — SIMANT_MODULE:A6E0
@@ -14544,7 +14512,7 @@ A763  cb                       retf
 ```
 
 ## _GotoMyAnt — SIMANT_MODULE:A764
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 224 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -14695,7 +14663,7 @@ A910  cb                       retf
 ```
 
 ## _GotoQueen — SIMANT_MODULE:A912
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 420 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -14932,7 +14900,7 @@ AB8F  cb                       retf
 ```
 
 ## _XferPatch — SIMANT_MODULE:AB90
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 385 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -15073,11 +15041,10 @@ AD0D  5e                       pop si
 AD0E  5f                       pop di
 AD0F  c9                       leave 
 AD10  cb                       retf 
-AD11  90                       nop 
 ```
 
 ## _PlaceQueenInYard — SIMANT_MODULE:AD12
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 937 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -15407,11 +15374,10 @@ B0B7  5e                       pop si
 B0B8  5f                       pop di
 B0B9  c9                       leave 
 B0BA  cb                       retf 
-B0BB  90                       nop 
 ```
 
 ## _MysteryButton — SIMANT_MODULE:B0BC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -15720,7 +15686,7 @@ B3BB  cb                       retf
 ```
 
 ## _win_CasteControlChanged — SIMANT_MODULE:B3BC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 500 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -15903,7 +15869,7 @@ B5AF  cb                       retf
 ```
 
 ## _win_ModeControlChanged — SIMANT_MODULE:B5B0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 500 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16086,7 +16052,7 @@ B7A3  cb                       retf
 ```
 
 ## _UpdateCasteWindow — SIMANT_MODULE:B7A4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 547 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16278,11 +16244,10 @@ B9C3  5e                       pop si
 B9C4  5f                       pop di
 B9C5  c9                       leave 
 B9C6  cb                       retf 
-B9C7  90                       nop 
 ```
 
 ## _UpdateModeWindow — SIMANT_MODULE:B9C8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 547 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16474,11 +16439,10 @@ BBE7  5e                       pop si
 BBE8  5f                       pop di
 BBE9  c9                       leave 
 BBEA  cb                       retf 
-BBEB  90                       nop 
 ```
 
 ## _OpenCasteWindow — SIMANT_MODULE:BBEC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 141 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16533,11 +16497,10 @@ BC6F  680013                   push 0x1300
 BC72  9a2ef5eab9               lcall 0xb9ea, 0xf52e ; _win_MakeGroupInvisible
 BC77  c9                       leave 
 BC78  cb                       retf 
-BC79  90                       nop 
 ```
 
 ## _OpenModeWindow — SIMANT_MODULE:BC7A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 141 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16592,11 +16555,10 @@ BCFD  680012                   push 0x1200
 BD00  9a2ef5f6bb               lcall 0xbbf6, 0xf52e ; _win_MakeGroupInvisible
 BD05  c9                       leave 
 BD06  cb                       retf 
-BD07  90                       nop 
 ```
 
 ## _ProcCasteEvent — SIMANT_MODULE:BD08
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16946,7 +16908,7 @@ C079  90                       nop
 ```
 
 ## _ProcModeEvent — SIMANT_MODULE:C07A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16969,7 +16931,7 @@ C0A5  90                       nop
 ```
 
 ## _IsPointInIsoTri — SIMANT_MODULE:C37C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 188 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -17064,7 +17026,7 @@ C437  cb                       retf
 ```
 
 ## _BoundPointToTri — SIMANT_MODULE:C438
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 176 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -17438,7 +17400,7 @@ C7C2  cb                       retf
 ```
 
 ## _DrawControlLevels — SIMANT_MODULE:C7C4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 538 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -17723,7 +17685,7 @@ CA79  cb                       retf
 ```
 
 ## _GetTriLatDist — SIMANT_MODULE:CA7A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 299 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -17843,11 +17805,10 @@ CBA1  5e                       pop si
 CBA2  5f                       pop di
 CBA3  c9                       leave 
 CBA4  cb                       retf 
-CBA5  90                       nop 
 ```
 
 ## _SetTriLatPoint — SIMANT_MODULE:CBA6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 221 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -17935,7 +17896,6 @@ CC7F  5e                       pop si
 CC80  5f                       pop di
 CC81  c9                       leave 
 CC82  cb                       retf 
-CC83  90                       nop 
 ```
 
 ## _initControls — SIMANT_MODULE:CC84
@@ -18206,7 +18166,7 @@ CF38  cb                       retf
 ```
 
 ## _AboutDialog — SIMANT_MODULE:CF3A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1192 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -18877,7 +18837,7 @@ D626  cb                       retf
 ```
 
 ## _MenuQuit — SIMANT_MODULE:D628
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 66 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -18912,7 +18872,7 @@ D669  cb                       retf
 ```
 
 ## _SetDefaultWindows — SIMANT_MODULE:D66A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 113 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -18962,11 +18922,10 @@ D6D1  0e                       push cs
 D6D2  e867be                   call 0x953c ; _SetMapTitle
 D6D5  9a2c0e59d6               lcall 0xd659, 0xe2c ; _OpenEditWindow
 D6DA  cb                       retf 
-D6DB  90                       nop 
 ```
 
 ## _NewGame — SIMANT_MODULE:D6DC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 691 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -19222,7 +19181,6 @@ D98B  5e                       pop si
 D98C  5f                       pop di
 D98D  c9                       leave 
 D98E  cb                       retf 
-D98F  90                       nop 
 ```
 
 ## _SetHelpCursor — GR_MODULE:0000
@@ -19362,7 +19320,7 @@ Source: src/recovered/DetectDisplay.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _InitGraphics — GR_MODULE:010C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 275 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -19451,11 +19409,10 @@ Source: unrecovered. Flags: unresolved.
 021C  5e                       pop si
 021D  c9                       leave 
 021E  cb                       retf 
-021F  90                       nop 
 ```
 
 ## _IBMInitStuff — GR_MODULE:0220
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1507 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -20040,7 +19997,6 @@ Source: unrecovered. Flags: unresolved.
 0800  5f                       pop di
 0801  c9                       leave 
 0802  cb                       retf 
-0803  90                       nop 
 ```
 
 ## _ReadWord — GR_MODULE:0804
@@ -20099,7 +20055,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SkipWords — GR_MODULE:0872
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 130 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -20163,7 +20119,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ReadConfig — GR_MODULE:08F4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 548 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -21103,7 +21059,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GPutPacked — GR_MODULE:10A2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 634 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -21380,7 +21336,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GMixedFill — GR_MODULE:131C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 130 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -21441,7 +21397,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GMixedFillBox — GR_MODULE:139E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 76 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -21865,7 +21821,7 @@ Source: src/recovered/GCloseFonts.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTG
 ```
 
 ## _GPutStr — GR_MODULE:1792
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 229 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -21953,7 +21909,6 @@ Source: unrecovered. Flags: unresolved.
 1874  5f                       pop di
 1875  c9                       leave 
 1876  cb                       retf 
-1877  90                       nop 
 ```
 
 ## _PopMsg — GR_MODULE:1878
@@ -22039,7 +21994,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CreateMonoSolidBrush — GR_MODULE:1902
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: src/recovered/CreateMonoSolidBrush.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
@@ -22127,7 +22082,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GSetAttrib — GR_MODULE:19B4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 50 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -22154,7 +22109,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GBoxFill — GR_MODULE:19E6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -22249,7 +22204,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GPatBox — GR_MODULE:1AB2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -22678,7 +22633,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CalcBitmapStuff — GR_MODULE:1E72
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 146 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -22750,7 +22705,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ConvertMaskBitmap2 — GR_MODULE:1F04
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1385 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -23300,7 +23255,6 @@ Source: unrecovered. Flags: unresolved.
 246A  5f                       pop di
 246B  c9                       leave 
 246C  cb                       retf 
-246D  90                       nop 
 ```
 
 ## _ConvertBitmap — GR_MODULE:246E
@@ -23578,7 +23532,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ConvertBitmap2 — GR_MODULE:2710
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 816 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -23912,7 +23866,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CopyBitmap2 — GR_MODULE:2A40
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 370 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -24072,7 +24026,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CopyMonoBitmap — GR_MODULE:2BB2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 801 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -24392,7 +24346,6 @@ Source: unrecovered. Flags: unresolved.
 2ED0  5f                       pop di
 2ED1  c9                       leave 
 2ED2  cb                       retf 
-2ED3  90                       nop 
 ```
 
 ## _CopyMonoMaskBitmap — GR_MODULE:2ED4
@@ -24837,7 +24790,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoBitmap — GR_MODULE:332A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 678 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -25159,7 +25112,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoMonoBitmap — GR_MODULE:364C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 870 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -25480,7 +25433,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoFastBitmap — GR_MODULE:39B2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 405 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -25635,7 +25588,6 @@ Source: unrecovered. Flags: unresolved.
 3B44  5f                       pop di
 3B45  c9                       leave 
 3B46  cb                       retf 
-3B47  90                       nop 
 ```
 
 ## _DoFastMonoBitmap — GR_MODULE:3B48
@@ -25853,7 +25805,7 @@ Source: src/recovered/GPutImg.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MO
 ```
 
 ## _GPutPicS — GR_MODULE:3D3C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 78 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -26023,7 +25975,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PaintStuff — GR_MODULE:3E92
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 290 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -26134,7 +26086,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GLine — GR_MODULE:3FB4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 132 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -26350,7 +26302,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawBitMapToBuffer — GR_MODULE:418E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1004 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -26769,7 +26721,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MySetCapture — GR_MODULE:457A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 88 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -26900,7 +26852,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _gr_BitMapSize — GR_MODULE:465C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 185 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -26979,11 +26931,10 @@ Source: unrecovered. Flags: unresolved.
 4712  5f                       pop di
 4713  c9                       leave 
 4714  cb                       retf 
-4715  90                       nop 
 ```
 
 ## _StillDown — GR_MODULE:4716
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 161 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -27045,7 +26996,6 @@ Source: unrecovered. Flags: unresolved.
 47B3  8bc6                     mov ax, si
 47B5  5e                       pop si
 47B6  cb                       retf 
-47B7  90                       nop 
 ```
 
 ## _WaitedEnough — GR_MODULE:47B8
@@ -27388,7 +27338,7 @@ Source: src/recovered/ButtonHeldInit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## _ButtonHeld — GR_MODULE:4A4E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 441 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -27545,7 +27495,6 @@ Source: unrecovered. Flags: unresolved.
 4C02  b80100                   mov ax, 1
 4C05  5e                       pop si
 4C06  cb                       retf 
-4C07  90                       nop 
 ```
 
 ## _ButtonHeldEnd — GR_MODULE:4C08
@@ -27582,7 +27531,7 @@ Source: src/recovered/ConvColor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_
 
 ## _SetMenuItemState — GR_MODULE:4C36
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 53 bytes.
-Source: src/recovered/SetMenuItemState.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/menu_state_tu.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4C36  55                       push bp
@@ -27610,8 +27559,8 @@ Source: src/recovered/SetMenuItemState.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _SetMenuOptionState — GR_MODULE:4C6C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 50 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 50 bytes.
+Source: src/recovered/menu_state_tu.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4C6C  55                       push bp
@@ -27665,7 +27614,7 @@ Source: src/recovered/SetMenuOptionText.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw',
 ```
 
 ## _ms_LoadPopUpResource — GR_MODULE:4CCE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 359 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -27826,11 +27775,10 @@ Source: unrecovered. Flags: unresolved.
 4E32  5f                       pop di
 4E33  c9                       leave 
 4E34  cb                       retf 
-4E35  90                       nop 
 ```
 
 ## _InitMenu — GR_MODULE:4E36
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 790 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -28109,7 +28057,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ms_PopUpMenuResource — GR_MODULE:514C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 320 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -28237,7 +28185,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _TrapFill — GR_MODULE:528C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 495 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -28432,7 +28380,6 @@ Source: unrecovered. Flags: unresolved.
 5478  5f                       pop di
 5479  c9                       leave 
 547A  cb                       retf 
-547B  90                       nop 
 ```
 
 ## _mem_Flush — GR_MODULE:547C
@@ -28517,7 +28464,7 @@ Source: src/recovered/mem_free_wrapper.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _mem_Alloc — GR_MODULE:54DA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 80 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -28561,7 +28508,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _mem_Realloc — GR_MODULE:552A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 86 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -28682,7 +28629,7 @@ Source: src/recovered/mem_MakeDiscardable.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw
 ```
 
 ## _mem_SetType — GR_MODULE:55D6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 78 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -28969,7 +28916,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _Ralloc — GR_MODULE:57F2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 160 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -29041,7 +28988,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RallocRealloc — GR_MODULE:5892
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 163 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -29113,7 +29060,6 @@ Source: unrecovered. Flags: unresolved.
 5932  5f                       pop di
 5933  c9                       leave 
 5934  cb                       retf 
-5935  90                       nop 
 ```
 
 ## _RallocFree — GR_MODULE:5936
@@ -29257,7 +29203,7 @@ Source: src/recovered/RallocFreed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTG
 ```
 
 ## _MakeBalloon — GR_MODULE:59E4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1100 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -29702,7 +29648,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ConvertMonoMaskToTandy — GR_MODULE:5E30
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 221 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -29800,7 +29746,6 @@ Source: unrecovered. Flags: unresolved.
 5F0A  5f                       pop di
 5F0B  c9                       leave 
 5F0C  cb                       retf 
-5F0D  90                       nop 
 ```
 
 ## _ConvertMonoMaskToColor — GR_MODULE:5F0E
@@ -30017,7 +29962,7 @@ Source: src/recovered/font_FontHeight.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '
 ```
 
 ## _font_StringWidth — GR_MODULE:60CE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 78 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -30060,7 +30005,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _font_SetFont — GR_MODULE:611C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 80 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -30158,7 +30103,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _font_PrintStr — GR_MODULE:6216
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 165 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -30232,7 +30177,6 @@ Source: unrecovered. Flags: unresolved.
 62B8  5f                       pop di
 62B9  c9                       leave 
 62BA  cb                       retf 
-62BB  90                       nop 
 ```
 
 ## _WinPrintf — GR_MODULE:62BC
@@ -30380,7 +30324,7 @@ Source: src/recovered/hanim_PrintSet.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## __hanim_FindObject — GR_MODULE:63CA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 69 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -30423,7 +30367,6 @@ Source: unrecovered. Flags: unresolved.
 640C  5f                       pop di
 640D  c9                       leave 
 640E  cb                       retf 
-640F  90                       nop 
 ```
 
 ## _hanim_AddAnimObject — GR_MODULE:6410
@@ -30682,7 +30625,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _hanim_RemoveAnimObject — GR_MODULE:669A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 260 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -30852,7 +30795,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _hanim_ActuallyRemoveAnimObjects — GR_MODULE:680C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 248 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -30964,7 +30907,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _hanim_HideObject — GR_MODULE:6904
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 179 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -31046,11 +30989,10 @@ Source: unrecovered. Flags: unresolved.
 69B4  5f                       pop di
 69B5  c9                       leave 
 69B6  cb                       retf 
-69B7  90                       nop 
 ```
 
 ## _hanim_ShowObject — GR_MODULE:69B8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 179 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -31132,11 +31074,10 @@ Source: unrecovered. Flags: unresolved.
 6A68  5f                       pop di
 6A69  c9                       leave 
 6A6A  cb                       retf 
-6A6B  90                       nop 
 ```
 
 ## _hanim_SetObjectPos — GR_MODULE:6A6C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 974 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -32445,7 +32386,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsMMMidiAvail — GR_MODULE:7712
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 42 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -32469,7 +32410,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsMMWaveAvail — GR_MODULE:773C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 42 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -32493,7 +32434,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CheckMMWave — GR_MODULE:7766
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 168 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -32701,7 +32642,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _snd_Install — GR_MODULE:793A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 804 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -32999,7 +32940,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _snd_Deinstall — GR_MODULE:7C5E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 608 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -33211,7 +33152,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _snd_IsSongDone — GR_MODULE:7EBE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 44 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -33443,7 +33384,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MciMessage — GR_MODULE:8154
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 295 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -33542,7 +33483,6 @@ Source: unrecovered. Flags: unresolved.
 8278  5f                       pop di
 8279  c9                       leave 
 827A  cb                       retf 
-827B  90                       nop 
 ```
 
 ## _MusicInit — GR_MODULE:827C
@@ -33578,7 +33518,7 @@ Source: src/recovered/myBeginSoundList.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _StopSong — GR_MODULE:8294
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 272 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -33901,7 +33841,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _myBeginSong — GR_MODULE:858E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -35561,7 +35501,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MciOutWave — GR_MODULE:959C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 788 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -35856,7 +35796,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _myBeginSound — GR_MODULE:98B0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 2263 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -36678,7 +36618,6 @@ A183  5e                       pop si
 A184  5f                       pop di
 A185  c9                       leave 
 A186  cb                       retf 
-A187  90                       nop 
 ```
 
 ## _mySoundIsDone — GR_MODULE:A188
@@ -36708,7 +36647,7 @@ A19E  cb                       retf
 ```
 
 ## _mySongIsDone — GR_MODULE:A1A0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 66 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -36736,7 +36675,7 @@ A1E1  cb                       retf
 ```
 
 ## _MultiMediaSong — GR_MODULE:A1E2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 51 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -36756,7 +36695,6 @@ A210  cb                       retf
 A211  90                       nop 
 A212  33c0                     xor ax, ax
 A214  cb                       retf 
-A215  90                       nop 
 ```
 
 ## _myServiceSong — GR_MODULE:A216
@@ -36803,7 +36741,7 @@ A264  cb                       retf
 
 ## _Beep — GR_MODULE:A266
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 8 bytes.
-Source: src/recovered/Beep.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/Beep.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A266  6a00                     push 0
@@ -36852,7 +36790,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InvalEuMap — ANTEDIT_MODULE:004C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 168 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -37003,7 +36941,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LoadTiles — ANTEDIT_MODULE:01D8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 2218 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -37898,7 +37836,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ProcEditEvent — ANTEDIT_MODULE:0B7A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -38011,7 +37949,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _win_EditChanged — ANTEDIT_MODULE:0C62
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 458 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -38217,7 +38155,7 @@ Source: src/recovered/DoEditUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _ScrollEditArrays — ANTEDIT_MODULE:0E5C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 734 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -38941,7 +38879,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _BoundEditPosition — ANTEDIT_MODULE:15B4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 107 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -38983,11 +38921,10 @@ Source: unrecovered. Flags: unresolved.
 1618  2bc3                     sub ax, bx
 161A  26a3307d                 mov word ptr es:[0x7d30], ax
 161E  cb                       retf 
-161F  90                       nop 
 ```
 
 ## _CenterEdit — ANTEDIT_MODULE:1620
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 180 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -39058,248 +38995,6 @@ Source: unrecovered. Flags: unresolved.
 16D0  8bc2                     mov ax, dx
 16D2  c9                       leave 
 16D3  cb                       retf 
-16D4  c80a0000                 enter 0xa, 0
-16D8  57                       push di
-16D9  56                       push si
-16DA  833e501400               cmp word ptr [0x1450], 0 ; _editBuf
-16DF  7403                     je 0x16e4
-16E1  e91302                   jmp 0x18f7
-16E4  684818                   push 0x1848 ; _match_position
-16E7  68089b                   push 0x9b08
-16EA  6a04                     push 4
-16EC  9ad2c2ab15               lcall 0x15ab, 0xc2d2 ; _win_GetObjRect
-16F1  83c406                   add sp, 6
-16F4  8e0690bf                 mov es, word ptr [0xbf90]
-16F8  26a10e9b                 mov ax, word ptr es:[0x9b0e]
-16FC  262b060a9b               sub ax, word ptr es:[0x9b0a]
-1701  03063c14                 add ax, word ptr [0x143c] ; _tileHeight
-1705  48                       dec ax
-1706  99                       cdq 
-1707  f73e3c14                 idiv word ptr [0x143c] ; _tileHeight
-170B  a37acd                   mov word ptr [0xcd7a], ax ; _editHeight
-170E  8bc8                     mov cx, ax
-1710  26a10c9b                 mov ax, word ptr es:[0x9b0c]
-1714  262b06089b               sub ax, word ptr es:[0x9b08]
-1719  03063a14                 add ax, word ptr [0x143a] ; _tileWidth
-171D  48                       dec ax
-171E  99                       cdq 
-171F  f73e3a14                 idiv word ptr [0x143a] ; _tileWidth
-1723  a380cc                   mov word ptr [0xcc80], ax ; _editWidth
-1726  f72e3a14                 imul word ptr [0x143a] ; _tileWidth
-172A  260306089b               add ax, word ptr es:[0x9b08]
-172F  26a30c9b                 mov word ptr es:[0x9b0c], ax
-1733  8bc1                     mov ax, cx
-1735  f72e3c14                 imul word ptr [0x143c] ; _tileHeight
-1739  2603060a9b               add ax, word ptr es:[0x9b0a]
-173E  26a30e9b                 mov word ptr es:[0x9b0e], ax
-1742  bbf28d                   mov bx, 0x8df2
-1745  8e068abf                 mov es, word ptr [0xbf8a]
-1749  895efa                   mov word ptr [bp - 6], bx
-174C  8c46fc                   mov word ptr [bp - 4], es
-174F  26833f00                 cmp word ptr es:[bx], 0
-1753  7421                     je 0x1776
-1755  26ff37                   push word ptr es:[bx]
-1758  9a9c556917               lcall 0x1769, 0x559c ; _mem_Unlock
-175D  83c402                   add sp, 2
-1760  c45efa                   les bx, ptr [bp - 6]
-1763  26ff37                   push word ptr es:[bx]
-1766  9a80558f17               lcall 0x178f, 0x5580 ; _mem_Free
-176B  83c402                   add sp, 2
-176E  c45efa                   les bx, ptr [bp - 6]
-1771  26c7070000               mov word ptr es:[bx], 0
-1776  bbf48d                   mov bx, 0x8df4
-1779  8e068abf                 mov es, word ptr [0xbf8a]
-177D  895ef6                   mov word ptr [bp - 0xa], bx
-1780  8c46f8                   mov word ptr [bp - 8], es
-1783  26833f00                 cmp word ptr es:[bx], 0
-1787  7421                     je 0x17aa
-1789  26ff37                   push word ptr es:[bx]
-178C  9a9c559d17               lcall 0x179d, 0x559c ; _mem_Unlock
-1791  83c402                   add sp, 2
-1794  c45ef6                   les bx, ptr [bp - 0xa]
-1797  26ff37                   push word ptr es:[bx]
-179A  9a8055bc17               lcall 0x17bc, 0x5580 ; _mem_Free
-179F  83c402                   add sp, 2
-17A2  c45ef6                   les bx, ptr [bp - 0xa]
-17A5  26c7070000               mov word ptr es:[bx], 0
-17AA  1e                       push ds
-17AB  68a014                   push 0x14a0
-17AE  6a01                     push 1
-17B0  a17acd                   mov ax, word ptr [0xcd7a] ; _editHeight
-17B3  f72e80cc                 imul word ptr [0xcc80] ; _editWidth
-17B7  52                       push dx
-17B8  50                       push ax
-17B9  9ada54cb17               lcall 0x17cb, 0x54da ; _mem_Alloc
-17BE  83c40a                   add sp, 0xa
-17C1  c45efa                   les bx, ptr [bp - 6]
-17C4  268907                   mov word ptr es:[bx], ax
-17C7  50                       push ax
-17C8  9a8e55ed17               lcall 0x17ed, 0x558e ; _mem_Lock
-17CD  83c402                   add sp, 2
-17D0  a33e14                   mov word ptr [0x143e], ax
-17D3  89164014                 mov word ptr [0x1440], dx
-17D7  1e                       push ds
-17D8  68ad14                   push 0x14ad
-17DB  6a01                     push 1
-17DD  a17acd                   mov ax, word ptr [0xcd7a] ; _editHeight
-17E0  f72e80cc                 imul word ptr [0xcc80] ; _editWidth
-17E4  d1e0                     shl ax, 1
-17E6  d1d2                     rcl dx, 1
-17E8  52                       push dx
-17E9  50                       push ax
-17EA  9ada54fc17               lcall 0x17fc, 0x54da ; _mem_Alloc
-17EF  83c40a                   add sp, 0xa
-17F2  c45ef6                   les bx, ptr [bp - 0xa]
-17F5  268907                   mov word ptr es:[bx], ax
-17F8  50                       push ax
-17F9  9a8e55ef18               lcall 0x18ef, 0x558e ; _mem_Lock
-17FE  83c402                   add sp, 2
-1801  a34214                   mov word ptr [0x1442], ax
-1804  89164414                 mov word ptr [0x1444], dx
-1808  a17acd                   mov ax, word ptr [0xcd7a] ; _editHeight
-180B  8b164214                 mov dx, word ptr [0x1442]
-180F  8b1e4414                 mov bx, word ptr [0x1444]
-1813  8bca                     mov cx, dx
-1815  f72e80cc                 imul word ptr [0xcc80] ; _editWidth
-1819  8bd1                     mov dx, cx
-181B  8bc8                     mov cx, ax
-181D  d1e1                     shl cx, 1
-181F  b8ffff                   mov ax, 0xffff
-1822  8bfa                     mov di, dx
-1824  8ec3                     mov es, bx
-1826  f3aa                     rep stosb byte ptr es:[di], al
-1828  8e068abf                 mov es, word ptr [0xbf8a]
-182C  26c706f68d0000           mov word ptr es:[0x8df6], 0
-1833  a176cc                   mov ax, word ptr [0xcc76] ; _MapPlane
-1836  0bc0                     or ax, ax
-1838  7c05                     jl 0x183f
-183A  7003                     jo 0x183f
-183C  48                       dec ax
-183D  7e05                     jle 0x1844
-183F  b94000                   mov cx, 0x40
-1842  eb03                     jmp 0x1847
-1844  b98000                   mov cx, 0x80
-1847  b85e16                   mov ax, 0x165e ; _match_position
-184A  8ec0                     mov es, ax
-184C  26833e2e7d00             cmp word ptr es:[0x7d2e], 0
-1852  7d0a                     jge 0x185e
-1854  26c7062e7d0000           mov word ptr es:[0x7d2e], 0
-185B  eb16                     jmp 0x1873
-185D  90                       nop 
-185E  8b1e80cc                 mov bx, word ptr [0xcc80] ; _editWidth
-1862  26a12e7d                 mov ax, word ptr es:[0x7d2e]
-1866  03c3                     add ax, bx
-1868  3bc1                     cmp ax, cx
-186A  7e07                     jle 0x1873
-186C  2bcb                     sub cx, bx
-186E  26890e2e7d               mov word ptr es:[0x7d2e], cx
-1873  26833e307d00             cmp word ptr es:[0x7d30], 0
-1879  7d09                     jge 0x1884
-187B  26c706307d0000           mov word ptr es:[0x7d30], 0
-1882  eb18                     jmp 0x189c
-1884  8b1e7acd                 mov bx, word ptr [0xcd7a] ; _editHeight
-1888  26a1307d                 mov ax, word ptr es:[0x7d30]
-188C  03c3                     add ax, bx
-188E  3d4000                   cmp ax, 0x40
-1891  7e09                     jle 0x189c
-1893  b84000                   mov ax, 0x40
-1896  2bc3                     sub ax, bx
-1898  26a3307d                 mov word ptr es:[0x7d30], ax
-189C  90                       nop 
-189D  0e                       push cs
-189E  e8e547                   call 0x6086 ; _ResetEditScrollRange
-18A1  1e                       push ds
-18A2  68e814                   push 0x14e8
-18A5  6a01                     push 1
-18A7  a17acd                   mov ax, word ptr [0xcd7a] ; _editHeight
-18AA  99                       cdq 
-18AB  52                       push dx
-18AC  50                       push ax
-18AD  a13c14                   mov ax, word ptr [0x143c] ; _tileHeight
-18B0  99                       cdq 
-18B1  52                       push dx
-18B2  50                       push ax
-18B3  a13a14                   mov ax, word ptr [0x143a] ; _tileWidth
-18B6  f72e80cc                 imul word ptr [0xcc80] ; _editWidth
-18BA  d1e0                     shl ax, 1
-18BC  d1d2                     rcl dx, 1
-18BE  d1e0                     shl ax, 1
-18C0  d1d2                     rcl dx, 1
-18C2  051f00                   add ax, 0x1f
-18C5  83d200                   adc dx, 0
-18C8  24e7                     and al, 0xe7
-18CA  d1ea                     shr dx, 1
-18CC  d1d8                     rcr ax, 1
-18CE  d1ea                     shr dx, 1
-18D0  d1d8                     rcr ax, 1
-18D2  d1ea                     shr dx, 1
-18D4  d1d8                     rcr ax, 1
-18D6  52                       push dx
-18D7  50                       push ax
-18D8  9a6e09e218               lcall 0x18e2, 0x96e ; __aFulmul, __aFlmul
-18DD  52                       push dx
-18DE  50                       push ax
-18DF  9a6e099a0e               lcall 0xe9a, 0x96e ; __aFulmul, __aFlmul
-18E4  052000                   add ax, 0x20
-18E7  83d200                   adc dx, 0
-18EA  52                       push dx
-18EB  50                       push ax
-18EC  9ada54fe18               lcall 0x18fe, 0x54da ; _mem_Alloc
-18F1  83c40a                   add sp, 0xa
-18F4  a35014                   mov word ptr [0x1450], ax ; _editBuf
-18F7  ff365014                 push word ptr [0x1450] ; _editBuf
-18FB  9a8e553619               lcall 0x1936, 0x558e ; _mem_Lock
-1900  83c402                   add sp, 2
-1903  a35214                   mov word ptr [0x1452], ax ; _theEditBufPtr
-1906  89165414                 mov word ptr [0x1454], dx
-190A  90                       nop 
-190B  0e                       push cs
-190C  e80903                   call 0x1c18 ; _PreDrawSpider
-190F  90                       nop 
-1910  0e                       push cs
-1911  e89833                   call 0x4cac ; _DrawCurBalloons
-1914  33ff                     xor di, di
-1916  393e7acd                 cmp word ptr [0xcd7a], di ; _editHeight
-191A  7e23                     jle 0x193f
-191C  33f6                     xor si, si
-191E  393680cc                 cmp word ptr [0xcc80], si ; _editWidth
-1922  7e0f                     jle 0x1933
-1924  57                       push di
-1925  56                       push si
-1926  e82749                   call 0x6250
-1929  83c404                   add sp, 4
-192C  46                       inc si
-192D  3b3680cc                 cmp si, word ptr [0xcc80] ; _editWidth
-1931  7cf1                     jl 0x1924
-1933  9a16a26619               lcall 0x1966, 0xa216 ; _myServiceSong
-1938  47                       inc di
-1939  3b3e7acd                 cmp di, word ptr [0xcd7a] ; _editHeight
-193D  7cdd                     jl 0x191c
-193F  833e4e1400               cmp word ptr [0x144e], 0 ; _editForce
-1944  740b                     je 0x1951
-1946  8e068abf                 mov es, word ptr [0xbf8a]
-194A  26c706f68d0000           mov word ptr es:[0x8df6], 0
-1951  8e0694bf                 mov es, word ptr [0xbf94]
-1955  26813ea678f401           cmp word ptr es:[0x78a6], 0x1f4
-195C  740a                     je 0x1968
-195E  90                       nop 
-195F  0e                       push cs
-1960  e80704                   call 0x1d6a ; _DrawSpider
-1963  9a16a27019               lcall 0x1970, 0xa216 ; _myServiceSong
-1968  90                       nop 
-1969  0e                       push cs
-196A  e83d3e                   call 0x57aa ; _DrawBalloons
-196D  9a16a27919               lcall 0x1979, 0xa216 ; _myServiceSong
-1972  ff365014                 push word ptr [0x1450] ; _editBuf
-1976  9a9c552915               lcall 0x1529, 0x559c ; _mem_Unlock
-197B  83c402                   add sp, 2
-197E  2bc0                     sub ax, ax
-1980  a35414                   mov word ptr [0x1454], ax
-1983  a35214                   mov word ptr [0x1452], ax ; _theEditBufPtr
-1986  5e                       pop si
-1987  5f                       pop di
-1988  c9                       leave 
-1989  c3                       ret 
 ```
 
 ## _DrawEditGraphs — ANTEDIT_MODULE:198A
@@ -39703,7 +39398,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawSpider — ANTEDIT_MODULE:1D6A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1402 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -40203,7 +39898,7 @@ Source: src/recovered/ed_MoveTo.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANT
 ```
 
 ## _ed_LineTo — ANTEDIT_MODULE:22FA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 665 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -40474,11 +40169,10 @@ Source: unrecovered. Flags: unresolved.
 2590  5f                       pop di
 2591  c9                       leave 
 2592  cb                       retf 
-2593  90                       nop 
 ```
 
 ## _DrawPalps — ANTEDIT_MODULE:2594
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -41094,7 +40788,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawLegs — ANTEDIT_MODULE:2BE0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -44032,7 +43726,7 @@ Source: src/recovered/BalloonIsVisible.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _EggBalloons — ANTEDIT_MODULE:48F0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 169 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -44099,11 +43793,10 @@ Source: unrecovered. Flags: unresolved.
 4996  1f                       pop ds
 4997  c9                       leave 
 4998  cb                       retf 
-4999  90                       nop 
 ```
 
 ## _FightBalloons — ANTEDIT_MODULE:499A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 169 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -44170,11 +43863,10 @@ Source: unrecovered. Flags: unresolved.
 4A40  1f                       pop ds
 4A41  c9                       leave 
 4A42  cb                       retf 
-4A43  90                       nop 
 ```
 
 ## _QueenBalloons — ANTEDIT_MODULE:4A44
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 169 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -44241,11 +43933,10 @@ Source: unrecovered. Flags: unresolved.
 4AEA  1f                       pop ds
 4AEB  c9                       leave 
 4AEC  cb                       retf 
-4AED  90                       nop 
 ```
 
 ## _RestBalloons — ANTEDIT_MODULE:4AEE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 169 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -44312,11 +44003,10 @@ Source: unrecovered. Flags: unresolved.
 4B94  1f                       pop ds
 4B95  c9                       leave 
 4B96  cb                       retf 
-4B97  90                       nop 
 ```
 
 ## _AddMsgBalloon — ANTEDIT_MODULE:4B98
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 276 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -44423,7 +44113,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawCurBalloons — ANTEDIT_MODULE:4CAC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 2693 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -45207,11 +44897,10 @@ Source: unrecovered. Flags: unresolved.
 572E  5f                       pop di
 572F  c9                       leave 
 5730  cb                       retf 
-5731  90                       nop 
 ```
 
 ## _EditMsgBalloon — ANTEDIT_MODULE:5732
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 114 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -45269,7 +44958,7 @@ Source: src/recovered/PreDrawBalloons.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '
 ```
 
 ## _DrawBalloons — ANTEDIT_MODULE:57AA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 897 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -45590,11 +45279,10 @@ Source: unrecovered. Flags: unresolved.
 5B28  5f                       pop di
 5B29  c9                       leave 
 5B2A  cb                       retf 
-5B2B  90                       nop 
 ```
 
 ## _DoEditScrollLine — ANTEDIT_MODULE:5B2C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 322 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -45710,7 +45398,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoEditScroll — ANTEDIT_MODULE:5C6E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46154,7 +45842,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EditScentMenu — ANTEDIT_MODULE:675E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 103 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46202,11 +45890,10 @@ Source: unrecovered. Flags: unresolved.
 67C2  5e                       pop si
 67C3  c9                       leave 
 67C4  cb                       retf 
-67C5  90                       nop 
 ```
 
 ## _EditToolsMenu — ANTEDIT_MODULE:67C6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 506 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46401,7 +46088,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _win_DrawExamineWindow — ANTEDIT_MODULE:69C0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 395 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46542,11 +46229,10 @@ Source: unrecovered. Flags: unresolved.
 6B48  5f                       pop di
 6B49  c9                       leave 
 6B4A  cb                       retf 
-6B4B  90                       nop 
 ```
 
 ## _MagnifyMenu — ANTEDIT_MODULE:6B4C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 471 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46706,11 +46392,10 @@ Source: unrecovered. Flags: unresolved.
 6D20  5f                       pop di
 6D21  c9                       leave 
 6D22  cb                       retf 
-6D23  90                       nop 
 ```
 
 ## _AntMenu — ANTEDIT_MODULE:6D24
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 232 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46814,7 +46499,7 @@ Source: src/recovered/SetExpTool.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTAN
 ```
 
 ## _DoWarnSetB — ANTEDIT_MODULE:6E1C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 86 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46856,7 +46541,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoHealthSetY — ANTEDIT_MODULE:6E72
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 86 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -46916,7 +46601,7 @@ Source: src/recovered/DoTab.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT
 ```
 
 ## _DoExpMenu — ANTEDIT_MODULE:6EE2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 320 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -47026,7 +46711,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _processExp — ANTEDIT_MODULE:7022
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 604 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -47253,7 +46938,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoTool — ANTEDIT_MODULE:727E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -47465,7 +47150,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DropWall — ANTEDIT_MODULE:7450
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 285 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -47577,11 +47262,10 @@ Source: unrecovered. Flags: unresolved.
 756A  5f                       pop di
 756B  c9                       leave 
 756C  cb                       retf 
-756D  90                       nop 
 ```
 
 ## _ExpDig — ANTEDIT_MODULE:756E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 997 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -47957,7 +47641,6 @@ Source: unrecovered. Flags: unresolved.
 7950  5f                       pop di
 7951  c9                       leave 
 7952  cb                       retf 
-7953  90                       nop 
 ```
 
 ## _ClearLifeB — ANTEDIT_MODULE:7954
@@ -48045,7 +47728,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ExpAddAnt — ANTEDIT_MODULE:79FC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 266 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -48216,7 +47899,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ExpIncSmell — ANTEDIT_MODULE:7B9E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 445 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -48384,11 +48067,10 @@ Source: unrecovered. Flags: unresolved.
 7D58  5e                       pop si
 7D59  c9                       leave 
 7D5A  cb                       retf 
-7D5B  90                       nop 
 ```
 
 ## _ExpKillAnts — ANTEDIT_MODULE:7D5C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 478 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -48574,7 +48256,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IncFoodHere — ANTEDIT_MODULE:7F3A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 287 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -48680,11 +48362,10 @@ Source: unrecovered. Flags: unresolved.
 8056  5f                       pop di
 8057  c9                       leave 
 8058  cb                       retf 
-8059  90                       nop 
 ```
 
 ## _ConnectAll — ANTEDIT_MODULE:805A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1267 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -49203,11 +48884,10 @@ Source: unrecovered. Flags: unresolved.
 854A  5f                       pop di
 854B  c9                       leave 
 854C  cb                       retf 
-854D  90                       nop 
 ```
 
 ## _ConnectWall — ANTEDIT_MODULE:854E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 241 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -49318,11 +48998,10 @@ Source: unrecovered. Flags: unresolved.
 863C  5f                       pop di
 863D  c9                       leave 
 863E  cb                       retf 
-863F  90                       nop 
 ```
 
 ## _WallNeighbors — ANTEDIT_MODULE:8640
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 190 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -49415,8 +49094,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItWall — ANTEDIT_MODULE:86FE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 26 bytes.
+Source: src/recovered/wf_IsItWall-da7d76733f.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 86FE  55                       push bp
@@ -49647,7 +49326,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SmoothACell — ANTEDIT_MODULE:88F4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 944 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -50077,7 +49756,7 @@ Source: src/recovered/IsValidSLoc.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTA
 ```
 
 ## _GetSM — ANTEDIT_MODULE:8CC8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 193 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -50163,11 +49842,10 @@ Source: unrecovered. Flags: unresolved.
 8D86  5f                       pop di
 8D87  c9                       leave 
 8D88  cb                       retf 
-8D89  90                       nop 
 ```
 
 ## _SetSM — ANTEDIT_MODULE:8D8A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 186 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -50598,7 +50276,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ChangeDirectory — ANTEDIT_MODULE:90DC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 364 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -50752,7 +50430,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## OPENDLG — ANTEDIT_MODULE:9248
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 667 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -51015,11 +50693,10 @@ Source: unrecovered. Flags: unresolved.
 94DE  5f                       pop di
 94DF  c9                       leave 
 94E0  ca0a00                   retf 0xa
-94E3  90                       nop 
 ```
 
 ## SAVEASDLG — ANTEDIT_MODULE:94E4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1083 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -51436,11 +51113,10 @@ Source: unrecovered. Flags: unresolved.
 991A  5f                       pop di
 991B  c9                       leave 
 991C  ca0a00                   retf 0xa
-991F  90                       nop 
 ```
 
 ## _FileSelect — ANTEDIT_MODULE:9920
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 970 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -51814,7 +51490,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SpecialTutorialInit — ANTEDIT_MODULE:9CEA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 153 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -51883,7 +51559,6 @@ Source: unrecovered. Flags: unresolved.
 9D80  5f                       pop di
 9D81  c9                       leave 
 9D82  cb                       retf 
-9D83  90                       nop 
 ```
 
 ## _DoPreLoadInits — ANTEDIT_MODULE:9D84
@@ -51908,7 +51583,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoLoadInitializations — ANTEDIT_MODULE:9DBE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 481 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52079,11 +51754,10 @@ Source: unrecovered. Flags: unresolved.
 9F9C  5f                       pop di
 9F9D  c9                       leave 
 9F9E  cb                       retf 
-9F9F  90                       nop 
 ```
 
 ## _LoadGame — ANTEDIT_MODULE:9FA0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 669 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52335,11 +52009,10 @@ A239  5e                       pop si
 A23A  5f                       pop di
 A23B  c9                       leave 
 A23C  cb                       retf 
-A23D  90                       nop 
 ```
 
 ## _SaveGame — ANTEDIT_MODULE:A23E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 626 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52609,7 +52282,7 @@ A4BA  cb                       retf
 ```
 
 ## _CheckRainArray — ANTEDIT_MODULE:A4BC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 97 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52654,11 +52327,10 @@ A518  33c0                     xor ax, ax
 A51A  5e                       pop si
 A51B  c9                       leave 
 A51C  cb                       retf 
-A51D  90                       nop 
 ```
 
 ## _ProcYardEvent — ANTEDIT_MODULE:A51E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52828,7 +52500,7 @@ A6CD  cb                       retf
 ```
 
 ## _ProcYardRibbonEvent — ANTEDIT_MODULE:A6CE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53128,7 +52800,7 @@ A9DF  cb                       retf
 ```
 
 ## _win_DrawYardWindow — ANTEDIT_MODULE:A9E0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 558 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53326,7 +52998,7 @@ AC0D  cb                       retf
 ```
 
 ## _UpdateYardMessage — ANTEDIT_MODULE:AC0E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 202 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53615,7 +53287,7 @@ AF13  cb                       retf
 ```
 
 ## _DrawSimKid — ANTEDIT_MODULE:AF14
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 507 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53779,11 +53451,10 @@ B109  268907                   mov word ptr es:[bx], ax
 B10C  5e                       pop si
 B10D  c9                       leave 
 B10E  cb                       retf 
-B10F  90                       nop 
 ```
 
 ## _DrawDog — ANTEDIT_MODULE:B110
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 134 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53882,7 +53553,7 @@ B1FE  cb                       retf
 ```
 
 ## _DrawSimCat — ANTEDIT_MODULE:B200
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 132 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53938,7 +53609,7 @@ B283  cb                       retf
 ```
 
 ## _DrawForSale — ANTEDIT_MODULE:B284
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -53963,11 +53634,10 @@ B2B7  9a106460b2               lcall 0xb260, 0x6410 ; _hanim_AddAnimObject
 B2BC  83c40a                   add sp, 0xa
 B2BF  a39218                   mov word ptr [0x1892], ax
 B2C2  cb                       retf 
-B2C3  90                       nop 
 ```
 
 ## _DrawMower — ANTEDIT_MODULE:B2C4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 229 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -54055,11 +53725,10 @@ B39F  9a1064a1b2               lcall 0xb2a1, 0x6410 ; _hanim_AddAnimObject
 B3A4  a39018                   mov word ptr [0x1890], ax
 B3A7  c9                       leave 
 B3A8  cb                       retf 
-B3A9  90                       nop 
 ```
 
 ## _DrawAnimYardMessage — ANTEDIT_MODULE:B3AA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -54120,7 +53789,7 @@ B461  cb                       retf
 ```
 
 ## _Draw_SimYard — ANTEDIT_MODULE:B462
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1595 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -54627,11 +54296,10 @@ BA99  5e                       pop si
 BA9A  5f                       pop di
 BA9B  c9                       leave 
 BA9C  cb                       retf 
-BA9D  90                       nop 
 ```
 
 ## _DrawRain — ANTEDIT_MODULE:BA9E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 112 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -54942,8 +54610,8 @@ BDDB  cb                       retf
 ```
 
 ## _TooFar — ANTEDIT_MODULE:BDDC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 39 bytes.
+Source: src/recovered/wf_TooFar-89685c4366.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 BDDC  55                       push bp
@@ -54965,11 +54633,10 @@ BDFD  90                       nop
 BDFE  b80100                   mov ax, 1
 BE01  c9                       leave 
 BE02  cb                       retf 
-BE03  90                       nop 
 ```
 
 ## _InvertPatch — ANTEDIT_MODULE:BE04
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 159 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -55037,7 +54704,6 @@ BE9F  5e                       pop si
 BEA0  5f                       pop di
 BEA1  c9                       leave 
 BEA2  cb                       retf 
-BEA3  90                       nop 
 ```
 
 ## _DrawSimColonies — ANTEDIT_MODULE:BEA4
@@ -55366,7 +55032,7 @@ C220  cb                       retf
 ```
 
 ## _ProcMapEvent — ANTEDIT_MODULE:C222
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -55408,7 +55074,7 @@ C26D  c3                       ret
 ```
 
 ## _ProcMapRibbonEvent — ANTEDIT_MODULE:C3D4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -55924,7 +55590,7 @@ CE45  cb                       retf
 ```
 
 ## _win_DrawMapWindow — ANTEDIT_MODULE:CE46
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 712 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -56273,7 +55939,7 @@ D225  cb                       retf
 ```
 
 ## _DrawMapFoot — ANTEDIT_MODULE:D226
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 484 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -56444,7 +56110,7 @@ D409  cb                       retf
 ```
 
 ## _MapToYellowAnt — ANTEDIT_MODULE:D40A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 105 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -56489,7 +56155,6 @@ D46B  90                       nop
 D46C  9a64a76ace               lcall 0xce6a, 0xa764 ; _GotoMyAnt
 D471  c9                       leave 
 D472  cb                       retf 
-D473  90                       nop 
 ```
 
 ## _Mini_DrawMapI — ANTEDIT_MODULE:D474
@@ -56772,7 +56437,7 @@ D79E  cb                       retf
 ```
 
 ## _MapToolsMenu — ANTEDIT_MODULE:DC1E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 600 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -57004,7 +56669,7 @@ DE75  cb                       retf
 ```
 
 ## _RibbonToolsMenu — ANTEDIT_MODULE:DE76
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 649 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -57251,11 +56916,10 @@ E0F9  83c404                   add sp, 4
 E0FC  5e                       pop si
 E0FD  c9                       leave 
 E0FE  cb                       retf 
-E0FF  90                       nop 
 ```
 
 ## _MapAreaEvent — ANTEDIT_MODULE:E100
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 514 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -57444,7 +57108,7 @@ E301  cb                       retf
 ```
 
 ## _Mini_MakeTable — ANTEDIT_MODULE:E302
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 114 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -57493,7 +57157,7 @@ E373  cb                       retf
 ```
 
 ## _OpenMiniMapWin — ANTEDIT_MODULE:E374
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1254 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -57996,7 +57660,7 @@ E91D  cb                       retf
 ```
 
 ## _ToggleMiniMapCursor — ANTEDIT_MODULE:E91E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 203 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58057,7 +57721,6 @@ E9DA  83c406                   add sp, 6
 E9DD  9a4c3efde8               lcall 0xe8fd, 0x3e4c ; _MSClipEnd
 E9E2  c706341a0100             mov word ptr [0x1a34], 1 ; _mmapCursorState
 E9E8  cb                       retf 
-E9E9  90                       nop 
 ```
 
 ## ProfInsChk — _TEXT:0010
@@ -58307,7 +57970,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _exit — _TEXT:01AF
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58323,7 +57986,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __exit — _TEXT:01BD
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58339,7 +58002,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cexit — _TEXT:01CC
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58357,7 +58020,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __c_exit — _TEXT:01DD
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58441,7 +58104,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _malloc — _TEXT:027C
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58451,7 +58114,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _free — _TEXT:0282
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58461,7 +58124,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _realloc — _TEXT:0288
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58656,7 +58319,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __fexpand — _TEXT:039E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 47 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58683,7 +58346,6 @@ Source: unrecovered. Flags: unresolved.
 03CA  5d                       pop bp
 03CB  4d                       dec bp
 03CC  cb                       retf 
-03CD  90                       nop 
 ```
 
 ## __memavl — _TEXT:03CE
@@ -58884,7 +58546,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _stricmp — _TEXT:050E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 69 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 69 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -58927,7 +58589,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _strcmpi — _TEXT:050E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 69 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 69 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59311,7 +58973,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __getdcwd — _TEXT:077C
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 262 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59425,7 +59087,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _unlink — _TEXT:0882
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: OVERLAPPING_ENTRY, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59445,7 +59107,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _remove — _TEXT:0882
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: OVERLAPPING_ENTRY, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59582,7 +59244,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFulmul — _TEXT:096E
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: PROBABLE, 50 bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SHARED_TAIL, 50 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59612,7 +59274,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFlmul — _TEXT:096E
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: PROBABLE, 50 bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SHARED_TAIL, 50 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59721,7 +59383,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFNaulmul — _TEXT:0A40
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: PROBABLE, 32 bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: OVERLAPPING_ENTRY, 32 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59743,7 +59405,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFNalmul — _TEXT:0A40
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: PROBABLE, 32 bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: OVERLAPPING_ENTRY, 32 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59818,7 +59480,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _sqrt — _TEXT:0AC0
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59827,7 +59489,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFCIsqrt — _TEXT:0AC6
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59836,7 +59498,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __ftol — _TEXT:0ACC
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 61 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: OVERLAPPING_ENTRY, 61 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59879,7 +59541,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFftol — _TEXT:0ACC
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 61 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: OVERLAPPING_ENTRY, 61 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -59922,7 +59584,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __fptrap — _TEXT:0B1E
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -60254,7 +59916,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cintDIV — _TEXT:0D94
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -60266,7 +59928,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __amsg_exit — _TEXT:0D9E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -60285,7 +59947,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __dosret0 — _TEXT:0DBC
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -60300,7 +59962,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __dosreturn — _TEXT:0DC9
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -60318,7 +59980,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __dosretax — _TEXT:0DDB
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: PROBABLE, 18 bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, 18 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -60480,7 +60142,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __output — _TEXT:0F3A
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61019,7 +60681,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __nmalloc — _TEXT:1430
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 61 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61049,7 +60711,6 @@ Source: unrecovered. Flags: unresolved.
 146A  5d                       pop bp
 146B  4d                       dec bp
 146C  cb                       retf 
-146D  90                       nop 
 ```
 
 ## __nfree — _TEXT:146E
@@ -61069,7 +60730,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __fmalloc — _TEXT:1480
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 43 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 43 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61097,7 +60758,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __ffree — _TEXT:14AC
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 17 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 17 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61113,7 +60774,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __nrealloc — _TEXT:14BE
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 83 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61152,11 +60813,10 @@ Source: unrecovered. Flags: unresolved.
 150E  5d                       pop bp
 150F  4d                       dec bp
 1510  cb                       retf 
-1511  90                       nop 
 ```
 
 ## __frealloc — _TEXT:1512
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 67 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 67 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61459,7 +61119,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cropzeros — _TEXT:1706
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 137 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61522,11 +61182,10 @@ Source: unrecovered. Flags: unresolved.
 178C  5d                       pop bp
 178D  4d                       dec bp
 178E  cb                       retf 
-178F  90                       nop 
 ```
 
 ## __positive — _TEXT:1790
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 56 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61567,7 +61226,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __fassign — _TEXT:17C8
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: PROBABLE, 115 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61637,11 +61296,10 @@ Source: unrecovered. Flags: unresolved.
 1838  5d                       pop bp
 1839  4d                       dec bp
 183A  cb                       retf 
-183B  90                       nop 
 ```
 
 ## __cftoe — _TEXT:183C
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 404 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61816,37 +61474,10 @@ Source: unrecovered. Flags: unresolved.
 19CD  5d                       pop bp
 19CE  4d                       dec bp
 19CF  cb                       retf 
-19D0  1e                       push ds
-19D1  58                       pop ax
-19D2  90                       nop 
-19D3  45                       inc bp
-19D4  55                       push bp
-19D5  8bec                     mov bp, sp
-19D7  1e                       push ds
-19D8  8ed8                     mov ds, ax
-19DA  83ec06                   sub sp, 6
-19DD  c606dab001               mov byte ptr [0xb0da], 1
-19E2  ff7610                   push word ptr [bp + 0x10]
-19E5  ff760e                   push word ptr [bp + 0xe]
-19E8  ff760c                   push word ptr [bp + 0xc]
-19EB  ff760a                   push word ptr [bp + 0xa]
-19EE  ff7608                   push word ptr [bp + 8]
-19F1  ff7606                   push word ptr [bp + 6]
-19F4  0e                       push cs
-19F5  e844fe                   call 0x183c ; __cftoe
-19F8  c606dab000               mov byte ptr [0xb0da], 0
-19FD  4d                       dec bp
-19FE  4d                       dec bp
-19FF  8be5                     mov sp, bp
-1A01  1f                       pop ds
-1A02  5d                       pop bp
-1A03  4d                       dec bp
-1A04  cb                       retf 
-1A05  90                       nop 
 ```
 
 ## __cftof — _TEXT:1A06
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 351 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -61989,32 +61620,6 @@ Source: unrecovered. Flags: unresolved.
 1B62  5d                       pop bp
 1B63  4d                       dec bp
 1B64  cb                       retf 
-1B65  90                       nop 
-1B66  1e                       push ds
-1B67  58                       pop ax
-1B68  90                       nop 
-1B69  45                       inc bp
-1B6A  55                       push bp
-1B6B  8bec                     mov bp, sp
-1B6D  1e                       push ds
-1B6E  8ed8                     mov ds, ax
-1B70  83ec06                   sub sp, 6
-1B73  c606dab001               mov byte ptr [0xb0da], 1
-1B78  ff760e                   push word ptr [bp + 0xe]
-1B7B  ff760c                   push word ptr [bp + 0xc]
-1B7E  ff760a                   push word ptr [bp + 0xa]
-1B81  ff7608                   push word ptr [bp + 8]
-1B84  ff7606                   push word ptr [bp + 6]
-1B87  0e                       push cs
-1B88  e87bfe                   call 0x1a06 ; __cftof
-1B8B  c606dab000               mov byte ptr [0xb0da], 0
-1B90  4d                       dec bp
-1B91  4d                       dec bp
-1B92  8be5                     mov sp, bp
-1B94  1f                       pop ds
-1B95  5d                       pop bp
-1B96  4d                       dec bp
-1B97  cb                       retf 
 ```
 
 ## __cftog — _TEXT:1B98
@@ -62115,7 +61720,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cfltcvt — _TEXT:1C76
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 110 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62168,35 +61773,10 @@ Source: unrecovered. Flags: unresolved.
 1CE1  5d                       pop bp
 1CE2  4d                       dec bp
 1CE3  cb                       retf 
-1CE4  55                       push bp
-1CE5  8bec                     mov bp, sp
-1CE7  837e0400                 cmp word ptr [bp + 4], 0
-1CEB  7425                     je 0x1d12
-1CED  ff7608                   push word ptr [bp + 8]
-1CF0  ff7606                   push word ptr [bp + 6]
-1CF3  90                       nop 
-1CF4  0e                       push cs
-1CF5  e894f8                   call 0x158c ; _strlen
-1CF8  8be5                     mov sp, bp
-1CFA  40                       inc ax
-1CFB  50                       push ax
-1CFC  ff7608                   push word ptr [bp + 8]
-1CFF  ff7606                   push word ptr [bp + 6]
-1D02  8b4606                   mov ax, word ptr [bp + 6]
-1D05  8b5608                   mov dx, word ptr [bp + 8]
-1D08  034604                   add ax, word ptr [bp + 4]
-1D0B  52                       push dx
-1D0C  50                       push ax
-1D0D  90                       nop 
-1D0E  0e                       push cs
-1D0F  e81ae9                   call 0x62c ; _memmove
-1D12  8be5                     mov sp, bp
-1D14  5d                       pop bp
-1D15  c20600                   ret 6
 ```
 
 ## __cintrindisp2 — _TEXT:1D18
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62225,7 +61805,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cintrindisp1 — _TEXT:1D48
-Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: FLOAT_RUNTIME (PLAUSIBLE). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62253,7 +61833,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __ctrandisp2 — _TEXT:1D74
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62274,7 +61854,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __ctrandisp1 — _TEXT:1D8E
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62559,7 +62139,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cldtog — _TEXT:224C
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 132 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62626,7 +62206,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cldcvt — _TEXT:22D0
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 116 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62684,7 +62264,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aNchkstk — _TEXT:2344
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62704,7 +62284,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __chkstk — _TEXT:2364
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62733,7 +62313,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __aFchkstk — _TEXT:2364
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62837,7 +62417,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __myalloc — _TEXT:2404
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62930,7 +62510,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _lseek — _TEXT:2492
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -62988,7 +62568,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _write — _TEXT:2514
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63220,7 +62800,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __fptostr — _TEXT:26D4
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 167 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63290,7 +62870,6 @@ Source: unrecovered. Flags: unresolved.
 2778  5d                       pop bp
 2779  4d                       dec bp
 277A  cb                       retf 
-277B  90                       nop 
 ```
 
 ## _memset — _TEXT:277C
@@ -63354,7 +62933,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __trandisp1 — _TEXT:27E0
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63391,7 +62970,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __trandisp2 — _TEXT:2822
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63445,7 +63024,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rttospopde — _TEXT:2885
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63453,7 +63032,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rttospop — _TEXT:2888
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63462,7 +63041,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtnospop — _TEXT:288B
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63479,7 +63058,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtnospopde — _TEXT:288F
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63488,7 +63067,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtzeropop — _TEXT:2894
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63509,7 +63088,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtonepop — _TEXT:289E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63541,7 +63120,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtifprojpop — _TEXT:28AF
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63551,7 +63130,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtindfpop — _TEXT:28B6
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63560,7 +63139,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtindfnpop — _TEXT:28B9
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63573,7 +63152,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rttosnpopde — _TEXT:28C7
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 7 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 7 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63583,7 +63162,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __rtifprojnpop — _TEXT:28CE
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -63958,7 +63537,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## $i8_output — _TEXT:2C06
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -64188,7 +63767,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __LD12MULTTENPOWER — _TEXT:3004
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -64288,7 +63867,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __LD12MULT — _TEXT:30D9
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -64768,7 +64347,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _fflush — _TEXT:352A
-Ownership: MICROSOFT_CRT (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: MICROSOFT_CRT (PROBABLE). Extent: PROBABLE, 130 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65020,7 +64599,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _fclose — _TEXT:38E4
-Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (STRONGLY SUPPORTED). Extent: PROBABLE, 201 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65119,7 +64698,6 @@ Source: unrecovered. Flags: unresolved.
 39AA  5d                       pop bp
 39AB  4d                       dec bp
 39AC  cb                       retf 
-39AD  90                       nop 
 ```
 
 ## __fsopen — _TEXT:39AE
@@ -65276,7 +64854,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _close — _TEXT:3B80
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65301,7 +64879,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _sopen — _TEXT:3BA8
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65323,7 +64901,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _open — _TEXT:3BC9
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65526,7 +65104,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _read — _TEXT:3D88
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65649,7 +65227,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _atoi — _TEXT:3E8E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65781,7 +65359,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isalpha — _TEXT:3F8C
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65790,7 +65368,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isupper — _TEXT:3F91
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65799,7 +65377,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _islower — _TEXT:3F96
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65808,7 +65386,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isdigit — _TEXT:3F9B
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65817,7 +65395,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isxdigit — _TEXT:3FA0
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65826,7 +65404,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isspace — _TEXT:3FA5
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65835,7 +65413,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ispunct — _TEXT:3FAA
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65844,7 +65422,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isalnum — _TEXT:3FAF
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65853,7 +65431,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isprint — _TEXT:3FB4
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65862,7 +65440,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _isgraph — _TEXT:3FB9
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -65871,7 +65449,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _iscntrl — _TEXT:3FBE
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 15 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 15 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -66080,7 +65658,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __openfile — _TEXT:412A
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 250 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -66190,7 +65768,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __getstream — _TEXT:4224
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 81 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -66227,7 +65805,6 @@ Source: unrecovered. Flags: unresolved.
 4272  5d                       pop bp
 4273  4d                       dec bp
 4274  cb                       retf 
-4275  90                       nop 
 ```
 
 ## _strcat — _TEXT:4276
@@ -66311,7 +65888,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __catox — _TEXT:42F8
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 86 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 86 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -66367,7 +65944,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _itoa — _TEXT:434E
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -66445,7 +66022,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cltoasub — _TEXT:43C8
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -66457,7 +66034,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## __cxtoa — _TEXT:43D5
-Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: PROBABLE, 86 bytes.
+Ownership: HISTORICAL_LIBRARY (CONFIRMED). Extent: SHARED_TAIL, 86 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -68454,7 +68031,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _win_PrintStyleTextInRect — _TEXT:5368
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 1224 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -68916,7 +68493,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _win_GetStyleTextHeight — _TEXT:5830
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 491 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -69105,11 +68682,10 @@ Source: unrecovered. Flags: unresolved.
 5A18  5f                       pop di
 5A19  c9                       leave 
 5A1A  cb                       retf 
-5A1B  90                       nop 
 ```
 
 ## _DisplayCard — _TEXT:5A1C
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 1725 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -69746,7 +69322,6 @@ Source: unrecovered. Flags: unresolved.
 60D6  5f                       pop di
 60D7  c9                       leave 
 60D8  cb                       retf 
-60D9  90                       nop 
 ```
 
 ## _OpenInfoWindow — _TEXT:60DA
@@ -69771,7 +69346,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PopUpInfoWindow — _TEXT:610C
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 1231 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -70223,11 +69798,10 @@ Source: unrecovered. Flags: unresolved.
 65D8  5f                       pop di
 65D9  c9                       leave 
 65DA  cb                       retf 
-65DB  90                       nop 
 ```
 
 ## _ProcInfoEvent — _TEXT:65DC
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 513 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -70417,11 +69991,10 @@ Source: unrecovered. Flags: unresolved.
 67DA  5f                       pop di
 67DB  c9                       leave 
 67DC  cb                       retf 
-67DD  90                       nop 
 ```
 
 ## _CheatKeys — _TEXT:67DE
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -71796,7 +71369,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbFinalStatus — _TEXT:7370
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 100 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -71846,7 +71419,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbImmediateStatus — _TEXT:73D4
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 100 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72167,7 +71740,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbReset — _TEXT:767E
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 136 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72234,7 +71807,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbSend — _TEXT:7706
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 160 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72309,7 +71882,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbListen — _TEXT:77A6
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 338 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72464,7 +72037,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbPostListen — _TEXT:78F8
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 320 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72783,7 +72356,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbPostReceiveAny — _TEXT:7BBA
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 181 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72860,11 +72433,10 @@ Source: unrecovered. Flags: unresolved.
 7C6C  5f                       pop di
 7C6D  c9                       leave 
 7C6E  cb                       retf 
-7C6F  90                       nop 
 ```
 
 ## _NbHangUp — _TEXT:7C70
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 142 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72933,7 +72505,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _NbCheck — _TEXT:7CFE
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 64 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -72971,7 +72543,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## GTCLIENTWNDPROC — _TEXT:7D3E
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 138 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -73071,7 +72643,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GtInitiateDDE — _TEXT:7E26
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 195 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -73149,11 +72721,10 @@ Source: unrecovered. Flags: unresolved.
 7EE6  5f                       pop di
 7EE7  c9                       leave 
 7EE8  cb                       retf 
-7EE9  90                       nop 
 ```
 
 ## _GtAppToGateway — _TEXT:7EEA
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -73601,7 +73172,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MaMemMove — _TEXT:82B6
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 201 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -73673,11 +73244,10 @@ Source: unrecovered. Flags: unresolved.
 837B  75d4                     jne 0x8351
 837D  c9                       leave 
 837E  cb                       retf 
-837F  90                       nop 
 ```
 
 ## _NetBios — _TEXT:8380
-Ownership: UNKNOWN (UNKNOWN). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: SHARED_TAIL, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -74054,7 +73624,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LoadStringAnt — SIMONE_MODULE:03F4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 231 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -74152,7 +73722,6 @@ Source: unrecovered. Flags: unresolved.
 04D8  5f                       pop di
 04D9  c9                       leave 
 04DA  cb                       retf 
-04DB  90                       nop 
 ```
 
 ## _CreateSimPats — SIMONE_MODULE:04DC
@@ -74164,7 +73733,7 @@ Source: src/recovered/CreateSimPats.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _CountAnts — SIMONE_MODULE:04DE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 725 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -74396,7 +73965,6 @@ Source: unrecovered. Flags: unresolved.
 07B0  5e                       pop si
 07B1  5f                       pop di
 07B2  cb                       retf 
-07B3  90                       nop 
 ```
 
 ## _FullCount — SIMONE_MODULE:07B4
@@ -74421,7 +73989,7 @@ Source: src/countupd.c. Flags: ['/AM', '/G2', '/Gs', '/Oe', '/NTSIMONE_MODULE'].
 ```
 
 ## _DoWater — SIMONE_MODULE:07C6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 773 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -74733,11 +74301,10 @@ Source: unrecovered. Flags: unresolved.
 0AC8  5f                       pop di
 0AC9  c9                       leave 
 0ACA  cb                       retf 
-0ACB  90                       nop 
 ```
 
 ## _PlaceDrop — SIMONE_MODULE:0ACC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 170 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -74821,7 +74388,7 @@ Source: src/recovered/InitWater.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIM
 ```
 
 ## _AddWater — SIMONE_MODULE:0B8A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 201 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -74910,7 +74477,6 @@ Source: unrecovered. Flags: unresolved.
 0C50  5f                       pop di
 0C51  c9                       leave 
 0C52  cb                       retf 
-0C53  90                       nop 
 ```
 
 ## _DropWater — SIMONE_MODULE:0C54
@@ -75002,7 +74568,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PickupFoodA — SIMONE_MODULE:0D18
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 109 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75050,11 +74616,10 @@ Source: unrecovered. Flags: unresolved.
 0D82  5f                       pop di
 0D83  c9                       leave 
 0D84  cb                       retf 
-0D85  90                       nop 
 ```
 
 ## _DropFoodA — SIMONE_MODULE:0D86
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 292 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75173,7 +74738,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FoodFall — SIMONE_MODULE:0EAA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 150 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75236,7 +74801,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PickupFoodB — SIMONE_MODULE:0F40
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 98 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75284,7 +74849,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PickupFoodR — SIMONE_MODULE:0FA2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 98 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75438,7 +75003,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetDir — SIMONE_MODULE:10CC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 86 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75530,8 +75095,8 @@ Source: src/recovered/GetDis.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE
 ```
 
 ## _InNestBounds — SIMONE_MODULE:115C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 38 bytes.
+Source: src/recovered/wf_InNestBounds-bacfde5aec.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 115C  55                       push bp
@@ -75556,8 +75121,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItDirt — SIMONE_MODULE:1182
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 26 bytes.
+Source: src/recovered/wf_IsItDirt-30ab0b6cc4.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 1182  55                       push bp
@@ -75577,7 +75142,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetExitDirB — SIMONE_MODULE:119C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 164 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75657,7 +75222,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetExitDirR — SIMONE_MODULE:1240
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 164 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -75968,7 +75533,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SGSRand — SIMONE_MODULE:14CC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 57 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -76004,7 +75569,6 @@ Source: unrecovered. Flags: unresolved.
 1502  5f                       pop di
 1503  c9                       leave 
 1504  cb                       retf 
-1505  90                       nop 
 ```
 
 ## _SetSRandSeed — SIMONE_MODULE:1506
@@ -76289,7 +75853,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DigMyNewHole — SIMONE_MODULE:16AE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 107 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -76338,11 +75902,10 @@ Source: unrecovered. Flags: unresolved.
 1716  5f                       pop di
 1717  c9                       leave 
 1718  cb                       retf 
-1719  90                       nop 
 ```
 
 ## _CreateNewHole — SIMONE_MODULE:171A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 506 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -76733,7 +76296,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeNewHoleB — SIMONE_MODULE:1B06
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 436 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -76916,7 +76479,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CanBeHouseHole — SIMONE_MODULE:1CBA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -76960,7 +76523,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeNewHoleR — SIMONE_MODULE:1D02
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 650 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -77218,8 +76781,6 @@ Source: unrecovered. Flags: unresolved.
 1F89  5f                       pop di
 1F8A  c9                       leave 
 1F8B  cb                       retf 
-1F8C  90                       nop 
-1F8D  90                       nop 
 ```
 
 ## _HoleBorder — SIMONE_MODULE:1F8E
@@ -77716,7 +77277,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DigTileThemR — SIMONE_MODULE:241C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 318 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -77856,7 +77417,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SmoothEdgesB — SIMONE_MODULE:255A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 362 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78015,8 +77576,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RIsItDirt — SIMONE_MODULE:26C4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 31 bytes.
+Source: src/recovered/wf_RIsItDirt-6adf524aef.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 26C4  55                       push bp
@@ -78035,11 +77596,10 @@ Source: unrecovered. Flags: unresolved.
 26DE  b80100                   mov ax, 1
 26E1  c9                       leave 
 26E2  cb                       retf 
-26E3  90                       nop 
 ```
 
 ## _SmoothEdgesR — SIMONE_MODULE:26E4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 362 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78198,7 +77758,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FixExitMapB — SIMONE_MODULE:284E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 198 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78283,7 +77843,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FixExitMapR — SIMONE_MODULE:2914
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 198 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78679,7 +78239,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindInBList — SIMONE_MODULE:2C86
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78721,7 +78281,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindInRList — SIMONE_MODULE:2CCE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78847,7 +78407,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ExitHole — SIMONE_MODULE:2DB6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 313 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78967,7 +78527,6 @@ Source: unrecovered. Flags: unresolved.
 2EEC  5f                       pop di
 2EED  c9                       leave 
 2EEE  cb                       retf 
-2EEF  90                       nop 
 ```
 
 ## _AddAntToAList — SIMONE_MODULE:2EF0
@@ -79136,7 +78695,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _BuildAntListA — SIMONE_MODULE:3046
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 162 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -79252,7 +78811,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeHousePatch — SIMONE_MODULE:3120
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -79586,7 +79145,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FloorTiles — SIMONE_MODULE:3406
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 188 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -79754,7 +79313,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeLint2 — SIMONE_MODULE:3578
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 105 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -79806,7 +79365,6 @@ Source: unrecovered. Flags: unresolved.
 35DE  5f                       pop di
 35DF  c9                       leave 
 35E0  cb                       retf 
-35E1  90                       nop 
 ```
 
 ## _CarpetFloorR — SIMONE_MODULE:35E2
@@ -79893,7 +79451,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeKitchenWall — SIMONE_MODULE:3698
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 196 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -81743,7 +81301,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MoveSpider — SIMONE_MODULE:4704
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -82332,7 +81890,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SpiderScan — SIMONE_MODULE:5536
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 387 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -82496,7 +82054,6 @@ Source: unrecovered. Flags: unresolved.
 56B6  5f                       pop di
 56B7  c9                       leave 
 56B8  cb                       retf 
-56B9  90                       nop 
 ```
 
 ## _SGetDis — SIMONE_MODULE:56BA
@@ -82581,7 +82138,7 @@ Source: src/recovered/IsYellowAnt.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _GetAntIndex — SIMONE_MODULE:573C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 269 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -82685,11 +82242,10 @@ Source: unrecovered. Flags: unresolved.
 5846  5e                       pop si
 5847  c9                       leave 
 5848  cb                       retf 
-5849  90                       nop 
 ```
 
 ## _SetAntIndex — SIMONE_MODULE:584A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 216 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -82779,7 +82335,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindLifeIndex — SIMONE_MODULE:5922
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -82870,11 +82426,10 @@ Source: unrecovered. Flags: unresolved.
 59F8  5f                       pop di
 59F9  c9                       leave 
 59FA  cb                       retf 
-59FB  90                       nop 
 ```
 
 ## _FindAntIndex — SIMONE_MODULE:59FC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 213 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -82963,11 +82518,10 @@ Source: unrecovered. Flags: unresolved.
 5ACE  5f                       pop di
 5ACF  c9                       leave 
 5AD0  cb                       retf 
-5AD1  90                       nop 
 ```
 
 ## _IsClear3x3 — SIMONE_MODULE:5AD2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 90 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83020,7 +82574,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsClearTile — SIMONE_MODULE:5B2C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 332 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83172,7 +82726,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddAntToList — SIMONE_MODULE:5C78
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 159 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83237,11 +82791,10 @@ Source: unrecovered. Flags: unresolved.
 5D14  5e                       pop si
 5D15  c9                       leave 
 5D16  cb                       retf 
-5D17  90                       nop 
 ```
 
 ## _SetLife — SIMONE_MODULE:5D18
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 432 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83449,8 +83002,8 @@ Source: src/recovered/IsThisEgg.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIM
 ```
 
 ## _IsThisGrass — SIMONE_MODULE:5EE4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 32 bytes.
+Source: src/recovered/wf_IsThisGrass-f06e1489c1.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 5EE4  55                       push bp
@@ -83472,8 +83025,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsThisFood — SIMONE_MODULE:5F04
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/wf_IsThisFood-26910209bd.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 5F04  55                       push bp
@@ -83530,8 +83083,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItNFood — SIMONE_MODULE:5F64
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 26 bytes.
+Source: src/recovered/wf_IsItNFood-b827504a64.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 5F64  55                       push bp
@@ -83551,7 +83104,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItFoodAt — SIMONE_MODULE:5F7E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 193 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83639,7 +83192,6 @@ Source: unrecovered. Flags: unresolved.
 603C  5e                       pop si
 603D  c9                       leave 
 603E  cb                       retf 
-603F  90                       nop 
 ```
 
 ## _GetLife — SIMONE_MODULE:6040
@@ -83720,7 +83272,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetMap — SIMONE_MODULE:60E2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 152 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83794,7 +83346,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetMap — SIMONE_MODULE:617A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 162 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83866,7 +83418,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ClearLife — SIMONE_MODULE:621C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 258 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -83976,7 +83528,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ClearMyLife — SIMONE_MODULE:631E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 465 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -84170,7 +83722,6 @@ Source: unrecovered. Flags: unresolved.
 64EC  5e                       pop si
 64ED  c9                       leave 
 64EE  cb                       retf 
-64EF  90                       nop 
 ```
 
 ## _SetQueenTail — SIMONE_MODULE:64F0
@@ -84207,7 +83758,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetMyLife — SIMONE_MODULE:6536
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 196 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -84293,7 +83844,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MoveMyLife — SIMONE_MODULE:65FA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -84380,7 +83931,6 @@ Source: unrecovered. Flags: unresolved.
 66D0  5e                       pop si
 66D1  c9                       leave 
 66D2  cb                       retf 
-66D3  90                       nop 
 ```
 
 ## _DoMapUpdateDraw — SIMONE_MODULE:66D4
@@ -84393,7 +83943,7 @@ Source: src/recovered/DoMapUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '
 
 ## _DoEditAndMapUpdateDraw — SIMONE_MODULE:66D6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
-Source: src/recovered/DoEditAndMapUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/DoEditAndMapUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 66D6  9a560eef63               lcall 0x63ef, 0xe56 ; _DoEditUpdateDraw
@@ -84401,7 +83951,7 @@ Source: src/recovered/DoEditAndMapUpdateDraw.c. Flags: ['/AL', '/G2', '/Gs', '/O
 ```
 
 ## _TargetAnt — SIMONE_MODULE:66DC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 73 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -84427,7 +83977,6 @@ Source: unrecovered. Flags: unresolved.
 671E  9ac24c7056               lcall 0x5670, 0x4cc2 ; _PauseGame
 6723  c9                       leave 
 6724  cb                       retf 
-6725  90                       nop 
 ```
 
 ## _EndTargetMode — SIMONE_MODULE:6726
@@ -84445,7 +83994,7 @@ Source: src/recovered/EndTargetMode.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _StartLifeTransfer — SIMONE_MODULE:6744
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 73 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -84471,7 +84020,6 @@ Source: unrecovered. Flags: unresolved.
 6786  9ac24c3d67               lcall 0x673d, 0x4cc2 ; _PauseGame
 678B  c9                       leave 
 678C  cb                       retf 
-678D  90                       nop 
 ```
 
 ## _EndLifeTransferMode — SIMONE_MODULE:678E
@@ -84549,7 +84097,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoLifeExchange — SIMONE_MODULE:6842
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 3379 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -85811,11 +85359,10 @@ Source: unrecovered. Flags: unresolved.
 7572  5f                       pop di
 7573  c9                       leave 
 7574  cb                       retf 
-7575  90                       nop 
 ```
 
 ## _DropMyFood — SIMONE_MODULE:7576
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1093 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -86264,11 +85811,10 @@ Source: unrecovered. Flags: unresolved.
 79B8  5f                       pop di
 79B9  c9                       leave 
 79BA  cb                       retf 
-79BB  90                       nop 
 ```
 
 ## _DropPebble — SIMONE_MODULE:79BC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 662 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -86536,7 +86082,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DropMyRock — SIMONE_MODULE:7C52
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1334 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -87088,7 +86634,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DropMyEgg — SIMONE_MODULE:8188
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1126 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -87545,7 +87091,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PickupMyRock — SIMONE_MODULE:85EE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 692 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -87815,7 +87361,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindEggAt — SIMONE_MODULE:88A2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 499 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88018,11 +87564,10 @@ Source: unrecovered. Flags: unresolved.
 8A92  5f                       pop di
 8A93  c9                       leave 
 8A94  cb                       retf 
-8A95  90                       nop 
 ```
 
 ## _FindLifeAt — SIMONE_MODULE:8A96
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 473 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88215,11 +87760,10 @@ Source: unrecovered. Flags: unresolved.
 8C6C  5f                       pop di
 8C6D  c9                       leave 
 8C6E  cb                       retf 
-8C6F  90                       nop 
 ```
 
 ## _SetMyHealth — SIMONE_MODULE:8C70
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 105 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88258,11 +87802,10 @@ Source: unrecovered. Flags: unresolved.
 8CD0  26c706f29a0100           mov word ptr es:[0x9af2], 1
 8CD7  c9                       leave 
 8CD8  cb                       retf 
-8CD9  90                       nop 
 ```
 
 ## _EatMyFood — SIMONE_MODULE:8CDA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 443 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88422,11 +87965,10 @@ Source: unrecovered. Flags: unresolved.
 8E92  5f                       pop di
 8E93  c9                       leave 
 8E94  cb                       retf 
-8E95  90                       nop 
 ```
 
 ## _PickupMyEgg — SIMONE_MODULE:8E96
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 181 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88499,11 +88041,10 @@ Source: unrecovered. Flags: unresolved.
 8F48  5e                       pop si
 8F49  c9                       leave 
 8F4A  cb                       retf 
-8F4B  90                       nop 
 ```
 
 ## _PickupMyFood — SIMONE_MODULE:8F4C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 672 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88778,7 +88319,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DropMyObject — SIMONE_MODULE:91EC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 100 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88833,7 +88374,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PickupMyObject — SIMONE_MODULE:9250
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 241 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -88933,11 +88474,10 @@ Source: unrecovered. Flags: unresolved.
 933E  5e                       pop si
 933F  c9                       leave 
 9340  cb                       retf 
-9341  90                       nop 
 ```
 
 ## _TileCanBeMovedOn — SIMONE_MODULE:9342
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 349 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89083,7 +88623,6 @@ Source: unrecovered. Flags: unresolved.
 949C  5f                       pop di
 949D  c9                       leave 
 949E  cb                       retf 
-949F  90                       nop 
 ```
 
 ## _IsNotBarrier — SIMONE_MODULE:94A0
@@ -89110,7 +88649,7 @@ Source: src/recovered/IsNotBarrier.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _IsNotObstacle — SIMONE_MODULE:94C6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 255 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89222,11 +88761,10 @@ Source: unrecovered. Flags: unresolved.
 95C2  5f                       pop di
 95C3  c9                       leave 
 95C4  cb                       retf 
-95C5  90                       nop 
 ```
 
 ## _IsItDigable — SIMONE_MODULE:95C6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 240 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89346,7 +88884,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItYellow — SIMONE_MODULE:96B6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 206 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89488,7 +89026,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsLiftable — SIMONE_MODULE:97CA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 275 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89617,11 +89155,10 @@ Source: unrecovered. Flags: unresolved.
 98DA  5f                       pop di
 98DB  c9                       leave 
 98DC  cb                       retf 
-98DD  90                       nop 
 ```
 
 ## _TryMyDropOrLift — SIMONE_MODULE:98DE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 619 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89872,11 +89409,10 @@ Source: unrecovered. Flags: unresolved.
 9B46  5f                       pop di
 9B47  c9                       leave 
 9B48  cb                       retf 
-9B49  90                       nop 
 ```
 
 ## _IsItAHole — SIMONE_MODULE:9B4A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -90258,7 +89794,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoSmells — SIMANT1_MODULE:02FA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 79 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -90292,7 +89828,6 @@ Source: unrecovered. Flags: unresolved.
 0342  e8938f                   call 0xffff92d8
 0345  e8fc8f                   call 0xffff9344
 0348  c3                       ret 
-0349  90                       nop 
 ```
 
 ## _ClrModePop — SIMANT1_MODULE:034A
@@ -90430,7 +89965,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoAntSimA — SIMANT1_MODULE:04D8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91035,7 +90570,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRestAnt — SIMANT1_MODULE:0B76
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 168 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91108,7 +90643,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRepoLoit — SIMANT1_MODULE:0C1E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 91 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91148,11 +90683,10 @@ Source: unrecovered. Flags: unresolved.
 0C76  5e                       pop si
 0C77  c9                       leave 
 0C78  c3                       ret 
-0C79  90                       nop 
 ```
 
 ## _DoRepoExit — SIMANT1_MODULE:0C7A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 208 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91227,7 +90761,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRepoFly — SIMANT1_MODULE:0D4A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 172 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91294,7 +90828,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDefendNest — SIMANT1_MODULE:0DF6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 112 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91344,7 +90878,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRandAntA — SIMANT1_MODULE:0E66
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 974 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91687,7 +91221,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRandAntAA — SIMANT1_MODULE:1234
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 588 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -91909,7 +91443,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDigOutAntA — SIMANT1_MODULE:1480
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 502 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -92080,7 +91614,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoToNestAnt — SIMANT1_MODULE:1676
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 915 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -92397,11 +91931,10 @@ Source: unrecovered. Flags: unresolved.
 1A06  5f                       pop di
 1A07  c9                       leave 
 1A08  c3                       ret 
-1A09  90                       nop 
 ```
 
 ## _DoToAlarm — SIMANT1_MODULE:1A0A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 682 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -92656,7 +92189,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoReturnFoodAnt — SIMANT1_MODULE:1CB4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 398 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -92805,7 +92338,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoForageAnt — SIMANT1_MODULE:1E42
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1126 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -93213,7 +92746,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRecruitAnt — SIMANT1_MODULE:22A8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 722 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -93622,7 +93155,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetWinner — SIMANT1_MODULE:26F4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 241 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -93705,11 +93238,10 @@ Source: unrecovered. Flags: unresolved.
 27E2  5f                       pop di
 27E3  c9                       leave 
 27E4  c3                       ret 
-27E5  90                       nop 
 ```
 
 ## _DoFightA — SIMANT1_MODULE:27E6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -93786,11 +93318,10 @@ Source: unrecovered. Flags: unresolved.
 28BC  5e                       pop si
 28BD  c9                       leave 
 28BE  c3                       ret 
-28BF  90                       nop 
 ```
 
 ## _DeadAntHere — SIMANT1_MODULE:28C0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 353 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -93912,7 +93443,6 @@ Source: unrecovered. Flags: unresolved.
 2A1E  5f                       pop di
 2A1F  c9                       leave 
 2A20  cb                       retf 
-2A21  90                       nop 
 ```
 
 ## _RandTurn — SIMANT1_MODULE:2A22
@@ -93935,7 +93465,7 @@ Source: src/recovered/RandTurn.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMA
 ```
 
 ## _DoAttackAnt — SIMANT1_MODULE:2A40
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 640 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -94170,7 +93700,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItHole — SIMANT1_MODULE:2CC0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 89 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -94214,11 +93744,10 @@ Source: unrecovered. Flags: unresolved.
 2D16  5f                       pop di
 2D17  c9                       leave 
 2D18  cb                       retf 
-2D19  90                       nop 
 ```
 
 ## _IsItFood — SIMANT1_MODULE:2D1A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 51 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -94244,7 +93773,6 @@ Source: unrecovered. Flags: unresolved.
 2D49  33c0                     xor ax, ax
 2D4B  c9                       leave 
 2D4C  cb                       retf 
-2D4D  90                       nop 
 ```
 
 ## _DoAntSimB — SIMANT1_MODULE:2D4E
@@ -94293,7 +93821,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoNestAntB — SIMANT1_MODULE:2DAE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -94990,7 +94518,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RaidInB — SIMANT1_MODULE:3524
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 235 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95079,11 +94607,10 @@ Source: unrecovered. Flags: unresolved.
 360C  5f                       pop di
 360D  c9                       leave 
 360E  cb                       retf 
-360F  90                       nop 
 ```
 
 ## _RaidOutB — SIMANT1_MODULE:3610
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 110 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95138,7 +94665,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRestB — SIMANT1_MODULE:367E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 294 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95253,7 +94780,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDrownB — SIMANT1_MODULE:37A4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 210 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95331,7 +94858,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRandB — SIMANT1_MODULE:3876
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 246 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95431,7 +94958,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRecruitN — SIMANT1_MODULE:396C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 232 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95530,7 +95057,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoNestFightB — SIMANT1_MODULE:3A54
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 334 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95658,7 +95185,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CheckNestFightB — SIMANT1_MODULE:3BA2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 154 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95769,7 +95296,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimEggB — SIMANT1_MODULE:3CA0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 290 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -95864,7 +95391,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimQueenB — SIMANT1_MODULE:3DC2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 666 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96089,12 +95616,10 @@ Source: unrecovered. Flags: unresolved.
 4059  5f                       pop di
 405A  c9                       leave 
 405B  cb                       retf 
-405C  90                       nop 
-405D  90                       nop 
 ```
 
 ## _GetBestDir — SIMANT1_MODULE:405E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 246 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96416,7 +95941,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LostTailB — SIMANT1_MODULE:433C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 98 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96465,7 +95990,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _TryMoveDirB — SIMANT1_MODULE:439E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 266 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96567,7 +96092,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoNestingB — SIMANT1_MODULE:44A8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 797 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96828,11 +96353,10 @@ Source: unrecovered. Flags: unresolved.
 47C2  5f                       pop di
 47C3  c9                       leave 
 47C4  cb                       retf 
-47C5  90                       nop 
 ```
 
 ## _TryEatFoodB — SIMANT1_MODULE:47C6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 126 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96882,7 +96406,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EatFoodB — SIMANT1_MODULE:4844
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 112 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96926,7 +96450,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _StealFoodB — SIMANT1_MODULE:48B4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 67 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -96956,7 +96480,6 @@ Source: unrecovered. Flags: unresolved.
 48F4  5f                       pop di
 48F5  c9                       leave 
 48F6  cb                       retf 
-48F7  90                       nop 
 ```
 
 ## _DecEatB — SIMANT1_MODULE:48F8
@@ -96984,7 +96507,7 @@ Source: src/recovered/DecEatB.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMAN
 ```
 
 ## _DoFoodInB — SIMANT1_MODULE:492A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 678 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -97228,7 +96751,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDigInB — SIMANT1_MODULE:4BD0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 735 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -97484,11 +97007,10 @@ Source: unrecovered. Flags: unresolved.
 4EAC  5f                       pop di
 4EAD  c9                       leave 
 4EAE  cb                       retf 
-4EAF  90                       nop 
 ```
 
 ## _DoDigOutB — SIMANT1_MODULE:4EB0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 686 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -97727,7 +97249,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LeaveNestB — SIMANT1_MODULE:515E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 172 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -97795,7 +97317,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetOutB — SIMANT1_MODULE:520A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 314 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -97964,7 +97486,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoNestAntR — SIMANT1_MODULE:53A4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -98659,7 +98181,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RaidInR — SIMANT1_MODULE:5B2A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 235 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -98748,11 +98270,10 @@ Source: unrecovered. Flags: unresolved.
 5C12  5f                       pop di
 5C13  c9                       leave 
 5C14  cb                       retf 
-5C15  90                       nop 
 ```
 
 ## _StayInR — SIMANT1_MODULE:5C16
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 249 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -98843,11 +98364,10 @@ Source: unrecovered. Flags: unresolved.
 5D0C  5f                       pop di
 5D0D  c9                       leave 
 5D0E  cb                       retf 
-5D0F  90                       nop 
 ```
 
 ## _RaidOutR — SIMANT1_MODULE:5D10
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 110 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -98902,7 +98422,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRestR — SIMANT1_MODULE:5D7E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 298 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99018,7 +98538,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDrownR — SIMANT1_MODULE:5EA8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 210 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99096,7 +98616,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRandR — SIMANT1_MODULE:5F7A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 248 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99197,7 +98717,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoNestFightR — SIMANT1_MODULE:6072
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 304 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99312,7 +98832,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CheckNestFightR — SIMANT1_MODULE:61A2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 160 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99507,7 +99027,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimQueenR — SIMANT1_MODULE:6386
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 639 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99726,7 +99246,6 @@ Source: unrecovered. Flags: unresolved.
 6602  5f                       pop di
 6603  c9                       leave 
 6604  cb                       retf 
-6605  90                       nop 
 ```
 
 ## _QueenMoveR — SIMANT1_MODULE:6606
@@ -99950,7 +99469,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LostTailR — SIMANT1_MODULE:67EE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 98 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -99999,7 +99518,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _TryMoveDirR — SIMANT1_MODULE:6850
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 186 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100079,7 +99598,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoNestingR — SIMANT1_MODULE:690A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 557 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100266,11 +99785,10 @@ Source: unrecovered. Flags: unresolved.
 6B34  5f                       pop di
 6B35  c9                       leave 
 6B36  cb                       retf 
-6B37  90                       nop 
 ```
 
 ## _TryEatFoodR — SIMANT1_MODULE:6B38
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 126 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100320,7 +99838,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EatFoodR — SIMANT1_MODULE:6BB6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 112 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100364,7 +99882,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _StealFoodR — SIMANT1_MODULE:6C26
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 67 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100394,7 +99912,6 @@ Source: unrecovered. Flags: unresolved.
 6C66  5f                       pop di
 6C67  c9                       leave 
 6C68  cb                       retf 
-6C69  90                       nop 
 ```
 
 ## _DecEatR — SIMANT1_MODULE:6C6A
@@ -100416,7 +99933,7 @@ Source: src/recovered/DecEatR.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMAN
 ```
 
 ## _DoFoodInR — SIMANT1_MODULE:6C8C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 640 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100644,7 +100161,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDigInR — SIMANT1_MODULE:6F0C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 798 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -100924,7 +100441,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDigOutR — SIMANT1_MODULE:722A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 656 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -101155,7 +100672,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetOutR — SIMANT1_MODULE:74BA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 314 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -101279,7 +100796,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoAntMoveY — SIMANT1_MODULE:75F4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1793 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -101845,11 +101362,10 @@ Source: unrecovered. Flags: unresolved.
 7CF2  5f                       pop di
 7CF3  c9                       leave 
 7CF4  cb                       retf 
-7CF5  90                       nop 
 ```
 
 ## _DoAntSimY — SIMANT1_MODULE:7CF6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 351 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -101967,11 +101483,10 @@ Source: unrecovered. Flags: unresolved.
 7E52  5e                       pop si
 7E53  c9                       leave 
 7E54  cb                       retf 
-7E55  90                       nop 
 ```
 
 ## _AnimYellowFight — SIMANT1_MODULE:7E56
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 545 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -102160,11 +101675,10 @@ Source: unrecovered. Flags: unresolved.
 8074  5f                       pop di
 8075  c9                       leave 
 8076  cb                       retf 
-8077  90                       nop 
 ```
 
 ## _AnimYellowInsane — SIMANT1_MODULE:8078
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 454 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -102329,7 +101843,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowFight — SIMANT1_MODULE:823E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 457 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -102494,11 +102008,10 @@ Source: unrecovered. Flags: unresolved.
 8404  5f                       pop di
 8405  c9                       leave 
 8406  cb                       retf 
-8407  90                       nop 
 ```
 
 ## _EnterNest — SIMANT1_MODULE:8408
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 155 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -102547,11 +102060,10 @@ Source: unrecovered. Flags: unresolved.
 849A  9a3665dd82               lcall 0x82dd, 0x6536 ; _SetMyLife
 849F  83c40c                   add sp, 0xc
 84A2  cb                       retf 
-84A3  90                       nop 
 ```
 
 ## _ExitNest — SIMANT1_MODULE:84A4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 477 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -102710,11 +102222,10 @@ Source: unrecovered. Flags: unresolved.
 867E  5f                       pop di
 867F  c9                       leave 
 8680  cb                       retf 
-8681  90                       nop 
 ```
 
 ## _GetMyDis — SIMANT1_MODULE:8682
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 421 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -102843,7 +102354,6 @@ Source: unrecovered. Flags: unresolved.
 8820  8bc6                     mov ax, si
 8822  03c1                     add ax, cx
 8824  e953ff                   jmp 0x877a
-8827  90                       nop 
 ```
 
 ## _GetMyBestDirs — SIMANT1_MODULE:8828
@@ -102944,7 +102454,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetMyRandDirs — SIMANT1_MODULE:8928
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 536 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -103143,7 +102653,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CheckMyBestDirs — SIMANT1_MODULE:8B40
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 169 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -103215,11 +102725,10 @@ Source: unrecovered. Flags: unresolved.
 8BE6  5f                       pop di
 8BE7  c9                       leave 
 8BE8  cb                       retf 
-8BE9  90                       nop 
 ```
 
 ## _GetMyNextRandDirs — SIMANT1_MODULE:8BEA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 244 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -103367,7 +102876,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetMyBestDir — SIMANT1_MODULE:8D3A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 399 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -103525,11 +103034,10 @@ Source: unrecovered. Flags: unresolved.
 8EC6  5f                       pop di
 8EC7  c9                       leave 
 8EC8  cb                       retf 
-8EC9  90                       nop 
 ```
 
 ## _GetMyDir — SIMANT1_MODULE:8ECA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 788 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -103832,7 +103340,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FillHolesBN — SIMANT1_MODULE:91DE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 102 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -103879,7 +103387,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FillHolesRN — SIMANT1_MODULE:9244
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 102 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104061,7 +103569,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SmoothAlarm — SIMANT1_MODULE:9380
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 187 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104144,11 +103652,10 @@ Source: unrecovered. Flags: unresolved.
 9438  5f                       pop di
 9439  c9                       leave 
 943A  c3                       ret 
-943B  90                       nop 
 ```
 
 ## _AlarmHere — SIMANT1_MODULE:943C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 65 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104180,7 +103687,6 @@ Source: unrecovered. Flags: unresolved.
 947A  5f                       pop di
 947B  c9                       leave 
 947C  c3                       ret 
-947D  90                       nop 
 ```
 
 ## _AlarmHere2 — SIMANT1_MODULE:947E
@@ -104216,8 +103722,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _JamScentBN — SIMANT1_MODULE:94B6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/wf_JamScentBN-cd34069882.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 94B6  55                       push bp
@@ -104251,8 +103757,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _JamScentRN — SIMANT1_MODULE:94F6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/wf_JamScentRN-18f9c8a2bb.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 94F6  55                       push bp
@@ -104286,8 +103792,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _JamScentBT — SIMANT1_MODULE:9536
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/wf_JamScentBT-86d27c2a8a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 9536  55                       push bp
@@ -104321,8 +103827,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _JamScentRT — SIMANT1_MODULE:9576
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/wf_JamScentRT-49b609e816.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 9576  55                       push bp
@@ -104356,7 +103862,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DecTSmell — SIMANT1_MODULE:95B6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 92 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104489,7 +103995,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRedInitiator — SIMANT1_MODULE:96D4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 619 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104701,11 +104207,10 @@ Source: unrecovered. Flags: unresolved.
 993C  5f                       pop di
 993D  c9                       leave 
 993E  cb                       retf 
-993F  90                       nop 
 ```
 
 ## _GetNewRedTask — SIMANT1_MODULE:9940
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 215 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104781,11 +104286,10 @@ Source: unrecovered. Flags: unresolved.
 9A0E  26c706749d0100           mov word ptr es:[0x9d74], 1
 9A15  5e                       pop si
 9A16  cb                       retf 
-9A17  90                       nop 
 ```
 
 ## _GetRedBestDirs — SIMANT1_MODULE:9A18
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 220 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -104878,7 +104382,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetStrategy — SIMTWO_MODULE:0000
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 460 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105036,7 +104540,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GstrB — SIMTWO_MODULE:01CC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 162 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105117,7 +104621,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetCasteProd — SIMTWO_MODULE:026E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 183 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105195,7 +104699,6 @@ Source: unrecovered. Flags: unresolved.
 0322  5f                       pop di
 0323  c9                       leave 
 0324  cb                       retf 
-0325  90                       nop 
 ```
 
 ## _SetModeProd — SIMTWO_MODULE:0326
@@ -105269,7 +104772,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GstrR — SIMTWO_MODULE:03C2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 332 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105427,7 +104930,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ForceModeA — SIMTWO_MODULE:0550
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105506,7 +105009,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ForceModeB — SIMTWO_MODULE:0622
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105581,7 +105084,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _Recruit — SIMTWO_MODULE:06D2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105667,7 +105170,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _UnRecruit — SIMTWO_MODULE:078A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 220 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105771,7 +105274,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RecruitRed — SIMTWO_MODULE:0866
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 115 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105823,7 +105326,6 @@ Source: unrecovered. Flags: unresolved.
 08D6  5e                       pop si
 08D7  c9                       leave 
 08D8  cb                       retf 
-08D9  90                       nop 
 ```
 
 ## _UnRecruitRed — SIMTWO_MODULE:08DA
@@ -105857,7 +105359,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetNewMode — SIMTWO_MODULE:0910
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 192 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105932,7 +105434,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetNewModeB — SIMTWO_MODULE:09D0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 127 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105980,11 +105482,10 @@ Source: unrecovered. Flags: unresolved.
 0A4C  5e                       pop si
 0A4D  c9                       leave 
 0A4E  cb                       retf 
-0A4F  90                       nop 
 ```
 
 ## _GetNewModeR — SIMTWO_MODULE:0A50
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 95 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106025,11 +105526,10 @@ Source: unrecovered. Flags: unresolved.
 0AAC  5e                       pop si
 0AAD  c9                       leave 
 0AAE  cb                       retf 
-0AAF  90                       nop 
 ```
 
 ## _GetForageDir — SIMTWO_MODULE:0AB0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 384 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106195,7 +105695,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetNestDir — SIMTWO_MODULE:0C30
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 547 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106410,11 +105910,10 @@ Source: unrecovered. Flags: unresolved.
 0E50  5f                       pop di
 0E51  c9                       leave 
 0E52  cb                       retf 
-0E53  90                       nop 
 ```
 
 ## _GetAlarmDir — SIMTWO_MODULE:0E54
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 286 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106542,7 +106041,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetRandDir — SIMTWO_MODULE:0F72
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 179 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106624,11 +106123,10 @@ Source: unrecovered. Flags: unresolved.
 1022  5f                       pop di
 1023  c9                       leave 
 1024  cb                       retf 
-1025  90                       nop 
 ```
 
 ## _GetDefendDir — SIMTWO_MODULE:1026
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 365 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106782,11 +106280,10 @@ Source: unrecovered. Flags: unresolved.
 1190  5f                       pop di
 1191  c9                       leave 
 1192  cb                       retf 
-1193  90                       nop 
 ```
 
 ## _GetRedDefendDir — SIMTWO_MODULE:1194
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 343 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -106932,11 +106429,10 @@ Source: unrecovered. Flags: unresolved.
 12E8  5f                       pop di
 12E9  c9                       leave 
 12EA  cb                       retf 
-12EB  90                       nop 
 ```
 
 ## _Bounce — SIMTWO_MODULE:12EC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 140 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -107098,7 +106594,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoSimYard — SIMTWO_MODULE:14A8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 262 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -107270,7 +106766,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimKidOutside — SIMTWO_MODULE:169C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 2240 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -107969,7 +107465,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetMowDir — SIMTWO_MODULE:1F5C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 225 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -108065,7 +107561,6 @@ Source: unrecovered. Flags: unresolved.
 203A  5f                       pop di
 203B  c9                       leave 
 203C  cb                       retf 
-203D  90                       nop 
 ```
 
 ## _NotMowed — SIMTWO_MODULE:203E
@@ -108146,7 +107641,7 @@ Source: src/recovered/InitGrassMap.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _SimKidInside — SIMTWO_MODULE:20B6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -108797,7 +108292,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimBird — SIMTWO_MODULE:28AA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 633 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109001,11 +108496,10 @@ Source: unrecovered. Flags: unresolved.
 2B1B  c70662ac0000             mov word ptr [0xac62], 0 ; _BirdFrame
 2B21  c9                       leave 
 2B22  cb                       retf 
-2B23  90                       nop 
 ```
 
 ## _SimCat — SIMTWO_MODULE:2B24
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 663 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109216,11 +108710,10 @@ Source: unrecovered. Flags: unresolved.
 2DB8  5f                       pop di
 2DB9  c9                       leave 
 2DBA  cb                       retf 
-2DBB  90                       nop 
 ```
 
 ## _SimDog — SIMTWO_MODULE:2DBC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 946 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109550,7 +109043,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FollowBoyDir — SIMTWO_MODULE:316E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 311 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109678,11 +109171,10 @@ Source: unrecovered. Flags: unresolved.
 32A2  5f                       pop di
 32A3  c9                       leave 
 32A4  cb                       retf 
-32A5  90                       nop 
 ```
 
 ## _FollowCatDir — SIMTWO_MODULE:32A6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 67 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109713,11 +109205,10 @@ Source: unrecovered. Flags: unresolved.
 32E4  250300                   and ax, 3
 32E7  c9                       leave 
 32E8  cb                       retf 
-32E9  90                       nop 
 ```
 
 ## _MakeBark — SIMTWO_MODULE:32EA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 155 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109783,11 +109274,10 @@ Source: unrecovered. Flags: unresolved.
 3382  5f                       pop di
 3383  c9                       leave 
 3384  cb                       retf 
-3385  90                       nop 
 ```
 
 ## _FootFall — SIMTWO_MODULE:3386
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 339 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -109921,7 +109411,6 @@ Source: unrecovered. Flags: unresolved.
 34D6  5f                       pop di
 34D7  c9                       leave 
 34D8  cb                       retf 
-34D9  90                       nop 
 ```
 
 ## _MowerFall — SIMTWO_MODULE:34DA
@@ -109986,7 +109475,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MaintainSwarm — SIMTWO_MODULE:3580
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 119 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -110034,11 +109523,10 @@ Source: unrecovered. Flags: unresolved.
 35F4  16                       push ss
 35F5  1f                       pop ds
 35F6  cb                       retf 
-35F7  90                       nop 
 ```
 
 ## _SimColonies — SIMTWO_MODULE:35F8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1771 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -110642,7 +110130,6 @@ Source: unrecovered. Flags: unresolved.
 3CE0  5f                       pop di
 3CE1  c9                       leave 
 3CE2  cb                       retf 
-3CE3  90                       nop 
 ```
 
 ## _GetNearbyPatches — SIMTWO_MODULE:3CE4
@@ -110692,7 +110179,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _Reproduce — SIMTWO_MODULE:3D4C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 165 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -110762,7 +110249,6 @@ Source: unrecovered. Flags: unresolved.
 3DEE  5f                       pop di
 3DEF  c9                       leave 
 3DF0  cb                       retf 
-3DF1  90                       nop 
 ```
 
 ## _StartMigrate — SIMTWO_MODULE:3DF2
@@ -110818,7 +110304,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EndMigrate — SIMTWO_MODULE:3E6C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 139 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -110881,7 +110367,6 @@ Source: unrecovered. Flags: unresolved.
 3EF4  5f                       pop di
 3EF5  c9                       leave 
 3EF6  cb                       retf 
-3EF7  90                       nop 
 ```
 
 ## _InitSow — SIMTWO_MODULE:3EF8
@@ -111369,7 +110854,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoAntLions — SIMTWO_MODULE:43FA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1758 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -112031,7 +111516,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindInLionList — SIMTWO_MODULE:4B12
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 69 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -112069,7 +111554,6 @@ Source: unrecovered. Flags: unresolved.
 4B54  5f                       pop di
 4B55  c9                       leave 
 4B56  cb                       retf 
-4B57  90                       nop 
 ```
 
 ## _KillAntLion — SIMTWO_MODULE:4B58
@@ -112135,7 +111619,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InitPillar — SIMTWO_MODULE:4BF8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 228 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -112224,7 +111708,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoPillar — SIMTWO_MODULE:4CDC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1576 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -112829,7 +112313,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _StorePillarMap — SIMTWO_MODULE:5304
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 110 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -112936,7 +112420,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeAPill — SIMTWO_MODULE:53DA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 767 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -113225,7 +112709,6 @@ Source: unrecovered. Flags: unresolved.
 56D6  5f                       pop di
 56D7  c9                       leave 
 56D8  cb                       retf 
-56D9  90                       nop 
 ```
 
 ## _PlacePillTile — SIMTWO_MODULE:56DA
@@ -113283,7 +112766,7 @@ Source: src/recovered/PillGetLife.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _IsPillDead — SIMTWO_MODULE:572A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 168 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -113360,7 +112843,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakePillFood — SIMTWO_MODULE:57D2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 560 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -113662,7 +113145,7 @@ Source: src/recovered/InitSimVars.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _RandWorld — SIMTWO_MODULE:5AB0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1493 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -114160,11 +113643,10 @@ Source: unrecovered. Flags: unresolved.
 6082  5f                       pop di
 6083  c9                       leave 
 6084  cb                       retf 
-6085  90                       nop 
 ```
 
 ## _RandYard — SIMTWO_MODULE:6086
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 476 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -114375,7 +113857,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DigOutBNest — SIMTWO_MODULE:62DE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 218 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -114462,7 +113944,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DigOutRNest — SIMTWO_MODULE:63B8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 218 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -114549,7 +114031,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InitYelloAnt — SIMTWO_MODULE:6492
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 315 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -114647,7 +114129,6 @@ Source: unrecovered. Flags: unresolved.
 65CA  5f                       pop di
 65CB  c9                       leave 
 65CC  cb                       retf 
-65CD  90                       nop 
 ```
 
 ## _PlaceBlackQueen — SIMTWO_MODULE:65CE
@@ -115062,7 +114543,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _fracSIN — SIMTWO_MODULE:69C8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 70 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115141,7 +114622,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddFood — SIMTWO_MODULE:6A58
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 513 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115329,7 +114810,6 @@ Source: unrecovered. Flags: unresolved.
 6C56  5f                       pop di
 6C57  c9                       leave 
 6C58  cb                       retf 
-6C59  90                       nop 
 ```
 
 ## _AddBlackAnts — SIMTWO_MODULE:6C5A
@@ -115398,7 +114878,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddRedAnts — SIMTWO_MODULE:6CFE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 173 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115464,11 +114944,10 @@ Source: unrecovered. Flags: unresolved.
 6DA8  5f                       pop di
 6DA9  c9                       leave 
 6DAA  cb                       retf 
-6DAB  90                       nop 
 ```
 
 ## _GrabMap — SIMTWO_MODULE:6DAC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 64 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115617,7 +115096,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepRight — SIMTWO_MODULE:6EFE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 181 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115691,11 +115170,10 @@ Source: unrecovered. Flags: unresolved.
 6FB0  5e                       pop si
 6FB1  c9                       leave 
 6FB2  cb                       retf 
-6FB3  90                       nop 
 ```
 
 ## _goStepLeft — SIMTWO_MODULE:6FB4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 163 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115758,11 +115236,10 @@ Source: unrecovered. Flags: unresolved.
 7054  5e                       pop si
 7055  c9                       leave 
 7056  cb                       retf 
-7057  90                       nop 
 ```
 
 ## _goStepDown — SIMTWO_MODULE:7058
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 181 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115836,11 +115313,10 @@ Source: unrecovered. Flags: unresolved.
 710A  5e                       pop si
 710B  c9                       leave 
 710C  cb                       retf 
-710D  90                       nop 
 ```
 
 ## _goStepUp — SIMTWO_MODULE:710E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 163 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -115903,11 +115379,10 @@ Source: unrecovered. Flags: unresolved.
 71AE  5e                       pop si
 71AF  c9                       leave 
 71B0  cb                       retf 
-71B1  90                       nop 
 ```
 
 ## _goStepNE — SIMTWO_MODULE:71B2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 300 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116017,7 +115492,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepSE — SIMTWO_MODULE:72DE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 318 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116138,7 +115613,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepSW — SIMTWO_MODULE:741C
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 306 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116255,7 +115730,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepNW — SIMTWO_MODULE:754E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 295 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116358,11 +115833,10 @@ Source: unrecovered. Flags: unresolved.
 7672  5e                       pop si
 7673  c9                       leave 
 7674  cb                       retf 
-7675  90                       nop 
 ```
 
 ## _FinishDiagStep — SIMTWO_MODULE:7676
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 215 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116436,7 +115910,6 @@ Source: unrecovered. Flags: unresolved.
 7742  9ae0114a77               lcall 0x774a, 0x11e0 ; _UpdateEdit
 7747  9aee146976               lcall 0x7669, 0x14ee ; _DrawEdit
 774C  cb                       retf 
-774D  90                       nop 
 ```
 
 ## _FinishHorzStep — SIMTWO_MODULE:774E
@@ -116624,7 +116097,7 @@ Source: src/recovered/OverlayInsideTiles.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw'
 ```
 
 ## _Feedback — SIMTWO_MODULE:78CA
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 453 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116778,11 +116251,10 @@ Source: unrecovered. Flags: unresolved.
 7A88  9acc607175               lcall 0x7571, 0x60cc ; _SetDefaultWindPrompt
 7A8D  c9                       leave 
 7A8E  cb                       retf 
-7A8F  90                       nop 
 ```
 
 ## _RunTutor — SIMTWO_MODULE:7A90
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 190 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116855,7 +116327,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GiveLesson — SIMTWO_MODULE:7B4E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -117245,7 +116717,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LessonDone — SIMTWO_MODULE:7F02
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -117482,7 +116954,7 @@ Source: src/recovered/db_Exists.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIM
 ```
 
 ## _db_SetDataBase — SIMTWO_MODULE:81AC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 146 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -117594,7 +117066,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _db_LoadObject — SIMTWO_MODULE:8292
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 188 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -117682,8 +117154,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _db_PurgeObject — SIMTWO_MODULE:834E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: src/recovered/db_PurgeObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 99 bytes.
+Source: src/recovered/db_PurgeObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 834E  55                       push bp
@@ -117728,12 +117200,11 @@ Source: src/recovered/db_PurgeObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 83AE  5e                       pop si
 83AF  c9                       leave 
 83B0  cb                       retf 
-83B1  90                       nop 
 ```
 
 ## _db_PurgeHandle — SIMTWO_MODULE:83B2
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 100 bytes.
-Source: src/recovered/db_PurgeHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/db_PurgeHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 83B2  c8040000                 enter 4, 0
@@ -117784,7 +117255,7 @@ Source: src/recovered/db_PurgeHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 
 ## _db_ReleaseHandle — SIMTWO_MODULE:8416
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 15 bytes.
-Source: src/recovered/db_ReleaseHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/db_ReleaseHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 8416  55                       push bp
@@ -117797,8 +117268,8 @@ Source: src/recovered/db_ReleaseHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 ```
 
 ## _db_ReleaseObject — SIMTWO_MODULE:8426
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
-Source: src/recovered/db_ReleaseObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 87 bytes.
+Source: src/recovered/db_ReleaseObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 8426  c8020000                 enter 2, 0
@@ -117838,12 +117309,11 @@ Source: src/recovered/db_ReleaseObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', 
 847A  5f                       pop di
 847B  c9                       leave 
 847C  cb                       retf 
-847D  90                       nop 
 ```
 
 ## _db_UnhookObject — SIMTWO_MODULE:847E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 38 bytes.
-Source: src/recovered/db_UnhookObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/db_UnhookObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 847E  55                       push bp
@@ -117866,7 +117336,7 @@ Source: src/recovered/db_UnhookObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '
 
 ## _db_CloseDataBase — SIMTWO_MODULE:84A4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 60 bytes.
-Source: src/recovered/db_CloseDataBase.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/db_CloseDataBase.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 84A4  833ee6b100               cmp word ptr [0xb1e6], 0 ; _db_numOfHandles
@@ -117943,7 +117413,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _db_SaveObject — SIMTWO_MODULE:8542
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
-Source: src/recovered/db_SaveObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/db_SaveObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 8542  55                       push bp
@@ -117977,7 +117447,7 @@ Source: src/recovered/db_SaveObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _DBAdd — SIMTWO_MODULE:858A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 327 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -118097,11 +117567,10 @@ Source: unrecovered. Flags: unresolved.
 86CE  5f                       pop di
 86CF  c9                       leave 
 86D0  cb                       retf 
-86D1  90                       nop 
 ```
 
 ## _DBRecall — SIMTWO_MODULE:86D2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 438 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -118926,7 +118395,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetFreeHandle — SIMTWO_MODULE:8EC4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -118990,7 +118459,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_CreateTable — SIMTWO_MODULE:8F46
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 265 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119103,11 +118572,10 @@ Source: unrecovered. Flags: unresolved.
 904C  5f                       pop di
 904D  c9                       leave 
 904E  cb                       retf 
-904F  90                       nop 
 ```
 
 ## _ch_RemoveEntry — SIMTWO_MODULE:9050
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 114 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119216,7 +118684,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_LookUpHandle — SIMTWO_MODULE:9142
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 163 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119289,11 +118757,10 @@ Source: unrecovered. Flags: unresolved.
 91E2  5f                       pop di
 91E3  c9                       leave 
 91E4  cb                       retf 
-91E5  90                       nop 
 ```
 
 ## _ch_LookUpId — SIMTWO_MODULE:91E6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 649 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119540,11 +119007,10 @@ Source: unrecovered. Flags: unresolved.
 946C  5f                       pop di
 946D  c9                       leave 
 946E  cb                       retf 
-946F  90                       nop 
 ```
 
 ## _ch_AddEntry — SIMTWO_MODULE:9470
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 706 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119799,7 +119265,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_DeleteEntry — SIMTWO_MODULE:9732
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 114 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119853,7 +119319,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_CleanupTable — SIMTWO_MODULE:97A4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 226 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -119941,7 +119407,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_DumpOldest — SIMTWO_MODULE:9886
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 320 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -120062,7 +119528,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_GetPrime — SIMTWO_MODULE:99C6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 159 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -120134,7 +119600,6 @@ Source: unrecovered. Flags: unresolved.
 9A62  5f                       pop di
 9A63  c9                       leave 
 9A64  cb                       retf 
-9A65  90                       nop 
 ```
 
 ## _ch_SetCacheHooks — SIMTWO_MODULE:9A66
@@ -120421,7 +119886,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindIndex — SIMTWO_MODULE:9D24
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 237 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -120513,7 +119978,6 @@ Source: unrecovered. Flags: unresolved.
 9E0E  5f                       pop di
 9E0F  c9                       leave 
 9E10  cb                       retf 
-9E11  90                       nop 
 ```
 
 ## _DeleteCurrentIndex — SIMTWO_MODULE:9E12
@@ -120618,7 +120082,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddIndex — SIMTWO_MODULE:9F16
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 351 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -120760,11 +120224,10 @@ A071  5e                       pop si
 A072  5f                       pop di
 A073  c9                       leave 
 A074  cb                       retf 
-A075  90                       nop 
 ```
 
 ## _DeleteIndex — SIMTWO_MODULE:A076
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 245 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -120865,60 +120328,6 @@ A167  5e                       pop si
 A168  5f                       pop di
 A169  c9                       leave 
 A16A  cb                       retf 
-A16B  90                       nop 
-A16C  55                       push bp
-A16D  8bec                     mov bp, sp
-A16F  8b5e06                   mov bx, word ptr [bp + 6]
-A172  8b4608                   mov ax, word ptr [bp + 8]
-A175  0bc3                     or ax, bx
-A177  7512                     jne 0xa18b
-A179  ff760e                   push word ptr [bp + 0xe]
-A17C  9a8014b1a1               lcall 0xa1b1, 0x1480 ; __fmalloc
-A181  5b                       pop bx
-A182  a336cc                   mov word ptr [0xcc36], ax
-A185  891638cc                 mov word ptr [0xcc38], dx
-A189  eb0a                     jmp 0xa195
-A18B  8b4608                   mov ax, word ptr [bp + 8]
-A18E  891e36cc                 mov word ptr [0xcc36], bx
-A192  a338cc                   mov word ptr [0xcc38], ax
-A195  a136cc                   mov ax, word ptr [0xcc36]
-A198  8b1638cc                 mov dx, word ptr [0xcc38]
-A19C  a33ecc                   mov word ptr [0xcc3e], ax
-A19F  891640cc                 mov word ptr [0xcc40], dx
-A1A3  8b460c                   mov ax, word ptr [bp + 0xc]
-A1A6  0b460a                   or ax, word ptr [bp + 0xa]
-A1A9  750b                     jne 0xa1b6
-A1AB  ff760e                   push word ptr [bp + 0xe]
-A1AE  9a8014669c               lcall 0x9c66, 0x1480 ; __fmalloc
-A1B3  5b                       pop bx
-A1B4  eb06                     jmp 0xa1bc
-A1B6  8b460a                   mov ax, word ptr [bp + 0xa]
-A1B9  8b560c                   mov dx, word ptr [bp + 0xc]
-A1BC  a34acc                   mov word ptr [0xcc4a], ax
-A1BF  89164ccc                 mov word ptr [0xcc4c], dx
-A1C3  a34ecc                   mov word ptr [0xcc4e], ax
-A1C6  891650cc                 mov word ptr [0xcc50], dx
-A1CA  2bc0                     sub ax, ax
-A1CC  a348cc                   mov word ptr [0xcc48], ax
-A1CF  a346cc                   mov word ptr [0xcc46], ax
-A1D2  a334cc                   mov word ptr [0xcc34], ax
-A1D5  a344cc                   mov word ptr [0xcc44], ax
-A1D8  8b460e                   mov ax, word ptr [bp + 0xe]
-A1DB  a330cc                   mov word ptr [0xcc30], ax
-A1DE  8be5                     mov sp, bp
-A1E0  5d                       pop bp
-A1E1  cb                       retf 
-A1E2  ff3638cc                 push word ptr [0xcc38]
-A1E6  ff3636cc                 push word ptr [0xcc36]
-A1EA  9aac14fca1               lcall 0xa1fc, 0x14ac ; __ffree
-A1EF  5b                       pop bx
-A1F0  5b                       pop bx
-A1F1  ff364ccc                 push word ptr [0xcc4c]
-A1F5  ff364acc                 push word ptr [0xcc4a]
-A1F9  9aac147fa1               lcall 0xa17f, 0x14ac ; __ffree
-A1FE  5b                       pop bx
-A1FF  5b                       pop bx
-A200  cb                       retf 
 ```
 
 ## _PackWriteByte — SIMTWO_MODULE:A201
@@ -121985,7 +121394,7 @@ ACC4  cb                       retf
 ```
 
 ## __font_StringWidth — SIMTWO_MODULE:ACC6
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 150 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -122137,7 +121546,7 @@ ADDE  cb                       retf
 ```
 
 ## _font_MakeImage — SIMTWO_MODULE:ADE0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 586 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -122350,7 +121759,6 @@ B026  5e                       pop si
 B027  5f                       pop di
 B028  c9                       leave 
 B029  cb                       retf 
-B02A  0080c0e0                 add byte ptr [bx + si - 0x1f40], al
 ```
 
 ## _DrawChar — SIMTWO_MODULE:B033
@@ -122669,7 +122077,7 @@ B2FF  cb                       retf
 ```
 
 ## _gr_JustifyStrInRect — SIMTWO_MODULE:B300
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 234 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -122813,7 +122221,7 @@ B440  cb                       retf
 ```
 
 ## _win_SetColorFromObj — SIMTWO_MODULE:B442
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 111 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -122861,11 +122269,10 @@ B4AB  83c406                   add sp, 6
 B4AE  5e                       pop si
 B4AF  c9                       leave 
 B4B0  cb                       retf 
-B4B1  90                       nop 
 ```
 
 ## _win_SetColorFromObjNum — SIMTWO_MODULE:B4B2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 152 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -123146,7 +122553,7 @@ B701  cb                       retf
 
 ## _win_DrawButtonBorder — SIMTWO_MODULE:B702
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
-Source: src/recovered/win_DrawButtonBorder.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/win_DrawButtonBorder.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 B702  1e                       push ds
@@ -123157,7 +122564,7 @@ B70E  cb                       retf
 ```
 
 ## _win_DrawObjectI — SIMTWO_MODULE:B710
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -123744,7 +123151,7 @@ BC95  cb                       retf
 ```
 
 ## _win_DrawTitle — SIMTWO_MODULE:BC98
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 193 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -123826,11 +123233,10 @@ BD55  5e                       pop si
 BD56  5f                       pop di
 BD57  c9                       leave 
 BD58  cb                       retf 
-BD59  90                       nop 
 ```
 
 ## _win_DrawBitMap — SIMTWO_MODULE:BD5A
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 214 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -124010,7 +123416,7 @@ BED1  cb                       retf
 ```
 
 ## _win_PrintTextInRect — SIMTWO_MODULE:BED2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 438 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -124220,7 +123626,7 @@ C0B0  cb                       retf
 ```
 
 ## _MyGetTopWindow — SIMTWO_MODULE:C0B2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 79 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -124262,7 +123668,6 @@ C0FC  8bc6                     mov ax, si
 C0FE  5e                       pop si
 C0FF  c9                       leave 
 C100  cb                       retf 
-C101  90                       nop 
 ```
 
 ## _win_IsWinExposed — SIMTWO_MODULE:C102
@@ -124334,7 +123739,7 @@ C19C  cb                       retf
 ```
 
 ## _win_IsWinInFront — SIMTWO_MODULE:C19E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 107 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -124388,7 +123793,6 @@ C204  33c0                     xor ax, ax
 C206  5e                       pop si
 C207  c9                       leave 
 C208  cb                       retf 
-C209  90                       nop 
 ```
 
 ## _win_FlushEvents — SIMTWO_MODULE:C20A
@@ -124648,7 +124052,7 @@ C3E3  cb                       retf
 ```
 
 ## _win_SetPalette — SIMTWO_MODULE:C3E4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 546 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -124909,7 +124313,7 @@ C660  cb                       retf
 ```
 
 ## _win_LoadWindow — SIMTWO_MODULE:C662
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 419 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -125090,11 +124494,10 @@ C801  5e                       pop si
 C802  5f                       pop di
 C803  c9                       leave 
 C804  cb                       retf 
-C805  90                       nop 
 ```
 
 ## _win_LoadAllWindows — SIMTWO_MODULE:C806
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 552 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -125329,7 +124732,7 @@ CA2D  cb                       retf
 ```
 
 ## _win_Open — SIMTWO_MODULE:CA2E
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1385 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -125820,7 +125223,6 @@ CF93  5e                       pop si
 CF94  5f                       pop di
 CF95  c9                       leave 
 CF96  cb                       retf 
-CF97  90                       nop 
 ```
 
 ## _win_Close — SIMTWO_MODULE:CF98
@@ -125950,7 +125352,7 @@ D0AF  cb                       retf
 ```
 
 ## _win_FindObject — SIMTWO_MODULE:D0B0
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 101 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -125999,12 +125401,11 @@ D111  5e                       pop si
 D112  5f                       pop di
 D113  c9                       leave 
 D114  cb                       retf 
-D115  90                       nop 
 ```
 
 ## _UpdateAllWindows — SIMTWO_MODULE:D116
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 58 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 58 bytes.
+Source: src/recovered/wf_UpdateAllWindows-97a1ff92dc.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 D116  c8120000                 enter 0x12, 0
@@ -126035,7 +125436,7 @@ D14F  cb                       retf
 ```
 
 ## _win_GetEvent — SIMTWO_MODULE:D150
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 420 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -126210,7 +125611,7 @@ D2F3  cb                       retf
 ```
 
 ## _win_SetObjFormatStr — SIMTWO_MODULE:D2F4
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 297 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -126329,7 +125730,6 @@ D419  5e                       pop si
 D41A  5f                       pop di
 D41B  c9                       leave 
 D41C  cb                       retf 
-D41D  90                       nop 
 ```
 
 ## _win_ToTop — SIMTWO_MODULE:D41E
@@ -126729,7 +126129,7 @@ D790  cb                       retf
 ```
 
 ## _win_ClearObjToEOL — SIMTWO_MODULE:D792
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 290 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -127444,7 +126844,7 @@ DDD0  cb                       retf
 ```
 
 ## INDIRECTDLGPROC — SIMTWO_MODULE:DDD2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 143 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -127505,11 +126905,10 @@ DE5B  1f                       pop ds
 DE5C  5e                       pop si
 DE5D  c9                       leave 
 DE5E  ca0a00                   retf 0xa
-DE61  90                       nop 
 ```
 
 ## _win_DoProxMenu — SIMTWO_MODULE:DE62
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 993 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -127885,7 +127284,6 @@ E23F  5e                       pop si
 E240  5f                       pop di
 E241  c9                       leave 
 E242  cb                       retf 
-E243  90                       nop 
 ```
 
 ## _win_InvalidateObject — SIMTWO_MODULE:E244
@@ -128187,7 +127585,7 @@ E404  cb                       retf
 ```
 
 ## _win_AutoSize — SIMTWO_MODULE:E406
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -128283,7 +127681,7 @@ E4E7  90                       nop
 ```
 
 ## _win_GetVal — SIMTWO_MODULE:E4E8
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 138 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -128349,7 +127747,7 @@ E571  cb                       retf
 ```
 
 ## _win_GetArg — SIMTWO_MODULE:E572
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 60 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -128383,7 +127781,7 @@ E5AD  cb                       retf
 ```
 
 ## __win_CalcObjElement — SIMTWO_MODULE:E5AE
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -128519,7 +127917,7 @@ E6E1  90                       nop
 ```
 
 ## _win_Recalc — SIMTWO_MODULE:E6E2
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -129091,7 +128489,7 @@ ED06  cb                       retf
 ```
 
 ## _win_SetObjSelectedStateI — SIMTWO_MODULE:ED08
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 331 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -129223,7 +128621,6 @@ EE4F  5e                       pop si
 EE50  5f                       pop di
 EE51  c9                       leave 
 EE52  cb                       retf 
-EE53  90                       nop 
 ```
 
 ## _win_SetObjSelectedState — SIMTWO_MODULE:EE54
@@ -129755,7 +129152,7 @@ F2BB  cb                       retf
 ```
 
 ## _win_SetObjVisibleState — SIMTWO_MODULE:F2BC
-Ownership: GAME (PROBABLE). Extent: SYMBOL_ONLY_START, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 344 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm

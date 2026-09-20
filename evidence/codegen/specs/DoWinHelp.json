@@ -1,0 +1,25 @@
+{
+  "symbol": "_DoWinHelp",
+  "template": "extern int near rootWnd;\nextern char far helpFile[];\nextern int far pascal WinHelp(int window, char far *file, unsigned int command, unsigned long data);\nvoid DoWinHelp(unsigned int context)\n{\n@BODY@\n}\n",
+  "axes": [
+    {
+      "name": "high_byte_expression_and_lifetime",
+      "marker": "@BODY@",
+      "rationale": "Unsigned 16-bit high-byte mask; all expressions identical for every input, temporary lifetime affects scheduling",
+      "generator": "u16_high_byte",
+      "parameter": "context",
+      "call": "WinHelp(rootWnd, helpFile, 1, (unsigned long)(@VALUE@));"
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "assumptions": [
+    "WinHelp uses the documented far pointer and DWORD ABI; helpFile is independently MAPSYM-bound, never a hardcoded selector."
+  ]
+}

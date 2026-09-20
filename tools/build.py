@@ -10,7 +10,7 @@ def main():
     ap.add_argument('--only',help='Comma-separated symbols to rebuild; retain other previously built objects for verification')
     args=ap.parse_args()
     out=ROOT/'build/recovered';out.mkdir(parents=True,exist_ok=True)
-    objects=[]
+    objects=[];compile_cache={}
     previous={r['symbol']:r for r in read_json(out/'manifest.json')['game_objects']} if args.only and (out/'manifest.json').exists() else {}
     selected=set(args.only.split(',')) if args.only else None
     recipes=read_json(ROOT/'src/recovery.json')['targets']
@@ -24,7 +24,9 @@ def main():
         if selected is not None and name not in selected:
             if name not in previous:raise FormatError('missing prior object; run full build')
             objects.append(previous[name]);continue
-        obj,receipt=compile_source(target['source'],target['flags'],target.get('compiler','msc600a'))
+        key=(target['source'],tuple(target['flags']),target.get('compiler','msc600a'))
+        if key not in compile_cache:compile_cache[key]=compile_source(key[0],list(key[1]),key[2])
+        obj,receipt=compile_cache[key]
         suffix=('__case%d'%case_collisions[name]) if name in case_collisions and case_collisions[name]>1 else ''
         dest=out/(name+suffix+'.obj');shutil.copyfile(obj,dest)
         objects.append(dict(symbol=name,object=dest.relative_to(ROOT).as_posix(),identity=identity(dest),receipt=receipt))

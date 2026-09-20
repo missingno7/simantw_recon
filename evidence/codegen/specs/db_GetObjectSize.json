@@ -1,0 +1,50 @@
+{
+  "symbol": "_db_GetObjectSize",
+  "template": "extern int near db_numOfHandles;\nextern int far db_handles[];\nextern int far DBRecall(int handle, char far *name, int far *size);\nextern void far mem_Free(int handle);\n\nint db_GetObjectSize(char far *name)\n{\n@LOCALS@\n\n    @LOOP@ {\n        handle = DBRecall(db_handles[index], name, &size);\n        @TEST@ {\n            mem_Free(handle);\n            return size;\n        }\n    }\n    return 0;\n}\n",
+  "axes": [
+    {
+      "name": "local_order_and_register_hint",
+      "marker": "@LOCALS@",
+      "rationale": "Same scalar types and operations; reorder declarations and optional register hints for non-address-taken locals",
+      "generator": "local_order_register",
+      "locals": [
+        "size",
+        "handle",
+        "index"
+      ],
+      "address_taken": [
+        "size"
+      ]
+    },
+    {
+      "name": "loop_spelling",
+      "marker": "@LOOP@",
+      "rationale": "Identical loop order and bound; induction expression spelling only",
+      "values": [
+        "for (index = 0; index < db_numOfHandles; ++index)",
+        "for (index = 0; index < db_numOfHandles; index++)",
+        "for (index = 0; db_numOfHandles > index; index += 1)",
+        "for (index = 0; index < db_numOfHandles; index = index + 1)"
+      ]
+    },
+    {
+      "name": "nonzero_test",
+      "marker": "@TEST@",
+      "rationale": "Equivalent nonzero scalar tests",
+      "values": [
+        "if (handle)",
+        "if (handle != 0)",
+        "if (!!handle)",
+        "if (!(handle == 0))"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ]
+}

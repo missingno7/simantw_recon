@@ -1,0 +1,25 @@
+Target | Candidate | Difference
+0000 enter 2, 0 | 0000 push bp | instruction_shape
+ | 0001 mov bp, sp | instruction_shape
+0004 push di | 0003 push di | 
+0005 push si | 0004 push si | 
+0006 mov di, word ptr [bp + 6] | 0005 mov si, word ptr [bp + 6] | register_allocation
+0009 push di |  | instruction_shape
+000a nop  |  | instruction_shape
+000b push cs | 0008 push si | register_allocation
+000c call 0xe6 | 0009 call <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 5514}] | immediate_or_binding
+000f add sp, 2 | 000c add sp, 2 | 
+0012 mov si, ax | 000f mov di, ax | register_allocation
+0014 push di | 0011 push si | register_allocation
+0015 nop  |  | instruction_shape
+0016 push cs |  | instruction_shape
+0017 call 0xe6 | 0012 call <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 5514}] | immediate_or_binding
+001a add sp, 2 | 0015 add sp, 2 | 
+ | 0018 mov si, ax | instruction_shape
+001d cmp ax, si | 001a cmp ax, di | register_allocation
+001f jle 0x23 | 001c jle 0x20 | branch_target
+0021 mov ax, si | 001e mov ax, di | register_allocation
+0023 pop si | 0020 pop si | 
+0024 pop di | 0021 pop di | 
+0025 leave  | 0022 leave  | 
+0026 retf  | 0023 retf  | 

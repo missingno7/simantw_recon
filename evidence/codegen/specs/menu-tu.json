@@ -1,0 +1,30 @@
+{
+  "symbol": "_SetMenuOptionState",
+  "template": "extern int far Scycle[];\nextern int far pascal CheckMenuItem(unsigned int menu, unsigned int item,\n                                    unsigned int flags);\n\nvoid SetMenuItemState(int item, int state)\n{\n    CheckMenuItem(Scycle[-23 + ((item & 0xf0) >> 4)],\n                  item | 0xfd00,\n                  state == 0x10 ? 8 : 0);\n}\n\nvoid SetMenuOptionState(int item, int state)\n{\n    CheckMenuItem(Scycle[-23 + ((item & 0xf0) >> 4)],\n                  item | 0xfd00,\n                  @CONDITION@ ? 8 : 0);\n}\n",
+  "axes": [
+    {
+      "name": "boolean_state_hypothesis",
+      "marker": "@CONDITION@",
+      "rationale": "Target CMP state,1 / CMC / SBB suggests unsigned nonzero; equality retained as negative contrast",
+      "values": [
+        "state != 0",
+        "(unsigned int)state >= 1",
+        "state == 1"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "tu_confidence": "CANDIDATE_TU",
+  "historical_filename": null,
+  "grouping_evidence": [
+    "Adjacent MAPSYM publics separated by one byte of alignment",
+    "Same CheckMenuItem import and Scycle selector; similar source operations"
+  ]
+}

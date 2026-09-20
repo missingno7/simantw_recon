@@ -1,0 +1,31 @@
+Target | Candidate | Difference
+0000 push bp | 0000 push bp | 
+0001 mov bp, sp | 0001 mov bp, sp | 
+0003 push di |  | instruction_shape
+0004 push si |  | instruction_shape
+0005 mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | 0003 mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | 
+0008 mov es, ax | 0006 mov es, ax | 
+000a mov di, word ptr [bp + 4] | 0008 mov cx, word ptr [bp + 8] | memory_operand,stack_local_layout
+000d mov bx, word ptr [bp + 6] | 000b mov bx, word ptr [bp + 4] | memory_operand,stack_local_layout
+ | 000e and bl, 0xfe | instruction_shape
+ | 0011 shl bx, 4 | instruction_shape
+0010 mov cx, word ptr [bp + 8] | 0014 mov ax, word ptr [bp + 6] | memory_operand,stack_local_layout
+0013 mov si, di |  | instruction_shape
+0015 and si, 0xfffe |  | instruction_shape
+0018 shl si, 4 |  | instruction_shape
+001b mov ax, bx |  | instruction_shape
+001d sar ax, 1 | 0017 sar ax, 1 | 
+001f add si, ax | 0019 add bx, ax | register_allocation
+0021 mov al, byte ptr es:[si + 0x62d2] | 001b mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 25298}] | memory_operand
+0026 sub ah, ah | 0020 sub ah, ah | 
+0028 cmp ax, cx | 0022 cmp ax, cx | 
+002a jge 0x3b | 0024 jge 0x2b | branch_target
+002c and di, 0xfffe |  | instruction_shape
+002f shl di, 4 |  | instruction_shape
+0032 sar bx, 1 |  | instruction_shape
+0034 add di, bx |  | instruction_shape
+0036 mov byte ptr es:[di + 0x62d2], cl | 0026 mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 25298}] | memory_operand
+003b pop si |  | instruction_shape
+003c pop di |  | instruction_shape
+003d leave  | 002b leave  | 
+003e ret  | 002c ret  | 

@@ -1,9 +1,9 @@
 extern int near rootWnd;
-extern void far pascal WinHelp(int window, int helpSegment,
-                               int helpOffset, int command,
-                               int dataHigh, int dataLow);
+extern char far helpFile[];
+extern int far pascal WinHelp(int window, char far *file,
+                              unsigned int command, unsigned long data);
 
-void ProcMenuHelp(int context)
+void ProcMenuHelp(unsigned int context)
 {
-    WinHelp(rootWnd, 0x4e41, 0x76ac, 1, 0, context);
+    WinHelp(rootWnd, helpFile, 1, (unsigned long)(unsigned int)context);
 }

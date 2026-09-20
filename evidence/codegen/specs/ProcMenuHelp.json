@@ -1,0 +1,33 @@
+{
+  "symbol": "_ProcMenuHelp",
+  "template": "extern int near rootWnd;\nextern char far helpFile[];\nextern int far pascal WinHelp(int window, char far *file, unsigned int command, unsigned long data);\nvoid ProcMenuHelp(@TYPE@ context)\n{\n    WinHelp(rootWnd, helpFile, 1, @ARG@);\n}\n",
+  "axes": [
+    {
+      "name": "word_parameter_type",
+      "marker": "@TYPE@",
+      "rationale": "Probe signedness hypothesis at Win16 word boundary; not assumed equivalent for negative inputs",
+      "values": [
+        "unsigned int",
+        "int"
+      ]
+    },
+    {
+      "name": "dword_extension",
+      "marker": "@ARG@",
+      "rationale": "Equivalent zero extension of a 16-bit context",
+      "values": [
+        "(unsigned long)(unsigned int)context",
+        "(unsigned long)(context & 0xffffU)",
+        "(long)(unsigned int)context"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ]
+}

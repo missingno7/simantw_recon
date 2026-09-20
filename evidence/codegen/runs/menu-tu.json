@@ -1,0 +1,863 @@
+{
+  "symbol": "_SetMenuOptionState",
+  "spec": {
+    "symbol": "_SetMenuOptionState",
+    "template": "extern int far Scycle[];\nextern int far pascal CheckMenuItem(unsigned int menu, unsigned int item,\n                                    unsigned int flags);\n\nvoid SetMenuItemState(int item, int state)\n{\n    CheckMenuItem(Scycle[-23 + ((item & 0xf0) >> 4)],\n                  item | 0xfd00,\n                  state == 0x10 ? 8 : 0);\n}\n\nvoid SetMenuOptionState(int item, int state)\n{\n    CheckMenuItem(Scycle[-23 + ((item & 0xf0) >> 4)],\n                  item | 0xfd00,\n                  @CONDITION@ ? 8 : 0);\n}\n",
+    "axes": [
+      {
+        "name": "boolean_state_hypothesis",
+        "marker": "@CONDITION@",
+        "rationale": "Target CMP state,1 / CMC / SBB suggests unsigned nonzero; equality retained as negative contrast",
+        "values": [
+          "state != 0",
+          "(unsigned int)state >= 1",
+          "state == 1"
+        ]
+      }
+    ],
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTGR_MODULE"
+    ],
+    "tu_confidence": "CANDIDATE_TU",
+    "historical_filename": null,
+    "grouping_evidence": [
+      "Adjacent MAPSYM publics separated by one byte of alignment",
+      "Same CheckMenuItem import and Scycle selector; similar source operations"
+    ]
+  },
+  "exe_sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+  "sym_sha256": "9d27f4d0872e483ddbf460bda8a2e34b7180f153c6d7c1a74d692720476c9a7f",
+  "candidates": 3,
+  "environment_launches": 1,
+  "exact_candidates": [
+    0
+  ],
+  "promotion": "NONE: independent rebuild and recipe review required",
+  "completed_candidates": 3,
+  "results": [
+    {
+      "candidate": 0,
+      "choices": {
+        "boolean_state_hypothesis": "state != 0"
+      },
+      "receipt": {
+        "source": "build/grinder/menu-tu/candidate0000.c",
+        "source_identity": {
+          "size": 526,
+          "sha256": "f259c33aadb5a68a9b5d7cf76d46abe4231823cbfa66690dd1d1b1fd9dc1b0e7"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTGR_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\Q7_2c28dk\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoJ0000.OBJ /AL /G2 /Gs /Oelw /NTGR_MODULE J0000.C > J0000.LOG",
+        "batch_index": 0,
+        "batch_directory": "build/Q7_2c28dk",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\n",
+        "stderr": "",
+        "object": "build/Q7_2c28dk/J0000.OBJ",
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "object_identity": {
+          "size": 434,
+          "sha256": "77f25e98a7714611f9e99b3a1e7fcf64e166c9b79efa22eefcaf7408f7fc6755"
+        }
+      },
+      "comparison": {
+        "result": "STRONGLY_SUPPORTED_MEMBER",
+        "issues": [],
+        "placements": {
+          "1": [
+            2,
+            19510
+          ],
+          "3": [
+            10,
+            50880
+          ]
+        },
+        "private_constraint_placements": [
+          3
+        ],
+        "anchors": {
+          "1": [
+            [
+              2,
+              19510,
+              "_SetMenuItemState"
+            ],
+            [
+              2,
+              19510,
+              "_SetMenuOptionState"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "GR_MODULE",
+            "original_segment": 2,
+            "original_offset": 19510,
+            "length": 104,
+            "initialized_ranges": [
+              [
+                0,
+                104
+              ]
+            ],
+            "literal_compared": 88,
+            "literal_equal": 88,
+            "divergences": [],
+            "fixups": [
+              {
+                "offset": 97,
+                "target": {
+                  "kind": "import",
+                  "module": "USER",
+                  "ordinal": 154
+                },
+                "equal": true,
+                "reason": "NE pointer relocation",
+                "omf": {
+                  "segment": 1,
+                  "offset": 97,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "CHECKMENUITEM"
+                  }
+                }
+              },
+              {
+                "offset": 77,
+                "target": {
+                  "kind": "internal",
+                  "segment": 9,
+                  "offset": 94818
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 77,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_Scycle"
+                  }
+                }
+              },
+              {
+                "offset": 63,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 50880
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 63,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 1,
+                  "frame_index": 1,
+                  "target_method": 0,
+                  "target_index": 3,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "segment",
+                    "name": "CONST"
+                  }
+                }
+              },
+              {
+                "offset": 46,
+                "target": {
+                  "kind": "import",
+                  "module": "USER",
+                  "ordinal": 154
+                },
+                "equal": true,
+                "reason": "NE pointer relocation",
+                "omf": {
+                  "segment": 1,
+                  "offset": 46,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "CHECKMENUITEM"
+                  }
+                }
+              },
+              {
+                "offset": 23,
+                "target": {
+                  "kind": "internal",
+                  "segment": 9,
+                  "offset": 94818
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 23,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_Scycle"
+                  }
+                }
+              },
+              {
+                "offset": 9,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 50880
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 9,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 1,
+                  "frame_index": 1,
+                  "target_method": 0,
+                  "target_index": 3,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "segment",
+                    "name": "CONST"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          },
+          {
+            "segment": "CONST",
+            "original_segment": 10,
+            "original_offset": 50880,
+            "length": 2,
+            "initialized_ranges": [
+              [
+                0,
+                2
+              ]
+            ],
+            "literal_compared": 0,
+            "literal_equal": 0,
+            "divergences": [],
+            "fixups": [
+              {
+                "offset": 0,
+                "target": {
+                  "kind": "internal",
+                  "segment": 9,
+                  "offset": 29328
+                },
+                "equal": true,
+                "reason": "NE selector for independently named target",
+                "omf": {
+                  "segment": 3,
+                  "offset": 0,
+                  "location_type": 2,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_Scycle"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 88,
+        "literal_equal": 88,
+        "fixups_equal": 7,
+        "fixups_total": 7,
+        "publics": [
+          "_SetMenuItemState",
+          "_SetMenuOptionState"
+        ],
+        "code_contribution_size": 104,
+        "features": {
+          "frame": [
+            "leave ",
+            "leave "
+          ],
+          "registers": [
+            "ah",
+            "ax",
+            "bp",
+            "bx",
+            "ebp",
+            "es",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [
+            "pop si",
+            "pop si"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 54,
+          "end": 104,
+          "size": 50,
+          "upper_bound": 104,
+          "return_offsets": [
+            103
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 19564,
+          "end": 19614,
+          "size": 50,
+          "upper_bound": 19614,
+          "return_offsets": [
+            19613
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "ah",
+            "ax",
+            "bp",
+            "bx",
+            "ebp",
+            "es",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [
+            "pop si"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": null
+      }
+    },
+    {
+      "candidate": 1,
+      "choices": {
+        "boolean_state_hypothesis": "(unsigned int)state >= 1"
+      },
+      "receipt": {
+        "source": "build/grinder/menu-tu/candidate0001.c",
+        "source_identity": {
+          "size": 540,
+          "sha256": "64ba7dd4711d2ad17990d23d505c1b8ea3bc57100509e34512df836598f1c748"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTGR_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\Q7_2c28dk\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoJ0001.OBJ /AL /G2 /Gs /Oelw /NTGR_MODULE J0001.C > J0001.LOG",
+        "batch_index": 1,
+        "batch_directory": "build/Q7_2c28dk",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\n",
+        "stderr": "",
+        "object": "build/Q7_2c28dk/J0001.OBJ",
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "object_identity": {
+          "size": 438,
+          "sha256": "2a1bd5b0cc2a2408d5cfe1984113291f727b592a47e92f402a9284f5ac67278d"
+        }
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "GR_MODULE unresolved/mismatched fixup at 0x64",
+          "GR_MODULE uncovered NE relocations",
+          "GR_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            2,
+            19510
+          ],
+          "3": [
+            10,
+            50880
+          ]
+        },
+        "private_constraint_placements": [
+          3
+        ],
+        "anchors": {
+          "1": [
+            [
+              2,
+              19510,
+              "_SetMenuItemState"
+            ],
+            [
+              2,
+              19510,
+              "_SetMenuOptionState"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "GR_MODULE",
+            "original_segment": 2,
+            "original_offset": 19510,
+            "length": 108,
+            "initialized_ranges": [
+              [
+                0,
+                108
+              ]
+            ],
+            "literal_compared": 96,
+            "literal_equal": 78,
+            "divergences": [
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107
+            ],
+            "fixups": [
+              {
+                "offset": 100,
+                "target": {
+                  "kind": "import",
+                  "module": "USER",
+                  "ordinal": 154
+                },
+                "equal": false,
+                "reason": "unsupported or unresolved target/frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 100,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "CHECKMENUITEM"
+                  }
+                }
+              },
+              {
+                "offset": 77,
+                "target": {
+                  "kind": "internal",
+                  "segment": 9,
+                  "offset": 94818
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 77,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_Scycle"
+                  }
+                }
+              },
+              {
+                "offset": 63,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 50880
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 63,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 1,
+                  "frame_index": 1,
+                  "target_method": 0,
+                  "target_index": 3,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "segment",
+                    "name": "CONST"
+                  }
+                }
+              },
+              {
+                "offset": 46,
+                "target": {
+                  "kind": "import",
+                  "module": "USER",
+                  "ordinal": 154
+                },
+                "equal": true,
+                "reason": "NE pointer relocation",
+                "omf": {
+                  "segment": 1,
+                  "offset": 46,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "CHECKMENUITEM"
+                  }
+                }
+              },
+              {
+                "offset": 23,
+                "target": {
+                  "kind": "internal",
+                  "segment": 9,
+                  "offset": 94818
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 23,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_Scycle"
+                  }
+                }
+              },
+              {
+                "offset": 9,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 50880
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 9,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 1,
+                  "frame_index": 1,
+                  "target_method": 0,
+                  "target_index": 3,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "segment",
+                    "name": "CONST"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          },
+          {
+            "segment": "CONST",
+            "original_segment": 10,
+            "original_offset": 50880,
+            "length": 2,
+            "initialized_ranges": [
+              [
+                0,
+                2
+              ]
+            ],
+            "literal_compared": 0,
+            "literal_equal": 0,
+            "divergences": [],
+            "fixups": [
+              {
+                "offset": 0,
+                "target": {
+                  "kind": "internal",
+                  "segment": 9,
+                  "offset": 29328
+                },
+                "equal": true,
+                "reason": "NE selector for independently named target",
+                "omf": {
+                  "segment": 3,
+                  "offset": 0,
+                  "location_type": 2,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_Scycle"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 96,
+        "literal_equal": 78,
+        "fixups_equal": 6,
+        "fixups_total": 7,
+        "publics": [
+          "_SetMenuItemState",
+          "_SetMenuOptionState"
+        ],
+        "code_contribution_size": 108,
+        "features": {
+          "frame": [
+            "leave ",
+            "leave "
+          ],
+          "registers": [
+            "ah",
+            "ax",
+            "bp",
+            "bx",
+            "ebp",
+            "es",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [
+            "pop si",
+            "pop si"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 54,
+          "end": 107,
+          "size": 53,
+          "upper_bound": 108,
+          "return_offsets": [
+            106
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 19564,
+          "end": 19614,
+          "size": 50,
+          "upper_bound": 19614,
+          "return_offsets": [
+            19613
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "ah",
+            "ax",
+            "bp",
+            "bx",
+            "ebp",
+            "es",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [
+            "pop si"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "GR_MODULE",
+          "offset": 89
+        }
+      }
+    }
+  ],
+  "candidate_index": [
+    {
+      "candidate": 0,
+      "source_identity": {
+        "size": 526,
+        "sha256": "f259c33aadb5a68a9b5d7cf76d46abe4231823cbfa66690dd1d1b1fd9dc1b0e7"
+      },
+      "object_identity": {
+        "size": 434,
+        "sha256": "77f25e98a7714611f9e99b3a1e7fcf64e166c9b79efa22eefcaf7408f7fc6755"
+      },
+      "exit_code": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER",
+      "representative": 0,
+      "batch_directory": "build/Q7_2c28dk",
+      "batch_index": 0
+    },
+    {
+      "candidate": 1,
+      "source_identity": {
+        "size": 540,
+        "sha256": "64ba7dd4711d2ad17990d23d505c1b8ea3bc57100509e34512df836598f1c748"
+      },
+      "object_identity": {
+        "size": 438,
+        "sha256": "2a1bd5b0cc2a2408d5cfe1984113291f727b592a47e92f402a9284f5ac67278d"
+      },
+      "exit_code": 0,
+      "result": "NO_COMPLETE_MATCH",
+      "representative": 1,
+      "batch_directory": "build/Q7_2c28dk",
+      "batch_index": 1
+    },
+    {
+      "candidate": 2,
+      "source_identity": {
+        "size": 526,
+        "sha256": "a7c8f4e212e3f1b6d1d9d03b086e6dd52f9a3f3b14439f9c77e5aabaf18c351c"
+      },
+      "object_identity": {
+        "size": 438,
+        "sha256": "37d1d214dbe8cc735922c317250b52958e37c1cbbdaacbbd59c3a921aa8b612a"
+      },
+      "exit_code": 0,
+      "result": "NO_COMPLETE_MATCH",
+      "representative": 1,
+      "batch_directory": "build/Q7_2c28dk",
+      "batch_index": 2
+    }
+  ],
+  "distinct_comparisons": 2
+}

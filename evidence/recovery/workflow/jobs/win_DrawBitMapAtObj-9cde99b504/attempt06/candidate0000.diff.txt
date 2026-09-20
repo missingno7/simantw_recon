@@ -1,0 +1,29 @@
+Target | Candidate | Difference
+0000 push bp | 0000 enter 4, 0 | instruction_shape
+0001 mov bp, sp |  | instruction_shape
+0003 push si | 0004 push si | 
+0004 mov si, word ptr [bp + 6] | 0005 mov si, word ptr [bp + 6] | 
+0007 mov es, word ptr [bp + 8] | 0008 mov es, word ptr [bp + 8] | 
+000a test byte ptr es:[si + 0x24], 1 | 000b test byte ptr es:[si + 0x24], 1 | 
+000f je 0x3d | 0010 je 0x3e | branch_target
+0011 push word ptr [bp + 0xa] | 0012 push word ptr [bp + 0xa] | 
+0014 push word ptr es:[si + 2] | 0015 push word ptr es:[si + 2] | 
+0018 push word ptr es:[si] | 0019 push word ptr es:[si] | 
+001b nop  | 001c lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 48474}] | instruction_shape
+001c push cs |  | instruction_shape
+001d call 0xffffff2a |  | instruction_shape
+0020 add sp, 6 | 0021 add sp, 6 | 
+0023 or ax, ax | 0024 or ax, ax | 
+0025 jne 0x3d | 0026 jne 0x3e | branch_target
+0027 mov al, byte ptr [0xce97] | 0028 mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52887}] | memory_operand
+002a cwde  | 002b cwde  | 
+002b or ax, word ptr [0xcf4e] | 002c or <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 53070}] | memory_operand
+002f push ax | 0030 push ax | 
+0030 mov ax, word ptr [bp + 8] | 0031 mov cx, word ptr [bp + 8] | register_allocation
+0033 push ax | 0034 push cx | register_allocation
+0034 push si | 0035 push si | 
+0035 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0036 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 3992}] | immediate_or_binding,immediate_or_binding
+003a add sp, 6 | 003b add sp, 6 | 
+003d pop si | 003e pop si | 
+003e leave  | 003f leave  | 
+003f retf  | 0040 retf  | 
