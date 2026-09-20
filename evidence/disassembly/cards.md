@@ -39561,8 +39561,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InvalidUpdateEdit — ANTEDIT_MODULE:1BEE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 41 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 41 bytes.
+Source: src/recovered/InvalidUpdateEdit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 1BEE  8e068abf                 mov es, word ptr [0xbf8a]
