@@ -117732,8 +117732,8 @@ Source: src/recovered/db_PurgeObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## _db_PurgeHandle — SIMTWO_MODULE:83B2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 100 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 100 bytes.
+Source: src/recovered/db_PurgeHandle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 83B2  c8040000                 enter 4, 0
