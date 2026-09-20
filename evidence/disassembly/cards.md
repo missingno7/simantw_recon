@@ -123959,8 +123959,8 @@ C32C  cb                       retf
 ```
 
 ## _win_ObjAddr — SIMTWO_MODULE:C32E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
+Source: src/recovered/wf_win_ObjAddr-54759b245b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 C32E  c8040000                 enter 4, 0
