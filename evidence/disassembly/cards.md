@@ -76052,8 +76052,8 @@ Source: src/recovered/GetRRandSeed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _SeedSRand — SIMONE_MODULE:152A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 12 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
+Source: src/recovered/SeedSRand.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 152A  9aac181b14               lcall 0x141b, 0x18ac ; _TickCount

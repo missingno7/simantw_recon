@@ -1,8 +1,7 @@
-/* Candidate reconstruction from the TickCount-seeded LFSR initializer. */
-#define SRandSeed (*(unsigned int near *)0xCBF2)
-extern long far TickCount(void);
+extern unsigned long far TickCount(void);
+extern int near edata[];
 
 void SeedSRand(void)
 {
-    SRandSeed = TickCount() ^ 0x3751;
+    edata[201] = (unsigned int)TickCount() ^ 0x3751;
 }
