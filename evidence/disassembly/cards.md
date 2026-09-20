@@ -123630,8 +123630,8 @@ BB92  cb                       retf
 ```
 
 ## _win_DrawWinIcons — SIMTWO_MODULE:BB94
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/win_DrawWinIcons.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 BB94  cb                       retf 
