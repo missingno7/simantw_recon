@@ -1,6 +1,5 @@
-/* Byte-matched reconstruction; historical declaration spelling is uncertain. */
 extern int near unpackHandle;
-extern int far close(int handle);
+extern int far pascal close(int handle);
 
 void UnpackFileClose(void)
 {
