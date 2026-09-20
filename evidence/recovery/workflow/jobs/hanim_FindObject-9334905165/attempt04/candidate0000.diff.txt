@@ -1,0 +1,42 @@
+Target | Candidate | Difference
+0000 push bp | 0000 push bp | 
+0001 mov bp, sp | 0001 mov bp, sp | 
+0003 push di | 0003 push di | 
+0004 push si | 0004 push si | 
+0005 lds di, ptr [bp + 0xa] | 0005 les di, ptr [bp + 0xa] | instruction_shape
+0008 xor cx, cx | 0008 xor cx, cx | 
+000a cmp word ptr [di], cx | 000a cmp word ptr es:[di], cx | memory_operand
+000c jg 0x12 | 000d jle 0x3c | instruction_shape
+000e push ss |  | instruction_shape
+000f pop ds |  | instruction_shape
+0010 jmp 0x3e |  | instruction_shape
+0012 mov bx, word ptr [bp + 6] | 000f mov bx, word ptr [bp + 6] | 
+0015 mov es, word ptr [bp + 8] | 0012 mov ds, word ptr [bp + 8] | register_allocation
+0018 mov ax, word ptr [bp + 0xe] | 0015 mov ax, word ptr [bp + 0xe] | 
+001b cmp word ptr es:[bx + 0x20], ax | 0018 cmp word ptr [bx + 0x20], ax | memory_operand
+001f je 0x2c | 001b je 0x2a | branch_target
+0021 add bx, 0x2c | 001d add bx, 0x2c | 
+0024 inc cx | 0020 inc cx | 
+0025 cmp word ptr [di], cx | 0021 cmp word ptr es:[di], cx | memory_operand
+0027 jg 0x18 | 0024 jg 0x15 | branch_target
+ | 0026 push ss | instruction_shape
+ | 0027 pop ds | instruction_shape
+0029 jmp 0xe | 0028 jmp 0x3c | branch_target
+002b nop  |  | instruction_shape
+002c push ss | 002a push ss | 
+002d pop ds | 002b pop ds | 
+002e les si, ptr [bp + 0x10] | 002c les si, ptr [bp + 0x10] | 
+0031 mov word ptr es:[si], cx | 002f mov word ptr es:[si], cx | 
+0034 mov ax, bx | 0032 mov ax, bx | 
+0036 mov dx, word ptr [bp + 8] | 0034 mov dx, word ptr [bp + 8] | 
+0039 pop si | 0037 pop si | 
+003a pop di | 0038 pop di | 
+003b leave  | 0039 leave  | 
+003c retf  | 003a retf  | 
+003d nop  | 003b nop  | 
+003e xor ax, ax | 003c xor ax, ax | 
+0040 cdq  | 003e cdq  | 
+0041 pop si | 003f pop si | 
+0042 pop di | 0040 pop di | 
+0043 leave  | 0041 leave  | 
+0044 retf  | 0042 retf  | 
