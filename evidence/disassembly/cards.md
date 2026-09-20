@@ -113638,8 +113638,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InitSimVars — SIMTWO_MODULE:5A70
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/InitSimVars.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 5A70  8e06a8c5                 mov es, word ptr [0xc5a8]
