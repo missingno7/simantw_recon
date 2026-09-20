@@ -108127,8 +108127,8 @@ Source: src/recovered/IsValidYard.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _InitGrassMap — SIMTWO_MODULE:2096
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 32 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 32 bytes.
+Source: src/recovered/InitGrassMap.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 2096  57                       push di
