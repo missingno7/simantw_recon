@@ -128813,8 +128813,8 @@ EAF9  cb                       retf
 ```
 
 ## _win_SetObjSelFlashState — SIMTWO_MODULE:EAFA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/win_SetObjSelFlashState.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EAFA  c8040000                 enter 4, 0
