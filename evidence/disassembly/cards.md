@@ -76479,8 +76479,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CanBeHouseHole — SIMONE_MODULE:1CBA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
+Source: src/recovered/wf_CanBeHouseHole-987878d5ee.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 1CBA  55                       push bp
@@ -78239,8 +78239,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindInBList — SIMONE_MODULE:2C86
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
+Source: src/recovered/wf_FindInBList-d950932078.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 2C86  55                       push bp
@@ -78281,8 +78281,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindInRList — SIMONE_MODULE:2CCE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 72 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
+Source: src/recovered/wf_FindInRList-130e8e266c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 2CCE  55                       push bp
