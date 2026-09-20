@@ -12,6 +12,7 @@ void win_SetObjAutoToggleState(int object, int state)
     register struct WinObjectAuto far *obj;
     win_LockWin(object);
     obj = win_ObjAddr(object);
-    obj->state ^= (obj->state ^ (state << 3)) & 8;
+    *(unsigned int far *)((unsigned char far *)obj + 0x24) ^=
+        (obj->state ^ (state << 3)) & 8;
     win_UnlockWin(object);
 }

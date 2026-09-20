@@ -128711,8 +128711,8 @@ EA5D  cb                       retf
 ```
 
 ## _win_SetObjAutoToggleState — SIMTWO_MODULE:EA5E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 63 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 63 bytes.
+Source: src/recovered/win_SetObjAutoToggleState.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EA5E  c8040000                 enter 4, 0
