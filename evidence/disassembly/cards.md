@@ -20524,8 +20524,8 @@ Source: src/recovered/GRectChecker.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _GCheckerBox — GR_MODULE:0C10
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 34 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 34 bytes.
+Source: src/recovered/GCheckerBox.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 0C10  55                       push bp
