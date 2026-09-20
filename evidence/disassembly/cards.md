@@ -40187,8 +40187,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ed_MoveTo — ANTEDIT_MODULE:22E4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 22 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 22 bytes.
+Source: src/recovered/ed_MoveTo.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 22E4  55                       push bp
