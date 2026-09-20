@@ -26828,8 +26828,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MyGetCapture — GR_MODULE:45F0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 9 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 9 bytes.
+Source: src/recovered/MyGetCapture.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 45F0  8e06b8c6                 mov es, word ptr [0xc6b8]
