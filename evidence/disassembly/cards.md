@@ -30324,8 +30324,8 @@ Source: src/recovered/hanim_PrintSet.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## __hanim_FindObject — GR_MODULE:63CA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 69 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 69 bytes.
+Source: src/recovered/wf_hanim_FindObject-9334905165.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 63CA  55                       push bp
