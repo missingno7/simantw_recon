@@ -25822,8 +25822,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GPutImg — GR_MODULE:3D02
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 57 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 57 bytes.
+Source: src/recovered/GPutImg.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 3D02  c8040000                 enter 4, 0
