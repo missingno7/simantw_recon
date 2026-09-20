@@ -128749,8 +128749,8 @@ EA9C  cb                       retf
 ```
 
 ## _win_MakeObjAutoToggle — SIMTWO_MODULE:EA9E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 46 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/win_MakeObjAutoToggle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EA9E  55                       push bp
@@ -128781,8 +128781,8 @@ EACB  cb                       retf
 ```
 
 ## _win_MakeObjUnAutoToggle — SIMTWO_MODULE:EACC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 46 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/win_MakeObjUnAutoToggle.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EACC  55                       push bp
@@ -128851,8 +128851,8 @@ EB38  cb                       retf
 ```
 
 ## _win_MakeObjSelFlash — SIMTWO_MODULE:EB3A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 46 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/win_MakeObjSelFlash.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EB3A  55                       push bp
@@ -128883,8 +128883,8 @@ EB67  cb                       retf
 ```
 
 ## _win_MakeObjUnSelFlash — SIMTWO_MODULE:EB68
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 46 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 46 bytes.
+Source: src/recovered/win_MakeObjUnSelFlash.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 EB68  55                       push bp
