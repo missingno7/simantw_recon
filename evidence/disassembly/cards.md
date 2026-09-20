@@ -89087,8 +89087,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsNotBarrier — SIMONE_MODULE:94A0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 37 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 37 bytes.
+Source: src/recovered/IsNotBarrier.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 94A0  55                       push bp

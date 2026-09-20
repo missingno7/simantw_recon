@@ -1,10 +1,8 @@
 extern int far TERRAINset;
 
-int IsNotBarrier(int value)
+int IsNotBarrier(int x)
 {
-    int test = value;
-
-    if (TERRAINset == 0 && test <= 0x50)
-        return 1;
-    return test <= 0x5f;
+    if (!TERRAINset)
+        return x <= 0x50;
+    return x <= 0x5f;
 }
