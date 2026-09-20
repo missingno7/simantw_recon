@@ -53092,8 +53092,8 @@ A997  cb                       retf
 ```
 
 ## _DrawYardCursor — ANTEDIT_MODULE:A998
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 36 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 36 bytes.
+Source: src/recovered/DrawYardCursor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 A998  833eb61800               cmp word ptr [0x18b6], 0
