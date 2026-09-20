@@ -117865,8 +117865,8 @@ Source: src/recovered/db_UnhookObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '
 ```
 
 ## _db_CloseDataBase — SIMTWO_MODULE:84A4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 60 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 60 bytes.
+Source: src/recovered/db_CloseDataBase.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 84A4  833ee6b100               cmp word ptr [0xb1e6], 0 ; _db_numOfHandles
