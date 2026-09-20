@@ -1,11 +1,14 @@
-/* Byte-matched reconstruction; historical declaration spelling is uncertain. */
-static unsigned int SRandSeed = 0;
+extern int near edata[];
 
-long SRand2(void)
+int SRand2(void)
 {
-    int result;
-    SRandSeed <<= 1;
-    if (SRandSeed & 0x8000) SRandSeed ^= 0x1bf5;
-    result = SRandSeed & 1;
-    return result;
+    unsigned int value;
+
+    value = edata[201];
+    if (value & 0x8000)
+        value = (value << 1) ^ 0x1bf5;
+    else
+        value <<= 1;
+    edata[201] = value;
+    return value & 1;
 }
