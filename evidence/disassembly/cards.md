@@ -120138,8 +120138,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ch_SetCacheHooks — SIMTWO_MODULE:9A66
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 31 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 31 bytes.
+Source: src/recovered/ch_SetCacheHooks.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 9A66  55                       push bp
