@@ -46800,8 +46800,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetExpTool — ANTEDIT_MODULE:6E0C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 16 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 16 bytes.
+Source: src/recovered/SetExpTool.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 6E0C  55                       push bp
