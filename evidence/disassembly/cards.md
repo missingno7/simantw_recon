@@ -26192,8 +26192,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RedrawScreen — GR_MODULE:4038
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 25 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 25 bytes.
+Source: src/recovered/RedrawScreen.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4038  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
