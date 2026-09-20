@@ -21846,8 +21846,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GCloseFonts — GR_MODULE:1768
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 42 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 42 bytes.
+Source: src/recovered/GCloseFonts.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 1768  833e30ba00               cmp word ptr [0xba30], 0 ; _bigFontH
