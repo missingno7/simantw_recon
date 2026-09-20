@@ -53110,8 +53110,8 @@ A9BB  cb                       retf
 ```
 
 ## _EraseYardCursor — ANTEDIT_MODULE:A9BC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 36 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 36 bytes.
+Source: src/recovered/EraseYardCursor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 A9BC  833eb61800               cmp word ptr [0x18b6], 0
