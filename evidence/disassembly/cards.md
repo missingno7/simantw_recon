@@ -5,8 +5,8 @@ Fixture EXE SHA-256: 538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f75161
 Linear decoding can include embedded data where extents remain unresolved. DS global labels assume the normal DGROUP context.
 
 ## _StopSimulation — SIMANT_MODULE:0000
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 52 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 52 bytes.
+Source: src/recovered/StopSimulation.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 0000  c8120000                 enter 0x12, 0
