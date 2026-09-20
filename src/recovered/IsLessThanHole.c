@@ -1,10 +1,8 @@
 extern int far TERRAINset;
 
-int IsLessThanHole(int value)
+int IsLessThanHole(int x)
 {
-    int test = value;
-
-    if (TERRAINset == 0 && test < 0x50)
-        return 1;
-    return test < 0x59;
+    if (!TERRAINset)
+        return x < 0x50;
+    return x < 0x59;
 }

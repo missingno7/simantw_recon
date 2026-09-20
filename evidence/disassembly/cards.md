@@ -89443,8 +89443,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsLessThanHole — SIMONE_MODULE:9784
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 37 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 37 bytes.
+Source: src/recovered/IsLessThanHole.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 9784  55                       push bp
