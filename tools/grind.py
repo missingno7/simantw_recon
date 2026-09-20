@@ -1,5 +1,7 @@
 """Narrow cheap-model interface: inspect, test, accept, block and queue."""
 import argparse,copy,json,re,shutil,time,sys
+import mapsym,ne
+from topology_context import direct_data_bindings
 from contextlib import redirect_stdout
 from pathlib import Path
 from common import ROOT,FormatError,read_json,write_json,identity,fixture
@@ -22,6 +24,12 @@ def inspect(symbol):
     matching=[c for c in all_cards if c['source'] and c['ownership']=='GAME' and c['segment']==card['segment']]
     matching.sort(key=lambda c:abs((c['extent']['size'] or 65536)-(card['extent']['size'] or 65536)))
     packet['similar_matched_functions']=[dict(symbol=c['symbol'],source=c['source'],size=c['extent']['size'],basis='Same code group and nearest size; similarity is not semantic proof') for c in matching[:5]]
+    packet['direct_data_bindings']=direct_data_bindings(card,mapsym.parse(fixture('SIMANTW.SYM')),ne.parse(fixture('SIMANTW.EXE')))
+    packet['evidence_state']=state.get('evidence_state')
+    packet['blocker_family_evidence']='evidence/recovery/blocker-families.json'
+    family_path=ROOT/packet['blocker_family_evidence']
+    family_report=read_json(family_path) if family_path.exists() else {}
+    packet['blocker_family']=family_report.get('functions',{}).get(symbol)
     packet['family_evidence']='layout/translation-units.json'
     packet['known_families']=[{k:u[k] for k in ['id','status','publics','evidence']} for u in read_json(ROOT/'layout/translation-units.json')['units'] if symbol in u['publics']]
     from library_match import import_symbols

@@ -40,7 +40,8 @@ def generate():
         elif job and job['status']=='ESCALATED':state='MATCH_BLOCKED';reasons=job['blockers']
         elif name in blocked and blocked[name]['status']!='PROMOTED_EXACT_RECONSTRUCTION':state='MATCH_BLOCKED';reasons=blocked[name]['blockers']
         else:state='MATCH_READY';reasons=[]
-        items.append(dict(symbol=name,state=state,blockers=reasons,extent=certificate,extent_input=extent_key,size=card['extent']['size'],segment=card['segment_name'],job=job['id'] if job else None,job_status=job['status'] if job else None,attempts=len(job.get('attempts',[])) if job else 0))
+        topology=blocked.get(name,{}).get('topology_diagnostic') or (job or {}).get('topology_diagnostic')
+        items.append(dict(evidence_state=topology['state'] if topology and state!='MATCHED' else None,symbol=name,state=state,blockers=reasons,extent=certificate,extent_input=extent_key,size=card['extent']['size'],segment=card['segment_name'],job=job['id'] if job else None,job_status=job['status'] if job else None,attempts=len(job.get('attempts',[])) if job else 0))
     items.sort(key=lambda r:({'MATCH_READY':0,'MATCH_BLOCKED':1,'STRUCTURE_BLOCKED':2,'MATCHED':3}[r['state']],r['size'] or 65536,r['symbol']))
     result=dict(schema_version=1,exe_sha256=image['sha256'],sym_sha256=symbols['sha256'],certificate_tool=sha256(b''.join((ROOT/p).read_bytes() for p in ['tools/factory_queue.py','tools/cfg_solver.py','tools/analysis.py','tools/ne.py','tools/mapsym.py'])),states=dict(Counter(r['state'] for r in items)),functions=items,proof_boundary='Structural certificates authorize candidate testing only. Strict recovery admission remains mandatory.')
     write_json(ROOT/'docs/production-queue.json',result);return result

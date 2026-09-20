@@ -2,6 +2,7 @@
 import json
 from common import ROOT, read_json, write_json, identity
 from codegen_grinder import rank
+from topology_diagnostics import classify as topology_classify
 
 TAXONOMY=['SOURCE_NOT_RECOVERED','SEMANTICS_UNKNOWN','EXTENT_UNKNOWN','REGISTER_ALLOCATION',
           'LOCAL_FRAME_LAYOUT','EXPRESSION_SHAPE','TRANSLATION_UNIT_CONTEXT','PRIVATE_CONST_LAYOUT',
@@ -25,10 +26,10 @@ def workflow_cases(root=ROOT):
         if job['status']!='ESCALATED':continue
         reports=[read_json(root/a['report']) for a in job.get('attempts',[]) if a.get('report')]
         rows=[(row,report) for report in reports for row in report['results']]
-        best,report=max(rows,key=lambda pair:rank(pair[0])) if rows else ({},{})
+        best,report=max(rows,key=lambda pair:(topology_classify(pair[0].get('comparison',{})) is not None,rank(pair[0]))) if rows else ({},{})
         spec=report.get('spec',read_json(path.parent/'submission.json'))
         score=best.get('comparison',{})
-        cases[job['symbol']]=dict(status='WORKFLOW_ESCALATED',job=job['id'],blockers=job['blockers'],
+        cases[job['symbol']]=dict(topology_diagnostic=topology_classify(score), status='WORKFLOW_ESCALATED',job=job['id'],blockers=job['blockers'],
             source=best.get('receipt',{}).get('source',spec.get('source')),
             semantic_hypothesis=spec.get('semantic_summary','Unreviewed task; no semantic hypothesis submitted'),
             binding_evidence=spec.get('binding_evidence',[]),best_score=score or None,

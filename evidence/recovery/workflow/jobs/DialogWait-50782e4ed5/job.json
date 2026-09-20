@@ -1,7 +1,7 @@
 {
   "id": "DialogWait-50782e4ed5",
   "symbol": "_DialogWait",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-20T12:58:02.241988+00:00",
   "flags": [
     "/AL",
@@ -307,11 +307,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "669d778573aa6c09a1a112198bb91939bfcc5c1d2a32151618aa066199ea309b",
+      "report": "evidence/recovery/workflow/jobs/DialogWait-50782e4ed5/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
   "reason": "Attempt 01 reproduces the complete 30-byte target layout, CFG, call binding to _WaitedEnough, stack cleanup, and editMessage[98] accesses. The only differences are private data bindings: target queue access is [bx - 0x350c] with effective base 0xcaf4 and timestamp address is 0xcad4, while ordinary extern near declarations leave _dialogMessages and _dialogTimes unresolved. Literal-address pointer casts are disallowed by the handoff lane, and self-contained private definitions cannot be proven at the target offsets. Exact proof therefore requires original dialog-module private data topology or specialist linker/TU analysis.",
-  "next_experiment": "Expert: recover symbolic/private declarations or the original TU data ordering that places the queue at DS 0xcaf4 and timestamp table at DS 0xcad4, then rerun the already matching source expression."
+  "next_experiment": "Expert: recover symbolic/private declarations or the original TU data ordering that places the queue at DS 0xcaf4 and timestamp table at DS 0xcad4, then rerun the already matching source expression.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/DialogWait-50782e4ed5/promotion.json"
 }

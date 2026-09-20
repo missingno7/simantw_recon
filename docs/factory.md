@@ -29,14 +29,26 @@ When the budget expires or a concrete blocker is established, preserve the candi
 
 | State | Functions | Meaning |
 | --- | ---: | --- |
-| MATCH_READY | 777 | Confirmed structural test extent, game ownership, available bytes/disassembly and contained evaluable relocation obligations. |
-| MATCH_BLOCKED | 38 | Readable attempted drafts with specific matching blockers. |
+| MATCH_READY | 689 | Confirmed structural test extent, game ownership, available bytes/disassembly and contained evaluable relocation obligations. |
+| MATCH_BLOCKED | 91 | Readable attempted drafts with specific matching blockers. |
 | STRUCTURE_BLOCKED | 42 | Unclosed, ambiguous or otherwise unsupported structural scope. |
-| MATCHED | 208 | Existing independently verified source recovery. |
+| MATCHED | 243 | Existing independently verified source recovery. |
 
 Structural confirmation is source-independent. It checks recursive closure, a second linear instruction-boundary pass, NOP-only gaps, entry/alias/incoming-branch evidence and relocation containment. It does not relabel the original CFG evidence as recovered source, establish an original OMF boundary, or substitute for admission. Certificates retain the original CFG status and their scope explicitly. They are cached against fixture, extent and analysis-tool identities so each candidate test does not rerun the entire structural census.
 
 The older READY/GUIDED/LARGE/EXPERT queue remains useful for estimating semantic effort. The four production states above are the factory routing interface. Unknown historical compiler patch identity is not a blanket blocker.
+
+## Expert topology pass and automatic stop
+
+The [expert pass](expert-blocker-pass.md) promoted 13 functions, reaching 243 functions / 6,950 bytes. Live machine-readable files remain authoritative. Three shared data families are solved, and two adjacent TUs have independent complete-member evidence. The strict matcher, admission gate, compiler profile and worker are unchanged.
+
+`BODY_MATCHED_BINDING_BLOCKED` is a diagnostic substate of MATCH_BLOCKED, not recovery credit. It requires known equal extents, layout/CFG/opcode agreement, no register/stack/branch differences, and complete literal differences covered by unresolved two-byte offset fixups. The workflow automatically escalates such an attempt immediately. Preserve the source and move to the next target; do not reopen it with cosmetic C changes. Unknown CFGs, constant differences outside bindings, or wrong calls do not qualify.
+
+`evidence/recovery/blocker-families.json`, `layout/private-data-topology.json` and [blocker-families.md](blocker-families.md) record shared operand evidence. `refresh` rebuilds these with the ledger and production queue. Family observations and stored body states do not authorize promotion. Family packets link preserved source identities; expert-only `tools/topology_retest.py JOB SPEC --reason REVIEW` reissues a parked job for an explicitly new experiment while preserving old context and budgets.
+
+Inspection packets now expose exact MAPSYM names for direct DGROUP operands and NE selector-slot targets, with an explicit DS-frame assumption. This surfaces names such as `_MapA` instead of encouraging invented unresolved externs.
+
+Size ordering is retained: this pass establishes a useful stop signal, but does not measure model effort well enough to justify new scheduling weights. Every ready target remains eligible; no hard target is hidden or removed by a heuristic.
 
 ## Measured runner decision
 
@@ -96,6 +108,6 @@ python tools/handoff_validate.py
 python tools/recovery_workflow.py doctor
 ```
 
-The latest handoff validation passes **110 tests**. It runs parser/proof/failure-path tests, canonical cache replay and fresh pilot admission. It also checks the 400-job service evidence against current runner identities. [handoff-readiness.json](handoff-readiness.json) records the current result.
+The latest handoff validation passes **118 tests**. It runs parser/proof/failure-path tests, canonical cache replay and fresh pilot admission. It also checks the 400-job service evidence against current runner identities. [handoff-readiness.json](handoff-readiness.json) records the current result.
 
-This factory phase adds no manually matched functions: recovery remains **208 game functions / 4,995 bytes** plus **77 historical runtime members / 12,960 bytes**. It has not benchmarked a particular cheap language model. The existing 38 matching blockers and 42 structural blockers remain explicit research work, and the whole reconstructed game remains unbuilt. LINK 5.30/RC outputs are structural scaffolding only.
+At the historical factory-infrastructure checkpoint, no manually matched functions had been added: recovery remains **208 game functions / 4,995 bytes** plus **77 historical runtime members / 12,960 bytes**. It has not benchmarked a particular cheap language model. The existing 38 matching blockers and 42 structural blockers remain explicit research work, and the whole reconstructed game remains unbuilt. LINK 5.30/RC outputs are structural scaffolding only.

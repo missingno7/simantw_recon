@@ -1,0 +1,54 @@
+{
+  "reviews": [
+    {
+      "symbol": "_db_GetObjectSize",
+      "decision": "RETAIN; no repeated 384-variant search",
+      "evidence": "evidence/codegen/db-instruction-diff.json",
+      "finding": "39 opcodes and seven fixups aligned; residual register scheduling. A new pointer-induction representation needs caller/type evidence before bounded testing."
+    },
+    {
+      "symbol": "_SRand1 / _SRand2..256",
+      "decision": "RETAIN_SHARED_CARRY_CODEGEN_FAMILY",
+      "evidence": "evidence/disassembly/cards.jsonl",
+      "finding": "Shared seed slot CBF2. Target SHL followed by JAE tests pre-shift high-bit carry; several old drafts instead test post-shift sign and contain forbidden literal casts. Preserve drafts; do not treat body semantics as established.",
+      "next_experiment": "Evidence-backed 32-bit intermediate/carry expression with named seed binding; first establish equivalence on all 65536 seed values, then a bounded compiler probe."
+    },
+    {
+      "symbol": "_ClearBuffer",
+      "decision": "RETAIN_STRING_ABI_RESEARCH",
+      "evidence": "evidence/disassembly/cards.jsonl",
+      "finding": "Target saves ES/DS/SI/DI, adjusts BP by six, uses REP STOSW followed by ADC DI,-1 and STOSB. Modern typed-word intrinsic fingerprint alone does not reproduce this ABI."
+    },
+    {
+      "symbol": "_MemRChr",
+      "decision": "RETAIN_REVERSE_SCAN_SEMANTICS_REVIEW",
+      "evidence": "evidence/disassembly/cards.jsonl",
+      "finding": "Target STD/REPNE SCASB starts at supplied pointer and clears DF on exit. Frozen buffer[count-1] indexing assumes a different starting pointer convention; callers must constrain ABI before intrinsic work."
+    },
+    {
+      "symbol": "_UnpackFileClose",
+      "decision": "RETAIN_KNOWN_NEGATIVE_ABI_MATRIX",
+      "evidence": "evidence/codegen/fingerprints.json",
+      "finding": "POP AX vs ADD SP,2/POP BX remains; no new liveness evidence justifies repeating the matrix."
+    },
+    {
+      "symbol": "_UnpackSetBuf",
+      "decision": "RETAIN_POINTER_ABI_FAMILY",
+      "evidence": "evidence/codegen/fingerprints.json",
+      "finding": "Prior far/huge/aggregate matrix negative; no newly established caller signature."
+    },
+    {
+      "symbol": "_NotMowed / _WaitHundredths / _ms_Delay",
+      "decision": "RETAIN_UNTIL_NEW_REPRESENTATION",
+      "evidence": "evidence/codegen/corpus-results.json",
+      "finding": "No new alias/lifetime/TU evidence established in this pass; no blind baseline replay."
+    },
+    {
+      "symbol": "_GSetAttrib",
+      "decision": "SOLVED_SEMANTIC_CORRECTION",
+      "evidence": "evidence/topology/runs/GSetAttrib/results.json",
+      "finding": "Common monoPat store was absent from every prior equal-colors path. Correct store matches baseline without pragma matrix."
+    }
+  ],
+  "policy": "No old bounded search repeated without new leverage; historical drafts preserved"
+}

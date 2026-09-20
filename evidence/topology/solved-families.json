@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "families": [
+    {
+      "id": "dialog-private-tables",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_DialogWait",
+        "_DialogAbort",
+        "_DialogAbortOrCont",
+        "_DialogClearWait",
+        "_DialogClearWaitInit",
+        "_DialogAbortAll"
+      ],
+      "evidence": [
+        "evidence/topology/runs/dialog-adjacent-tu/results.json"
+      ],
+      "objects": [
+        {
+          "id": "DGROUP:CAD4",
+          "role": "eight dialog timestamps",
+          "size": 32,
+          "near_far": "near",
+          "declaration": "static unsigned long near dialogTimes[8];",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:CAF4",
+          "role": "eight dialog wait/message words",
+          "size": 16,
+          "near_far": "near",
+          "declaration": "static int near dialogMessages[8];",
+          "source_order_reproduced": true
+        }
+      ],
+      "notes": [
+        "Overflow bound eight constrains array capacity; timestamp/messages bases separated by 32 bytes",
+        "DialogClearWaitInit also needed correct Pascal argument order and ordered strings",
+        "DialogAbortAll also needed count snapshot before indexed fill",
+        "Independent individual promotions retained; grouping does not establish historical filename"
+      ]
+    },
+    {
+      "id": "map-stencils",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_MakePlugV",
+        "_MakePlugH",
+        "_MakeKnob",
+        "_MakePenny"
+      ],
+      "evidence": [
+        "evidence/topology/runs/map-adjacent-tu/results.json"
+      ],
+      "objects": [
+        {
+          "id": "DGROUP:28E8",
+          "role": "MapA; independently named destination, not private unknown state",
+          "size": null,
+          "near_far": "near",
+          "declaration": "extern unsigned char near MapA[];",
+          "source_order_reproduced": false
+        },
+        {
+          "id": "DGROUP:2314",
+          "role": "vertical plug tile stencil",
+          "size": 20,
+          "near_far": "near",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:2328",
+          "role": "horizontal plug tile stencil",
+          "size": 20,
+          "near_far": "near",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:233C",
+          "role": "knob tile stencil",
+          "size": 25,
+          "near_far": "near",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:2356",
+          "role": "penny tile stencil",
+          "size": 9,
+          "near_far": "near",
+          "source_order_reproduced": true
+        }
+      ],
+      "notes": [
+        "Four-member contiguous TU rejected by public anchors; retain negative experiment",
+        "Three-member H/knob/penny contribution is strongly supported; V is nonadjacent",
+        "GrabMap remains a body/control-flow blocker; shared map binding does not solve it"
+      ]
+    },
+    {
+      "id": "yard-private-state",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_DrawYard",
+        "_UpdateYard"
+      ],
+      "evidence": [
+        "evidence/topology/runs/DrawYard/results.json",
+        "evidence/topology/runs/UpdateYard/results.json"
+      ],
+      "objects": [
+        {
+          "id": "DGROUP:18B4",
+          "role": "redraw-enable flag",
+          "size": 2,
+          "near_far": "near",
+          "declaration": "static int near yardDrawFlag = 1;",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:BCD8",
+          "role": "yard window handle",
+          "size": 2,
+          "near_far": "near",
+          "declaration": "static int near yardWindow;",
+          "source_order_reproduced": true
+        }
+      ],
+      "notes": [
+        "Separate initialized DATA and uninitialized BSS contributions; no padding to numeric addresses"
+      ]
+    },
+    {
+      "id": "common-epilogue-semantics",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_GSetAttrib"
+      ],
+      "objects": [],
+      "evidence": [
+        "evidence/topology/runs/GSetAttrib/results.json"
+      ],
+      "notes": [
+        "Correct common monoPat store replaces unsupported optimizer-context hypothesis; baseline unchanged"
+      ]
+    }
+  ]
+}

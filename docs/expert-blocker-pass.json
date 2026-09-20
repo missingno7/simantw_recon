@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "before": {
+    "progress": {
+      "phase": "MATCHED_OBJECT_RECOVERY",
+      "game_functions": 230,
+      "game_code_bytes": 6240,
+      "runtime_members": 77,
+      "runtime_code_bytes": 12960,
+      "whole_executable_build": false
+    },
+    "states": {
+      "MATCH_READY": 689,
+      "MATCH_BLOCKED": 104,
+      "STRUCTURE_BLOCKED": 42,
+      "MATCHED": 230
+    }
+  },
+  "after": {
+    "progress": {
+      "phase": "MATCHED_OBJECT_RECOVERY",
+      "game_functions": 243,
+      "game_code_bytes": 6950,
+      "runtime_members": 77,
+      "runtime_code_bytes": 12960,
+      "whole_executable_build": false
+    },
+    "states": {
+      "MATCH_READY": 689,
+      "MATCH_BLOCKED": 91,
+      "STRUCTURE_BLOCKED": 42,
+      "MATCHED": 243
+    }
+  },
+  "promoted": [
+    "_DialogAbort",
+    "_DialogAbortAll",
+    "_DialogAbortOrCont",
+    "_DialogClearWait",
+    "_DialogClearWaitInit",
+    "_DialogWait",
+    "_DrawYard",
+    "_GSetAttrib",
+    "_MakeKnob",
+    "_MakePenny",
+    "_MakePlugH",
+    "_MakePlugV",
+    "_UpdateYard"
+  ],
+  "solved_families": [
+    {
+      "id": "dialog-private-tables",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_DialogWait",
+        "_DialogAbort",
+        "_DialogAbortOrCont",
+        "_DialogClearWait",
+        "_DialogClearWaitInit",
+        "_DialogAbortAll"
+      ],
+      "evidence": [
+        "evidence/topology/runs/dialog-adjacent-tu/results.json"
+      ],
+      "objects": [
+        {
+          "id": "DGROUP:CAD4",
+          "role": "eight dialog timestamps",
+          "size": 32,
+          "near_far": "near",
+          "declaration": "static unsigned long near dialogTimes[8];",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:CAF4",
+          "role": "eight dialog wait/message words",
+          "size": 16,
+          "near_far": "near",
+          "declaration": "static int near dialogMessages[8];",
+          "source_order_reproduced": true
+        }
+      ],
+      "notes": [
+        "Overflow bound eight constrains array capacity; timestamp/messages bases separated by 32 bytes",
+        "DialogClearWaitInit also needed correct Pascal argument order and ordered strings",
+        "DialogAbortAll also needed count snapshot before indexed fill",
+        "Independent individual promotions retained; grouping does not establish historical filename"
+      ]
+    },
+    {
+      "id": "map-stencils",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_MakePlugV",
+        "_MakePlugH",
+        "_MakeKnob",
+        "_MakePenny"
+      ],
+      "evidence": [
+        "evidence/topology/runs/map-adjacent-tu/results.json"
+      ],
+      "objects": [
+        {
+          "id": "DGROUP:28E8",
+          "role": "MapA; independently named destination, not private unknown state",
+          "size": null,
+          "near_far": "near",
+          "declaration": "extern unsigned char near MapA[];",
+          "source_order_reproduced": false
+        },
+        {
+          "id": "DGROUP:2314",
+          "role": "vertical plug tile stencil",
+          "size": 20,
+          "near_far": "near",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:2328",
+          "role": "horizontal plug tile stencil",
+          "size": 20,
+          "near_far": "near",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:233C",
+          "role": "knob tile stencil",
+          "size": 25,
+          "near_far": "near",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:2356",
+          "role": "penny tile stencil",
+          "size": 9,
+          "near_far": "near",
+          "source_order_reproduced": true
+        }
+      ],
+      "notes": [
+        "Four-member contiguous TU rejected by public anchors; retain negative experiment",
+        "Three-member H/knob/penny contribution is strongly supported; V is nonadjacent",
+        "GrabMap remains a body/control-flow blocker; shared map binding does not solve it"
+      ]
+    },
+    {
+      "id": "yard-private-state",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_DrawYard",
+        "_UpdateYard"
+      ],
+      "evidence": [
+        "evidence/topology/runs/DrawYard/results.json",
+        "evidence/topology/runs/UpdateYard/results.json"
+      ],
+      "objects": [
+        {
+          "id": "DGROUP:18B4",
+          "role": "redraw-enable flag",
+          "size": 2,
+          "near_far": "near",
+          "declaration": "static int near yardDrawFlag = 1;",
+          "source_order_reproduced": true
+        },
+        {
+          "id": "DGROUP:BCD8",
+          "role": "yard window handle",
+          "size": 2,
+          "near_far": "near",
+          "declaration": "static int near yardWindow;",
+          "source_order_reproduced": true
+        }
+      ],
+      "notes": [
+        "Separate initialized DATA and uninitialized BSS contributions; no padding to numeric addresses"
+      ]
+    },
+    {
+      "id": "common-epilogue-semantics",
+      "status": "SOLVED_STRICT",
+      "members": [
+        "_GSetAttrib"
+      ],
+      "objects": [],
+      "evidence": [
+        "evidence/topology/runs/GSetAttrib/results.json"
+      ],
+      "notes": [
+        "Correct common monoPat store replaces unsupported optimizer-context hypothesis; baseline unchanged"
+      ]
+    }
+  ],
+  "blocker_summary": {
+    "families": 76,
+    "shared_families": 9,
+    "evidence_states": {
+      "BODY_UNRESOLVED_OR_UNMEASURED": 82,
+      "SOLVED_STRICT": 13,
+      "BODY_MATCHED_BINDING_BLOCKED": 9
+    },
+    "structural_families": {
+      "INDIRECT_DISPATCH_TABLE": 40,
+      "INTERRUPT_OR_NONRETURN": 2
+    }
+  },
+  "structural_promotions": [],
+  "structural_evidence": "evidence/topology/structural-dispatch.json",
+  "validation": {
+    "full_suite": {
+      "command": [
+        "C:\\msys64\\mingw64\\bin\\python.exe",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "count": 118,
+      "log": "build/handoff-validation/tests.log",
+      "log_identity": {
+        "size": 10299,
+        "sha256": "9c95b26d2bf929e67510a4dde64f2c91016c2f8d97d93d63a17ce5ccf7c0d3ba"
+      }
+    },
+    "handoff_passed": true,
+    "doctor": "READY_FOR_BOUNDED_HANDOFF",
+    "independently_verified_functions": 243,
+    "runtime_members": 77,
+    "strict_proof_tools_unchanged": [
+      "tools/matcher.py",
+      "tools/library_match.py",
+      "tools/recovery_gate.py",
+      "tools/verify_recovery.py",
+      "tools/compiler.py",
+      "tools/cfg_solver.py",
+      "tools/ne.py",
+      "tools/omf.py",
+      "layout/toolchain.json",
+      "layout/fixtures.json",
+      "tools/compiler_worker.py",
+      "tools/compiler_service.py",
+      "tools/compiler_wait.asm"
+    ],
+    "fresh_compiler_routing_oracle": "evidence/topology/oracle/validation.json",
+    "worker_changed": false,
+    "active_jobs": [],
+    "transaction_status": "COMMITTED"
+  },
+  "resume_commands": [
+    "python tools/recovery_workflow.py doctor",
+    "python tools/grind.py next"
+  ],
+  "resume_prompt": "Continue ordinary bounded recovery using docs/cheap-model-prompt.md. Do not reopen MATCH_BLOCKED or STRUCTURE_BLOCKED cases. Honor automatic BODY_MATCHED_BINDING_BLOCKED escalation and consult direct_data_bindings before declaring globals."
+}

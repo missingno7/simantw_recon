@@ -1,0 +1,33 @@
+Target | Candidate | Difference
+0000 enter 4, 0 | 0000 enter 2, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+ | 0006 mov word ptr [bp - 2], 0 | instruction_shape
+0006 xor di, di | 000b xor si, si | register_allocation
+0008 xor si, si | 000d mov di, word ptr [bp - 2] | instruction_shape
+000a mov bx, di |  | instruction_shape
+000c add bx, si | 0010 add di, si | register_allocation
+000e add bx, 0x28e8 | 0012 add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}] | immediate_or_binding
+0012 mov word ptr [bp - 4], bx |  | instruction_shape
+0015 mov al, byte ptr [bx] | 0016 mov al, byte ptr [di] | register_allocation
+0017 sub ah, ah | 0018 sub ah, ah | 
+0019 push ax | 001a push ax | 
+001a lcall <resolved fixup> [{'kind': 'internal', 'segment': 6, 'offset': 0}] | 001b lcall <resolved fixup> [{'kind': 'internal', 'segment': 6, 'offset': 11546}] | immediate_or_binding,immediate_or_binding
+001f add sp, 2 | 0020 add sp, 2 | 
+0022 dec ax | 0023 dec ax | 
+0023 jne 0x2f | 0024 jne 0x49 | branch_target
+0025 lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 0}] | 0026 lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 5646}] | immediate_or_binding,immediate_or_binding
+002a mov bx, word ptr [bp - 4] |  | instruction_shape
+002d mov byte ptr [bx], al | 002b mov byte ptr [di], al | register_allocation
+002f inc si | 002d inc si | 
+0030 cmp si, 0x40 | 002e cmp si, 0x40 | 
+0033 jl 0xa | 0031 jl 0xd | 
+0035 add di, 0x40 | 0033 add word ptr [bp - 2], 0x40 | instruction_shape
+0038 cmp di, 0x2000 | 0037 cmp word ptr [bp - 2], 0x2000 | instruction_shape
+003c jl 8 | 003c jl 0xb | 
+003e mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 49376}] | 003e mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 49376}] | 
+0042 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40580}] | 0042 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40580}] | 
+0049 pop si | 0049 pop si | 
+004a pop di | 004a pop di | 
+004b leave  | 004b leave  | 
+004c retf  | 004c retf  | 

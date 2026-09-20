@@ -1,7 +1,7 @@
 {
   "id": "DialogAbortAll-1f3ea4f9f2",
   "symbol": "_DialogAbortAll",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-20T12:47:09.025226+00:00",
   "flags": [
     "/AL",
@@ -349,11 +349,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "946a8c51c8d8182400b9eeb861ab59223a8086153905c93fe8e0748ed1c363e1",
+      "report": "evidence/recovery/workflow/jobs/DialogAbortAll-1f3ea4f9f2/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
   "reason": "The routine semantics are established: load editMessage[98], skip a negative count, fill queue entries 0..count with -1 via REP STOSW, then reset editMessage[98] to -1. Attempts 01-03 with a named near external queue reproduced the fill idiom but left _dialogMessages unresolved and emitted a second count check (32/34-byte candidates versus 30-byte target). Attempt 04 declared the evidence-supported eight-entry queue as a private near array; it resolved privately but at DS offset 0x1eca rather than the target's literal queue base 0xcaf4, and still differed in the count expression. The direct pointer-cast experiment was rejected by the handoff lane as a literal-address pointer cast. Exact proof therefore requires missing private data placement or specialist structural/linker analysis; no safe ordinary-C experiment can supply that placement.",
-  "next_experiment": "Expert: recover the original translation-unit private data topology or an allowed symbolic declaration that resolves the queue at DS offset 0xcaf4, then retest the local-count/REP-STOSW expression."
+  "next_experiment": "Expert: recover the original translation-unit private data topology or an allowed symbolic declaration that resolves the queue at DS offset 0xcaf4, then retest the local-count/REP-STOSW expression.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/DialogAbortAll-1f3ea4f9f2/promotion.json"
 }

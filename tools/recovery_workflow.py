@@ -28,7 +28,7 @@ STATE=ROOT/'evidence/recovery/workflow'
 PROTECTED=['tools/matcher.py','tools/library_match.py','tools/recovery_gate.py','tools/verify_recovery.py',
            'tools/compiler.py','tools/cfg_solver.py','tools/ne.py','tools/omf.py',
            'tools/compiler_worker.py','tools/compiler_service.py','tools/compiler_wait.asm','layout/compiler-service.json','tools/grind.py','tools/factory_queue.py',
-           'tools/recovery_workflow.py','tools/codegen_grinder.py','tools/codegen_transforms.py','tools/codegen_cache.py',
+           'tools/recovery_workflow.py','tools/topology_diagnostics.py','tools/codegen_grinder.py','tools/codegen_transforms.py','tools/codegen_cache.py',
            'layout/toolchain.json','layout/fixtures.json','layout/runtime-ownership.json']
 CORE=['src/recovery.json','build/recovered/manifest.json','evidence/recovery/verified-objects.json','docs/progress.json']
 MAX_ATTEMPTS=8
@@ -145,7 +145,13 @@ def run_attempt(job_id):
     best=result['results'][0]
     attempt=dict(number=len(job['attempts'])+1,submission_digest=semantic_digest,report=relative(out/'results.json'),completed=result['completed_candidates'],candidates=result['candidates'],cache=result['cache'],best_candidate=best['candidate'],result=best['comparison']['result'])
     job['attempts'].append(attempt)
+    from topology_diagnostics import classify as topology_classify
+    topology = next((diagnosis for row in result['results'] if (diagnosis := topology_classify(row['comparison']))), None)
     if result['exact_candidates']:job['status']='EXACT_CANDIDATE'
+    elif topology:
+        job.update(status='ESCALATED', blockers=['DATA_LAYOUT'], evidence_state=topology['state'],
+                   topology_diagnostic=topology, reason='Body matches outside unresolved offset bindings; ordinary shape search stopped automatically',
+                   next_experiment='Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source')
     elif len(job['attempts'])==MAX_ATTEMPTS or used+result['candidates']>=MAX_TOTAL_CANDIDATES:
         comparison=best['comparison']
         cause=('SOURCE_COMPILATION_ERROR' if not result['completed_candidates'] else 'SEMANTICS_UNKNOWN' if comparison.get('fixups_equal',0)<comparison.get('fixups_total',0) else 'LOCAL_FRAME_LAYOUT' if comparison.get('features',{}).get('frame')!=comparison.get('target_features',{}).get('frame') else 'REGISTER_ALLOCATION' if comparison.get('diagnostic',{}).get('categories')==['REGISTER_ALLOCATION'] else 'EXPRESSION_SHAPE')
@@ -244,6 +250,10 @@ def refresh():
     from blocker_ledger import main as ledger
     from cards import main as update_cards
     cfg();ledger();update_cards();queue()
+    from factory_queue import generate as factory_generate
+    from blocker_families import generate as family_generate
+    from structural_families import generate as structural_generate
+    factory_generate();structural_generate();family_generate()
 
 
 def recover_interrupted_attempts():

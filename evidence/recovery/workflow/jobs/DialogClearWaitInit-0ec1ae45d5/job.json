@@ -1,7 +1,7 @@
 {
   "id": "DialogClearWaitInit-0ec1ae45d5",
   "symbol": "_DialogClearWaitInit",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-20T17:36:03.717757+00:00",
   "flags": [
     "/AL",
@@ -307,11 +307,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "0be466cc7a19ea5f8f031567aa782f9945ba780e71a5f8697ec8b961fb3e71b9",
+      "report": "evidence/recovery/workflow/jobs/DialogClearWaitInit-0ec1ae45d5/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
   "reason": "Attempt 01 reproduces all 20 target opcodes and the complete 70-byte layout: editMessage[98] counter increments and reset, exact overflow strings and MessageBox ordinal/style, TickCount call, timestamp/message indexing shifts, and return. Strict proof differs only in private DGROUP data bindings: the target uses direct DS offsets 0x150c/0x1522 for the strings and 0xcad4/0xcaf4 table bases, while safe ordinary declarations leave _DATA/string relocations and external _dialogTimes/_dialogMessages fixups. This is the same concrete dialog-module private layout issue recorded for DialogClearWait/DialogWait.",
-  "next_experiment": "Recover the original SIMANT_MODULE dialog translation-unit private string/table declarations and ordering at DS:0x150c, 0x1522, 0xcad4, and 0xcaf4, then rerun independent acceptance with the already exact candidate body."
+  "next_experiment": "Recover the original SIMANT_MODULE dialog translation-unit private string/table declarations and ordering at DS:0x150c, 0x1522, 0xcad4, and 0xcaf4, then rerun independent acceptance with the already exact candidate body.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/DialogClearWaitInit-0ec1ae45d5/promotion.json"
 }
