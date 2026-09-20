@@ -26814,8 +26814,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MyReleaseCapture — GR_MODULE:45D2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 29 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 29 bytes.
+Source: src/recovered/MyReleaseCapture.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 45D2  8e06b8c6                 mov es, word ptr [0xc6b8]
