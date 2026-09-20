@@ -1,0 +1,1 @@
+void InvalQueenStorageDisp(void) {}

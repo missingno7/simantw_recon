@@ -12809,24 +12809,24 @@ Source: src/recovered/myButton.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMA
 ```
 
 ## _DoShiftHelp — SIMANT_MODULE:96AC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/DoShiftHelp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96AC  cb                       retf 
 ```
 
 ## _initSimWindows — SIMANT_MODULE:96AE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/initSimWindows.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96AE  cb                       retf 
 ```
 
 ## _SetSimCursor — SIMANT_MODULE:96B0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/SetSimCursor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96B0  cb                       retf 
@@ -12842,80 +12842,80 @@ Source: src/recovered/BootUpGame.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSI
 ```
 
 ## _CheckItem — SIMANT_MODULE:96B6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/CheckItem.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96B6  cb                       retf 
 ```
 
 ## _ScrollDownS — SIMANT_MODULE:96B8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollDownS.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96B8  cb                       retf 
 ```
 
 ## _ScrollUpS — SIMANT_MODULE:96BA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollUpS.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96BA  cb                       retf 
 ```
 
 ## _ScrollUp — SIMANT_MODULE:96BC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollUp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96BC  cb                       retf 
 ```
 
 ## _ScrollDown — SIMANT_MODULE:96BE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollDown.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96BE  cb                       retf 
 ```
 
 ## _ScrollRight — SIMANT_MODULE:96C0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollRight.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96C0  cb                       retf 
 ```
 
 ## _ScrollRightS — SIMANT_MODULE:96C2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollRightS.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96C2  cb                       retf 
 ```
 
 ## _InvalQueenStorageDisp — SIMANT_MODULE:96C4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/InvalQueenStorageDisp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96C4  cb                       retf 
 ```
 
 ## _ScrollLeft — SIMANT_MODULE:96C6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ScrollLeft.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96C6  cb                       retf 
 ```
 
 ## _MakeDMap — SIMANT_MODULE:96C8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/MakeDMap.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 96C8  cb                       retf 
@@ -12978,8 +12978,8 @@ Source: src/recovered/ABS.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MO
 ```
 
 ## _ErrorLog — SIMANT_MODULE:9728
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
+Source: src/recovered/ErrorLog.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9728  cb                       retf 
