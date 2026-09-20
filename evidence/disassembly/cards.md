@@ -21957,8 +21957,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PopMsg — GR_MODULE:1878
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 26 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 26 bytes.
+Source: src/recovered/PopMsg.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 1878  55                       push bp
