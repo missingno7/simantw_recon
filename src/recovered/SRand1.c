@@ -1,11 +1,14 @@
-/* Byte-matched reconstruction; historical declaration spelling is uncertain. */
-#define SRandSeed (*(unsigned int near *)0xCBF2)
+extern unsigned int near edata[];
 
-int SRand1(int divisor)
+int SRand1(unsigned int range)
 {
-    int result;
-    SRandSeed <<= 1;
-    if (SRandSeed & 0x8000) SRandSeed ^= 0x1bf5;
-    result = SRandSeed % divisor;
-    return result;
+    unsigned int value;
+
+    value = edata[201];
+    if (value & 0x8000)
+        value = (value << 1) ^ 0x1bf5;
+    else
+        value <<= 1;
+    edata[201] = value;
+    return value % range;
 }
