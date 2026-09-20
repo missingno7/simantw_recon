@@ -31,8 +31,8 @@ Source: src/recovered/StopSimulation.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/
 ```
 
 ## _RestartSimulation — SIMANT_MODULE:0034
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 28 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 28 bytes.
+Source: src/recovered/RestartSimulation.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 0034  ff0e4400                 dec word ptr [0x44]
