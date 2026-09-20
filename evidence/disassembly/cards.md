@@ -128609,8 +128609,8 @@ E7BE  e4e7                     in al, 0xe7
 ```
 
 ## _win_SetObjSelectableState — SIMTWO_MODULE:E9C4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 62 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 62 bytes.
+Source: src/recovered/win_SetObjSelectableState.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 E9C4  c8040000                 enter 4, 0

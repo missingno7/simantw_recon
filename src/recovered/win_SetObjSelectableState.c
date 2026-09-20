@@ -12,6 +12,7 @@ void win_SetObjSelectableState(int object, int state)
     struct WinObjectSelectable far *obj;
     win_LockWin(object);
     obj = win_ObjAddr(object);
-    obj->state ^= (obj->state ^ (state << 1)) & 2;
+    *(unsigned int far *)((unsigned char far *)obj + 0x24) ^=
+        (obj->state ^ (state << 1)) & 2;
     win_UnlockWin(object);
 }
