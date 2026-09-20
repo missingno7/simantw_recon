@@ -27372,8 +27372,8 @@ Source: src/recovered/GetMousePos.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTG
 ```
 
 ## _ButtonHeldInit — GR_MODULE:4A2C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 33 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 33 bytes.
+Source: src/recovered/ButtonHeldInit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4A2C  90                       nop 
