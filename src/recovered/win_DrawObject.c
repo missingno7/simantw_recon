@@ -1,14 +1,12 @@
-/* Byte-matched reconstruction; historical declaration spelling is uncertain. */
-struct WinObject {
-    unsigned char unused[0x24];
-    unsigned char flags;
+struct GameObject {
+    unsigned char reserved[0x24];
+    unsigned int flags;
 };
 
-extern void far win_DrawObjectI(unsigned int offset, unsigned int segment);
+extern void far win_DrawObjectI(unsigned long object);
 
-void win_DrawObject(struct WinObject far *object)
+void win_DrawObject(struct GameObject far *object)
 {
     if (object->flags & 1)
-        win_DrawObjectI((unsigned int)(unsigned long)object,
-                        (unsigned int)((unsigned long)object >> 16));
+        win_DrawObjectI((unsigned long)object);
 }

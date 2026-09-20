@@ -123595,8 +123595,8 @@ BB63  cb                       retf
 ```
 
 ## _win_DrawObjectNum — SIMTWO_MODULE:BB64
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 47 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 47 bytes.
+Source: src/recovered/win_DrawObjectNum.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 BB64  55                       push bp
