@@ -19324,8 +19324,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DetectDisplay — GR_MODULE:00CA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 65 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 65 bytes.
+Source: src/recovered/DetectDisplay.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 00CA  57                       push di
