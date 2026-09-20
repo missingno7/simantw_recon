@@ -57978,8 +57978,8 @@ E8F4  cb                       retf
 ```
 
 ## _EraseMiniMapCursor — ANTEDIT_MODULE:E8F6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 40 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 40 bytes.
+Source: src/recovered/EraseMiniMapCursor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 E8F6  ff36cebc                 push word ptr [0xbcce]
