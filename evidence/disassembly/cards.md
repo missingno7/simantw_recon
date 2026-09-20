@@ -30357,8 +30357,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetDebugFlag — GR_MODULE:63B4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 7 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 7 bytes.
+Source: src/recovered/SetDebugFlag.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 63B4  c706f2080000             mov word ptr [0x8f2], 0

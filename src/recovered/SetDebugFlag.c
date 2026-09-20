@@ -1,6 +1,6 @@
-#define debugFlag (*(int near *)0x08f2)
+extern int near paletteH[];
 
 void SetDebugFlag(void)
 {
-    debugFlag = 0;
+    paletteH[76] = 0;
 }
