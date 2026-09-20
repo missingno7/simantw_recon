@@ -79207,8 +79207,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ClearListB — SIMONE_MODULE:30E8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 12 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
+Source: src/recovered/ClearListB.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 30E8  8e0628c4                 mov es, word ptr [0xc428]
@@ -79217,8 +79217,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ClearListR — SIMONE_MODULE:30F4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 12 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
+Source: src/recovered/ClearListR.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 30F4  8e062ac4                 mov es, word ptr [0xc42a]
