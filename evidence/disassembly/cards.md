@@ -124193,8 +124193,8 @@ C087  cb                       retf
 ```
 
 ## _win_PrintTextInObj — SIMTWO_MODULE:C088
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 41 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 41 bytes.
+Source: src/recovered/win_PrintTextInObj.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 C088  c8080000                 enter 8, 0
