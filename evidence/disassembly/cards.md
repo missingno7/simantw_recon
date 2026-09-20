@@ -21975,8 +21975,8 @@ Source: src/recovered/PopMsg.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MOD
 ```
 
 ## _Error — GR_MODULE:1892
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 26 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 26 bytes.
+Source: src/recovered/Error.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 1892  55                       push bp
