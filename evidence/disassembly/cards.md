@@ -117842,8 +117842,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _db_UnhookObject — SIMTWO_MODULE:847E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 38 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 38 bytes.
+Source: src/recovered/db_UnhookObject.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 847E  55                       push bp
