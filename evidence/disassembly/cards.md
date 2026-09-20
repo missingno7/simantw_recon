@@ -113256,8 +113256,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PillGetLife — SIMTWO_MODULE:5702
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 40 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 40 bytes.
+Source: src/recovered/PillGetLife.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 5702  55                       push bp
