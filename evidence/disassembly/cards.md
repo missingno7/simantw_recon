@@ -114543,8 +114543,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _fracSIN — SIMTWO_MODULE:69C8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 70 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 70 bytes.
+Source: src/recovered/wf_fracSIN-85445ba91f.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 69C8  55                       push bp
