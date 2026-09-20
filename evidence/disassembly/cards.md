@@ -117451,8 +117451,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _db_Exists — SIMTWO_MODULE:8176
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 54 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 54 bytes.
+Source: src/recovered/db_Exists.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 8176  c8640000                 enter 0x64, 0
