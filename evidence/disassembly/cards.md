@@ -28447,8 +28447,8 @@ Source: src/recovered/mem_Flush.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_
 ```
 
 ## _mem_Debugging — GR_MODULE:5486
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 11 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 11 bytes.
+Source: src/recovered/mem_Debugging.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 5486  55                       push bp

@@ -1,6 +1,6 @@
-#define debugging (*(int near *)0x0864)
+extern int near paletteH[];
 
 void mem_Debugging(int value)
 {
-    debugging = value;
+    paletteH[5] = value;
 }
