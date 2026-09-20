@@ -1,7 +1,6 @@
-/* Candidate reconstruction from the closed seed mutator. */
-#define SRandSeed (*(unsigned int near *)0xCBF2)
+extern int near edata[];
 
-void SetSRandSeed(unsigned int seed)
+void SetSRandSeed(int value)
 {
-    SRandSeed = seed;
+    edata[201] = value;
 }

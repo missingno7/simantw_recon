@@ -1,7 +1,6 @@
-/* Candidate reconstruction from the closed seed accessor. */
-#define SRandSeed (*(unsigned int near *)0xCBF2)
+extern int near edata[];
 
-long GetSRandSeed(void)
+unsigned long GetSRandSeed(void)
 {
-    return SRandSeed;
+    return (unsigned long)(unsigned int)edata[201];
 }

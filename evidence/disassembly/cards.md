@@ -76008,8 +76008,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetSRandSeed — SIMONE_MODULE:1506
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 11 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 11 bytes.
+Source: src/recovered/SetSRandSeed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 1506  55                       push bp
@@ -76021,8 +76021,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetSRandSeed — SIMONE_MODULE:1512
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 6 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
+Source: src/recovered/GetSRandSeed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 1512  a1f2cb                   mov ax, word ptr [0xcbf2]
