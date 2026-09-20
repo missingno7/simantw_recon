@@ -1,11 +1,14 @@
-/* Candidate reconstruction of the zoomed-window predicate. */
-extern unsigned int near win_hwnd[];
-extern int far pascal IsZoomed(unsigned int window);
+extern int near win_hwnd[];
+extern int far pascal IsZoomed(int window);
 
-int win_IsWinZoomed(unsigned int object)
+int win_IsWinZoomed(int window)
 {
-    unsigned int near *address;
-    address = &win_hwnd[object >> 8];
-    if (*address && IsZoomed(*address)) return 1;
-    return 0;
+    register int near *windowPtr;
+    int originalWindow;
+
+    originalWindow = window;
+    windowPtr = &win_hwnd[originalWindow >> 8];
+    if (*windowPtr == 0)
+        return 0;
+    return IsZoomed(*windowPtr) != 0;
 }
