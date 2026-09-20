@@ -1,8 +1,7 @@
-/* Candidate reconstruction of the window maximize wrapper. */
-extern unsigned int near win_hwnd[];
-extern int far pascal ShowWindow(unsigned int window, int command);
+extern int near win_hwnd[];
+extern void far pascal ShowWindow(int window, int command);
 
-int win_Zoom(unsigned int object)
+void win_Zoom(int window)
 {
-    return ShowWindow(win_hwnd[object >> 8], 3);
+    ShowWindow(win_hwnd[window >> 8], 3);
 }

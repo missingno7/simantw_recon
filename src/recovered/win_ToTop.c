@@ -1,8 +1,7 @@
-/* Candidate reconstruction of the window z-order wrapper. */
-extern unsigned int near win_hwnd[];
-extern int far pascal BringWindowToTop(unsigned int window);
+extern int near win_hwnd[];
+extern void far pascal BringWindowToTop(int window);
 
-int win_ToTop(unsigned int object)
+void win_ToTop(int window)
 {
-    return BringWindowToTop(win_hwnd[object >> 8]);
+    BringWindowToTop(win_hwnd[window >> 8]);
 }

@@ -124490,8 +124490,8 @@ C2B8  cb                       retf
 ```
 
 ## _win_Zoom — SIMTWO_MODULE:C2BA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 24 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 24 bytes.
+Source: src/recovered/win_Zoom.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 C2BA  55                       push bp
@@ -126333,8 +126333,8 @@ D41D  90                       nop
 ```
 
 ## _win_ToTop — SIMTWO_MODULE:D41E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 22 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 22 bytes.
+Source: src/recovered/win_ToTop.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 D41E  55                       push bp
