@@ -5687,8 +5687,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ClosePalette — SIMANT_MODULE:4C0C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 23 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 23 bytes.
+Source: src/recovered/ClosePalette.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 4C0C  833e5a0800               cmp word ptr [0x85a], 0 ; _paletteH
