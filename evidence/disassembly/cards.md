@@ -74802,8 +74802,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InitWater — SIMONE_MODULE:0B76
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 20 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 20 bytes.
+Source: src/recovered/InitWater.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 0B76  56                       push si
