@@ -167,10 +167,20 @@ def review():
         rows[job['symbol']] = dict(job=job['id'], root_cause=cls, previous_blockers=job.get('blockers'), attempts=len(job.get('attempts', [])),
                                    candidates=sum(a.get('candidates', 1) for a in job.get('attempts', [])), best_report=report, detail=detail)
     summary = Counter(r['root_cause'] for r in rows.values())
+    # Introducers whose recovery would unblock the most unit-layout functions.
+    unlock = Counter()
+    for r in rows.values():
+        for m in r['detail'].get('missing_introducers', []):
+            unlock[m] += 1
+    queue_states = {}
+    queue_path = ROOT / 'docs/production-queue.json'
+    if queue_path.exists():
+        queue_states = {f['symbol']: f['state'] for f in read_json(queue_path)['functions']}
+    unlock_targets = [dict(symbol=m, unblocks=n, state=queue_states.get(m)) for m, n in unlock.most_common(25)]
     sub = Counter(r['detail'].get('subclass') for r in rows.values() if r['root_cause'].startswith('B'))
     out = dict(schema_version=1, scope='Supervisor re-evaluation of parked jobs; classification only, no budget or escalation change, no recovery credit',
                inputs={p: identity(ROOT / p) for p in ['evidence/topology/build-topology.json', 'evidence/recovery/units/proposals.json'] if (ROOT / p).exists()},
-               summary=dict(summary), unit_subclasses=dict(sub), unnamed_code_regions=unnamed, functions=rows)
+               summary=dict(summary), unit_subclasses=dict(sub), unlock_targets=unlock_targets, unnamed_code_regions=unnamed, functions=rows)
     write_json(REPORT, out)
     return out
 
@@ -179,7 +189,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.parse_args()
     out = review()
-    print(json.dumps(dict(summary=out['summary'], unit_subclasses=out['unit_subclasses']), indent=2))
+    print(json.dumps(dict(summary=out['summary'], unit_subclasses=out['unit_subclasses'], unlock_targets=out['unlock_targets'][:10]), indent=2))
 
 
 if __name__ == '__main__':
