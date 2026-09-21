@@ -53728,8 +53728,8 @@ B3A8  cb                       retf
 ```
 
 ## _DrawAnimYardMessage — ANTEDIT_MODULE:B3AA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 184 bytes.
+Source: src/recovered/wf_DrawAnimYardMessage-cbcb9b80e9.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 B3AA  833eecbc00               cmp word ptr [0xbcec], 0
@@ -89412,8 +89412,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsItAHole — SIMONE_MODULE:9B4A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 184 bytes.
+Source: src/recovered/wf_IsItAHole-fd9d6ad240.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 9B4A  c8020000                 enter 2, 0
@@ -115096,8 +115096,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepRight — SIMTWO_MODULE:6EFE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 181 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 181 bytes.
+Source: src/recovered/wf_goStepRight-9a2b2904fe.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 6EFE  55                       push bp
@@ -126047,8 +126047,8 @@ D6D9  cb                       retf
 ```
 
 ## _win_PrintfAtObj — SIMTWO_MODULE:D6DA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 183 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 183 bytes.
+Source: src/recovered/wf_win_PrintfAtObj-9e4b836702.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 D6DA  c86c0000                 enter 0x6c, 0

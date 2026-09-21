@@ -1,0 +1,32 @@
+{
+ "symbol": "_SetCasteProd",
+ "source": "build/grind/scp_t2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "void far SetCasteProd(void)\n{\n    int pct[4];\n    int want[4];\n    int i;\n    int best;\n\n    {\n        int total;\n        int ideal;\n\n        total = 0;\n        ideal = 0;\n        for (i = 0; i < 4; i++) {\n            total += CastePopB[i + 1];\n            ideal += IdealCaste[i];\n        }\n        for (i = 0; i < 4; i++) {\n            if (total <= 0)\n                pct[i] = 0;\n            else\n                pct[i] = 100L * CastePopB[i + 1] / total;\n            if (ideal <= 0)\n                want[i] = 0;\n            else\n                want[i] = 100L * IdealCaste[i] / ideal;\n        }\n    }\n    {\n        int which;\n\n        best = 0;\n        which = 0;\n        for (i = 0; i < 4; i++) {\n            if (pct[i] - want[i] < best) {\n                best = pct[i] - want[i];\n                which = i;\n            }\n        }\n        MakeMe = CasteTabB[which];\n    }\n}\n",
+    "void far SetCasteProd(void)\n{\n    int i;\n    int total;\n    int ideal;\n    int best;\n    int which;\n    int pct[4];\n    int want[4];\n\n    total = 0;\n    ideal = 0;\n    for (i = 0; i < 4; i++) {\n        total += CastePopB[i + 1];\n        ideal += IdealCaste[i];\n    }\n    for (i = 0; i < 4; i++) {\n        if (total <= 0)\n            pct[i] = 0;\n        else\n            pct[i] = 100L * CastePopB[i + 1] / total;\n        if (ideal <= 0)\n            want[i] = 0;\n        else\n            want[i] = 100L * IdealCaste[i] / ideal;\n    }\n    which = best = 0;\n    for (i = 0; i < 4; i++) {\n        if (pct[i] - want[i] < best) {\n            best = pct[i] - want[i];\n            which = i;\n        }\n    }\n    MakeMe = CasteTabB[which];\n}\n",
+    "void far SetCasteProd(void)\n{\n    int i;\n    int total;\n    int ideal;\n    int diff;\n    int pct[4];\n    int want[4];\n\n    total = 0;\n    ideal = 0;\n    for (i = 0; i < 4; i++) {\n        total += CastePopB[i + 1];\n        ideal += IdealCaste[i];\n    }\n    for (i = 0; i < 4; i++) {\n        if (total <= 0)\n            pct[i] = 0;\n        else\n            pct[i] = 100L * CastePopB[i + 1] / total;\n        if (ideal <= 0)\n            want[i] = 0;\n        else\n            want[i] = 100L * IdealCaste[i] / ideal;\n    }\n    total = ideal = 0;\n    for (i = 0; i < 4; i++) {\n        diff = pct[i] - want[i];\n        if (diff < ideal) {\n            ideal = diff;\n            total = i;\n        }\n    }\n    MakeMe = CasteTabB[total];\n}\n"
+   ],
+   "rationale": "four frame scalars with total and the chosen index sharing [bp-4]"
+  }
+ ],
+ "semantic_summary": "SetCasteProd: block-scoped totals, chained which = best = 0, and total/ideal reused as index/best",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_SetCasteProd"
+ ]
+}
