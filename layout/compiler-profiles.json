@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "scope": "Evidence-backed compiler profiles attached to candidate historical objects (translation units). The locked baseline stays the default; a non-default profile applies only through a reviewed assignment whose evidence is recorded here.",
+  "compiler": "msc700",
+  "common_flags": [
+    "/AL",
+    "/G2",
+    "/Gs"
+  ],
+  "segment_flag": "/NT",
+  "default_profile": "baseline",
+  "profiles": {
+    "baseline": {
+      "flags": [
+        "/Oelw"
+      ],
+      "description": "Locked conservative profile: /Oe register allocation, /Ol loop optimisation, /Ow aliasing across calls. Every admitted msc700 source was proven under it."
+    },
+    "og": {
+      "flags": [
+        "/Oeglw"
+      ],
+      "parent": "baseline",
+      "description": "Baseline plus /Og global common-subexpression elimination and register write-through before calls. Discriminated by parked code-shape bodies; refuted for the win_SetColorFromObj object."
+    },
+    "ogi": {
+      "flags": [
+        "/Oegilw"
+      ],
+      "parent": "og",
+      "description": "og plus /Oi intrinsic generation (inline memset/memcpy/strlen/strcat forms). Requires string-intrinsic fingerprints in the target."
+    },
+    "ga": {
+      "flags": [
+        "/Oelw",
+        "/GA"
+      ],
+      "parent": "baseline",
+      "description": "Baseline plus /GA Windows application prologue optimisation. Requires exported-prologue evidence; invariant on the admitted corpus."
+    },
+    "og-ga": {
+      "flags": [
+        "/Oeglw",
+        "/GA"
+      ],
+      "parent": "og",
+      "description": "og plus /GA. Requires both kinds of evidence."
+    }
+  },
+  "evidence_rules": {
+    "minimality": "A profile may only be assigned when its probe outcome improves on its parent profile (baseline < og < ogi; baseline < ga; og < og-ga); otherwise the parent is the minimal explanation.",
+    "og": "At least one member of the context reaches a strict GOOD member result under og but not under baseline (STRICT), or improves the search diagnostic without regressions (DIAGNOSTIC). Any admitted member of the context must be profile-invariant between baseline and og (invariance evidence).",
+    "ogi": "Rules for og plus a target containing string-intrinsic fingerprints (rep stosb/movsb, repne scasb) that the baseline candidate can only produce through library calls.",
+    "ga": "Original exported-function prologue evidence in the context that baseline cannot reproduce.",
+    "refutation": "An admitted member whose object changes under a profile refutes that profile for its context."
+  },
+  "invariance": {
+    "evidence": "evidence/experiments/optimizer-profile/invariance2.json",
+    "summary": "362 of 363 admitted msc700 sources compile to identical CODE bytes under baseline, og and ogi; all 363 are identical under ga. The admitted corpus therefore cannot identify the historical switches; only the discriminating members do.",
+    "discriminating": {
+      "_win_SetColorFromObj": [
+        "og",
+        "ogi"
+      ]
+    }
+  },
+  "contexts": {
+    "simtwo:4CDC": {
+      "publics": [
+        "_DoPillar",
+        "_StorePillarMap",
+        "_ReplacePillarMap",
+        "_MakeAPill",
+        "_PlacePillTile",
+        "_PillGetLife",
+        "_IsPillDead",
+        "_MakePillFood",
+        "_PillFoodTile"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:34:43.716176+00:00"
+    },
+    "antedit:9024": {
+      "publics": [
+        "_SeparateFile"
+      ],
+      "segment": "ANTEDIT_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:34:45.919706+00:00"
+    }
+  },
+  "assignments": [
+    {
+      "id": "asg-simtwo-4cdc-og",
+      "context": "simtwo:4CDC",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/IsPillDead-8cef0d554b.json"
+      ],
+      "reason": "IsPillDead reaches STRONGLY_SUPPORTED_MEMBER only under /Og (probe); the pillar object (DoPillar..PillFoodTile, 16 shared selector-pool joins) shares one compiler profile; no admitted member of the context changes under /Og (invariance evidence).",
+      "reviewed": "2026-09-21T17:34:43.716176+00:00"
+    },
+    {
+      "id": "asg-antedit-9024-og",
+      "context": "antedit:9024",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/SeparateFile-7ddbb3ac46.json"
+      ],
+      "reason": "SeparateFile reaches CONFIRMED_MEMBER only under /Og (probe); its object context is not yet located by selector-pool evidence, so the scope is the function's own component.",
+      "reviewed": "2026-09-21T17:34:45.919706+00:00"
+    }
+  ],
+  "refutations": [
+    {
+      "id": "ref-win-setcolor-og",
+      "symbols": [
+        "_win_SetColorFromObj"
+      ],
+      "profiles": [
+        "og",
+        "ogi",
+        "og-ga"
+      ],
+      "evidence": "evidence/experiments/optimizer-profile/invariance2.json",
+      "reason": "Admitted source changes CODE bytes under /Og; the object containing it was not built with /Og."
+    }
+  ]
+}

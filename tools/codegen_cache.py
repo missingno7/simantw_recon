@@ -25,7 +25,10 @@ def compile_cached(jobs,compiler='msc700'):
     compiled=compile_batch(misses,compiler) if misses else []
     for (i,folder),(obj,receipt) in zip(keys,compiled):
         if obj and not receipt['unsupported_option']:
-            dest=folder/'OUTPUT.OBJ';shutil.copyfile(obj,dest)
+            # Atomic publication: another process compiling the same source
+            # must never observe a partially copied object.
+            import os
+            dest=folder/'OUTPUT.OBJ';partial=folder/('OUTPUT.%d.tmp'%os.getpid());shutil.copyfile(obj,partial);partial.replace(dest)
             receipt=dict(receipt,object=dest.relative_to(ROOT).as_posix())
             write_json(folder/'receipt.json',receipt);obj=dest
         results[i]=(obj,receipt)

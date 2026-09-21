@@ -1,7 +1,7 @@
 {
   "id": "InitApplicationWindows-84f4e064cb",
   "symbol": "_InitApplicationWindows",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T16:05:48.576226+00:00",
   "flags": [
     "/AL",
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 12007,
-      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
+      "size": 14333,
+      "sha256": "2eda21b68a24f23a1422212a02156ccca06bc299d0bec0d1ce8be27e1189f216"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,16 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8782,
-      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
+      "size": 10118,
+      "sha256": "7eb8da7b0f280730a2dc5d12f979a6ae48c558715db6835dfa85921c0e3b33ea"
     },
     "tools/factory_queue.py": {
       "size": 5170,
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24419,
-      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
+      "size": 28630,
+      "sha256": "a9881325355622d6e9176583ee7e759a94bb15ab2877ad87b91f9bafa803bd01"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -84,8 +84,16 @@
       "sha256": "89b8a8a928a0d3708a8ca3912ebf21791fd9ee8b838e5a39173ad82dcf291338"
     },
     "tools/codegen_cache.py": {
-      "size": 2567,
-      "sha256": "2bd26c2de9e8025284a2a3fadd604166fa39d67267a2bae1bd539e09b83d8d9f"
+      "size": 2798,
+      "sha256": "a8db25e4be045a39c372ea05d52a8e076f4734e275478374d9c7bc3c720ebcc4"
+    },
+    "tools/compiler_profiles.py": {
+      "size": 16688,
+      "sha256": "ccbe851988a896bb3b99482b541d439a75a9cf7f7a6e1a0e59e18b950638a30d"
+    },
+    "tools/tu_assembly.py": {
+      "size": 21090,
+      "sha256": "d8803d003e10fe00b54f485459da42f88ca8a348d0999ccf01b041c8bce27903"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -98,6 +106,10 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
+    },
+    "layout/compiler-profiles.json": {
+      "size": 5523,
+      "sha256": "5e1214c00354245f0869f8756bd5c2a5225d3751d1e923fbe41289e9fd9ecc5e"
     }
   },
   "fixture_identity": {
@@ -300,7 +312,7 @@
   "attempts": [
     {
       "number": 1,
-      "submission_digest": "0e8265b1056725af262c0d9ae476353e3792cd41a479c68f9aa9f8085b49237e",
+      "submission_digest": "0e8265b1056725af262c0d9ae476353e3792cd41a479c68f9aa9f8085b49237e:superseded-by-tool-replay",
       "report": "evidence/recovery/workflow/jobs/InitApplicationWindows-84f4e064cb/attempt01/results.json",
       "completed": 1,
       "candidates": 1,
@@ -311,11 +323,44 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "0e8265b1056725af262c0d9ae476353e3792cd41a479c68f9aa9f8085b49237e",
+      "report": "evidence/recovery/workflow/jobs/InitApplicationWindows-84f4e064cb/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "CONFIRMED_MEMBER"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "DATA_LAYOUT"
   ],
-  "reason": "Body exact (Sonnet grinder, 1 attempt, evidence/recovery/workflow/jobs/InitApplicationWindows-84f4e064cb/attempt01/candidate0000.c, 197 vs 197 bytes, 58/58 opcodes, no aligned differences): win_LoadAllWindows(); eleven win_SetWinDrawHook(id, hook) registrations (ids 0x000, 0x100, 0x1500, 0x1200, 0x1300, 0x1900, 0x500, 0x1e00, 0x400, 0x1d00, 0x1800 with win_DrawEditWindow, win_DrawMapWindow, win_DrawHistoryWindow, win_DrawModeWindow, win_DrawCasteWindow, win_DrawYardWindow, win_DrawInfoWindow, win_DrawPictureWindow, win_DrawEndGameWindow, win_DrawExamineWindow, win_DrawScoreWindow); InitMapFunctions(). The eleven far function-pointer arguments fail as 'unsupported or unresolved target/frame' offset fixups: the strict matcher does not yet validate offset fixups to far code symbols (the gap already noted for the matcher), so admission is blocked by tooling, not by the source.",
-  "next_experiment": "Tool work, not source work: extend the strict matcher to validate two-byte offset fixups whose target is a named far code symbol (segment + MAPSYM offset) against the original's unrelocated literal, then re-test this candidate unchanged; distinguishing observation: eleven 'push <offset of win_Draw*>' immediates with no loader relocation."
+  "parked_reason": "Body exact (Sonnet grinder, 1 attempt, evidence/recovery/workflow/jobs/InitApplicationWindows-84f4e064cb/attempt01/candidate0000.c, 197 vs 197 bytes, 58/58 opcodes, no aligned differences): win_LoadAllWindows(); eleven win_SetWinDrawHook(id, hook) registrations (ids 0x000, 0x100, 0x1500, 0x1200, 0x1300, 0x1900, 0x500, 0x1e00, 0x400, 0x1d00, 0x1800 with win_DrawEditWindow, win_DrawMapWindow, win_DrawHistoryWindow, win_DrawModeWindow, win_DrawCasteWindow, win_DrawYardWindow, win_DrawInfoWindow, win_DrawPictureWindow, win_DrawEndGameWindow, win_DrawExamineWindow, win_DrawScoreWindow); InitMapFunctions(). The eleven far function-pointer arguments fail as 'unsupported or unresolved target/frame' offset fixups: the strict matcher does not yet validate offset fixups to far code symbols (the gap already noted for the matcher), so admission is blocked by tooling, not by the source.",
+  "parked_next_experiment": "Tool work, not source work: extend the strict matcher to validate two-byte offset fixups whose target is a named far code symbol (segment + MAPSYM offset) against the original's unrelocated literal, then re-test this candidate unchanged; distinguishing observation: eleven 'push <offset of win_Draw*>' immediates with no loader relocation.",
+  "budget_extensions": [
+    {
+      "kind": "TOOL_REPLAY",
+      "changed_tools": [
+        "tools/library_match.py",
+        "tools/grind.py",
+        "tools/recovery_workflow.py",
+        "tools/codegen_cache.py",
+        "tools/compiler_profiles.py",
+        "tools/tu_assembly.py",
+        "layout/compiler-profiles.json"
+      ],
+      "attempts": 1,
+      "candidates": 1,
+      "reviewed": "2026-09-21T17:39:14.861212+00:00",
+      "reason": "Strict matcher now validates OMF LOC 5 far-code offset fixups with a paired selector (tests/test_far_code_offsets.py); replay the preserved exact-body candidate unchanged"
+    }
+  ],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/InitApplicationWindows-84f4e064cb/promotion.json"
 }

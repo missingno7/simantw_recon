@@ -104,12 +104,19 @@ class ReceiptAndCacheTests(TemporaryWorkflow):
         r=self.fixture();self.put('layout/toolchain.json','{"files":{},"changed":true}')
         with self.assertRaisesRegex(FormatError,'toolchain'):compiler.validate_receipt(r)
 
+FLAGS=['/AL','/G2','/Gs','/Oelw','/NTGR_MODULE']
+
 class BudgetTests(TemporaryWorkflow):
-    def spec(self):return dict(symbol='_a',compiler='msc700',flags=['/AL'],template='int a(void) { return 1; }',semantic_summary='Return one',publics=['_a'],max_candidates=96)
-    def job(self):return dict(symbol='_a',flags=['/AL'],status='OPEN',attempts=[])
+    def spec(self):return dict(symbol='_a',compiler='msc700',flags=list(FLAGS),template='int a(void) { return 1; }',semantic_summary='Return one',publics=['_a'],max_candidates=96)
+    def job(self):return dict(symbol='_a',flags=list(FLAGS),status='OPEN',attempts=[])
+    def reader(self,spec,job):
+        return lambda path:job if str(path).endswith('job.json') else spec
     def test_unbounded_or_changed_profile_rejected(self):
-        for change in [dict(max_candidates=97),dict(flags=['/AL','/Oa']),dict(semantic_summary='')]:
+        for change in [dict(max_candidates=97),dict(flags=['/AL','/Oa']),dict(semantic_summary=''),dict(publics=['_a','_b'])]:
             with self.assertRaises(FormatError):workflow.check_submission(dict(self.spec(),**change),self.job())
+    def test_uncatalogued_flags_rejected_even_when_job_agrees(self):
+        job=dict(self.job(),flags=['/AL','/G2','/Gs','/Ox','/NTGR_MODULE']);spec=dict(self.spec(),flags=list(job['flags']))
+        with self.assertRaisesRegex(FormatError,'catalog'):workflow.check_submission(spec,job)
     def test_assembly_or_absolute_pointer_rejected(self):
         for code in ['int a(void) { _asm nop; }','char far *p=(char far *)0x12345678;']:
             with self.assertRaises(FormatError):workflow.check_submission(dict(self.spec(),template=code),self.job())
@@ -124,23 +131,23 @@ class BudgetTests(TemporaryWorkflow):
         self.assertEqual(workflow.experiment_digest(spec),workflow.experiment_digest(changed))
     def test_duplicate_experiment_does_not_compile(self):
         spec=self.spec();job=self.job();digest=workflow.experiment_digest(spec);job['attempts']=[dict(submission_digest=digest)]
-        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',return_value=spec),patch.object(workflow,'run') as run:
+        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',side_effect=self.reader(spec,job)),patch.object(workflow,'run') as run:
             with self.assertRaisesRegex(FormatError,'identical'):workflow.run_attempt('unused')
             run.assert_not_called()
     def test_final_mismatch_escalates_without_promotion(self):
         spec=self.spec();job=self.job();job['attempts']=[dict(submission_digest='previous%d'%i,candidates=1) for i in range(workflow.MAX_ATTEMPTS-1)]
         result=dict(results=[dict(candidate=0,comparison=dict(result='NO_COMPLETE_MATCH'))],completed_candidates=1,candidates=1,cache={},exact_candidates=[])
-        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',return_value=spec),patch.object(workflow,'run',return_value=result),patch.object(workflow,'refresh') as refresh,patch.object(workflow,'commit_core') as commit:
+        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',side_effect=self.reader(spec,job)),patch.object(workflow,'run',return_value=result),patch.object(workflow,'refresh') as refresh,patch.object(workflow,'commit_core') as commit:
             response=workflow.run_attempt('unused')
             self.assertEqual(response['status'],'ESCALATED');refresh.assert_called_once();commit.assert_not_called()
     def test_source_syntax_error_can_be_revised_without_expert_escalation(self):
         spec=self.spec();job=self.job();result=dict(results=[dict(candidate=0,comparison=dict(result='COMPILE_FAILED'))],completed_candidates=0,candidates=1,cache={},exact_candidates=[])
-        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',return_value=spec),patch.object(workflow,'run',return_value=result),patch.object(workflow,'queue'):
+        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',side_effect=self.reader(spec,job)),patch.object(workflow,'run',return_value=result),patch.object(workflow,'queue'):
             response=workflow.run_attempt('unused')
             self.assertEqual(response['status'],'NEEDS_REVISION')
     def test_total_candidate_budget_prevents_more_compilation(self):
         spec=self.spec();job=self.job();job['attempts']=[dict(submission_digest=str(i),candidates=96) for i in range(2)]
-        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',return_value=spec),patch.object(workflow,'run') as run:
+        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',side_effect=self.reader(spec,job)),patch.object(workflow,'run') as run:
             with self.assertRaisesRegex(FormatError,'total target budget'):workflow.run_attempt('unused')
             run.assert_not_called()
     def test_mismatch_cannot_enter_promotion(self):
@@ -175,8 +182,23 @@ class TransactionTests(TemporaryWorkflow):
         self.assertEqual(read_json(path)['status'],'PROMOTED');self.assertNotIn('old',read_json(self.state/'transaction.json'))
     def test_interrupted_worker_is_durably_parked(self):
         path=self.state/'jobs/a-1234567890/job.json';write_json(path,dict(id='a-1234567890',status='RUNNING'))
-        with patch.object(workflow,'refresh') as refresh:workflow.recover_interrupted_attempts()
+        with patch.object(workflow,'LOCKS',self.root/'locks'),patch.object(workflow,'refresh') as refresh:workflow.recover_interrupted_attempts()
         self.assertEqual(read_json(path)['status'],'ESCALATED');refresh.assert_called_once()
+    def test_live_worker_is_not_parked(self):
+        path=self.state/'jobs/a-1234567890/job.json';write_json(path,dict(id='a-1234567890',status='RUNNING'))
+        with patch.object(workflow,'LOCKS',self.root/'locks'),patch.object(workflow,'refresh') as refresh:
+            with workflow.job_lock('a-1234567890'):
+                workflow.recover_interrupted_attempts()
+        self.assertEqual(read_json(path)['status'],'RUNNING');refresh.assert_not_called()
+    def test_stale_attempt_result_is_not_recorded(self):
+        # Another process changed the job while this attempt compiled: refuse to commit.
+        spec=dict(symbol='_a',compiler='msc700',flags=list(FLAGS),template='int a(void) { return 1; }',semantic_summary='Return one',publics=['_a'],max_candidates=96)
+        job=dict(symbol='_a',flags=list(FLAGS),status='OPEN',attempts=[]);stolen=dict(job,status='ESCALATED')
+        result=dict(results=[dict(candidate=0,comparison=dict(result='NO_COMPLETE_MATCH'))],completed_candidates=1,candidates=1,cache={},exact_candidates=[])
+        reader=lambda path:stolen if str(path).endswith('job.json') else spec
+        with patch.object(workflow,'checked_job',return_value=(self.root,job)),patch.object(workflow,'read_json',side_effect=reader),patch.object(workflow,'run',return_value=result),patch.object(workflow,'refresh'),patch.object(workflow,'queue'):
+            with self.assertRaisesRegex(FormatError,'changed while'):workflow.run_attempt('unused')
+        self.assertEqual(job['attempts'],[])
     def test_escalation_survives_ledger_rebuild(self):
         path=self.state/'jobs/a-1234567890/job.json';write_json(path,dict(id='a-1234567890',symbol='_a',status='ESCALATED',blockers=['FAR_POINTER_TYPE'],reason='LES mismatch',next_experiment='Inspect callers',attempts=[]))
         write_json(path.parent/'submission.json',dict(source='candidate.c',semantic_summary='Store far pointer'))

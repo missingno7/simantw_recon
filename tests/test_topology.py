@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from contextlib import nullcontext
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from topology_diagnostics import classify
 from common import ROOT
@@ -60,12 +61,12 @@ class TopologyRoutingTests(unittest.TestCase):
         result=dict(results=[dict(candidate=0,comparison=self.baseline())],
                     completed_candidates=1,candidates=1,cache={},exact_candidates=[])
         with patch.object(wf,'checked_job',return_value=(ROOT/'build/topology-test',job)), \
-             patch.object(wf,'read_json',return_value={}), \
+             patch.object(wf,'read_json',side_effect=lambda path:job if str(path).endswith('job.json') else {}), \
              patch.object(wf,'check_submission'), \
              patch.object(wf,'variants',return_value=iter([('source',{})])), \
              patch.object(wf,'experiment_digest',return_value='new-source'), \
              patch.object(wf,'atomic_json'),patch.object(wf,'run',return_value=result), \
-             patch.object(wf,'refresh'),patch.object(wf,'queue'):
+             patch.object(wf,'refresh'),patch.object(wf,'queue'),              patch.object(wf,'global_lock',lambda *a,**k:nullcontext()):
             outcome=wf.run_attempt(job['id'])
         self.assertEqual(outcome['status'],'ESCALATED')
         self.assertEqual(job['evidence_state'],'BODY_MATCHED_BINDING_BLOCKED')

@@ -6504,8 +6504,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _InitApplicationWindows — SIMANT_MODULE:5464
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 197 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 197 bytes.
+Source: src/recovered/wf_InitApplicationWindows-84f4e064cb.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 5464  9a06c87454               lcall 0x5474, 0xc806 ; _win_LoadAllWindows
@@ -50195,8 +50195,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SeparateFile — ANTEDIT_MODULE:9024
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 184 bytes.
+Source: src/recovered/wf_SeparateFile-7ddbb3ac46.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 9024  c80e0000                 enter 0xe, 0
@@ -112766,8 +112766,8 @@ Source: src/recovered/PillGetLife.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _IsPillDead — SIMTWO_MODULE:572A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 168 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 168 bytes.
+Source: src/recovered/wf_IsPillDead-8cef0d554b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 572A  c8060000                 enter 6, 0

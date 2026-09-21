@@ -36,10 +36,32 @@ def identity(path):
     b = Path(path).read_bytes()
     return {'size': len(b), 'sha256': sha256(b)}
 def write_json(path, value):
+    # Atomic replace so concurrent readers never see a partial file; Windows
+    # may briefly refuse the replace while another process reads the target.
+    import os, time
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2, ensure_ascii=True)+'\n', encoding='utf-8')
-def read_json(path): return json.loads(Path(path).read_text(encoding='utf-8'))
+    temporary = path.with_name(path.name + '.%d.tmp' % os.getpid())
+    temporary.write_text(json.dumps(value, indent=2, ensure_ascii=True)+'\n', encoding='utf-8')
+    deadline = time.monotonic() + 5
+    while True:
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(0.01)
+def read_json(path):
+    import time
+    deadline = time.monotonic() + 5
+    while True:
+        try:
+            return json.loads(Path(path).read_text(encoding='utf-8'))
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(0.01)
 def fixture(name):
     expected = read_json(ROOT/'layout/fixtures.json')['files'][name]
     b = (ROOT/'assets'/name).read_bytes()

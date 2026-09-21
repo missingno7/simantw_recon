@@ -1,13 +1,13 @@
 {
   "id": "IsPillDead-8cef0d554b",
   "symbol": "_IsPillDead",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T13:36:36.796395+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "protected": {
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 12007,
-      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
+      "size": 14333,
+      "sha256": "2eda21b68a24f23a1422212a02156ccca06bc299d0bec0d1ce8be27e1189f216"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,16 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8782,
-      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
+      "size": 10118,
+      "sha256": "7eb8da7b0f280730a2dc5d12f979a6ae48c558715db6835dfa85921c0e3b33ea"
     },
     "tools/factory_queue.py": {
       "size": 5170,
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24419,
-      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
+      "size": 28630,
+      "sha256": "a9881325355622d6e9176583ee7e759a94bb15ab2877ad87b91f9bafa803bd01"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -84,8 +84,16 @@
       "sha256": "89b8a8a928a0d3708a8ca3912ebf21791fd9ee8b838e5a39173ad82dcf291338"
     },
     "tools/codegen_cache.py": {
-      "size": 2567,
-      "sha256": "2bd26c2de9e8025284a2a3fadd604166fa39d67267a2bae1bd539e09b83d8d9f"
+      "size": 2798,
+      "sha256": "a8db25e4be045a39c372ea05d52a8e076f4734e275478374d9c7bc3c720ebcc4"
+    },
+    "tools/compiler_profiles.py": {
+      "size": 16688,
+      "sha256": "ccbe851988a896bb3b99482b541d439a75a9cf7f7a6e1a0e59e18b950638a30d"
+    },
+    "tools/tu_assembly.py": {
+      "size": 21090,
+      "sha256": "d8803d003e10fe00b54f485459da42f88ca8a348d0999ccf01b041c8bce27903"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -98,6 +106,10 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
+    },
+    "layout/compiler-profiles.json": {
+      "size": 5523,
+      "sha256": "5e1214c00354245f0869f8756bd5c2a5225d3751d1e923fbe41289e9fd9ecc5e"
     }
   },
   "fixture_identity": {
@@ -325,11 +337,38 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "820968b05a665489079e9cd8ad5c84720a3347697168c5315a18007a00c61d97",
+      "report": "evidence/recovery/workflow/jobs/IsPillDead-8cef0d554b/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
-  "blockers": [
+  "profile": {
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-4cdc-og",
+    "context": "simtwo:4CDC",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/IsPillDead-8cef0d554b.json"
+    ],
+    "component": "simtwo:4CDC",
+    "refuted_profiles": []
+  },
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Best candidate evidence/recovery/workflow/jobs/IsPillDead-8cef0d554b/attempt01/candidate0000.c (162 vs 168 bytes): the 3x3 scan around far PillarX/PillarY (x from PillarX-1 while < PillarX+2, y likewise), IsValidA per cell with the conditional cell read materialising zero on the invalid path, the LifeA[x][y] test, the count and the final count > 5 all match structurally. Register homes differ: the original keeps x in CX with home [bp-2], the row offset x*64 in [bp-4] and the count in DI with home [bp-6], and reads PillarX through an immediate segment load at the top but through CONST slots (PillarY 0xc5a2 before PillarX 0xc5a4) later; MSC7 puts x in BX with a different frame layout, the count in memory and both far reads through slots (conflicting CONST placement). Conditional/&& tests, declaration order, register hint and increment spellings (attempts 01-02, 13 candidates) do not change it.",
-  "next_experiment": "Do not repeat test-form or declaration matrices. Investigate the mixed immediate/slot segment loads for the same far word (also seen matching in goStepLeft) and forms where the count has the highest weight (for example the count incremented through a helper or the loop bounds hoisted into locals only for the outer loop); distinguishing observation 'mov word ptr [bp-6],di' at +0x1e and 'mov word ptr [bp-2],cx' at +0x42."
+  "parked_reason": "Best candidate evidence/recovery/workflow/jobs/IsPillDead-8cef0d554b/attempt01/candidate0000.c (162 vs 168 bytes): the 3x3 scan around far PillarX/PillarY (x from PillarX-1 while < PillarX+2, y likewise), IsValidA per cell with the conditional cell read materialising zero on the invalid path, the LifeA[x][y] test, the count and the final count > 5 all match structurally. Register homes differ: the original keeps x in CX with home [bp-2], the row offset x*64 in [bp-4] and the count in DI with home [bp-6], and reads PillarX through an immediate segment load at the top but through CONST slots (PillarY 0xc5a2 before PillarX 0xc5a4) later; MSC7 puts x in BX with a different frame layout, the count in memory and both far reads through slots (conflicting CONST placement). Conditional/&& tests, declaration order, register hint and increment spellings (attempts 01-02, 13 candidates) do not change it.",
+  "parked_next_experiment": "Do not repeat test-form or declaration matrices. Investigate the mixed immediate/slot segment loads for the same far word (also seen matching in goStepLeft) and forms where the count has the highest weight (for example the count incremented through a helper or the loop bounds hoisted into locals only for the outer loop); distinguishing observation 'mov word ptr [bp-6],di' at +0x1e and 'mov word ptr [bp-2],cx' at +0x42.",
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/IsPillDead-8cef0d554b/promotion.json"
 }

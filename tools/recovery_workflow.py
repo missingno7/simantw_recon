@@ -22,14 +22,17 @@ from recovery_gate import admission_targets, check_member
 from recovery_context import compact_packet, markdown
 from library_match import import_symbols
 from verify_recovery import verify
+import compiler_profiles
 import ne, mapsym, omf
 
 STATE=ROOT/'evidence/recovery/workflow'
+LOCKS=ROOT/'build/locks'
 PROTECTED=['tools/matcher.py','tools/library_match.py','tools/recovery_gate.py','tools/verify_recovery.py',
            'tools/compiler.py','tools/cfg_solver.py','tools/ne.py','tools/omf.py',
            'tools/compiler_worker.py','tools/compiler_service.py','tools/compiler_wait.asm','layout/compiler-service.json','tools/grind.py','tools/factory_queue.py',
            'tools/recovery_workflow.py','tools/topology_diagnostics.py','tools/codegen_grinder.py','tools/codegen_transforms.py','tools/codegen_cache.py',
-           'layout/toolchain.json','layout/fixtures.json','layout/runtime-ownership.json']
+           'tools/compiler_profiles.py','tools/tu_assembly.py',
+           'layout/toolchain.json','layout/fixtures.json','layout/runtime-ownership.json','layout/compiler-profiles.json']
 CORE=['src/recovery.json','build/recovered/manifest.json','evidence/recovery/verified-objects.json','docs/progress.json']
 MAX_ATTEMPTS=8
 MAX_CANDIDATES=96
@@ -50,8 +53,12 @@ def checked_job(job_id):
     if job['fixture_identity']!=read_json(ROOT/'layout/fixtures.json'):raise FormatError('changed fixture identity')
     return directory,job
 
-def jobs():
-    return [read_json(p) for p in sorted((STATE/'jobs').glob('*/job.json'))]
+def jobs(include_units=False):
+    rows=[read_json(p) for p in sorted((STATE/'jobs').glob('*/job.json'))]
+    return rows if include_units else [j for j in rows if j.get('lane')!='TU_ASSEMBLY']
+
+def unit_jobs():
+    return [j for j in jobs(include_units=True) if j.get('lane')=='TU_ASSEMBLY']
 
 def classify(card,ledger,job=None):
     extent=card['extent'];reasons=list(ledger.get(card['symbol'],{}).get('blockers',[]))
@@ -93,17 +100,20 @@ def next_task(symbol=None,lane='READY'):
     key=sha256((card['symbol']+card['exe_sha256']).encode())[:10]
     job_id=card['symbol'].lstrip('_')+'-'+key;directory=STATE/'jobs'/job_id;directory.mkdir(parents=True,exist_ok=True)
     packet=compact_packet(card,cards(),recipes(),read_json(ROOT/'evidence/recovery/blockers.json')['drafts'])
-    flags=['/AL','/G2','/Gs','/Oelw','/NT'+card['segment_name']]
+    profile=compiler_profiles.resolve(card['symbol']);flags=compiler_profiles.profile_flags(profile['name'],card['segment_name'])
     write_json(directory/'packet.json',packet);(directory/'packet.md').write_text(markdown(packet),encoding='utf-8')
     (directory/'candidate.c').write_text('/* TODO: write the semantic reconstruction described in packet.md. */\n')
     write_json(directory/'submission.json',dict(symbol=card['symbol'],source=relative(directory/'candidate.c'),compiler='msc700',flags=flags,
                 max_candidates=MAX_CANDIDATES,axes=[],semantic_summary='',binding_evidence=[],publics=[card['symbol']]))
-    job=dict(id=job_id,symbol=card['symbol'],status='OPEN',created=timestamp(),flags=flags,protected=protected(),fixture_identity=read_json(ROOT/'layout/fixtures.json'),attempts=[])
+    job=dict(id=job_id,symbol=card['symbol'],status='OPEN',created=timestamp(),flags=flags,profile=profile,protected=protected(),fixture_identity=read_json(ROOT/'layout/fixtures.json'),attempts=[])
     atomic_json(directory/'job.json',job);queue()
     return dict(job=job_id,packet=relative(directory/'packet.md'),submission=relative(directory/'submission.json'),status='OPEN')
 
 def check_submission(spec,job):
     if spec.get('symbol')!=job['symbol'] or spec.get('compiler')!='msc700' or spec.get('flags')!=job['flags']:raise FormatError('submission changed target or baseline compiler profile')
+    if job.get('lane')=='TU_ASSEMBLY':
+        if sorted(spec.get('publics',[]))!=sorted(job['publics']):raise FormatError('unit submission must cover exactly the unit publics')
+    elif spec.get('publics')!=[job['symbol']]:raise FormatError('single-function submission must name exactly its public')
     if not spec.get('semantic_summary','').strip():raise FormatError('write a concrete semantic summary before compilation')
     if not 1<=spec.get('max_candidates',0)<=MAX_CANDIDATES:raise FormatError('workflow candidate budget is 1..96')
     if job['symbol'] not in spec.get('publics',[]):raise FormatError('requested public must be included')
@@ -115,6 +125,8 @@ def check_submission(spec,job):
         if 'TODO' in source or not code.strip():raise FormatError('unfinished source')
         if re.search(r'\b(?:__asm|_asm|asm|_emit|__emit|incbin)\b|#\s*(?:include|pragma)',code,re.I):raise FormatError('handoff lane requires self-contained ordinary C, without assembly or compiler pragmas')
         if re.search(r'\([^)]*\*[^)]*\)\s*(?:0x[0-9a-f]+|[1-9][0-9]*)',code,re.I):raise FormatError('literal-address pointer cast requires expert review')
+    # Only catalogued compiler profiles are admissible; no free flag search.
+    compiler_profiles.identify_profile(job['flags'])
 
 def experiment_digest(spec):
     # Administrative prose and axis ordering cannot turn an identical set of
@@ -123,24 +135,31 @@ def experiment_digest(spec):
     return sha256(json.dumps(dict(compiler=spec['compiler'],flags=spec['flags'],symbol=spec['symbol'],sources=sources),sort_keys=True).encode())
 
 
+def attempt_limit(job):
+    return MAX_ATTEMPTS+len(job.get('budget_extensions',[]))
+
 def run_attempt(job_id):
     directory,job=checked_job(job_id)
     if job['status'] not in ('OPEN','NEEDS_REVISION'):raise FormatError('job is not accepting attempts')
-    if len(job['attempts'])>=MAX_ATTEMPTS:raise FormatError('attempt budget exhausted; escalate')
+    if len(job['attempts'])>=attempt_limit(job):raise FormatError('attempt budget exhausted; escalate')
     spec=read_json(directory/'submission.json');check_submission(spec,job)
     used=sum(a.get('candidates',1) for a in job['attempts']);planned=sum(1 for _ in variants(spec))
     if used+planned>MAX_TOTAL_CANDIDATES:raise FormatError('total target budget exceeded; shrink the variant set or defer')
     semantic_digest=experiment_digest(spec)
     if any(a['submission_digest']==semantic_digest for a in job['attempts']):raise FormatError('identical experiment already recorded; change the hypothesis or escalate')
     out=directory/('attempt%02d'%(len(job['attempts'])+1))
-    job.update(status='RUNNING',pending_attempt=dict(submission_digest=semantic_digest,output=relative(out)))
+    job.update(status='RUNNING',pending_attempt=dict(submission_digest=semantic_digest,output=relative(out),owner=dict(pid=os.getpid(),started=timestamp())))
     atomic_json(directory/'job.json',job)
     try:result=run(spec,relative(out),cache=True)
     except Exception as exc:
         job.update(status='ESCALATED',blockers=['COMPILER_EXECUTION_FAILURE'],reason='Compiler workflow failed: '+str(exc),next_experiment='Expert: inspect pending attempt logs and restore worker before retrying')
         atomic_json(directory/'job.json',job)
-        refresh()
+        with global_lock():refresh()
         raise
+    # Compare-and-commit: the job file must still carry this attempt's token.
+    current=read_json(directory/'job.json')
+    if current.get('status')!='RUNNING' or current.get('pending_attempt',{}).get('submission_digest')!=semantic_digest:
+        raise FormatError('job state changed while the attempt ran; result not recorded')
     job.pop('pending_attempt',None)
     best=result['results'][0]
     attempt=dict(number=len(job['attempts'])+1,submission_digest=semantic_digest,report=relative(out/'results.json'),completed=result['completed_candidates'],candidates=result['candidates'],cache=result['cache'],best_candidate=best['candidate'],result=best['comparison']['result'])
@@ -152,14 +171,15 @@ def run_attempt(job_id):
         job.update(status='ESCALATED', blockers=['DATA_LAYOUT'], evidence_state=topology['state'],
                    topology_diagnostic=topology, reason='Body matches outside unresolved offset bindings; ordinary shape search stopped automatically',
                    next_experiment='Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source')
-    elif len(job['attempts'])==MAX_ATTEMPTS or used+result['candidates']>=MAX_TOTAL_CANDIDATES:
+    elif len(job['attempts'])>=attempt_limit(job) or used+result['candidates']>=MAX_TOTAL_CANDIDATES:
         comparison=best['comparison']
         cause=('SOURCE_COMPILATION_ERROR' if not result['completed_candidates'] else 'SEMANTICS_UNKNOWN' if comparison.get('fixups_equal',0)<comparison.get('fixups_total',0) else 'LOCAL_FRAME_LAYOUT' if comparison.get('features',{}).get('frame')!=comparison.get('target_features',{}).get('frame') else 'REGISTER_ALLOCATION' if comparison.get('diagnostic',{}).get('categories')==['REGISTER_ALLOCATION'] else 'EXPRESSION_SHAPE')
         job.update(status='ESCALATED',blockers=[cause],reason='Bounded candidate budget exhausted; best result: '+comparison['result'],next_experiment='Expert: inspect best divergence and choose a new semantic/type/TU family')
     else:job['status']='NEEDS_REVISION'
     atomic_json(directory/'job.json',job)
-    if job['status']=='ESCALATED':refresh()
-    else:queue()
+    with global_lock():
+        if job['status']=='ESCALATED':refresh()
+        else:queue()
     return dict(job=job_id,status=job['status'],attempt=attempt,exact_candidates=result['exact_candidates'])
 
 def atomic_bytes(path,data):
@@ -218,14 +238,22 @@ def promote(job_id,candidate=None,audit_only=False):
     if public_names!=set(spec['publics']):raise FormatError('compiled code publics differ from declared promotion scope')
     inventory={x['name']:x for x in read_json(ROOT/'evidence/symbols/inventory.json')['symbols']}
     if any(inventory.get(name,{}).get('ownership')!='GAME' for name in public_names):raise FormatError('runtime/unknown ownership cannot receive game-source promotion')
+    # Already-admitted publics may only be re-admitted inside a unit job that
+    # declares them; their previous recipes are superseded and archived.
+    superseded={name:current_recipes['targets'][name] for name in public_names if name in current_recipes['targets']}
+    if superseded and (job.get('lane')!='TU_ASSEMBLY' or set(superseded)-set(job.get('supersedes',[]))):raise FormatError('promotion would silently replace admitted recipes: '+', '.join(sorted(superseded)))
+    profile_name,segment=compiler_profiles.identify_profile(job['flags']);profile=job.get('profile') or compiler_profiles.resolve(job['symbol'])
+    if profile['name']!=profile_name:raise FormatError('job flags disagree with its recorded compiler profile')
     targets=admission_targets(module,raw,image,symbols,sorted(public_names));comparison=check_member(module,raw,image,symbols,imports,targets)
-    proof=dict(job=job_id,candidate=candidate,admitted=True,audit_only=audit_only,semantic_summary=spec['semantic_summary'],binding_evidence=spec.get('binding_evidence',[]),receipt=receipt,comparison=comparison,targets=targets,scope='Exact readable reconstruction, not original text or filename')
+    proof=dict(job=job_id,candidate=candidate,admitted=True,audit_only=audit_only,semantic_summary=spec['semantic_summary'],binding_evidence=spec.get('binding_evidence',[]),receipt=receipt,comparison=comparison,targets=targets,
+               compiler_profile=dict(profile,flags=job['flags']),unit=job.get('unit'),superseded_recipes=superseded,scope='Exact readable reconstruction, not original text or filename')
     proof_path=directory/('audit.json' if audit_only else 'promotion.json');write_json(proof_path,proof)
     if audit_only:return dict(job=job_id,admission='PASSED',promotion='NONE',evidence=relative(proof_path))
     stored=ROOT/'build/recovered'/('wf_'+job_id+'.obj');shutil.copyfile(obj,stored)
     game={r['symbol']:r for r in manifest['game_objects']}
     for name,target in targets.items():
-        target.update(source=relative(destination),compiler='msc700',flags=job['flags'],promotion_evidence=relative(proof_path))
+        target.update(source=relative(destination),compiler='msc700',flags=job['flags'],profile=profile['name'],profile_evidence=profile.get('assignment'),promotion_evidence=relative(proof_path))
+        if job.get('unit'):target['unit']=job['unit']
         current_recipes['targets'][name]=target
         game[name]=dict(symbol=name,object=relative(stored),identity=identity(stored),receipt=receipt)
     manifest=dict(manifest,game_objects=list(game.values()))
@@ -243,7 +271,9 @@ def defer(job_id,cause,reason,next_experiment):
     directory,job=checked_job(job_id)
     if job['status']=='PROMOTED':raise FormatError('cannot defer a promoted task')
     job.update(status='ESCALATED',blockers=[cause],reason=reason,next_experiment=next_experiment)
-    atomic_json(directory/'job.json',job);refresh();return dict(job=job_id,status='ESCALATED')
+    atomic_json(directory/'job.json',job)
+    with global_lock():refresh()
+    return dict(job=job_id,status='ESCALATED')
 
 def refresh():
     from cfg_solver import main as cfg
@@ -257,13 +287,18 @@ def refresh():
 
 
 def recover_interrupted_attempts():
-    # Called only while holding the exclusive workflow lock, so RUNNING cannot
-    # belong to another live workflow process.
+    # A RUNNING job whose per-job lock is free has no live owner: its attempt
+    # was interrupted. A held lock means another process is still compiling.
     changed=False
-    for job in jobs():
-        if job['status']=='RUNNING':
-            job.update(status='ESCALATED',blockers=['COMPILER_EXECUTION_FAILURE'],reason='Attempt interrupted before its result was recorded',next_experiment='Expert: inspect pending output and compiler receipts; do not silently repeat the experiment')
-            atomic_json(STATE/'jobs'/job['id']/'job.json',job);changed=True
+    for job in jobs(include_units=True):
+        if job['status']!='RUNNING':continue
+        try:
+            with job_lock(job['id']):
+                current=read_json(STATE/'jobs'/job['id']/'job.json')
+                if current['status']!='RUNNING':continue
+                current.update(status='ESCALATED',blockers=['COMPILER_EXECUTION_FAILURE'],reason='Attempt interrupted before its result was recorded',next_experiment='Expert: inspect pending output and compiler receipts; do not silently repeat the experiment')
+                atomic_json(STATE/'jobs'/job['id']/'job.json',current);changed=True
+        except FormatError:continue
     if changed:refresh()
 
 def doctor():
@@ -274,9 +309,11 @@ def doctor():
     validation=read_json(validation_path) if validation_path.exists() else {}
     if not validation.get('passed'):problems.append('Run tools/handoff_validate.py to establish infrastructure readiness')
     elif any(not (ROOT/p).exists() or identity(ROOT/p)!=expected for p,expected in validation['inputs'].items()):problems.append('Infrastructure changed since handoff validation; rerun tools/handoff_validate.py')
-    if sum(r['status']=='EXACT_CANDIDATE' for r in work['functions']):problems.append('Exact candidates awaiting independent promotion')
+    if sum(r['status']=='EXACT_CANDIDATE' for r in work['functions']) or any(j['status']=='EXACT_CANDIDATE' for j in unit_jobs()):problems.append('Exact candidates awaiting independent promotion')
+    try:compiler_profiles.validate()
+    except FormatError as exc:problems.append(str(exc))
     current=protected()
-    for job in jobs():
+    for job in jobs(include_units=True):
         if job['status'] in ('OPEN','NEEDS_REVISION','EXACT_CANDIDATE','RUNNING') and job.get('protected')!=current:
             problems.append('Active job has stale proof/tool context: '+job['id']+'; expert review required')
     completed=[j for j in jobs() if j['status']=='PROMOTED'];escalated=[j for j in jobs() if j['status']=='ESCALATED']
@@ -289,23 +326,47 @@ def doctor():
     write_json(ROOT/'docs/handoff-readiness.json',result);return result
 
 @contextmanager
-def workflow_lock():
-    (ROOT/'build').mkdir(exist_ok=True)
-    with (ROOT/'build/recovery-workflow.lock').open('a+b') as handle:
-        handle.write(b'0');handle.flush();handle.seek(0)
-        try:
-            if os.name=='nt':
-                import msvcrt
-                msvcrt.locking(handle.fileno(),msvcrt.LK_NBLCK,1)
-            else:
-                import fcntl
-                fcntl.flock(handle.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
-        except OSError as exc:raise FormatError('another recovery workflow command is active') from exc
+def file_lock(path,timeout,message):
+    """Exclusive OS file lock; waits up to timeout seconds (0 = non-blocking)."""
+    import time
+    path.parent.mkdir(parents=True,exist_ok=True)
+    with path.open('a+b') as handle:
+        handle.seek(0);handle.write(b'0');handle.flush()
+        deadline=time.monotonic()+timeout
+        while True:
+            handle.seek(0)
+            try:
+                if os.name=='nt':
+                    import msvcrt
+                    msvcrt.locking(handle.fileno(),msvcrt.LK_NBLCK,1)
+                else:
+                    import fcntl
+                    fcntl.flock(handle.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+                break
+            except OSError as exc:
+                if time.monotonic()>=deadline:raise FormatError(message) from exc
+                time.sleep(0.05)
         try:yield
         finally:
             handle.seek(0)
             if os.name=='nt':msvcrt.locking(handle.fileno(),msvcrt.LK_UNLCK,1)
             else:fcntl.flock(handle.fileno(),fcntl.LOCK_UN)
+
+def global_lock(timeout=120):
+    """Short exclusive section for shared state: queue allocation, shared evidence rebuilds, core manifest transactions."""
+    return file_lock(ROOT/'build/recovery-workflow.lock',timeout,'another recovery workflow command holds the shared-state lock')
+
+def job_lock(job_id,timeout=0):
+    """Exclusive per-job section for attempts, deferral and promotion; compilation runs under it, not under the global lock."""
+    if not re.fullmatch(r'[A-Za-z0-9_]+-[a-f0-9]{10}',job_id):raise FormatError('invalid job ID')
+    return file_lock(LOCKS/'jobs'/(job_id+'.lock'),timeout,'job '+job_id+' is being worked on by another process')
+
+def workflow_lock():
+    """Whole-workflow exclusive section (validation and maintenance only)."""
+    return global_lock()
+
+def job_for_symbol(symbol):
+    return next((j for j in jobs() if j['symbol']==symbol),None)
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);sub=ap.add_subparsers(dest='action',required=True)
@@ -315,17 +376,22 @@ def main():
     p=sub.add_parser('promote');p.add_argument('job');p.add_argument('--candidate',type=int);p.add_argument('--audit-only',action='store_true')
     p=sub.add_parser('defer');p.add_argument('job');p.add_argument('--cause',required=True);p.add_argument('--reason',required=True);p.add_argument('--next-experiment',required=True)
     args=ap.parse_args()
-    with workflow_lock():
+    with global_lock():
         recover_transaction()
         recover_interrupted_attempts()
-        if args.action=='queue':result=queue();result={k:v for k,v in result.items() if k!='functions'}
-        elif args.action=='next':result=next_task(args.symbol,args.lane)
-        elif args.action=='attempt':result=run_attempt(args.job)
-        elif args.action=='promote':result=promote(args.job,args.candidate,args.audit_only)
-        elif args.action=='defer':result=defer(args.job,args.cause,args.reason,args.next_experiment)
-        elif args.action=='refresh':refresh();result=dict(status='REFRESHED')
-        else:result=doctor()
-        print(json.dumps(result,indent=2))
+    if args.action=='attempt':
+        with job_lock(args.job):result=run_attempt(args.job)
+    elif args.action=='promote':
+        with job_lock(args.job),global_lock():result=promote(args.job,args.candidate,args.audit_only)
+    elif args.action=='defer':
+        with job_lock(args.job):result=defer(args.job,args.cause,args.reason,args.next_experiment)
+    else:
+        with global_lock():
+            if args.action=='queue':result=queue();result={k:v for k,v in result.items() if k!='functions'}
+            elif args.action=='next':result=next_task(args.symbol,args.lane)
+            elif args.action=='refresh':refresh();result=dict(status='REFRESHED')
+            else:result=doctor()
+    print(json.dumps(result,indent=2))
 
 if __name__=='__main__':
     try:main()
