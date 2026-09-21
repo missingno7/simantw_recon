@@ -1,7 +1,7 @@
 {
   "id": "IsItDigable-40b466471f",
   "symbol": "_IsItDigable",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:17:21.232260+00:00",
   "flags": [
     "/AL",
@@ -332,6 +332,53 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "e471de66a0a7059b3a1aee21c699103519b44b978bd429b426a94a88df597294",
+      "report": "evidence/recovery/workflow/jobs/IsItDigable-40b466471f/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "584dd515fb3a3f4027443e010e0edc230d57104bbaf2f331e639adf1e3e89d2e",
+      "report": "evidence/recovery/workflow/jobs/IsItDigable-40b466471f/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "dff9c7477e7c939866efa1afe5dee5c31f389f5ec17e200db02523512ae71423",
+      "report": "evidence/recovery/workflow/jobs/IsItDigable-40b466471f/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Reopened per corrected guidance (prior block wrongly cited CONST/placement-conflict diagnostics). Tried two variants to defeat the apparent 3-way switch-arm merge into one shared pointer-based map read: differently-shaped lvalues per arm (2D index / flat pointer+offset / flat pointer index, attempt03, same source already tried pre-reopen) and local near-pointer variables per arm (attempt04, 61/113, worse than the plain switch's 68/113). Restored the plain switch form (best known: 68/113 opcodes) as the final candidate. 2 real revisions this reopened job (plus original pre-reopen attempts = well over 4 total across the job's history).",
+  "next_experiment": "The FixExitMapR precedent needed the differing-lvalue trick only for a 2-ARM if/else, not a 3-ARM switch; a supervisor should check whether MSC7's tail-merge threshold differs for 3+ arms, or whether the original truly used a switch (jump table) rather than sequential compares for this dispatch, since the aligned_asm's cascading dec/je/je/je pattern matches a sequential compare chain that a switch statement might compile differently."
 }

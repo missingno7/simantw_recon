@@ -82138,8 +82138,8 @@ Source: src/recovered/IsYellowAnt.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _GetAntIndex — SIMONE_MODULE:573C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 269 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 269 bytes.
+Source: src/recovered/wf_GetAntIndex-a8eba5e594.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 573C  55                       push bp
@@ -105085,7 +105085,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _Recruit — SIMTWO_MODULE:06D2
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 184 bytes.
-Source: src/recovered/wf_Recruit-bed37927bb.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_0000_Recruit_3-04bd7dd52e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 06D2  55                       push bp
@@ -105170,8 +105170,8 @@ Source: src/recovered/wf_Recruit-bed37927bb.c. Flags: ['/AL', '/G2', '/Gs', '/Oe
 ```
 
 ## _UnRecruit — SIMTWO_MODULE:078A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 220 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 220 bytes.
+Source: src/recovered/wf_tu_simtwo_0000_Recruit_3-04bd7dd52e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 078A  55                       push bp
@@ -105275,7 +105275,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _RecruitRed — SIMTWO_MODULE:0866
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 115 bytes.
-Source: src/recovered/wf_RecruitRed-253bf13685.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_0000_Recruit_3-04bd7dd52e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 0866  c8040000                 enter 4, 0

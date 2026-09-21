@@ -1,7 +1,7 @@
 {
   "id": "FixExitMapR-ab2edbcf6f",
   "symbol": "_FixExitMapR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T18:42:41.518079+00:00",
   "flags": [
     "/AL",
@@ -332,6 +332,67 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "73daac643fa08ca10911cb9b48974e6a99be1f9567f853d6ea434f0aec6d6a91",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapR-ab2edbcf6f/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "a52a9f33b9e97373e02cdeeedeb79d71e9025bc89630ed1888090e55826409db",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapR-ab2edbcf6f/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "0cd96365f812d74cbd9ad848135f1b55ff4930654e95c4786344fbf42b5e5208",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapR-ab2edbcf6f/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "182cde34f9381e39cb9b45c6377150cc8dce8b80e238f5a64893ae6c3d6b2187",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapR-ab2edbcf6f/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Reopened per corrected guidance (prior block wrongly cited CONST/placement-conflict diagnostics). Tried swapping the nx/ny computation order in the neighbour loop (attempt05, 59/78, worse than the existing 62/78); reverted to the best-known candidate. Genuine remaining difference: target reloads ES twice per loop iteration for the two DX()/DY() neighbour reads (two 'mov <fixup seg8,offset0>; mov es,ax' pairs visible per iteration), while the candidate's DX() macro reuses the DS already loaded for the main array, needing no fresh ES load at all. Over 5 total revisions across this job's history (4 before reopening, this one after).",
+  "next_experiment": "Try declaring Dx8 twice under two different extern names/macros (one for the nx computation, one for ny) so each DX() call is forced through its own selector load instead of sharing the DS already established for the main array, matching the observed double ES-reload shape."
 }

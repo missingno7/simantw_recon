@@ -1,7 +1,7 @@
 {
   "id": "IncFoodHere-9a2f87901f",
   "symbol": "_IncFoodHere",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:22:25.609484+00:00",
   "flags": [
     "/AL",
@@ -318,5 +318,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "7ba4dd7327ef223d96bfbf5abbca64355e4690da1b84619990a914c97f717e3b",
+      "report": "evidence/recovery/workflow/jobs/IncFoodHere-9a2f87901f/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "72b38e52946e16bf4284b54f1d174656da95896ffd156612d8facc24e3d887dc",
+      "report": "evidence/recovery/workflow/jobs/IncFoodHere-9a2f87901f/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "e8a5bac284b48b856d08e243992b0dcb949da0de6ae78e9832a2272739fac302",
+      "report": "evidence/recovery/workflow/jobs/IncFoodHere-9a2f87901f/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "TRANSLATION_UNIT_CONTEXT"
+  ],
+  "reason": "Best candidate (attempt03, build/grind/agentB/_IncFoodHere.c): CFG and most operands match once the CONTROL-held/not-held branches were correctly split so that food is decremented (match_position array-indexed reads at bytes 0x9e84/0x9ea4/0x72de, i.e. match_position[0x4f42]/[0x4f52]/[0x394f]) only on the held path and incremented (through FoodA/FoodB/FoodR, each its own int far scalar) only on the not-held path -- 77/256 literal bytes, 6/26 fixups. Two remaining, evidence-backed mismatches, both isolated-compilation artifacts rather than semantic errors: (1) the target inserts 'push ss; pop ds' plus an explicit ss: segment-override read of MapPlane right before the food-decrement section (offsets 95-105), which ordinary DS-relative C does not reproduce -- this only appears once match_position's own segment has already been loaded via 'mov ax,SEG match_position; mov es,ax' earlier in the same function, suggesting DS tracking here depends on unit-level compilation state, not this function's body; (2) the final FoodA/FoodB/FoodR increments, each through its own named DGROUP selector slot (0xc27e/0xc280/0xc282 in the target) compile in isolation to a synthesized CONST-segment fixup instead of those three real slots -- the identical symptom independently blocked in ExpIncSmell (PherMapBN/BT/RN/RT/A) and ExpKillAnts (Dx8/match_position combined with ExpSubStates), all in this same unit context antedit:7022, while match_position's own array-indexed accesses (used for the read/decrement side of this very function) resolve correctly. A cosmetic register-order swap (cmp si,di vs cmp di,si around the two tile/threshold comparisons) persisted across both phrasings tried and did not affect the CFG shape or jump targets.",
+  "next_experiment": "Run IncFoodHere through the unit-assembly lane (tools/tu_assembly.py propose/build/test) for antedit:7022 together with DropWall, ExpAddFood, ExpIncSmell and ExpKillAnts so its FoodA/FoodB/FoodR selector slots and the ss:-prefixed MapPlane read resolve against the pool and DS state already established by the earlier unit members instead of a fresh isolated CONST fixup."
 }

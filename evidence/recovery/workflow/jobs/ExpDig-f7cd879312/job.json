@@ -1,7 +1,7 @@
 {
   "id": "ExpDig-f7cd879312",
   "symbol": "_ExpDig",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:23:29.151799+00:00",
   "flags": [
     "/AL",
@@ -318,5 +318,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "e3ebc3de0b379f93c7a4fde7a363d0b9423e2fd76f85d42d19ea52e044d7cb06",
+      "report": "evidence/recovery/workflow/jobs/ExpDig-f7cd879312/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "TRANSLATION_UNIT_CONTEXT"
+  ],
+  "reason": "Best-effort candidate (attempt01, build/grind/agentB/_ExpDig.c) for this 997-byte function, the largest and most far-data-heavy member of unit antedit:7022: mode dispatch (ExpSubStates[2] XORed with CONTROL), the outer GetDir-driven drag loop, the MapPlane 0/1/2/3 switch shape, the combined ClearLifeB/R (Dx8[index+0x3d18|0x46e6] search, matching the already-admitted ClearLifeB/ClearLifeR bodies) plus FillDirtB/R (TilesDugB/R, TileTotXB/YB, TileTotXR/YR, SmoothEdgesB/R x4, ExitMapB/R, matching the already-admitted FillDirtB/FillDirtR bodies) for the dig-and-smooth mode, and the closing Dx9/Dy9 GetDir step (matching DropWall's already-understood shape) are all modelled from the disassembly and named MAPSYM bindings (LifeB/LifeR/MapB/MapR/ExitMapB/ExitMapR/ListIndexB/ListIndexR/Dx8/Dx9/Dy9 all exact). As expected from the pattern independently established in every other complex member of this unit (ExpIncSmell, ExpKillAnts, IncFoodHere, DropWall, all blocked TRANSLATION_UNIT_CONTEXT), the very first far ES-selector load in this candidate -- ExpSubStates at es:[0x8602], offset 6, the identical declaration that matches byte-for-byte in the already-accepted ExpAddAnt/ExpAddFood -- again compiles in isolation to a synthesized CONST-segment fixup instead of the target's raw DGROUP indirect load (mov es,word ptr[0xc270]). The frame size (enter 0x1a,0 vs the target's enter 0x22,0) and the six TilesDugB/TileTotXB/TileTotYB/TilesDugR/TileTotXR/TileTotYR far-pointer setups (target: literal-offset immediate plus a segment-only fixup reported against match_position, i.e. an address-of-style construction not yet reproduced by this candidate's plain '&TilesDugB' etc., which instead emits a symbol+offset fixup) remain unresolved and were not iterated further given the dominant, already-diagnosed environmental blocker. Given the scale of this function, only one attempt was spent confirming the same root cause recurs rather than exhausting the budget on a blocker already evidenced five times in this unit.",
+  "next_experiment": "Run ExpDig through the unit-assembly lane (tools/tu_assembly.py propose/build/test) for antedit:7022 together with the other five blocked/accepted members (DropWall, ExpAddFood, ExpAddAnt, ExpIncSmell, ExpKillAnts, IncFoodHere) so its far ExpSubStates/Dx8/Dx9/Dy9/TilesDug*/TileTot* loads resolve against the unit's established selector pool; separately, an expert should confirm the exact address-of idiom (six match_position-style literal-offset + SEG-fixup pointer constructions) needed to reproduce the target's TilesDugB/TileTotXB/TileTotYB/TilesDugR/TileTotXR/TileTotYR pointer setup before re-attempting body work."
 }

@@ -346,11 +346,53 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "673c1154851a766b6b283cbb310a01d11203ddd311d3836fb0fbbdbfc80982af",
+      "report": "evidence/recovery/workflow/jobs/win_MakeObjUnselected-9d27a12818/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "c1185360313abcb53f3bbf11bda90783505d25d39a1b3a35f49609d54b2f8e55",
+      "report": "evidence/recovery/workflow/jobs/win_MakeObjUnselected-9d27a12818/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "55dbe763aac92d7dd9c9ef6c3e4f31f48a537950eadd331c02f9648b28e5bea2",
+      "report": "evidence/recovery/workflow/jobs/win_MakeObjUnselected-9d27a12818/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Body structure and loop (sibling-group unselect scan, win_handles bucket, group-byte match, win_SetObjSelectedStateI(0,...) calls) match the win_SetObjSelectedState/win_MakeGroupUnselected family exactly (loop body from target offset 111 onward aligns once earlier byte drift is discounted), but two register-allocation choices never reproduce regardless of declaration order, register hints, or block scoping (2 attempts, both byte-identical divergence): (1) target copies the win_ObjAddr result into DI ('mov di,bx' at +0x1f / offset31) before testing object->flags via BX and reading object->group via DI, while the candidate keeps object only in BX+stack and never allocates DI, so es:[di+0x20] never appears; (2) target fetches win_handles[objectNumber>>8] with a single 'les bx,[bx-0x3166]' (observed_displacement 52890, exact_mapsym _win_handles) immediately followed by two stores of bx/es to the bucket local, while the candidate compiles the same 'bucket = win_handles[idx];' as a resolved-fixup two-word load into ax/dx then a redundant 'mov di,ax' copy, costing 9 extra bytes and cascading every later offset/branch target. This is the identical divergence signature already recorded on the sibling job win_SetObjSelectedState-eff61da9d3 (blocked REGISTER_ALLOCATION, itself pointing at the parked win_MakeObjSelected/win_SetGroupSelectedObj group after dozens of candidates each) and win_MakeGroupUnselected-e97a1cf683; none of the three has found a source form that makes /Oelw choose DI for the object pointer or LES for the win_handles fetch. Best candidate: build/grind/agentH/_win_MakeObjUnselected.c (203 vs 194 bytes, 60/85 opcodes aligned, first_structural_difference at target offset 31).",
-  "next_experiment": "Resolve together with the parked win_MakeObjSelected/win_SetGroupSelectedObj/win_SetObjSelectedState siblings as one unit-assembly experiment (tools/tu_assembly.py) rather than per-symbol source search: test whether compiling the whole win_ selection-state TU together (shared object/bucket declarations, consistent first-reference order for win_handles) makes /Oelw pick DI for the object pointer and LES for the win_handles fetch, since isolated per-function declaration/register-hint variants have not changed either choice across three sibling jobs."
+  "reason": "Reopened per corrected policy (CONST/selector fixup noise is expected, not a blocker); five real revisions now tried in total (register hint + block-scoped locals; inline win_handles[idx] at all three use sites with no named bucket variable -- this got the win_handles fetch itself to match exactly, 'les <fixup>' at the identical offset target uses; a named 'bucket' variable assigned via (bucket=win_handles[idx])->count in the condition; a named 'bucket' assigned as a separate statement after an inline condition test; reverting to the all-inline form as the best of the five). Two independent, unresolved register-allocation choices remain, both present in every variant tried: (1) target copies the win_ObjAddr result into DI ('mov di,bx' at +0x1f) before testing object->flags via BX and reading object->group via DI; no candidate variant ever allocates DI for this pointer, keeping it in BX+stack instead, so es:[di+0x20] never appears. (2) whenever win_handles[idx] is captured in a NAMED local ('bucket'), the fetch compiles as a two-word resolved-fixup load into ax/dx plus a redundant register copy (9+ extra bytes) instead of target's single 'les'; the ONLY way to reproduce the single-les form is to never name the pointer and instead reference win_handles[idx] inline at each site, but that then makes the compiler recompute the array-index arithmetic (sar/shl) a second and third time rather than reuse bp-0xc/bp-0xa the way target does after its one LES. No source form found reproduces both the single LES AND the reused pointer simultaneously. Best candidate (used for this block): build/grind/agentH/_win_MakeObjUnselected.c, matching the family's other sibling blockers (win_SetObjSelectedState-eff61da9d3, win_MakeGroupUnselected-e97a1cf683).",
+  "next_experiment": "Resolve together with the parked win_MakeObjSelected/win_SetGroupSelectedObj/win_SetObjSelectedState siblings as one unit-assembly experiment (tools/tu_assembly.py): test whether compiling the whole win_ selection-state TU together makes /Oelw pick DI for the object pointer and reuse a single LES'd bucket pointer, since five isolated per-function source variants (two before reopening, three after) never changed either choice."
 }

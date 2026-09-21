@@ -1,7 +1,7 @@
 {
   "id": "DropWall-5dc188e389",
   "symbol": "_DropWall",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T18:41:46.940992+00:00",
   "flags": [
     "/AL",
@@ -318,5 +318,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "160f32962fc84b7fe99e93f560b415d4a754bf61f5a24e2b6264e28d0a5fbf17",
+      "report": "evidence/recovery/workflow/jobs/DropWall-5dc188e389/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "118ff4fb7d50f6c2f3db28378651ae4efdb1d81c3107ed60530e7da7931865c9",
+      "report": "evidence/recovery/workflow/jobs/DropWall-5dc188e389/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "TRANSLATION_UNIT_CONTEXT"
+  ],
+  "reason": "Best candidate (attempt02, build/grind/agentB/_DropWall.c): CFG, all comparisons, calls and constants match 1:1 with the target once an explicit idx=(x<<6)+y local was added to reproduce the target's cached mov[bp-4] map-cell index (matching enter 6,0's 3-word frame: dir, delta, idx) -- 86/258 literal bytes, 11/27 fixups, first_structural_difference only at offset106. Two remaining, evidence-backed mismatches: (1) si/di are swapped throughout the whole function relative to the target (target loads si=[bp+6]=x, di=[bp+8]=y; every candidate instruction using si/di is the target's instruction with si and di exchanged, with identical semantics and push order, e.g. target 'mov si,[bp+6];mov di,[bp+8]' vs candidate 'mov si,[bp+8];mov di,[bp+6]') -- a pure register-label swap that persisted whether or not an idx local, the 2D vs flat MapA declaration, or an intermediate 'delta' local were used, so it is not attributable to a specific source expression; (2) as independently seen in ExpIncSmell, ExpKillAnts and IncFoodHere (same unit antedit:7022), every far ES-selector load in this function -- both ExpSubStates (offset96, previously matching byte-for-byte in the already-accepted ExpAddAnt/ExpAddFood members of this same unit) and Dx9/Dy9 (offsets 244/262) -- now compiles in isolation to a synthesized CONST-segment fixup instead of the target's raw DGROUP indirect NE-selector-slot loads (0xc270/0xc272/0xc274). This is the fourth member of this unit to show the identical CONST-fixup symptom; ExpSubStates alone matched cleanly in three earlier, separately-accepted members of the same unit before this pattern started appearing, which points at a unit/session-level selector-pool or toolchain state change rather than a declaration error in this candidate.",
+  "next_experiment": "Run DropWall through the unit-assembly lane (tools/tu_assembly.py propose/build/test) for antedit:7022 together with ExpAddFood, ExpAddAnt, ExpIncSmell, ExpKillAnts and IncFoodHere, and have an expert compare its selector-pool/register-allocation behavior against the already-accepted ExpAddAnt/ExpAddFood receipts to determine whether the CONST-fixup and si/di-swap symptoms trace to a toolchain/session state change that occurred partway through this unit's grind (a tu_assembly.py modification was independently observed mid-session) rather than to this function's declarations."
 }

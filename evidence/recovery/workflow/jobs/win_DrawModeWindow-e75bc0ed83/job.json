@@ -1,7 +1,7 @@
 {
   "id": "win_DrawModeWindow-e75bc0ed83",
   "symbol": "_win_DrawModeWindow",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:21:16.424818+00:00",
   "flags": [
     "/AL",
@@ -318,5 +318,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "8d52fe7710beab64088816fe8391b83695d96af2a3bbeeb2250dd07eeed02fc9",
+      "report": "evidence/recovery/workflow/jobs/win_DrawModeWindow-e75bc0ed83/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "6fa499089d71766bf94058368e32478b90e1849a4d370e5793bd5a6e8e576fad",
+      "report": "evidence/recovery/workflow/jobs/win_DrawModeWindow-e75bc0ed83/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "8415043775c9e23163e78e788e1f7c511ca37879c797f9c5888af56cacfe4e75",
+      "report": "evidence/recovery/workflow/jobs/win_DrawModeWindow-e75bc0ed83/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate (evidence/recovery/workflow/jobs/win_DrawModeWindow-*/attempt01 and attempt03, identical bytes) reaches 214/216 bytes exact, all 15 fixups equal, instruction_layout_match true, cfg_shape_match true: the only remaining difference is opcode selection for the two 'if (flags & 1)' bit-0 tests (window-clip guard and bitmap-redraw guard), each compiled from a struct-grouped local-frame source (struct rect (8B) + struct{int x,y;}pos (4B) + struct FastBitmap far *bits (4B, only its segment half spilled) = 16B frame, matching ENTER 0x10) that otherwise reproduces every instruction, stack offset and call/selector fixup exactly. The target's two mask=1 tests use 'mov ax,di / and al,1 / je' (destructive AND, write-back kept even though AL is dead), while every candidate source tried (plain '(char)flags & 1', '(int)((char)flags & 1)', an explicit 'bit = flags & 1; if (bit)' local, and a plain '==1' comparison) compiles to 'mov ax,di / test al,1 / je' (non-destructive TEST) instead -- MSC7 clearly CAN choose AND for this exact byte pattern, since the third test in the same function ('if (flags & 2)', mask=2) already matches the target exactly with 'test al,2' both here and in the target, so the AND/TEST choice is specific to mask=1 and not reproducible by varying the C expression around it. This is the identical unresolved difference already exhausted for the twin _win_DrawCasteWindow (job win_DrawCasteWindow-251d370ef3, ESCALATED after 8 attempts, cause SEMANTICS_UNKNOWN, best candidate attempt07 with the same 2-byte AND-vs-TEST gap). Preserving the near-exact candidate; not spending further isolated-compile budget re-guessing this one opcode choice.",
+  "next_experiment": "Assemble the simant:B324 unit (InitTriVars, win_CasteControlChanged, win_ModeControlChanged, UpdateCasteWindow, UpdateModeWindow, OpenCasteWindow, OpenModeWindow, ProcCasteEvent, ProcModeEvent, IsPointInIsoTri, BoundPointToTri, win_DrawModeWindow, win_ModeControlClosed, win_DrawCasteWindow, win_CasteControlClosed, DrawControlLevels, cvtLevels2IdealCaste, GetTriLatDist, SetTriLatPoint, initControls) with tools/tu_assembly.py so whole-unit register/optimizer context (rather than an isolated single-function compile) can be checked against the AND-vs-TEST choice for the mask=1 guard tests."
 }

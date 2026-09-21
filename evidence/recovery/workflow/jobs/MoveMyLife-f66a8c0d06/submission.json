@@ -1,6 +1,6 @@
 {
   "symbol": "_MoveMyLife",
-  "source": "evidence/recovery/workflow/jobs/MoveMyLife-f66a8c0d06/candidate.c",
+  "source": "build/grind/agentF/_MoveMyLife.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,9 +9,9 @@
     "/Oelw",
     "/NTSIMONE_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "* MoveMyLife: relocate the player's ant to (plane, x, y, type, dir).\n * Clears the ant's current life cell (ClearMyLife on the current My*\n * globals, matching src/recovered/wf_EnterNest-606488b329.c's call\n * shape), defaults plane to 1 when the caller passes 0, then bounds\n * checks the destination: 0<=x<=0x7f, 0<=y<=0x3f for plane<=1 (yard),\n * else 0<=x<=0x3f, 0<=y<=0x3f (nest); out-of-range silently returns\n * (the current cell stays cleared). On success the destination cell is\n * marked 0xff via SetLife(plane,x,y,code); for a queen (type==0x60) the\n * cell behind her (offset by the Dx8/Dy8 delta at the reverse direction\n * dir^4, the same reverse-direction idiom as GetExitDirB/R) is marked\n * 0xfe too (the queen occupies two cells). The My* position globals are\n * then updated to the new plane/x/y/type/dir.",
+  "semantic_summary": "Reopen: prior block wrongly cited DGROUP/CONST diagnostics as a blocker per corrected brief guidance. Removed the separate adjustedPlane local and reassign the plane parameter directly, since target stores its plane-default result to memory and reloads it rather than keeping it live in a register across the whole function; reassigning the parameter slot may better match that.",
   "binding_evidence": [
     "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],

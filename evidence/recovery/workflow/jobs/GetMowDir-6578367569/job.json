@@ -1,7 +1,7 @@
 {
   "id": "GetMowDir-6578367569",
   "symbol": "_GetMowDir",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T18:41:28.446081+00:00",
   "flags": [
     "/AL",
@@ -318,5 +318,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "0ae2fd5d950f81a46f2f3323b0001c8f9ac1cc627b7507d997a5ea334104709e",
+      "report": "evidence/recovery/workflow/jobs/GetMowDir-6578367569/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Control flow, bounds checks, match_position bit test/clear idiom, and the boy-message/BoyHere/YardCycle&3 tail all reproduce correctly with the right opcodes and immediates (candidate 198 vs target 225 bytes, same shape once bindings are set aside). The one remaining real difference is register allocation for the per-direction candidate-square computation: target computes cx=mowDx[i]+x into SI first (kept live, never spilled) and cy=mowDy[i]+y into DI second, then tests si<0,di<0,si>0xb,di>0xf in that order. My candidate's compiler persistently evaluates the y-table expression (mowDy[i]+y) FIRST into SI and the x-table expression (mowDx[i]+x) SECOND into AX (spilled to [bp-2]), regardless of: C statement order (cx-then-cy vs cy-then-cx), the two static tables' declaration/memory order, the cx/cy local declaration order, replacing the && bounds condition with sequential if/continue statements matching the target's exact check order, or copying x/y into fresh locals before the loop (all six variants confirmed via direct compiler-service probes outside the job budget, same swap every time). The loop induction variable i also only lands on the stack ([bp-4], read through bx each iteration, matching target) in some of these variants and stays in a register in others, correlated with the same swap. This looks like a fixed MSC7 /Oe scheduling rule for this two-independent-array-index-plus-parameter expression shape that ordinary source restructuring does not control.",
+  "next_experiment": "Try forcing the x-table expression to materialize into SI via an intermediate volatile-like barrier (e.g. a dummy function call or volatile local between the two computations) so the compiler cannot freely interleave; or try computing only cx first, fully consuming it (bounds check it immediately, in its own if-block with an early continue) before cy is even mentioned in source, rather than computing both before any check."
 }

@@ -1,0 +1,109 @@
+Whole-member issues: conflicting private placement constraints CONST; SIMANT_MODULE unresolved/mismatched fixup at 0xb0; SIMANT_MODULE unresolved/mismatched fixup at 0xa9; SIMANT_MODULE unresolved/mismatched fixup at 0x7c; SIMANT_MODULE unresolved/mismatched fixup at 0x77; SIMANT_MODULE unresolved/mismatched fixup at 0x6a; SIMANT_MODULE unresolved/mismatched fixup at 0x63; SIMANT_MODULE unresolved/mismatched fixup at 0x5c; SIMANT_MODULE unresolved/mismatched fixup at 0x55; SIMANT_MODULE unresolved/mismatched fixup at 0x3d; SIMANT_MODULE unresolved/mismatched fixup at 0x36; SIMANT_MODULE unresolved/mismatched fixup at 0x13; SIMANT_MODULE unresolved/mismatched fixup at 0xf; SIMANT_MODULE uncovered NE relocations; SIMANT_MODULE literal bytes differ; unplaced contribution CONST
+  SIMANT_MODULE+0xb0: candidate {'kind': 'internal', 'segment': 4, 'offset': 2260}; original loader []
+  SIMANT_MODULE+0xa9: candidate {'kind': 'internal', 'segment': 4, 'offset': 2414}; original loader []
+  SIMANT_MODULE+0x7c: candidate {'kind': 'internal', 'segment': 9, 'offset': 40172}; original loader []
+  SIMANT_MODULE+0x77: candidate {'kind': 'segment', 'name': 'CONST'}; original loader []
+  SIMANT_MODULE+0x6a: candidate {'kind': 'internal', 'segment': 4, 'offset': 2260}; original loader []
+  SIMANT_MODULE+0x63: candidate {'kind': 'internal', 'segment': 4, 'offset': 2414}; original loader []
+  SIMANT_MODULE+0x5c: candidate {'kind': 'internal', 'segment': 9, 'offset': 32512}; original loader []
+  SIMANT_MODULE+0x55: candidate {'kind': 'segment', 'name': 'CONST'}; original loader []
+  SIMANT_MODULE+0x3d: candidate {'kind': 'internal', 'segment': 4, 'offset': 2260}; original loader [{'site': 52198, 'source_type': 2, 'target': {'kind': 'internal', 'segment': 4, 'offset': 0}, 'additive': False}]
+  SIMANT_MODULE+0x36: candidate {'kind': 'internal', 'segment': 4, 'offset': 2414}; original loader []
+  SIMANT_MODULE+0x13: candidate {'kind': 'internal', 'segment': 9, 'offset': 32976}; original loader []
+  SIMANT_MODULE+0xf: candidate {'kind': 'segment', 'name': 'CONST'}; original loader []
+Target | Candidate | Difference
+0000 enter 0xa, 0 | 0000 enter 8, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 mov di, word ptr [bp + 0xe] |  | instruction_shape
+0009 mov si, word ptr [bp + 6] | 0006 mov si, word ptr [bp + 6] | 
+000c push 0 | 0009 push 0 | 
+000e push -1 | 000b push -1 | 
+0010 mov es, word ptr [0xc122] | 000d mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
+0014 mov ax, word ptr es:[0x80d0] | 0011 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 32976}] | memory_operand
+0018 sub ax, 2 | 0015 sub ax, 2 | 
+001b push 0 | 0018 push 0 | 
+001d push ax | 001a push ax | 
+ | 001b mov ax, 0xffff | instruction_shape
+ | 001e xor dx, dx | instruction_shape
+001e mov es, word ptr [bp + 8] | 0020 mov es, word ptr [bp + 8] | 
+0021 mov cx, word ptr es:[si] | 0023 mov cx, word ptr es:[si] | 
+0024 mov bx, cx | 0026 mov bx, cx | 
+0026 sub ax, ax | 0028 sub di, di | register_allocation
+0028 mov word ptr [bp - 8], cx |  | instruction_shape
+002b mov word ptr [bp - 6], ax |  | instruction_shape
+002e mov ax, 0xffff |  | instruction_shape
+0031 xor dx, dx |  | instruction_shape
+0033 sub ax, cx | 002a sub ax, cx | 
+0035 sbb dx, word ptr [bp - 6] | 002c sbb dx, di | instruction_shape
+0038 push dx | 002e push dx | 
+0039 push ax | 002f push ax | 
+003a mov word ptr [bp - 0xa], bx | 0030 mov word ptr [bp - 6], di | memory_operand,stack_local_layout
+ | 0033 mov di, cx | instruction_shape
+003d lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 0}] | 0035 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2414}] | immediate_or_binding,immediate_or_binding
+0042 push dx | 003a push dx | 
+0043 push ax | 003b push ax | 
+0044 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 0}] | 003c lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2260}] | immediate_or_binding,immediate_or_binding
+0049 les bx, ptr [bp + 0xa] | 0041 les bx, ptr [bp + 0xa] | 
+004c add ax, word ptr es:[bx + 2] | 0044 add ax, word ptr es:[bx + 2] | 
+0050 mov es, word ptr [bp + 0x10] | 0048 les bx, ptr [bp + 0xe] | instruction_shape
+0053 mov word ptr es:[di + 2], ax | 004b mov word ptr es:[bx + 2], ax | register_allocation
+0057 push 0 | 004f push 0 | 
+0059 push -1 | 0051 push -1 | 
+005b mov es, word ptr [0xc120] | 0053 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
+005f push 0 | 0057 push 0 | 
+0061 push word ptr es:[0x7f00] | 0059 push <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 32512}] | memory_operand
+0066 push word ptr [bp - 6] | 005e push word ptr [bp - 6] | 
+0069 push word ptr [bp - 8] | 0061 push di | instruction_shape
+006c lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 0}] | 0062 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2414}] | immediate_or_binding,immediate_or_binding
+0071 push dx | 0067 push dx | 
+0072 push ax | 0068 push ax | 
+0073 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 0}] | 0069 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2260}] | immediate_or_binding,immediate_or_binding
+0078 mov word ptr [bp - 4], ax | 006e mov word ptr [bp - 2], ax | memory_operand,stack_local_layout
+ | 0071 mov cx, di | instruction_shape
+007b shl ax, 1 | 0073 shl ax, 1 | 
+007d mov es, word ptr [0xc11c] | 0075 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
+0081 sub ax, word ptr es:[0x9cec] | 0079 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40172}] | instruction_shape
+0086 neg ax | 007e sub di, ax | instruction_shape
+0088 mov word ptr [bp - 2], ax | 0080 cmp cx, -1 | instruction_shape
+008b cmp word ptr [bp - 0xa], -1 |  | instruction_shape
+008f je 0xca | 0083 je 0xc2 | branch_target
+0091 cmp ax, 3 | 0085 cmp di, 3 | register_allocation
+0094 jl 0xca | 0088 jl 0xc2 | branch_target
+0096 mov ax, 0xffff | 008a mov ax, 0xffff | 
+0099 mov es, word ptr [bp + 8] | 008d mov es, word ptr [bp + 8] | 
+009c sub ax, word ptr es:[si] | 0090 sub ax, word ptr es:[si] | 
+009f push 0 | 0093 push 0 | 
+00a1 push ax | 0095 push ax | 
+ | 0096 mov ax, di | instruction_shape
+ | 0098 cdq  | instruction_shape
+ | 0099 sub ax, 3 | instruction_shape
+ | 009c sbb dx, 0 | instruction_shape
+ | 009f push dx | instruction_shape
+ | 00a0 push ax | instruction_shape
+00a2 mov ax, word ptr [bp - 2] | 00a1 mov ax, word ptr es:[si + 4] | memory_operand
+00a5 sub ax, 3 |  | instruction_shape
+00a8 cdq  | 00a5 cdq  | 
+00a9 push dx | 00a6 push dx | 
+00aa push ax | 00a7 push ax | 
+00ab push 0 |  | instruction_shape
+00ad push word ptr es:[si + 4] |  | instruction_shape
+00b1 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 0}] | 00a8 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2414}] | immediate_or_binding,immediate_or_binding
+00b6 push dx | 00ad push dx | 
+00b7 push ax | 00ae push ax | 
+00b8 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 0}] | 00af lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2260}] | immediate_or_binding,immediate_or_binding
+00bd les bx, ptr [bp + 0xa] | 00b4 les bx, ptr [bp + 0xa] | 
+00c0 add ax, word ptr es:[bx + 4] | 00b7 add ax, word ptr es:[bx + 4] | 
+00c4 add ax, word ptr [bp - 4] | 00bb add ax, word ptr [bp - 2] | memory_operand,stack_local_layout
+ | 00be mov bx, ax | instruction_shape
+00c7 jmp 0xd0 | 00c0 jmp 0xc8 | branch_target
+00c9 nop  |  | instruction_shape
+00ca les bx, ptr [bp + 0xa] | 00c2 les bx, ptr [bp + 0xa] | 
+00cd mov ax, word ptr es:[bx] | 00c5 mov bx, word ptr es:[bx] | register_allocation
+00d0 add ax, 2 | 00c8 lea ax, [bx + 2] | instruction_shape
+00d3 mov es, word ptr [bp + 0x10] | 00cb les bx, ptr [bp + 0xe] | instruction_shape
+00d6 mov word ptr es:[di], ax | 00ce mov word ptr es:[bx], ax | register_allocation
+00d9 pop si | 00d1 pop si | 
+00da pop di | 00d2 pop di | 
+00db leave  | 00d3 leave  | 
+00dc retf  | 00d4 retf  | 

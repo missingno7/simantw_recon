@@ -1,7 +1,7 @@
 {
   "id": "DoRandR-fc777553ef",
   "symbol": "_DoRandR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:21:22.251550+00:00",
   "flags": [
     "/AL",
@@ -333,5 +333,10 @@
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Same systemic register/frame-layout gap as every other simant1:2D4E/R-twin target blocked this session (_DoDrownB/_DoDrownR/_RaidInB/_RaidInR/_DoRandB): candidate is 245 bytes against a 248-byte target (enter 4,0 vs enter 8,0), first_structural_difference at target offset 47. Target keeps every intermediate value stack-resident ([bp-8]=cell pointer, [bp-2]=ant, [bp-6]=fight index, [bp-4]=handled flag, explicit 'mov word ptr[bp-4],1'/'mov word ptr[bp-4],0'/'cmp word ptr[bp-4],0' reload) while si=x/di=y stay resident for the FindInRList/TryMoveDirR calls; the candidate instead keeps ant/handled in si and computes the cell address through bx alone (x loaded straight into bx, not si), i.e. it is MORE register-optimized than the historical build, not less -- the same direction of mismatch seen on every prior block this session. Semantic body otherwise verified correct: fight-range check first (ant in 8..0x67 -> FindInRList(x,y,ant)/GetWinner, Dx8 fields at 0x48dc/0x46e6/0x44f0 matching RlistS/RlistT/RlistM bindings), yellow-ant fallback only outside that range (IsYellowAnt(ant)!=0 && MeColor==0 -> YellowFight(3,Tindex), note the inverted MeColor polarity and kind=3 versus DoRandB's kind=2 -- both directly evidenced by the disassembly), then two TryMoveDirR attempts. Best candidate: build/grind/agentE/_DoRandR.c (test1).",
+  "next_experiment": "This is the sixth simant1:2D4E/twin function this session (after DoDrownB/R, RaidInB/R, DoRandB) where an isolated candidate's register allocator is consistently MORE aggressive (fewer stack spills, more register retention) than the historical object; an expert should check whether the compiler_service/compiler.py test harness's 'baseline' /Oelw invocation genuinely matches the flags+environment originally used for the SIMANT1_MODULE code group, or whether unit-level tu_assembly.py compilation (providing the compiler the OTHER unit members' declarations/register pressure) changes this outcome, since no single-function isolated candidate in this unit has reproduced the target's spill behavior despite semantically exact bodies each time."
 }
