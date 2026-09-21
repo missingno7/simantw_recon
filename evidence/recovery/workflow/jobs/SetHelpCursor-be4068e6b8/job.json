@@ -1,7 +1,7 @@
 {
   "id": "SetHelpCursor-be4068e6b8",
   "symbol": "_SetHelpCursor",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:11:58.353864+00:00",
   "flags": [
     "/AL",
@@ -311,6 +311,53 @@
       },
       "best_candidate": 0,
       "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c6a835473e1bda974d3e4b2cf462f0e2a2c0d3e32d5bd20d6c03147b6f923e38",
+      "report": "evidence/recovery/workflow/jobs/SetHelpCursor-be4068e6b8/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "2d87a7105848a87612a9b5198a4bc4e69780c9caebd976bfd50e8aef0672e7fd",
+      "report": "evidence/recovery/workflow/jobs/SetHelpCursor-be4068e6b8/attempt03/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 4,
+      "submission_digest": "55365211073575d8eee8db038faa6f490fd389d040a16ad8451ad02b3ca08b77",
+      "report": "evidence/recovery/workflow/jobs/SetHelpCursor-be4068e6b8/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ],
+  "reason": "Inline strlen/strcat ('mov cx,0xffff / xor ax,ax / repne scasb / not cx ...' and 'rep movsw / adc cx,cx / rep movsb' at +0x30..+0x7f and +0x9e..+0xc4) identify the /Oi intrinsic family (DecodeString, CarpetFloorL/R, MakeKitchenWall): hHelpCursor = LoadCursor(hInst, \"HelpCursor\") (USER.173), getcwd(helpFile, 0x100), append \"\\\\\" unless the path already ends in one, then strcat(helpFile, helpFileName); literals at DGROUP 0xb91e/0xb929. Sonnet grinder, 3 attempts, best evidence/recovery/workflow/jobs/SetHelpCursor-be4068e6b8/attempt02/candidate0000.c (113 vs 201 bytes) with strlen/strcat and _fstrlen/_fstrcat as calls under the locked profile.",
+  "next_experiment": "Recompile the reference candidate under a documented /Oi (or /Oegilw) profile for SIMANT_MODULE as part of the optimizer-profile decision (see evidence/experiments/optimizer-profile); distinguishing observation: 'repne scasb' at +0x38."
 }

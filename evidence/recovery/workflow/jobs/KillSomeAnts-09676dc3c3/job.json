@@ -1,7 +1,7 @@
 {
   "id": "KillSomeAnts-09676dc3c3",
   "symbol": "_KillSomeAnts",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:07:47.357856+00:00",
   "flags": [
     "/AL",
@@ -353,6 +353,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "71b204107ad16df9815b52629274acf6c40e3f0fc64e3cf5ab5fac34ec494c94",
+      "report": "evidence/recovery/workflow/jobs/KillSomeAnts-09676dc3c3/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "ee860099e2ca2251a5bdf2d14a611578cc49bccc358e8488acbac04605c2b68b",
+      "report": "evidence/recovery/workflow/jobs/KillSomeAnts-09676dc3c3/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/ksa3.c, 187 vs 198 bytes, 58/71 opcodes): walk the A list from the top index down through a per-entry pointer into Dx8 (+0x2f62 type byte, +0x23a4 x, +0x278e y); mode 1 kills every live ant (bit 0x80 clear) with DeadAntHere(x, y, 0), otherwise ants with bit 0x80 set are killed with DeadAntHere(x, y, 1) unless IsItYellow(x, y, 1); each kill clears the type byte and stops after 50; CompactListA() and FullCount() at the end. The original keeps the kill counter in DI and homes the far pointer in the frame (enter 4, 'mov [bp-4],bx' + 'les bx,[bp-4]'), /Oelw keeps the pointer offset in DI and spills the counter instead, for declaration orders, &AT() pointer forms and split increments alike.",
+  "next_experiment": "Same frame-homed far pointer family; try the counter declared first and the pointer assigned from a struct-typed far pointer (LES load) rather than pointer arithmetic on &Dx8; distinguishing observation: 'xor di,di' at +0x10 and 'les bx,[bp-4]' at +0x59."
 }

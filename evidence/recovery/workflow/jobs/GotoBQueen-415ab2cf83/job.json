@@ -1,7 +1,7 @@
 {
   "id": "GotoBQueen-415ab2cf83",
   "symbol": "_GotoBQueen",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:15:58.584260+00:00",
   "flags": [
     "/AL",
@@ -297,5 +297,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "b28de3b2aae5e84fb1c258ae8bb991f6fe6855048f92104b31a3ac0a736db108",
+      "report": "evidence/recovery/workflow/jobs/GotoBQueen-415ab2cf83/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "8a798a216a999589c2ffda8ee597ce54ffb02175d7ab82e0e5657fa3d2216055",
+      "report": "evidence/recovery/workflow/jobs/GotoBQueen-415ab2cf83/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "105474776d5ab38d1e23d3a60eb41c291a19aab717734561fa0e5a048e2c875f",
+      "report": "evidence/recovery/workflow/jobs/GotoBQueen-415ab2cf83/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "61578c1111f510d65a389e00c99c21f3e80b358dcb9b30f3d08e444606a335d5",
+      "report": "evidence/recovery/workflow/jobs/GotoBQueen-415ab2cf83/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/GotoBQueen-415ab2cf83/attempt01/candidate0000.c, 203 vs 205 bytes, 62/69 opcodes): when MeType == 0x60 scroll the map to the player's own MePlane/MeLocX/MeLocY as GotoMapPoint does (cursor erase/redraw inside MSClipStart/End, CenterEdit/UpdateEdit with UDMapFlip cleared on the current plane, else SetMapPlaneLocation + DrawMap), otherwise GotoQueen(0x60). The single difference: the original writes the SI-cached plane to a third frame word ('mov [bp-2],si' at +0x72) just before SetMapPlaneLocation and still pushes SI; /Oelw omits the write-through, and a reloaded local changes the frame layout instead. Same write-only frame-home family as GotoBQueen's siblings (AddBlackAnts, SmoothAlarm, CenterEdit).",
+  "next_experiment": "Evaluate with the optimizer-profile evidence in evidence/experiments/optimizer-profile (write-through of register-cached values before calls appears only under /Og-class profiles); distinguishing observation: 'mov [bp-2],si' at +0x72 never re-read."
 }

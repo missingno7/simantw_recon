@@ -49192,8 +49192,8 @@ Source: src/recovered/wf_FillDirtB-b73109489f.c. Flags: ['/AL', '/G2', '/Gs', '/
 ```
 
 ## _FillDirtR — ANTEDIT_MODULE:87DA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 193 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 193 bytes.
+Source: src/recovered/wf_FillDirtR-d16ac84868.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 87DA  55                       push bp
@@ -74388,8 +74388,8 @@ Source: src/recovered/InitWater.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIM
 ```
 
 ## _AddWater — SIMONE_MODULE:0B8A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 201 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 201 bytes.
+Source: src/recovered/wf_AddWater-d30012f385.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 0B8A  c8060000                 enter 6, 0

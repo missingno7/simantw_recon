@@ -1,6 +1,6 @@
 {
   "symbol": "__win_SetProxItem",
-  "source": "evidence/recovery/workflow/jobs/win_SetProxItem-1c33190071/candidate.c",
+  "source": "build/grind/wsp_batch.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -10,8 +10,20 @@
     "/NTSIMTWO_MODULE"
   ],
   "max_candidates": 96,
-  "axes": [],
-  "semantic_summary": "final: second mask (obj & 0xff) > 0 to try to suppress test-peephole and match ax/sub ah/or ax shape",
+  "axes": [
+    {
+      "name": "second_guard_spelling",
+      "marker": "/*VARIANT*/",
+      "values": [
+        "{\n        int low;\n        low = (unsigned char)obj;\n        if (obj != -1 && low != 0)\n        {\n            win_LockWin(obj);\n            GRectInv(win_handles[obj >> 8]->rects[obj & 0xff]);\n            win_UnlockWin(obj);\n        }\n    }",
+        "{\n        int low;\n        low = obj & 0xff;\n        if (obj != -1 && low != 0)\n        {\n            win_LockWin(obj);\n            GRectInv(win_handles[obj >> 8]->rects[obj & 0xff]);\n            win_UnlockWin(obj);\n        }\n    }",
+        "{\n        unsigned char low;\n        low = (unsigned char)obj;\n        if (obj != -1 && low != 0)\n        {\n            win_LockWin(obj);\n            GRectInv(win_handles[obj >> 8]->rects[obj & 0xff]);\n            win_UnlockWin(obj);\n        }\n    }",
+        "{\n        if (obj != -1 && LOWBYTE(obj))\n        {\n            win_LockWin(obj);\n            GRectInv(win_handles[obj >> 8]->rects[obj & 0xff]);\n            win_UnlockWin(obj);\n        }\n    }"
+      ],
+      "rationale": "Supervisor-directed final batch: name the widened low-byte test as a local (int from cast, int from &0xff mask, unsigned char local) or via a LOWBYTE macro, to try to reproduce target's mov ax,si/sub ah,ah/or ax,ax/je shape with the correct je (not jle) branch."
+    }
+  ],
+  "semantic_summary": "Batch of 4 spellings for the second (obj) low-byte guard, naming the widened test value per supervisor request",
   "binding_evidence": [
     "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],

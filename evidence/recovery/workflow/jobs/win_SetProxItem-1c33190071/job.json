@@ -1,7 +1,7 @@
 {
   "id": "win_SetProxItem-1c33190071",
   "symbol": "__win_SetProxItem",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:04:17.839739+00:00",
   "flags": [
     "/AL",
@@ -395,6 +395,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "f39636776974754f46c531b45c605ccf566b16a95b8f76d1dc5124950fa0bbd5",
+      "report": "evidence/recovery/workflow/jobs/win_SetProxItem-1c33190071/attempt08/results.json",
+      "completed": 4,
+      "candidates": 4,
+      "cache": {
+        "hits": 0,
+        "misses": 4,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 8 attempts, best evidence/recovery/workflow/jobs/win_SetProxItem-1c33190071/attempt07/candidate0000.c, 197 vs 197 bytes, 74/75 opcodes): clip_Push, MSClipStart(win_hwnd[obj >> 8]), un-highlight the previous lastProxObj (valid when != -1 with a nonzero low byte) with GRectInv on its bucket rect between win_LockWin/UnlockWin, highlight obj the same way, MSClipEnd, lastProxObj = obj, clip_Pop. The single difference: the original tests the low byte of obj as an int ('mov ax,si / sub ah,ah / or ax,ax / je' at +0x74); /Oelw peepholes plain mask tests into 'test si,0xff', a relational '(obj & 0xff) > 0' gives the widened sequence but 'jle', and named int/byte locals or a macro shift the SI/DI allocation of the whole tail.",
+  "next_experiment": "Look at how the first guard (lastProxObj, a memory operand) is spelled in the accepted win_* sources and reuse an identical helper for both guards, e.g. a byte cast on a value first copied to a plain int with the same name in both blocks; distinguishing observation: 'sub ah,ah / or ax,ax / je' at +0x76."
 }
