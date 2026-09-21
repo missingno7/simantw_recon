@@ -1,0 +1,93 @@
+Whole-member issues: conflicting private placement constraints _DATA; GR_MODULE unresolved/mismatched fixup at 0xa3; GR_MODULE unresolved/mismatched fixup at 0x95; GR_MODULE unresolved/mismatched fixup at 0x8c; GR_MODULE unresolved/mismatched fixup at 0x89; GR_MODULE unresolved/mismatched fixup at 0x7e; GR_MODULE unresolved/mismatched fixup at 0x63; GR_MODULE unresolved/mismatched fixup at 0x53; GR_MODULE unresolved/mismatched fixup at 0x3a; GR_MODULE unresolved/mismatched fixup at 0x2b; GR_MODULE unresolved/mismatched fixup at 0x11; GR_MODULE unresolved/mismatched fixup at 0xb; GR_MODULE uncovered NE relocations; GR_MODULE literal bytes differ; unplaced contribution _DATA
+  GR_MODULE+0xa3: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader []
+  GR_MODULE+0x95: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader []
+  GR_MODULE+0x8c: candidate {'kind': 'internal', 'segment': 2, 'offset': 25276}; original loader []
+  GR_MODULE+0x89: candidate {'kind': 'segment', 'name': '_DATA'}; original loader [{'site': 16734, 'source_type': 2, 'target': {'kind': 'internal', 'segment': 7, 'offset': 0}, 'additive': False}]
+  GR_MODULE+0x7e: candidate {'kind': 'internal', 'segment': 7, 'offset': 42600}; original loader []
+  GR_MODULE+0x63: candidate {'kind': 'internal', 'segment': 7, 'offset': 42600}; original loader []
+  GR_MODULE+0x53: candidate {'kind': 'internal', 'segment': 7, 'offset': 42538}; original loader []
+  GR_MODULE+0x3a: candidate {'kind': 'internal', 'segment': 2, 'offset': 21902}; original loader []
+  GR_MODULE+0x2b: candidate {'kind': 'internal', 'segment': 2, 'offset': 21722}; original loader []
+  GR_MODULE+0x11: candidate {'kind': 'internal', 'segment': 2, 'offset': 21902}; original loader []
+  GR_MODULE+0xb: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+Target | Candidate | Difference
+0000 enter 0xa, 0 | 0000 enter 8, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 mov di, word ptr [bp + 0xa] |  | instruction_shape
+0009 mov si, word ptr [bp + 0xe] | 0006 mov si, word ptr [bp + 0xe] | 
+000c push ds | 0009 push ds | 
+000d push 0xbac4 | 000a push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+0010 push 1 | 000d push 1 | 
+0012 push si | 000f push si | 
+0013 nop  | 0010 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | instruction_shape
+0014 push cs |  | instruction_shape
+0015 call 0x14ba |  | instruction_shape
+0018 add sp, 2 | 0015 add sp, 2 | 
+001b mov es, dx | 0018 mov es, dx | 
+001d mov bx, ax | 001a mov bx, ax | 
+001f push 0 | 001c push 0 | 
+0021 push word ptr es:[bx + 2] | 001e push word ptr es:[bx + 2] | 
+ | 0022 mov di, ax | instruction_shape
+0025 mov word ptr [bp - 8], bx | 0024 mov word ptr [bp - 8], di | register_allocation
+0028 mov word ptr [bp - 6], es | 0027 mov word ptr [bp - 6], es | 
+002b nop  | 002a lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21722}] | instruction_shape
+002c push cs |  | instruction_shape
+002d call 0x1406 |  | instruction_shape
+0030 add sp, 0xa | 002f add sp, 0xa | 
+0033 mov es, word ptr [bp + 0xc] | 0032 les bx, ptr [bp + 0xa] | instruction_shape
+0036 mov word ptr es:[di], ax | 0035 mov word ptr es:[bx], ax | register_allocation
+0039 push ax | 0038 push ax | 
+003a nop  | 0039 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | instruction_shape
+003b push cs |  | instruction_shape
+003c call 0x14ba |  | instruction_shape
+003f add sp, 2 | 003e add sp, 2 | 
+0042 mov word ptr [bp - 4], ax | 0041 mov di, ax | instruction_shape
+0045 mov word ptr [bp - 2], dx | 0043 mov word ptr [bp - 2], dx | 
+0048 les bx, ptr [bp - 8] | 0046 les bx, ptr [bp - 8] | 
+004b push word ptr es:[bx + 2] | 0049 push word ptr es:[bx + 2] | 
+004f mov ax, es | 004d lea ax, [bx + 4] | instruction_shape
+0051 add bx, 4 |  | instruction_shape
+0054 adc ax, 0 |  | instruction_shape
+0057 push ax | 0050 push es | register_allocation
+0058 push bx | 0051 push ax | register_allocation
+0059 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 0}] | 0052 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 42538}] | immediate_or_binding,immediate_or_binding
+005e add sp, 6 | 0057 add sp, 6 | 
+0061 push 0xc | 005a push 0xc | 
+0063 push word ptr [bp + 8] | 005c push word ptr [bp + 8] | 
+0066 push word ptr [bp + 6] | 005f push word ptr [bp + 6] | 
+0069 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 0}] | 0062 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 42600}] | immediate_or_binding,immediate_or_binding
+006e add sp, 6 | 0067 add sp, 6 | 
+0071 les bx, ptr [bp - 8] | 006a les bx, ptr [bp - 8] | 
+0074 mov ax, word ptr es:[bx + 2] | 006d mov ax, word ptr es:[bx + 2] | 
+0078 mov cx, ax | 0071 mov cx, ax | 
+007a sub ax, 0x10 | 0073 sub ax, 0x10 | 
+007d push ax | 0076 push ax | 
+007e push word ptr [bp - 2] | 0077 push word ptr [bp - 2] | 
+0081 push word ptr [bp - 4] | 007a push di | instruction_shape
+0084 mov word ptr [bp - 0xa], cx | 007b mov di, cx | instruction_shape
+0087 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 0}] | 007d lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 42600}] | immediate_or_binding,immediate_or_binding
+008c add sp, 6 | 0082 add sp, 6 | 
+008f push ax | 0085 push ax | 
+0090 push word ptr [bp - 0xa] | 0086 push di | instruction_shape
+0093 push ds | 0087 push ds | 
+0094 push 0xbac8 | 0088 push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+0097 nop  | 008b lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25276}] | instruction_shape
+0098 push cs |  | instruction_shape
+0099 call 0x21e8 |  | instruction_shape
+009c add sp, 8 | 0090 add sp, 8 | 
+009f push si | 0093 push si | 
+00a0 nop  | 0094 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21916}] | instruction_shape
+00a1 push cs |  | instruction_shape
+00a2 call 0x14c8 |  | instruction_shape
+00a5 add sp, 2 | 0099 add sp, 2 | 
+00a8 mov es, word ptr [bp + 0xc] | 009c les bx, ptr [bp + 0xa] | instruction_shape
+00ab push word ptr es:[di] | 009f push word ptr es:[bx] | register_allocation
+00ae nop  | 00a2 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21916}] | instruction_shape
+00af push cs |  | instruction_shape
+00b0 call 0x14c8 |  | instruction_shape
+00b3 add sp, 2 | 00a7 add sp, 2 | 
+00b6 pop si | 00aa pop si | 
+00b7 pop di | 00ab pop di | 
+00b8 leave  | 00ac leave  | 
+00b9 retf  | 00ad retf  | 

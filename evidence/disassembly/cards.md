@@ -20844,8 +20844,8 @@ Source: src/recovered/GRectInv.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_M
 ```
 
 ## _GRectOutline — GR_MODULE:0EDE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 186 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 186 bytes.
+Source: src/recovered/wf_GRectOutline-cbe72b492f.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 0EDE  c80e0000                 enter 0xe, 0
@@ -110777,8 +110777,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddAntLion — SIMTWO_MODULE:4340
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 186 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 186 bytes.
+Source: src/recovered/wf_AddAntLion-3b9ada1a24.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 4340  c8040000                 enter 4, 0
