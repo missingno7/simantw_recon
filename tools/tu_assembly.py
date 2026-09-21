@@ -331,7 +331,7 @@ def propose(min_functions=1):
     return rows
 
 
-def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None):
+def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None, unit_source=None):
     """Compose a candidate unit from preserved sources and write its evidence folder."""
     import compiler_profiles
     from recovery_workflow import cards
@@ -345,6 +345,29 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     order = [m for m in comp['publics'] if m in members]
     if order != members:
         raise FormatError('members must be given in MAPSYM order')
+    if unit_source is not None:
+        # A reviewed hand-written unit (publics plus static helpers between them).
+        path = ROOT / unit_source
+        if not path.exists() or not path.resolve().is_relative_to(ROOT):
+            raise FormatError('unit source must be a repository file')
+        text = path.read_text(encoding='latin1')
+        for m in members:
+            if not re.search(r'' + re.escape(m.lstrip('_')) + r'\s*\(', text):
+                raise FormatError('unit source does not define ' + m)
+        import compiler_profiles
+        names = {compiler_profiles.resolve(m)['name'] for m in members}
+        if len(names) != 1:
+            raise FormatError('members resolve to different compiler profiles: ' + str(names))
+        profile = next(iter(names))
+        unit_id = re.sub(r'[^A-Za-z0-9]+', '_', component_id) + '_%s_%d_reviewed' % (members[0].lstrip('_'), len(members))
+        folder = UNITS / unit_id
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / 'unit.c').write_text(text, encoding='latin1')
+        spec = dict(unit=unit_id, component=component_id, segment=comp['segment'], members=members, sources={'*': dict(source=unit_source, basis='REVIEWED_UNIT_SOURCE', identity=identity(path))},
+                    profile=profile, flags=compiler_profiles.profile_flags(profile, comp['segment']), layout='reviewed', overrides={}, reason=reason, created=timestamp(),
+                    topology=dict(join_evidence=comp.get('join_evidence'), range=comp['range']), status='COMPOSED', source=(folder / 'unit.c').relative_to(ROOT).as_posix(), source_identity=identity(folder / 'unit.c'))
+        write_json(folder / 'unit.json', spec)
+        return spec
     sources = preserved_sources()
     for m, path in (source_overrides or {}).items():
         if not (ROOT / path).exists() or not (ROOT / path).resolve().is_relative_to(ROOT):
@@ -439,7 +462,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest='action', required=True)
     p = sub.add_parser('propose'); p.add_argument('--min', type=int, default=1); p.add_argument('--limit', type=int, default=40)
-    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--reason', default='')
+    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--reason', default='')
     p = sub.add_parser('test'); p.add_argument('unit')
     p = sub.add_parser('job'); p.add_argument('unit'); p.add_argument('--reason', required=True)
     args = ap.parse_args()
@@ -454,7 +477,7 @@ def main():
             name, text = item.split('=', 1)
             overrides[name] = text
         source_overrides = dict(item.split('=', 1) for item in args.source)
-        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides)
+        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source)
         print(json.dumps({k: v for k, v in result.items() if k not in ('sources',)}, indent=2))
     elif args.action == 'test':
         print(json.dumps(test_unit(args.unit), indent=2))

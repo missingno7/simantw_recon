@@ -161,9 +161,9 @@ def refresh_unattempted(job_id, reason):
         raise FormatError('invalid job ID')
     directory = wf.STATE / 'jobs' / job_id
     job = read_json(directory / 'job.json')
-    if (job.get('id') != job_id or job.get('status') != 'OPEN'
-            or job.get('attempts') != [] or job.get('pending_attempt')):
-        raise FormatError('context-only refresh requires an OPEN unattempted job')
+    if (job.get('id') != job_id or job.get('status') not in ('OPEN', 'NEEDS_REVISION')
+            or job.get('pending_attempt')):
+        raise FormatError('context-only refresh requires an OPEN or NEEDS_REVISION job without a pending attempt')
     if not reason.strip():
         raise FormatError('expert review reason required')
     if job['fixture_identity'] != read_json(wf.ROOT / 'layout/fixtures.json'):
@@ -194,8 +194,8 @@ def refresh_unattempted(job_id, reason):
                                       for name in ('candidate.c','submission.json')},
                     reviewed=wf.timestamp(), recovery_credit=0))
     wf.atomic_json(directory / 'job.json', dict(job, protected=current))
-    return dict(job=job_id, status='OPEN', context_refreshed=True,
-                attempts=0, recovery_credit=0, changed_tools=changed)
+    return dict(job=job_id, status=job['status'], context_refreshed=True,
+                attempts=len(job['attempts']), recovery_credit=0, changed_tools=changed)
 
 
 if __name__ == '__main__':

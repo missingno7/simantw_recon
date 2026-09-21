@@ -4387,8 +4387,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _PatchColorArrays — SIMANT_MODULE:3F0C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 206 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 206 bytes.
+Source: src/recovered/wf_PatchColorArrays-a1dab56f48.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 3F0C  c8100000                 enter 0x10, 0
@@ -7848,8 +7848,8 @@ Source: src/recovered/wf_PictStrnDialog-d2f52b0e98.c. Flags: ['/AL', '/G2', '/Gs
 ```
 
 ## _win_DrawPictureWindow — SIMANT_MODULE:61F6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 198 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 198 bytes.
+Source: src/recovered/wf_win_DrawPictureWindow-9fe716872a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 61F6  c8100000                 enter 0x10, 0
@@ -20959,8 +20959,8 @@ Source: src/recovered/GRectFill.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_
 ```
 
 ## _GRectFillOutline — GR_MODULE:0FC6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 220 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 220 bytes.
+Source: src/recovered/wf_GRectFillOutline-24e4a6aa35.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 0FC6  c8100000                 enter 0x10, 0
@@ -47728,8 +47728,8 @@ Source: src/recovered/wf_ClearLifeR-d74962e731.c. Flags: ['/AL', '/G2', '/Gs', '
 ```
 
 ## _ExpAddAnt — ANTEDIT_MODULE:79FC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 266 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 266 bytes.
+Source: src/recovered/wf_ExpAddAnt-6ef6c47e91.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 79FC  c8020000                 enter 2, 0
@@ -82245,8 +82245,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetAntIndex — SIMONE_MODULE:584A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 216 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 216 bytes.
+Source: src/recovered/wf_SetAntIndex-965b821698.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 584A  55                       push bp
@@ -82335,8 +82335,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FindLifeIndex — SIMONE_MODULE:5922
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 217 bytes.
+Source: src/recovered/wf_FindLifeIndex-3b1fa0607c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 5922  c80e0000                 enter 0xe, 0
@@ -106510,8 +106510,8 @@ Source: src/recovered/wf_Bounce-0d87abbf42.c. Flags: ['/AL', '/G2', '/Gs', '/Oel
 ```
 
 ## _InitSimYard — SIMTWO_MODULE:1378
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 304 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 304 bytes.
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_4-bf9b121c43.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 1378  8e06f6c4                 mov es, word ptr [0xc4f6]
@@ -106594,8 +106594,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoSimYard — SIMTWO_MODULE:14A8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 262 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 262 bytes.
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_4-bf9b121c43.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 14A8  b88915                   mov ax, 0x1589 ; _match_position
@@ -106686,8 +106686,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SendBoyMsg — SIMTWO_MODULE:15AE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 59 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 59 bytes.
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_4-bf9b121c43.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 15AE  55                       push bp
@@ -106712,8 +106712,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimRain — SIMTWO_MODULE:15EA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 177 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 177 bytes.
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_4-bf9b121c43.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 15EA  8e062ec5                 mov es, word ptr [0xc52e]

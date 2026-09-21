@@ -1,0 +1,21 @@
+{
+  "symbol": "_IsItDigable",
+  "source": "evidence/recovery/workflow/jobs/IsItDigable-40b466471f/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "* IsItDigable: whether the tile at (plane, x, y) can be dug. Requires\n * plane >= 2 (nest planes only) and (x, y) within the shared 64x64 map\n * bound (0<=x<=0x3f, 0<=y<=0x3f); out of either range returns false.\n * A second bounds test selects which per-plane range gates the map\n * lookup (0<=x<=0x3f for plane>1, 0<=x<=0x7f for plane<=1 -- the\n * plane<=1/MapA case is unreachable given the first plane>=2 gate, but\n * the compiled target still carries it, so it is kept here); when in\n * range, the tile byte comes from the named near map for the plane\n * (MapA plane 1, MapB plane 2, MapR plane 3, matching the exact MAPSYM\n * bindings and FixExitMapB/R's MapB/MapR declarations), else the tile\n * stays the -1 sentinel. The tile is digable when IsItDirt (same-segment\n * far call, src/recovered/wf_IsItDirt-30ab0b6cc4.c) accepts it, or when\n * its value falls in [0x1c, 0x1f].",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_IsItDigable"
+  ]
+}

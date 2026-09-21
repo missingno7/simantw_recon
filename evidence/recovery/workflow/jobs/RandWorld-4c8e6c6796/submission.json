@@ -1,0 +1,21 @@
+{
+  "symbol": "_RandWorld",
+  "source": "evidence/recovery/workflow/jobs/RandWorld-4c8e6c6796/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "* RandWorld: generate a new game world.  Parameters (in declaration\n * order, matching push order into SetSRandSeed/MakeMap): seed, blackSize\n * (scaled by *1.25 and later used both as the initial DigOutBNest tunnel\n * length << 4 and as the terrain-seeding budget for the black pass),\n * redSize (same role, mirrored for red), mapWidth, mapKind (both passed\n * straight through to MakeMap and gate the initial terrain-clearing\n * pass's border seeding).\n *\n * Steps: seed the PRNG and call InitSpider/MakeMap; scale blackSize and\n * redSize by *1.25; clear the 64x64 MapB/MapR to grass (0x2e), the far\n * ExitMapB/ExitMapR to 0, and the near LifeB/LifeR/LifeA (and an unnamed\n * near companion array immediately after LifeA) to 0; seed a border row\n * with rock/edge tiles (TERRAINset-gated); run two near-identical\n * \"vegetation\" seeding passes over LifeA -- one budgeted by blackSize,\n * one by redSize -- that pick a random empty (LifeA==0, MapA<0x50) cell\n * and give it a SRand8()-based tile value in a range chosen by two\n * SRand16()/SRand2() thresholds (black adds 0x10/0x20/0x30/0x40, red\n * subtracts the same steps); clear the HoleMapR/HoleMapB tables; clear\n * the accumulated tile-total/mass/dug counters and the water table; dig\n * the initial black/red nest tunnels (DigOutBNest/DigOutRNest) when\n * their size exceeds 1; rebuild the A ant list and clear the B/R lists;\n * reset the queen counters and last-egg positions; when redSize > 0,\n * place the initial red queen using the same random-walk-then-chamber\n * logic as PlaceRedQueen (inlined here rather than called); when\n * blackSize > 0, call PlaceBlackQueen and InitYelloAnt, reset the food\n * counters and add the initial food pile unless CurGameType==3, seed\n * both colonies' health to 100; clear the edit/lost/cycle counters, run\n * ClearHistory/CountAnts/InvalEuMap, and set the map/colony view points.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_RandWorld"
+  ]
+}

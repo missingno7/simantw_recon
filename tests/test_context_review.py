@@ -46,9 +46,14 @@ class UnattemptedContextTests(unittest.TestCase):
             self.assertEqual(record['preserved_inputs'][name],identity(self.directory/name))
         self.verify.assert_called_once_with(publish=False)
 
-    def test_attempted_running_exact_or_pending_jobs_reject(self):
+    def test_attempted_job_keeps_its_attempts_after_refresh(self):
+        self.job['attempts']=[{'number':1}];self.job['status']='NEEDS_REVISION';self.save_job()
+        result=self.run_review()
+        self.assertEqual((result['status'],result['attempts']),('NEEDS_REVISION',1))
+        self.assertEqual(json.loads((self.directory/'job.json').read_text())['attempts'],[{'number':1}])
+    def test_running_exact_escalated_or_pending_jobs_reject(self):
         baseline=copy.deepcopy(self.job)
-        for changes in [dict(attempts=[{}]),dict(status='RUNNING'),dict(status='EXACT_CANDIDATE'),dict(pending_attempt={'output':'x'})]:
+        for changes in [dict(status='ESCALATED'),dict(status='RUNNING'),dict(status='EXACT_CANDIDATE'),dict(pending_attempt={'output':'x'})]:
             self.job=dict(baseline,**changes);self.save_job()
             with self.assertRaises(FormatError):self.run_review()
         self.verify.assert_not_called()

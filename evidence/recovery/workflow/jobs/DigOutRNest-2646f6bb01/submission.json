@@ -1,0 +1,21 @@
+{
+  "symbol": "_DigOutRNest",
+  "source": "evidence/recovery/workflow/jobs/DigOutRNest-2646f6bb01/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "* DigOutRNest: dig out the red nest entrance tunnel.  Exact B/R twin of\n * DigOutBNest (same offsets, same instruction bytes but for the R-family\n * callees and HoleMapR selector).  The nest's fixed surface entry tile\n * (x=0x20, y=1) is dug immediately (DigTileR).  If count is nonzero the\n * tunnel then random-walks: each step picks a new octant direction near\n * the previous one (SRand1(5) biased by dir, folded into 0..7 via -3 &\n * 7), steps one Dx8/Dy8 cell, and clamps the candidate cell to the\n * playable yard interior [1,0x3e].  Clamping on X forces the next\n * direction toward 2 (east) or 6 (west); clamping on Y overrides that\n * with 4 (south) or 0 (north).  The step is committed only when\n * DigTileThemR (claim/dig the neighbour's tile) reports success (1); on\n * success, once the tunnel reaches the surface row (y==1) a surface hole\n * is opened at that column if HoleMapR does not already have one there\n * (MakeNewHoleR).  The walk repeats until count reaches zero, whether or\n * not each individual step succeeded.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_DigOutRNest"
+  ]
+}

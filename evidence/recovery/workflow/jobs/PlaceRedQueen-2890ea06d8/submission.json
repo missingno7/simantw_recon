@@ -1,0 +1,21 @@
+{
+  "symbol": "_PlaceRedQueen",
+  "source": "evidence/recovery/workflow/jobs/PlaceRedQueen-2890ea06d8/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "* PlaceRedQueen: pick a spot for a new red queen's nest and dig it.\n * Red twin of PlaceBlackQueen, minus the 50% SRand2() gate on the\n * tunnel's wobble re-roll (here every row re-rolls) and minus the\n * separate RebornX/RebornY stores (only LastRedEgg is recorded).\n *\n * count = SRand4() + 7 tunnel steps.  If count > 1, dig straight down\n * column x=0x20 from row 1, one tile per row; each row a small wobble\n * (SRand1(3)-1, i.e. -1/0/+1) is re-rolled and added to the current\n * column, and if the result stays inside [8,0x38] it becomes the new\n * column (otherwise the column is left where it was).  After the\n * tunnel, y is the row just past its last dug tile (whether or not the\n * tunnel ran at all: if count<=1 nothing is dug and x=0x20, y=1 are the\n * untouched initial values).  Two more tiles are then dug diagonally\n * (x++, y++ before each dig, twice), then one more tile at the final\n * (x, y): that spot becomes LastRedEgg.  Two columns further east\n * (x+=2, same row) a three-tile queen chamber is dug using the fixed\n * octant 6 (Dx8[6]/Dy8[6], MakeRedQueen's own pattern with dir=2,\n * d=dir^4=6 baked in rather than computed), two ants are added at the\n * chamber's two ends with type bytes dir+0xE0 and dir+0xE8, and\n * RedQueens is incremented.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_PlaceRedQueen"
+  ]
+}
