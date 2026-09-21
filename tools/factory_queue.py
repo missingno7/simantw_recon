@@ -16,8 +16,13 @@ def certify(card,raw,image,symbols):
     ns=image['segments'][card['segment']-1];code=raw[ns['file_offset']:ns['file_offset']+ns['logical_size']];entries=[p['offset'] for p in symbols['segments'][card['segment']-1]['symbols']]
     proof=solve(code,card['offset'],e['upper_bound'],entries,ns['relocations'],card['segment'])
     if proof['end']!=e['end'] or proof['status']!='PROBABLE' or proof['reasons']:reasons.append('RECURSIVE_SCOPE_NOT_CLOSED')
-    decoded=list(decoder().disasm(code[card['offset']:e['end']],card['offset']))
-    if sum(i.size for i in decoded)!=e['size']:reasons.append('INCOMPLETE_LINEAR_DECODE')
+    # Linear decode of every code run between the proven jump tables; the
+    # table bytes are data and count toward the extent without being decoded.
+    spans=sorted((t['table'],t['table']+2*t['count']) for t in proof.get('jump_tables',[]))
+    decoded=[];cursor=card['offset'];covered=0
+    for a,b in spans+[(e['end'],e['end'])]:
+        decoded+=list(decoder().disasm(code[cursor:a],cursor));covered+=b-a;cursor=b
+    if sum(i.size for i in decoded)+covered!=e['size']:reasons.append('INCOMPLETE_LINEAR_DECODE')
     starts={i.address:i for i in decoded}
     if not set(proof['instruction_starts']).issubset(starts):reasons.append('OVERLAPPING_INSTRUCTION_STREAMS')
     for r in ns['relocations']:

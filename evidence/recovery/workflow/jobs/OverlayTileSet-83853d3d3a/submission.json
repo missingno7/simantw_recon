@@ -1,19 +1,23 @@
 {
   "symbol": "_OverlayTileSet",
-  "source": "evidence/recovery/workflow/jobs/OverlayTileSet-83853d3d3a/candidate.c",
+  "source": "build/grind/agentT/OverlayTileSet.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTANTEDIT_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "* OverlayTileSet: switch the edit view's terrain overlay tile set.\n * Ignored unless the caller passes type 0.  id 0x3e9 (1001) selects the\n * night/set terrain tiles, id 0x3e8 (1000) the day/clear ones; each\n * guards on editBufInvalidFlag[1] so it only reloads terrainTiles (and\n * frees the previous handle) the first time that state is requested,\n * but TERRAINset and Barrier are refreshed every call.",
+  "semantic_summary": "OverlayTileSet(type,id): for type 0, id 1001 sets editBufInvalidFlag[1]=1/TERRAINset=1, frees and reloads terrainTiles via db_LoadObject(9,9,1)+db_UnhookObject(9,9) once, Barrier=0x90; id 1000 mirrors with 0/0, db_LoadObject(10,9,1)+db_UnhookObject(10,9), Barrier=0x50. Natural far-global source; frame home for &terrainTiles is /Og global CSE.",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "editBufInvalidFlag at segment8+36342 (index 1 = 36344)",
+    "TERRAINset segment9+39790",
+    "terrainTiles segment9+40416 (MAPSYM _terrainTiles)",
+    "Barrier segment9+30212",
+    "probe evidence/experiments/optimizer-profile/probes/OverlayTileSet-83853d3d3a.json: STRONGLY_SUPPORTED_MEMBER under og"
   ],
   "publics": [
     "_OverlayTileSet"

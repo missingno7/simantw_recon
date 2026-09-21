@@ -8,8 +8,55 @@ from common import ROOT, fixture, read_json, write_json
 from analysis import decoder, cs, X86_OP_IMM
 import ne, mapsym
 
+def switch_table(ins,chain,seen,code,start,limit,relocation_bytes):
+    """Recognise the MSC 7 switch dispatch `cmp r,N ; ja default ; shl r,1 ;
+    xchg bx,r|mov bx,r ; jmp word ptr cs:[bx+T]` and return its table.
+
+    The table holds N+1 (`ja`) or N (`jae`/`jnb`) near code offsets stored
+    directly after the jump (one alignment NOP allowed). Every entry must lie
+    inside the symbol bound and no table byte may carry a loader obligation.
+    Anything else stays an unresolved indirect jump.
+    """
+    if ins.mnemonic!='jmp' or len(ins.operands)!=1 or ins.operands[0].type!=cs.x86.X86_OP_MEM:return None
+    mem=ins.operands[0].mem
+    if ins.reg_name(mem.segment)!='cs' or ins.reg_name(mem.base)!='bx' or mem.index:return None
+    table=mem.disp&65535
+    after=ins.address+ins.size
+    if not (table==after or (table==after+1 and code[after:after+1]==b'\x90')):return None
+    # Walk backwards through the fall-through chain: index move, shift, then
+    # the bound check. The shift may also be reached by the taken arm of
+    # `jbe/jb` (`cmp ; jbe shift ; jmp default ; shift:`).
+    back=[];pos=ins.address
+    for _ in range(3):
+        pos=chain.get(pos)
+        if pos is None:break
+        back.append(seen[pos])
+    text=[(i.mnemonic,i.op_str) for i in back]
+    if len(text)<2:return None
+    if text[0] in (('xchg','bx, ax'),('xchg','ax, bx'),('mov','bx, ax')) and text[1]==('shl','ax, 1'):shift=back[1]
+    elif text[0]==('shl','bx, 1'):shift=back[0]
+    else:return None
+    # Predecessor of the shift: fall-through, or a conditional branch targeting it.
+    pred=chain.get(shift.address)
+    branch=seen.get(pred) if pred is not None else None
+    if branch is not None and branch.mnemonic=='mov' and branch.op_str.startswith('ax, '):
+        pred=chain.get(branch.address);branch=seen.get(pred) if pred is not None else None
+    if branch is None or branch.mnemonic not in ('ja','jae','jnb'):
+        branch=next((i for i in seen.values() if i.mnemonic in ('jbe','jb','jna','jnae') and len(i.operands)==1 and i.operands[0].type==X86_OP_IMM and i.operands[0].imm==shift.address),None)
+        if branch is None:return None
+    cmp_pos=chain.get(branch.address)
+    cmp_ins=seen.get(cmp_pos) if cmp_pos is not None else None
+    if cmp_ins is None or cmp_ins.mnemonic!='cmp' or len(cmp_ins.operands)!=2 or cmp_ins.operands[1].type!=X86_OP_IMM:return None
+    bound=cmp_ins.operands[1].imm
+    count=bound+1 if branch.mnemonic in ('ja','jbe','jna') else bound
+    if not 1<=count<=256 or table+2*count>limit:return None
+    if any(p in relocation_bytes for p in range(table,table+2*count)):return None
+    targets=[int.from_bytes(code[table+2*i:table+2*i+2],'little') for i in range(count)]
+    if any(not start<=t<limit for t in targets):return None
+    return dict(source=ins.address,table=table,count=count,targets=targets,bound_check=cmp_ins.address)
+
 def solve(code,start,limit,entries=(),relocations=(),segment=None):
-    pending=[start];seen={};edges=[];returns=[];issues=[];indirect=[];occupied={}
+    pending=[start];seen={};edges=[];returns=[];issues=[];indirect=[];occupied={};chain={};tables=[]
     entries=set(entries);relocation_bytes={p for r in relocations for q in r['sites'] for p in range(q,q+r['width'])}
     while pending:
         pos=pending.pop()
@@ -28,6 +75,15 @@ def solve(code,start,limit,entries=(),relocations=(),segment=None):
         if ins.mnemonic in ('int','int3','iret','iretw','hlt'):
             issues.append('non-return terminator');continue
         if ins.group(cs.CS_GRP_JUMP):
+            found=switch_table(ins,chain,seen,code,start,limit,relocation_bytes)
+            if found:
+                if any(p in occupied for p in range(found['table'],found['table']+2*found['count'])):
+                    issues.append('overlapping instruction streams');continue
+                for p in range(found['table'],found['table']+2*found['count']):occupied[p]='table'
+                tables.append(found)
+                for t in found['targets']:
+                    edges.append(dict(source=pos,target=t,kind='TABLE'));pending.append(t)
+                continue
             if ins.mnemonic=='ljmp':
                 relocation=next((r for r in relocations if pos+1 in r['sites'] or pos+3 in r['sites']),None)
                 target=relocation.get('target',{}) if relocation else {}
@@ -43,24 +99,34 @@ def solve(code,start,limit,entries=(),relocations=(),segment=None):
             edges.append(dict(source=pos,target=dest,kind='BRANCH'))
             pending.append(dest)
             if ins.mnemonic=='jmp':continue
+        chain[pos+ins.size]=pos
         pending.append(pos+ins.size)
-    end=max((i.address+i.size for i in seen.values()),default=start)
+    end=max([i.address+i.size for i in seen.values()]+[t['table']+2*t['count'] for t in tables],default=start)
     gaps=[];pos=start
+    table_spans={(t['table'],t['table']+2*t['count']) for t in tables}
     for ins in sorted(seen.values(),key=lambda i:i.address):
         if pos<ins.address:
             data=code[pos:ins.address]
             # Only unreachable NOP padding without loader obligations is resolved.
             padding=all(b==0x90 for b in data) and not any(p in relocation_bytes for p in range(pos,ins.address))
-            gaps.append(dict(start=pos,end=ins.address,hex=data.hex(),classification='ALIGNMENT_NOP' if padding else 'UNOWNED'))
+            inside=[(a,b) for a,b in table_spans if pos<=a and b<=ins.address]
+            remainder=[code[q:q+1] for q in range(pos,ins.address) if not any(a<=q<b for a,b in inside)]
+            table_gap=bool(inside) and all(x==b'\x90' for x in remainder) and not any(p in relocation_bytes for p in range(pos,ins.address))
+            if table_gap:classification='JUMP_TABLE'
+            elif padding:classification='ALIGNMENT_NOP'
+            else:classification='UNOWNED'
+            gaps.append(dict(start=pos,end=ins.address,hex=data.hex(),classification=classification))
         pos=ins.address+ins.size
+    for a,b in table_spans:
+        if a>=pos:gaps.append(dict(start=a,end=b,hex=code[a:b].hex(),classification='JUMP_TABLE'))
     cross=[e for e in edges if e['kind']=='CROSS_BOUNDARY']
     overlapping=[p for p in entries if start<p<end]
-    closed=bool(returns) and not issues and not indirect and not cross and all(g['classification']=='ALIGNMENT_NOP' for g in gaps)
+    closed=bool(returns) and not issues and not indirect and not cross and all(g['classification'] in ('ALIGNMENT_NOP','JUMP_TABLE') for g in gaps)
     status='OVERLAPPING_ENTRY' if overlapping or 'overlapping instruction streams' in issues else 'AMBIGUOUS_TABLE' if indirect else 'SHARED_TAIL' if cross else 'PROBABLE'
     if not closed and status=='PROBABLE':issues.append('graph not closed or unowned gap')
     return dict(status=status,start=start,end=end if closed else None,size=end-start if closed else None,
                 upper_bound=limit,reachable_end=end,return_offsets=sorted(returns),edges=edges,
-                gaps=gaps,indirect_jumps=indirect,overlapping_entries=overlapping,reasons=sorted(set(issues)),
+                gaps=gaps,indirect_jumps=indirect,jump_tables=tables,overlapping_entries=overlapping,reasons=sorted(set(issues)),
                 instruction_starts=sorted(seen),proof='CFG_ONLY_NOT_RECOVERED_SOURCE')
 
 def main():

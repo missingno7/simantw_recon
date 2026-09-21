@@ -1,12 +1,18 @@
 /*
  * ResetEditScrollRange: keep the edit window's scrollbars in sync with
- * the map.  If win_hwnd[0] isn't open, do nothing.  When MapMode,
- * editHeight or editWidth have changed since the last call (each
- * cached, initially -1), recompute both scrollbar ranges: vertical
- * 0..(0x40-editHeight), horizontal 0..0x80 normally or 0..(0x40-editWidth)
- * when MapMode is 2 or 3, then remember the new MapMode/editHeight/
- * editWidth.  Either way, sync each scrollbar's thumb position to
- * MapPnt.x / MapPnt.y if it has drifted.
+ * the map.  Nothing happens unless win_hwnd[0] (the edit window) exists.
+ * When MapMode, editHeight or editWidth differ from the values cached at
+ * the previous call (three private words, initialised to -1 at DGROUP
+ * 0x14f8/0x14fa/0x14fc: ff ff ff ff ff ff), both scrollbar ranges are
+ * recomputed with SetScrollRange: vertical 0..(0x40-editHeight),
+ * horizontal 0..(0x40-editWidth) in map modes 2 and 3, else 0..0x80,
+ * and the cache is refreshed.  Either way each bar's thumb is synced to
+ * MapPnt.x / MapPnt.y when GetScrollPos reports it drifted.
+ *
+ * Unit profile /Og: the far address of MapMode is computed once, homed
+ * on the frame (ENTER 4,0) and reloaded via LES after the first
+ * SetScrollRange call; the source uses the plain far global.  The two
+ * horizontal SetScrollRange calls share a cross-jumped tail (push ax/1/call).
  */
 struct MapPoint {
     int x;
@@ -29,21 +35,16 @@ extern int far pascal GetScrollPos(int hwnd, int bar);
 
 void far ResetEditScrollRange(void)
 {
-    int hMax;
-    int far *mode;
-
     if (win_hwnd[0] == 0)
         return;
 
-    mode = &MapMode;
-    if (*mode != lastMode || lastEditHeight != editHeight || lastEditWidth != editWidth) {
+    if (MapMode != lastMode || lastEditHeight != editHeight || lastEditWidth != editWidth) {
         SetScrollRange(win_hwnd[0], 1, 0, 0x40 - editHeight, 1);
-        if (*mode == 2 || *mode == 3)
-            hMax = 0x40 - editWidth;
+        if (MapMode != 2 && MapMode != 3)
+            SetScrollRange(win_hwnd[0], 0, 0, 0x80, 1);
         else
-            hMax = 0x80;
-        SetScrollRange(win_hwnd[0], 0, 0, hMax, 1);
-        lastMode = *mode;
+            SetScrollRange(win_hwnd[0], 0, 0, 0x40 - editWidth, 1);
+        lastMode = MapMode;
         lastEditHeight = editHeight;
         lastEditWidth = editWidth;
     }

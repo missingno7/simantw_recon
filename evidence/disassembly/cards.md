@@ -192,7 +192,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoUserButtonUpdate — SIMANT_MODULE:01B6
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 131 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -244,11 +244,10 @@ Source: unrecovered. Flags: unresolved.
 0232  9a54eeffff               lcall 0xffff, 0xee54 ; _win_SetObjSelectedState
 0237  c9                       leave 
 0238  cb                       retf 
-0239  90                       nop 
 ```
 
 ## _UpdateUserButtons — SIMANT_MODULE:023A
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 303 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -359,11 +358,10 @@ Source: unrecovered. Flags: unresolved.
 0366  5e                       pop si
 0367  5f                       pop di
 0368  cb                       retf 
-0369  90                       nop 
 ```
 
 ## _SetUserButton — SIMANT_MODULE:036A
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 345 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -474,11 +472,10 @@ Source: unrecovered. Flags: unresolved.
 04C0  5e                       pop si
 04C1  c9                       leave 
 04C2  cb                       retf 
-04C3  90                       nop 
 ```
 
 ## _DoUserButton — SIMANT_MODULE:04C4
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 994 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -1978,7 +1975,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoMouse — SIMANT_MODULE:13F6
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1077 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -2378,7 +2375,6 @@ Source: unrecovered. Flags: unresolved.
 1828  5f                       pop di
 1829  c9                       leave 
 182A  cb                       retf 
-182B  90                       nop 
 ```
 
 ## _DoNextWindow — SIMANT_MODULE:182C
@@ -4048,7 +4044,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## MAINWNDPROC — SIMANT_MODULE:2930
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 4953 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -6045,7 +6041,7 @@ Source: src/recovered/ProcMenuHelp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _ProcMenu — SIMANT_MODULE:4FC2
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1186 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -9825,7 +9821,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowDeath — SIMANT_MODULE:7746
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1904 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11105,7 +11101,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowCommandKey — SIMANT_MODULE:8562
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 600 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11342,7 +11338,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _YellowCommand — SIMANT_MODULE:87BA
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 625 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -11571,7 +11567,6 @@ Source: unrecovered. Flags: unresolved.
 8A24  9ab0980f87               lcall 0x870f, 0x98b0 ; _myBeginSound
 8A29  c9                       leave 
 8A2A  cb                       retf 
-8A2B  90                       nop 
 ```
 
 ## _YellowHelp — SIMANT_MODULE:8A2C
@@ -15377,7 +15372,7 @@ B0BA  cb                       retf
 ```
 
 ## _MysteryButton — SIMANT_MODULE:B0BC
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 616 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16558,7 +16553,7 @@ BD06  cb                       retf
 ```
 
 ## _ProcCasteEvent — SIMANT_MODULE:BD08
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 881 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -16904,11 +16899,10 @@ C075  5e                       pop si
 C076  5f                       pop di
 C077  c9                       leave 
 C078  cb                       retf 
-C079  90                       nop 
 ```
 
 ## _ProcModeEvent — SIMANT_MODULE:C07A
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 769 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -33841,7 +33835,7 @@ Source: src/recovered/wf_Extract24BitVal-523b60cef9.c. Flags: ['/AL', '/G2', '/G
 ```
 
 ## _myBeginSong — GR_MODULE:858E
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 4110 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -36864,8 +36858,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _OverlayTileSet — ANTEDIT_MODULE:00F4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 227 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 227 bytes.
+Source: src/recovered/wf_OverlayTileSet-83853d3d3a.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 00F4  c8040000                 enter 4, 0
@@ -37836,7 +37830,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ProcEditEvent — ANTEDIT_MODULE:0B7A
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 232 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -40172,7 +40166,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DrawPalps — ANTEDIT_MODULE:2594
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1611 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -40784,11 +40778,10 @@ Source: unrecovered. Flags: unresolved.
 2BDC  5f                       pop di
 2BDD  c9                       leave 
 2BDE  cb                       retf 
-2BDF  90                       nop 
 ```
 
 ## _DrawLegs — ANTEDIT_MODULE:2BE0
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 7368 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -45398,7 +45391,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoEditScroll — ANTEDIT_MODULE:5C6E
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1047 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -45757,7 +45750,6 @@ Source: unrecovered. Flags: unresolved.
 6082  5f                       pop di
 6083  c9                       leave 
 6084  cb                       retf 
-6085  90                       nop 
 ```
 
 ## _ResetEditScrollRange — ANTEDIT_MODULE:6086
@@ -46938,7 +46930,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoTool — ANTEDIT_MODULE:727E
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 358 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52330,7 +52322,7 @@ A51C  cb                       retf
 ```
 
 ## _ProcYardEvent — ANTEDIT_MODULE:A51E
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 432 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -52500,7 +52492,7 @@ A6CD  cb                       retf
 ```
 
 ## _ProcYardRibbonEvent — ANTEDIT_MODULE:A6CE
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 714 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -55032,7 +55024,7 @@ C220  cb                       retf
 ```
 
 ## _ProcMapEvent — ANTEDIT_MODULE:C222
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 434 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -55074,7 +55066,7 @@ C26D  c3                       ret
 ```
 
 ## _ProcMapRibbonEvent — ANTEDIT_MODULE:C3D4
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 626 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -69994,7 +69986,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CheatKeys — _TEXT:67DE
-Ownership: UNKNOWN (UNKNOWN). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 1155 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -70424,7 +70416,6 @@ Source: unrecovered. Flags: unresolved.
 6C5E  5f                       pop di
 6C5F  c9                       leave 
 6C60  cb                       retf 
-6C61  90                       nop 
 ```
 
 ## _CopyChar — _TEXT:6C62
@@ -72724,7 +72715,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GtAppToGateway — _TEXT:7EEA
-Ownership: UNKNOWN (UNKNOWN). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: UNKNOWN (UNKNOWN). Extent: PROBABLE, 718 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -78811,7 +78802,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MakeHousePatch — SIMONE_MODULE:3120
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 742 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -81301,7 +81292,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MoveSpider — SIMONE_MODULE:4704
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 3165 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -89965,7 +89956,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoAntSimA — SIMANT1_MODULE:04D8
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1348 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -93821,7 +93812,7 @@ Source: src/recovered/wf_DoAntSimB-84a2084e1a.c. Flags: ['/AL', '/G2', '/Gs', '/
 ```
 
 ## _DoNestAntB — SIMANT1_MODULE:2DAE
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1909 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -94514,7 +94505,6 @@ Source: unrecovered. Flags: unresolved.
 3520  5f                       pop di
 3521  c9                       leave 
 3522  cb                       retf 
-3523  90                       nop 
 ```
 
 ## _RaidInB — SIMANT1_MODULE:3524
@@ -97486,7 +97476,7 @@ Source: src/recovered/wf_DoAntSimR-682e4ecadf.c. Flags: ['/AL', '/G2', '/Gs', '/
 ```
 
 ## _DoNestAntR — SIMANT1_MODULE:53A4
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1925 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -98177,7 +98167,6 @@ Source: unrecovered. Flags: unresolved.
 5B26  5f                       pop di
 5B27  c9                       leave 
 5B28  cb                       retf 
-5B29  90                       nop 
 ```
 
 ## _RaidInR — SIMANT1_MODULE:5B2A
@@ -104930,7 +104919,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ForceModeA — SIMTWO_MODULE:0550
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 210 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -105009,7 +104998,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ForceModeB — SIMTWO_MODULE:0622
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 176 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -107641,7 +107630,7 @@ Source: src/recovered/InitGrassMap.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NT
 ```
 
 ## _SimKidInside — SIMTWO_MODULE:20B6
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 2036 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116327,7 +116316,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GiveLesson — SIMTWO_MODULE:7B4E
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 948 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116717,7 +116706,7 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _LessonDone — SIMTWO_MODULE:7F02
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 627 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -116919,7 +116908,6 @@ Source: unrecovered. Flags: unresolved.
 8172  5e                       pop si
 8173  c9                       leave 
 8174  cb                       retf 
-8175  90                       nop 
 ```
 
 ## _db_Exists — SIMTWO_MODULE:8176
@@ -122564,7 +122552,7 @@ B70E  cb                       retf
 ```
 
 ## _win_DrawObjectI — SIMTWO_MODULE:B710
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 1076 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -127585,7 +127573,7 @@ E404  cb                       retf
 ```
 
 ## _win_AutoSize — SIMTWO_MODULE:E406
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 225 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -127677,7 +127665,6 @@ E4E0  8b1660cc                 mov dx, word ptr [0xcc60]
 E4E4  5e                       pop si
 E4E5  c9                       leave 
 E4E6  cb                       retf 
-E4E7  90                       nop 
 ```
 
 ## _win_GetVal — SIMTWO_MODULE:E4E8
@@ -127781,7 +127768,7 @@ E5AD  cb                       retf
 ```
 
 ## __win_CalcObjElement — SIMTWO_MODULE:E5AE
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 307 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -127913,11 +127900,10 @@ E6DD  5e                       pop si
 E6DE  5f                       pop di
 E6DF  c9                       leave 
 E6E0  cb                       retf 
-E6E1  90                       nop 
 ```
 
 ## _win_Recalc — SIMTWO_MODULE:E6E2
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 738 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
