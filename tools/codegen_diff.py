@@ -6,9 +6,20 @@ from cfg_solver import solve
 from matcher import unique_symbol
 
 
-def instructions(code,bindings=None):
-    bindings=bindings or {};rows=[]
-    for ins in decoder().disasm(code,0):
+def instructions(code,bindings=None,tables=(),base=0):
+    """Instruction rows; proven switch jump tables (relative span, entry
+    count) become `dw` rows whose operand is the case target relative to the
+    function start `base` (a bound word uses its resolved fixup target)."""
+    bindings=bindings or {};rows=[];decoded=[];cursor=0
+    for a,count in sorted(tables):
+        decoded+=list(decoder().disasm(code[cursor:a],cursor))
+        for pos in range(a,a+2*count,2):
+            bound=[b for p,b in bindings.items() if pos<=p<pos+2 and isinstance(b,dict) and b.get('kind')=='internal']
+            value=(bound[0]['offset'] if bound else int.from_bytes(code[pos:pos+2],'little'))-base
+            rows.append(dict(offset=pos,size=2,mnemonic='dw',asm=f'dw offset {value:#x}',operands=[dict(kind='branch',size=2,value=value)],jump=False,ret=False))
+        cursor=a+2*count
+    decoded+=list(decoder().disasm(code[cursor:],cursor))
+    for ins in decoded:
         local=[(p-ins.address,b) for p,b in bindings.items() if ins.address<=p<ins.address+ins.size]
         operands=[]
         for op in ins.operands:
@@ -23,7 +34,7 @@ def instructions(code,bindings=None):
             else:value=dict(kind='unknown',size=op.size)
             operands.append(value)
         rows.append(dict(offset=ins.address,size=ins.size,mnemonic=ins.mnemonic,asm=ins.mnemonic+' '+('<resolved fixup> '+str([b for _,b in local]) if local else ins.op_str),operands=operands,jump=ins.group(cs.CS_GRP_JUMP),ret=ins.group(cs.CS_GRP_RET)))
-    return rows
+    rows.sort(key=lambda r:r['offset']);return rows
 
 
 def structure(row):return row['mnemonic'],tuple((op['kind'],op['size']) for op in row['operands'])
@@ -49,8 +60,8 @@ def blocks(rows):
     return result
 
 
-def compare_code(target,candidate,target_bindings=None,candidate_bindings=None):
-    left=instructions(target,target_bindings);right=instructions(candidate,candidate_bindings);a=[structure(r) for r in left];b=[structure(r) for r in right]
+def compare_code(target,candidate,target_bindings=None,candidate_bindings=None,closure=None,target_tables=(),candidate_tables=(),base=0):
+    left=instructions(target,target_bindings,target_tables,base);right=instructions(candidate,candidate_bindings,candidate_tables,base);a=[structure(r) for r in left];b=[structure(r) for r in right]
     align=[]
     for tag,i,j,k,l in SequenceMatcher(a=a,b=b,autojunk=False).get_opcodes():
         for n in range(max(j-i,l-k)):align.append((left[i+n] if i+n<j else None,right[k+n] if k+n<l else None))
@@ -75,7 +86,7 @@ def compare_code(target,candidate,target_bindings=None,candidate_bindings=None):
                         if p['base']==q['base']=='bp' and p['displacement']!=q['displacement']:counters['stack_local_differences']+=1;changes.append('stack_local_layout')
         display.append(dict(target_offset=x['offset'] if x else None,target=x['asm'] if x else '',candidate_offset=y['offset'] if y else None,candidate=y['asm'] if y else '',differences=changes))
     lb,rb=blocks(left),blocks(right);graph=lambda bb:[(r['terminal'],r['successors']) for r in bb]
-    closure=[solve(code,0,len(code)) for code in (target,candidate)]
+    closure=closure or [solve(code,0,len(code)) for code in (target,candidate)]
     known=all(r['end'] is not None and r['status']=='PROBABLE' for r in closure)
     graph_match=graph(lb)==graph(rb) if known else None
     ordering=a!=b and Counter(a)==Counter(b)
@@ -153,7 +164,11 @@ def diagnose(module,raw,image,symbols,symbol,comparison):
                 for site in list(bindings):
                     if pos<=site<pos+5:bindings.pop(site)
             normalizations.append(dict(offset=pos,reason='Strictly validated LINK far-call/jump translation'))
-    result=compare_code(data[start:end],bytes(view),tb,cb)
+    # Jump tables proven by the CFG solver on both sides: their words are
+    # compared as case targets relative to the function, not as opcodes.
+    target_tables=[(x['table']-start,x['count']) for x in extent.get('jump_tables',[])]
+    candidate_tables=[(x['table']-begin,x['count']) for x in ce.get('jump_tables',[])]
+    result=compare_code(data[start:end],bytes(view),tb,cb,closure=[extent,ce],target_tables=target_tables,candidate_tables=candidate_tables,base=start)
     result['diagnostic_normalizations']=normalizations
     result['unresolved_member_obligations']=unresolved_member_obligations(comparison,image)
     result.update(exact_match=comparison['result'] in ('CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER') and extent['size'] is not None and extent['size']==ce['size'],strict_member_result=comparison['result'],fixups_equal=comparison.get('fixups_equal'),fixups_total=comparison.get('fixups_total'),extent_known=extent['end'] is not None,contribution_bytes=ss['length'],linker_transformations=[t for c in comparison.get('contributions',[]) for t in c['transformations']])

@@ -3,6 +3,7 @@ import sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from cfg_solver import solve
+from codegen_diff import compare_code
 
 def table(*targets):return b''.join(t.to_bytes(2,'little') for t in targets)
 
@@ -39,5 +40,18 @@ class JumpTables(unittest.TestCase):
     def test_table_not_adjacent_to_jump_is_ambiguous(self):
         code=bytes.fromhex('3d0100'+'770a'+'d1e0'+'93'+'2effa70f00'+'cb90')+table(0x13,0x13)+bytes.fromhex('cb')
         self.assertEqual(solve(code,0,len(code))['status'],'AMBIGUOUS_TABLE')
+
+class DiagnosticTables(unittest.TestCase):
+    def test_table_words_align_as_case_targets(self):
+        r=solve(JA,0,len(JA));tables=[(t['table'],t['count']) for t in r['jump_tables']]
+        d=compare_code(JA,JA,closure=[r,r],target_tables=tables,candidate_tables=tables)
+        self.assertEqual(d['opcode_matches'],d['opcode_total']);self.assertTrue(d['cfg_shape_match'])
+        self.assertEqual([x['target'] for x in d['aligned_asm'] if x['target'].startswith('dw')],['dw offset 0x11','dw offset 0x12'])
+    def test_bound_table_word_uses_fixup_target(self):
+        r=solve(JA,0,len(JA));tables=[(t['table'],t['count']) for t in r['jump_tables']]
+        shifted=JA[:0x0d]+bytes(4)+JA[0x11:]
+        bindings={0x0d:dict(kind='internal',segment=1,offset=0x11),0x0f:dict(kind='internal',segment=1,offset=0x12)}
+        d=compare_code(JA,shifted,None,bindings,closure=[r,r],target_tables=tables,candidate_tables=tables)
+        self.assertEqual([x['differences'] for x in d['aligned_asm'] if x['target'].startswith('dw')],[[],[]])
 
 if __name__=='__main__':unittest.main()

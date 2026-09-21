@@ -192,8 +192,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoUserButtonUpdate — SIMANT_MODULE:01B6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 131 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 131 bytes.
+Source: src/recovered/wf_DoUserButtonUpdate-cf874c4e35.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 01B6  55                       push bp
@@ -205,18 +205,18 @@ Source: unrecovered. Flags: unresolved.
 01C4  d1e0                     shl ax, 1
 01C6  93                       xchg bx, ax
 01C7  2effa7cc01               jmp word ptr cs:[bx + 0x1cc]
-01CC  de01                     fiadd word ptr [bx + di]
-01CE  37                       aaa 
-01CF  02ea                     add ch, dl
-01D1  0137                     add word ptr [bx], si
-01D3  02f6                     add dh, dh
-01D5  0102                     add word ptr [bp + si], ax
-01D7  020e021a                 add cl, byte ptr [0x1a02]
-01DB  0226028e                 add ah, byte ptr [0x8e02]
-01DF  06                       push es
-01E0  6e                       outsb dx, byte ptr [si]
-01E1  be26ff                   mov si, 0xff26
-01E4  36289ceb46               sub byte ptr ss:[si + 0x46eb], bl
+01CC  de01                     dw offset 0x1de
+01CE  3702                     dw offset 0x237
+01D0  ea01                     dw offset 0x1ea
+01D2  3702                     dw offset 0x237
+01D4  f601                     dw offset 0x1f6
+01D6  0202                     dw offset 0x202
+01D8  0e02                     dw offset 0x20e
+01DA  1a02                     dw offset 0x21a
+01DC  2602                     dw offset 0x226
+01DE  8e066ebe                 mov es, word ptr [0xbe6e]
+01E2  26ff36289c               push word ptr es:[0x9c28]
+01E7  eb46                     jmp 0x22f
 01E9  90                       nop 
 01EA  8e0670be                 mov es, word ptr [0xbe70]
 01EE  26ff36f485               push word ptr es:[0x85f4]
@@ -268,15 +268,18 @@ Source: unrecovered. Flags: unresolved.
 025F  93                       xchg bx, ax
 0260  2effa76602               jmp word ptr cs:[bx + 0x266]
 0265  90                       nop 
-0266  7802                     js 0x26a
-0268  d6                       salc 
-0269  028402d6                 add al, byte ptr [si - 0x29fe]
-026D  0290029c                 add dl, byte ptr [bx + si - 0x63fe]
-0271  02a802b4                 add ch, byte ptr [bx + si - 0x4bfe]
-0275  02c0                     add al, al
-0277  028e066e                 add cl, byte ptr [bp + 0x6e06]
-027B  be26ff                   mov si, 0xff26
-027E  36289ceb46               sub byte ptr ss:[si + 0x46eb], bl
+0266  7802                     dw offset 0x278
+0268  d602                     dw offset 0x2d6
+026A  8402                     dw offset 0x284
+026C  d602                     dw offset 0x2d6
+026E  9002                     dw offset 0x290
+0270  9c02                     dw offset 0x29c
+0272  a802                     dw offset 0x2a8
+0274  b402                     dw offset 0x2b4
+0276  c002                     dw offset 0x2c0
+0278  8e066ebe                 mov es, word ptr [0xbe6e]
+027C  26ff36289c               push word ptr es:[0x9c28]
+0281  eb46                     jmp 0x2c9
 0283  90                       nop 
 0284  8e0670be                 mov es, word ptr [0xbe70]
 0288  26ff36f485               push word ptr es:[0x85f4]
@@ -311,15 +314,15 @@ Source: unrecovered. Flags: unresolved.
 02E2  d1e0                     shl ax, 1
 02E4  93                       xchg bx, ax
 02E5  2effa7ea02               jmp word ptr cs:[bx + 0x2ea]
-02EA  fc                       cld 
-02EB  025a03                   add bl, byte ptr [bp + si + 3]
-02EE  0803                     or byte ptr [bp + di], al
-02F0  5a                       pop dx
-02F1  0314                     add dx, word ptr [si]
-02F3  0320                     add sp, word ptr [bx + si]
-02F5  032c                     add bp, word ptr [si]
-02F7  0338                     add di, word ptr [bx + si]
-02F9  034403                   add ax, word ptr [si + 3]
+02EA  fc02                     dw offset 0x2fc
+02EC  5a03                     dw offset 0x35a
+02EE  0803                     dw offset 0x308
+02F0  5a03                     dw offset 0x35a
+02F2  1403                     dw offset 0x314
+02F4  2003                     dw offset 0x320
+02F6  2c03                     dw offset 0x32c
+02F8  3803                     dw offset 0x338
+02FA  4403                     dw offset 0x344
 02FC  8e066ebe                 mov es, word ptr [0xbe6e]
 0300  26ff36289c               push word ptr es:[0x9c28]
 0305  eb46                     jmp 0x34d
@@ -391,25 +394,23 @@ Source: unrecovered. Flags: unresolved.
 03AF  93                       xchg bx, ax
 03B0  2effa7b603               jmp word ptr cs:[bx + 0x3b6]
 03B5  90                       nop 
-03B6  d6                       salc 
-03B7  03d6                     add dx, si
-03B9  03d6                     add dx, si
-03BB  03d6                     add dx, si
-03BD  03e8                     add bp, ax
-03BF  0302                     add ax, word ptr [bp + si]
-03C1  04d6                     add al, 0xd6
-03C3  031c                     add bx, word ptr [si]
-03C5  04d6                     add al, 0xd6
-03C7  0334                     add si, word ptr [si]
-03C9  044c                     add al, 0x4c
-03CB  0464                     add al, 0x64
-03CD  047c                     add al, 0x7c
-03CF  0494                     add al, 0x94
-03D1  04d6                     add al, 0xd6
-03D3  03d6                     add dx, si
-03D5  03c4                     add ax, sp
-03D7  5e                       pop si
-03D8  fc                       cld 
+03B6  d603                     dw offset 0x3d6
+03B8  d603                     dw offset 0x3d6
+03BA  d603                     dw offset 0x3d6
+03BC  d603                     dw offset 0x3d6
+03BE  e803                     dw offset 0x3e8
+03C0  0204                     dw offset 0x402
+03C2  d603                     dw offset 0x3d6
+03C4  1c04                     dw offset 0x41c
+03C6  d603                     dw offset 0x3d6
+03C8  3404                     dw offset 0x434
+03CA  4c04                     dw offset 0x44c
+03CC  6404                     dw offset 0x464
+03CE  7c04                     dw offset 0x47c
+03D0  9404                     dw offset 0x494
+03D2  d603                     dw offset 0x3d6
+03D4  d603                     dw offset 0x3d6
+03D6  c45efc                   les bx, ptr [bp - 4]
 03D9  26806724f7               and byte ptr es:[bx + 0x24], 0xf7
 03DE  26804f2508               or byte ptr es:[bx + 0x25], 8
 03E3  6a00                     push 0
@@ -633,23 +634,22 @@ Source: unrecovered. Flags: unresolved.
 0667  93                       xchg bx, ax
 0668  2effa76e06               jmp word ptr cs:[bx + 0x66e]
 066D  90                       nop 
-066E  8e069606                 mov es, word ptr [0x696]
-0672  9e                       sahf 
-0673  06                       push es
-0674  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-0675  06                       push es
-0676  ae                       scasb al, byte ptr es:[di]
-0677  06                       push es
-0678  f8                       clc 
-0679  06                       push es
-067A  1207                     adc al, byte ptr [bx]
-067C  8c07                     mov word ptr [bx], es
-067E  bc07c6                   mov sp, 0xc607
-0681  07                       pop es
-0682  e207                     loop 0x68b
-0684  f6070a                   test byte ptr [bx], 0xa
-0687  081e0832                 or byte ptr [0x3208], bl
-068B  086008                   or byte ptr [bx + si + 8], ah
+066E  8e06                     dw offset 0x68e
+0670  9606                     dw offset 0x696
+0672  9e06                     dw offset 0x69e
+0674  a606                     dw offset 0x6a6
+0676  ae06                     dw offset 0x6ae
+0678  f806                     dw offset 0x6f8
+067A  1207                     dw offset 0x712
+067C  8c07                     dw offset 0x78c
+067E  bc07                     dw offset 0x7bc
+0680  c607                     dw offset 0x7c6
+0682  e207                     dw offset 0x7e2
+0684  f607                     dw offset 0x7f6
+0686  0a08                     dw offset 0x80a
+0688  1e08                     dw offset 0x81e
+068A  3208                     dw offset 0x832
+068C  6008                     dw offset 0x860
 068E  90                       nop 
 068F  0e                       push cs
 0690  e8e7b5                   call 0xffffbc7a
@@ -2216,14 +2216,12 @@ Source: unrecovered. Flags: unresolved.
 168B  93                       xchg bx, ax
 168C  2effa79216               jmp word ptr cs:[bx + 0x1692]
 1691  90                       nop 
-1692  9e                       sahf 
-1693  16                       push ss
-1694  1217                     adc dl, byte ptr [bx]
-1696  8617                     xchg byte ptr [bx], dl
-1698  9e                       sahf 
-1699  16                       push ss
-169A  1217                     adc dl, byte ptr [bx]
-169C  8617                     xchg byte ptr [bx], dl
+1692  9e16                     dw offset 0x169e
+1694  1217                     dw offset 0x1712
+1696  8617                     dw offset 0x1786
+1698  9e16                     dw offset 0x169e
+169A  1217                     dw offset 0x1712
+169C  8617                     dw offset 0x1786
 169E  6a01                     push 1
 16A0  9aab160000               lcall 0, 0x16ab
 16A5  6a20                     push 0x20
@@ -4124,24 +4122,1672 @@ Source: unrecovered. Flags: unresolved.
 29E6  d1e0                     shl ax, 1
 29E8  93                       xchg bx, ax
 29E9  2effa7ee29               jmp word ptr cs:[bx + 0x29ee]
-29EE  3e337d29                 xor di, word ptr ds:[di + 0x29]
-29F2  7d29                     jge 0x2a1d
-29F4  7d29                     jge 0x2a1f
-29F6  7d29                     jge 0x2a21
-29F8  7d29                     jge 0x2a23
-29FA  7d29                     jge 0x2a25
-29FC  7d29                     jge 0x2a27
-29FE  7d29                     jge 0x2a29
-2A00  7d29                     jge 0x2a2b
-2A02  7d29                     jge 0x2a2d
-2A04  7d29                     jge 0x2a2f
-2A06  7d29                     jge 0x2a31
-2A08  7d29                     jge 0x2a33
-2A0A  7d29                     jge 0x2a35
-2A0C  7d29                     jge 0x2a37
-2A0E  7d29                     jge 0x2a39
-2A10  60                       pushaw 
-2A11  336236                   xor sp, word ptr [bp + si + 0x36]
+29EE  3e33                     dw offset 0x333e
+29F0  7d29                     dw offset 0x297d
+29F2  7d29                     dw offset 0x297d
+29F4  7d29                     dw offset 0x297d
+29F6  7d29                     dw offset 0x297d
+29F8  7d29                     dw offset 0x297d
+29FA  7d29                     dw offset 0x297d
+29FC  7d29                     dw offset 0x297d
+29FE  7d29                     dw offset 0x297d
+2A00  7d29                     dw offset 0x297d
+2A02  7d29                     dw offset 0x297d
+2A04  7d29                     dw offset 0x297d
+2A06  7d29                     dw offset 0x297d
+2A08  7d29                     dw offset 0x297d
+2A0A  7d29                     dw offset 0x297d
+2A0C  7d29                     dw offset 0x297d
+2A0E  7d29                     dw offset 0x297d
+2A10  6033                     dw offset 0x3360
+2A12  6236                     dw offset 0x3662
+2A14  fe37                     dw offset 0x37fe
+2A16  1038                     dw offset 0x3810
+2A18  1038                     dw offset 0x3810
+2A1A  3d0502                   cmp ax, 0x205
+2A1D  7503                     jne 0x2a22
+2A1F  e9c810                   jmp 0x3aea
+2A22  771a                     ja 0x2a3e
+2A24  2d0102                   sub ax, 0x201
+2A27  7303                     jae 0x2a2c
+2A29  e951ff                   jmp 0x297d
+2A2C  2d0200                   sub ax, 2
+2A2F  7703                     ja 0x2a34
+2A31  e9b610                   jmp 0x3aea
+2A34  48                       dec ax
+2A35  7503                     jne 0x2a3a
+2A37  e9d408                   jmp 0x330e
+2A3A  e940ff                   jmp 0x297d
+2A3D  90                       nop 
+2A3E  2d0f03                   sub ax, 0x30f
+2A41  7503                     jne 0x2a46
+2A43  e98211                   jmp 0x3bc8
+2A46  48                       dec ax
+2A47  48                       dec ax
+2A48  7503                     jne 0x2a4d
+2A4A  e9bf10                   jmp 0x3b0c
+2A4D  2dac00                   sub ax, 0xac
+2A50  7503                     jne 0x2a55
+2A52  e96111                   jmp 0x3bb6
+2A55  e925ff                   jmp 0x297d
+2A58  9a9c14672a               lcall 0x2a67, 0x149c ; _UpdateEditIfBufInvalid
+2A5D  ff760e                   push word ptr [bp + 0xe]
+2A60  56                       push si
+2A61  e91012                   jmp 0x3c74
+2A64  9a9c14b62a               lcall 0x2ab6, 0x149c ; _UpdateEditIfBufInvalid
+2A69  a1a6bc                   mov ax, word ptr [0xbca6] ; _win_hwnd
+2A6C  39460e                   cmp word ptr [bp + 0xe], ax
+2A6F  7403                     je 0x2a74
+2A71  e96201                   jmp 0x2bd6
+2A74  837e0a02                 cmp word ptr [bp + 0xa], 2
+2A78  7409                     je 0x2a83
+2A7A  837e0a00                 cmp word ptr [bp + 0xa], 0
+2A7E  7403                     je 0x2a83
+2A80  e95301                   jmp 0x2bd6
+2A83  6a00                     push 0
+2A85  6a00                     push 0
+2A87  68027f                   push 0x7f02
+2A8A  9a17280000               lcall 0, 0x2817
+2A8F  50                       push ax
+2A90  9ace2b0000               lcall 0, 0x2bce
+2A95  8946fa                   mov word ptr [bp - 6], ax
+2A98  680001                   push 0x100
+2A9B  9a56c2eb2a               lcall 0x2aeb, 0xc256 ; _win_IsWinOpen
+2AA0  83c402                   add sp, 2
+2AA3  0bc0                     or ax, ax
+2AA5  7416                     je 0x2abd
+2AA7  ff36a8bc                 push word ptr [0xbca8]
+2AAB  9afa3dbb2a               lcall 0x2abb, 0x3dfa ; _MSClipStart
+2AB0  83c402                   add sp, 2
+2AB3  9a0cc7782b               lcall 0x2b78, 0xc70c ; _EraseMapCursor
+2AB8  9a4c3ed82a               lcall 0x2ad8, 0x3e4c ; _MSClipEnd
+2ABD  bb5014                   mov bx, 0x1450
+2AC0  8e06b2be                 mov es, word ptr [0xbeb2]
+2AC4  899e36fe                 mov word ptr [bp - 0x1ca], bx
+2AC8  8c8638fe                 mov word ptr [bp - 0x1c8], es
+2ACC  26833f00                 cmp word ptr es:[bx], 0
+2AD0  7414                     je 0x2ae6
+2AD2  26ff37                   push word ptr es:[bx]
+2AD5  9a8055a02b               lcall 0x2ba0, 0x5580 ; _mem_Free
+2ADA  83c402                   add sp, 2
+2ADD  c49e36fe                 les bx, ptr [bp - 0x1ca]
+2AE1  26c7070000               mov word ptr es:[bx], 0
+2AE6  6a00                     push 0
+2AE8  9aa8e3f52a               lcall 0x2af5, 0xe3a8 ; _win_LockWin
+2AED  83c402                   add sp, 2
+2AF0  6a00                     push 0
+2AF2  9acec3662b               lcall 0x2b66, 0xc3ce ; _win_WinAddr
+2AF7  83c402                   add sp, 2
+2AFA  8bf8                     mov di, ax
+2AFC  8956fe                   mov word ptr [bp - 2], dx
+2AFF  8ec2                     mov es, dx
+2B01  268b05                   mov ax, word ptr es:[di]
+2B04  8bc8                     mov cx, ax
+2B06  262b4504                 sub ax, word ptr es:[di + 4]
+2B0A  8b5606                   mov dx, word ptr [bp + 6]
+2B0D  03c2                     add ax, dx
+2B0F  8cc6                     mov si, es
+2B11  26c45d2c                 les bx, ptr es:[di + 0x2c]
+2B15  2601470c                 add word ptr es:[bx + 0xc], ax
+2B19  8cc0                     mov ax, es
+2B1B  8ec6                     mov es, si
+2B1D  268b7502                 mov si, word ptr es:[di + 2]
+2B21  89b634fe                 mov word ptr [bp - 0x1cc], si
+2B25  262b7506                 sub si, word ptr es:[di + 6]
+2B29  899e30fe                 mov word ptr [bp - 0x1d0], bx
+2B2D  898632fe                 mov word ptr [bp - 0x1ce], ax
+2B31  8b4608                   mov ax, word ptr [bp + 8]
+2B34  89be2cfe                 mov word ptr [bp - 0x1d4], di
+2B38  8c862efe                 mov word ptr [bp - 0x1d2], es
+2B3C  8e8632fe                 mov es, word ptr [bp - 0x1ce]
+2B40  051200                   add ax, 0x12
+2B43  03f0                     add si, ax
+2B45  2601770e                 add word ptr es:[bx + 0xe], si
+2B49  03ca                     add cx, dx
+2B4B  c49e2cfe                 les bx, ptr [bp - 0x1d4]
+2B4F  26894f04                 mov word ptr es:[bx + 4], cx
+2B53  8bc8                     mov cx, ax
+2B55  038634fe                 add ax, word ptr [bp - 0x1cc]
+2B59  26894706                 mov word ptr es:[bx + 6], ax
+2B5D  6a00                     push 0
+2B5F  8bf1                     mov si, cx
+2B61  8bfa                     mov di, dx
+2B63  9ae2e6702b               lcall 0x2b70, 0xe6e2 ; _win_Recalc
+2B68  83c402                   add sp, 2
+2B6B  6a00                     push 0
+2B6D  9aa4e3842b               lcall 0x2b84, 0xe3a4 ; _win_UnlockWin
+2B72  83c402                   add sp, 2
+2B75  9ae011c32b               lcall 0x2bc3, 0x11e0 ; _UpdateEdit
+2B7A  8d46ea                   lea ax, [bp - 0x16]
+2B7D  16                       push ss
+2B7E  50                       push ax
+2B7F  6a04                     push 4
+2B81  9ad2c2ab2b               lcall 0x2bab, 0xc2d2 ; _win_GetObjRect
+2B86  83c406                   add sp, 6
+2B89  ff76f0                   push word ptr [bp - 0x10]
+2B8C  ff76ee                   push word ptr [bp - 0x12]
+2B8F  ff367acd                 push word ptr [0xcd7a] ; _editHeight
+2B93  ff3680cc                 push word ptr [0xcc80] ; _editWidth
+2B97  56                       push si
+2B98  57                       push di
+2B99  1e                       push ds
+2B9A  685e04                   push 0x45e
+2B9D  9abc62bb2b               lcall 0x2bbb, 0x62bc ; _WinPrintf
+2BA2  83c410                   add sp, 0x10
+2BA5  680001                   push 0x100
+2BA8  9a56c29228               lcall 0x2892, 0xc256 ; _win_IsWinOpen
+2BAD  83c402                   add sp, 2
+2BB0  0bc0                     or ax, ax
+2BB2  7416                     je 0x2bca
+2BB4  ff36a8bc                 push word ptr [0xbca8]
+2BB8  9afa3dc82b               lcall 0x2bc8, 0x3dfa ; _MSClipStart
+2BBD  83c402                   add sp, 2
+2BC0  9a52c6a227               lcall 0x27a2, 0xc652 ; _DrawMapCursor
+2BC5  9a4c3e8b26               lcall 0x268b, 0x3e4c ; _MSClipEnd
+2BCA  ff76fa                   push word ptr [bp - 6]
+2BCD  9a1f290000               lcall 0, 0x291f
+2BD2  e99910                   jmp 0x3c6e
+2BD5  90                       nop 
+2BD6  a17ecd                   mov ax, word ptr [0xcd7e] ; _mainRootWnd
+2BD9  39460e                   cmp word ptr [bp + 0xe], ax
+2BDC  7403                     je 0x2be1
+2BDE  e99100                   jmp 0x2c72
+2BE1  833e76cd00               cmp word ptr [0xcd76], 0 ; _ribbonBarWnd
+2BE6  741a                     je 0x2c02
+2BE8  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+2BEC  8d46ea                   lea ax, [bp - 0x16]
+2BEF  16                       push ss
+2BF0  50                       push ax
+2BF1  9add1a0000               lcall 0, 0x1add
+2BF6  8b46f0                   mov ax, word ptr [bp - 0x10]
+2BF9  2b46ec                   sub ax, word ptr [bp - 0x14]
+2BFC  8946fe                   mov word ptr [bp - 2], ax
+2BFF  eb06                     jmp 0x2c07
+2C01  90                       nop 
+2C02  c746fe0000               mov word ptr [bp - 2], 0
+2C07  833e78cd00               cmp word ptr [0xcd78], 0 ; _rootWnd
+2C0C  7428                     je 0x2c36
+2C0E  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2C12  6a00                     push 0
+2C14  6a00                     push 0
+2C16  6a00                     push 0
+2C18  8b4606                   mov ax, word ptr [bp + 6]
+2C1B  50                       push ax
+2C1C  8b4e08                   mov cx, word ptr [bp + 8]
+2C1F  2b4efe                   sub cx, word ptr [bp - 2]
+2C22  51                       push cx
+2C23  6a06                     push 6
+2C25  8bf0                     mov si, ax
+2C27  8bf9                     mov di, cx
+2C29  9a532c0000               lcall 0, 0x2c53
+2C2E  89367acc                 mov word ptr [0xcc7a], si ; _screenWidth
+2C32  893e86ce                 mov word ptr [0xce86], di ; _screenHeight
+2C36  833e76cd00               cmp word ptr [0xcd76], 0 ; _ribbonBarWnd
+2C3B  7503                     jne 0x2c40
+2C3D  e92e10                   jmp 0x3c6e
+2C40  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+2C44  6a00                     push 0
+2C46  6a00                     push 0
+2C48  6a00                     push 0
+2C4A  ff7606                   push word ptr [bp + 6]
+2C4D  ff76fe                   push word ptr [bp - 2]
+2C50  6a06                     push 6
+2C52  9affff0000               lcall 0, 0xffff
+2C57  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+2C5B  6a00                     push 0
+2C5D  6a00                     push 0
+2C5F  6a01                     push 1
+2C61  9aa2250000               lcall 0, 0x25a2
+2C66  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+2C6A  9acd090000               lcall 0, 0x9cd
+2C6F  e9fc0f                   jmp 0x3c6e
+2C72  a178cd                   mov ax, word ptr [0xcd78] ; _rootWnd
+2C75  39460e                   cmp word ptr [bp + 0xe], ax
+2C78  7403                     je 0x2c7d
+2C7A  e9f10f                   jmp 0x3c6e
+2C7D  833ea6bc00               cmp word ptr [0xbca6], 0 ; _win_hwnd
+2C82  7503                     jne 0x2c87
+2C84  e9e70f                   jmp 0x3c6e
+2C87  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+2C8B  9affff0000               lcall 0, 0xffff
+2C90  0bc0                     or ax, ax
+2C92  7503                     jne 0x2c97
+2C94  e9d70f                   jmp 0x3c6e
+2C97  9affff0000               lcall 0, 0xffff
+2C9C  3ca3                     cmp al, 0xa3
+2C9E  750e                     jne 0x2cae
+2CA0  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+2CA4  6a03                     push 3
+2CA6  9affff0000               lcall 0, 0xffff
+2CAB  e9c00f                   jmp 0x3c6e
+2CAE  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+2CB2  6a00                     push 0
+2CB4  6a00                     push 0
+2CB6  6a00                     push 0
+2CB8  6a20                     push 0x20
+2CBA  9ac82c0000               lcall 0, 0x2cc8
+2CBF  d1e0                     shl ax, 1
+2CC1  034606                   add ax, word ptr [bp + 6]
+2CC4  50                       push ax
+2CC5  6a21                     push 0x21
+2CC7  9ab31a0000               lcall 0, 0x1ab3
+2CCC  d1e0                     shl ax, 1
+2CCE  034608                   add ax, word ptr [bp + 8]
+2CD1  50                       push ax
+2CD2  6a06                     push 6
+2CD4  9a2a2c0000               lcall 0, 0x2c2a
+2CD9  e9920f                   jmp 0x3c6e
+2CDC  a176cd                   mov ax, word ptr [0xcd76] ; _ribbonBarWnd
+2CDF  39460e                   cmp word ptr [bp + 0xe], ax
+2CE2  7403                     je 0x2ce7
+2CE4  e98700                   jmp 0x2d6e
+2CE7  a124cf                   mov ax, word ptr [0xcf24]
+2CEA  0b0622cf                 or ax, word ptr [0xcf22]
+2CEE  757e                     jne 0x2d6e
+2CF0  a128cf                   mov ax, word ptr [0xcf28]
+2CF3  0b0626cf                 or ax, word ptr [0xcf26]
+2CF7  7575                     jne 0x2d6e
+2CF9  ff760e                   push word ptr [bp + 0xe]
+2CFC  8d46ba                   lea ax, [bp - 0x46]
+2CFF  16                       push ss
+2D00  50                       push ax
+2D01  9affff0000               lcall 0, 0xffff
+2D06  50                       push ax
+2D07  1e                       push ds
+2D08  681004                   push 0x410
+2D0B  6a17                     push 0x17
+2D0D  8bf0                     mov si, ax
+2D0F  9affff0000               lcall 0, 0xffff
+2D14  8946fc                   mov word ptr [bp - 4], ax
+2D17  8956fe                   mov word ptr [bp - 2], dx
+2D1A  ff760e                   push word ptr [bp + 0xe]
+2D1D  8d46da                   lea ax, [bp - 0x26]
+2D20  16                       push ss
+2D21  50                       push ax
+2D22  9af22b0000               lcall 0, 0x2bf2
+2D27  56                       push si
+2D28  8d46da                   lea ax, [bp - 0x26]
+2D2B  16                       push ss
+2D2C  50                       push ax
+2D2D  6a02                     push 2
+2D2F  9affff0000               lcall 0, 0xffff
+2D34  50                       push ax
+2D35  9affff0000               lcall 0, 0xffff
+2D3A  56                       push si
+2D3B  8b46de                   mov ax, word ptr [bp - 0x22]
+2D3E  2b46fc                   sub ax, word ptr [bp - 4]
+2D41  99                       cdq 
+2D42  2bc2                     sub ax, dx
+2D44  d1f8                     sar ax, 1
+2D46  50                       push ax
+2D47  8b46e0                   mov ax, word ptr [bp - 0x20]
+2D4A  2b46fe                   sub ax, word ptr [bp - 2]
+2D4D  99                       cdq 
+2D4E  2bc2                     sub ax, dx
+2D50  d1f8                     sar ax, 1
+2D52  50                       push ax
+2D53  1e                       push ds
+2D54  682804                   push 0x428
+2D57  6a17                     push 0x17
+2D59  9affff0000               lcall 0, 0xffff
+2D5E  ff760e                   push word ptr [bp + 0xe]
+2D61  8d46ba                   lea ax, [bp - 0x46]
+2D64  16                       push ss
+2D65  50                       push ax
+2D66  9affff0000               lcall 0, 0xffff
+2D6B  e98700                   jmp 0x2df5
+2D6E  ff760e                   push word ptr [bp + 0xe]
+2D71  1e                       push ds
+2D72  684004                   push 0x440
+2D75  9a1c2e0000               lcall 0, 0x2e1c
+2D7A  3dffff                   cmp ax, 0xffff
+2D7D  7503                     jne 0x2d82
+2D7F  e9ec0e                   jmp 0x3c6e
+2D82  833e78cd00               cmp word ptr [0xcd78], 0 ; _rootWnd
+2D87  7503                     jne 0x2d8c
+2D89  e9e20e                   jmp 0x3c6e
+2D8C  6a00                     push 0
+2D8E  6a00                     push 0
+2D90  ff7608                   push word ptr [bp + 8]
+2D93  ff7606                   push word ptr [bp + 6]
+2D96  ff760a                   push word ptr [bp + 0xa]
+2D99  ff760c                   push word ptr [bp + 0xc]
+2D9C  ff760e                   push word ptr [bp + 0xe]
+2D9F  9a923e5a2e               lcall 0x2e5a, 0x3e92 ; _PaintStuff
+2DA4  83c40e                   add sp, 0xe
+2DA7  e9d80e                   jmp 0x3c82
+2DAA  8b7e0e                   mov di, word ptr [bp + 0xe]
+2DAD  9a9c145b2a               lcall 0x2a5b, 0x149c ; _UpdateEditIfBufInvalid
+2DB2  393e7ecd                 cmp word ptr [0xcd7e], di ; _mainRootWnd
+2DB6  7546                     jne 0x2dfe
+2DB8  833e78cd00               cmp word ptr [0xcd78], 0 ; _rootWnd
+2DBD  743b                     je 0x2dfa
+2DBF  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2DC3  6a00                     push 0
+2DC5  9a742f0000               lcall 0, 0x2f74
+2DCA  90                       nop 
+2DCB  0e                       push cs
+2DCC  e859a8                   call 0xffffd628
+2DCF  0bc0                     or ax, ax
+2DD1  740d                     je 0x2de0
+2DD3  90                       nop 
+2DD4  0e                       push cs
+2DD5  e878d2                   call 0x50 ; _CleanUp
+2DD8  b80100                   mov ax, 1
+2DDB  33d2                     xor dx, dx
+2DDD  e9a20e                   jmp 0x3c82
+2DE0  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2DE4  6a00                     push 0
+2DE6  6a11                     push 0x11
+2DE8  ff364200                 push word ptr [0x42]
+2DEC  ff364000                 push word ptr [0x40] ; _lpTimerFunc
+2DF0  9a922f0000               lcall 0, 0x2f92
+2DF5  33c0                     xor ax, ax
+2DF7  ebe2                     jmp 0x2ddb
+2DF9  90                       nop 
+2DFA  57                       push di
+2DFB  e9730e                   jmp 0x3c71
+2DFE  a178cd                   mov ax, word ptr [0xcd78] ; _rootWnd
+2E01  39460e                   cmp word ptr [bp + 0xe], ax
+2E04  7503                     jne 0x2e09
+2E06  e954fc                   jmp 0x2a5d
+2E09  a176cd                   mov ax, word ptr [0xcd76] ; _ribbonBarWnd
+2E0C  39460e                   cmp word ptr [bp + 0xe], ax
+2E0F  7503                     jne 0x2e14
+2E11  e949fc                   jmp 0x2a5d
+2E14  ff760e                   push word ptr [bp + 0xe]
+2E17  1e                       push ds
+2E18  684604                   push 0x446
+2E1B  9a302e0000               lcall 0, 0x2e30
+2E20  3dffff                   cmp ax, 0xffff
+2E23  7503                     jne 0x2e28
+2E25  e935fc                   jmp 0x2a5d
+2E28  ff760e                   push word ptr [bp + 0xe]
+2E2B  1e                       push ds
+2E2C  684c04                   push 0x44c
+2E2F  9a4e2f0000               lcall 0, 0x2f4e
+2E34  50                       push ax
+2E35  9a98cf7d2e               lcall 0x2e7d, 0xcf98 ; _win_Close
+2E3A  83c402                   add sp, 2
+2E3D  eb99                     jmp 0x2dd8
+2E3F  90                       nop 
+2E40  833e78cd00               cmp word ptr [0xcd78], 0 ; _rootWnd
+2E45  7503                     jne 0x2e4a
+2E47  e9240e                   jmp 0x3c6e
+2E4A  837e0a00                 cmp word ptr [bp + 0xa], 0
+2E4E  7503                     jne 0x2e53
+2E50  e95b01                   jmp 0x2fae
+2E53  1e                       push ds
+2E54  68bd04                   push 0x4bd
+2E57  9abc625a2f               lcall 0x2f5a, 0x62bc ; _WinPrintf
+2E5C  83c404                   add sp, 4
+2E5F  6a01                     push 1
+2E61  90                       nop 
+2E62  0e                       push cs
+2E63  e83818                   call 0x469e ; _SetUpPalette
+2E66  83c402                   add sp, 2
+2E69  c70634000100             mov word ptr [0x34], 1 ; _activeAppFlag
+2E6F  833e760300               cmp word ptr [0x376], 0
+2E74  7513                     jne 0x2e89
+2E76  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2E7A  9ab2c06b2f               lcall 0x2f6b, 0xc0b2 ; _MyGetTopWindow
+2E7F  83c402                   add sp, 2
+2E82  a37603                   mov word ptr [0x376], ax
+2E85  0bc0                     or ax, ax
+2E87  7412                     je 0x2e9b
+2E89  ff367603                 push word ptr [0x376]
+2E8D  688600                   push 0x86
+2E90  6a01                     push 1
+2E92  6a00                     push 0
+2E94  6a00                     push 0
+2E96  9affff0000               lcall 0, 0xffff
+2E9B  a17a03                   mov ax, word ptr [0x37a]
+2E9E  8e0670be                 mov es, word ptr [0xbe70]
+2EA2  26a3f685                 mov word ptr es:[0x85f6], ax
+2EA6  8b0e7803                 mov cx, word ptr [0x378]
+2EAA  26890ef485               mov word ptr es:[0x85f4], cx
+2EAF  8e06b4be                 mov es, word ptr [0xbeb4]
+2EB3  26890ef60a               mov word ptr es:[0xaf6], cx
+2EB8  8e06b6be                 mov es, word ptr [0xbeb6]
+2EBC  26a3f80a                 mov word ptr es:[0xaf8], ax
+2EC0  833e320000               cmp word ptr [0x32], 0 ; _paletteFlag
+2EC5  7444                     je 0x2f0b
+2EC7  68f11f                   push 0x1ff1 ; _StopSimulation
+2ECA  68381c                   push 0x1c38
+2ECD  ff367ccc                 push word ptr [0xcc7c] ; _hInst
+2ED1  9a7c1c0000               lcall 0, 0x1c7c
+2ED6  8bf8                     mov di, ax
+2ED8  8956fe                   mov word ptr [bp - 2], dx
+2EDB  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2EDF  8bc2                     mov ax, dx
+2EE1  50                       push ax
+2EE2  57                       push di
+2EE3  6a00                     push 0
+2EE5  6a00                     push 0
+2EE7  8bf2                     mov si, dx
+2EE9  9a911c0000               lcall 0, 0x1c91
+2EEE  56                       push si
+2EEF  57                       push di
+2EF0  9a9a1c0000               lcall 0, 0x1c9a
+2EF5  833e76cd00               cmp word ptr [0xcd76], 0 ; _ribbonBarWnd
+2EFA  740f                     je 0x2f0b
+2EFC  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+2F00  6a00                     push 0
+2F02  6a00                     push 0
+2F04  6a00                     push 0
+2F06  9a622c0000               lcall 0, 0x2c62
+2F0B  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2F0F  9affff0000               lcall 0, 0xffff
+2F14  833e360000               cmp word ptr [0x36], 0 ; _captureWnd
+2F19  744d                     je 0x2f68
+2F1B  833e7ecd00               cmp word ptr [0xcd7e], 0 ; _mainRootWnd
+2F20  7446                     je 0x2f68
+2F22  ff363600                 push word ptr [0x36] ; _captureWnd
+2F26  9a4b1c0000               lcall 0, 0x1c4b
+2F2B  0bc0                     or ax, ax
+2F2D  7439                     je 0x2f68
+2F2F  ff367ecd                 push word ptr [0xcd7e] ; _mainRootWnd
+2F33  9a5d240000               lcall 0, 0x245d
+2F38  0bc0                     or ax, ax
+2F3A  7523                     jne 0x2f5f
+2F3C  ff363600                 push word ptr [0x36] ; _captureWnd
+2F40  9affff0000               lcall 0, 0xffff
+2F45  ff363600                 push word ptr [0x36] ; _captureWnd
+2F49  1e                       push ds
+2F4A  68d904                   push 0x4d9
+2F4D  9a28140000               lcall 0, 0x1428
+2F52  50                       push ax
+2F53  1e                       push ds
+2F54  68df04                   push 0x4df
+2F57  9abc629729               lcall 0x2997, 0x62bc ; _WinPrintf
+2F5C  83c406                   add sp, 6
+2F5F  ff363600                 push word ptr [0x36] ; _captureWnd
+2F63  9a6e180000               lcall 0, 0x186e
+2F68  9a0ac29e2a               lcall 0x2a9e, 0xc20a ; _win_FlushEvents
+2F6D  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2F71  6a00                     push 0
+2F73  9adb180000               lcall 0, 0x18db
+2F78  a14200                   mov ax, word ptr [0x42]
+2F7B  0b064000                 or ax, word ptr [0x40] ; _lpTimerFunc
+2F7F  7415                     je 0x2f96
+2F81  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2F85  6a00                     push 0
+2F87  6a11                     push 0x11
+2F89  ff364200                 push word ptr [0x42]
+2F8D  ff364000                 push word ptr [0x40] ; _lpTimerFunc
+2F91  9a5f1a0000               lcall 0, 0x1a5f
+2F96  833e8c0300               cmp word ptr [0x38c], 0
+2F9B  7409                     je 0x2fa6
+2F9D  ff368c03                 push word ptr [0x38c]
+2FA1  9ac82f0000               lcall 0, 0x2fc8
+2FA6  1e                       push ds
+2FA7  680205                   push 0x502
+2FAA  e9cd00                   jmp 0x307a
+2FAD  90                       nop 
+2FAE  1e                       push ds
+2FAF  681e05                   push 0x51e
+2FB2  9abc620c30               lcall 0x300c, 0x62bc ; _WinPrintf
+2FB7  83c404                   add sp, 4
+2FBA  6a00                     push 0
+2FBC  6a00                     push 0
+2FBE  68027f                   push 0x7f02
+2FC1  9a8b2a0000               lcall 0, 0x2a8b
+2FC6  50                       push ax
+2FC7  9a2b310000               lcall 0, 0x312b
+2FCC  a38c03                   mov word ptr [0x38c], ax
+2FCF  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2FD3  6a00                     push 0
+2FD5  9ac62d0000               lcall 0, 0x2dc6
+2FDA  a14200                   mov ax, word ptr [0x42]
+2FDD  0b064000                 or ax, word ptr [0x40] ; _lpTimerFunc
+2FE1  7416                     je 0x2ff9
+2FE3  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+2FE7  6a00                     push 0
+2FE9  68aa00                   push 0xaa
+2FEC  ff364200                 push word ptr [0x42]
+2FF0  ff364000                 push word ptr [0x40] ; _lpTimerFunc
+2FF4  9af12d0000               lcall 0, 0x2df1
+2FF9  833e360000               cmp word ptr [0x36], 0 ; _captureWnd
+2FFE  7411                     je 0x3011
+3000  9affff0000               lcall 0, 0xffff
+3005  1e                       push ds
+3006  683c05                   push 0x53c
+3009  9abc621e30               lcall 0x301e, 0x62bc ; _WinPrintf
+300E  83c404                   add sp, 4
+3011  6a00                     push 0
+3013  90                       nop 
+3014  0e                       push cs
+3015  e88616                   call 0x469e ; _SetUpPalette
+3018  83c402                   add sp, 2
+301B  9a94827d30               lcall 0x307d, 0x8294 ; _StopSong
+3020  833e340000               cmp word ptr [0x34], 0 ; _activeAppFlag
+3025  7430                     je 0x3057
+3027  8e0670be                 mov es, word ptr [0xbe70]
+302B  26a1f485                 mov ax, word ptr es:[0x85f4]
+302F  a37803                   mov word ptr [0x378], ax
+3032  26a1f685                 mov ax, word ptr es:[0x85f6]
+3036  a37a03                   mov word ptr [0x37a], ax
+3039  33c0                     xor ax, ax
+303B  26a3f485                 mov word ptr es:[0x85f4], ax
+303F  8e06b4be                 mov es, word ptr [0xbeb4]
+3043  26a3f60a                 mov word ptr es:[0xaf6], ax
+3047  8e0670be                 mov es, word ptr [0xbe70]
+304B  26a3f685                 mov word ptr es:[0x85f6], ax
+304F  8e06b6be                 mov es, word ptr [0xbeb6]
+3053  26a3f80a                 mov word ptr es:[0xaf8], ax
+3057  833e760300               cmp word ptr [0x376], 0
+305C  7412                     je 0x3070
+305E  ff367603                 push word ptr [0x376]
+3062  688600                   push 0x86
+3065  6a00                     push 0
+3067  6a00                     push 0
+3069  6a00                     push 0
+306B  9ab3310000               lcall 0, 0x31b3
+3070  c70634000000             mov word ptr [0x34], 0 ; _activeAppFlag
+3076  1e                       push ds
+3077  686305                   push 0x563
+307A  9abc627532               lcall 0x3275, 0x62bc ; _WinPrintf
+307F  83c404                   add sp, 4
+3082  e9e90b                   jmp 0x3c6e
+3085  90                       nop 
+3086  833e100000               cmp word ptr [0x10], 0 ; _bHelp
+308B  7403                     je 0x3090
+308D  e98e02                   jmp 0x331e
+3090  a1a6bc                   mov ax, word ptr [0xbca6] ; _win_hwnd
+3093  39460a                   cmp word ptr [bp + 0xa], ax
+3096  750e                     jne 0x30a6
+3098  6a00                     push 0
+309A  9a9ec1b730               lcall 0x30b7, 0xc19e ; _win_IsWinInFront
+309F  83c402                   add sp, 2
+30A2  0bc0                     or ax, ax
+30A4  7526                     jne 0x30cc
+30A6  a1a8bc                   mov ax, word ptr [0xbca8]
+30A9  39460a                   cmp word ptr [bp + 0xa], ax
+30AC  7403                     je 0x30b1
+30AE  e98300                   jmp 0x3134
+30B1  680001                   push 0x100
+30B4  9a9ec17831               lcall 0x3178, 0xc19e ; _win_IsWinInFront
+30B9  83c402                   add sp, 2
+30BC  0bc0                     or ax, ax
+30BE  7474                     je 0x3134
+30C0  6a10                     push 0x10
+30C2  9ab6280000               lcall 0, 0x28b6
+30C7  f6c480                   test ah, 0x80
+30CA  7468                     je 0x3134
+30CC  837e0601                 cmp word ptr [bp + 6], 1
+30D0  7562                     jne 0x3134
+30D2  8e068cbe                 mov es, word ptr [0xbe8c]
+30D6  26833eb48003             cmp word ptr es:[0x80b4], 3
+30DC  7556                     jne 0x3134
+30DE  8e06aebe                 mov es, word ptr [0xbeae]
+30E2  26a1e279                 mov ax, word ptr es:[0x79e2]
+30E6  3d0600                   cmp ax, 6
+30E9  7744                     ja 0x312f
+30EB  d1e0                     shl ax, 1
+30ED  93                       xchg bx, ax
+30EE  2effa7f430               jmp word ptr cs:[bx + 0x30f4]
+30F3  90                       nop 
+30F4  0231                     dw offset 0x3102
+30F6  0831                     dw offset 0x3108
+30F8  0e31                     dw offset 0x310e
+30FA  1431                     dw offset 0x3114
+30FC  1a31                     dw offset 0x311a
+30FE  2031                     dw offset 0x3120
+3100  2631                     dw offset 0x3126
+3102  ff3682cd                 push word ptr [0xcd82] ; _magCursor
+3106  eb22                     jmp 0x312a
+3108  ff3680cd                 push word ptr [0xcd80] ; _rockCursor
+310C  eb1c                     jmp 0x312a
+310E  ff3684ce                 push word ptr [0xce84] ; _digCursor
+3112  eb16                     jmp 0x312a
+3114  ff3694ce                 push word ptr [0xce94] ; _antCursor
+3118  eb10                     jmp 0x312a
+311A  ff3682cc                 push word ptr [0xcc82] ; _foodCursor
+311E  eb0a                     jmp 0x312a
+3120  ff367ccd                 push word ptr [0xcd7c] ; _dropCursor
+3124  eb04                     jmp 0x312a
+3126  ff368cce                 push word ptr [0xce8c] ; _sprayCursor
+312A  9a912a0000               lcall 0, 0x2a91
+312F  ba0100                   mov dx, 1
+3132  eb02                     jmp 0x3136
+3134  33d2                     xor dx, dx
+3136  0bd2                     or dx, dx
+3138  7403                     je 0x313d
+313A  e9b8fc                   jmp 0x2df5
+313D  e92e0b                   jmp 0x3c6e
+3140  8b7e0e                   mov di, word ptr [bp + 0xe]
+3143  393e78cd                 cmp word ptr [0xcd78], di ; _rootWnd
+3147  7503                     jne 0x314c
+3149  e9aefc                   jmp 0x2dfa
+314C  393e76cd                 cmp word ptr [0xcd76], di ; _ribbonBarWnd
+3150  7503                     jne 0x3155
+3152  e9a5fc                   jmp 0x2dfa
+3155  393e7ecd                 cmp word ptr [0xcd7e], di ; _mainRootWnd
+3159  7503                     jne 0x315e
+315B  e99cfc                   jmp 0x2dfa
+315E  393e7603                 cmp word ptr [0x376], di
+3162  7503                     jne 0x3167
+3164  e993fc                   jmp 0x2dfa
+3167  817e080102               cmp word ptr [bp + 8], 0x201
+316C  7403                     je 0x3171
+316E  e989fc                   jmp 0x2dfa
+3171  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3175  9ab2c09231               lcall 0x3192, 0xc0b2 ; _MyGetTopWindow
+317A  83c402                   add sp, 2
+317D  50                       push ax
+317E  1e                       push ds
+317F  685204                   push 0x452
+3182  9a762d0000               lcall 0, 0x2d76
+3187  8bf0                     mov si, ax
+3189  83feff                   cmp si, -1
+318C  7430                     je 0x31be
+318E  56                       push si
+318F  9acec3a032               lcall 0x32a0, 0xc3ce ; _win_WinAddr
+3194  83c402                   add sp, 2
+3197  8ec2                     mov es, dx
+3199  8bd8                     mov bx, ax
+319B  26f6471c40               test byte ptr es:[bx + 0x1c], 0x40
+31A0  751c                     jne 0x31be
+31A2  57                       push di
+31A3  9a642f0000               lcall 0, 0x2f64
+31A8  57                       push di
+31A9  688600                   push 0x86
+31AC  6a01                     push 1
+31AE  6a00                     push 0
+31B0  6a00                     push 0
+31B2  9afa310000               lcall 0, 0x31fa
+31B7  b80200                   mov ax, 2
+31BA  e91efc                   jmp 0x2ddb
+31BD  90                       nop 
+31BE  b80300                   mov ax, 3
+31C1  e917fc                   jmp 0x2ddb
+31C4  a178cd                   mov ax, word ptr [0xcd78] ; _rootWnd
+31C7  39460e                   cmp word ptr [bp + 0xe], ax
+31CA  7503                     jne 0x31cf
+31CC  e98ef8                   jmp 0x2a5d
+31CF  a176cd                   mov ax, word ptr [0xcd76] ; _ribbonBarWnd
+31D2  39460e                   cmp word ptr [bp + 0xe], ax
+31D5  7503                     jne 0x31da
+31D7  e983f8                   jmp 0x2a5d
+31DA  a17ecd                   mov ax, word ptr [0xcd7e] ; _mainRootWnd
+31DD  39460e                   cmp word ptr [bp + 0xe], ax
+31E0  7503                     jne 0x31e5
+31E2  e978f8                   jmp 0x2a5d
+31E5  833e760300               cmp word ptr [0x376], 0
+31EA  7412                     je 0x31fe
+31EC  ff367603                 push word ptr [0x376]
+31F0  688600                   push 0x86
+31F3  6a00                     push 0
+31F5  6a00                     push 0
+31F7  6a00                     push 0
+31F9  9a0b320000               lcall 0, 0x320b
+31FE  ff760e                   push word ptr [bp + 0xe]
+3201  688600                   push 0x86
+3204  6a01                     push 1
+3206  6a00                     push 0
+3208  6a00                     push 0
+320A  9a972e0000               lcall 0, 0x2e97
+320F  8b460e                   mov ax, word ptr [bp + 0xe]
+3212  a37603                   mov word ptr [0x376], ax
+3215  e9ddfb                   jmp 0x2df5
+3218  8b4e0e                   mov cx, word ptr [bp + 0xe]
+321B  390ea6bc                 cmp word ptr [0xbca6], cx ; _win_hwnd
+321F  7511                     jne 0x3232
+3221  ff7608                   push word ptr [bp + 8]
+3224  ff7606                   push word ptr [bp + 6]
+3227  90                       nop 
+3228  0e                       push cs
+3229  e842e8                   call 0x1a6e ; _AdjustWndMinMax
+322C  83c404                   add sp, 4
+322F  e9c3fb                   jmp 0x2df5
+3232  390e7ecd                 cmp word ptr [0xcd7e], cx ; _mainRootWnd
+3236  7512                     jne 0x324a
+3238  b86400                   mov ax, 0x64
+323B  c45e06                   les bx, ptr [bp + 6]
+323E  2689470e                 mov word ptr es:[bx + 0xe], ax
+3242  2689470c                 mov word ptr es:[bx + 0xc], ax
+3246  e9acfb                   jmp 0x2df5
+3249  90                       nop 
+324A  51                       push cx
+324B  e9230a                   jmp 0x3c71
+324E  817e0a0040               cmp word ptr [bp + 0xa], 0x4000
+3253  7703                     ja 0x3258
+3255  e9160a                   jmp 0x3c6e
+3258  6a00                     push 0
+325A  9affff0000               lcall 0, 0xffff
+325F  0bd2                     or dx, dx
+3261  7403                     je 0x3266
+3263  e9080a                   jmp 0x3c6e
+3266  3d50c3                   cmp ax, 0xc350
+3269  7203                     jb 0x326e
+326B  e9000a                   jmp 0x3c6e
+326E  1e                       push ds
+326F  681206                   push 0x612
+3272  9a7818a22d               lcall 0x2da2, 0x1878 ; _PopMsg
+3277  e905fe                   jmp 0x307f
+327A  9a9c14b02d               lcall 0x2db0, 0x149c ; _UpdateEditIfBufInvalid
+327F  833e340000               cmp word ptr [0x34], 0 ; _activeAppFlag
+3284  7503                     jne 0x3289
+3286  e94ffb                   jmp 0x2dd8
+3289  837e0a00                 cmp word ptr [bp + 0xa], 0
+328D  7503                     jne 0x3292
+328F  e9dc09                   jmp 0x3c6e
+3292  a1a6bc                   mov ax, word ptr [0xbca6] ; _win_hwnd
+3295  39460e                   cmp word ptr [bp + 0xe], ax
+3298  7532                     jne 0x32cc
+329A  680023                   push 0x2300
+329D  9a56c2b532               lcall 0x32b5, 0xc256 ; _win_IsWinOpen
+32A2  83c402                   add sp, 2
+32A5  0bc0                     or ax, ax
+32A7  7503                     jne 0x32ac
+32A9  e9c209                   jmp 0x3c6e
+32AC  680022                   push 0x2200
+32AF  680023                   push 0x2300
+32B2  9a34d4382e               lcall 0x2e38, 0xd434 ; _win_Swap
+32B7  83c404                   add sp, 4
+32BA  ff36eabc                 push word ptr [0xbcea]
+32BE  9a01330000               lcall 0, 0x3301
+32C3  9a60cb0833               lcall 0x3308, 0xcb60 ; _DrawMapData
+32C8  e9a309                   jmp 0x3c6e
+32CB  90                       nop 
+32CC  a1d8bc                   mov ax, word ptr [0xbcd8]
+32CF  39460e                   cmp word ptr [bp + 0xe], ax
+32D2  7403                     je 0x32d7
+32D4  e99709                   jmp 0x3c6e
+32D7  680022                   push 0x2200
+32DA  9a56c2f232               lcall 0x32f2, 0xc256 ; _win_IsWinOpen
+32DF  83c402                   add sp, 2
+32E2  0bc0                     or ax, ax
+32E4  7503                     jne 0x32e9
+32E6  e98509                   jmp 0x3c6e
+32E9  680023                   push 0x2300
+32EC  680022                   push 0x2200
+32EF  9a34d47d33               lcall 0x337d, 0xd434 ; _win_Swap
+32F4  83c404                   add sp, 4
+32F7  90                       nop 
+32F8  0e                       push cs
+32F9  e8a861                   call 0x94a4 ; _UpdateLayQueenModeDisplay
+32FC  ff36ecbc                 push word ptr [0xbcec]
+3300  9a6b2c0000               lcall 0, 0x2c6b
+3305  9ad8ac6c34               lcall 0x346c, 0xacd8 ; _DrawYardData
+330A  e96109                   jmp 0x3c6e
+330D  90                       nop 
+330E  833e100001               cmp word ptr [0x10], 1 ; _bHelp
+3313  1bc0                     sbb ax, ax
+3315  f7d8                     neg ax
+3317  a31000                   mov word ptr [0x10], ax ; _bHelp
+331A  0bc0                     or ax, ax
+331C  740c                     je 0x332a
+331E  8e0686be                 mov es, word ptr [0xbe86]
+3322  26ff36d072               push word ptr es:[0x72d0]
+3327  eb0c                     jmp 0x3335
+3329  90                       nop 
+332A  ff760e                   push word ptr [bp + 0xe]
+332D  6af4                     push -0xc
+332F  9a8b240000               lcall 0, 0x248b
+3334  50                       push ax
+3335  9aa22f0000               lcall 0, 0x2fa2
+333A  e9b8fa                   jmp 0x2df5
+333D  90                       nop 
+333E  833e78cd00               cmp word ptr [0xcd78], 0 ; _rootWnd
+3343  7503                     jne 0x3348
+3345  e92609                   jmp 0x3c6e
+3348  ff7608                   push word ptr [bp + 8]
+334B  ff7606                   push word ptr [bp + 6]
+334E  ff760a                   push word ptr [bp + 0xa]
+3351  ff760e                   push word ptr [bp + 0xe]
+3354  90                       nop 
+3355  0e                       push cs
+3356  e833db                   call 0xe8c ; _DoKeyDown
+3359  83c408                   add sp, 8
+335C  e90f09                   jmp 0x3c6e
+335F  90                       nop 
+3360  8b7e0a                   mov di, word ptr [bp + 0xa]
+3363  8bc7                     mov ax, di
+3365  80fcfd                   cmp ah, 0xfd
+3368  7403                     je 0x336d
+336A  e9db02                   jmp 0x3648
+336D  24f0                     and al, 0xf0
+336F  3ca0                     cmp al, 0xa0
+3371  7403                     je 0x3376
+3373  e9c802                   jmp 0x363e
+3376  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+337A  9ab2c09d30               lcall 0x309d, 0xc0b2 ; _MyGetTopWindow
+337F  83c402                   add sp, 2
+3382  8bf0                     mov si, ax
+3384  0bf6                     or si, si
+3386  7503                     jne 0x338b
+3388  e94dfa                   jmp 0x2dd8
+338B  8bc7                     mov ax, di
+338D  2ae4                     sub ah, ah
+338F  2da000                   sub ax, 0xa0
+3392  3d0c00                   cmp ax, 0xc
+3395  7603                     jbe 0x339a
+3397  e93efa                   jmp 0x2dd8
+339A  d1e0                     shl ax, 1
+339C  93                       xchg bx, ax
+339D  2effa7a233               jmp word ptr cs:[bx + 0x33a2]
+33A2  bc33                     dw offset 0x33bc
+33A4  ce33                     dw offset 0x33ce
+33A6  d833                     dw offset 0x33d8
+33A8  1c34                     dw offset 0x341c
+33AA  2634                     dw offset 0x3426
+33AC  3834                     dw offset 0x3438
+33AE  5c34                     dw offset 0x345c
+33B0  b434                     dw offset 0x34b4
+33B2  0c35                     dw offset 0x350c
+33B4  6435                     dw offset 0x3564
+33B6  d82d                     dw offset 0x2dd8
+33B8  bc35                     dw offset 0x35bc
+33BA  dc35                     dw offset 0x35dc
+33BC  56                       push si
+33BD  6a10                     push 0x10
+33BF  6a00                     push 0
+33C1  6a00                     push 0
+33C3  6a00                     push 0
+33C5  9a6c300000               lcall 0, 0x306c
+33CA  e90bfa                   jmp 0x2dd8
+33CD  90                       nop 
+33CE  56                       push si
+33CF  681201                   push 0x112
+33D2  6800f1                   push 0xf100
+33D5  ebea                     jmp 0x33c1
+33D7  90                       nop 
+33D8  8bfe                     mov di, si
+33DA  0bf6                     or si, si
+33DC  7503                     jne 0x33e1
+33DE  e9f7f9                   jmp 0x2dd8
+33E1  897efe                   mov word ptr [bp - 2], di
+33E4  eb02                     jmp 0x33e8
+33E6  8bf7                     mov si, di
+33E8  56                       push si
+33E9  6a02                     push 2
+33EB  9a13340000               lcall 0, 0x3413
+33F0  8bf8                     mov di, ax
+33F2  0bff                     or di, di
+33F4  75f0                     jne 0x33e6
+33F6  56                       push si
+33F7  6a04                     push 4
+33F9  9a4e180000               lcall 0, 0x184e
+33FE  0bc0                     or ax, ax
+3400  750d                     jne 0x340f
+3402  56                       push si
+3403  9a272f0000               lcall 0, 0x2f27
+3408  0bc0                     or ax, ax
+340A  7403                     je 0x340f
+340C  e90703                   jmp 0x3716
+340F  56                       push si
+3410  6a03                     push 3
+3412  9a40180000               lcall 0, 0x1840
+3417  8bf0                     mov si, ax
+3419  ebdb                     jmp 0x33f6
+341B  90                       nop 
+341C  56                       push si
+341D  681201                   push 0x112
+3420  6810f0                   push 0xf010
+3423  eb9c                     jmp 0x33c1
+3425  90                       nop 
+3426  3936a6bc                 cmp word ptr [0xbca6], si ; _win_hwnd
+342A  7403                     je 0x342f
+342C  e9a9f9                   jmp 0x2dd8
+342F  56                       push si
+3430  681201                   push 0x112
+3433  6800f0                   push 0xf000
+3436  eb89                     jmp 0x33c1
+3438  3936a6bc                 cmp word ptr [0xbca6], si ; _win_hwnd
+343C  7403                     je 0x3441
+343E  e997f9                   jmp 0x2dd8
+3441  56                       push si
+3442  9a8c2c0000               lcall 0, 0x2c8c
+3447  0bc0                     or ax, ax
+3449  740b                     je 0x3456
+344B  56                       push si
+344C  6a01                     push 1
+344E  9aa72c0000               lcall 0, 0x2ca7
+3453  e982f9                   jmp 0x2dd8
+3456  56                       push si
+3457  6a03                     push 3
+3459  ebf3                     jmp 0x344e
+345B  90                       nop 
+345C  6a00                     push 0
+345E  6a00                     push 0
+3460  6a00                     push 0
+3462  681501                   push 0x115
+3465  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+3469  9a6e5c9f34               lcall 0x349f, 0x5c6e ; _DoEditScroll
+346E  83c40a                   add sp, 0xa
+3471  6a11                     push 0x11
+3473  9a83340000               lcall 0, 0x3483
+3478  f6c480                   test ah, 0x80
+347B  7503                     jne 0x3480
+347D  e958f9                   jmp 0x2dd8
+3480  6a26                     push 0x26
+3482  9aa7340000               lcall 0, 0x34a7
+3487  f6c480                   test ah, 0x80
+348A  7503                     jne 0x348f
+348C  e949f9                   jmp 0x2dd8
+348F  6a00                     push 0
+3491  6a00                     push 0
+3493  6a00                     push 0
+3495  681501                   push 0x115
+3498  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+349C  9a6e5cc434               lcall 0x34c4, 0x5c6e ; _DoEditScroll
+34A1  83c40a                   add sp, 0xa
+34A4  6a11                     push 0x11
+34A6  9acc340000               lcall 0, 0x34cc
+34AB  f6c480                   test ah, 0x80
+34AE  75d0                     jne 0x3480
+34B0  e925f9                   jmp 0x2dd8
+34B3  90                       nop 
+34B4  6a00                     push 0
+34B6  6a00                     push 0
+34B8  6a01                     push 1
+34BA  681501                   push 0x115
+34BD  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+34C1  9a6e5cf734               lcall 0x34f7, 0x5c6e ; _DoEditScroll
+34C6  83c40a                   add sp, 0xa
+34C9  6a11                     push 0x11
+34CB  9adb340000               lcall 0, 0x34db
+34D0  f6c480                   test ah, 0x80
+34D3  7503                     jne 0x34d8
+34D5  e900f9                   jmp 0x2dd8
+34D8  6a28                     push 0x28
+34DA  9aff340000               lcall 0, 0x34ff
+34DF  f6c480                   test ah, 0x80
+34E2  7503                     jne 0x34e7
+34E4  e9f1f8                   jmp 0x2dd8
+34E7  6a00                     push 0
+34E9  6a00                     push 0
+34EB  6a01                     push 1
+34ED  681501                   push 0x115
+34F0  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+34F4  9a6e5c1c35               lcall 0x351c, 0x5c6e ; _DoEditScroll
+34F9  83c40a                   add sp, 0xa
+34FC  6a11                     push 0x11
+34FE  9a24350000               lcall 0, 0x3524
+3503  f6c480                   test ah, 0x80
+3506  75d0                     jne 0x34d8
+3508  e9cdf8                   jmp 0x2dd8
+350B  90                       nop 
+350C  6a00                     push 0
+350E  6a00                     push 0
+3510  6a00                     push 0
+3512  681401                   push 0x114
+3515  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+3519  9a6e5c4f35               lcall 0x354f, 0x5c6e ; _DoEditScroll
+351E  83c40a                   add sp, 0xa
+3521  6a11                     push 0x11
+3523  9a33350000               lcall 0, 0x3533
+3528  f6c480                   test ah, 0x80
+352B  7503                     jne 0x3530
+352D  e9a8f8                   jmp 0x2dd8
+3530  6a25                     push 0x25
+3532  9a57350000               lcall 0, 0x3557
+3537  f6c480                   test ah, 0x80
+353A  7503                     jne 0x353f
+353C  e999f8                   jmp 0x2dd8
+353F  6a00                     push 0
+3541  6a00                     push 0
+3543  6a00                     push 0
+3545  681401                   push 0x114
+3548  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+354C  9a6e5c7435               lcall 0x3574, 0x5c6e ; _DoEditScroll
+3551  83c40a                   add sp, 0xa
+3554  6a11                     push 0x11
+3556  9a7c350000               lcall 0, 0x357c
+355B  f6c480                   test ah, 0x80
+355E  75d0                     jne 0x3530
+3560  e975f8                   jmp 0x2dd8
+3563  90                       nop 
+3564  6a00                     push 0
+3566  6a00                     push 0
+3568  6a01                     push 1
+356A  681401                   push 0x114
+356D  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+3571  9a6e5ca735               lcall 0x35a7, 0x5c6e ; _DoEditScroll
+3576  83c40a                   add sp, 0xa
+3579  6a11                     push 0x11
+357B  9a8b350000               lcall 0, 0x358b
+3580  f6c480                   test ah, 0x80
+3583  7503                     jne 0x3588
+3585  e950f8                   jmp 0x2dd8
+3588  6a27                     push 0x27
+358A  9aaf350000               lcall 0, 0x35af
+358F  f6c480                   test ah, 0x80
+3592  7503                     jne 0x3597
+3594  e941f8                   jmp 0x2dd8
+3597  6a00                     push 0
+3599  6a00                     push 0
+359B  6a01                     push 1
+359D  681401                   push 0x114
+35A0  ff36a6bc                 push word ptr [0xbca6] ; _win_hwnd
+35A4  9a6e5c7d32               lcall 0x327d, 0x5c6e ; _DoEditScroll
+35A9  83c40a                   add sp, 0xa
+35AC  6a11                     push 0x11
+35AE  9ac3300000               lcall 0, 0x30c3
+35B3  f6c480                   test ah, 0x80
+35B6  75d0                     jne 0x3588
+35B8  e91df8                   jmp 0x2dd8
+35BB  90                       nop 
+35BC  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+35C0  8e06b8be                 mov es, word ptr [0xbeb8]
+35C4  26ff369293               push word ptr es:[0x9392]
+35C9  26ff369093               push word ptr es:[0x9390]
+35CE  1e                       push ds
+35CF  688e03                   push 0x38e
+35D2  6a00                     push 0
+35D4  9a1b360000               lcall 0, 0x361b
+35D9  e9fcf7                   jmp 0x2dd8
+35DC  9ae6350000               lcall 0, 0x35e6
+35E1  0bc0                     or ax, ax
+35E3  744b                     je 0x3630
+35E5  9affff0000               lcall 0, 0xffff
+35EA  50                       push ax
+35EB  1e                       push ds
+35EC  68a103                   push 0x3a1
+35EF  9a83310000               lcall 0, 0x3183
+35F4  8bf0                     mov si, ax
+35F6  56                       push si
+35F7  1e                       push ds
+35F8  68a703                   push 0x3a7
+35FB  8d863aff                 lea ax, [bp - 0xc6]
+35FF  16                       push ss
+3600  50                       push ax
+3601  9a56045725               lcall 0x2557, 0x456 ; _sprintf
+3606  83c40a                   add sp, 0xa
+3609  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+360D  8d863aff                 lea ax, [bp - 0xc6]
+3611  16                       push ss
+3612  50                       push ax
+3613  1e                       push ds
+3614  68d603                   push 0x3d6
+3617  682410                   push 0x1024
+361A  9affff0000               lcall 0, 0xffff
+361F  0bc0                     or ax, ax
+3621  7503                     jne 0x3626
+3623  e9b2f7                   jmp 0x2dd8
+3626  9a8b360000               lcall 0, 0x368b
+362B  56                       push si
+362C  e906f8                   jmp 0x2e35
+362F  90                       nop 
+3630  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3634  1e                       push ds
+3635  68f403                   push 0x3f4
+3638  1e                       push ds
+3639  68e503                   push 0x3e5
+363C  eb94                     jmp 0x35d2
+363E  57                       push di
+363F  90                       nop 
+3640  0e                       push cs
+3641  e832e2                   call 0x1876 ; _DoMenuEntry
+3644  e9f3f7                   jmp 0x2e3a
+3647  90                       nop 
+3648  80fcf9                   cmp ah, 0xf9
+364B  750d                     jne 0x365a
+364D  2ae4                     sub ah, ah
+364F  8e06babe                 mov es, word ptr [0xbeba]
+3653  26a3ee80                 mov word ptr es:[0x80ee], ax
+3657  e97ef7                   jmp 0x2dd8
+365A  ff760e                   push word ptr [bp + 0xe]
+365D  56                       push si
+365E  57                       push di
+365F  e91506                   jmp 0x3c77
+3662  8b760e                   mov si, word ptr [bp + 0xe]
+3665  39367ecd                 cmp word ptr [0xcd7e], si ; _mainRootWnd
+3669  7555                     jne 0x36c0
+366B  8b7e0a                   mov di, word ptr [bp + 0xa]
+366E  8bc7                     mov ax, di
+3670  24f0                     and al, 0xf0
+3672  2d20f0                   sub ax, 0xf020
+3675  7409                     je 0x3680
+3677  2d4000                   sub ax, 0x40
+367A  7416                     je 0x3692
+367C  e9b500                   jmp 0x3734
+367F  90                       nop 
+3680  833e360000               cmp word ptr [0x36], 0 ; _captureWnd
+3685  7503                     jne 0x368a
+3687  e9aa00                   jmp 0x3734
+368A  9a01300000               lcall 0, 0x3001
+368F  e9a200                   jmp 0x3734
+3692  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3696  6a00                     push 0
+3698  9a3b370000               lcall 0, 0x373b
+369D  90                       nop 
+369E  0e                       push cs
+369F  e8869f                   call 0xffffd628
+36A2  0bc0                     or ax, ax
+36A4  7403                     je 0x36a9
+36A6  e92af7                   jmp 0x2dd3
+36A9  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+36AD  50                       push ax
+36AE  6a11                     push 0x11
+36B0  ff364200                 push word ptr [0x42]
+36B4  ff364000                 push word ptr [0x40] ; _lpTimerFunc
+36B8  9a6f370000               lcall 0, 0x376f
+36BD  e918f7                   jmp 0x2dd8
+36C0  8b7e0a                   mov di, word ptr [bp + 0xa]
+36C3  8bc7                     mov ax, di
+36C5  24f0                     and al, 0xf0
+36C7  3d40f0                   cmp ax, 0xf040
+36CA  7554                     jne 0x3720
+36CC  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+36D0  9ab2c0dd32               lcall 0x32dd, 0xc0b2 ; _MyGetTopWindow
+36D5  83c402                   add sp, 2
+36D8  8bf0                     mov si, ax
+36DA  0bf6                     or si, si
+36DC  7503                     jne 0x36e1
+36DE  e9f7f6                   jmp 0x2dd8
+36E1  eb03                     jmp 0x36e6
+36E3  90                       nop 
+36E4  8bf7                     mov si, di
+36E6  56                       push si
+36E7  6a02                     push 2
+36E9  9a0e370000               lcall 0, 0x370e
+36EE  8bf8                     mov di, ax
+36F0  0bff                     or di, di
+36F2  75f0                     jne 0x36e4
+36F4  56                       push si
+36F5  6a04                     push 4
+36F7  9afa330000               lcall 0, 0x33fa
+36FC  0bc0                     or ax, ax
+36FE  750a                     jne 0x370a
+3700  56                       push si
+3701  9a04340000               lcall 0, 0x3404
+3706  0bc0                     or ax, ax
+3708  750c                     jne 0x3716
+370A  56                       push si
+370B  6a03                     push 3
+370D  9aec330000               lcall 0, 0x33ec
+3712  8bf0                     mov si, ax
+3714  ebde                     jmp 0x36f4
+3716  56                       push si
+3717  9aa4310000               lcall 0, 0x31a4
+371C  e9b9f6                   jmp 0x2dd8
+371F  90                       nop 
+3720  3936d8bc                 cmp word ptr [0xbcd8], si
+3724  750e                     jne 0x3734
+3726  8bc7                     mov ax, di
+3728  24f0                     and al, 0xf0
+372A  3d60f0                   cmp ax, 0xf060
+372D  7505                     jne 0x3734
+372F  90                       nop 
+3730  0e                       push cs
+3731  e8f65f                   call 0x972a ; _YardToMap
+3734  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3738  6a00                     push 0
+373A  9ad62f0000               lcall 0, 0x2fd6
+373F  56                       push si
+3740  ff760c                   push word ptr [bp + 0xc]
+3743  57                       push di
+3744  ff7608                   push word ptr [bp + 8]
+3747  ff7606                   push word ptr [bp + 6]
+374A  9affff0000               lcall 0, 0xffff
+374F  8946fc                   mov word ptr [bp - 4], ax
+3752  8956fe                   mov word ptr [bp - 2], dx
+3755  a14200                   mov ax, word ptr [0x42]
+3758  0b064000                 or ax, word ptr [0x40] ; _lpTimerFunc
+375C  7415                     je 0x3773
+375E  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3762  6a00                     push 0
+3764  6a11                     push 0x11
+3766  ff364200                 push word ptr [0x42]
+376A  ff364000                 push word ptr [0x40] ; _lpTimerFunc
+376E  9af52f0000               lcall 0, 0x2ff5
+3773  3b367ecd                 cmp si, word ptr [0xcd7e] ; _mainRootWnd
+3777  757c                     jne 0x37f5
+3779  8bc7                     mov ax, di
+377B  24f0                     and al, 0xf0
+377D  2d20f1                   sub ax, 0xf120
+3780  7573                     jne 0x37f5
+3782  833e360000               cmp word ptr [0x36], 0 ; _captureWnd
+3787  746c                     je 0x37f5
+3789  ff363600                 push word ptr [0x36] ; _captureWnd
+378D  9a412f0000               lcall 0, 0x2f41
+3792  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3796  8d46ea                   lea ax, [bp - 0x16]
+3799  16                       push ss
+379A  50                       push ax
+379B  9aaa370000               lcall 0, 0x37aa
+37A0  ff363600                 push word ptr [0x36] ; _captureWnd
+37A4  8d46e2                   lea ax, [bp - 0x1e]
+37A7  16                       push ss
+37A8  50                       push ax
+37A9  9a232d0000               lcall 0, 0x2d23
+37AE  ff363600                 push word ptr [0x36] ; _captureWnd
+37B2  6a00                     push 0
+37B4  8b46e2                   mov ax, word ptr [bp - 0x1e]
+37B7  2b46e6                   sub ax, word ptr [bp - 0x1a]
+37BA  99                       cdq 
+37BB  2bc2                     sub ax, dx
+37BD  d1f8                     sar ax, 1
+37BF  8bc8                     mov cx, ax
+37C1  8b46ee                   mov ax, word ptr [bp - 0x12]
+37C4  2b46ea                   sub ax, word ptr [bp - 0x16]
+37C7  99                       cdq 
+37C8  2bc2                     sub ax, dx
+37CA  d1f8                     sar ax, 1
+37CC  03c8                     add cx, ax
+37CE  51                       push cx
+37CF  8b46e4                   mov ax, word ptr [bp - 0x1c]
+37D2  2b46e8                   sub ax, word ptr [bp - 0x18]
+37D5  99                       cdq 
+37D6  2bc2                     sub ax, dx
+37D8  d1f8                     sar ax, 1
+37DA  8bc8                     mov cx, ax
+37DC  8b46f0                   mov ax, word ptr [bp - 0x10]
+37DF  2b46ec                   sub ax, word ptr [bp - 0x14]
+37E2  99                       cdq 
+37E3  2bc2                     sub ax, dx
+37E5  d1f8                     sar ax, 1
+37E7  03c8                     add cx, ax
+37E9  51                       push cx
+37EA  6a00                     push 0
+37EC  6a00                     push 0
+37EE  6a05                     push 5
+37F0  9ad52c0000               lcall 0, 0x2cd5
+37F5  8b46fc                   mov ax, word ptr [bp - 4]
+37F8  8b56fe                   mov dx, word ptr [bp - 2]
+37FB  e98404                   jmp 0x3c82
+37FE  ff760e                   push word ptr [bp + 0xe]
+3801  56                       push si
+3802  6a00                     push 0
+3804  6a00                     push 0
+3806  6a00                     push 0
+3808  90                       nop 
+3809  0e                       push cs
+380A  e833ec                   call 0x2440 ; MYTIMERFUNC
+380D  e9e5f5                   jmp 0x2df5
+3810  8b7e0e                   mov di, word ptr [bp + 0xe]
+3813  393ea6bc                 cmp word ptr [0xbca6], di ; _win_hwnd
+3817  7403                     je 0x381c
+3819  e9def5                   jmp 0x2dfa
+381C  8b760a                   mov si, word ptr [bp + 0xa]
+381F  ff7608                   push word ptr [bp + 8]
+3822  ff7606                   push word ptr [bp + 6]
+3825  56                       push si
+3826  ff760c                   push word ptr [bp + 0xc]
+3829  57                       push di
+382A  9a6e5c5b38               lcall 0x385b, 0x5c6e ; _DoEditScroll
+382F  83c40a                   add sp, 0xa
+3832  0bf6                     or si, si
+3834  7408                     je 0x383e
+3836  83fe01                   cmp si, 1
+3839  7403                     je 0x383e
+383B  e9b7f5                   jmp 0x2df5
+383E  6a01                     push 1
+3840  9a63380000               lcall 0, 0x3863
+3845  f6c480                   test ah, 0x80
+3848  7503                     jne 0x384d
+384A  e9a8f5                   jmp 0x2df5
+384D  ff7608                   push word ptr [bp + 8]
+3850  ff7606                   push word ptr [bp + 6]
+3853  56                       push si
+3854  ff760c                   push word ptr [bp + 0xc]
+3857  57                       push di
+3858  9a6e5cc632               lcall 0x32c6, 0x5c6e ; _DoEditScroll
+385D  83c40a                   add sp, 0xa
+3860  6a01                     push 1
+3862  9a74340000               lcall 0, 0x3474
+3867  f6c480                   test ah, 0x80
+386A  75e1                     jne 0x384d
+386C  e986f5                   jmp 0x2df5
+386F  90                       nop 
+3870  8b1678cd                 mov dx, word ptr [0xcd78] ; _rootWnd
+3874  0bd2                     or dx, dx
+3876  7503                     jne 0x387b
+3878  e97af5                   jmp 0x2df5
+387B  8b760e                   mov si, word ptr [bp + 0xe]
+387E  3bf2                     cmp si, dx
+3880  7503                     jne 0x3885
+3882  e970f5                   jmp 0x2df5
+3885  8b4606                   mov ax, word ptr [bp + 6]
+3888  8946f6                   mov word ptr [bp - 0xa], ax
+388B  8946f2                   mov word ptr [bp - 0xe], ax
+388E  8b4608                   mov ax, word ptr [bp + 8]
+3891  8946f8                   mov word ptr [bp - 8], ax
+3894  8946f4                   mov word ptr [bp - 0xc], ax
+3897  56                       push si
+3898  8d46f2                   lea ax, [bp - 0xe]
+389B  16                       push ss
+389C  50                       push ax
+389D  9acf380000               lcall 0, 0x38cf
+38A2  ff76f4                   push word ptr [bp - 0xc]
+38A5  ff76f2                   push word ptr [bp - 0xe]
+38A8  9affff0000               lcall 0, 0xffff
+38AD  8bf8                     mov di, ax
+38AF  57                       push di
+38B0  1e                       push ds
+38B1  685804                   push 0x458
+38B4  9af0350000               lcall 0, 0x35f0
+38B9  8946fc                   mov word ptr [bp - 4], ax
+38BC  40                       inc ax
+38BD  7507                     jne 0x38c6
+38BF  c746fe0000               mov word ptr [bp - 2], 0
+38C4  eb2b                     jmp 0x38f1
+38C6  ff760e                   push word ptr [bp + 0xe]
+38C9  8d46f6                   lea ax, [bp - 0xa]
+38CC  16                       push ss
+38CD  50                       push ax
+38CE  9a8c3a0000               lcall 0, 0x3a8c
+38D3  57                       push di
+38D4  8d46f6                   lea ax, [bp - 0xa]
+38D7  16                       push ss
+38D8  50                       push ax
+38D9  9a9a3a0000               lcall 0, 0x3a9a
+38DE  8d46f6                   lea ax, [bp - 0xa]
+38E1  16                       push ss
+38E2  50                       push ax
+38E3  ff76fc                   push word ptr [bp - 4]
+38E6  9ab0d00039               lcall 0x3900, 0xd0b0 ; _win_FindObject
+38EB  83c406                   add sp, 6
+38EE  8946fe                   mov word ptr [bp - 2], ax
+38F1  f646feff                 test byte ptr [bp - 2], 0xff
+38F5  7503                     jne 0x38fa
+38F7  e9cf00                   jmp 0x39c9
+38FA  ff76fe                   push word ptr [bp - 2]
+38FD  9a2ec37339               lcall 0x3973, 0xc32e ; _win_ObjAddr
+3902  83c402                   add sp, 2
+3905  8bf0                     mov si, ax
+3907  8956fc                   mov word ptr [bp - 4], dx
+390A  bbbc1b                   mov bx, 0x1bbc
+390D  8e06bcbe                 mov es, word ptr [0xbebc]
+3911  899e28fe                 mov word ptr [bp - 0x1d8], bx
+3915  8c862afe                 mov word ptr [bp - 0x1d6], es
+3919  26833fff                 cmp word ptr es:[bx], -1
+391D  747b                     je 0x399a
+391F  268b1f                   mov bx, word ptr es:[bx]
+3922  c1fb08                   sar bx, 8
+3925  d1e3                     shl bx, 1
+3927  39bfa6bc                 cmp word ptr [bx - 0x435a], di
+392B  756d                     jne 0x399a
+392D  8ec2                     mov es, dx
+392F  26f6442410               test byte ptr es:[si + 0x24], 0x10
+3934  7503                     jne 0x3939
+3936  e99000                   jmp 0x39c9
+3939  8b46fe                   mov ax, word ptr [bp - 2]
+393C  bbd2a0                   mov bx, 0xa0d2
+393F  8e06bebe                 mov es, word ptr [0xbebe]
+3943  899e24fe                 mov word ptr [bp - 0x1dc], bx
+3947  8c8626fe                 mov word ptr [bp - 0x1da], es
+394B  263907                   cmp word ptr es:[bx], ax
+394E  7479                     je 0x39c9
+3950  8bd8                     mov bx, ax
+3952  c1fb08                   sar bx, 8
+3955  d1e3                     shl bx, 1
+3957  ffb7a6bc                 push word ptr [bx - 0x435a]
+395B  9afa3d8c39               lcall 0x398c, 0x3dfa ; _MSClipStart
+3960  83c402                   add sp, 2
+3963  c49e24fe                 les bx, ptr [bp - 0x1dc]
+3967  26833fff                 cmp word ptr es:[bx], -1
+396B  740b                     je 0x3978
+396D  26ff37                   push word ptr es:[bx]
+3970  9ac0dc8439               lcall 0x3984, 0xdcc0 ; _win_ObjInv
+3975  83c402                   add sp, 2
+3978  837efeff                 cmp word ptr [bp - 2], -1
+397C  740b                     je 0x3989
+397E  ff76fe                   push word ptr [bp - 2]
+3981  9ac0dcc439               lcall 0x39c4, 0xdcc0 ; _win_ObjInv
+3986  83c402                   add sp, 2
+3989  9a4c3e213a               lcall 0x3a21, 0x3e4c ; _MSClipEnd
+398E  8b46fe                   mov ax, word ptr [bp - 2]
+3991  c49e24fe                 les bx, ptr [bp - 0x1dc]
+3995  268907                   mov word ptr es:[bx], ax
+3998  eb2f                     jmp 0x39c9
+399A  8ec2                     mov es, dx
+399C  26f6442410               test byte ptr es:[si + 0x24], 0x10
+39A1  7426                     je 0x39c9
+39A3  8e06c0be                 mov es, word ptr [0xbec0]
+39A7  26a110be                 mov ax, word ptr es:[0xbe10]
+39AB  3346fe                   xor ax, word ptr [bp - 2]
+39AE  898622fe                 mov word ptr [bp - 0x1de], ax
+39B2  f6c4ff                   test ah, 0xff
+39B5  7512                     jne 0x39c9
+39B7  f68622feff               test byte ptr [bp - 0x1de], 0xff
+39BC  740b                     je 0x39c9
+39BE  ff76fe                   push word ptr [bp - 2]
+39C1  9a0cddd539               lcall 0x39d5, 0xdd0c ; __win_SetProxItem
+39C6  83c402                   add sp, 2
+39C9  3b3eb8bc                 cmp di, word ptr [0xbcb8]
+39CD  7403                     je 0x39d2
+39CF  e923f4                   jmp 0x2df5
+39D2  9a08dd2d3a               lcall 0x3a2d, 0xdd08 ; _win_GetProxEvent
+39D7  8bf0                     mov si, ax
+39D9  81e6ff00                 and si, 0xff
+39DD  83ee02                   sub si, 2
+39E0  bbbc1b                   mov bx, 0x1bbc
+39E3  8e06bcbe                 mov es, word ptr [0xbebc]
+39E7  899e28fe                 mov word ptr [bp - 0x1d8], bx
+39EB  8c862afe                 mov word ptr [bp - 0x1d6], es
+39EF  268b07                   mov ax, word ptr es:[bx]
+39F2  8bde                     mov bx, si
+39F4  d1e3                     shl bx, 1
+39F6  81c37c03                 add bx, 0x37c
+39FA  899e20fe                 mov word ptr [bp - 0x1e0], bx
+39FE  3907                     cmp word ptr [bx], ax
+3A00  7503                     jne 0x3a05
+3A02  e9f0f3                   jmp 0x2df5
+3A05  0bf6                     or si, si
+3A07  7d03                     jge 0x3a0c
+3A09  e9e9f3                   jmp 0x2df5
+3A0C  83fe07                   cmp si, 7
+3A0F  7e03                     jle 0x3a14
+3A11  e9e1f3                   jmp 0x2df5
+3A14  8b9e28fe                 mov bx, word ptr [bp - 0x1d8]
+3A18  26833fff                 cmp word ptr es:[bx], -1
+3A1C  7422                     je 0x3a40
+3A1E  9ad245c63a               lcall 0x3ac6, 0x45d2 ; _MyReleaseCapture
+3A23  c49e28fe                 les bx, ptr [bp - 0x1d8]
+3A27  26ff37                   push word ptr es:[bx]
+3A2A  9a98cf3e3a               lcall 0x3a3e, 0xcf98 ; _win_Close
+3A2F  83c402                   add sp, 2
+3A32  c49e28fe                 les bx, ptr [bp - 0x1d8]
+3A36  26c707ffff               mov word ptr es:[bx], 0xffff
+3A3B  9a16d1713a               lcall 0x3a71, 0xd116 ; _UpdateAllWindows
+3A40  8b9e20fe                 mov bx, word ptr [bp - 0x1e0]
+3A44  833fff                   cmp word ptr [bx], -1
+3A47  7503                     jne 0x3a4c
+3A49  e98e00                   jmp 0x3ada
+3A4C  c49e28fe                 les bx, ptr [bp - 0x1d8]
+3A50  268b07                   mov ax, word ptr es:[bx]
+3A53  8b9e20fe                 mov bx, word ptr [bp - 0x1e0]
+3A57  3907                     cmp word ptr [bx], ax
+3A59  747f                     je 0x3ada
+3A5B  8b07                     mov ax, word ptr [bx]
+3A5D  8b9e28fe                 mov bx, word ptr [bp - 0x1d8]
+3A61  268907                   mov word ptr es:[bx], ax
+3A64  8d46ea                   lea ax, [bp - 0x16]
+3A67  16                       push ss
+3A68  50                       push ax
+3A69  8d840209                 lea ax, [si + 0x902]
+3A6D  50                       push ax
+3A6E  9ad2c2ae3a               lcall 0x3aae, 0xc2d2 ; _win_GetObjRect
+3A73  83c406                   add sp, 6
+3A76  8b46ee                   mov ax, word ptr [bp - 0x12]
+3A79  8946fc                   mov word ptr [bp - 4], ax
+3A7C  8b46ec                   mov ax, word ptr [bp - 0x14]
+3A7F  8946fe                   mov word ptr [bp - 2], ax
+3A82  ff36b8bc                 push word ptr [0xbcb8]
+3A86  8d46fc                   lea ax, [bp - 4]
+3A89  16                       push ss
+3A8A  50                       push ax
+3A8B  9ac1050000               lcall 0, 0x5c1
+3A90  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3A94  8d46fc                   lea ax, [bp - 4]
+3A97  16                       push ss
+3A98  50                       push ax
+3A99  9af00e0000               lcall 0, 0xef0
+3A9E  ff76fe                   push word ptr [bp - 2]
+3AA1  ff76fc                   push word ptr [bp - 4]
+3AA4  c49e28fe                 les bx, ptr [bp - 0x1d8]
+3AA8  26ff37                   push word ptr es:[bx]
+3AAB  9a2ecad336               lcall 0x36d3, 0xca2e ; _win_Open
+3AB0  83c406                   add sp, 6
+3AB3  c49e28fe                 les bx, ptr [bp - 0x1d8]
+3AB7  268b1f                   mov bx, word ptr es:[bx]
+3ABA  c1fb08                   sar bx, 8
+3ABD  d1e3                     shl bx, 1
+3ABF  ffb7a6bc                 push word ptr [bx - 0x435a]
+3AC3  9a7a45e13a               lcall 0x3ae1, 0x457a ; _MySetCapture
+3AC8  83c402                   add sp, 2
+3ACB  8e06bebe                 mov es, word ptr [0xbebe]
+3ACF  26c706d2a0ffff           mov word ptr es:[0xa0d2], 0xffff
+3AD6  e91cf3                   jmp 0x2df5
+3AD9  90                       nop 
+3ADA  ff36b8bc                 push word ptr [0xbcb8]
+3ADE  9a7a452e3b               lcall 0x3b2e, 0x457a ; _MySetCapture
+3AE3  83c402                   add sp, 2
+3AE6  e90cf3                   jmp 0x2df5
+3AE9  90                       nop 
+3AEA  833e78cd00               cmp word ptr [0xcd78], 0 ; _rootWnd
+3AEF  7503                     jne 0x3af4
+3AF1  e97a01                   jmp 0x3c6e
+3AF4  ff7608                   push word ptr [bp + 8]
+3AF7  ff7606                   push word ptr [bp + 6]
+3AFA  ff760a                   push word ptr [bp + 0xa]
+3AFD  56                       push si
+3AFE  ff760e                   push word ptr [bp + 0xe]
+3B01  90                       nop 
+3B02  0e                       push cs
+3B03  e8f0d8                   call 0x13f6 ; _DoMouse
+3B06  83c40a                   add sp, 0xa
+3B09  e96201                   jmp 0x3c6e
+3B0C  8b760e                   mov si, word ptr [bp + 0xe]
+3B0F  8b7e0a                   mov di, word ptr [bp + 0xa]
+3B12  56                       push si
+3B13  8d86bafe                 lea ax, [bp - 0x146]
+3B17  16                       push ss
+3B18  50                       push ax
+3B19  688000                   push 0x80
+3B1C  9a3e3b0000               lcall 0, 0x3b3e
+3B21  8d86bafe                 lea ax, [bp - 0x146]
+3B25  16                       push ss
+3B26  50                       push ax
+3B27  1e                       push ds
+3B28  688105                   push 0x581
+3B2B  9abc62b52f               lcall 0x2fb5, 0x62bc ; _WinPrintf
+3B30  83c408                   add sp, 8
+3B33  57                       push di
+3B34  8d863afe                 lea ax, [bp - 0x1c6]
+3B38  16                       push ss
+3B39  50                       push ax
+3B3A  688000                   push 0x80
+3B3D  9affff0000               lcall 0, 0xffff
+3B42  8d863afe                 lea ax, [bp - 0x1c6]
+3B46  16                       push ss
+3B47  50                       push ax
+3B48  1e                       push ds
+3B49  68a005                   push 0x5a0
+3B4C  9abc625f3b               lcall 0x3b5f, 0x62bc ; _WinPrintf
+3B51  83c408                   add sp, 8
+3B54  3bfe                     cmp di, si
+3B56  750c                     jne 0x3b64
+3B58  1e                       push ds
+3B59  68c005                   push 0x5c0
+3B5C  9abc62c23b               lcall 0x3bc2, 0x62bc ; _WinPrintf
+3B61  e9c8f6                   jmp 0x322c
+3B64  833e340000               cmp word ptr [0x34], 0 ; _activeAppFlag
+3B69  755d                     jne 0x3bc8
+3B6B  68183c                   push 0x3c18 ; _StopSimulation
+3B6E  68381c                   push 0x1c38
+3B71  ff367ccc                 push word ptr [0xcc7c] ; _hInst
+3B75  9a223c0000               lcall 0, 0x3c22
+3B7A  8bf0                     mov si, ax
+3B7C  8956fe                   mov word ptr [bp - 2], dx
+3B7F  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3B83  8bc2                     mov ax, dx
+3B85  50                       push ax
+3B86  56                       push si
+3B87  6a00                     push 0
+3B89  6a00                     push 0
+3B8B  8bfa                     mov di, dx
+3B8D  9a403c0000               lcall 0, 0x3c40
+3B92  57                       push di
+3B93  56                       push si
+3B94  9a4d3c0000               lcall 0, 0x3c4d
+3B99  833e76cd00               cmp word ptr [0xcd76], 0 ; _ribbonBarWnd
+3B9E  7503                     jne 0x3ba3
+3BA0  e952f2                   jmp 0x2df5
+3BA3  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+3BA7  6a00                     push 0
+3BA9  6a00                     push 0
+3BAB  6a00                     push 0
+3BAD  9a633c0000               lcall 0, 0x3c63
+3BB2  e940f2                   jmp 0x2df5
+3BB5  90                       nop 
+3BB6  ff7608                   push word ptr [bp + 8]
+3BB9  ff7606                   push word ptr [bp + 6]
+3BBC  ff760a                   push word ptr [bp + 0xa]
+3BBF  9a5481123c               lcall 0x3c12, 0x8154 ; _MciMessage
+3BC4  e9d2ed                   jmp 0x2999
+3BC7  90                       nop 
+3BC8  833e5a0800               cmp word ptr [0x85a], 0 ; _paletteH
+3BCD  7503                     jne 0x3bd2
+3BCF  e99c00                   jmp 0x3c6e
+3BD2  ff760e                   push word ptr [bp + 0xe]
+3BD5  9affff0000               lcall 0, 0xffff
+3BDA  8bf0                     mov si, ax
+3BDC  56                       push si
+3BDD  ff365a08                 push word ptr [0x85a] ; _paletteH
+3BE1  6a00                     push 0
+3BE3  9afa3b0000               lcall 0, 0x3bfa
+3BE8  8946fe                   mov word ptr [bp - 2], ax
+3BEB  56                       push si
+3BEC  9affff0000               lcall 0, 0xffff
+3BF1  8bf8                     mov di, ax
+3BF3  56                       push si
+3BF4  ff76fe                   push word ptr [bp - 2]
+3BF7  6a00                     push 0
+3BF9  9affff0000               lcall 0, 0xffff
+3BFE  ff760e                   push word ptr [bp + 0xe]
+3C01  56                       push si
+3C02  9affff0000               lcall 0, 0xffff
+3C07  0bff                     or di, di
+3C09  7e5c                     jle 0x3c67
+3C0B  1e                       push ds
+3C0C  68e005                   push 0x5e0
+3C0F  9abc625e39               lcall 0x395e, 0x62bc ; _WinPrintf
+3C14  83c404                   add sp, 4
+3C17  68c82e                   push 0x2ec8 ; _StopSimulation
+3C1A  68381c                   push 0x1c38
+3C1D  ff367ccc                 push word ptr [0xcc7c] ; _hInst
+3C21  9ad22e0000               lcall 0, 0x2ed2
+3C26  8bf0                     mov si, ax
+3C28  8956fe                   mov word ptr [bp - 2], dx
+3C2B  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
+3C2F  8bc2                     mov ax, dx
+3C31  50                       push ax
+3C32  56                       push si
+3C33  6a00                     push 0
+3C35  6a00                     push 0
+3C37  89b61cfe                 mov word ptr [bp - 0x1e4], si
+3C3B  89861efe                 mov word ptr [bp - 0x1e2], ax
+3C3F  9aea2e0000               lcall 0, 0x2eea
+3C44  ffb61efe                 push word ptr [bp - 0x1e2]
+3C48  ffb61cfe                 push word ptr [bp - 0x1e4]
+3C4C  9af12e0000               lcall 0, 0x2ef1
+3C51  833e76cd00               cmp word ptr [0xcd76], 0 ; _ribbonBarWnd
+3C56  740f                     je 0x3c67
+3C58  ff3676cd                 push word ptr [0xcd76] ; _ribbonBarWnd
+3C5C  6a00                     push 0
+3C5E  6a00                     push 0
+3C60  6a00                     push 0
+3C62  9a072f0000               lcall 0, 0x2f07
+3C67  8bc7                     mov ax, di
+3C69  99                       cdq 
+3C6A  eb16                     jmp 0x3c82
+3C6C  90                       nop 
+3C6D  90                       nop 
+3C6E  ff760e                   push word ptr [bp + 0xe]
+3C71  ff760c                   push word ptr [bp + 0xc]
+3C74  ff760a                   push word ptr [bp + 0xa]
+3C77  ff7608                   push word ptr [bp + 8]
+3C7A  ff7606                   push word ptr [bp + 6]
+3C7D  9a4b370000               lcall 0, 0x374b
+3C82  1f                       pop ds
+3C83  5e                       pop si
+3C84  5f                       pop di
+3C85  c9                       leave 
+3C86  ca0a00                   retf 0xa
 ```
 
 ## _InitInstance — SIMANT_MODULE:3C8A
@@ -6067,84 +7713,76 @@ Source: unrecovered. Flags: unresolved.
 4FF5  93                       xchg bx, ax
 4FF6  2effa7fc4f               jmp word ptr cs:[bx + 0x4ffc]
 4FFB  90                       nop 
-4FFC  9e                       sahf 
-4FFD  50                       push ax
-4FFE  8850a6                   mov byte ptr [bx + si - 0x5a], dl
-5001  50                       push ax
-5002  c050c050                 rcl byte ptr [bx + si - 0x40], 0x50
-5006  c0508850                 rcl byte ptr [bx + si - 0x78], 0x50
-500A  c0508850                 rcl byte ptr [bx + si - 0x78], 0x50
-500E  885088                   mov byte ptr [bx + si - 0x78], dl
-5011  50                       push ax
-5012  885088                   mov byte ptr [bx + si - 0x78], dl
-5015  50                       push ax
-5016  885088                   mov byte ptr [bx + si - 0x78], dl
-5019  50                       push ax
-501A  8850ce                   mov byte ptr [bx + si - 0x32], dl
-501D  50                       push ax
-501E  d6                       salc 
-501F  50                       push ax
-5020  de50e6                   ficom word ptr [bx + si - 0x1a]
-5023  50                       push ax
-5024  ee                       out dx, al
-5025  50                       push ax
-5026  f650fe                   not byte ptr [bx + si - 2]
-5029  50                       push ax
-502A  06                       push es
-502B  51                       push cx
-502C  885088                   mov byte ptr [bx + si - 0x78], dl
-502F  50                       push ax
-5030  885088                   mov byte ptr [bx + si - 0x78], dl
-5033  50                       push ax
-5034  885088                   mov byte ptr [bx + si - 0x78], dl
-5037  50                       push ax
-5038  885088                   mov byte ptr [bx + si - 0x78], dl
-503B  50                       push ax
-503C  1e                       push ds
-503D  51                       push cx
-503E  1e                       push ds
-503F  51                       push cx
-5040  1e                       push ds
-5041  51                       push cx
-5042  1e                       push ds
-5043  51                       push cx
-5044  88509a                   mov byte ptr [bx + si - 0x66], dl
-5047  51                       push cx
-5048  ac                       lodsb al, byte ptr [si]
-5049  51                       push cx
-504A  b051                     mov al, 0x51
-504C  885088                   mov byte ptr [bx + si - 0x78], dl
-504F  50                       push ax
-5050  885088                   mov byte ptr [bx + si - 0x78], dl
-5053  50                       push ax
-5054  885088                   mov byte ptr [bx + si - 0x78], dl
-5057  50                       push ax
-5058  885088                   mov byte ptr [bx + si - 0x78], dl
-505B  50                       push ax
-505C  8850b4                   mov byte ptr [bx + si - 0x4c], dl
-505F  51                       push cx
-5060  885088                   mov byte ptr [bx + si - 0x78], dl
-5063  50                       push ax
-5064  885088                   mov byte ptr [bx + si - 0x78], dl
-5067  50                       push ax
-5068  885088                   mov byte ptr [bx + si - 0x78], dl
-506B  50                       push ax
-506C  885088                   mov byte ptr [bx + si - 0x78], dl
-506F  50                       push ax
-5070  885088                   mov byte ptr [bx + si - 0x78], dl
-5073  50                       push ax
-5074  885088                   mov byte ptr [bx + si - 0x78], dl
-5077  50                       push ax
-5078  885088                   mov byte ptr [bx + si - 0x78], dl
-507B  50                       push ax
-507C  4a                       dec dx
-507D  52                       push dx
-507E  88509c                   mov byte ptr [bx + si - 0x64], dl
-5081  53                       push bx
-5082  a053a6                   mov al, byte ptr [0xa653]
-5085  53                       push bx
-5086  ac                       lodsb al, byte ptr [si]
-5087  53                       push bx
+4FFC  9e50                     dw offset 0x509e
+4FFE  8850                     dw offset 0x5088
+5000  a650                     dw offset 0x50a6
+5002  c050                     dw offset 0x50c0
+5004  c050                     dw offset 0x50c0
+5006  c050                     dw offset 0x50c0
+5008  8850                     dw offset 0x5088
+500A  c050                     dw offset 0x50c0
+500C  8850                     dw offset 0x5088
+500E  8850                     dw offset 0x5088
+5010  8850                     dw offset 0x5088
+5012  8850                     dw offset 0x5088
+5014  8850                     dw offset 0x5088
+5016  8850                     dw offset 0x5088
+5018  8850                     dw offset 0x5088
+501A  8850                     dw offset 0x5088
+501C  ce50                     dw offset 0x50ce
+501E  d650                     dw offset 0x50d6
+5020  de50                     dw offset 0x50de
+5022  e650                     dw offset 0x50e6
+5024  ee50                     dw offset 0x50ee
+5026  f650                     dw offset 0x50f6
+5028  fe50                     dw offset 0x50fe
+502A  0651                     dw offset 0x5106
+502C  8850                     dw offset 0x5088
+502E  8850                     dw offset 0x5088
+5030  8850                     dw offset 0x5088
+5032  8850                     dw offset 0x5088
+5034  8850                     dw offset 0x5088
+5036  8850                     dw offset 0x5088
+5038  8850                     dw offset 0x5088
+503A  8850                     dw offset 0x5088
+503C  1e51                     dw offset 0x511e
+503E  1e51                     dw offset 0x511e
+5040  1e51                     dw offset 0x511e
+5042  1e51                     dw offset 0x511e
+5044  8850                     dw offset 0x5088
+5046  9a51                     dw offset 0x519a
+5048  ac51                     dw offset 0x51ac
+504A  b051                     dw offset 0x51b0
+504C  8850                     dw offset 0x5088
+504E  8850                     dw offset 0x5088
+5050  8850                     dw offset 0x5088
+5052  8850                     dw offset 0x5088
+5054  8850                     dw offset 0x5088
+5056  8850                     dw offset 0x5088
+5058  8850                     dw offset 0x5088
+505A  8850                     dw offset 0x5088
+505C  8850                     dw offset 0x5088
+505E  b451                     dw offset 0x51b4
+5060  8850                     dw offset 0x5088
+5062  8850                     dw offset 0x5088
+5064  8850                     dw offset 0x5088
+5066  8850                     dw offset 0x5088
+5068  8850                     dw offset 0x5088
+506A  8850                     dw offset 0x5088
+506C  8850                     dw offset 0x5088
+506E  8850                     dw offset 0x5088
+5070  8850                     dw offset 0x5088
+5072  8850                     dw offset 0x5088
+5074  8850                     dw offset 0x5088
+5076  8850                     dw offset 0x5088
+5078  8850                     dw offset 0x5088
+507A  8850                     dw offset 0x5088
+507C  4a52                     dw offset 0x524a
+507E  8850                     dw offset 0x5088
+5080  9c53                     dw offset 0x539c
+5082  a053                     dw offset 0x53a0
+5084  a653                     dw offset 0x53a6
+5086  ac53                     dw offset 0x53ac
 5088  837efe31                 cmp word ptr [bp - 2], 0x31
 508C  7d03                     jge 0x5091
 508E  e9c003                   jmp 0x5451
@@ -9913,20 +11551,20 @@ Source: unrecovered. Flags: unresolved.
 7846  d1e0                     shl ax, 1
 7848  93                       xchg bx, ax
 7849  2effa74e78               jmp word ptr cs:[bx + 0x784e]
-784E  6478a4                   js 0x77f5
-7851  78fe                     js 0x7851
-7853  7812                     js 0x7867
-7855  794e                     jns 0x78a5
-7857  7970                     jns 0x78c9
-7859  799e                     jns 0x77f9
-785B  79d0                     jns 0x782d
-785D  7902                     jns 0x7861
-785F  7a48                     jp 0x78a9
-7861  7a7a                     jp 0x78dd
-7863  7a6a                     jp 0x78cf
-7865  7e6a                     jle 0x78d1
-7867  059a8a                   add ax, 0x8a9a
-786A  15cc78                   adc ax, 0x78cc ; _initStuff
+784E  6478                     dw offset 0x7864
+7850  a478                     dw offset 0x78a4
+7852  fe78                     dw offset 0x78fe
+7854  1279                     dw offset 0x7912
+7856  4e79                     dw offset 0x794e
+7858  7079                     dw offset 0x7970
+785A  9e79                     dw offset 0x799e
+785C  d079                     dw offset 0x79d0
+785E  027a                     dw offset 0x7a02
+7860  487a                     dw offset 0x7a48
+7862  7a7a                     dw offset 0x7a7a
+7864  6a7e                     push 0x7e
+7866  6a05                     push 5
+7868  9a8a15cc78               lcall 0x78cc, 0x158a ; _SRand1
 786D  83c402                   add sp, 2
 7870  05274e                   add ax, 0x4e27
 7873  50                       push ax
@@ -11149,26 +12787,27 @@ Source: unrecovered. Flags: unresolved.
 85C1  93                       xchg bx, ax
 85C2  2effa7c885               jmp word ptr cs:[bx - 0x7a38]
 85C7  90                       nop 
-85C8  ae                       scasb al, byte ptr es:[di]
-85C9  87ee                     xchg si, bp
-85CB  85ee                     test si, bp
-85CD  85ee                     test si, bp
-85CF  85ee                     test si, bp
-85D1  85ee                     test si, bp
-85D3  85ee                     test si, bp
-85D5  85ee                     test si, bp
-85D7  8518                     test word ptr [bx + si], bx
-85D9  871e874a                 xchg word ptr [0x4a87], bx
-85DD  8786878a                 xchg word ptr [bp - 0x7579], ax
-85E1  87ee                     xchg si, bp
-85E3  85ee                     test si, bp
-85E5  85ee                     test si, bp
-85E7  85ee                     test si, bp
-85E9  85ee                     test si, bp
-85EB  858e87c7                 test word ptr [bp - 0x3879], cx
-85EF  46                       inc si
-85F0  fe00                     inc byte ptr [bx + si]
-85F2  008b46fe                 add byte ptr [bp + di - 0x1ba], cl
+85C8  ae87                     dw offset 0x87ae
+85CA  ee85                     dw offset 0x85ee
+85CC  ee85                     dw offset 0x85ee
+85CE  ee85                     dw offset 0x85ee
+85D0  ee85                     dw offset 0x85ee
+85D2  ee85                     dw offset 0x85ee
+85D4  ee85                     dw offset 0x85ee
+85D6  ee85                     dw offset 0x85ee
+85D8  1887                     dw offset 0x8718
+85DA  1e87                     dw offset 0x871e
+85DC  4a87                     dw offset 0x874a
+85DE  8687                     dw offset 0x8786
+85E0  8a87                     dw offset 0x878a
+85E2  ee85                     dw offset 0x85ee
+85E4  ee85                     dw offset 0x85ee
+85E6  ee85                     dw offset 0x85ee
+85E8  ee85                     dw offset 0x85ee
+85EA  ee85                     dw offset 0x85ee
+85EC  8e87                     dw offset 0x878e
+85EE  c746fe0000               mov word ptr [bp - 2], 0
+85F3  8b46fe                   mov ax, word ptr [bp - 2]
 85F6  c9                       leave 
 85F7  cb                       retf 
 85F8  6a10                     push 0x10
@@ -11361,18 +13000,20 @@ Source: unrecovered. Flags: unresolved.
 87ED  93                       xchg bx, ax
 87EE  2effa7f487               jmp word ptr cs:[bx - 0x780c]
 87F3  90                       nop 
-87F4  0e                       push cs
-87F5  884e88                   mov byte ptr [bp - 0x78], cl
-87F8  68887a                   push 0x7a88
-87FB  888c88a2                 mov byte ptr [si - 0x5d78], cl
-87FF  88b488bc                 mov byte ptr [si - 0x4378], dh
-8803  884e89                   mov byte ptr [bp - 0x77], cl
-8806  7889                     js 0x8791
-8808  cc                       int3 
-8809  89d4                     mov sp, dx
-880B  89f4                     mov sp, si
-880D  89ff                     mov di, di
-880F  3678cd                   js 0x87df
+87F4  0e88                     dw offset 0x880e
+87F6  4e88                     dw offset 0x884e
+87F8  6888                     dw offset 0x8868
+87FA  7a88                     dw offset 0x887a
+87FC  8c88                     dw offset 0x888c
+87FE  a288                     dw offset 0x88a2
+8800  b488                     dw offset 0x88b4
+8802  bc88                     dw offset 0x88bc
+8804  4e89                     dw offset 0x894e
+8806  7889                     dw offset 0x8978
+8808  cc89                     dw offset 0x89cc
+880A  d489                     dw offset 0x89d4
+880C  f489                     dw offset 0x89f4
+880E  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
 8812  680f86                   push 0x860f ; _match_position
 8815  68ac76                   push 0x76ac
 8818  6a01                     push 1
@@ -15388,24 +17029,22 @@ B0D1  e94c02                   jmp 0xb320
 B0D4  d1e0                     shl ax, 1
 B0D6  93                       xchg bx, ax
 B0D7  2effa7dcb0               jmp word ptr cs:[bx - 0x4f24]
-B0DC  fa                       cli 
-B0DD  b0fa                     mov al, 0xfa
-B0DF  b064                     mov al, 0x64
-B0E1  b1c6                     mov cl, 0xc6
-B0E3  b1de                     mov cl, 0xde
-B0E5  b1ec                     mov cl, 0xec
-B0E7  b1fc                     mov cl, 0xfc
-B0E9  b152                     mov cl, 0x52
-B0EB  b25c                     mov dl, 0x5c
-B0ED  b274                     mov dl, 0x74
-B0EF  b28c                     mov dl, 0x8c
-B0F1  b2a0                     mov dl, 0xa0
-B0F3  b2c6                     mov dl, 0xc6
-B0F5  b2de                     mov dl, 0xde
-B0F7  b206                     mov dl, 6
-B0F9  b38e                     mov bl, 0x8e
-B0FB  06                       push es
-B0FC  dac0                     fcmovb st(0), st(0)
+B0DC  fab0                     dw offset 0xb0fa
+B0DE  fab0                     dw offset 0xb0fa
+B0E0  64b1                     dw offset 0xb164
+B0E2  c6b1                     dw offset 0xb1c6
+B0E4  deb1                     dw offset 0xb1de
+B0E6  ecb1                     dw offset 0xb1ec
+B0E8  fcb1                     dw offset 0xb1fc
+B0EA  52b2                     dw offset 0xb252
+B0EC  5cb2                     dw offset 0xb25c
+B0EE  74b2                     dw offset 0xb274
+B0F0  8cb2                     dw offset 0xb28c
+B0F2  a0b2                     dw offset 0xb2a0
+B0F4  c6b2                     dw offset 0xb2c6
+B0F6  deb2                     dw offset 0xb2de
+B0F8  06b3                     dw offset 0xb306
+B0FA  8e06dac0                 mov es, word ptr [0xc0da]
 B0FE  268b0ef080               mov cx, word ptr es:[0x80f0]
 B103  81f9e803                 cmp cx, 0x3e8
 B107  7d1f                     jge 0xb128
@@ -16573,17 +18212,21 @@ BD2B  d1e0                     shl ax, 1
 BD2D  93                       xchg bx, ax
 BD2E  2effa734bd               jmp word ptr cs:[bx - 0x42cc]
 BD33  90                       nop 
-BD34  52                       push dx
-BD35  bd60bd                   mov bp, 0xbd60
-BD38  50                       push ax
-BD39  c084bd84bd               rol byte ptr [si - 0x7b43], 0xbd
-BD3E  84bd70c0                 test byte ptr [di - 0x3f90], bh
-BD42  70c0                     jo 0xbd04
-BD44  70c0                     jo 0xbd06
-BD46  70c0                     jo 0xbd08
-BD48  ec                       in al, dx
-BD49  bd70c0                   mov bp, 0xc070
-BD4C  26c026c026c0             shl byte ptr es:[0x26c0], 0xc0
+BD34  52bd                     dw offset 0xbd52
+BD36  60bd                     dw offset 0xbd60
+BD38  50c0                     dw offset 0xc050
+BD3A  84bd                     dw offset 0xbd84
+BD3C  84bd                     dw offset 0xbd84
+BD3E  84bd                     dw offset 0xbd84
+BD40  70c0                     dw offset 0xc070
+BD42  70c0                     dw offset 0xc070
+BD44  70c0                     dw offset 0xc070
+BD46  70c0                     dw offset 0xc070
+BD48  ecbd                     dw offset 0xbdec
+BD4A  70c0                     dw offset 0xc070
+BD4C  26c0                     dw offset 0xc026
+BD4E  26c0                     dw offset 0xc026
+BD50  26c0                     dw offset 0xc026
 BD52  680e13                   push 0x130e
 BD55  90                       nop 
 BD56  0e                       push cs
@@ -16922,6 +18565,300 @@ C09D  d1e0                     shl ax, 1
 C09F  93                       xchg bx, ax
 C0A0  2effa7a6c0               jmp word ptr cs:[bx - 0x3f5a]
 C0A5  90                       nop 
+C0A6  c4c0                     dw offset 0xc0c4
+C0A8  d2c0                     dw offset 0xc0d2
+C0AA  52c3                     dw offset 0xc352
+C0AC  f6c0                     dw offset 0xc0f6
+C0AE  f6c0                     dw offset 0xc0f6
+C0B0  f6c0                     dw offset 0xc0f6
+C0B2  72c3                     dw offset 0xc372
+C0B4  72c3                     dw offset 0xc372
+C0B6  72c3                     dw offset 0xc372
+C0B8  72c3                     dw offset 0xc372
+C0BA  5ec1                     dw offset 0xc15e
+C0BC  72c3                     dw offset 0xc372
+C0BE  28c3                     dw offset 0xc328
+C0C0  28c3                     dw offset 0xc328
+C0C2  28c3                     dw offset 0xc328
+C0C4  680e12                   push 0x120e
+C0C7  90                       nop 
+C0C8  0e                       push cs
+C0C9  e8e099                   call 0x5aac ; _DoWinHelp
+C0CC  83c402                   add sp, 2
+C0CF  e9a002                   jmp 0xc372
+C0D2  8e0642c1                 mov es, word ptr [0xc142]
+C0D6  26833ece9f00             cmp word ptr es:[0x9fce], 0
+C0DC  7403                     je 0xc0e1
+C0DE  e99102                   jmp 0xc372
+C0E1  26c706ce9f0100           mov word ptr es:[0x9fce], 1
+C0E8  6a04                     push 4
+C0EA  680012                   push 0x1200
+C0ED  9a2ef501c1               lcall 0xc101, 0xf52e ; _win_MakeGroupInvisible
+C0F2  e97a02                   jmp 0xc36f
+C0F5  90                       nop 
+C0F6  680512                   push 0x1205
+C0F9  6a03                     push 3
+C0FB  680012                   push 0x1200
+C0FE  9a26f169c1               lcall 0xc169, 0xf126 ; _win_SetGroupSelectedObj
+C103  83c406                   add sp, 6
+C106  b8bec2                   mov ax, 0xc2be ; _match_position
+C109  8b1ea015                 mov bx, word ptr [0x15a0] ; _modeSet
+C10D  8bcb                     mov cx, bx
+C10F  d1e3                     shl bx, 1
+C111  03d9                     add bx, cx
+C113  d1e3                     shl bx, 1
+C115  8e0644c1                 mov es, word ptr [0xc144]
+C119  1e                       push ds
+C11A  8dbf5886                 lea di, [bx - 0x79a8]
+C11E  be749c                   mov si, 0x9c74
+C121  8ed8                     mov ds, ax
+C123  a5                       movsw word ptr es:[di], word ptr [si]
+C124  a5                       movsw word ptr es:[di], word ptr [si]
+C125  a5                       movsw word ptr es:[di], word ptr [si]
+C126  1f                       pop ds
+C127  c45e06                   les bx, ptr [bp + 6]
+C12A  268b4f0c                 mov cx, word ptr es:[bx + 0xc]
+C12E  81e90612                 sub cx, 0x1206
+C132  890ea015                 mov word ptr [0x15a0], cx ; _modeSet
+C136  ba749c                   mov dx, 0x9c74
+C139  8bd9                     mov bx, cx
+C13B  d1e1                     shl cx, 1
+C13D  03cb                     add cx, bx
+C13F  d1e1                     shl cx, 1
+C141  81c15886                 add cx, 0x8658
+C145  bbd4bd                   mov bx, 0xbdd4 ; _Dx8
+C148  1e                       push ds
+C149  8bfa                     mov di, dx
+C14B  8bf1                     mov si, cx
+C14D  8ec0                     mov es, ax
+C14F  8edb                     mov ds, bx
+C151  a5                       movsw word ptr es:[di], word ptr [si]
+C152  a5                       movsw word ptr es:[di], word ptr [si]
+C153  a5                       movsw word ptr es:[di], word ptr [si]
+C154  1f                       pop ds
+C155  90                       nop 
+C156  0e                       push cs
+C157  e86ef8                   call 0xb9c8 ; _UpdateModeWindow
+C15A  e9f501                   jmp 0xc352
+C15D  90                       nop 
+C15E  8d46e8                   lea ax, [bp - 0x18]
+C161  16                       push ss
+C162  50                       push ax
+C163  680d12                   push 0x120d
+C166  9ad2c24fc2               lcall 0xc24f, 0xc2d2 ; _win_GetObjRect
+C16B  83c406                   add sp, 6
+C16E  8b7eea                   mov di, word ptr [bp - 0x16]
+C171  8b46ee                   mov ax, word ptr [bp - 0x12]
+C174  8946fe                   mov word ptr [bp - 2], ax
+C177  8b4eec                   mov cx, word ptr [bp - 0x14]
+C17A  894ef4                   mov word ptr [bp - 0xc], cx
+C17D  8b56e8                   mov dx, word ptr [bp - 0x18]
+C180  8956f6                   mov word ptr [bp - 0xa], dx
+C183  8bc1                     mov ax, cx
+C185  03c2                     add ax, dx
+C187  99                       cdq 
+C188  2bc2                     sub ax, dx
+C18A  d1f8                     sar ax, 1
+C18C  8946fc                   mov word ptr [bp - 4], ax
+C18F  c45e06                   les bx, ptr [bp + 6]
+C192  268b4708                 mov ax, word ptr es:[bx + 8]
+C196  8946fa                   mov word ptr [bp - 6], ax
+C199  268b770a                 mov si, word ptr es:[bx + 0xa]
+C19D  8b46ee                   mov ax, word ptr [bp - 0x12]
+C1A0  3bf0                     cmp si, ax
+C1A2  7c03                     jl 0xc1a7
+C1A4  e98100                   jmp 0xc228
+C1A7  3bf7                     cmp si, di
+C1A9  7c7d                     jl 0xc228
+C1AB  8b46fe                   mov ax, word ptr [bp - 2]
+C1AE  2bc7                     sub ax, di
+C1B0  99                       cdq 
+C1B1  52                       push dx
+C1B2  50                       push ax
+C1B3  8b46f6                   mov ax, word ptr [bp - 0xa]
+C1B6  2b46fc                   sub ax, word ptr [bp - 4]
+C1B9  8bce                     mov cx, si
+C1BB  2b4efe                   sub cx, word ptr [bp - 2]
+C1BE  f7e9                     imul cx
+C1C0  52                       push dx
+C1C1  50                       push ax
+C1C2  9ad40801c2               lcall 0xc201, 0x8d4 ; __aFldiv
+C1C7  8bc8                     mov cx, ax
+C1C9  8b46f6                   mov ax, word ptr [bp - 0xa]
+C1CC  8bda                     mov bx, dx
+C1CE  99                       cdq 
+C1CF  03c8                     add cx, ax
+C1D1  13da                     adc bx, dx
+C1D3  8b46fa                   mov ax, word ptr [bp - 6]
+C1D6  99                       cdq 
+C1D7  3bda                     cmp bx, dx
+C1D9  7c0d                     jl 0xc1e8
+C1DB  7f04                     jg 0xc1e1
+C1DD  3bc8                     cmp cx, ax
+C1DF  7607                     jbe 0xc1e8
+C1E1  33c0                     xor ax, ax
+C1E3  eb3b                     jmp 0xc220
+C1E5  90                       nop 
+C1E6  90                       nop 
+C1E7  90                       nop 
+C1E8  8bc7                     mov ax, di
+C1EA  2b46fe                   sub ax, word ptr [bp - 2]
+C1ED  99                       cdq 
+C1EE  52                       push dx
+C1EF  50                       push ax
+C1F0  8b46fc                   mov ax, word ptr [bp - 4]
+C1F3  2b46f4                   sub ax, word ptr [bp - 0xc]
+C1F6  8bce                     mov cx, si
+C1F8  2bcf                     sub cx, di
+C1FA  f7e9                     imul cx
+C1FC  52                       push dx
+C1FD  50                       push ax
+C1FE  9ad40853be               lcall 0xbe53, 0x8d4 ; __aFldiv
+C203  8bc8                     mov cx, ax
+C205  8b46fc                   mov ax, word ptr [bp - 4]
+C208  8bda                     mov bx, dx
+C20A  99                       cdq 
+C20B  03c8                     add cx, ax
+C20D  13da                     adc bx, dx
+C20F  8b46fa                   mov ax, word ptr [bp - 6]
+C212  99                       cdq 
+C213  3bda                     cmp bx, dx
+C215  7f06                     jg 0xc21d
+C217  7cc8                     jl 0xc1e1
+C219  3bc8                     cmp cx, ax
+C21B  72c4                     jb 0xc1e1
+C21D  b80100                   mov ax, 1
+C220  8946f8                   mov word ptr [bp - 8], ax
+C223  8bd0                     mov dx, ax
+C225  eb03                     jmp 0xc22a
+C227  90                       nop 
+C228  33d2                     xor dx, dx
+C22A  0bd2                     or dx, dx
+C22C  7503                     jne 0xc231
+C22E  e94101                   jmp 0xc372
+C231  8e0642c1                 mov es, word ptr [0xc142]
+C235  26833ece9f00             cmp word ptr es:[0x9fce], 0
+C23B  7424                     je 0xc261
+C23D  26c706ce9f0000           mov word ptr es:[0x9fce], 0
+C244  680512                   push 0x1205
+C247  6a03                     push 3
+C249  680012                   push 0x1200
+C24C  9a26f15cc2               lcall 0xc25c, 0xf126 ; _win_SetGroupSelectedObj
+C251  83c406                   add sp, 6
+C254  6a04                     push 4
+C256  680012                   push 0x1200
+C259  9ab0f46dc3               lcall 0xc36d, 0xf4b0 ; _win_MakeGroupVisible
+C25E  83c404                   add sp, 4
+C261  c746f0ffff               mov word ptr [bp - 0x10], 0xffff
+C266  680012                   push 0x1200
+C269  9a448e75c3               lcall 0xc375, 0x8e44 ; _clip_SetWin
+C26E  83c402                   add sp, 2
+C271  8b4606                   mov ax, word ptr [bp + 6]
+C274  8b5608                   mov dx, word ptr [bp + 8]
+C277  050800                   add ax, 8
+C27A  b90400                   mov cx, 4
+C27D  8bf8                     mov di, ax
+C27F  8d76f0                   lea si, [bp - 0x10]
+C282  8ec2                     mov es, dx
+C284  d1e9                     shr cx, 1
+C286  1bc0                     sbb ax, ax
+C288  3bc9                     cmp cx, cx
+C28A  f3a7                     repe cmpsw word ptr [si], word ptr es:[di]
+C28C  7504                     jne 0xc292
+C28E  2bc8                     sub cx, ax
+C290  f3a6                     repe cmpsb byte ptr [si], byte ptr es:[di]
+C292  7442                     je 0xc2d6
+C294  8b5e06                   mov bx, word ptr [bp + 6]
+C297  268b4708                 mov ax, word ptr es:[bx + 8]
+C29B  268b570a                 mov dx, word ptr es:[bx + 0xa]
+C29F  8946f0                   mov word ptr [bp - 0x10], ax
+C2A2  8956f2                   mov word ptr [bp - 0xe], dx
+C2A5  8d46e8                   lea ax, [bp - 0x18]
+C2A8  16                       push ss
+C2A9  50                       push ax
+C2AA  8d4708                   lea ax, [bx + 8]
+C2AD  06                       push es
+C2AE  50                       push ax
+C2AF  8bf0                     mov si, ax
+C2B1  8cc7                     mov di, es
+C2B3  90                       nop 
+C2B4  0e                       push cs
+C2B5  e88001                   call 0xc438 ; _BoundPointToTri
+C2B8  83c408                   add sp, 8
+C2BB  57                       push di
+C2BC  56                       push si
+C2BD  68c4c2                   push 0xc2c4 ; _match_position
+C2C0  68f880                   push 0x80f8
+C2C3  6805c3                   push 0xc305 ; _match_position
+C2C6  68749c                   push 0x9c74
+C2C9  90                       nop 
+C2CA  0e                       push cs
+C2CB  e8ac07                   call 0xca7a ; _GetTriLatDist
+C2CE  83c40c                   add sp, 0xc
+C2D1  90                       nop 
+C2D2  0e                       push cs
+C2D3  e8f2f6                   call 0xb9c8 ; _UpdateModeWindow
+C2D6  8b4606                   mov ax, word ptr [bp + 6]
+C2D9  8b5608                   mov dx, word ptr [bp + 8]
+C2DC  050800                   add ax, 8
+C2DF  52                       push dx
+C2E0  50                       push ax
+C2E1  8bf0                     mov si, ax
+C2E3  8bfa                     mov di, dx
+C2E5  9a1c4afbc2               lcall 0xc2fb, 0x4a1c ; _GetMousePos
+C2EA  83c404                   add sp, 4
+C2ED  ff36cabc                 push word ptr [0xbcca]
+C2F1  57                       push di
+C2F2  56                       push si
+C2F3  9a82bf0000               lcall 0, 0xbf82
+C2F8  9a164734c3               lcall 0xc334, 0x4716 ; _StillDown
+C2FD  0bc0                     or ax, ax
+C2FF  7403                     je 0xc304
+C301  e96dff                   jmp 0xc271
+C304  b895bd                   mov ax, 0xbd95 ; _match_position
+C307  8b1ea015                 mov bx, word ptr [0x15a0] ; _modeSet
+C30B  8bcb                     mov cx, bx
+C30D  d1e3                     shl bx, 1
+C30F  03d9                     add bx, cx
+C311  d1e3                     shl bx, 1
+C313  8e0644c1                 mov es, word ptr [0xc144]
+C317  1e                       push ds
+C318  8dbf5886                 lea di, [bx - 0x79a8]
+C31C  be749c                   mov si, 0x9c74
+C31F  8ed8                     mov ds, ax
+C321  a5                       movsw word ptr es:[di], word ptr [si]
+C322  a5                       movsw word ptr es:[di], word ptr [si]
+C323  a5                       movsw word ptr es:[di], word ptr [si]
+C324  1f                       pop ds
+C325  eb4b                     jmp 0xc372
+C327  90                       nop 
+C328  8036b21501               xor byte ptr [0x15b2], 1
+C32D  ff36cabc                 push word ptr [0xbcca]
+C331  9afa3d4dc3               lcall 0xc34d, 0x3dfa ; _MSClipStart
+C336  83c402                   add sp, 2
+C339  ff36b215                 push word ptr [0x15b2]
+C33D  6a00                     push 0
+C33F  680012                   push 0x1200
+C342  90                       nop 
+C343  0e                       push cs
+C344  e87d04                   call 0xc7c4 ; _DrawControlLevels
+C347  83c406                   add sp, 6
+C34A  9a4c3e76bf               lcall 0xbf76, 0x3e4c ; _MSClipEnd
+C34F  eb21                     jmp 0xc372
+C351  90                       nop 
+C352  8e0642c1                 mov es, word ptr [0xc142]
+C356  26833ece9f00             cmp word ptr es:[0x9fce], 0
+C35C  7414                     je 0xc372
+C35E  26c706ce9f0000           mov word ptr es:[0x9fce], 0
+C365  6a04                     push 4
+C367  680012                   push 0x1200
+C36A  9ab0f47ebd               lcall 0xbd7e, 0xf4b0 ; _win_MakeGroupVisible
+C36F  83c404                   add sp, 4
+C372  9a468e14bd               lcall 0xbd14, 0x8e46 ; _clip_Off
+C377  5e                       pop si
+C378  5f                       pop di
+C379  c9                       leave 
+C37A  cb                       retf 
 ```
 
 ## _IsPointInIsoTri — SIMANT_MODULE:C37C
@@ -35021,214 +36958,135 @@ Source: unrecovered. Flags: unresolved.
 9207  93                       xchg bx, ax
 9208  2effa70e92               jmp word ptr cs:[bx - 0x6df2]
 920D  90                       nop 
-920E  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-9212  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-9216  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-921A  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-921E  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-9222  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-9226  20932093                 and byte ptr [bp + di - 0x6ce0], dl
-922A  20930e93                 and byte ptr [bp + di - 0x6cf2], dl
-922E  ce                       into 
-922F  93                       xchg bx, ax
-9230  ce                       into 
-9231  93                       xchg bx, ax
-9232  ce                       into 
-9233  93                       xchg bx, ax
-9234  ce                       into 
-9235  93                       xchg bx, ax
-9236  ce                       into 
-9237  93                       xchg bx, ax
-9238  ce                       into 
-9239  93                       xchg bx, ax
-923A  ce                       into 
-923B  93                       xchg bx, ax
-923C  ce                       into 
-923D  93                       xchg bx, ax
-923E  ce                       into 
-923F  93                       xchg bx, ax
-9240  ce                       into 
-9241  93                       xchg bx, ax
-9242  ce                       into 
-9243  93                       xchg bx, ax
-9244  ce                       into 
-9245  93                       xchg bx, ax
-9246  ce                       into 
-9247  93                       xchg bx, ax
-9248  ce                       into 
-9249  93                       xchg bx, ax
-924A  ce                       into 
-924B  93                       xchg bx, ax
-924C  ce                       into 
-924D  93                       xchg bx, ax
-924E  0e                       push cs
-924F  93                       xchg bx, ax
-9250  0e                       push cs
-9251  93                       xchg bx, ax
-9252  0e                       push cs
-9253  93                       xchg bx, ax
-9254  0e                       push cs
-9255  93                       xchg bx, ax
-9256  0e                       push cs
-9257  93                       xchg bx, ax
-9258  0e                       push cs
-9259  93                       xchg bx, ax
-925A  0e                       push cs
-925B  93                       xchg bx, ax
-925C  0e                       push cs
-925D  93                       xchg bx, ax
-925E  0e                       push cs
-925F  93                       xchg bx, ax
-9260  0e                       push cs
-9261  93                       xchg bx, ax
-9262  0e                       push cs
-9263  93                       xchg bx, ax
-9264  0e                       push cs
-9265  93                       xchg bx, ax
-9266  0e                       push cs
-9267  93                       xchg bx, ax
-9268  0e                       push cs
-9269  93                       xchg bx, ax
-926A  0e                       push cs
-926B  93                       xchg bx, ax
-926C  0e                       push cs
-926D  93                       xchg bx, ax
-926E  aa                       stosb byte ptr es:[di], al
-926F  94                       xchg sp, ax
-9270  aa                       stosb byte ptr es:[di], al
-9271  94                       xchg sp, ax
-9272  aa                       stosb byte ptr es:[di], al
-9273  94                       xchg sp, ax
-9274  aa                       stosb byte ptr es:[di], al
-9275  94                       xchg sp, ax
-9276  aa                       stosb byte ptr es:[di], al
-9277  94                       xchg sp, ax
-9278  aa                       stosb byte ptr es:[di], al
-9279  94                       xchg sp, ax
-927A  aa                       stosb byte ptr es:[di], al
-927B  94                       xchg sp, ax
-927C  aa                       stosb byte ptr es:[di], al
-927D  94                       xchg sp, ax
-927E  aa                       stosb byte ptr es:[di], al
-927F  94                       xchg sp, ax
-9280  aa                       stosb byte ptr es:[di], al
-9281  94                       xchg sp, ax
-9282  aa                       stosb byte ptr es:[di], al
-9283  94                       xchg sp, ax
-9284  aa                       stosb byte ptr es:[di], al
-9285  94                       xchg sp, ax
-9286  aa                       stosb byte ptr es:[di], al
-9287  94                       xchg sp, ax
-9288  aa                       stosb byte ptr es:[di], al
-9289  94                       xchg sp, ax
-928A  aa                       stosb byte ptr es:[di], al
-928B  94                       xchg sp, ax
-928C  0e                       push cs
-928D  93                       xchg bx, ax
-928E  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-9292  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-9296  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-929A  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-929E  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-92A2  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-92A6  d294d294                 rcl byte ptr [si - 0x6b2e], cl
-92AA  d2940e93                 rcl byte ptr [si - 0x6cf2], cl
-92AE  0e                       push cs
-92AF  93                       xchg bx, ax
-92B0  0e                       push cs
-92B1  93                       xchg bx, ax
-92B2  0e                       push cs
-92B3  93                       xchg bx, ax
-92B4  0e                       push cs
-92B5  93                       xchg bx, ax
-92B6  0e                       push cs
-92B7  93                       xchg bx, ax
-92B8  0e                       push cs
-92B9  93                       xchg bx, ax
-92BA  0e                       push cs
-92BB  93                       xchg bx, ax
-92BC  0e                       push cs
-92BD  93                       xchg bx, ax
-92BE  0e                       push cs
-92BF  93                       xchg bx, ax
-92C0  0e                       push cs
-92C1  93                       xchg bx, ax
-92C2  0e                       push cs
-92C3  93                       xchg bx, ax
-92C4  0e                       push cs
-92C5  93                       xchg bx, ax
-92C6  0e                       push cs
-92C7  93                       xchg bx, ax
-92C8  0e                       push cs
-92C9  93                       xchg bx, ax
-92CA  0e                       push cs
-92CB  93                       xchg bx, ax
-92CC  0e                       push cs
-92CD  93                       xchg bx, ax
-92CE  0e                       push cs
-92CF  93                       xchg bx, ax
-92D0  0e                       push cs
-92D1  93                       xchg bx, ax
-92D2  0e                       push cs
-92D3  93                       xchg bx, ax
-92D4  0e                       push cs
-92D5  93                       xchg bx, ax
-92D6  0e                       push cs
-92D7  93                       xchg bx, ax
-92D8  0e                       push cs
-92D9  93                       xchg bx, ax
-92DA  0e                       push cs
-92DB  93                       xchg bx, ax
-92DC  0e                       push cs
-92DD  93                       xchg bx, ax
-92DE  0e                       push cs
-92DF  93                       xchg bx, ax
-92E0  0e                       push cs
-92E1  93                       xchg bx, ax
-92E2  0e                       push cs
-92E3  93                       xchg bx, ax
-92E4  0e                       push cs
-92E5  93                       xchg bx, ax
-92E6  0e                       push cs
-92E7  93                       xchg bx, ax
-92E8  0e                       push cs
-92E9  93                       xchg bx, ax
-92EA  0e                       push cs
-92EB  93                       xchg bx, ax
-92EC  0e                       push cs
-92ED  93                       xchg bx, ax
-92EE  0e                       push cs
-92EF  93                       xchg bx, ax
-92F0  0e                       push cs
-92F1  93                       xchg bx, ax
-92F2  0e                       push cs
-92F3  93                       xchg bx, ax
-92F4  0e                       push cs
-92F5  93                       xchg bx, ax
-92F6  0e                       push cs
-92F7  93                       xchg bx, ax
-92F8  0e                       push cs
-92F9  93                       xchg bx, ax
-92FA  0e                       push cs
-92FB  93                       xchg bx, ax
-92FC  0e                       push cs
-92FD  93                       xchg bx, ax
-92FE  0e                       push cs
-92FF  93                       xchg bx, ax
-9300  0e                       push cs
-9301  93                       xchg bx, ax
-9302  0e                       push cs
-9303  93                       xchg bx, ax
-9304  0e                       push cs
-9305  93                       xchg bx, ax
-9306  0e                       push cs
-9307  93                       xchg bx, ax
-9308  0e                       push cs
-9309  93                       xchg bx, ax
-930A  0e                       push cs
-930B  93                       xchg bx, ax
-930C  f694ff76                 not byte ptr [si + 0x76ff]
-9310  f8                       clc 
+920E  2093                     dw offset 0x9320
+9210  2093                     dw offset 0x9320
+9212  2093                     dw offset 0x9320
+9214  2093                     dw offset 0x9320
+9216  2093                     dw offset 0x9320
+9218  2093                     dw offset 0x9320
+921A  2093                     dw offset 0x9320
+921C  2093                     dw offset 0x9320
+921E  2093                     dw offset 0x9320
+9220  2093                     dw offset 0x9320
+9222  2093                     dw offset 0x9320
+9224  2093                     dw offset 0x9320
+9226  2093                     dw offset 0x9320
+9228  2093                     dw offset 0x9320
+922A  2093                     dw offset 0x9320
+922C  0e93                     dw offset 0x930e
+922E  ce93                     dw offset 0x93ce
+9230  ce93                     dw offset 0x93ce
+9232  ce93                     dw offset 0x93ce
+9234  ce93                     dw offset 0x93ce
+9236  ce93                     dw offset 0x93ce
+9238  ce93                     dw offset 0x93ce
+923A  ce93                     dw offset 0x93ce
+923C  ce93                     dw offset 0x93ce
+923E  ce93                     dw offset 0x93ce
+9240  ce93                     dw offset 0x93ce
+9242  ce93                     dw offset 0x93ce
+9244  ce93                     dw offset 0x93ce
+9246  ce93                     dw offset 0x93ce
+9248  ce93                     dw offset 0x93ce
+924A  ce93                     dw offset 0x93ce
+924C  ce93                     dw offset 0x93ce
+924E  0e93                     dw offset 0x930e
+9250  0e93                     dw offset 0x930e
+9252  0e93                     dw offset 0x930e
+9254  0e93                     dw offset 0x930e
+9256  0e93                     dw offset 0x930e
+9258  0e93                     dw offset 0x930e
+925A  0e93                     dw offset 0x930e
+925C  0e93                     dw offset 0x930e
+925E  0e93                     dw offset 0x930e
+9260  0e93                     dw offset 0x930e
+9262  0e93                     dw offset 0x930e
+9264  0e93                     dw offset 0x930e
+9266  0e93                     dw offset 0x930e
+9268  0e93                     dw offset 0x930e
+926A  0e93                     dw offset 0x930e
+926C  0e93                     dw offset 0x930e
+926E  aa94                     dw offset 0x94aa
+9270  aa94                     dw offset 0x94aa
+9272  aa94                     dw offset 0x94aa
+9274  aa94                     dw offset 0x94aa
+9276  aa94                     dw offset 0x94aa
+9278  aa94                     dw offset 0x94aa
+927A  aa94                     dw offset 0x94aa
+927C  aa94                     dw offset 0x94aa
+927E  aa94                     dw offset 0x94aa
+9280  aa94                     dw offset 0x94aa
+9282  aa94                     dw offset 0x94aa
+9284  aa94                     dw offset 0x94aa
+9286  aa94                     dw offset 0x94aa
+9288  aa94                     dw offset 0x94aa
+928A  aa94                     dw offset 0x94aa
+928C  0e93                     dw offset 0x930e
+928E  d294                     dw offset 0x94d2
+9290  d294                     dw offset 0x94d2
+9292  d294                     dw offset 0x94d2
+9294  d294                     dw offset 0x94d2
+9296  d294                     dw offset 0x94d2
+9298  d294                     dw offset 0x94d2
+929A  d294                     dw offset 0x94d2
+929C  d294                     dw offset 0x94d2
+929E  d294                     dw offset 0x94d2
+92A0  d294                     dw offset 0x94d2
+92A2  d294                     dw offset 0x94d2
+92A4  d294                     dw offset 0x94d2
+92A6  d294                     dw offset 0x94d2
+92A8  d294                     dw offset 0x94d2
+92AA  d294                     dw offset 0x94d2
+92AC  0e93                     dw offset 0x930e
+92AE  0e93                     dw offset 0x930e
+92B0  0e93                     dw offset 0x930e
+92B2  0e93                     dw offset 0x930e
+92B4  0e93                     dw offset 0x930e
+92B6  0e93                     dw offset 0x930e
+92B8  0e93                     dw offset 0x930e
+92BA  0e93                     dw offset 0x930e
+92BC  0e93                     dw offset 0x930e
+92BE  0e93                     dw offset 0x930e
+92C0  0e93                     dw offset 0x930e
+92C2  0e93                     dw offset 0x930e
+92C4  0e93                     dw offset 0x930e
+92C6  0e93                     dw offset 0x930e
+92C8  0e93                     dw offset 0x930e
+92CA  0e93                     dw offset 0x930e
+92CC  0e93                     dw offset 0x930e
+92CE  0e93                     dw offset 0x930e
+92D0  0e93                     dw offset 0x930e
+92D2  0e93                     dw offset 0x930e
+92D4  0e93                     dw offset 0x930e
+92D6  0e93                     dw offset 0x930e
+92D8  0e93                     dw offset 0x930e
+92DA  0e93                     dw offset 0x930e
+92DC  0e93                     dw offset 0x930e
+92DE  0e93                     dw offset 0x930e
+92E0  0e93                     dw offset 0x930e
+92E2  0e93                     dw offset 0x930e
+92E4  0e93                     dw offset 0x930e
+92E6  0e93                     dw offset 0x930e
+92E8  0e93                     dw offset 0x930e
+92EA  0e93                     dw offset 0x930e
+92EC  0e93                     dw offset 0x930e
+92EE  0e93                     dw offset 0x930e
+92F0  0e93                     dw offset 0x930e
+92F2  0e93                     dw offset 0x930e
+92F4  0e93                     dw offset 0x930e
+92F6  0e93                     dw offset 0x930e
+92F8  0e93                     dw offset 0x930e
+92FA  0e93                     dw offset 0x930e
+92FC  0e93                     dw offset 0x930e
+92FE  0e93                     dw offset 0x930e
+9300  0e93                     dw offset 0x930e
+9302  0e93                     dw offset 0x930e
+9304  0e93                     dw offset 0x930e
+9306  0e93                     dw offset 0x930e
+9308  0e93                     dw offset 0x930e
+930A  0e93                     dw offset 0x930e
+930C  f694                     dw offset 0x94f6
+930E  ff76f8                   push word ptr [bp - 8]
 9311  1e                       push ds
 9312  680f11                   push 0x110f
 9315  90                       nop 
@@ -37853,24 +39711,26 @@ Source: unrecovered. Flags: unresolved.
 0B9F  93                       xchg bx, ax
 0BA0  2effa7a60b               jmp word ptr cs:[bx + 0xba6]
 0BA5  90                       nop 
-0BA6  ca0b5a                   retf 0x5a0b
-0BA9  0cda                     or al, 0xda
-0BAB  0be6                     or sp, si
-0BAD  0bee                     or bp, si
-0BAF  0bf8                     or di, ax
-0BB1  0bfc                     or di, sp
-0BB3  0b00                     or ax, word ptr [bx + si]
-0BB5  0c08                     or al, 8
-0BB7  0c10                     or al, 0x10
-0BB9  0c18                     or al, 0x18
-0BBB  0c20                     or al, 0x20
-0BBD  0c36                     or al, 0x36
-0BBF  0c3e                     or al, 0x3e
-0BC1  0c4c                     or al, 0x4c
-0BC3  0c5a                     or al, 0x5a
-0BC5  0c5a                     or al, 0x5a
-0BC7  0cca                     or al, 0xca
-0BC9  0b8cc050                 or cx, word ptr [si + 0x50c0]
+0BA6  ca0b                     dw offset 0xbca
+0BA8  5a0c                     dw offset 0xc5a
+0BAA  da0b                     dw offset 0xbda
+0BAC  e60b                     dw offset 0xbe6
+0BAE  ee0b                     dw offset 0xbee
+0BB0  f80b                     dw offset 0xbf8
+0BB2  fc0b                     dw offset 0xbfc
+0BB4  000c                     dw offset 0xc00
+0BB6  080c                     dw offset 0xc08
+0BB8  100c                     dw offset 0xc10
+0BBA  180c                     dw offset 0xc18
+0BBC  200c                     dw offset 0xc20
+0BBE  360c                     dw offset 0xc36
+0BC0  3e0c                     dw offset 0xc3e
+0BC2  4c0c                     dw offset 0xc4c
+0BC4  5a0c                     dw offset 0xc5a
+0BC6  5a0c                     dw offset 0xc5a
+0BC8  ca0b                     dw offset 0xbca
+0BCA  8cc0                     mov ax, es
+0BCC  50                       push ax
 0BCD  56                       push si
 0BCE  9a386adf0b               lcall 0xbdf, 0x6a38 ; _processEdit
 0BD3  83c404                   add sp, 4
@@ -40209,13 +42069,14 @@ Source: unrecovered. Flags: unresolved.
 25F8  d1e0                     shl ax, 1
 25FA  93                       xchg bx, ax
 25FB  2effa70026               jmp word ptr cs:[bx + 0x2600]
-2600  1026bc26                 adc byte ptr [0x26bc], ah
-2604  7627                     jbe 0x262d
-2606  3428                     xor al, 0x28
-2608  e428                     in al, 0x28
-260A  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-260B  295a2a                   sub word ptr [bp + si + 0x2a], bx
-260E  142b                     adc al, 0x2b
+2600  1026                     dw offset 0x2610
+2602  bc26                     dw offset 0x26bc
+2604  7627                     dw offset 0x2776
+2606  3428                     dw offset 0x2834
+2608  e428                     dw offset 0x28e4
+260A  a629                     dw offset 0x29a6
+260C  5a2a                     dw offset 0x2a5a
+260E  142b                     dw offset 0x2b14
 2610  8b7e06                   mov di, word ptr [bp + 6]
 2613  8d4504                   lea ax, [di + 4]
 2616  8e068abf                 mov es, word ptr [0xbf8a]
@@ -40808,13 +42669,14 @@ Source: unrecovered. Flags: unresolved.
 2C15  93                       xchg bx, ax
 2C16  2effa71c2c               jmp word ptr cs:[bx + 0x2c1c]
 2C1B  90                       nop 
-2C1C  2c2c                     sub al, 0x2c
-2C1E  a02f20                   mov al, byte ptr [0x202f]
-2C21  33c2                     xor ax, dx
-2C23  3656                     push si
-2C25  3a02                     cmp al, byte ptr [bp + si]
-2C27  3e8e410c                 mov es, word ptr ds:[bx + di + 0xc]
-2C2B  45                       inc bp
+2C1C  2c2c                     dw offset 0x2c2c
+2C1E  a02f                     dw offset 0x2fa0
+2C20  2033                     dw offset 0x3320
+2C22  c236                     dw offset 0x36c2
+2C24  563a                     dw offset 0x3a56
+2C26  023e                     dw offset 0x3e02
+2C28  8e41                     dw offset 0x418e
+2C2A  0c45                     dw offset 0x450c
 2C2C  8b7e08                   mov di, word ptr [bp + 8]
 2C2F  8b7606                   mov si, word ptr [bp + 6]
 2C32  8e06e6bf                 mov es, word ptr [0xbfe6]
@@ -45421,16 +47283,14 @@ Source: unrecovered. Flags: unresolved.
 5CA6  d1e0                     shl ax, 1
 5CA8  93                       xchg bx, ax
 5CA9  2effa7ae5c               jmp word ptr cs:[bx + 0x5cae]
-5CAE  c45cd4                   les bx, ptr [si - 0x2c]
-5CB1  5d                       pop bp
-5CB2  ca5e04                   retf 0x45e
-5CB5  5f                       pop di
-5CB6  5c                       pop sp
-5CB7  5f                       pop di
-5CB8  5c                       pop sp
-5CB9  5f                       pop di
-5CBA  d85ffe                   fcomp dword ptr [bx - 2]
-5CBD  5f                       pop di
+5CAE  c45c                     dw offset 0x5cc4
+5CB0  d45d                     dw offset 0x5dd4
+5CB2  ca5e                     dw offset 0x5eca
+5CB4  045f                     dw offset 0x5f04
+5CB6  5c5f                     dw offset 0x5f5c
+5CB8  5c5f                     dw offset 0x5f5c
+5CBA  d85f                     dw offset 0x5fd8
+5CBC  fe5f                     dw offset 0x5ffe
 5CBE  8b76fe                   mov si, word ptr [bp - 2]
 5CC1  e96d03                   jmp 0x6031
 5CC4  81fe1401                 cmp si, 0x114
@@ -46945,15 +48805,14 @@ Source: unrecovered. Flags: unresolved.
 7294  d1e0                     shl ax, 1
 7296  93                       xchg bx, ax
 7297  2effa79c72               jmp word ptr cs:[bx + 0x729c]
-729C  aa                       stosb byte ptr es:[di], al
-729D  72d8                     jb 0x7277
-729F  7208                     jb 0x72a9
-72A1  7324                     jae 0x72c7
-72A3  7332                     jae 0x72d7
-72A5  73c4                     jae 0x726b
-72A7  73d2                     jae 0x727b
-72A9  738b                     jae 0x7236
-72AB  7e08                     jle 0x72b5
+729C  aa72                     dw offset 0x72aa
+729E  d872                     dw offset 0x72d8
+72A0  0873                     dw offset 0x7308
+72A2  2473                     dw offset 0x7324
+72A4  3273                     dw offset 0x7332
+72A6  c473                     dw offset 0x73c4
+72A8  d273                     dw offset 0x73d2
+72AA  8b7e08                   mov di, word ptr [bp + 8]
 72AD  8b7606                   mov si, word ptr [bp + 6]
 72B0  57                       push di
 72B1  56                       push si
@@ -52340,27 +54199,24 @@ A537  d1e0                     shl ax, 1
 A539  93                       xchg bx, ax
 A53A  2effa740a5               jmp word ptr cs:[bx - 0x5ac0]
 A53F  90                       nop 
-A540  60                       pushaw 
-A541  a5                       movsw word ptr es:[di], word ptr [si]
-A542  cb                       retf 
-A543  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A544  cb                       retf 
-A545  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A546  cb                       retf 
-A547  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A548  cb                       retf 
-A549  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A54A  70a5                     jo 0xa4f1
-A54C  78a5                     js 0xa4f3
-A54E  8ca590a5                 mov word ptr [di - 0x5a70], fs
-A552  9aa5cba642               lcall 0x42a6, 0xcba5
-A557  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A558  56                       push si
-A559  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A55A  cb                       retf 
-A55B  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-A55C  64a6                     cmpsb byte ptr fs:[si], byte ptr es:[di]
-A55E  c0a68cc050               shl byte ptr [bp - 0x3f74], 0x50
+A540  60a5                     dw offset 0xa560
+A542  cba6                     dw offset 0xa6cb
+A544  cba6                     dw offset 0xa6cb
+A546  cba6                     dw offset 0xa6cb
+A548  cba6                     dw offset 0xa6cb
+A54A  70a5                     dw offset 0xa570
+A54C  78a5                     dw offset 0xa578
+A54E  8ca5                     dw offset 0xa58c
+A550  90a5                     dw offset 0xa590
+A552  9aa5                     dw offset 0xa59a
+A554  cba6                     dw offset 0xa6cb
+A556  42a6                     dw offset 0xa642
+A558  56a6                     dw offset 0xa656
+A55A  cba6                     dw offset 0xa6cb
+A55C  64a6                     dw offset 0xa664
+A55E  c0a6                     dw offset 0xa6c0
+A560  8cc0                     mov ax, es
+A562  50                       push ax
 A563  56                       push si
 A564  90                       nop 
 A565  0e                       push cs
@@ -52510,36 +54366,43 @@ A6E7  d1e0                     shl ax, 1
 A6E9  93                       xchg bx, ax
 A6EA  2effa7f0a6               jmp word ptr cs:[bx - 0x5910]
 A6EF  90                       nop 
-A6F0  36a7                     cmpsw word ptr ss:[si], word ptr es:[di]
-A6F2  58                       pop ax
-A6F3  a7                       cmpsw word ptr [si], word ptr es:[di]
-A6F4  8ea7aca7                 mov fs, word ptr [bx - 0x5854]
-A6F8  caa772                   retf 0x72a7
-A6FB  a8ea                     test al, 0xea
-A6FD  a8f6                     test al, 0xf6
-A6FF  a80a                     test al, 0xa
-A701  a918a9                   test ax, 0xa918
-A704  18a918a9                 sbb byte ptr [bx + di - 0x56e8], ch
-A708  18a918a9                 sbb byte ptr [bx + di - 0x56e8], ch
-A70C  18a918a9                 sbb byte ptr [bx + di - 0x56e8], ch
-A710  18a92ea9                 sbb byte ptr [bx + di - 0x56d2], ch
-A714  2ea92ea9                 test ax, 0xa92e
-A718  2ea92ea9                 test ax, 0xa92e
-A71C  2ea92ea9                 test ax, 0xa92e
-A720  95                       xchg bp, ax
-A721  a995a9                   test ax, 0xa995
-A724  95                       xchg bp, ax
-A725  a995a9                   test ax, 0xa995
-A728  95                       xchg bp, ax
-A729  a995a9                   test ax, 0xa995
-A72C  95                       xchg bp, ax
-A72D  a995a9                   test ax, 0xa995
-A730  95                       xchg bp, ax
-A731  a995a9                   test ax, 0xa995
-A734  3ea96800                 test ax, 0x68
-A738  199a56c2                 sbb word ptr [bp + si - 0x3daa], bx
-A73C  4b                       dec bx ; _GetStrategy
-A73D  a7                       cmpsw word ptr [si], word ptr es:[di]
+A6F0  36a7                     dw offset 0xa736
+A6F2  58a7                     dw offset 0xa758
+A6F4  8ea7                     dw offset 0xa78e
+A6F6  aca7                     dw offset 0xa7ac
+A6F8  caa7                     dw offset 0xa7ca
+A6FA  72a8                     dw offset 0xa872
+A6FC  eaa8                     dw offset 0xa8ea
+A6FE  f6a8                     dw offset 0xa8f6
+A700  0aa9                     dw offset 0xa90a
+A702  18a9                     dw offset 0xa918
+A704  18a9                     dw offset 0xa918
+A706  18a9                     dw offset 0xa918
+A708  18a9                     dw offset 0xa918
+A70A  18a9                     dw offset 0xa918
+A70C  18a9                     dw offset 0xa918
+A70E  18a9                     dw offset 0xa918
+A710  18a9                     dw offset 0xa918
+A712  2ea9                     dw offset 0xa92e
+A714  2ea9                     dw offset 0xa92e
+A716  2ea9                     dw offset 0xa92e
+A718  2ea9                     dw offset 0xa92e
+A71A  2ea9                     dw offset 0xa92e
+A71C  2ea9                     dw offset 0xa92e
+A71E  2ea9                     dw offset 0xa92e
+A720  95a9                     dw offset 0xa995
+A722  95a9                     dw offset 0xa995
+A724  95a9                     dw offset 0xa995
+A726  95a9                     dw offset 0xa995
+A728  95a9                     dw offset 0xa995
+A72A  95a9                     dw offset 0xa995
+A72C  95a9                     dw offset 0xa995
+A72E  95a9                     dw offset 0xa995
+A730  95a9                     dw offset 0xa995
+A732  95a9                     dw offset 0xa995
+A734  3ea9                     dw offset 0xa93e
+A736  680019                   push 0x1900
+A739  9a56c24ba7               lcall 0xa74b, 0xc256 ; _win_IsWinOpen
 A73E  83c402                   add sp, 2
 A741  0bc0                     or ax, ax
 A743  750b                     jne 0xa750
@@ -55040,29 +56903,163 @@ C239  e99501                   jmp 0xc3d1
 C23C  d1e0                     shl ax, 1
 C23E  93                       xchg bx, ax
 C23F  2effa744c2               jmp word ptr cs:[bx - 0x3dbc]
-C244  72c2                     jb 0xc208
-C246  d1c3                     rol bx, 1
-C248  d1c3                     rol bx, 1
-C24A  82c28a                   add dl, 0x8a
-C24D  c29cc2                   ret 0xc29c
-C250  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-C251  c2c0c2                   ret 0xc2c0
-C254  cac2d4                   retf 0xd4c2
-C257  c2d8c2                   ret 0xc2d8
-C25A  dcc2                     fadd st(2), st(0)
-C25C  e0c2                     loopne 0xc220
-C25E  1cc3                     sbb al, 0xc3
-C260  24c3                     and al, 0xc3
-C262  86c3                     xchg bl, al
-C264  8ec3                     mov es, bx
-C266  96                       xchg si, ax
-C267  c3                       ret 
-C268  9e                       sahf 
-C269  c3                       ret 
-C26A  a6                       cmpsb byte ptr [si], byte ptr es:[di]
-C26B  c3                       ret 
-C26C  ae                       scasb al, byte ptr es:[di]
-C26D  c3                       ret 
+C244  72c2                     dw offset 0xc272
+C246  d1c3                     dw offset 0xc3d1
+C248  d1c3                     dw offset 0xc3d1
+C24A  82c2                     dw offset 0xc282
+C24C  8ac2                     dw offset 0xc28a
+C24E  9cc2                     dw offset 0xc29c
+C250  a6c2                     dw offset 0xc2a6
+C252  c0c2                     dw offset 0xc2c0
+C254  cac2                     dw offset 0xc2ca
+C256  d4c2                     dw offset 0xc2d4
+C258  d8c2                     dw offset 0xc2d8
+C25A  dcc2                     dw offset 0xc2dc
+C25C  e0c2                     dw offset 0xc2e0
+C25E  1cc3                     dw offset 0xc31c
+C260  24c3                     dw offset 0xc324
+C262  86c3                     dw offset 0xc386
+C264  8ec3                     dw offset 0xc38e
+C266  96c3                     dw offset 0xc396
+C268  9ec3                     dw offset 0xc39e
+C26A  a6c3                     dw offset 0xc3a6
+C26C  aec3                     dw offset 0xc3ae
+C26E  c4c3                     dw offset 0xc3c4
+C270  ccc3                     dw offset 0xc3cc
+C272  8cc0                     mov ax, es
+C274  50                       push ax
+C275  56                       push si
+C276  90                       nop 
+C277  0e                       push cs
+C278  e8851e                   call 0xe100 ; _MapAreaEvent
+C27B  83c404                   add sp, 4
+C27E  e95001                   jmp 0xc3d1
+C281  90                       nop 
+C282  9a18998dc2               lcall 0xc28d, 0x9918 ; _MapToYard
+C287  e94701                   jmp 0xc3d1
+C28A  9ade9594c2               lcall 0xc294, 0x95de ; _ClearMapScentButtons
+C28F  6a01                     push 1
+C291  9acaa59fc2               lcall 0xc29f, 0xa5ca ; _SetMapPlane
+C296  83c402                   add sp, 2
+C299  e93501                   jmp 0xc3d1
+C29C  9ade95a9c2               lcall 0xc2a9, 0x95de ; _ClearMapScentButtons
+C2A1  6a02                     push 2
+C2A3  ebec                     jmp 0xc291
+C2A5  90                       nop 
+C2A6  9ade95b0c2               lcall 0xc2b0, 0x95de ; _ClearMapScentButtons
+C2AB  6a03                     push 3
+C2AD  9acaa5c5c2               lcall 0xc2c5, 0xa5ca ; _SetMapPlane
+C2B2  83c402                   add sp, 2
+C2B5  680001                   push 0x100
+C2B8  9a1ed447c3               lcall 0xc347, 0xd41e ; _win_ToTop
+C2BD  ebd7                     jmp 0xc296
+C2BF  90                       nop 
+C2C0  6a04                     push 4
+C2C2  9a829ecfc2               lcall 0xc2cf, 0x9e82 ; _SetMapModeAnt
+C2C7  ebe9                     jmp 0xc2b2
+C2C9  90                       nop 
+C2CA  6a05                     push 5
+C2CC  9a829e1fc3               lcall 0xc31f, 0x9e82 ; _SetMapModeAnt
+C2D1  ebc3                     jmp 0xc296
+C2D3  90                       nop 
+C2D4  6a08                     push 8
+C2D6  ebf4                     jmp 0xc2cc
+C2D8  6a06                     push 6
+C2DA  ebf0                     jmp 0xc2cc
+C2DC  6a07                     push 7
+C2DE  ebec                     jmp 0xc2cc
+C2E0  833e981900               cmp word ptr [0x1998], 0 ; _showTrails
+C2E5  7525                     jne 0xc30c
+C2E7  bbd29b                   mov bx, 0x9bd2
+C2EA  8e06eac1                 mov es, word ptr [0xc1ea]
+C2EE  895ef4                   mov word ptr [bp - 0xc], bx
+C2F1  8c46f6                   mov word ptr [bp - 0xa], es
+C2F4  26833f00                 cmp word ptr es:[bx], 0
+C2F8  7412                     je 0xc30c
+C2FA  26c7070000               mov word ptr es:[bx], 0
+C2FF  90                       nop 
+C300  0e                       push cs
+C301  e83a0a                   call 0xcd3e ; _DrawMap
+C304  c45ef4                   les bx, ptr [bp - 0xc]
+C307  26c7070100               mov word ptr es:[bx], 1
+C30C  833e981901               cmp word ptr [0x1998], 1 ; _showTrails
+C311  1bc0                     sbb ax, ax
+C313  f7d8                     neg ax
+C315  a39819                   mov word ptr [0x1998], ax ; _showTrails
+C318  e9b600                   jmp 0xc3d1
+C31B  90                       nop 
+C31C  9a7abc6bc3               lcall 0xc36b, 0xbc7a ; _OpenModeWindow
+C321  e9ad00                   jmp 0xc3d1
+C324  6a11                     push 0x11
+C326  9a33c30000               lcall 0, 0xc333
+C32B  f6c480                   test ah, 0x80
+C32E  744e                     je 0xc37e
+C330  6a10                     push 0x10
+C332  9affff0000               lcall 0, 0xffff
+C337  f6c480                   test ah, 0x80
+C33A  7434                     je 0xc370
+C33C  8d46f8                   lea ax, [bp - 8]
+C33F  16                       push ss
+C340  50                       push ax
+C341  681001                   push 0x110
+C344  9ad2c278c3               lcall 0xc378, 0xc2d2 ; _win_GetObjRect
+C349  83c406                   add sp, 6
+C34C  8b46fc                   mov ax, word ptr [bp - 4]
+C34F  0346f8                   add ax, word ptr [bp - 8]
+C352  99                       cdq 
+C353  2bc2                     sub ax, dx
+C355  d1f8                     sar ax, 1
+C357  8e4608                   mov es, word ptr [bp + 8]
+C35A  26394408                 cmp word ptr es:[si + 8], ax
+C35E  7c04                     jl 0xc364
+C360  33c0                     xor ax, ax
+C362  eb03                     jmp 0xc367
+C364  b80100                   mov ax, 1
+C367  50                       push ax
+C368  9a049d81c3               lcall 0xc381, 0x9d04 ; _AddSomeAnts
+C36D  e926ff                   jmp 0xc296
+C370  6a01                     push 1
+C372  689600                   push 0x96
+C375  9a586a89b8               lcall 0xb889, 0x6a58 ; _AddFood
+C37A  e9fefe                   jmp 0xc27b
+C37D  90                       nop 
+C37E  9a64a789c3               lcall 0xc389, 0xa764 ; _GotoMyAnt
+C383  eb4c                     jmp 0xc3d1
+C385  90                       nop 
+C386  9aecbb91c3               lcall 0xc391, 0xbbec ; _OpenCasteWindow
+C38B  eb44                     jmp 0xc3d1
+C38D  90                       nop 
+C38E  9abcb099c3               lcall 0xc399, 0xb0bc ; _MysteryButton
+C393  5e                       pop si
+C394  c9                       leave 
+C395  cb                       retf 
+C396  9a6a8aa1c3               lcall 0xc3a1, 0x8a6a ; _OpenHistoryWindow
+C39B  5e                       pop si
+C39C  c9                       leave 
+C39D  cb                       retf 
+C39E  9aaa5cbfc3               lcall 0xc3bf, 0x5caa ; _ScoreDialog
+C3A3  5e                       pop si
+C3A4  c9                       leave 
+C3A5  cb                       retf 
+C3A6  9ada60dfc1               lcall 0xc1df, 0x60da ; _OpenInfoWindow
+C3AB  5e                       pop si
+C3AC  c9                       leave 
+C3AD  cb                       retf 
+C3AE  8e06ecc1                 mov es, word ptr [0xc1ec]
+C3B2  26c706b09f0100           mov word ptr es:[0x9fb0], 1
+C3B9  680301                   push 0x103
+C3BC  9aac5acfc3               lcall 0xc3cf, 0x5aac ; _DoWinHelp
+C3C1  e9d2fe                   jmp 0xc296
+C3C4  90                       nop 
+C3C5  0e                       push cs
+C3C6  e85518                   call 0xdc1e ; _MapToolsMenu
+C3C9  5e                       pop si
+C3CA  c9                       leave 
+C3CB  cb                       retf 
+C3CC  9a9e5d5fc1               lcall 0xc15f, 0x5d9e ; _DrawCastePopUp
+C3D1  5e                       pop si
+C3D2  c9                       leave 
+C3D3  cb                       retf 
 ```
 
 ## _ProcMapRibbonEvent — ANTEDIT_MODULE:C3D4
@@ -55082,18 +57079,237 @@ C3EB  e95502                   jmp 0xc643
 C3EE  d1e0                     shl ax, 1
 C3F0  93                       xchg bx, ax
 C3F1  2effa7f6c3               jmp word ptr cs:[bx - 0x3c0a]
-C3F6  42                       inc dx
-C3F7  c498c4aa                 les bx, ptr [bx + si - 0x553c]
-C3FB  c4b4c4be                 les si, ptr [si - 0x413c]
-C3FF  c402                     les ax, ptr [bp + si]
-C401  c50a                     lds cx, ptr [bp + si]
-C403  c520                     lds sp, ptr [bx + si]
-C405  c528                     lds bp, ptr [bx + si]
-C407  c530                     lds si, ptr [bx + si]
-C409  c54cc5                   lds cx, ptr [si - 0x3b]
-C40C  76c5                     jbe 0xc3d3
-C40E  90                       nop 
-C40F  c5acc5c8                 lds bp, ptr [si - 0x373b]
+C3F6  42c4                     dw offset 0xc442
+C3F8  98c4                     dw offset 0xc498
+C3FA  aac4                     dw offset 0xc4aa
+C3FC  b4c4                     dw offset 0xc4b4
+C3FE  bec4                     dw offset 0xc4be
+C400  02c5                     dw offset 0xc502
+C402  0ac5                     dw offset 0xc50a
+C404  20c5                     dw offset 0xc520
+C406  28c5                     dw offset 0xc528
+C408  30c5                     dw offset 0xc530
+C40A  4cc5                     dw offset 0xc54c
+C40C  76c5                     dw offset 0xc576
+C40E  90c5                     dw offset 0xc590
+C410  acc5                     dw offset 0xc5ac
+C412  c8c5                     dw offset 0xc5c8
+C414  c8c5                     dw offset 0xc5c8
+C416  c8c5                     dw offset 0xc5c8
+C418  c8c5                     dw offset 0xc5c8
+C41A  c8c5                     dw offset 0xc5c8
+C41C  c8c5                     dw offset 0xc5c8
+C41E  c8c5                     dw offset 0xc5c8
+C420  c8c5                     dw offset 0xc5c8
+C422  dcc5                     dw offset 0xc5dc
+C424  dcc5                     dw offset 0xc5dc
+C426  dcc5                     dw offset 0xc5dc
+C428  dcc5                     dw offset 0xc5dc
+C42A  dcc5                     dw offset 0xc5dc
+C42C  dcc5                     dw offset 0xc5dc
+C42E  dcc5                     dw offset 0xc5dc
+C430  43c6                     dw offset 0xc643
+C432  43c6                     dw offset 0xc643
+C434  43c6                     dw offset 0xc643
+C436  43c6                     dw offset 0xc643
+C438  43c6                     dw offset 0xc643
+C43A  43c6                     dw offset 0xc643
+C43C  43c6                     dw offset 0xc643
+C43E  43c6                     dw offset 0xc643
+C440  ecc5                     dw offset 0xc5ec
+C442  680001                   push 0x100
+C445  9a56c257c4               lcall 0xc457, 0xc256 ; _win_IsWinOpen
+C44A  83c402                   add sp, 2
+C44D  0bc0                     or ax, ax
+C44F  751a                     jne 0xc46b
+C451  680019                   push 0x1900
+C454  9a56c266c4               lcall 0xc466, 0xc256 ; _win_IsWinOpen
+C459  83c402                   add sp, 2
+C45C  0bc0                     or ax, ax
+C45E  750b                     jne 0xc46b
+C460  680001                   push 0x100
+C463  9a2eca71c4               lcall 0xc471, 0xca2e ; _win_Open
+C468  83c402                   add sp, 2
+C46B  680019                   push 0x1900
+C46E  9a56c2cac4               lcall 0xc4ca, 0xc256 ; _win_IsWinOpen
+C473  83c402                   add sp, 2
+C476  0bc0                     or ax, ax
+C478  740c                     je 0xc486
+C47A  ff36d8bc                 push word ptr [0xbcd8]
+C47E  9a8bc40000               lcall 0, 0xc48b
+C483  e9bd01                   jmp 0xc643
+C486  ff36a8bc                 push word ptr [0xbca8]
+C48A  9affff0000               lcall 0, 0xffff
+C48F  9a18999bc4               lcall 0xc49b, 0x9918 ; _MapToYard
+C494  e9ac01                   jmp 0xc643
+C497  90                       nop 
+C498  9ade95a2c4               lcall 0xc4a2, 0x95de ; _ClearMapScentButtons
+C49D  6a02                     push 2
+C49F  9acaa5adc4               lcall 0xc4ad, 0xa5ca ; _SetMapPlane
+C4A4  83c402                   add sp, 2
+C4A7  e99901                   jmp 0xc643
+C4AA  9ade95b7c4               lcall 0xc4b7, 0x95de ; _ClearMapScentButtons
+C4AF  6a03                     push 3
+C4B1  ebec                     jmp 0xc49f
+C4B3  90                       nop 
+C4B4  9ade9505c5               lcall 0xc505, 0x95de ; _ClearMapScentButtons
+C4B9  6a01                     push 1
+C4BB  ebe2                     jmp 0xc49f
+C4BD  90                       nop 
+C4BE  8d46f8                   lea ax, [bp - 8]
+C4C1  16                       push ss
+C4C2  50                       push ax
+C4C3  26ff740c                 push word ptr es:[si + 0xc]
+C4C7  9ad2c2dac4               lcall 0xc4da, 0xc2d2 ; _win_GetObjRect
+C4CC  83c406                   add sp, 6
+C4CF  8d46f0                   lea ax, [bp - 0x10]
+C4D2  16                       push ss
+C4D3  50                       push ax
+C4D4  680014                   push 0x1400
+C4D7  9ad2c2fbc5               lcall 0xc5fb, 0xc2d2 ; _win_GetObjRect
+C4DC  83c406                   add sp, 6
+C4DF  6a00                     push 0
+C4E1  8b46fc                   mov ax, word ptr [bp - 4]
+C4E4  2b46f8                   sub ax, word ptr [bp - 8]
+C4E7  d1f8                     sar ax, 1
+C4E9  8b4ef4                   mov cx, word ptr [bp - 0xc]
+C4EC  2b4ef0                   sub cx, word ptr [bp - 0x10]
+C4EF  d1f9                     sar cx, 1
+C4F1  2bc1                     sub ax, cx
+C4F3  0346f8                   add ax, word ptr [bp - 8]
+C4F6  50                       push ax
+C4F7  90                       nop 
+C4F8  0e                       push cs
+C4F9  e8781e                   call 0xe374 ; _OpenMiniMapWin
+C4FC  83c404                   add sp, 4
+C4FF  e94101                   jmp 0xc643
+C502  9a44a81bc5               lcall 0xc51b, 0xa844 ; _GotoSpider
+C507  5e                       pop si
+C508  c9                       leave 
+C509  cb                       retf 
+C50A  8e06ecc1                 mov es, word ptr [0xc1ec]
+C50E  26c706b09f0100           mov word ptr es:[0x9fb0], 1
+C515  680822                   push 0x2208
+C518  9aac5a23c5               lcall 0xc523, 0x5aac ; _DoWinHelp
+C51D  eb85                     jmp 0xc4a4
+C51F  90                       nop 
+C520  9aaa5c35c5               lcall 0xc535, 0x5caa ; _ScoreDialog
+C525  5e                       pop si
+C526  c9                       leave 
+C527  cb                       retf 
+C528  90                       nop 
+C529  0e                       push cs
+C52A  e84919                   call 0xde76 ; _RibbonToolsMenu
+C52D  5e                       pop si
+C52E  c9                       leave 
+C52F  cb                       retf 
+C530  6a04                     push 4
+C532  9a829e51c5               lcall 0xc551, 0x9e82 ; _SetMapModeAnt
+C537  83c402                   add sp, 2
+C53A  8e06eec1                 mov es, word ptr [0xc1ee]
+C53E  26833e108604             cmp word ptr es:[0x8610], 4
+C544  7522                     jne 0xc568
+C546  b80100                   mov ax, 1
+C549  eb20                     jmp 0xc56b
+C54B  90                       nop 
+C54C  6a05                     push 5
+C54E  9a829e7bc5               lcall 0xc57b, 0x9e82 ; _SetMapModeAnt
+C553  83c402                   add sp, 2
+C556  8e06eec1                 mov es, word ptr [0xc1ee]
+C55A  26833e108605             cmp word ptr es:[0x8610], 5
+C560  7506                     jne 0xc568
+C562  b80200                   mov ax, 2
+C565  eb04                     jmp 0xc56b
+C567  90                       nop 
+C568  b8ffff                   mov ax, 0xffff
+C56B  a358ac                   mov word ptr [0xac58], ax ; _ELayerMode
+C56E  90                       nop 
+C56F  0e                       push cs
+C570  e8dd48                   call 0x10e50
+C573  5e                       pop si
+C574  c9                       leave 
+C575  cb                       retf 
+C576  6a08                     push 8
+C578  9a829e95c5               lcall 0xc595, 0x9e82 ; _SetMapModeAnt
+C57D  83c402                   add sp, 2
+C580  8e06eec1                 mov es, word ptr [0xc1ee]
+C584  26833e108608             cmp word ptr es:[0x8610], 8
+C58A  75dc                     jne 0xc568
+C58C  33c0                     xor ax, ax
+C58E  ebdb                     jmp 0xc56b
+C590  6a06                     push 6
+C592  9a829eb1c5               lcall 0xc5b1, 0x9e82 ; _SetMapModeAnt
+C597  83c402                   add sp, 2
+C59A  8e06eec1                 mov es, word ptr [0xc1ee]
+C59E  26833e108606             cmp word ptr es:[0x8610], 6
+C5A4  75c2                     jne 0xc568
+C5A6  b80300                   mov ax, 3
+C5A9  ebc0                     jmp 0xc56b
+C5AB  90                       nop 
+C5AC  6a07                     push 7
+C5AE  9a829ed6c5               lcall 0xc5d6, 0x9e82 ; _SetMapModeAnt
+C5B3  83c402                   add sp, 2
+C5B6  8e06eec1                 mov es, word ptr [0xc1ee]
+C5BA  26833e108607             cmp word ptr es:[0x8610], 7
+C5C0  75a6                     jne 0xc568
+C5C2  b80400                   mov ax, 4
+C5C5  eba4                     jmp 0xc56b
+C5C7  90                       nop 
+C5C8  268b440c                 mov ax, word ptr es:[si + 0xc]
+C5CC  8bc8                     mov cx, ax
+C5CE  2d1022                   sub ax, 0x2210
+C5D1  50                       push ax
+C5D2  51                       push cx
+C5D3  9ac404e7c5               lcall 0xc5e7, 0x4c4 ; _DoUserButton
+C5D8  e921ff                   jmp 0xc4fc
+C5DB  90                       nop 
+C5DC  268b440c                 mov ax, word ptr es:[si + 0xc]
+C5E0  2d1822                   sub ax, 0x2218
+C5E3  50                       push ax
+C5E4  9aa60841c6               lcall 0xc641, 0x8a6 ; _DoBookMark
+C5E9  e9b8fe                   jmp 0xc4a4
+C5EC  682222                   push 0x2222
+C5EF  8bc6                     mov ax, si
+C5F1  8cc2                     mov dx, es
+C5F3  050800                   add ax, 8
+C5F6  52                       push dx
+C5F7  50                       push ax
+C5F8  9ab6e226c6               lcall 0xc626, 0xe2b6 ; _win_IsPointInObj
+C5FD  83c406                   add sp, 6
+C600  0bc0                     or ax, ax
+C602  7412                     je 0xc616
+C604  681f23                   push 0x231f
+C607  ff7608                   push word ptr [bp + 8]
+C60A  56                       push si
+C60B  90                       nop 
+C60C  0e                       push cs
+C60D  e862a8                   call 0x6e72 ; _DoHealthSetY
+C610  83c406                   add sp, 6
+C613  5e                       pop si
+C614  c9                       leave 
+C615  cb                       retf 
+C616  682322                   push 0x2223
+C619  8bc6                     mov ax, si
+C61B  8b5608                   mov dx, word ptr [bp + 8]
+C61E  050800                   add ax, 8
+C621  52                       push dx
+C622  50                       push ax
+C623  9ab6e2bbc2               lcall 0xc2bb, 0xe2b6 ; _win_IsPointInObj
+C628  83c406                   add sp, 6
+C62B  0bc0                     or ax, ax
+C62D  740f                     je 0xc63e
+C62F  682023                   push 0x2320
+C632  8b4608                   mov ax, word ptr [bp + 8]
+C635  50                       push ax
+C636  56                       push si
+C637  90                       nop 
+C638  0e                       push cs
+C639  e8e0a7                   call 0x6e1c ; _DoWarnSetB
+C63C  ebd2                     jmp 0xc610
+C63E  9a9e5d85c2               lcall 0xc285, 0x5d9e ; _DrawCastePopUp
+C643  5e                       pop si
+C644  c9                       leave 
+C645  cb                       retf 
 ```
 
 ## _OpenMapWindow — ANTEDIT_MODULE:C646
@@ -70006,25 +72222,35 @@ Source: unrecovered. Flags: unresolved.
 67FE  d1e0                     shl ax, 1
 6800  93                       xchg bx, ax
 6801  2effa70668               jmp word ptr cs:[bx + 0x6806]
-6806  3a6850                   cmp ch, byte ptr [bx + si + 0x50]
-6809  686c68                   push 0x686c
-680C  7e68                     jle 0x6876
-680E  90                       nop 
-680F  68ca68                   push 0x68ca
-6812  de68f2                   fisubr word ptr [bx + si - 0xe]
-6815  680669                   push 0x6906
-6818  1c69                     sbb al, 0x69
-681A  6669b269bc69c669d0       imul esi, dword ptr [bp + si - 0x4397], 0xd069c669
-6823  69e069f8                 imul sp, ax, 0xf869
-6827  69206a36                 imul sp, word ptr [bx + si], 0x366a
-682B  6a76                     push 0x76
-682D  6ad4                     push -0x2c
-682F  6ade                     push -0x22
-6831  6a02                     push 2
-6833  6b266b726b               imul sp, word ptr [0x726b], 0x6b
-6838  ae                       scasb al, byte ptr es:[di]
-6839  6b6a7e6a                 imul bp, word ptr [bp + si + 0x7e], 0x6a
-683D  006a0a                   add byte ptr [bp + si + 0xa], ch
+6806  3a68                     dw offset 0x683a
+6808  5068                     dw offset 0x6850
+680A  6c68                     dw offset 0x686c
+680C  7e68                     dw offset 0x687e
+680E  9068                     dw offset 0x6890
+6810  ca68                     dw offset 0x68ca
+6812  de68                     dw offset 0x68de
+6814  f268                     dw offset 0x68f2
+6816  0669                     dw offset 0x6906
+6818  1c69                     dw offset 0x691c
+681A  6669                     dw offset 0x6966
+681C  b269                     dw offset 0x69b2
+681E  bc69                     dw offset 0x69bc
+6820  c669                     dw offset 0x69c6
+6822  d069                     dw offset 0x69d0
+6824  e069                     dw offset 0x69e0
+6826  f869                     dw offset 0x69f8
+6828  206a                     dw offset 0x6a20
+682A  366a                     dw offset 0x6a36
+682C  766a                     dw offset 0x6a76
+682E  d46a                     dw offset 0x6ad4
+6830  de6a                     dw offset 0x6ade
+6832  026b                     dw offset 0x6b02
+6834  266b                     dw offset 0x6b26
+6836  726b                     dw offset 0x6b72
+6838  ae6b                     dw offset 0x6bae
+683A  6a7e                     push 0x7e
+683C  6a00                     push 0
+683E  6a0a                     push 0xa
 6840  9ab0985968               lcall 0x6859, 0x98b0 ; _myBeginSound
 6845  83c406                   add sp, 6
 6848  83068eac0a               add word ptr [0xac8e], 0xa ; _QueenStorageR
@@ -72831,16 +75057,24 @@ Source: unrecovered. Flags: unresolved.
 8014  d1e0                     shl ax, 1
 8016  93                       xchg bx, ax
 8017  2effa71c80               jmp word ptr cs:[bx - 0x7fe4]
-801C  40                       inc ax
-801D  804080b0                 add byte ptr [bx + si - 0x80], 0xb0
-8021  814080b081               add word ptr [bx + si - 0x80], 0x81b0
-8026  6e                       outsb dx, byte ptr [si]
-8027  806e80fe                 sub byte ptr [bp - 0x80], 0xfe
-802B  804080b0                 add byte ptr [bx + si - 0x80], 0xb0
-802F  81b081408030             xor word ptr [bx + si + 0x4081], 0x3080
-8035  8150815081               adc word ptr [bx + si - 0x7f], 0x8150
-803A  50                       push ax
-803B  8150815081               adc word ptr [bx + si - 0x7f], 0x8150
+801C  4080                     dw offset 0x8040
+801E  4080                     dw offset 0x8040
+8020  b081                     dw offset 0x81b0
+8022  4080                     dw offset 0x8040
+8024  b081                     dw offset 0x81b0
+8026  6e80                     dw offset 0x806e
+8028  6e80                     dw offset 0x806e
+802A  fe80                     dw offset 0x80fe
+802C  4080                     dw offset 0x8040
+802E  b081                     dw offset 0x81b0
+8030  b081                     dw offset 0x81b0
+8032  4080                     dw offset 0x8040
+8034  3081                     dw offset 0x8130
+8036  5081                     dw offset 0x8150
+8038  5081                     dw offset 0x8150
+803A  5081                     dw offset 0x8150
+803C  5081                     dw offset 0x8150
+803E  5081                     dw offset 0x8150
 8040  c45ef4                   les bx, ptr [bp - 0xc]
 8043  26ff37                   push word ptr es:[bx]
 8046  9a75800000               lcall 0, 0x8075
@@ -78830,42 +81064,47 @@ Source: unrecovered. Flags: unresolved.
 3161  93                       xchg bx, ax
 3162  2effa76831               jmp word ptr cs:[bx + 0x3168]
 3167  90                       nop 
-3168  bc31b4                   mov sp, 0xb431
-316B  31ca                     xor dx, cx
-316D  31ca                     xor dx, cx
-316F  31d2                     xor dx, dx
-3171  31da                     xor dx, bx
-3173  3128                     xor word ptr [bx + si], bp
-3175  32a832fc                 xor ch, byte ptr [bx + si - 0x3ce]
-3179  325033                   xor dl, byte ptr [bx + si + 0x33]
-317C  d231                     sal byte ptr [bx + di], cl
-317E  d231                     sal byte ptr [bx + di], cl
-3180  6c                       insb byte ptr es:[di], dx
-3181  33d2                     xor dx, dx
-3183  31d2                     xor dx, dx
-3185  318833b4                 xor word ptr [bx + si - 0x4bcd], cx
-3189  31ca                     xor dx, cx
-318B  31ca                     xor dx, cx
-318D  31ca                     xor dx, cx
-318F  31d6                     xor si, dx
-3191  33d6                     xor dx, si
-3193  33d6                     xor dx, si
-3195  33d6                     xor dx, si
-3197  33d6                     xor dx, si
-3199  33d6                     xor dx, si
-319B  33d6                     xor dx, si
-319D  33d6                     xor dx, si
-319F  33d6                     xor dx, si
-31A1  33d6                     xor dx, si
-31A3  33d6                     xor dx, si
-31A5  33d6                     xor dx, si
-31A7  33b431ca                 xor si, word ptr [si - 0x35cf]
-31AB  31ca                     xor dx, cx
-31AD  31ca                     xor dx, cx
-31AF  31e0                     xor ax, sp
-31B1  33e0                     xor sp, ax
-31B3  33900ee8                 xor dx, word ptr [bx + si - 0x17f2]
-31B7  df04                     fild word ptr [si]
+3168  bc31                     dw offset 0x31bc
+316A  b431                     dw offset 0x31b4
+316C  ca31                     dw offset 0x31ca
+316E  ca31                     dw offset 0x31ca
+3170  d231                     dw offset 0x31d2
+3172  da31                     dw offset 0x31da
+3174  2832                     dw offset 0x3228
+3176  a832                     dw offset 0x32a8
+3178  fc32                     dw offset 0x32fc
+317A  5033                     dw offset 0x3350
+317C  d231                     dw offset 0x31d2
+317E  d231                     dw offset 0x31d2
+3180  6c33                     dw offset 0x336c
+3182  d231                     dw offset 0x31d2
+3184  d231                     dw offset 0x31d2
+3186  8833                     dw offset 0x3388
+3188  b431                     dw offset 0x31b4
+318A  ca31                     dw offset 0x31ca
+318C  ca31                     dw offset 0x31ca
+318E  ca31                     dw offset 0x31ca
+3190  d633                     dw offset 0x33d6
+3192  d633                     dw offset 0x33d6
+3194  d633                     dw offset 0x33d6
+3196  d633                     dw offset 0x33d6
+3198  d633                     dw offset 0x33d6
+319A  d633                     dw offset 0x33d6
+319C  d633                     dw offset 0x33d6
+319E  d633                     dw offset 0x33d6
+31A0  d633                     dw offset 0x33d6
+31A2  d633                     dw offset 0x33d6
+31A4  d633                     dw offset 0x33d6
+31A6  d633                     dw offset 0x33d6
+31A8  b431                     dw offset 0x31b4
+31AA  ca31                     dw offset 0x31ca
+31AC  ca31                     dw offset 0x31ca
+31AE  ca31                     dw offset 0x31ca
+31B0  e033                     dw offset 0x33e0
+31B2  e033                     dw offset 0x33e0
+31B4  90                       nop 
+31B5  0e                       push cs
+31B6  e8df04                   call 0x3698 ; _MakeKitchenWall
 31B9  e94602                   jmp 0x3402
 31BC  90                       nop 
 31BD  0e                       push cs
@@ -81671,7 +83910,708 @@ Source: unrecovered. Flags: unresolved.
 4B57  93                       xchg bx, ax
 4B58  2effa75e4b               jmp word ptr cs:[bx + 0x4b5e]
 4B5D  90                       nop 
-4B5E  6a4b                     push 0x4b
+4B5E  6a4b                     dw offset 0x4b6a
+4B60  f04b                     dw offset 0x4bf0
+4B62  a84c                     dw offset 0x4ca8
+4B64  e54d                     dw offset 0x4de5
+4B66  b44f                     dw offset 0x4fb4
+4B68  7e50                     dw offset 0x507e
+4B6A  8e063cc4                 mov es, word ptr [0xc43c]
+4B6E  26c70690720200           mov word ptr es:[0x7290], 2
+4B75  689600                   push 0x96
+4B78  90                       nop 
+4B79  0e                       push cs
+4B7A  e80dca                   call 0x158a ; _SRand1
+4B7D  83c402                   add sp, 2
+4B80  0bc0                     or ax, ax
+4B82  7508                     jne 0x4b8c
+4B84  c45eea                   les bx, ptr [bp - 0x16]
+4B87  26c7070100               mov word ptr es:[bx], 1
+4B8C  90                       nop 
+4B8D  0e                       push cs
+4B8E  e86508                   call 0x53f6 ; _SFoundAnt
+4B91  bb5e7a                   mov bx, 0x7a5e
+4B94  8e064cc4                 mov es, word ptr [0xc44c]
+4B98  895ee6                   mov word ptr [bp - 0x1a], bx
+4B9B  8c46e8                   mov word ptr [bp - 0x18], es
+4B9E  268907                   mov word ptr es:[bx], ax
+4BA1  3dfeff                   cmp ax, 0xfffe
+4BA4  7403                     je 0x4ba9
+4BA6  e9dcfb                   jmp 0x4785
+4BA9  6a1e                     push 0x1e
+4BAB  90                       nop 
+4BAC  0e                       push cs
+4BAD  e8dac9                   call 0x158a ; _SRand1
+4BB0  83c402                   add sp, 2
+4BB3  0bc0                     or ax, ax
+4BB5  7521                     jne 0x4bd8
+4BB7  6a08                     push 8
+4BB9  90                       nop 
+4BBA  0e                       push cs
+4BBB  e8ccc9                   call 0x158a ; _SRand1
+4BBE  83c402                   add sp, 2
+4BC1  8bd8                     mov bx, ax
+4BC3  a180ac                   mov ax, word ptr [0xac80] ; _SpidDir
+4BC6  c1e003                   shl ax, 3
+4BC9  03d8                     add bx, ax
+4BCB  8e065ac4                 mov es, word ptr [0xc45a]
+4BCF  268a872400               mov al, byte ptr es:[bx + 0x24]
+4BD4  98                       cwde 
+4BD5  a380ac                   mov word ptr [0xac80], ax ; _SpidDir
+4BD8  8e064ac4                 mov es, word ptr [0xc44a]
+4BDC  26833e607d08             cmp word ptr es:[0x7d60], 8
+4BE2  7403                     je 0x4be7
+4BE4  e91407                   jmp 0x52fb
+4BE7  90                       nop 
+4BE8  0e                       push cs
+4BE9  e84a09                   call 0x5536 ; _SpiderScan
+4BEC  e90c07                   jmp 0x52fb
+4BEF  90                       nop 
+4BF0  8e0642c4                 mov es, word ptr [0xc442]
+4BF4  26833e5a8a00             cmp word ptr es:[0x8a5a], 0
+4BFA  742c                     je 0x4c28
+4BFC  8b3e80ac                 mov di, word ptr [0xac80] ; _SpidDir
+4C00  8e065cc4                 mov es, word ptr [0xc45c]
+4C04  268a85dc87               mov al, byte ptr es:[di - 0x7824]
+4C09  98                       cwde 
+4C0A  29067cac                 sub word ptr [0xac7c], ax ; _SpidX
+4C0E  8e065ec4                 mov es, word ptr [0xc45e]
+4C12  268a85e487               mov al, byte ptr es:[di - 0x781c]
+4C17  98                       cwde 
+4C18  29067eac                 sub word ptr [0xac7e], ax ; _SpidY
+4C1C  8e063cc4                 mov es, word ptr [0xc43c]
+4C20  26a19072                 mov ax, word ptr es:[0x7290]
+4C24  48                       dec ax
+4C25  eb2a                     jmp 0x4c51
+4C27  90                       nop 
+4C28  8b3e80ac                 mov di, word ptr [0xac80] ; _SpidDir
+4C2C  8e065cc4                 mov es, word ptr [0xc45c]
+4C30  268a85dc87               mov al, byte ptr es:[di - 0x7824]
+4C35  98                       cwde 
+4C36  01067cac                 add word ptr [0xac7c], ax ; _SpidX
+4C3A  8e065ec4                 mov es, word ptr [0xc45e]
+4C3E  268a85e487               mov al, byte ptr es:[di - 0x781c]
+4C43  98                       cwde 
+4C44  01067eac                 add word ptr [0xac7e], ax ; _SpidY
+4C48  8e063cc4                 mov es, word ptr [0xc43c]
+4C4C  26a19072                 mov ax, word ptr es:[0x7290]
+4C50  40                       inc ax
+4C51  80e403                   and ah, 3
+4C54  26a39072                 mov word ptr es:[0x7290], ax
+4C58  6a14                     push 0x14
+4C5A  90                       nop 
+4C5B  0e                       push cs
+4C5C  e82bc9                   call 0x158a ; _SRand1
+4C5F  83c402                   add sp, 2
+4C62  0bc0                     or ax, ax
+4C64  7521                     jne 0x4c87
+4C66  6a08                     push 8
+4C68  90                       nop 
+4C69  0e                       push cs
+4C6A  e81dc9                   call 0x158a ; _SRand1
+4C6D  83c402                   add sp, 2
+4C70  8bd8                     mov bx, ax
+4C72  a180ac                   mov ax, word ptr [0xac80] ; _SpidDir
+4C75  c1e003                   shl ax, 3
+4C78  03d8                     add bx, ax
+4C7A  8e065ac4                 mov es, word ptr [0xc45a]
+4C7E  268a872400               mov al, byte ptr es:[bx + 0x24]
+4C83  98                       cwde 
+4C84  a380ac                   mov word ptr [0xac80], ax ; _SpidDir
+4C87  90                       nop 
+4C88  0e                       push cs
+4C89  e86a07                   call 0x53f6 ; _SFoundAnt
+4C8C  bb5e7a                   mov bx, 0x7a5e
+4C8F  8e064cc4                 mov es, word ptr [0xc44c]
+4C93  895ee6                   mov word ptr [bp - 0x1a], bx
+4C96  8c46e8                   mov word ptr [bp - 0x18], es
+4C99  268907                   mov word ptr es:[bx], ax
+4C9C  3dfeff                   cmp ax, 0xfffe
+4C9F  7503                     jne 0x4ca4
+4CA1  e9b403                   jmp 0x5058
+4CA4  e9defa                   jmp 0x4785
+4CA7  90                       nop 
+4CA8  bb5e7a                   mov bx, 0x7a5e
+4CAB  b8cd4c                   mov ax, 0x4ccd ; _match_position
+4CAE  8ec0                     mov es, ax
+4CB0  895ee6                   mov word ptr [bp - 0x1a], bx
+4CB3  8c46e8                   mov word ptr [bp - 0x18], es
+4CB6  26833f00                 cmp word ptr es:[bx], 0
+4CBA  7d03                     jge 0x4cbf
+4CBC  e9a900                   jmp 0x4d68
+4CBF  268b1f                   mov bx, word ptr es:[bx]
+4CC2  b86248                   mov ax, 0x4862 ; _Dx8
+4CC5  8ec0                     mov es, ax
+4CC7  268a87622f               mov al, byte ptr es:[bx + 0x2f62]
+4CCC  b9f44c                   mov cx, 0x4cf4 ; _match_position
+4CCF  8ec1                     mov es, cx
+4CD1  263206a880               xor al, byte ptr es:[0x80a8]
+4CD6  a8f0                     test al, 0xf0
+4CD8  745e                     je 0x4d38
+4CDA  c45eea                   les bx, ptr [bp - 0x16]
+4CDD  26c7070000               mov word ptr es:[bx], 0
+4CE2  c45ee6                   les bx, ptr [bp - 0x1a]
+4CE5  26c707feff               mov word ptr es:[bx], 0xfffe
+4CEA  c45eee                   les bx, ptr [bp - 0x12]
+4CED  26833f01                 cmp word ptr es:[bx], 1
+4CF1  756f                     jne 0x4d62
+4CF3  b80b4d                   mov ax, 0x4d0b ; _match_position
+4CF6  8ed8                     mov ds, ax
+4CF8  36a17eac                 mov ax, word ptr ss:[0xac7e]
+4CFC  c1f804                   sar ax, 4
+4CFF  a3ea78                   mov word ptr [0x78ea], ax
+4D02  368b0e7cac               mov cx, word ptr ss:[0xac7c]
+4D07  c1f904                   sar cx, 4
+4D0A  ba1e4d                   mov dx, 0x4d1e ; _match_position
+4D0D  8ec2                     mov es, dx
+4D0F  26890eb878               mov word ptr es:[0x78b8], cx
+4D14  36890e88cd               mov word ptr ss:[0xcd88], cx
+4D19  36a37ece                 mov word ptr ss:[0xce7e], ax
+4D1D  b87b48                   mov ax, 0x487b ; _match_position
+4D20  8ec0                     mov es, ax
+4D22  26833e607d06             cmp word ptr es:[0x7d60], 6
+4D28  7403                     je 0x4d2d
+4D2A  e9f1fb                   jmp 0x491e
+4D2D  26c706607d0000           mov word ptr es:[0x7d60], 0
+4D34  e9e7fb                   jmp 0x491e
+4D37  90                       nop 
+4D38  16                       push ss
+4D39  1f                       pop ds
+4D3A  c45ee6                   les bx, ptr [bp - 0x1a]
+4D3D  26833f00                 cmp word ptr es:[bx], 0
+4D41  7d43                     jge 0x4d86
+4D43  8b167ece                 mov dx, word ptr [0xce7e] ; _MeLocY
+4D47  2b56f4                   sub dx, word ptr [bp - 0xc]
+4D4A  8b1e88cd                 mov bx, word ptr [0xcd88] ; _MeLocX
+4D4E  2b5ef2                   sub bx, word ptr [bp - 0xe]
+4D51  7902                     jns 0x4d55
+4D53  f7db                     neg bx
+4D55  0bd2                     or dx, dx
+4D57  7d02                     jge 0x4d5b
+4D59  f7da                     neg dx
+4D5B  8bfa                     mov di, dx
+4D5D  03fb                     add di, bx
+4D5F  eb50                     jmp 0x4db1
+4D61  90                       nop 
+4D62  16                       push ss
+4D63  1f                       pop ds
+4D64  e9f605                   jmp 0x535d
+4D67  90                       nop 
+4D68  16                       push ss
+4D69  1f                       pop ds
+4D6A  833e80ce01               cmp word ptr [0xce80], 1 ; _MePlane
+4D6F  7ec9                     jle 0x4d3a
+4D71  c45eea                   les bx, ptr [bp - 0x16]
+4D74  26c7070000               mov word ptr es:[bx], 0
+4D79  c45ee6                   les bx, ptr [bp - 0x1a]
+4D7C  26c707feff               mov word ptr es:[bx], 0xfffe
+4D81  5e                       pop si
+4D82  5f                       pop di
+4D83  c9                       leave 
+4D84  cb                       retf 
+4D85  90                       nop 
+4D86  268b1f                   mov bx, word ptr es:[bx]
+4D89  8e0656c4                 mov es, word ptr [0xc456]
+4D8D  268a8f8e27               mov cl, byte ptr es:[bx + 0x278e]
+4D92  2aed                     sub ch, ch
+4D94  2b4ef4                   sub cx, word ptr [bp - 0xc]
+4D97  268bb7a423               mov si, word ptr es:[bx + 0x23a4]
+4D9C  81e6ff00                 and si, 0xff
+4DA0  2b76f2                   sub si, word ptr [bp - 0xe]
+4DA3  7902                     jns 0x4da7
+4DA5  f7de                     neg si
+4DA7  0bc9                     or cx, cx
+4DA9  7d02                     jge 0x4dad
+4DAB  f7d9                     neg cx
+4DAD  8bf9                     mov di, cx
+4DAF  03fe                     add di, si
+4DB1  83ff40                   cmp di, 0x40
+4DB4  7e09                     jle 0x4dbf
+4DB6  c45eee                   les bx, ptr [bp - 0x12]
+4DB9  26833f01                 cmp word ptr es:[bx], 1
+4DBD  75b2                     jne 0x4d71
+4DBF  83ff02                   cmp di, 2
+4DC2  7c03                     jl 0x4dc7
+4DC4  e9c500                   jmp 0x4e8c
+4DC7  c45eea                   les bx, ptr [bp - 0x16]
+4DCA  26c7070300               mov word ptr es:[bx], 3
+4DCF  a17cac                   mov ax, word ptr [0xac7c] ; _SpidX
+4DD2  24f0                     and al, 0xf0
+4DD4  050800                   add ax, 8
+4DD7  a37cac                   mov word ptr [0xac7c], ax ; _SpidX
+4DDA  a17eac                   mov ax, word ptr [0xac7e] ; _SpidY
+4DDD  24f0                     and al, 0xf0
+4DDF  050800                   add ax, 8
+4DE2  a37eac                   mov word ptr [0xac7e], ax ; _SpidY
+4DE5  c45eee                   les bx, ptr [bp - 0x12]
+4DE8  26833f01                 cmp word ptr es:[bx], 1
+4DEC  7536                     jne 0x4e24
+4DEE  a17cac                   mov ax, word ptr [0xac7c] ; _SpidX
+4DF1  c1f804                   sar ax, 4
+4DF4  a388cd                   mov word ptr [0xcd88], ax ; _MeLocX
+4DF7  a17eac                   mov ax, word ptr [0xac7e] ; _SpidY
+4DFA  c1f804                   sar ax, 4
+4DFD  a37ece                   mov word ptr [0xce7e], ax ; _MeLocY
+4E00  8e064ac4                 mov es, word ptr [0xc44a]
+4E04  26833e607d06             cmp word ptr es:[0x7d60], 6
+4E0A  7507                     jne 0x4e13
+4E0C  26c706607d0000           mov word ptr es:[0x7d60], 0
+4E13  8e0660c4                 mov es, word ptr [0xc460]
+4E17  26833ef28500             cmp word ptr es:[0x85f2], 0
+4E1D  7405                     je 0x4e24
+4E1F  9a64a7ae4f               lcall 0x4fae, 0xa764 ; _GotoMyAnt
+4E24  bb5e7a                   mov bx, 0x7a5e
+4E27  8e064cc4                 mov es, word ptr [0xc44c]
+4E2B  895ee6                   mov word ptr [bp - 0x1a], bx
+4E2E  8c46e8                   mov word ptr [bp - 0x18], es
+4E31  26833ffe                 cmp word ptr es:[bx], -2
+4E35  7503                     jne 0x4e3a
+4E37  e99503                   jmp 0x51cf
+4E3A  26833f00                 cmp word ptr es:[bx], 0
+4E3E  7d03                     jge 0x4e43
+4E40  e91b03                   jmp 0x515e
+4E43  8e064ec4                 mov es, word ptr [0xc44e]
+4E47  26a1a880                 mov ax, word ptr es:[0x80a8]
+4E4B  8946d0                   mov word ptr [bp - 0x30], ax
+4E4E  8e46e8                   mov es, word ptr [bp - 0x18]
+4E51  268b1f                   mov bx, word ptr es:[bx]
+4E54  8e0656c4                 mov es, word ptr [0xc456]
+4E58  263287622f               xor al, byte ptr es:[bx + 0x2f62]
+4E5D  a8f0                     test al, 0xf0
+4E5F  7403                     je 0x4e64
+4E61  e9ee02                   jmp 0x5152
+4E64  f646d080                 test byte ptr [bp - 0x30], 0x80
+4E68  7503                     jne 0x4e6d
+4E6A  e99b02                   jmp 0x5108
+4E6D  8e0662c4                 mov es, word ptr [0xc462]
+4E71  2683065c7d01             add word ptr es:[0x7d5c], 1
+4E77  2683165e7d00             adc word ptr es:[0x7d5e], 0
+4E7D  8e063ac4                 mov es, word ptr [0xc43a]
+4E81  26c706da780400           mov word ptr es:[0x78da], 4
+4E88  e99802                   jmp 0x5123
+4E8B  90                       nop 
+4E8C  c45ee6                   les bx, ptr [bp - 0x1a]
+4E8F  26833f00                 cmp word ptr es:[bx], 0
+4E93  7d0b                     jge 0x4ea0
+4E95  ff367ece                 push word ptr [0xce7e] ; _MeLocY
+4E99  ff3688cd                 push word ptr [0xcd88] ; _MeLocX
+4E9D  eb16                     jmp 0x4eb5
+4E9F  90                       nop 
+4EA0  268b1f                   mov bx, word ptr es:[bx]
+4EA3  8e0656c4                 mov es, word ptr [0xc456]
+4EA7  268a878e27               mov al, byte ptr es:[bx + 0x278e]
+4EAC  2ae4                     sub ah, ah
+4EAE  50                       push ax
+4EAF  268a87a423               mov al, byte ptr es:[bx + 0x23a4]
+4EB4  50                       push ax
+4EB5  ff76f4                   push word ptr [bp - 0xc]
+4EB8  ff76f2                   push word ptr [bp - 0xe]
+4EBB  90                       nop 
+4EBC  0e                       push cs
+4EBD  e80cc2                   call 0x10cc ; _GetDir
+4EC0  83c408                   add sp, 8
+4EC3  8bf0                     mov si, ax
+4EC5  8e065ac4                 mov es, word ptr [0xc45a]
+4EC9  8b1e80ac                 mov bx, word ptr [0xac80] ; _SpidDir
+4ECD  c1e303                   shl bx, 3
+4ED0  03de                     add bx, si
+4ED2  268a872300               mov al, byte ptr es:[bx + 0x23]
+4ED7  98                       cwde 
+4ED8  a380ac                   mov word ptr [0xac80], ax ; _SpidDir
+4EDB  c45ee6                   les bx, ptr [bp - 0x1a]
+4EDE  26833f00                 cmp word ptr es:[bx], 0
+4EE2  7d04                     jge 0x4ee8
+4EE4  6a7e                     push 0x7e
+4EE6  eb02                     jmp 0x4eea
+4EE8  6afb                     push -5
+4EEA  6a00                     push 0
+4EEC  6a2f                     push 0x2f
+4EEE  9ab0983f15               lcall 0x153f, 0x98b0 ; _myBeginSound
+4EF3  83c406                   add sp, 6
+4EF6  8e0642c4                 mov es, word ptr [0xc442]
+4EFA  26833e5a8a00             cmp word ptr es:[0x8a5a], 0
+4F00  743c                     je 0x4f3e
+4F02  8b3680ac                 mov si, word ptr [0xac80] ; _SpidDir
+4F06  8e065cc4                 mov es, word ptr [0xc45c]
+4F0A  268a84dc87               mov al, byte ptr es:[si - 0x7824]
+4F0F  98                       cwde 
+4F10  8bc8                     mov cx, ax
+4F12  c1e002                   shl ax, 2
+4F15  03c1                     add ax, cx
+4F17  29067cac                 sub word ptr [0xac7c], ax ; _SpidX
+4F1B  8e065ec4                 mov es, word ptr [0xc45e]
+4F1F  268a84e487               mov al, byte ptr es:[si - 0x781c]
+4F24  98                       cwde 
+4F25  8bc8                     mov cx, ax
+4F27  c1e002                   shl ax, 2
+4F2A  03c1                     add ax, cx
+4F2C  29067eac                 sub word ptr [0xac7e], ax ; _SpidY
+4F30  8e063cc4                 mov es, word ptr [0xc43c]
+4F34  26a19072                 mov ax, word ptr es:[0x7290]
+4F38  2d0200                   sub ax, 2
+4F3B  eb3a                     jmp 0x4f77
+4F3D  90                       nop 
+4F3E  8b3680ac                 mov si, word ptr [0xac80] ; _SpidDir
+4F42  8e065cc4                 mov es, word ptr [0xc45c]
+4F46  268a84dc87               mov al, byte ptr es:[si - 0x7824]
+4F4B  98                       cwde 
+4F4C  8bc8                     mov cx, ax
+4F4E  c1e002                   shl ax, 2
+4F51  03c1                     add ax, cx
+4F53  01067cac                 add word ptr [0xac7c], ax ; _SpidX
+4F57  8e065ec4                 mov es, word ptr [0xc45e]
+4F5B  268a84e487               mov al, byte ptr es:[si - 0x781c]
+4F60  98                       cwde 
+4F61  8bc8                     mov cx, ax
+4F63  c1e002                   shl ax, 2
+4F66  03c1                     add ax, cx
+4F68  01067eac                 add word ptr [0xac7e], ax ; _SpidY
+4F6C  8e063cc4                 mov es, word ptr [0xc43c]
+4F70  26a19072                 mov ax, word ptr es:[0x7290]
+4F74  050200                   add ax, 2
+4F77  80e403                   and ah, 3
+4F7A  26a39072                 mov word ptr es:[0x7290], ax
+4F7E  c45eee                   les bx, ptr [bp - 0x12]
+4F81  26833f01                 cmp word ptr es:[bx], 1
+4F85  7403                     je 0x4f8a
+4F87  e97103                   jmp 0x52fb
+4F8A  a17cac                   mov ax, word ptr [0xac7c] ; _SpidX
+4F8D  c1f804                   sar ax, 4
+4F90  a388cd                   mov word ptr [0xcd88], ax ; _MeLocX
+4F93  a17eac                   mov ax, word ptr [0xac7e] ; _SpidY
+4F96  c1f804                   sar ax, 4
+4F99  a37ece                   mov word ptr [0xce7e], ax ; _MeLocY
+4F9C  8e0660c4                 mov es, word ptr [0xc460]
+4FA0  26833ef28500             cmp word ptr es:[0x85f2], 0
+4FA6  7503                     jne 0x4fab
+4FA8  e95003                   jmp 0x52fb
+4FAB  9a64a7914a               lcall 0x4a91, 0xa764 ; _GotoMyAnt
+4FB0  e94803                   jmp 0x52fb
+4FB3  90                       nop 
+4FB4  6a08                     push 8
+4FB6  90                       nop 
+4FB7  0e                       push cs
+4FB8  e8cfc5                   call 0x158a ; _SRand1
+4FBB  83c402                   add sp, 2
+4FBE  8bd8                     mov bx, ax
+4FC0  a180ac                   mov ax, word ptr [0xac80] ; _SpidDir
+4FC3  c1e003                   shl ax, 3
+4FC6  03d8                     add bx, ax
+4FC8  8e065ac4                 mov es, word ptr [0xc45a]
+4FCC  268a872400               mov al, byte ptr es:[bx + 0x24]
+4FD1  98                       cwde 
+4FD2  a380ac                   mov word ptr [0xac80], ax ; _SpidDir
+4FD5  8e0642c4                 mov es, word ptr [0xc442]
+4FD9  26833e5a8a00             cmp word ptr es:[0x8a5a], 0
+4FDF  7439                     je 0x501a
+4FE1  8bf8                     mov di, ax
+4FE3  8e065cc4                 mov es, word ptr [0xc45c]
+4FE7  268a85dc87               mov al, byte ptr es:[di - 0x7824]
+4FEC  98                       cwde 
+4FED  8bc8                     mov cx, ax
+4FEF  c1e002                   shl ax, 2
+4FF2  03c1                     add ax, cx
+4FF4  29067cac                 sub word ptr [0xac7c], ax ; _SpidX
+4FF8  8e065ec4                 mov es, word ptr [0xc45e]
+4FFC  268a85e487               mov al, byte ptr es:[di - 0x781c]
+5001  98                       cwde 
+5002  8bc8                     mov cx, ax
+5004  c1e002                   shl ax, 2
+5007  03c1                     add ax, cx
+5009  29067eac                 sub word ptr [0xac7e], ax ; _SpidY
+500D  8e063cc4                 mov es, word ptr [0xc43c]
+5011  26a19072                 mov ax, word ptr es:[0x7290]
+5015  2d0200                   sub ax, 2
+5018  eb37                     jmp 0x5051
+501A  8bf8                     mov di, ax
+501C  8e065cc4                 mov es, word ptr [0xc45c]
+5020  268a85dc87               mov al, byte ptr es:[di - 0x7824]
+5025  98                       cwde 
+5026  8bc8                     mov cx, ax
+5028  c1e002                   shl ax, 2
+502B  03c1                     add ax, cx
+502D  01067cac                 add word ptr [0xac7c], ax ; _SpidX
+5031  8e065ec4                 mov es, word ptr [0xc45e]
+5035  268a85e487               mov al, byte ptr es:[di - 0x781c]
+503A  98                       cwde 
+503B  8bc8                     mov cx, ax
+503D  c1e002                   shl ax, 2
+5040  03c1                     add ax, cx
+5042  01067eac                 add word ptr [0xac7e], ax ; _SpidY
+5046  8e063cc4                 mov es, word ptr [0xc43c]
+504A  26a19072                 mov ax, word ptr es:[0x7290]
+504E  050200                   add ax, 2
+5051  80e403                   and ah, 3
+5054  26a39072                 mov word ptr es:[0x7290], ax
+5058  6a32                     push 0x32
+505A  90                       nop 
+505B  0e                       push cs
+505C  e82bc5                   call 0x158a ; _SRand1
+505F  83c402                   add sp, 2
+5062  0bc0                     or ax, ax
+5064  7403                     je 0x5069
+5066  e99202                   jmp 0x52fb
+5069  c45eea                   les bx, ptr [bp - 0x16]
+506C  268907                   mov word ptr es:[bx], ax
+506F  8e063cc4                 mov es, word ptr [0xc43c]
+5073  26c70690720200           mov word ptr es:[0x7290], 2
+507A  e97e02                   jmp 0x52fb
+507D  90                       nop 
+507E  bbe072                   mov bx, 0x72e0
+5081  8e0658c4                 mov es, word ptr [0xc458]
+5085  895ed2                   mov word ptr [bp - 0x2e], bx
+5088  8c46d4                   mov word ptr [bp - 0x2c], es
+508B  26ff0f                   dec word ptr es:[bx]
+508E  7536                     jne 0x50c6
+5090  8b7ef2                   mov di, word ptr [bp - 0xe]
+5093  8b76f4                   mov si, word ptr [bp - 0xc]
+5096  33c0                     xor ax, ax
+5098  c45eda                   les bx, ptr [bp - 0x26]
+509B  268907                   mov word ptr es:[bx], ax
+509E  c45eea                   les bx, ptr [bp - 0x16]
+50A1  268907                   mov word ptr es:[bx], ax
+50A4  56                       push si
+50A5  57                       push di
+50A6  90                       nop 
+50A7  0e                       push cs
+50A8  e8dbbc                   call 0xd86 ; _DropFoodA
+50AB  83c404                   add sp, 4
+50AE  56                       push si
+50AF  57                       push di
+50B0  90                       nop 
+50B1  0e                       push cs
+50B2  e8d1bc                   call 0xd86 ; _DropFoodA
+50B5  83c404                   add sp, 4
+50B8  56                       push si
+50B9  57                       push di
+50BA  90                       nop 
+50BB  0e                       push cs
+50BC  e8c7bc                   call 0xd86 ; _DropFoodA
+50BF  83c404                   add sp, 4
+50C2  5e                       pop si
+50C3  5f                       pop di
+50C4  c9                       leave 
+50C5  cb                       retf 
+50C6  68e803                   push 0x3e8
+50C9  90                       nop 
+50CA  0e                       push cs
+50CB  e8bcc4                   call 0x158a ; _SRand1
+50CE  83c402                   add sp, 2
+50D1  c45ed2                   les bx, ptr [bp - 0x2e]
+50D4  263b07                   cmp ax, word ptr es:[bx]
+50D7  7c03                     jl 0x50dc
+50D9  e91f02                   jmp 0x52fb
+50DC  26813f9001               cmp word ptr es:[bx], 0x190
+50E1  7e0d                     jle 0x50f0
+50E3  6a03                     push 3
+50E5  90                       nop 
+50E6  0e                       push cs
+50E7  e8a0c4                   call 0x158a ; _SRand1
+50EA  83c402                   add sp, 2
+50ED  40                       inc ax
+50EE  eb0d                     jmp 0x50fd
+50F0  6a02                     push 2
+50F2  90                       nop 
+50F3  0e                       push cs
+50F4  e893c4                   call 0x158a ; _SRand1
+50F7  83c402                   add sp, 2
+50FA  050200                   add ax, 2
+50FD  8e063cc4                 mov es, word ptr [0xc43c]
+5101  26a39072                 mov word ptr es:[0x7290], ax
+5105  e9f301                   jmp 0x52fb
+5108  8e0664c4                 mov es, word ptr [0xc464]
+510C  268306a07601             add word ptr es:[0x76a0], 1
+5112  268316a27600             adc word ptr es:[0x76a2], 0
+5118  8e063ac4                 mov es, word ptr [0xc43a]
+511C  26c706da780000           mov word ptr es:[0x78da], 0
+5123  32c0                     xor al, al
+5125  c45ee6                   les bx, ptr [bp - 0x1a]
+5128  268b1f                   mov bx, word ptr es:[bx]
+512B  8e0656c4                 mov es, word ptr [0xc456]
+512F  268bb7a423               mov si, word ptr es:[bx + 0x23a4]
+5134  81e6ff00                 and si, 0xff
+5138  c1e606                   shl si, 6
+513B  8bcb                     mov cx, bx
+513D  268a9f8e27               mov bl, byte ptr es:[bx + 0x278e]
+5142  2aff                     sub bh, bh
+5144  8880e868                 mov byte ptr [bx + si + 0x68e8], al
+5148  8bd9                     mov bx, cx
+514A  268887622f               mov byte ptr es:[bx + 0x2f62], al
+514F  eb5a                     jmp 0x51ab
+5151  90                       nop 
+5152  c45ee6                   les bx, ptr [bp - 0x1a]
+5155  26c707feff               mov word ptr es:[bx], 0xfffe
+515A  e96401                   jmp 0x52c1
+515D  90                       nop 
+515E  ff3650cf                 push word ptr [0xcf50] ; _MeDir
+5162  ff3684cc                 push word ptr [0xcc84] ; _MeType
+5166  8e0666c4                 mov es, word ptr [0xc466]
+516A  8b1e80ac                 mov bx, word ptr [0xac80] ; _SpidDir
+516E  268a87f487               mov al, byte ptr es:[bx - 0x780c]
+5173  0246f4                   add al, byte ptr [bp - 0xc]
+5176  253f00                   and ax, 0x3f
+5179  50                       push ax
+517A  8e0668c4                 mov es, word ptr [0xc468]
+517E  268a87ec87               mov al, byte ptr es:[bx - 0x7814]
+5183  0246f2                   add al, byte ptr [bp - 0xe]
+5186  257f00                   and ax, 0x7f
+5189  50                       push ax
+518A  ff3680ce                 push word ptr [0xce80] ; _MePlane
+518E  90                       nop 
+518F  0e                       push cs
+5190  e86714                   call 0x65fa ; _MoveMyLife
+5193  83c40a                   add sp, 0xa
+5196  6a01                     push 1
+5198  9a4677224e               lcall 0x4e22, 0x7746 ; _YellowDeath
+519D  83c402                   add sp, 2
+51A0  8e063ac4                 mov es, word ptr [0xc43a]
+51A4  26c706da780000           mov word ptr es:[0x78da], 0
+51AB  c45ee6                   les bx, ptr [bp - 0x1a]
+51AE  26c707feff               mov word ptr es:[bx], 0xfffe
+51B3  8e064ac4                 mov es, word ptr [0xc44a]
+51B7  26833e607d07             cmp word ptr es:[0x7d60], 7
+51BD  7c05                     jl 0x51c4
+51BF  b80b00                   mov ax, 0xb
+51C2  eb03                     jmp 0x51c7
+51C4  b83200                   mov ax, 0x32
+51C7  8e0638c4                 mov es, word ptr [0xc438]
+51CB  26a3ae77                 mov word ptr es:[0x77ae], ax
+51CF  8e0668c4                 mov es, word ptr [0xc468]
+51D3  8b1e80ac                 mov bx, word ptr [0xac80] ; _SpidDir
+51D7  268a87ec87               mov al, byte ptr es:[bx - 0x7814]
+51DC  98                       cwde 
+51DD  8bf0                     mov si, ax
+51DF  0376f2                   add si, word ptr [bp - 0xe]
+51E2  83e67f                   and si, 0x7f
+51E5  8e0666c4                 mov es, word ptr [0xc466]
+51E9  268a87f487               mov al, byte ptr es:[bx - 0x780c]
+51EE  98                       cwde 
+51EF  8bf8                     mov di, ax
+51F1  037ef4                   add di, word ptr [bp - 0xc]
+51F4  83e73f                   and di, 0x3f
+51F7  8e066ac4                 mov es, word ptr [0xc46a]
+51FB  26833e6e9b00             cmp word ptr es:[0x9b6e], 0
+5201  7528                     jne 0x522b
+5203  8bde                     mov bx, si
+5205  c1e306                   shl bx, 6
+5208  03df                     add bx, di
+520A  81c3e828                 add bx, 0x28e8
+520E  895ece                   mov word ptr [bp - 0x32], bx
+5211  803f18                   cmp byte ptr [bx], 0x18
+5214  7315                     jae 0x522b
+5216  90                       nop 
+5217  0e                       push cs
+5218  e8b3c3                   call 0x15ce ; _SRand4
+521B  8e063ac4                 mov es, word ptr [0xc43a]
+521F  260206da78               add al, byte ptr es:[0x78da]
+5224  0410                     add al, 0x10
+5226  8b5ece                   mov bx, word ptr [bp - 0x32]
+5229  8807                     mov byte ptr [bx], al
+522B  897efc                   mov word ptr [bp - 4], di
+522E  8e0638c4                 mov es, word ptr [0xc438]
+5232  26833eae7700             cmp word ptr es:[0x77ae], 0
+5238  7e3e                     jle 0x5278
+523A  26ff0eae77               dec word ptr es:[0x77ae]
+523F  26a1ae77                 mov ax, word ptr es:[0x77ae]
+5243  b90a00                   mov cx, 0xa
+5246  99                       cdq 
+5247  f7f9                     idiv cx
+5249  0bd2                     or dx, dx
+524B  7403                     je 0x5250
+524D  e9ab00                   jmp 0x52fb
+5250  90                       nop 
+5251  0e                       push cs
+5252  e859c3                   call 0x15ae ; _SRand2
+5255  0bc0                     or ax, ax
+5257  7503                     jne 0x525c
+5259  e99f00                   jmp 0x52fb
+525C  6afb                     push -5
+525E  90                       nop 
+525F  0e                       push cs
+5260  e82bc4                   call 0x168e ; _SRand256
+5263  c1e003                   shl ax, 3
+5266  057727                   add ax, 0x2777
+5269  50                       push ax
+526A  6a2c                     push 0x2c
+526C  9ab098a752               lcall 0x52a7, 0x98b0 ; _myBeginSound
+5271  83c406                   add sp, 6
+5274  e98400                   jmp 0x52fb
+5277  90                       nop 
+5278  8e0636c4                 mov es, word ptr [0xc436]
+527C  26ff0e7280               dec word ptr es:[0x8072]
+5281  7529                     jne 0x52ac
+5283  26c70672800a00           mov word ptr es:[0x8072], 0xa
+528A  8e0660c4                 mov es, word ptr [0xc460]
+528E  26833efc8500             cmp word ptr es:[0x85fc], 0
+5294  7416                     je 0x52ac
+5296  90                       nop 
+5297  0e                       push cs
+5298  e813c3                   call 0x15ae ; _SRand2
+529B  0bc0                     or ax, ax
+529D  750d                     jne 0x52ac
+529F  6a0a                     push 0xa
+52A1  50                       push ax
+52A2  6a0a                     push 0xa
+52A4  9ab098f14e               lcall 0x4ef1, 0x98b0 ; _myBeginSound
+52A9  83c406                   add sp, 6
+52AC  8e063ac4                 mov es, word ptr [0xc43a]
+52B0  26ff36da78               push word ptr es:[0x78da]
+52B5  ff76fc                   push word ptr [bp - 4]
+52B8  56                       push si
+52B9  9ac0282948               lcall 0x4829, 0x28c0 ; _DeadAntHere
+52BE  83c406                   add sp, 6
+52C1  c45eea                   les bx, ptr [bp - 0x16]
+52C4  26c7070000               mov word ptr es:[bx], 0
+52C9  c45eee                   les bx, ptr [bp - 0x12]
+52CC  26833f01                 cmp word ptr es:[bx], 1
+52D0  7529                     jne 0x52fb
+52D2  8e064ac4                 mov es, word ptr [0xc44a]
+52D6  26833e607d06             cmp word ptr es:[0x7d60], 6
+52DC  7507                     jne 0x52e5
+52DE  26c706607d0000           mov word ptr es:[0x7d60], 0
+52E5  8b46f2                   mov ax, word ptr [bp - 0xe]
+52E8  8e0650c4                 mov es, word ptr [0xc450]
+52EC  26a3b878                 mov word ptr es:[0x78b8], ax
+52F0  8b46f4                   mov ax, word ptr [bp - 0xc]
+52F3  8e0652c4                 mov es, word ptr [0xc452]
+52F7  26a3ea78                 mov word ptr es:[0x78ea], ax
+52FB  a17eac                   mov ax, word ptr [0xac7e] ; _SpidY
+52FE  c1f804                   sar ax, 4
+5301  50                       push ax
+5302  a17cac                   mov ax, word ptr [0xac7c] ; _SpidX
+5305  c1f804                   sar ax, 4
+5308  50                       push ax
+5309  90                       nop 
+530A  0e                       push cs
+530B  e8f448                   call 0x9c02 ; _IsValidA
+530E  83c404                   add sp, 4
+5311  0bc0                     or ax, ax
+5313  751c                     jne 0x5331
+5315  c45eda                   les bx, ptr [bp - 0x26]
+5318  268907                   mov word ptr es:[bx], ax
+531B  c45eee                   les bx, ptr [bp - 0x12]
+531E  26833f01                 cmp word ptr es:[bx], 1
+5322  750d                     jne 0x5331
+5324  268907                   mov word ptr es:[bx], ax
+5327  6a04                     push 4
+5329  9a46779b51               lcall 0x519b, 0x7746 ; _YellowDeath
+532E  83c402                   add sp, 2
+5331  8e066ac4                 mov es, word ptr [0xc46a]
+5335  26833e6e9b00             cmp word ptr es:[0x9b6e], 0
+533B  7420                     je 0x535d
+533D  8b367cac                 mov si, word ptr [0xac7c] ; _SpidX
+5341  83e6f0                   and si, 0xfff0
+5344  c1e602                   shl si, 2
+5347  8b1e7eac                 mov bx, word ptr [0xac7e] ; _SpidY
+534B  c1fb04                   sar bx, 4
+534E  80b8e82890               cmp byte ptr [bx + si + 0x28e8], 0x90
+5353  7608                     jbe 0x535d
+5355  c45eda                   les bx, ptr [bp - 0x26]
+5358  26c7070000               mov word ptr es:[bx], 0
+535D  5e                       pop si
+535E  5f                       pop di
+535F  c9                       leave 
+5360  cb                       retf 
 ```
 
 ## _ScanForAnts — SIMONE_MODULE:5362
@@ -90048,26 +92988,27 @@ Source: unrecovered. Flags: unresolved.
 05ED  93                       xchg bx, ax
 05EE  2effa7f405               jmp word ptr cs:[bx + 0x5f4]
 05F3  90                       nop 
-05F4  1c06                     sbb al, 6
-05F6  2c06                     sub al, 6
-05F8  38064806                 cmp byte ptr [0x648], al
-05FC  2c06                     sub al, 6
-05FE  58                       pop ax
-05FF  06                       push es
-0600  680678                   push 0x7806
-0603  06                       push es
-0604  8806e206                 mov byte ptr [0x6e2], al
-0608  a207b2                   mov byte ptr [0xb207], al
-060B  07                       pop es
-060C  c20736                   ret 0x3607
-060F  08e6                     or dh, ah
-0611  084209                   or byte ptr [bp + si + 9], al
-0614  52                       push dx
-0615  0909                     or word ptr [bx + di], cx
-0617  0a09                     or cl, byte ptr [bx + di]
-0619  0af8                     or bh, al
-061B  098e0616                 or word ptr [bp + 0x1606], cx
-061F  c3                       ret 
+05F4  1c06                     dw offset 0x61c
+05F6  2c06                     dw offset 0x62c
+05F8  3806                     dw offset 0x638
+05FA  4806                     dw offset 0x648
+05FC  2c06                     dw offset 0x62c
+05FE  5806                     dw offset 0x658
+0600  6806                     dw offset 0x668
+0602  7806                     dw offset 0x678
+0604  8806                     dw offset 0x688
+0606  e206                     dw offset 0x6e2
+0608  a207                     dw offset 0x7a2
+060A  b207                     dw offset 0x7b2
+060C  c207                     dw offset 0x7c2
+060E  3608                     dw offset 0x836
+0610  e608                     dw offset 0x8e6
+0612  4209                     dw offset 0x942
+0614  5209                     dw offset 0x952
+0616  090a                     dw offset 0xa09
+0618  090a                     dw offset 0xa09
+061A  f809                     dw offset 0x9f8
+061C  8e0616c3                 mov es, word ptr [0xc316]
 0620  26ff366a9b               push word ptr es:[0x9b6a]
 0625  e83e08                   call 0xe66 ; _DoRandAntA
 0628  e9db03                   jmp 0xa06
@@ -93868,27 +96809,24 @@ Source: unrecovered. Flags: unresolved.
 2E47  93                       xchg bx, ax
 2E48  2effa74e2e               jmp word ptr cs:[bx + 0x2e4e]
 2E4D  90                       nop 
-2E4E  222f                     and ch, byte ptr [bx]
-2E50  8a2f                     mov ch, byte ptr [bx]
-2E52  cf                       iret 
-2E53  2f                       das 
-2E54  a22fb4                   mov byte ptr [0xb42f], al
-2E57  2f                       das 
-2E58  cf                       iret 
-2E59  2f                       das 
-2E5A  c82fcf2f                 enter -0x30d1, 0x2f
-2E5E  64307630                 xor byte ptr fs:[bp + 0x30], dh
-2E62  8a30                     mov dh, byte ptr [bx + si]
-2E64  cf                       iret 
-2E65  2f                       das 
-2E66  cf                       iret 
-2E67  2f                       das 
-2E68  98                       cwde 
-2E69  30ac31cf                 xor byte ptr [si - 0x30cf], ch
-2E6D  2f                       das 
-2E6E  cf                       iret 
-2E6F  2f                       das 
-2E70  b632                     mov dh, 0x32
+2E4E  222f                     dw offset 0x2f22
+2E50  8a2f                     dw offset 0x2f8a
+2E52  cf2f                     dw offset 0x2fcf
+2E54  a22f                     dw offset 0x2fa2
+2E56  b42f                     dw offset 0x2fb4
+2E58  cf2f                     dw offset 0x2fcf
+2E5A  c82f                     dw offset 0x2fc8
+2E5C  cf2f                     dw offset 0x2fcf
+2E5E  6430                     dw offset 0x3064
+2E60  7630                     dw offset 0x3076
+2E62  8a30                     dw offset 0x308a
+2E64  cf2f                     dw offset 0x2fcf
+2E66  cf2f                     dw offset 0x2fcf
+2E68  9830                     dw offset 0x3098
+2E6A  ac31                     dw offset 0x31ac
+2E6C  cf2f                     dw offset 0x2fcf
+2E6E  cf2f                     dw offset 0x2fcf
+2E70  b632                     dw offset 0x32b6
 2E72  9a2e16af2e               lcall 0x2eaf, 0x162e ; _SRand32
 2E77  0bc0                     or ax, ax
 2E79  751a                     jne 0x2e95
@@ -97530,27 +100468,24 @@ Source: unrecovered. Flags: unresolved.
 543B  93                       xchg bx, ax
 543C  2effa74254               jmp word ptr cs:[bx + 0x5442]
 5441  90                       nop 
-5442  48                       dec ax
-5443  55                       push bp
-5444  c45562                   les dx, ptr [di + 0x62]
-5447  58                       pop ax
-5448  da55ea                   ficom dword ptr [di - 0x16]
-544B  55                       push bp
-544C  625862                   bound bx, dword ptr [bx + si + 0x62]
-544F  58                       pop ax
-5450  6258fc                   bound bx, dword ptr [bx + si - 4]
-5453  55                       push bp
-5454  0e                       push cs
-5455  56                       push si
-5456  205662                   and byte ptr [bp + 0x62], dl
-5459  58                       pop ax
-545A  62582e                   bound bx, dword ptr [bx + si + 0x2e]
-545D  56                       push si
-545E  4e                       dec si
-545F  57                       push di
-5460  625862                   bound bx, dword ptr [bx + si + 0x62]
-5463  58                       pop ax
-5464  7458                     je 0x54be
+5442  4855                     dw offset 0x5548
+5444  c455                     dw offset 0x55c4
+5446  6258                     dw offset 0x5862
+5448  da55                     dw offset 0x55da
+544A  ea55                     dw offset 0x55ea
+544C  6258                     dw offset 0x5862
+544E  6258                     dw offset 0x5862
+5450  6258                     dw offset 0x5862
+5452  fc55                     dw offset 0x55fc
+5454  0e56                     dw offset 0x560e
+5456  2056                     dw offset 0x5620
+5458  6258                     dw offset 0x5862
+545A  6258                     dw offset 0x5862
+545C  2e56                     dw offset 0x562e
+545E  4e57                     dw offset 0x574e
+5460  6258                     dw offset 0x5862
+5462  6258                     dw offset 0x5862
+5464  7458                     dw offset 0x5874
 5466  9a2e16b554               lcall 0x54b5, 0x162e ; _SRand32
 546B  0bc0                     or ax, ax
 546D  751d                     jne 0x548c
@@ -104932,13 +107867,15 @@ Source: unrecovered. Flags: unresolved.
 055E  d1e0                     shl ax, 1
 0560  93                       xchg bx, ax
 0561  2effa76605               jmp word ptr cs:[bx + 0x566]
-0566  8805                     mov byte ptr [di], al
-0568  8005a6                   add byte ptr [di], 0xa6
-056B  057805                   add ax, 0x578
-056E  d805                     fadd dword ptr [di]
-0570  8005a6                   add byte ptr [di], 0xa6
-0573  057805                   add ax, 0x578
-0576  d805                     fadd dword ptr [di]
+0566  8805                     dw offset 0x588
+0568  8005                     dw offset 0x580
+056A  a605                     dw offset 0x5a6
+056C  7805                     dw offset 0x578
+056E  d805                     dw offset 0x5d8
+0570  8005                     dw offset 0x580
+0572  a605                     dw offset 0x5a6
+0574  7805                     dw offset 0x578
+0576  d805                     dw offset 0x5d8
 0578  b88105                   mov ax, 0x581 ; _Dx8
 057B  8ec0                     mov es, ax
 057D  eb7a                     jmp 0x5f9
@@ -105013,19 +107950,16 @@ Source: unrecovered. Flags: unresolved.
 0631  93                       xchg bx, ax
 0632  2effa73806               jmp word ptr cs:[bx + 0x638]
 0637  90                       nop 
-0638  5a                       pop dx
-0639  06                       push es
-063A  52                       push dx
-063B  06                       push es
-063C  7806                     js 0x644
-063E  4a                       dec dx
-063F  06                       push es
-0640  88065206                 mov byte ptr [0x652], al
-0644  7806                     js 0x64c
-0646  4a                       dec dx
-0647  06                       push es
-0648  8806b853                 mov byte ptr [0x53b8], al ; _Dx8
-064C  06                       push es
+0638  5a06                     dw offset 0x65a
+063A  5206                     dw offset 0x652
+063C  7806                     dw offset 0x678
+063E  4a06                     dw offset 0x64a
+0640  8806                     dw offset 0x688
+0642  5206                     dw offset 0x652
+0644  7806                     dw offset 0x678
+0646  4a06                     dw offset 0x64a
+0648  8806                     dw offset 0x688
+064A  b85306                   mov ax, 0x653 ; _Dx8
 064D  8ec0                     mov es, ax
 064F  eb58                     jmp 0x6a9
 0651  90                       nop 
@@ -107772,28 +110706,29 @@ Source: unrecovered. Flags: unresolved.
 226B  93                       xchg bx, ax
 226C  2effa77222               jmp word ptr cs:[bx + 0x2272]
 2271  90                       nop 
-2272  9e                       sahf 
-2273  22c4                     and al, ah
-2275  22e4                     and ah, ah
-2277  2204                     and al, byte ptr [si]
-2279  2324                     and sp, word ptr [si]
-227B  234623                   and ax, word ptr [bp + 0x23]
-227E  68238a                   push 0x8a23
-2281  23ac23ce                 and bp, word ptr [si - 0x31dd]
-2285  23f0                     and si, ax
-2287  2312                     and dx, word ptr [bp + si]
-2289  2434                     and al, 0x34
-228B  2456                     and al, 0x56
-228D  2478                     and al, 0x78
-228F  249a                     and al, 0x9a
-2291  2450                     and al, 0x50
-2293  255025                   and ax, 0x2550
-2296  50                       push ax
-2297  255025                   and ax, 0x2550
-229A  bc24e4                   mov sp, 0xe424
-229D  248e                     and al, 0x8e
-229F  06                       push es
-22A0  0cc5                     or al, 0xc5
+2272  9e22                     dw offset 0x229e
+2274  c422                     dw offset 0x22c4
+2276  e422                     dw offset 0x22e4
+2278  0423                     dw offset 0x2304
+227A  2423                     dw offset 0x2324
+227C  4623                     dw offset 0x2346
+227E  6823                     dw offset 0x2368
+2280  8a23                     dw offset 0x238a
+2282  ac23                     dw offset 0x23ac
+2284  ce23                     dw offset 0x23ce
+2286  f023                     dw offset 0x23f0
+2288  1224                     dw offset 0x2412
+228A  3424                     dw offset 0x2434
+228C  5624                     dw offset 0x2456
+228E  7824                     dw offset 0x2478
+2290  9a24                     dw offset 0x249a
+2292  5025                     dw offset 0x2550
+2294  5025                     dw offset 0x2550
+2296  5025                     dw offset 0x2550
+2298  5025                     dw offset 0x2550
+229A  bc24                     dw offset 0x24bc
+229C  e424                     dw offset 0x24e4
+229E  8e060cc5                 mov es, word ptr [0xc50c]
 22A2  268b1e848a               mov bx, word ptr es:[0x8a84]
 22A7  8bbf9623                 mov di, word ptr [bx + 0x2396]
 22AB  81e7ff00                 and di, 0xff
@@ -116333,65 +119268,65 @@ Source: unrecovered. Flags: unresolved.
 7B61  93                       xchg bx, ax
 7B62  2effa7687b               jmp word ptr cs:[bx + 0x7b68]
 7B67  90                       nop 
-7B68  d87be0                   fdivr dword ptr [bp + di - 0x20]
-7B6B  7bec                     jnp 0x7b59
-7B6D  7b18                     jnp 0x7b87
-7B6F  7c34                     jl 0x7ba5
-7B71  7c40                     jl 0x7bb3
-7B73  7c48                     jl 0x7bbd
-7B75  7c74                     jl 0x7beb
-7B77  7c92                     jl 0x7b0b
-7B79  7cb0                     jl 0x7b2b
-7B7B  7cb8                     jl 0x7b35
-7B7D  7cc4                     jl 0x7b43
-7B7F  7ccc                     jl 0x7b4d
-7B81  7cd8                     jl 0x7b5b
-7B83  7cf6                     jl 0x7b7b
-7B85  7cfe                     jl 0x7b85
-7B87  7c06                     jl 0x7b8f
-7B89  7d12                     jge 0x7b9d
-7B8B  7d1e                     jge 0x7bab
-7B8D  7d26                     jge 0x7bb5
-7B8F  7d2e                     jge 0x7bbf
-7B91  7d3a                     jge 0x7bcd
-7B93  7d42                     jge 0x7bd7
-7B95  7d54                     jge 0x7beb
-7B97  7d5c                     jge 0x7bf5
-7B99  7d64                     jge 0x7bff
-7B9B  7d6c                     jge 0x7c09
-7B9D  7d8e                     jge 0x7b2d
-7B9F  7d96                     jge 0x7b37
-7BA1  7d9e                     jge 0x7b41
-7BA3  7da6                     jge 0x7b4b
-7BA5  7dae                     jge 0x7b55
-7BA7  7db6                     jge 0x7b5f
-7BA9  7dc2                     jge 0x7b6d
-7BAB  7dca                     jge 0x7b77
-7BAD  7dd2                     jge 0x7b81
-7BAF  7dde                     jge 0x7b8f
-7BB1  7de6                     jge 0x7b99
-7BB3  7df2                     jge 0x7ba7
-7BB5  7dfa                     jge 0x7bb1
-7BB7  7d06                     jge 0x7bbf
-7BB9  7e26                     jle 0x7be1
-7BBB  7e2e                     jle 0x7beb
-7BBD  7eee                     jle 0x7bad
-7BBF  7e3a                     jle 0x7bfb
-7BC1  7e46                     jle 0x7c09
-7BC3  7e52                     jle 0x7c17
-7BC5  7e5a                     jle 0x7c21
-7BC7  7e66                     jle 0x7c2f
-7BC9  7e9c                     jle 0x7b67
-7BCB  7ea8                     jle 0x7b75
-7BCD  7eb0                     jle 0x7b7f
-7BCF  7eb8                     jle 0x7b89
-7BD1  7ec0                     jle 0x7b93
-7BD3  7ec8                     jle 0x7b9d
-7BD5  7ee4                     jle 0x7bbb
-7BD7  7e6a                     jle 0x7c43
-7BD9  0168f8                   add word ptr [bx + si - 8], bp
-7BDC  2ae9                     sub ch, cl
-7BDE  0903                     or word ptr [bp + di], ax
+7B68  d87b                     dw offset 0x7bd8
+7B6A  e07b                     dw offset 0x7be0
+7B6C  ec7b                     dw offset 0x7bec
+7B6E  187c                     dw offset 0x7c18
+7B70  347c                     dw offset 0x7c34
+7B72  407c                     dw offset 0x7c40
+7B74  487c                     dw offset 0x7c48
+7B76  747c                     dw offset 0x7c74
+7B78  927c                     dw offset 0x7c92
+7B7A  b07c                     dw offset 0x7cb0
+7B7C  b87c                     dw offset 0x7cb8
+7B7E  c47c                     dw offset 0x7cc4
+7B80  cc7c                     dw offset 0x7ccc
+7B82  d87c                     dw offset 0x7cd8
+7B84  f67c                     dw offset 0x7cf6
+7B86  fe7c                     dw offset 0x7cfe
+7B88  067d                     dw offset 0x7d06
+7B8A  127d                     dw offset 0x7d12
+7B8C  1e7d                     dw offset 0x7d1e
+7B8E  267d                     dw offset 0x7d26
+7B90  2e7d                     dw offset 0x7d2e
+7B92  3a7d                     dw offset 0x7d3a
+7B94  427d                     dw offset 0x7d42
+7B96  547d                     dw offset 0x7d54
+7B98  5c7d                     dw offset 0x7d5c
+7B9A  647d                     dw offset 0x7d64
+7B9C  6c7d                     dw offset 0x7d6c
+7B9E  8e7d                     dw offset 0x7d8e
+7BA0  967d                     dw offset 0x7d96
+7BA2  9e7d                     dw offset 0x7d9e
+7BA4  a67d                     dw offset 0x7da6
+7BA6  ae7d                     dw offset 0x7dae
+7BA8  b67d                     dw offset 0x7db6
+7BAA  c27d                     dw offset 0x7dc2
+7BAC  ca7d                     dw offset 0x7dca
+7BAE  d27d                     dw offset 0x7dd2
+7BB0  de7d                     dw offset 0x7dde
+7BB2  e67d                     dw offset 0x7de6
+7BB4  f27d                     dw offset 0x7df2
+7BB6  fa7d                     dw offset 0x7dfa
+7BB8  067e                     dw offset 0x7e06
+7BBA  267e                     dw offset 0x7e26
+7BBC  2e7e                     dw offset 0x7e2e
+7BBE  ee7e                     dw offset 0x7eee
+7BC0  3a7e                     dw offset 0x7e3a
+7BC2  467e                     dw offset 0x7e46
+7BC4  527e                     dw offset 0x7e52
+7BC6  5a7e                     dw offset 0x7e5a
+7BC8  667e                     dw offset 0x7e66
+7BCA  9c7e                     dw offset 0x7e9c
+7BCC  a87e                     dw offset 0x7ea8
+7BCE  b07e                     dw offset 0x7eb0
+7BD0  b87e                     dw offset 0x7eb8
+7BD2  c07e                     dw offset 0x7ec0
+7BD4  c87e                     dw offset 0x7ec8
+7BD6  e47e                     dw offset 0x7ee4
+7BD8  6a01                     push 1
+7BDA  68f82a                   push 0x2af8
+7BDD  e90903                   jmp 0x7ee9
 7BE0  6a01                     push 1
 7BE2  68fa2a                   push 0x2afa
 7BE5  686842                   push 0x4268
@@ -116721,40 +119656,63 @@ Source: unrecovered. Flags: unresolved.
 7F12  d1e0                     shl ax, 1
 7F14  93                       xchg bx, ax
 7F15  2effa71a7f               jmp word ptr cs:[bx + 0x7f1a]
-7F1A  8a7f8a                   mov bh, byte ptr [bx - 0x76]
-7F1D  7f90                     jg 0x7eaf
-7F1F  7f90                     jg 0x7eb1
-7F21  7f72                     jg 0x7f95
-7F23  808a7fc47f               or byte ptr [bp + si - 0x3b81], 0x7f
-7F28  e080                     loopne 0x7eaa
-7F2A  0a802880                 or al, byte ptr [bx + si - 0x7fd8]
-7F2E  8a7f30                   mov bh, byte ptr [bx + 0x30]
-7F31  81388054                 cmp word ptr [bx + si], 0x5480
-7F35  808a7f6280               or byte ptr [bp + si + 0x627f], 0x80
-7F3A  8a7f6a                   mov bh, byte ptr [bx + 0x6a]
-7F3D  8082807280               add byte ptr [bp + si + 0x7280], 0x80
-7F42  7a80                     jp 0x7ec4
-7F44  82808a7f8a               add byte ptr [bx + si + 0x7f8a], 0x8a
-7F49  808a7fc47f               or byte ptr [bp + si - 0x3b81], 0x7f
-7F4E  96                       xchg si, ax
-7F4F  808a7f8a7f               or byte ptr [bp + si - 0x7581], 0x7f
-7F54  c8808a7f                 enter -0x7580, 0x7f
-7F58  2880f480                 sub byte ptr [bx + si - 0x7f0c], al
-7F5C  8a7f8a                   mov bh, byte ptr [bx - 0x76]
-7F5F  7ffc                     jg 0x7f5d
-7F61  808a7f0481               or byte ptr [bp + si + 0x47f], 0x81
-7F66  0c81                     or al, 0x81
-7F68  8a7f12                   mov bh, byte ptr [bx + 0x12]
-7F6B  812880e0                 sub word ptr [bx + si], 0xe080
-7F6F  808a7f8a7f               or byte ptr [bp + si - 0x7581], 0x7f
-7F74  e080                     loopne 0x7ef6
-7F76  2a818a7f                 sub al, byte ptr [bx + di + 0x7f8a]
-7F7A  3081e080                 xor byte ptr [bx + di - 0x7f20], al
-7F7E  8a7f36                   mov bh, byte ptr [bx + 0x36]
-7F81  818a7f44818a             or word ptr [bp + si + 0x447f], 0x8a81
-7F87  7f8a                     jg 0x7f13
-7F89  7fb8                     jg 0x7f43
-7F8B  0100                     add word ptr [bx + si], ax
+7F1A  8a7f                     dw offset 0x7f8a
+7F1C  8a7f                     dw offset 0x7f8a
+7F1E  907f                     dw offset 0x7f90
+7F20  907f                     dw offset 0x7f90
+7F22  7280                     dw offset 0x8072
+7F24  8a7f                     dw offset 0x7f8a
+7F26  c47f                     dw offset 0x7fc4
+7F28  e080                     dw offset 0x80e0
+7F2A  0a80                     dw offset 0x800a
+7F2C  2880                     dw offset 0x8028
+7F2E  8a7f                     dw offset 0x7f8a
+7F30  3081                     dw offset 0x8130
+7F32  3880                     dw offset 0x8038
+7F34  5480                     dw offset 0x8054
+7F36  8a7f                     dw offset 0x7f8a
+7F38  6280                     dw offset 0x8062
+7F3A  8a7f                     dw offset 0x7f8a
+7F3C  6a80                     dw offset 0x806a
+7F3E  8280                     dw offset 0x8082
+7F40  7280                     dw offset 0x8072
+7F42  7a80                     dw offset 0x807a
+7F44  8280                     dw offset 0x8082
+7F46  8a7f                     dw offset 0x7f8a
+7F48  8a80                     dw offset 0x808a
+7F4A  8a7f                     dw offset 0x7f8a
+7F4C  c47f                     dw offset 0x7fc4
+7F4E  9680                     dw offset 0x8096
+7F50  8a7f                     dw offset 0x7f8a
+7F52  8a7f                     dw offset 0x7f8a
+7F54  c880                     dw offset 0x80c8
+7F56  8a7f                     dw offset 0x7f8a
+7F58  2880                     dw offset 0x8028
+7F5A  f480                     dw offset 0x80f4
+7F5C  8a7f                     dw offset 0x7f8a
+7F5E  8a7f                     dw offset 0x7f8a
+7F60  fc80                     dw offset 0x80fc
+7F62  8a7f                     dw offset 0x7f8a
+7F64  0481                     dw offset 0x8104
+7F66  0c81                     dw offset 0x810c
+7F68  8a7f                     dw offset 0x7f8a
+7F6A  1281                     dw offset 0x8112
+7F6C  2880                     dw offset 0x8028
+7F6E  e080                     dw offset 0x80e0
+7F70  8a7f                     dw offset 0x7f8a
+7F72  8a7f                     dw offset 0x7f8a
+7F74  e080                     dw offset 0x80e0
+7F76  2a81                     dw offset 0x812a
+7F78  8a7f                     dw offset 0x7f8a
+7F7A  3081                     dw offset 0x8130
+7F7C  e080                     dw offset 0x80e0
+7F7E  8a7f                     dw offset 0x7f8a
+7F80  3681                     dw offset 0x8136
+7F82  8a7f                     dw offset 0x7f8a
+7F84  4481                     dw offset 0x8144
+7F86  8a7f                     dw offset 0x7f8a
+7F88  8a7f                     dw offset 0x7f8a
+7F8A  b80100                   mov ax, 1
 7F8D  5e                       pop si
 7F8E  c9                       leave 
 7F8F  cb                       retf 
@@ -122619,22 +125577,28 @@ B7B3  d1e0                     shl ax, 1
 B7B5  93                       xchg bx, ax
 B7B6  2effa7bcb7               jmp word ptr cs:[bx - 0x4844]
 B7BB  90                       nop 
-B7BC  e6b7                     out 0xb7, al
-B7BE  10bbf8b7                 adc byte ptr [bp + di - 0x4808], bh
-B7C2  04b8                     add al, 0xb8
-B7C4  aa                       stosb byte ptr es:[di], al
-B7C5  b8beb8                   mov ax, 0xb8be
-B7C8  beb882                   mov si, 0x82b8
-B7CB  b810bb                   mov ax, 0xbb10
-B7CE  10bbc6b8                 adc byte ptr [bp + di - 0x473a], bh
-B7D2  e4b8                     in al, 0xb8
-B7D4  10bb00b9                 adc byte ptr [bp + di - 0x4700], bh
-B7D8  b1b9                     mov cl, 0xb9
-B7DA  30b910bb                 xor byte ptr [bx + di - 0x44f0], bh
-B7DE  3aba6aba                 cmp bh, byte ptr [bp + si - 0x4596]
-B7E2  7eba                     jle 0xb79e
-B7E4  b8baff                   mov ax, 0xffba
-B7E7  76fc                     jbe 0xb7e5
+B7BC  e6b7                     dw offset 0xb7e6
+B7BE  10bb                     dw offset 0xbb10
+B7C0  f8b7                     dw offset 0xb7f8
+B7C2  04b8                     dw offset 0xb804
+B7C4  aab8                     dw offset 0xb8aa
+B7C6  beb8                     dw offset 0xb8be
+B7C8  beb8                     dw offset 0xb8be
+B7CA  82b8                     dw offset 0xb882
+B7CC  10bb                     dw offset 0xbb10
+B7CE  10bb                     dw offset 0xbb10
+B7D0  c6b8                     dw offset 0xb8c6
+B7D2  e4b8                     dw offset 0xb8e4
+B7D4  10bb                     dw offset 0xbb10
+B7D6  00b9                     dw offset 0xb900
+B7D8  b1b9                     dw offset 0xb9b1
+B7DA  30b9                     dw offset 0xb930
+B7DC  10bb                     dw offset 0xbb10
+B7DE  3aba                     dw offset 0xba3a
+B7E0  6aba                     dw offset 0xba6a
+B7E2  7eba                     dw offset 0xba7e
+B7E4  b8ba                     dw offset 0xbab8
+B7E6  ff76fc                   push word ptr [bp - 4]
 B7E9  ff76fa                   push word ptr [bp - 6]
 B7EC  90                       nop 
 B7ED  0e                       push cs
@@ -127589,22 +130553,21 @@ E41B  d1e0                     shl ax, 1
 E41D  93                       xchg bx, ax
 E41E  2effa724e4               jmp word ptr cs:[bx - 0x1bdc]
 E423  90                       nop 
-E424  58                       pop ax
-E425  e464                     in al, 0x64
-E427  e440                     in al, 0x40
-E429  e440                     in al, 0x40
-E42B  e476                     in al, 0x76
-E42D  e440                     in al, 0x40
-E42F  e440                     in al, 0x40
-E431  e458                     in al, 0x58
-E433  e464                     in al, 0x64
-E435  e440                     in al, 0x40
-E437  e440                     in al, 0x40
-E439  e4a2                     in al, 0xa2
-E43B  e4ac                     in al, 0xac
-E43D  e4a2                     in al, 0xa2
-E43F  e426                     in al, 0x26
-E441  8b4404                   mov ax, word ptr [si + 4]
+E424  58e4                     dw offset 0xe458
+E426  64e4                     dw offset 0xe464
+E428  40e4                     dw offset 0xe440
+E42A  40e4                     dw offset 0xe440
+E42C  76e4                     dw offset 0xe476
+E42E  40e4                     dw offset 0xe440
+E430  40e4                     dw offset 0xe440
+E432  58e4                     dw offset 0xe458
+E434  64e4                     dw offset 0xe464
+E436  40e4                     dw offset 0xe440
+E438  40e4                     dw offset 0xe440
+E43A  a2e4                     dw offset 0xe4a2
+E43C  ace4                     dw offset 0xe4ac
+E43E  a2e4                     dw offset 0xe4a2
+E440  268b4404                 mov ax, word ptr es:[si + 4]
 E444  262b04                   sub ax, word ptr es:[si]
 E447  a35ecc                   mov word ptr [0xcc5e], ax
 E44A  268b4406                 mov ax, word ptr es:[si + 6]
@@ -127786,14 +130749,13 @@ E5C8  7714                     ja 0xe5de
 E5CA  d1e0                     shl ax, 1
 E5CC  93                       xchg bx, ax
 E5CD  2effa7d2e5               jmp word ptr cs:[bx - 0x1a2e]
-E5D2  e6e5                     out 0xe5, al
-E5D4  ec                       in al, dx
-E5D5  e5f0                     in ax, 0xf0
-E5D7  e5f6                     in ax, 0xf6
-E5D9  e5fc                     in ax, 0xfc
-E5DB  e586                     in ax, 0x86
-E5DD  e6b8                     out 0xb8, al
-E5DF  0100                     add word ptr [bx + si], ax
+E5D2  e6e5                     dw offset 0xe5e6
+E5D4  ece5                     dw offset 0xe5ec
+E5D6  f0e5                     dw offset 0xe5f0
+E5D8  f6e5                     dw offset 0xe5f6
+E5DA  fce5                     dw offset 0xe5fc
+E5DC  86e6                     dw offset 0xe686
+E5DE  b80100                   mov ax, 1
 E5E1  5e                       pop si
 E5E2  5f                       pop di
 E5E3  c9                       leave 
@@ -127986,10 +130948,201 @@ E7AD  d1e0                     shl ax, 1
 E7AF  93                       xchg bx, ax
 E7B0  2effa7b6e7               jmp word ptr cs:[bx - 0x184a]
 E7B5  90                       nop 
-E7B6  c8e7cce7                 enter -0x3319, -0x19
-E7BA  d4e7                     aam 0xe7
-E7BC  dce7                     fsubr st(7), st(0)
-E7BE  e4e7                     in al, 0xe7
+E7B6  c8e7                     dw offset 0xe7c8
+E7B8  cce7                     dw offset 0xe7cc
+E7BA  d4e7                     dw offset 0xe7d4
+E7BC  dce7                     dw offset 0xe7dc
+E7BE  e4e7                     dw offset 0xe7e4
+E7C0  fee7                     dw offset 0xe7fe
+E7C2  b90100                   mov cx, 1
+E7C5  e98900                   jmp 0xe851
+E7C8  33c9                     xor cx, cx
+E7CA  eb6e                     jmp 0xe83a
+E7CC  c746fe0000               mov word ptr [bp - 2], 0
+E7D1  eb16                     jmp 0xe7e9
+E7D3  90                       nop 
+E7D4  c746fe0100               mov word ptr [bp - 2], 1
+E7D9  eb0e                     jmp 0xe7e9
+E7DB  90                       nop 
+E7DC  c746fe0200               mov word ptr [bp - 2], 2
+E7E1  eb06                     jmp 0xe7e9
+E7E3  90                       nop 
+E7E4  c746fe0300               mov word ptr [bp - 2], 3
+E7E9  ff76fe                   push word ptr [bp - 2]
+E7EC  26ff34                   push word ptr es:[si]
+E7EF  90                       nop 
+E7F0  0e                       push cs
+E7F1  e8f4fc                   call 0xe4e8 ; _win_GetVal
+E7F4  83c404                   add sp, 4
+E7F7  8946fc                   mov word ptr [bp - 4], ax
+E7FA  8bc8                     mov cx, ax
+E7FC  eb3c                     jmp 0xe83a
+E7FE  268b04                   mov ax, word ptr es:[si]
+E801  8946fe                   mov word ptr [bp - 2], ax
+E804  8a4607                   mov al, byte ptr [bp + 7]
+E807  98                       cwde 
+E808  8e06dcc6                 mov es, word ptr [0xc6dc]
+E80C  263b06de78               cmp ax, word ptr es:[0x78de]
+E811  7c0d                     jl 0xe820
+E813  817e060028               cmp word ptr [bp + 6], 0x2800
+E818  7d06                     jge 0xe820
+E81A  b90080                   mov cx, 0x8000
+E81D  eb1b                     jmp 0xe83a
+E81F  90                       nop 
+E820  8b46fe                   mov ax, word ptr [bp - 2]
+E823  d1e0                     shl ax, 1
+E825  8b5e06                   mov bx, word ptr [bp + 6]
+E828  c1fb08                   sar bx, 8
+E82B  c1e302                   shl bx, 2
+E82E  c49f9ace                 les bx, ptr [bx - 0x3166]
+E832  83c310                   add bx, 0x10
+E835  03d8                     add bx, ax
+E837  268b0f                   mov cx, word ptr es:[bx]
+E83A  81f90080                 cmp cx, 0x8000
+E83E  740e                     je 0xe84e
+E840  8e46fa                   mov es, word ptr [bp - 6]
+E843  8d5cf8                   lea bx, [si - 8]
+E846  26030f                   add cx, word ptr es:[bx]
+E849  894efe                   mov word ptr [bp - 2], cx
+E84C  eb03                     jmp 0xe851
+E84E  b90080                   mov cx, 0x8000
+E851  8e46f6                   mov es, word ptr [bp - 0xa]
+E854  26390d                   cmp word ptr es:[di], cx
+E857  7406                     je 0xe85f
+E859  26890d                   mov word ptr es:[di], cx
+E85C  ff46e8                   inc word ptr [bp - 0x18]
+E85F  83c602                   add si, 2
+E862  83c702                   add di, 2
+E865  ff4ef2                   dec word ptr [bp - 0xe]
+E868  7403                     je 0xe86d
+E86A  e934ff                   jmp 0xe7a1
+E86D  8346ec04                 add word ptr [bp - 0x14], 4
+E871  ff4ee2                   dec word ptr [bp - 0x1e]
+E874  7403                     je 0xe879
+E876  e9e9fe                   jmp 0xe762
+E879  8b7edc                   mov di, word ptr [bp - 0x24]
+E87C  837ee800                 cmp word ptr [bp - 0x18], 0
+E880  7403                     je 0xe885
+E882  e9bbfe                   jmp 0xe740
+E885  897edc                   mov word ptr [bp - 0x24], di
+E888  c45edc                   les bx, ptr [bp - 0x24]
+E88B  268b472c                 mov ax, word ptr es:[bx + 0x2c]
+E88F  268b572e                 mov dx, word ptr es:[bx + 0x2e]
+E893  06                       push es
+E894  1e                       push ds
+E895  8bf0                     mov si, ax
+E897  8eda                     mov ds, dx
+E899  a5                       movsw word ptr es:[di], word ptr [si]
+E89A  a5                       movsw word ptr es:[di], word ptr [si]
+E89B  a5                       movsw word ptr es:[di], word ptr [si]
+E89C  a5                       movsw word ptr es:[di], word ptr [si]
+E89D  1f                       pop ds
+E89E  07                       pop es
+E89F  26c45f2c                 les bx, ptr es:[bx + 0x2c]
+E8A3  26807f210f               cmp byte ptr es:[bx + 0x21], 0xf
+E8A8  7522                     jne 0xe8cc
+E8AA  c45edc                   les bx, ptr [bp - 0x24]
+E8AD  26c4772c                 les si, ptr es:[bx + 0x2c]
+E8B1  268a4428                 mov al, byte ptr es:[si + 0x28]
+E8B5  98                       cwde 
+E8B6  8e46de                   mov es, word ptr [bp - 0x22]
+E8B9  260107                   add word ptr es:[bx], ax
+E8BC  26014702                 add word ptr es:[bx + 2], ax
+E8C0  8bc8                     mov cx, ax
+E8C2  40                       inc ax
+E8C3  26294704                 sub word ptr es:[bx + 4], ax
+E8C7  41                       inc cx
+E8C8  26294f06                 sub word ptr es:[bx + 6], cx
+E8CC  837eda00                 cmp word ptr [bp - 0x26], 0
+E8D0  7e72                     jle 0xe944
+E8D2  8b46dc                   mov ax, word ptr [bp - 0x24]
+E8D5  8b56de                   mov dx, word ptr [bp - 0x22]
+E8D8  052c00                   add ax, 0x2c
+E8DB  8bc8                     mov cx, ax
+E8DD  8956fa                   mov word ptr [bp - 6], dx
+E8E0  8e06dec6                 mov es, word ptr [0xc6de]
+E8E4  26a10abd                 mov ax, word ptr es:[0xbd0a]
+E8E8  8946d4                   mov word ptr [bp - 0x2c], ax
+E8EB  8b46da                   mov ax, word ptr [bp - 0x26]
+E8EE  8946fc                   mov word ptr [bp - 4], ax
+E8F1  8b7edc                   mov di, word ptr [bp - 0x24]
+E8F4  8e46fa                   mov es, word ptr [bp - 6]
+E8F7  8bf1                     mov si, cx
+E8F9  26c51c                   lds bx, ptr es:[si]
+E8FC  8b07                     mov ax, word ptr [bx]
+E8FE  8946fe                   mov word ptr [bp - 2], ax
+E901  3b4704                   cmp ax, word ptr [bx + 4]
+E904  7e0b                     jle 0xe911
+E906  8b4704                   mov ax, word ptr [bx + 4]
+E909  8907                     mov word ptr [bx], ax
+E90B  8b46fe                   mov ax, word ptr [bp - 2]
+E90E  894704                   mov word ptr [bx + 4], ax
+E911  8b4702                   mov ax, word ptr [bx + 2]
+E914  8946fe                   mov word ptr [bp - 2], ax
+E917  3b4706                   cmp ax, word ptr [bx + 6]
+E91A  7e0c                     jle 0xe928
+E91C  8b4706                   mov ax, word ptr [bx + 6]
+E91F  894702                   mov word ptr [bx + 2], ax
+E922  8b46fe                   mov ax, word ptr [bp - 2]
+E925  894706                   mov word ptr [bx + 6], ax
+E928  837ed400                 cmp word ptr [bp - 0x2c], 0
+E92C  741c                     je 0xe94a
+E92E  8e46de                   mov es, word ptr [bp - 0x22]
+E931  268b05                   mov ax, word ptr es:[di]
+E934  8bd0                     mov dx, ax
+E936  050200                   add ax, 2
+E939  2907                     sub word ptr [bx], ax
+E93B  83c202                   add dx, 2
+E93E  295704                   sub word ptr [bx + 4], dx
+E941  eb12                     jmp 0xe955
+E943  90                       nop 
+E944  8b7edc                   mov di, word ptr [bp - 0x24]
+E947  eb5c                     jmp 0xe9a5
+E949  90                       nop 
+E94A  8e46de                   mov es, word ptr [bp - 0x22]
+E94D  268b05                   mov ax, word ptr es:[di]
+E950  2907                     sub word ptr [bx], ax
+E952  294704                   sub word ptr [bx + 4], ax
+E955  26f6451c04               test byte ptr es:[di + 0x1c], 4
+E95A  7414                     je 0xe970
+E95C  268b4502                 mov ax, word ptr es:[di + 2]
+E960  8bd0                     mov dx, ax
+E962  051200                   add ax, 0x12
+E965  294702                   sub word ptr [bx + 2], ax
+E968  83c212                   add dx, 0x12
+E96B  295706                   sub word ptr [bx + 6], dx
+E96E  eb22                     jmp 0xe992
+E970  837ed400                 cmp word ptr [bp - 0x2c], 0
+E974  7412                     je 0xe988
+E976  268b4502                 mov ax, word ptr es:[di + 2]
+E97A  8bd0                     mov dx, ax
+E97C  050200                   add ax, 2
+E97F  294702                   sub word ptr [bx + 2], ax
+E982  83c202                   add dx, 2
+E985  ebe4                     jmp 0xe96b
+E987  90                       nop 
+E988  268b4502                 mov ax, word ptr es:[di + 2]
+E98C  294702                   sub word ptr [bx + 2], ax
+E98F  294706                   sub word ptr [bx + 6], ax
+E992  ff4f04                   dec word ptr [bx + 4]
+E995  ff4f06                   dec word ptr [bx + 6]
+E998  83c104                   add cx, 4
+E99B  ff4efc                   dec word ptr [bp - 4]
+E99E  7403                     je 0xe9a3
+E9A0  e951ff                   jmp 0xe8f4
+E9A3  16                       push ss
+E9A4  1f                       pop ds
+E9A5  8e46de                   mov es, word ptr [bp - 0x22]
+E9A8  26c45d2c                 les bx, ptr es:[di + 0x2c]
+E9AC  26807f210f               cmp byte ptr es:[bx + 0x21], 0xf
+E9B1  750d                     jne 0xe9c0
+E9B3  8e46de                   mov es, word ptr [bp - 0x22]
+E9B6  26c45d2c                 les bx, ptr es:[di + 0x2c]
+E9BA  26c747020000             mov word ptr es:[bx + 2], 0
+E9C0  5e                       pop si
+E9C1  5f                       pop di
+E9C2  c9                       leave 
+E9C3  cb                       retf 
 ```
 
 ## _win_SetObjSelectableState — SIMTWO_MODULE:E9C4

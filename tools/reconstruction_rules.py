@@ -14,6 +14,8 @@ def triggers(card, packet=None):
         found.add('far_data')
     if any(x in text for x in ('stos', 'movs', 'scas', 'lods', 'cmps')):
         found.add('string_ops')
+    if any(r['mnemonic'] == 'dw' for r in rows):
+        found.add('jump_table')
     if any(r['mnemonic'] == 'mov' and r['operands'].startswith(('si, word ptr [bp', 'di, word ptr [bp')) for r in rows):
         found.add('si_di_home')
     if any(r['mnemonic'] == 'mov' and r['operands'] in ('dx, 1', 'dx, 0') for r in rows):

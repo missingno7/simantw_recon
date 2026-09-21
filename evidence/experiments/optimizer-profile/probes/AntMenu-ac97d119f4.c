@@ -1,13 +1,20 @@
 /*
- * AntMenu: pop the ant/yellow-jacket context menu for a mouse event
- * (far MouseEvent pt, fields x@+8,y@+0xa) and run the selected
- * command.  Logs "ANTMENU".  If MeMode==0, uses menu 0x800 when
- * MeType==0x40 and no nest browse is in progress, else menu 0x700; if
- * MeMode==1, menu 0x2000; MeMode>=2 makes no selection (-1).  The
- * chosen ProxMenu item index looks up a game command from one of
- * three private tables depending on MeMode/MeType/MeNestStarted, and
- * command 2 additionally sends YellowCommand(3) when Shift is held.
- * Returns the raw ProxMenu selection (or -1).
+ * AntMenu: pop the ant context menu for a mouse event (far event record,
+ * x at +8, y at +0xa) and dispatch the chosen command.  Traces "ANTMENU".
+ * In MeMode 0 the menu is 0x800 when the player is a yellow jacket
+ * (MeType 0x40) whose nest has not started, otherwise 0x700; in MeMode 1
+ * it is 0x2000; other modes select nothing (-1).  A selection >= 0 is
+ * translated through one of three private signed-byte command tables
+ * (DGROUP 0x1ba6: 08 09 00 00, 0x1baa: 01 02 04 05 06 00, 0x1bb0: 0a 0b
+ * 06 00, followed by the "ANTMENU" literal) chosen by the same
+ * MeMode/MeType/MeNestStarted test; outside MeMode 1, command 2 becomes
+ * command 3 while Shift (VK 0x10) is held.  The command goes to
+ * YellowCommand and the raw menu selection is returned.
+ *
+ * Unit profile /Og: MeMode is read through a far pointer local homed on
+ * the frame (reloaded via LES); the three win_DoProxMenu calls share one
+ * cross-jumped call site.  The selection is copied into the command
+ * variable (SI) and translated in place.
  */
 struct MouseEvent {
     int pad[4];
@@ -19,11 +26,11 @@ extern int far MeMode;
 extern int near MeType;
 extern int far MeNestStarted;
 
-static signed char near cmdA[4] = {0x08, 0x09, 0x00, 0x00};
-static signed char near cmdB[6] = {0x01, 0x02, 0x04, 0x05, 0x06, 0x00};
-static signed char near cmdC[4] = {0x0a, 0x0b, 0x06, 0x00};
+static signed char near yellowCmds[4] = {0x08, 0x09, 0x00, 0x00};
+static signed char near antCmds[6] = {0x01, 0x02, 0x04, 0x05, 0x06, 0x00};
+static signed char near mapCmds[4] = {0x0a, 0x0b, 0x06, 0x00};
 
-extern void far WinPrintf(char far *text);
+extern void far WinPrintf(char far *format, ...);
 extern int far win_DoProxMenu(int menu, int layer, int x, int y);
 extern int far pascal GetAsyncKeyState(int key);
 extern void far YellowCommand(int command);
@@ -50,16 +57,17 @@ int far AntMenu(struct MouseEvent far *pt)
     if (result < 0)
         return result;
 
-    if (*mode == 1)
-        cmd = cmdA[result];
-    else if (MeType == 0x40 && MeNestStarted == 0)
-        cmd = cmdB[result];
-    else
-        cmd = cmdC[result];
-
-    if (cmd == 2) {
-        if (GetAsyncKeyState(0x10) & 0x8000)
-            YellowCommand(3);
+    cmd = result;
+    if (*mode == 1) {
+        cmd = mapCmds[cmd];
+    } else {
+        if (MeType == 0x40 && MeNestStarted == 0)
+            cmd = yellowCmds[cmd];
+        else
+            cmd = antCmds[cmd];
+        if (cmd == 2 && (GetAsyncKeyState(0x10) & 0x8000))
+            cmd = 3;
     }
+    YellowCommand(cmd);
     return result;
 }

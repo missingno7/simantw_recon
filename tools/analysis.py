@@ -43,13 +43,23 @@ def extent(code,start,limit):
             'end':end if not reasons else None,'size':end-start if not reasons else None,
             'upper_bound':limit,'return_offsets':returns,'reasons':sorted(set(reasons))}
 
-def disassemble(code,start,end,segment,ne,symbols):
+def disassemble(code,start,end,segment,ne,symbols,tables=()):
+    """Instruction rows for [start,end). Proven switch jump tables (from the
+    CFG solver) are emitted as `dw` data rows so the bytes stay complete
+    without decoding table words as instructions."""
     names={}
     for s in symbols['segments']:
         for x in s['symbols']:names.setdefault((s['number'],x['offset']),[]).append(x['name'])
     relocs={site:r for r in ne['segments'][segment-1]['relocations'] for site in r['sites']}
-    rows=[]
-    for i in decoder().disasm(code[start:end],start):
+    rows=[];spans=sorted((t['table'],t['table']+2*t['count']) for t in tables if start<=t['table'] and t['table']+2*t['count']<=end)
+    instructions=[];cursor=start
+    for a,b in spans+[(end,end)]:
+        instructions+=list(decoder().disasm(code[cursor:a],cursor))
+        for pos in range(a,b,2):
+            target=int.from_bytes(code[pos:pos+2],'little')
+            rows.append({'offset':pos,'bytes':code[pos:pos+2].hex(),'mnemonic':'dw','operands':f'offset {target:#x}','references':[{'kind':'jump_table_entry','segment':segment,'offset':target,'names':[]}]})
+        cursor=b
+    for i in instructions:
         refs=[]
         for pos in range(i.address,i.address+i.size):
             if pos in relocs:
@@ -64,4 +74,4 @@ def disassemble(code,start,end,segment,ne,symbols):
                 address=op.mem.disp&65535
                 if (10,address) in names:refs.append({'kind':'global_ds_assumed','segment':10,'offset':address,'names':names[10,address]})
         rows.append({'offset':i.address,'bytes':i.bytes.hex(),'mnemonic':i.mnemonic,'operands':i.op_str,'references':refs})
-    return rows
+    rows.sort(key=lambda r:r['offset']);return rows

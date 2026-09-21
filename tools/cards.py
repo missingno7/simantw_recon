@@ -25,7 +25,7 @@ def main():
         e=extent(code,start,limit)
         solved=cfg.get('functions',{}).get(item['name'])
         if solved and (solved['end'] is not None or solved['status'] in ('SHARED_TAIL','OVERLAPPING_ENTRY','AMBIGUOUS_TABLE')):e=solved.copy()
-        recipe=recipes.get(item['name']);rows=disassemble(code,start,e['end'] or limit,seg,n,s)
+        recipe=recipes.get(item['name']);rows=disassemble(code,start,e['end'] or limit,seg,n,s,(solved or {}).get('jump_tables',[]))
         calls=[r for row in rows if 'call' in row['mnemonic'] for r in row['references']]
         globals_=[r for row in rows for r in row['references'] if r['kind']=='global_ds_assumed']
         if recipe and e['size']==recipe['size']:e['status']='CONFIRMED';e['review']=recipe['extent_evidence']

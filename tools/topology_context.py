@@ -10,6 +10,7 @@ def direct_data_bindings(card,symbols,image):
                if r['source_type']==2 for site in r['sites']}
     result=[]
     for row in card['disassembly']:
+        if row.get('mnemonic')=='dw':continue  # proven jump-table words are data
         for ins in decoder().disasm(bytes.fromhex(row['bytes']),row['offset']):
             for operand in ins.operands:
                 if operand.type!=cs.x86.X86_OP_MEM:continue
@@ -27,7 +28,7 @@ def direct_data_bindings(card,symbols,image):
 
 def far_data_bindings(card, symbols, image):
     """Local ES evidence only; no CFG, object-boundary or placement proof."""
-    instructions = [ins for row in card['disassembly']
+    instructions = [ins for row in card['disassembly'] if row.get('mnemonic') != 'dw'
                     for ins in decoder().disasm(bytes.fromhex(row['bytes']), row['offset'])]
     # A branch may enter after the selector load. Never carry evidence over it.
     entries = {op.imm for ins in instructions if ins.group(cs.CS_GRP_JUMP)
