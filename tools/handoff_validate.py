@@ -39,7 +39,7 @@ def main():
         if not runner['passed'] or runner['jobs']<400 or any(identity(ROOT/p)!=expected for p,expected in runner['inputs'].items()):raise FormatError('persistent service stress validation missing or stale')
         receipt['factory']=dict(runner_evidence='evidence/experiments/runner/service-stress.json',jobs=runner['jobs'],elapsed_seconds=runner['elapsed_seconds'],environment_launches=runner['environment_launches'])
         receipt['inputs']={p.relative_to(ROOT).as_posix():identity(p) for folder in ('tools','tests') for p in sorted((ROOT/folder).glob('*.py'))}
-        for name in ['layout/toolchain.json','layout/fixtures.json','layout/runtime-ownership.json','layout/compiler-service.json','tools/compiler_wait.asm','tools/runner_host.asm']:receipt['inputs'][name]=identity(ROOT/name)
+        for name in ['layout/toolchain.json','layout/fixtures.json','layout/runtime-ownership.json','layout/compiler-service.json','layout/compiler-profiles.json','tools/compiler_wait.asm','tools/runner_host.asm']:receipt['inputs'][name]=identity(ROOT/name)
         receipt['passed']=True;write_json(STATE/'validation.json',receipt)
         print(json.dumps(dict(passed=True,tests=receipt['tests']['count'],cache=receipt['cache'],pilot=receipt['pilot_revalidation']['result']),indent=2))
 

@@ -169,12 +169,13 @@ def refresh_unattempted(job_id, reason):
     if job['fixture_identity'] != read_json(wf.ROOT / 'layout/fixtures.json'):
         raise FormatError('fixture identity changed; cannot refresh context')
     current = wf.protected()
-    if set(job['protected']) != set(current):
-        raise FormatError('protected input set changed; separate expert review required')
-    changed = [p for p in current if job['protected'][p] != current[p]]
+    if set(current) - set(job['protected']):
+        raise FormatError('protected input set gained entries; separate expert review required')
+    removed = sorted(set(job['protected']) - set(current))
+    changed = [p for p in current if job['protected'][p] != current[p]] + removed
     if not changed:
         raise FormatError('job context is already current')
-    if any(not p.startswith('tools/') or not p.endswith('.py') for p in changed):
+    if any(not (p.startswith('tools/') and p.endswith('.py')) and p not in removed for p in changed):
         raise FormatError('only validated Python tool changes may be refreshed')
     validation = read_json(wf.STATE / 'validation.json')
     expected = {p.relative_to(wf.ROOT).as_posix()

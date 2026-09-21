@@ -204,6 +204,46 @@
       "source": "evidence/topology/build-topology.json",
       "basis": "Same-object component (shared selector pool / private data / contiguity)",
       "recorded": "2026-09-21T17:57:56.019512+00:00"
+    },
+    "simtwo:6EFE": {
+      "publics": [
+        "_goStepRight",
+        "_goStepLeft",
+        "_goStepDown",
+        "_goStepUp",
+        "_goStepNE",
+        "_goStepSE",
+        "_goStepSW",
+        "_goStepNW",
+        "_FinishDiagStep",
+        "_FinishHorzStep",
+        "_FinishVertStep"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T20:30:18.495045+00:00"
+    },
+    "simtwo:5AB0": {
+      "publics": [
+        "_RandWorld",
+        "_RandYard",
+        "_GenerateTutorial",
+        "_DigOutBNest",
+        "_DigOutRNest",
+        "_InitYelloAnt",
+        "_PlaceBlackQueen",
+        "_MakeBlkQueen",
+        "_PlaceRedQueen",
+        "_MakeRedQueen",
+        "_fracSIN",
+        "_fracCOS",
+        "_AddFood"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T20:33:49.818067+00:00"
     }
   },
   "assignments": [
@@ -290,6 +330,32 @@
       ],
       "reason": "win_DrawBitMapAtObj reaches CONFIRMED_MEMBER only under /Og (probe); its object is not yet joined to the ga-assigned framework core, so the scope is its own component",
       "reviewed": "2026-09-21T17:57:56.019512+00:00"
+    },
+    {
+      "id": "asg-simtwo-6efe-og",
+      "context": "simtwo:6EFE",
+      "profile": "og",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/goStepNE-b80e3154f9.json",
+        "evidence/experiments/optimizer-profile/probes/goStepSE-d7e8947954.json"
+      ],
+      "reason": "goStepNE and goStepSE reach full opcode alignment (103/103, 114/114) only under /Og (the far-address CSE into a stack temp reloaded via LES is /Og global CSE); the movement object simtwo:6EFE (55 shared-slot joins) shares one profile; its six admitted members are /Og-invariant",
+      "reviewed": "2026-09-21T20:30:18.495550+00:00"
+    },
+    {
+      "id": "asg-simtwo-5ab0-og",
+      "context": "simtwo:5AB0",
+      "profile": "og",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/PlaceBlackQueen-131a724e0a.json",
+        "evidence/experiments/optimizer-profile/probes/PlaceRedQueen-2890ea06d8.json"
+      ],
+      "reason": "PlaceBlackQueen and PlaceRedQueen reach full opcode alignment with zero register differences (125/125 and 116/117, every non-fixup byte equal) only under /Og: their tunnel-loop range test repeats wobble + x and the update is x += wobble, and only global CSE folds the three occurrences into the AX temporary with an unused frame home that both targets show (enter 8 / enter 6); under the baseline profile the sum is recomputed (124/125, 115/119). DigOutRNest/DigOutBNest exact bodies (attempt06/attempt03) are og-invariant; the admitted members fracSIN, fracCOS and ExpAddFood are covered by the corpus invariance evidence. The nest-generation object simtwo:5AB0 shares one profile.",
+      "reviewed": "2026-09-21T20:33:49.818570+00:00"
     }
   ],
   "refutations": [

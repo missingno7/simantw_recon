@@ -48887,8 +48887,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ConnectWall — ANTEDIT_MODULE:854E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 241 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 241 bytes.
+Source: src/recovered/wf_ConnectWall-bbdd72e7a8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 854E  c8020000                 enter 2, 0
@@ -115097,7 +115097,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _goStepRight — SIMTWO_MODULE:6EFE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 181 bytes.
-Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 6EFE  55                       push bp
@@ -115174,7 +115174,7 @@ Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G
 
 ## _goStepLeft — SIMTWO_MODULE:6FB4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 163 bytes.
-Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 6FB4  55                       push bp
@@ -115240,7 +115240,7 @@ Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G
 
 ## _goStepDown — SIMTWO_MODULE:7058
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 181 bytes.
-Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 7058  55                       push bp
@@ -115317,7 +115317,7 @@ Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G
 
 ## _goStepUp — SIMTWO_MODULE:710E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 163 bytes.
-Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 710E  55                       push bp
@@ -115382,8 +115382,8 @@ Source: src/recovered/wf_tu_simtwo_6EFE_prefix4-43544063f0.c. Flags: ['/AL', '/G
 ```
 
 ## _goStepNE — SIMTWO_MODULE:71B2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 300 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 300 bytes.
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 71B2  c8060000                 enter 6, 0
@@ -115492,8 +115492,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepSE — SIMTWO_MODULE:72DE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 318 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 318 bytes.
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 72DE  c8060000                 enter 6, 0
@@ -115613,8 +115613,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepSW — SIMTWO_MODULE:741C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 306 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 306 bytes.
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 741C  c8040000                 enter 4, 0
@@ -115730,8 +115730,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _goStepNW — SIMTWO_MODULE:754E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 295 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 295 bytes.
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 754E  55                       push bp
@@ -115836,8 +115836,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FinishDiagStep — SIMTWO_MODULE:7676
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 215 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 215 bytes.
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 7676  a176cc                   mov ax, word ptr [0xcc76] ; _MapPlane
@@ -115914,7 +115914,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _FinishHorzStep — SIMTWO_MODULE:774E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 119 bytes.
-Source: src/recovered/wf_tu_simtwo_6EFE_prefix2-d0592154b0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 774E  a176cc                   mov ax, word ptr [0xcc76] ; _MapPlane
@@ -115961,7 +115961,7 @@ Source: src/recovered/wf_tu_simtwo_6EFE_prefix2-d0592154b0.c. Flags: ['/AL', '/G
 
 ## _FinishVertStep — SIMTWO_MODULE:77C6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 119 bytes.
-Source: src/recovered/wf_tu_simtwo_6EFE_prefix2-d0592154b0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 77C6  a176cc                   mov ax, word ptr [0xcc76] ; _MapPlane

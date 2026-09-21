@@ -1,21 +1,24 @@
 {
   "id": "goStepNE-b80e3154f9",
   "symbol": "_goStepNE",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T18:42:39.125423+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-6efe-og",
+    "context": "simtwo:6EFE",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/goStepNE-b80e3154f9.json",
+      "evidence/experiments/optimizer-profile/probes/goStepSE-d7e8947954.json"
+    ],
     "component": "simtwo:6EFE",
     "refuted_profiles": []
   },
@@ -77,8 +80,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -332,11 +331,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "6270e6ee03a0484789f0a481aa2646f9c9093400b047975d63b3f4d7958a82f4",
+      "report": "evidence/recovery/workflow/jobs/goStepNE-b80e3154f9/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "LOCAL_FRAME_LAYOUT"
   ],
-  "reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepNE-b80e3154f9/attempt01): score 0.631, 91/103 opcodes matched, but instruction_layout_match=false and cfg_shape_match=false with first_structural_difference at offset 0 (target frame is 'enter 6,0' / candidate is bare 'push bp; mov bp,sp' -- target reserves 6 bytes of locals we do not produce). Diagnostic shows the horizontal (x, compare-to-hScrollMax) clamp is NOT translated as three independent direct far-fixup accesses like our candidate: the target computes the far address of MapPnt.x ONCE (mov bx,<near-offset-imm>; mov es,<CONST slot>; store to [bp-4]/[bp-2]) inside the clamp (needed because 'inc/cmp/conditional-store' touches MapPnt.x three times in one block), then REUSES that cached far pointer via 'les bx, ptr [bp-4]' at all three later switch-case reads of MapPnt.x (AMapPnt.x/BMapPnt.x/RMapPnt.x = EditColumns/2 + MapPnt.x), instead of recomputing a fresh CONST-pool fixup each time as our source produces. The vertical (y, compare-to-0) clamp does NOT get this treatment (direct 'dec/conditional-store' via fixup addressing, matching our shape) -- so the effect is specific to whichever axis's clamp compares against a nonzero bound (hScrollMax/vScrollMax) and needs a third CMP access to the same far lvalue; that axis's address gets spilled to a stack temp and reused, changing every later reference to that coordinate through the whole function body. This is an /Oe register/local-frame allocation decision (which lvalue address is worth caching across the function) that plain equivalent C does not control; introducing an explicit pointer local would not be a natural composition of the admitted goStepUp/goStepRight bodies and was not attempted. Separately, the same shared simtwo:6EFE CONST-selector-pool placement gap documented for _FinishDiagStep (block reason, evidence/recovery/workflow/jobs/FinishDiagStep-1f1e8e9f64) also affects every 'mov es,[CONST]' segment load here (7 unplaced CONST-pool references, 'conflicting private placement constraints CONST').",
-  "next_experiment": "After the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py (see _FinishDiagStep next-experiment), have a supervisor try caching the hScrollMax-bound axis's far address in an explicit local (mirroring goStepRight's own clamp codegen) and reusing it for that axis's three switch-case field reads via 'les', while leaving the 0-bound axis as direct fixup accesses; verify against the aligned_asm in evidence/recovery/workflow/jobs/goStepNE-b80e3154f9/attempt01/results.json before spending more attempts."
+  "parked_reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepNE-b80e3154f9/attempt01): score 0.631, 91/103 opcodes matched, but instruction_layout_match=false and cfg_shape_match=false with first_structural_difference at offset 0 (target frame is 'enter 6,0' / candidate is bare 'push bp; mov bp,sp' -- target reserves 6 bytes of locals we do not produce). Diagnostic shows the horizontal (x, compare-to-hScrollMax) clamp is NOT translated as three independent direct far-fixup accesses like our candidate: the target computes the far address of MapPnt.x ONCE (mov bx,<near-offset-imm>; mov es,<CONST slot>; store to [bp-4]/[bp-2]) inside the clamp (needed because 'inc/cmp/conditional-store' touches MapPnt.x three times in one block), then REUSES that cached far pointer via 'les bx, ptr [bp-4]' at all three later switch-case reads of MapPnt.x (AMapPnt.x/BMapPnt.x/RMapPnt.x = EditColumns/2 + MapPnt.x), instead of recomputing a fresh CONST-pool fixup each time as our source produces. The vertical (y, compare-to-0) clamp does NOT get this treatment (direct 'dec/conditional-store' via fixup addressing, matching our shape) -- so the effect is specific to whichever axis's clamp compares against a nonzero bound (hScrollMax/vScrollMax) and needs a third CMP access to the same far lvalue; that axis's address gets spilled to a stack temp and reused, changing every later reference to that coordinate through the whole function body. This is an /Oe register/local-frame allocation decision (which lvalue address is worth caching across the function) that plain equivalent C does not control; introducing an explicit pointer local would not be a natural composition of the admitted goStepUp/goStepRight bodies and was not attempted. Separately, the same shared simtwo:6EFE CONST-selector-pool placement gap documented for _FinishDiagStep (block reason, evidence/recovery/workflow/jobs/FinishDiagStep-1f1e8e9f64) also affects every 'mov es,[CONST]' segment load here (7 unplaced CONST-pool references, 'conflicting private placement constraints CONST').",
+  "parked_next_experiment": "After the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py (see _FinishDiagStep next-experiment), have a supervisor try caching the hScrollMax-bound axis's far address in an explicit local (mirroring goStepRight's own clamp codegen) and reusing it for that axis's three switch-case field reads via 'les', while leaving the 0-bound axis as direct fixup accesses; verify against the aligned_asm in evidence/recovery/workflow/jobs/goStepNE-b80e3154f9/attempt01/results.json before spending more attempts.",
+  "budget_extensions": []
 }

@@ -1,7 +1,7 @@
 {
   "id": "GSetBigFont-7fcd9c4568",
   "symbol": "_GSetBigFont",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:17:56.678986+00:00",
   "flags": [
     "/AL",
@@ -318,5 +318,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "540fc628648b2765ba730c51f29530fcad89ef3d198e821a36b5ff7a8411c246",
+      "report": "evidence/recovery/workflow/jobs/GSetBigFont-7fcd9c4568/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Body is an exact instruction match: opcode_matches == opcode_total (90/90), candidate_bytes == target_bytes (259 == 259), zero register/branch/immediate/stack differences across the whole aligned diff. Full call sequence confirmed: AddFontResource(\"fontres.fon\") gates a WM_FONTCHANGE broadcast SendMessage(-1,0x1d,0,0L) only on success but CreateFont/GetDC/SelectObject/GetTextMetrics/SetMapperFlags/ReleaseDC always run when bigFontH==0; CreateFont(14,8,0,0,400,0,0,0,0,2,1,2,1,\"Gaia8x14\"); tm.tmAveCharWidth+tm.tmMaxCharWidth and (tm.tmHeight+tm.tmAscent)/2 captured into two private scratch bytes (one DGROUP, one PACK-segment __based, matching the admitted IsMMWaveAvail/GetFreeHandle idiom); when clipDC!=0, SetMapperFlags(clipDC,0L) then SelectObject(clipDC,bigFontH), only storing the result into savedFont the first time (savedFont==0); fontWidth/fontHeight always updated from the scratch bytes at the end. The only residual issues are all 'unplaced contribution _DATA' / 'unresolved target _DATA' entries on the two string literals (\"fontres.fon\", \"Gaia8x14\") -- exactly the isolated-compile literal-pool placement noise (same class as ConvertMonoMaskToTandy's tdyballoon tag, recovered directly from the DGROUP literal pool but still not byte-placeable without the rest of the TU's literals). One attempt was sufficient to reach a fully opcode-exact body; this did not auto-escalate the job (unlike the selector-fixup cases), so recording it explicitly. Best candidate: build/grind/agentH/_GSetBigFont.c.",
+  "next_experiment": "Compile together with the sibling GSetSmallFont (same unit_context gr:1560, same fontres.fon/AddFontResource/CreateFont/GetTextMetrics shape with a Gaia8x8 face) via tools/tu_assembly.py so both literal strings land in the shared literal pool at their real historical offsets."
 }

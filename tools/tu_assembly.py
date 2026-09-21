@@ -172,7 +172,11 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None):
                     if it['normalized'] not in [d['normalized'] for d in declarations]:
                         declarations.append(dict(it, origin=f['symbol']))
             elif it['kind'] == 'definition':
-                if it['name'] == f['symbol'].lstrip('_'):
+                # A preserved unit source may already define several members;
+                # each definition is emitted once, in MAPSYM order below.
+                if any(d['name'] == it['name'] for d in definitions):
+                    continue
+                if it['name'] == f['symbol'].lstrip('_') or ('_' + it['name']) in sources:
                     definitions.append(dict(it, origin=f['symbol']))
                 else:
                     # A helper (e.g. static function) defined by a preserved source.
@@ -188,7 +192,8 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None):
         for d in declarations:
             lines.append(d['text'])
         lines.append('')
-        for d in definitions:
+        rank = {m.lstrip('_'): i for i, m in enumerate(order)}
+        for d in sorted(definitions, key=lambda d: rank.get(d['name'], len(rank))):
             lines.append(d['text'])
             lines.append('')
     else:
@@ -352,7 +357,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
             raise FormatError('unit source must be a repository file')
         text = path.read_text(encoding='latin1')
         for m in members:
-            if not re.search(r'' + re.escape(m.lstrip('_')) + r'\s*\(', text):
+            if not re.search(r'\b' + re.escape(m.lstrip('_')) + r'\s*\(', text):
                 raise FormatError('unit source does not define ' + m)
         import compiler_profiles
         names = {compiler_profiles.resolve(m)['name'] for m in members}

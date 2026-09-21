@@ -7,15 +7,18 @@
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-6efe-og",
+    "context": "simtwo:6EFE",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/goStepNE-b80e3154f9.json",
+      "evidence/experiments/optimizer-profile/probes/goStepSE-d7e8947954.json"
+    ],
     "component": "simtwo:6EFE",
     "refuted_profiles": []
   },
@@ -117,8 +120,8 @@
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
     },
     "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
+      "size": 12983,
+      "sha256": "7d075cb78f5220f3e39eeb8612787fab508ca3169f4385dab6c6fa56e147685a"
     }
   },
   "fixture_identity": {
@@ -332,11 +335,184 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "44b81da11f0286b945968a0ab1096642a749bb021a7efc2cd4c2a7d7fd7a1db7",
+      "report": "evidence/recovery/workflow/jobs/goStepSW-1b19d0d598/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "LOCAL_FRAME_LAYOUT"
   ],
-  "reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepSW-1b19d0d598/attempt01): score 0.664, 99/110 opcodes matched, instruction_layout_match=false, cfg_shape_match=false, first_structural_difference at offset 0 (target 'enter 4, 0' reserving 4 bytes of locals; our candidate is bare 'push bp; mov bp,sp'). Same class of /Oe local-frame/pointer-caching difference documented and blocked on _goStepNE and _goStepSE: the target caches a far address (here just 4 bytes -- one far pointer, no separate stored bound word, consistent with the X axis using the 0-bound 'Left' clamp shape that needs no fetched bound but still gets its address cached and reused via 'les' at the later switch-case reads) instead of recomputing a fresh CONST-pool fixup each time as our direct-addressing candidate does; 9 immediate/memory-operand and 7 branch-target differences follow from that shape mismatch. Body semantics otherwise line up (Y=Down clamped to vScrollMax, X=Left clamped to 0, and the ScrollDownS/ScrollRightS calls both confirmed correct against the disassembly's own loader bindings, including the non-axis-matched _ScrollRightS on the decrementing X clamp already seen on _goStepNW). Also carries the same shared simtwo:6EFE CONST-selector-pool placement gap documented on _FinishDiagStep/_goStepNE/_goStepNW/_goStepSE.",
-  "next_experiment": "Same as _goStepNE/_goStepSE: after the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py, have a supervisor cache the X-axis far address in an explicit local reused via 'les' for the later switch-case reads (notably even though the 0-bound clamp itself only needs 2 direct accesses, unlike NE's 3-access nonzero-bound case, so the 3-access-triggers-caching hypothesis from the _goStepNE block does not fully explain this one), checked against evidence/recovery/workflow/jobs/goStepSW-1b19d0d598/attempt01/results.json aligned_asm, before spending more attempts."
+  "parked_reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepSW-1b19d0d598/attempt01): score 0.664, 99/110 opcodes matched, instruction_layout_match=false, cfg_shape_match=false, first_structural_difference at offset 0 (target 'enter 4, 0' reserving 4 bytes of locals; our candidate is bare 'push bp; mov bp,sp'). Same class of /Oe local-frame/pointer-caching difference documented and blocked on _goStepNE and _goStepSE: the target caches a far address (here just 4 bytes -- one far pointer, no separate stored bound word, consistent with the X axis using the 0-bound 'Left' clamp shape that needs no fetched bound but still gets its address cached and reused via 'les' at the later switch-case reads) instead of recomputing a fresh CONST-pool fixup each time as our direct-addressing candidate does; 9 immediate/memory-operand and 7 branch-target differences follow from that shape mismatch. Body semantics otherwise line up (Y=Down clamped to vScrollMax, X=Left clamped to 0, and the ScrollDownS/ScrollRightS calls both confirmed correct against the disassembly's own loader bindings, including the non-axis-matched _ScrollRightS on the decrementing X clamp already seen on _goStepNW). Also carries the same shared simtwo:6EFE CONST-selector-pool placement gap documented on _FinishDiagStep/_goStepNE/_goStepNW/_goStepSE.",
+  "parked_next_experiment": "Same as _goStepNE/_goStepSE: after the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py, have a supervisor cache the X-axis far address in an explicit local reused via 'les' for the later switch-case reads (notably even though the 0-bound clamp itself only needs 2 direct accesses, unlike NE's 3-access nonzero-bound case, so the 3-access-triggers-caching hypothesis from the _goStepNE block does not fully explain this one), checked against evidence/recovery/workflow/jobs/goStepSW-1b19d0d598/attempt01/results.json aligned_asm, before spending more attempts.",
+  "budget_extensions": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 285,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 276,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 263,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 255,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 236,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 225,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 216,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 203,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 195,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 176,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 165,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 156,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 143,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 135,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 116,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 59,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  },
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source"
 }

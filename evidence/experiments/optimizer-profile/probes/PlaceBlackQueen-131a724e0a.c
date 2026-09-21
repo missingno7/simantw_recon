@@ -1,23 +1,29 @@
 /*
  * PlaceBlackQueen: pick a spot for a new black queen's nest and dig it.
  *
- * count = SRand4() + 7 tunnel steps.  If count > 1, dig straight down
- * column x=0x20 from row 1, one tile per row; each row, with 50% chance
- * (SRand2()==0) re-roll a small wobble (SRand1(3)-1, i.e. -1/0/+1) that
- * is then added to the current column and, if the result stays inside
- * [8,0x38], becomes the new column (otherwise the column is left where
- * it was and the stale wobble is tried again next row).  After the
- * tunnel, y is the row just past its last dug tile (whether or not the
- * tunnel ran at all: if count<=1 nothing is dug and x=0x20, y=1 are the
- * untouched initial values).  Two more tiles are then dug diagonally
- * (x++, y++ before each dig, twice), then one more tile at the final
- * (x, y): that spot becomes both LastBlackEgg and the reborn point
- * (RebornX/RebornY).  Two columns further east (x+=2, same row) a
- * three-tile queen chamber is dug using the fixed octant 6 (Dx8[6]/
- * Dy8[6], i.e. MakeBlkQueen's own pattern with dir=2, d=dir^4=6 baked
- * in rather than computed), two ants are added at the chamber's two
- * ends with type bytes dir+0x60 and dir+0x68, and BlkQueens is
- * incremented.
+ * count = SRand4() + 7 tunnel steps.  Starting at (x=0x20, y=1), if
+ * count > y, dig straight down one tile per row y = 1 .. count-1; each
+ * row, with 50% chance (SRand2()==0) re-roll a small wobble
+ * (SRand1(3)-1, i.e. -1/0/+1); the wobble is then added to the current
+ * column when the shifted column stays inside [8,0x38].  Two more tiles
+ * are dug diagonally (x++, y++ before each dig, twice), then one more
+ * tile at the final (x, y): that spot becomes LastBlackEgg and the
+ * reborn point (RebornX/RebornY).  Two columns further east (x+=2, same
+ * row) a three-tile queen chamber is dug using the fixed octant 6
+ * (Dx8[6]/Dy8[6]), two ants are added at the chamber's two ends with
+ * type bytes 0x62 and 0x6a, and BlkQueens is incremented.
+ *
+ * Profile evidence (agentX): the tunnel loop's range test repeats the
+ * sum wobble + x and the column update is x += wobble; only global
+ * common-subexpression elimination (/Og, catalog profile "og") folds
+ * the three occurrences into the single AX temporary with an unused
+ * frame home that the target shows (enter 8, mov ax,di / add ax,si /
+ * cmp / cmp / mov si,ax).  Under the og profile this source compiles
+ * to the target body byte for byte (x declared before wobble fixes the
+ * CSE operand order); under the baseline profile the sum is recomputed.
+ * y is the loop row (spilled to [bp-4] inside the loop, DI outside),
+ * wobble is a plain local initialised to 0 (home [bp-6]) that takes DI
+ * inside the loop, x stays in SI.
  */
 extern char far Dx8[];
 extern char far Dy8[];
@@ -34,26 +40,22 @@ extern int far SRand1(int range);
 
 void far PlaceBlackQueen(void)
 {
-    int wobble, i, count, cand, x, y;
+    int count, x, y, wobble;
 
     wobble = 0;
     x = 0x20;
-    i = 1;
+    y = 1;
     count = SRand4() + 7;
-    if (count > i) {
+    if (count > y) {
         do {
-            DigTileB(x, i);
-            if (SRand2() == 0) {
-                wobble = SRand1(3);
-                wobble--;
-            }
-            cand = wobble + x;
-            if (cand >= 8 && cand <= 0x38)
-                x = cand;
-            i++;
-        } while (i < count);
+            DigTileB(x, y);
+            if (SRand2() == 0)
+                wobble = SRand1(3) - 1;
+            if (wobble + x >= 8 && wobble + x <= 0x38)
+                x += wobble;
+            y++;
+        } while (y < count);
     }
-    y = i;
 
     count = 2;
     do {

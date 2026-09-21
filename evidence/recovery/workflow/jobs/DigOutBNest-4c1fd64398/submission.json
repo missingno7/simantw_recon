@@ -1,6 +1,6 @@
 {
   "symbol": "_DigOutBNest",
-  "source": "evidence/recovery/workflow/jobs/DigOutBNest-4c1fd64398/candidate.c",
+  "source": "build/grind/agentX/DigOutBNest.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,11 +9,11 @@
     "/Oelw",
     "/NTSIMTWO_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "* DigOutBNest: dig out the black nest entrance tunnel.\n *\n * The nest's fixed surface entry tile (x=0x20, y=1) is dug immediately\n * (DigTileB).  If count is nonzero the tunnel then random-walks: each\n * step picks a new octant direction near the previous one (SRand1(5)\n * biased by dir, folded into 0..7 via -3 & 7), steps one Dx8/Dy8 cell,\n * and clamps the candidate cell to the playable yard interior [1,0x3e].\n * Clamping on X forces the next direction toward 2 (east) or 6 (west);\n * clamping on Y overrides that with 4 (south) or 0 (north).  The step\n * is committed only when DigTileThemB (claim/dig the neighbour's tile)\n * reports success (1); on success, once the tunnel reaches the surface\n * row (y==1) a surface hole is opened at that column if HoleMapB does\n * not already have one there (MakeNewHoleB).  The walk repeats until\n * count reaches zero, whether or not each individual step succeeded.",
+  "semantic_summary": "Black nest entrance tunnel random walk: dir is a single local (no carry variable) reassigned by the X/Y clamps; commit reads HoleMapB[x] and calls MakeNewHoleB(newX)",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "target frame [bp-2]=newX,[bp-4]=x,[bp-6]=y,[bp-8]=dir home with SI cache flushed at the y-clamp else path and reloaded at the loop end; newY in DI throughout; x committed via the AX copy of newX; controlled probe matches 80/80 opcodes and every non-fixup byte"
   ],
   "publics": [
     "_DigOutBNest"

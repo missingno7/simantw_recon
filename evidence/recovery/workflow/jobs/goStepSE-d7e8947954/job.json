@@ -1,21 +1,24 @@
 {
   "id": "goStepSE-d7e8947954",
   "symbol": "_goStepSE",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T18:45:14.787782+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-6efe-og",
+    "context": "simtwo:6EFE",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/goStepNE-b80e3154f9.json",
+      "evidence/experiments/optimizer-profile/probes/goStepSE-d7e8947954.json"
+    ],
     "component": "simtwo:6EFE",
     "refuted_profiles": []
   },
@@ -77,8 +80,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -332,11 +331,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "1e3f718d15c45b3719a2d29d0601f18cb4882283f22d7e766b6425da596b6c9f",
+      "report": "evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "LOCAL_FRAME_LAYOUT"
   ],
-  "reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt01): score 0.649, 102/114 opcodes matched, instruction_layout_match=false, cfg_shape_match=false, first_structural_difference at offset 0 (target 'enter 6, 0' reserving 6 bytes of locals; our candidate is bare 'push bp; mov bp,sp'). Same class of /Oe local-frame/pointer-caching difference already documented and blocked on _goStepNE: the disassembly shows the compiler caches a far address in a stack temp (here for at least one axis, both of which compare against a nonzero bound: Y vs vScrollMax, X vs hScrollMax) and reuses it later via 'les' at the switch-case field reads, instead of recomputing a fresh CONST-pool fixup each time as our direct-addressing candidate does; a chain of 8 immediate/memory-operand and 9 branch-target differences follow from that shape mismatch. Body semantics otherwise line up (axis directions, bounds and the ScrollDownS/ScrollRightS calls all confirmed correct against the disassembly's own loader bindings). Also carries the same shared simtwo:6EFE CONST-selector-pool placement gap documented on _FinishDiagStep/_goStepNE/_goStepNW.",
-  "next_experiment": "Same as _goStepNE: after the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py, have a supervisor determine which axis (or both) needs its far address cached in an explicit local and reused via 'les' for the later switch-case reads, checked against evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt01/results.json aligned_asm, before spending more attempts."
+  "parked_reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt01): score 0.649, 102/114 opcodes matched, instruction_layout_match=false, cfg_shape_match=false, first_structural_difference at offset 0 (target 'enter 6, 0' reserving 6 bytes of locals; our candidate is bare 'push bp; mov bp,sp'). Same class of /Oe local-frame/pointer-caching difference already documented and blocked on _goStepNE: the disassembly shows the compiler caches a far address in a stack temp (here for at least one axis, both of which compare against a nonzero bound: Y vs vScrollMax, X vs hScrollMax) and reuses it later via 'les' at the switch-case field reads, instead of recomputing a fresh CONST-pool fixup each time as our direct-addressing candidate does; a chain of 8 immediate/memory-operand and 9 branch-target differences follow from that shape mismatch. Body semantics otherwise line up (axis directions, bounds and the ScrollDownS/ScrollRightS calls all confirmed correct against the disassembly's own loader bindings). Also carries the same shared simtwo:6EFE CONST-selector-pool placement gap documented on _FinishDiagStep/_goStepNE/_goStepNW.",
+  "parked_next_experiment": "Same as _goStepNE: after the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py, have a supervisor determine which axis (or both) needs its far address cached in an explicit local and reused via 'les' for the later switch-case reads, checked against evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt01/results.json aligned_asm, before spending more attempts.",
+  "budget_extensions": []
 }

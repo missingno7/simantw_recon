@@ -1,21 +1,24 @@
 {
   "id": "FinishDiagStep-1f1e8e9f64",
   "symbol": "_FinishDiagStep",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T18:45:25.330780+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-6efe-og",
+    "context": "simtwo:6EFE",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/goStepNE-b80e3154f9.json",
+      "evidence/experiments/optimizer-profile/probes/goStepSE-d7e8947954.json"
+    ],
     "component": "simtwo:6EFE",
     "refuted_profiles": []
   },
@@ -77,8 +80,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -346,11 +345,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "f3e0ad67c2330a8a85afbf4db2257713821096e0ee561840dd962f140e376bc2",
+      "report": "evidence/recovery/workflow/jobs/FinishDiagStep-1f1e8e9f64/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "PRIVATE_CONST_LAYOUT"
   ],
-  "reason": "Attempt 2 (evidence/recovery/workflow/jobs/FinishDiagStep-1f1e8e9f64/attempt02): instruction_layout_match=true, cfg_shape_match=true, 70/70 opcodes matched, 0 register/immediate/branch/stack differences, score 0.871. All 21 named-object fixups (_MapPlane,_EditColumns,_EditRows,_MapPnt.x/y,_AMapPnt.x/y,_BMapPnt.x/y,_RMapPnt.x/y,_UpdateEdit,_DrawEdit) are equal=true with correct offsets. The only issues are the 6 distinct 'mov es, word ptr [CONST pool slot]' segment-selector loads (target literals 0xc64c/0xc64e/0xc650/0xc652/0xc654/0xc656, one per distinct far segment: MapPnt, AMapPnt, EditRows, EditColumns, BMapPnt, RMapPnt) -- comparison reports 'conflicting private placement constraints CONST' and 'unplaced contribution CONST'. unit_context confirms simtwo:6EFE is one 11-member object (goStepRight/Left/Down/Up, goStepNE/SE/SW/NW, FinishDiagStep, FinishHorzStep, FinishVertStep) sharing ONE CONST selector pool ordered by first reference across the WHOLE unit; the already-admitted prefix2/prefix4 TUs fixed slots for their own subset, and an isolated single-function test of FinishDiagStep cannot establish where its 6 selector words are placed relative to the object's other 5 still-unrecovered members. Body and reference order are otherwise exactly right (this candidate's per-case x-then-y reference order reproduces every named fixup).",
-  "next_experiment": "Compose FinishDiagStep with its simtwo:6EFE siblings (goStepRight/Left/Down/Up, FinishHorzStep/FinishVertStep, and the other diagonal goStep* members once drafted) via tools/tu_assembly.py so the shared CONST selector-pool placement is established from full-object reference order, then retest as part of that unit job; preserve this source (build/grind/agentD/FinishDiagStep.c) as the exact-body candidate."
+  "parked_reason": "Attempt 2 (evidence/recovery/workflow/jobs/FinishDiagStep-1f1e8e9f64/attempt02): instruction_layout_match=true, cfg_shape_match=true, 70/70 opcodes matched, 0 register/immediate/branch/stack differences, score 0.871. All 21 named-object fixups (_MapPlane,_EditColumns,_EditRows,_MapPnt.x/y,_AMapPnt.x/y,_BMapPnt.x/y,_RMapPnt.x/y,_UpdateEdit,_DrawEdit) are equal=true with correct offsets. The only issues are the 6 distinct 'mov es, word ptr [CONST pool slot]' segment-selector loads (target literals 0xc64c/0xc64e/0xc650/0xc652/0xc654/0xc656, one per distinct far segment: MapPnt, AMapPnt, EditRows, EditColumns, BMapPnt, RMapPnt) -- comparison reports 'conflicting private placement constraints CONST' and 'unplaced contribution CONST'. unit_context confirms simtwo:6EFE is one 11-member object (goStepRight/Left/Down/Up, goStepNE/SE/SW/NW, FinishDiagStep, FinishHorzStep, FinishVertStep) sharing ONE CONST selector pool ordered by first reference across the WHOLE unit; the already-admitted prefix2/prefix4 TUs fixed slots for their own subset, and an isolated single-function test of FinishDiagStep cannot establish where its 6 selector words are placed relative to the object's other 5 still-unrecovered members. Body and reference order are otherwise exactly right (this candidate's per-case x-then-y reference order reproduces every named fixup).",
+  "parked_next_experiment": "Compose FinishDiagStep with its simtwo:6EFE siblings (goStepRight/Left/Down/Up, FinishHorzStep/FinishVertStep, and the other diagonal goStep* members once drafted) via tools/tu_assembly.py so the shared CONST selector-pool placement is established from full-object reference order, then retest as part of that unit job; preserve this source (build/grind/agentD/FinishDiagStep.c) as the exact-body candidate.",
+  "budget_extensions": []
 }

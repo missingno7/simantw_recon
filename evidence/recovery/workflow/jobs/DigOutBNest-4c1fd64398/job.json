@@ -117,8 +117,8 @@
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
     },
     "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
+      "size": 12983,
+      "sha256": "7d075cb78f5220f3e39eeb8612787fab508ca3169f4385dab6c6fa56e147685a"
     }
   },
   "fixture_identity": {
@@ -346,11 +346,61 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "79726447599561f950a26cfe5685af372b7ccd57cc9eda5b83602ea935454243",
+      "report": "evidence/recovery/workflow/jobs/DigOutBNest-4c1fd64398/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "REGISTER_ALLOCATION"
+    "DATA_LAYOUT"
   ],
-  "reason": "Attempt02 (evidence/recovery/workflow/jobs/DigOutBNest-4c1fd64398/attempt02/results.json) is a body-equivalence attempt for the DigOutRNest twin (already blocked with the identical draft shape and identical 110/218 literal-byte gap): control flow, all branch targets and 77/81 opcodes align exactly (candidate 220 vs target 218 bytes). The remaining gap is the same pure register/frame-slot artifact documented for DigOutRNest: the compiler enregisters newY in DI everywhere except the newY<2 branch, where it writes the literal 1 into SI instead of DI, and the whole function gets a 5th local stack slot (ENTER 0xa vs target ENTER 8) instead of exactly aliasing dir/newY to SI/DI as the original does. This job could not be tested for several attempts earlier in this session (ERROR: proof/toolchain changed since task creation; expert must refresh the task) and only became testable later in the same session without any action from this grinder; the same five source shapes tried and rejected for DigOutRNest (separate nextDir var, register-storage hints, three declaration orderings, two statement orderings inside the newY<2 branch) were re-verified here with identical results before landing on this best draft.",
-  "next_experiment": "Same next experiment as DigOutRNest and PlaceBlackQueen/PlaceRedQueen: retest through tools/tu_assembly.py once DigOutBNest/DigOutRNest/PlaceBlackQueen/PlaceRedQueen/RandWorld are all drafted together in simtwo:5AB0, since single-function isolation cannot reproduce the whole object's real register pressure."
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 181,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 78,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 62,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }

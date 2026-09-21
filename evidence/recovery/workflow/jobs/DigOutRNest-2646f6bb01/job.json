@@ -388,11 +388,61 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "0c9c976e3491d447085510e019a6ac4b6d7cc92a9c136dd5d4ee16b066943c2d",
+      "report": "evidence/recovery/workflow/jobs/DigOutRNest-2646f6bb01/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "REGISTER_ALLOCATION"
+    "DATA_LAYOUT"
   ],
-  "reason": "Attempt04 (evidence/recovery/workflow/jobs/DigOutRNest-2646f6bb01/attempt04/results.json) is a body-equivalence attempt for the DigOutBNest twin: control flow, all branch targets and 77/81 opcodes align exactly (77/81 matches, extent 218 vs candidate 220 bytes). The remaining gap is a pure register/frame-slot artifact in the Y-clamp block: the compiler enregisters newY in DI everywhere except the newY<2 branch, where it writes the literal 1 into SI instead of DI (di/si swap only inside that one branch), and the whole function gets a 5th local stack slot (ENTER 0xa vs target ENTER 8) instead of exactly aliasing dir/newY to SI/DI as the original does. Tried: (1) separate nextDir var distinct from dir -> extra reconciliation jmp/mov at the X/Y merge point; (2) reassigning dir directly in the X-clamp with carry=dir in the Y-else branch -> closest match, only the newY<2 branch's register choice diverges; (3) explicit register-storage hints on dir/newY -> no change; (4) reordering local declarations (dir/y/x vs dir/x/y) -> no change; (5) reordering the two statements inside the newY<2 branch (carry before/after newY) -> best result (110 literal byte diffs vs 115), kept as final source. Declaration order and register hints do not move MSC7 /Oelw's allocator here; the mismatch is confined to one literal-store instruction choice inside a single conditional block.",
-  "next_experiment": "Try lifting the newY=1 literal store out of the if-branch by writing it through the same lvalue expression the else-branch uses for newY's last write (e.g. an assignment shaped like 'newY = newY - (newY - 1)' or a helper that reads back a value already resident in DI) so the compiler cannot treat the branch as a fresh dead-register literal store; alternatively test with a translation-unit-level TU assembly (tools/tu_assembly.py) alongside DigOutBNest/PlaceBlackQueen/PlaceRedQueen/RandWorld so the same unit's other selector-pool users influence the allocator the same way the historical single compilation unit did."
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 181,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 78,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 62,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }
