@@ -1,7 +1,7 @@
 {
   "id": "IsPointInIsoTri-72e19122a6",
   "symbol": "_IsPointInIsoTri",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:35:49.721087+00:00",
   "flags": [
     "/AL",
@@ -325,6 +325,95 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "e842aea188127a3e114dfeb461b5d5ba537d1e18055ec5435f47c9c72d869973",
+      "report": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "85133cc7c2c66b9253502a639c518e7d8acfa35708d7762dd37bf4523bff8c0c",
+      "report": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "8176c2039ff427c72bd7c1804b0e9e9cc6f0a69794f6d29725d5022304b9b313",
+      "report": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "5b8ea27d49d6e55b2f0bc6450d2ddf571f66877a79a8aae13768f75da975827c",
+      "report": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "ffc2fdb5b703fa4334413072da1e201c20faf0cecde4280262e14a61e825e32f",
+      "report": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "c3ee1aeb716a0559ab96eb46c561dd5a9ac6c84521fd5390abd7ceef5db959cc",
+      "report": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt08/results.json",
+      "completed": 5,
+      "candidates": 5,
+      "cache": {
+        "hits": 0,
+        "misses": 5,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Semantics established (Sonnet grinder + supervisor, 8 attempts, best evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/attempt06/candidate0000.c, 190 vs 188 bytes, 84/89 opcodes): point inside the isosceles triangle of the far rect (apex bottom centre): top <= y < bottom, x >= left edge (LDIV(left-mid, y-bottom, bottom-top) + left) and x <= right edge (LDIV(mid-right, y-top, top-bottom) + mid), long division as in the accepted BoundPointToTri. Everything through the first division matches; the original emits the left-edge long compare as jl-true / jg-fail / ja-fail at +0x71 whereas /Oelw emits jg-fail / jl-true / ja-fail for every spelling tried (x >= e, e <= x, negated forms, short-circuit chains with the right edge inline, early return), shifting one register choice and adding a mov/sub pair.",
+  "next_experiment": "Find a verified function where a signed long compare emits the true jump first (jl before jg) and copy its operand typing; distinguishing observation: jl at +0x71 preceding jg."
 }

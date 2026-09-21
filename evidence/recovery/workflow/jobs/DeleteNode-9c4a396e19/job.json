@@ -1,7 +1,7 @@
 {
   "id": "DeleteNode-9c4a396e19",
   "symbol": "_DeleteNode",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:38:48.954567+00:00",
   "flags": [
     "/AL",
@@ -297,5 +297,95 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "02cf7e80d97ee6672b99dd65ae476436c0e668a7eb79e1aa5f6c7fe3ea9e2164",
+      "report": "evidence/recovery/workflow/jobs/DeleteNode-9c4a396e19/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "e992b8e7a86144e9ab899011ac87c5f1f08ad3dc7d9751eaef2f74dafb2cf490",
+      "report": "evidence/recovery/workflow/jobs/DeleteNode-9c4a396e19/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "84f6ebc4d077f656e2e972f5abdba42112ef6ac4edb692013aaf3703e54765ca",
+      "report": "evidence/recovery/workflow/jobs/DeleteNode-9c4a396e19/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "78a716caaedc1dbd7b1386d163a2717765d1b711993281661764c93914132042",
+      "report": "evidence/recovery/workflow/jobs/DeleteNode-9c4a396e19/attempt04/results.json",
+      "completed": 4,
+      "candidates": 4,
+      "cache": {
+        "hits": 0,
+        "misses": 4,
+        "environment_launches": 0
+      },
+      "best_candidate": 2,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "7c766b3979ba62a2511a3f834cb9cc4f32397fc72dfc6731059a889efdfc1eeb",
+      "report": "evidence/recovery/workflow/jobs/DeleteNode-9c4a396e19/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "f5d74ce1e39d1b398f0b88cdaf2a6fae1fa966937da8100cc29f66c9e9555e05",
+      "report": "evidence/recovery/workflow/jobs/DeleteNode-9c4a396e19/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "reason": "Identified as the LZSS (Okumura) tree deletion of the unpacker: lson at +0x1016, rson at +0x3018, dad at +0x521a (after the 4113-byte text buffer), N = NIL = 0x1000, standard one-child / rightmost-of-left-subtree replacement, dad[p] = NIL at the end. The arrays live in the far block whose far pointer is _unpackHandle (DGROUP 0xb8dc/0xb8de): the original loads DS from the pointer's segment word only ('push ds / mov ds,[0xb8de]' at +0x8), keeps AX = 0x1000 and BX = p*2 for the whole body and needs a 2-byte frame. Sonnet grinder (6 attempts, best build/grind/dln3.c, 242 vs 189 bytes, 35/73) modelled the arrays through the Dx8 selector (wrong object); the supervisor's __based((__segment)unpackHandle) array form (attempt06, 461 bytes) makes MSC7 reload ES per access. The right declaration is a TU-level question.",
+  "next_experiment": "Model the block as struct LzssState { unsigned char text_buf[4113+pad]; int lson[N+1]; int rson[N+257]; int dad[N+1]; } reached through a pointer whose offset is known zero (a __segment-typed global or a based pointer on a segment variable declared in this TU) so DS-relative [bx+disp] accesses result; distinguishing observation: 'mov ds,[0xb8de]' at +0x9 with no offset word read."
 }

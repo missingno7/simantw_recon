@@ -49001,8 +49001,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _WallNeighbors — ANTEDIT_MODULE:8640
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 190 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 190 bytes.
+Source: src/recovered/wf_WallNeighbors-7ac5fa173f.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8640  55                       push bp

@@ -1,7 +1,7 @@
 {
   "id": "TryMoveDirR-6dd77c4f90",
   "symbol": "_TryMoveDirR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:24:40.042623+00:00",
   "flags": [
     "/AL",
@@ -396,5 +396,10 @@
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 7 attempts, best evidence/recovery/workflow/jobs/TryMoveDirR-6dd77c4f90/attempt02/candidate0000.c, 201 vs 186 bytes, 62/76 opcodes): dx = Dx8[dir] + x, dy = Dy8[dir+8] + y from signed byte tables; dx outside 0..63 or dy > 63 returns 0, dy < 1 returns GetOutR(x); MapR[dx*64+dy] >= 0x1c returns 0; otherwise LifeR[cell] = (RlistT[Tindex] & 0xf8) | dir, LifeR[x*64+y] = 0, RlistX/RlistY[Tindex] = dx/dy, RlistT[Tindex] = LifeR[cell], return 1. The original keeps the dy sum in DI from +0x1e ('mov di,ax') and dx in AX/SI across the GetOutR path; /Oelw spills dy to [bp-2] and reloads it, cascading register swaps through the tail. Separate far arrays vs a single Dx8-based blob, cached RlistT pointer, declaration orders and reduced temporaries do not change the spill (the Dx8 blob form regressed to 46/74 with a DS switch).",
+  "next_experiment": "Isolate the GetOutR early exit before the dx bounds checks (goto/separate block) and test dy declared before dx with the list bytes addressed through the accepted AT() macro but the delta tables kept as named signed-char far arrays; distinguishing observation: 'mov di,ax' at +0x1e with no [bp-2] spill."
 }

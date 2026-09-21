@@ -1,21 +1,34 @@
 {
-  "symbol": "_IsPointInIsoTri",
-  "source": "evidence/recovery/workflow/jobs/IsPointInIsoTri-72e19122a6/candidate.c",
-  "compiler": "msc700",
-  "flags": [
-    "/AL",
-    "/G2",
-    "/Gs",
-    "/Oelw",
-    "/NTSIMANT_MODULE"
-  ],
-  "max_candidates": 96,
-  "axes": [],
-  "semantic_summary": "nested if && chain, single shared fail epilogue",
-  "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
-  ],
-  "publics": [
-    "_IsPointInIsoTri"
-  ]
+ "symbol": "_IsPointInIsoTri",
+ "source": "build/grind/pit_t.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "edge1 = LDIV(left - mid, y - bottom, bottom - top) + left;\n        if (x < edge1 || x > (edge2 = LDIV(mid - right, y - top, top - bottom) + mid))\n            return 0;\n        return 1;",
+    "edge1 = LDIV(left - mid, y - bottom, bottom - top) + left;\n        if (edge1 > x || (edge2 = LDIV(mid - right, y - top, top - bottom) + mid) < x)\n            return 0;\n        return 1;",
+    "edge1 = LDIV(left - mid, y - bottom, bottom - top) + left;\n        if (edge1 <= x && x <= (edge2 = LDIV(mid - right, y - top, top - bottom) + mid))\n            return 1;",
+    "if (x >= (edge1 = LDIV(left - mid, y - bottom, bottom - top) + left) && x <= (edge2 = LDIV(mid - right, y - top, top - bottom) + mid))\n            return 1;",
+    "edge1 = LDIV(left - mid, y - bottom, bottom - top) + left;\n        if (!(x < edge1)) {\n            edge2 = LDIV(mid - right, y - top, top - bottom) + mid;\n            if (!(x > edge2))\n                return 1;\n        }"
+   ],
+   "rationale": "target: jl true / jg fail / ja fail then jg true / jl fail / jb fail"
+  }
+ ],
+ "semantic_summary": "IsPointInIsoTri: short-circuit forms of the two edge tests (true branch emitted first on the left edge)",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_IsPointInIsoTri"
+ ]
 }

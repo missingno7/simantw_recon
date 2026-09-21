@@ -1,7 +1,7 @@
 {
   "id": "db_LoadObject-a858ed5ff7",
   "symbol": "_db_LoadObject",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:38:44.708110+00:00",
   "flags": [
     "/AL",
@@ -297,5 +297,81 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "f71b3707ec80c57e87395b7c2d494626ffac06e1799fa08bf6238188f059d76a",
+      "report": "evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "86aa1ddaa71c99c881f11cefbeadda6beb4143afaa41ca7eccc2b45df88718e0",
+      "report": "evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "7d5f415bd487e677f8d925a5985c914080a636a9d551ac4a050a9d14e9091482",
+      "report": "evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "c45791115b2a6a2966ca6310d21727e91d6effda361c6a76e4ab0963342b979f",
+      "report": "evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "b1f32d7dfcb528203dc6f77cb2b5676c9bfb3f21f1cc333a9d49775fd53d3f3a",
+      "report": "evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 5 attempts, best evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt04/candidate0000.c, 192 vs 188 bytes, 73/81 opcodes): ch_LookUpId cache hit -> mem_SetType(handle, lock) and return; otherwise loop over db_numOfHandles calling DBRecall(match_position[i], object, kind, &dummy) until a handle returns, ch_AddEntry(object, kind, db_cacheTable, handle) with Punt on failure, return the handle; exhausted loop prints via WinPrintf and returns 0. Only difference: the original pushes the DBRecall result straight from AX for the ch_AddEntry argument (+0x7c) and reloads it from [bp-2] for the return; /Oelw copies it to SI first ('mov si,ax') in every form tried.",
+  "next_experiment": "Let AX flow directly into the push: 'if (ch_AddEntry(object, kind, db_cacheTable, handle = DBRecall(...)) == 0) Punt();' or return through a second variable assigned after ch_AddEntry; distinguishing observation: 'push ax' at +0x7c with no preceding 'mov si,ax'."
 }
