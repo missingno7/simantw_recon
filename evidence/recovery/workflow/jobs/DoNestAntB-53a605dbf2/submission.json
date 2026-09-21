@@ -11,8 +11,10 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "",
-  "binding_evidence": [],
+  "semantic_summary": "* DoNestAntB: per-tick AI dispatcher for one B-colony ant, called once per\n * pending Dx8 list record by DoAntSimB(life=x, column=y, attribute=attr).\n * attr is the ant's own attribute/type byte (BlistT): bit 0x80 selects one\n * of two independent halves of this dispatcher (colony colour), bits\n * 0x78 (>>3) give a \"mode0\" nibble passed on to several per-mode workers.\n *\n * Low half (attr&0x80==0): the current ant's own BlistM mode is read, a\n * per-mode population counter (TemBModePop) is bumped, and unless\n * mode==9 a random death check (SRand256()==0 && SRand32()>HealthB) can\n * clear the ant (BlistT=0, LifeB cell=0, BAntsExpired++) and return.\n * Otherwise mode (0..17) dispatches to one of the per-mode B-colony\n * workers (DoNestingB, DoFoodInB, DoDigInB, DoDigOutB, SimEggB,\n * SimQueenB, DoNestFightB) or to inline attack/movement logic matching\n * CheckNestFightB/DoRestB's bodies, reused inline rather than by call\n * (matching this codebase's copy-paste style between similar\n * dispatchers).\n *\n * High half (attr&0x80!=0): bumps TemRModePop, and either resolves via\n * an inline DoNestFightB(x,y) call (attr>0xef) or otherwise inspects the\n * ant sitting on the destination cell: a yellow ant there is fought via\n * YellowFight; a B-list ant in 1..0x67 either has its old coordinate\n * cleared (and, below 8, is treated as eaten/expired) or is fought via\n * GetWinner; otherwise mode==7 raids in (RaidInB) while any other mode\n * tries GetExitDirB/TryMoveDirB movement before giving up.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
   "publics": [
     "_DoNestAntB"
   ]

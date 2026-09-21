@@ -11,7 +11,7 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "* ProcModeEvent: dense switch (msg->code - 0x1203, 15 cases) dispatching the\n * mode-tool window's control events (object 0x1200 family).  0x1203 shows\n * mode help (0x120e).  0x1204 hides group 4 once, guarded by the shared\n * near ModeAuto flag.  0x1206/0x1207/0x1208 select control 3 (object\n * 0x1205), latch modeSet to the pressed control and save the currently\n * edited level (segment9 record at match_position word index 0x4e3a) into\n * the matching Dx8 default-level slot (six bytes at Dx8[modeSet*6-0x79a8]),\n * refresh the window, and fall into 0x1205's body, which un-selects and\n * shows group 4 while ModeAuto is set.  0x120d is a mouse-down inside the\n * iso-triangle diagram (win_GetObjRect(0x120d)): while the button stays\n * down (StillDown), the clamped point (BoundPointToTri) is fed to\n * GetTriLatDist to update the live level record and the window, tracking\n * screen position through GetMousePos/ScreenToClient; on release the live\n * level is re-saved into Dx8's slot for the current modeSet.  0x120f/\n * 0x1210/0x1211 toggle the private near modeDrag byte/word and redraw the\n * control levels bar while clip-guarding MSClipStart/End.  Every path\n * falls into the shared clip_Off() cleanup.",
+  "semantic_summary": "Attempt5: inline &msg->x/msg->y at each use site (no cached pt pointer, matches recomputed lea [bx+8] in target); last.x/last.y assigned as two explicit mov instead of struct copy",
   "binding_evidence": [
     "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],

@@ -401,11 +401,120 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "02f3edffa916489370b147637ba0125a752b55db8ab5eae8c5bff80507f8b16a",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "6a97752b9daea636b61caec95cb83ca5780e631f0114363030f06a8173933bad",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "LOCAL_FRAME_LAYOUT"
+    "DATA_LAYOUT"
   ],
-  "reason": "Six explained attempts (one lost to a systemic 'proof/toolchain changed since task creation' environment error affecting many concurrent jobs, not this source) converge closely: best candidate matches target byte-for-byte in size (315/315), opcode_total 94/opcode_matches 92, zero register-only differences, only 1 branch-target offset drift and ~20 memory-operand differences that are entirely the expected isolated-compile CONST/selector-fixup noise (mov es,[slot] shows as an unresolved CONST target; same-segment SRand16/SRand8 self-calls show offset:0 vs offset:5646/5614) per the documented isolated-compile expectation, not semantic. The one remaining real difference is local-frame layout: the target places the CurGameType snapshot ('type') in the FURTHEST stack slot (bp-8) and the random-search locals x,y in the two closer slots (bp-4,bp-6), using AX directly for the first type==3 compare and only reloading type from memory for the later type==2 compare (a natural partial-spill, register survives the first use, gets spilled by the time of the second). A plain non-volatile 'type' local promotes fully into SI for both compares (91/94 opcodes, one register-only diff, no frame-size delta from target). Forcing memory residency with 'volatile int type' gets the exact byte count and zero register diffs but assigns type the CLOSEST slot (bp-4) and pushes x,y to bp-6/bp-8 -- the reverse of the target's order. Tried: reordering the C declarations of type vs x/y/col/count/tries, and giving x/y/col/count/tries genuine nested block scope matching their real usage depth (col/count/tries in an inner brace inside the x/y-holding else-branch) -- both produced byte-identical recompiles to the flat-declaration volatile version, so MSC7's og-profile slot assignment here is not driven by C declaration or block-scope order for this shape. Best candidate preserved at build/grind/agentJ/InitYelloAnt.c; attempt reports under evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/.",
-  "next_experiment": "Find what drives MSC7's slot order here given declaration/scope order don't: try making x and y assignments happen earlier in program order relative to 'type' (e.g. compute a throwaway use of x/y before the type==3 test) to see whether first-use order (not declaration order) governs slot placement; or try splitting the single volatile 'type' into two reads (one non-volatile local read once for the type==3 test, a second freshly-read volatile/memory local for the type==2 test) to reproduce the target's AX-then-reload asymmetry directly instead of forcing memory residency for both uses."
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 264,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 238,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 229,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 98,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 84,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 60,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 25,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 14,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }
