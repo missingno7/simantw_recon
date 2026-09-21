@@ -14,6 +14,19 @@
  * is opened at that column if HoleMapR does not already have one there
  * (MakeNewHoleR).  The walk repeats until count reaches zero, whether or
  * not each individual step succeeded.
+ *
+ * Register/frame evidence (agentX): there is no separate carry variable.
+ * dir is one local whose home is [bp-8]; MSC 7 caches it in SI from the
+ * loop top through the clamps, flushes the cache at the start of the
+ * y-clamp's else path (mov [bp-8],si), stores the clamp constants 4/0
+ * straight to the home, and reloads SI from the home at the loop end
+ * (mov si,[bp-8]).  A distinct carry variable makes the allocator route
+ * the loop-end copy through DI.  The commit block reads the new column
+ * once through x (HoleMapR[x]) and once through newX (MakeNewHoleR(newX)),
+ * which keeps x's committed value in the AX copy of newX instead of a
+ * DI/SI region register and leaves newY in DI for its whole life; frame
+ * order newX, x, y, dir matches enter 8.  Probe: 80/80 opcodes, all
+ * non-fixup bytes equal under the baseline profile (and under og).
  */
 extern char far Dx8[];
 extern char far Dy8[];
@@ -26,7 +39,7 @@ extern int far SRand1(int range);
 
 void far DigOutRNest(int count)
 {
-    int dir, x, y, newX, newY, nextDir;
+    int dir, y, x, newX, newY;
 
     dir = 4;
     y = 1;
@@ -40,28 +53,25 @@ void far DigOutRNest(int count)
         newY = y + Dy8[dir];
         if (newX < 1) {
             newX = 1;
-            nextDir = 2;
+            dir = 2;
         } else if (newX > 0x3e) {
             newX = 0x3e;
-            nextDir = 6;
-        } else {
-            nextDir = dir;
+            dir = 6;
         }
         if (newY < 2) {
             newY = 1;
-            nextDir = 4;
+            dir = 4;
         } else if (newY > 0x3e) {
             newY = 0x3e;
-            nextDir = 0;
+            dir = 0;
         }
         if (DigTileThemR(newX, newY) == 1) {
             x = newX;
             y = newY;
             if (y == 1 && HoleMapR[x] == 0)
-                MakeNewHoleR(x);
+                MakeNewHoleR(newX);
         }
         if (--count == 0)
             break;
-        dir = nextDir;
     }
 }

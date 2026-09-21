@@ -1,7 +1,7 @@
 {
   "id": "win_SetObjFormatStr-deed196f77",
   "symbol": "_win_SetObjFormatStr",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:34:32.088428+00:00",
   "flags": [
     "/AL",
@@ -317,5 +317,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "ab97404ea0f7b6180b5063ace91d10668e37debec6ed871dfbe4e5bad96fd6f9",
+      "report": "evidence/recovery/workflow/jobs/win_SetObjFormatStr-deed196f77/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Semantics established via the admitted win_ObjAddr bucket pattern and recovered debug strings (Punt 'Attempt to get obj address outsize window' at 0xbd12, Ralloc tag 'formatStr' at 0xbdca): 65/115 opcodes, target 297 vs candidate 272 bytes. win_LockWin; bucket=win_handles[objectNumber>>8]; Punt if bucket->count<=(unsigned char)objectNumber; obj=bucket->objects[(unsigned char)objectNumber]; fmtObj=obj's far pointer field at +0x2c; vsprintf a local buffer from fmtObj's format text (starting at fmtObj+0x2e) and the caller's va_list pointer; len=strlen+1; if fmtObj's growable buffer (+0x2a/+0x2c of fmtObj) is null, Ralloc(1,len+8,\"formatStr\"); else if its current size is too small, RallocRealloc(...,1,len+4,...); either way copy the formatted text into the growable buffer; win_UnlockWin. One attempt given session time constraints; the semantic shape (field offsets, Punt/Ralloc evidence, two-level far-pointer object structure) is well evidenced but the exact RallocSize/strlen/strcpy signatures and the precise realloc-size-comparison arithmetic are unverified guesses. Best candidate: build/grind/agentH/_win_SetObjFormatStr.c.",
+  "next_experiment": "Identify the exact unnamed loader operand at offset124 (likely strlen) and offset166 (likely a size-query call) via their target segment/offset in the packet's direct_data_bindings, and cross-check RallocRealloc's real parameter count against any other admitted Ralloc/RallocRealloc caller in this unit."
 }

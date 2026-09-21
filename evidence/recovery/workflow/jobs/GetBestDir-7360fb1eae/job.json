@@ -1,7 +1,7 @@
 {
   "id": "GetBestDir-7360fb1eae",
   "symbol": "_GetBestDir",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:20:49.093625+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "075e3bddda90eaf2e22772a6ddf38657285d0ec7b1ac8dd3296e2837e9c26068",
+      "report": "evidence/recovery/workflow/jobs/GetBestDir-7360fb1eae/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "81/97 opcodes match, size exact (246/246). Same REGISTER_ALLOCATION/epilogue-merge class already recorded for sibling GetRedBestDirs/GetMyBestDirs in this same unit family: the target's early return (threshold<=0) reuses the shared final epilogue via a jmp to the tail that reloads 'best' from its stack slot, while this candidate folds it to an inline 'mov ax,0xffff' plus its own pop/pop/leave/retf copy. All Dx8/Dy8/GetMap/IsNotObstacle/IsThisPebble/GetDis segment-selector diffs are the expected per-object CONST fixups. Candidate build/grind/agentI/_GetBestDir.c, attempt01.",
+  "next_experiment": "Same as GetRedBestDirs/GetMyBestDirs: find a source shape for the early best=-1 return that keeps the compiler from folding it to an immediate-only inline epilogue distinct from the final shared tail."
 }

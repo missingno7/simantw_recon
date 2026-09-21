@@ -1,7 +1,7 @@
 {
   "id": "TryMoveDirB-b35531d834",
   "symbol": "_TryMoveDirB",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:21:02.506211+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "a72cd8c697abee5aedcac2f42f3d3e809c18fe554869c95b21cb53bfdf88431c",
+      "report": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "70/104 opcodes match with the full semantic structure recovered (bounds checks, GetOutB near-call deferral, MapB/LifeB cell walkability, conditional DoTroph recruit call gated on LifeB==0xff/MeWantFood/BlistX[Tindex]<0x80, and the BlistX/BlistY/BlistT relocation tail), all data bindings resolved to exact MAPSYM names (MapB, LifeB, MeWantFood, Tindex, BlistX/Y/T, Dx8, Dy8). Residual differences are dominated by register allocation (candidate keeps the Dy8-derived delta in cx where the target keeps di, cascading into the local-frame size: enter 4,0 vs target's enter 6,0) plus the expected CONST selector fixups. Candidate build/grind/agentI/_TryMoveDirB.c, attempt01: bytes 13/298 raw-literal, size 298 vs target 266.",
+  "next_experiment": "Try renaming/reordering the nx/ny/cell locals or computing ny before nx (matching the target's Dy8-then-Dx8 instruction order more literally in the C statement order) to see whether that changes which register the allocator picks for the stepped-Y delta."
 }

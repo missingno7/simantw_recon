@@ -1,21 +1,23 @@
 {
   "id": "FixExitMapR-ab2edbcf6f",
   "symbol": "_FixExitMapR",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T18:42:41.518079+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMONE_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simone-284e-og",
+    "context": "simone:284E",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/FixExitMapR-ab2edbcf6f.json"
+    ],
     "component": "simone:284E",
     "refuted_profiles": []
   },
@@ -77,8 +79,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +103,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +117,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -388,11 +386,27 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "d0ccc49d3dd7ddaf7bb3d3a58aadd63ffb805fc33e822b548fd2d96070f9adda",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapR-ab2edbcf6f/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "EXPRESSION_SHAPE"
   ],
-  "reason": "Reopened per corrected guidance (prior block wrongly cited CONST/placement-conflict diagnostics). Tried swapping the nx/ny computation order in the neighbour loop (attempt05, 59/78, worse than the existing 62/78); reverted to the best-known candidate. Genuine remaining difference: target reloads ES twice per loop iteration for the two DX()/DY() neighbour reads (two 'mov <fixup seg8,offset0>; mov es,ax' pairs visible per iteration), while the candidate's DX() macro reuses the DS already loaded for the main array, needing no fresh ES load at all. Over 5 total revisions across this job's history (4 before reopening, this one after).",
-  "next_experiment": "Try declaring Dx8 twice under two different extern names/macros (one for the nx computation, one for ny) so each DX() call is forced through its own selector load instead of sharing the DS already established for the main array, matching the observed double ES-reload shape."
+  "parked_reason": "Reopened per corrected guidance (prior block wrongly cited CONST/placement-conflict diagnostics). Tried swapping the nx/ny computation order in the neighbour loop (attempt05, 59/78, worse than the existing 62/78); reverted to the best-known candidate. Genuine remaining difference: target reloads ES twice per loop iteration for the two DX()/DY() neighbour reads (two 'mov <fixup seg8,offset0>; mov es,ax' pairs visible per iteration), while the candidate's DX() macro reuses the DS already loaded for the main array, needing no fresh ES load at all. Over 5 total revisions across this job's history (4 before reopening, this one after).",
+  "parked_next_experiment": "Try declaring Dx8 twice under two different extern names/macros (one for the nx computation, one for ny) so each DX() call is forced through its own selector load instead of sharing the DS already established for the main array, matching the observed double ES-reload shape.",
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/FixExitMapR-ab2edbcf6f/promotion.json"
 }
