@@ -1,7 +1,7 @@
 {
   "id": "SetMyLife-b6713fe079",
   "symbol": "_SetMyLife",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:02:30.662999+00:00",
   "flags": [
     "/AL",
@@ -353,6 +353,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "39dd64216b8505cf46d18238e130d9c73aa49ca83c4a5dcdddba21ff1de625be",
+      "report": "evidence/recovery/workflow/jobs/SetMyLife-b6713fe079/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "557095e2d70406449eec0a68af6ce28f40b65497a247ba40b399948423d270d4",
+      "report": "evidence/recovery/workflow/jobs/SetMyLife-b6713fe079/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/sml3.c, 191 vs 196 bytes, 73/79 opcodes): validate (x, y) for the plane (0..0x7f or 0..0x3f by plane <= 1, y 0..0x3f), SetLife(plane, x, y, life); for type 0x60 also SetLife(plane, Dx8[dir^4] + x, Dy8[(dir^4)+8] + y, life == 0xff ? 0xfe : life); when life != 0 commit MeLocX/MeLocY/MeDir/MeType/MePlane. The only difference: the original materialises the vacated-cell code in a frame word ('mov [bp-2],0xfe' / 'mov [bp-2],si' then 'push [bp-2]' at +0x66..+0x71) whereas /Oelw keeps it in AX for ternary, if/else (both orders), pre-assigned and switch forms (switch changed the compare shape).",
+  "next_experiment": "Find how a branch-merged temporary is forced to a frame slot before an argument push (e.g. a local also read after the call, or declared in an inner block with its address taken by a macro); distinguishing observation: 'mov word ptr [bp-2],0xfe' at +0x66."
 }

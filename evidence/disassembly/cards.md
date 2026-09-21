@@ -20578,8 +20578,8 @@ Source: src/recovered/wf_GBoxOutline-26008b9ec1.c. Flags: ['/AL', '/G2', '/Gs', 
 ```
 
 ## _GRectPartialOutline — GR_MODULE:0CC2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 200 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 200 bytes.
+Source: src/recovered/wf_GRectPartialOutline-050d8b305a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 0CC2  55                       push bp
@@ -52998,8 +52998,8 @@ AC0D  cb                       retf
 ```
 
 ## _UpdateYardMessage — ANTEDIT_MODULE:AC0E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 202 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 202 bytes.
+Source: src/recovered/wf_UpdateYardMessage-77b8db79c0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 AC0E  680019                   push 0x1900

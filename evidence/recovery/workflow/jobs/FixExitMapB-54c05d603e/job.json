@@ -1,7 +1,7 @@
 {
   "id": "FixExitMapB-54c05d603e",
   "symbol": "_FixExitMapB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:05:06.452624+00:00",
   "flags": [
     "/AL",
@@ -325,6 +325,67 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "448b03124da60d86d054694497d839b87925bf47a4e8d94e8f061220a2e456c8",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapB-54c05d603e/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "7a2dc78ebe071ef2fa0db773ad3e5095b54cf5f629f5d2950c3c5e3cc65686f8",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapB-54c05d603e/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "2c7b0d033d71c415b1df9b1ce47cfef4748491dd339757bb05e678463a72e239",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapB-54c05d603e/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "6639d6343de11c9dcb96defa31f47d8db5fd86b03821b0201d1b1c82170048ce",
+      "report": "evidence/recovery/workflow/jobs/FixExitMapB-54c05d603e/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best evidence/recovery/workflow/jobs/FixExitMapB-54c05d603e/attempt02/candidate0000.c, 173 vs 198 bytes, 59/78 opcodes): for y < 2, ExitMapB[x][y] = 0xff when MapB[x][y] == 0x18 else 0xfe; otherwise the maximum in-bounds ExitMapB of the eight Dx8/Dy8 neighbours minus one (0 when the maximum is 0) is stored, the neighbour loop matching the original almost instruction for instruction. Remaining: the original keeps the two constant stores in separate ES-loaded arms (+0x1f and the 0xfe arm) where /Oelw merges them into one store with AL = 0xff/0xfe; the frame is 6 bytes with only [bp-2] referenced; and the post-loop value is reloaded into CX with 'dec cl' where /Oelw uses BX and 'lea ax,[bx-1]'.",
+  "next_experiment": "Try the y < 2 case with the two stores written through differently typed lvalues (e.g. one through the AT() macro and one through a named ExitMapB[64][64] array) or in separate blocks with a call between, and a byte-typed best local; also check whether the twin FixExitMapR shares the shape. Distinguishing observation: two ES loads for the 0xff/0xfe stores and 'mov cx,[bp-2] / dec cl' at the end."
 }

@@ -1,7 +1,7 @@
 {
   "id": "InitApplicationWindows-84f4e064cb",
   "symbol": "_InitApplicationWindows",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:05:48.576226+00:00",
   "flags": [
     "/AL",
@@ -312,5 +312,10 @@
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "reason": "Body exact (Sonnet grinder, 1 attempt, evidence/recovery/workflow/jobs/InitApplicationWindows-84f4e064cb/attempt01/candidate0000.c, 197 vs 197 bytes, 58/58 opcodes, no aligned differences): win_LoadAllWindows(); eleven win_SetWinDrawHook(id, hook) registrations (ids 0x000, 0x100, 0x1500, 0x1200, 0x1300, 0x1900, 0x500, 0x1e00, 0x400, 0x1d00, 0x1800 with win_DrawEditWindow, win_DrawMapWindow, win_DrawHistoryWindow, win_DrawModeWindow, win_DrawCasteWindow, win_DrawYardWindow, win_DrawInfoWindow, win_DrawPictureWindow, win_DrawEndGameWindow, win_DrawExamineWindow, win_DrawScoreWindow); InitMapFunctions(). The eleven far function-pointer arguments fail as 'unsupported or unresolved target/frame' offset fixups: the strict matcher does not yet validate offset fixups to far code symbols (the gap already noted for the matcher), so admission is blocked by tooling, not by the source.",
+  "next_experiment": "Tool work, not source work: extend the strict matcher to validate two-byte offset fixups whose target is a named far code symbol (segment + MAPSYM offset) against the original's unrelocated literal, then re-test this candidate unchanged; distinguishing observation: eleven 'push <offset of win_Draw*>' immediates with no loader relocation."
 }
