@@ -1,0 +1,29 @@
+{
+  "symbol": "_StartFightA",
+  "source": "build/grind/sfa_template2.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT1_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "func",
+      "marker": "@@FUNC@@",
+      "values": [
+        "/*\n * StartFightA: an A-list ant at (x, y) attacks the ant occupying (nx, ny).\n * The attacker's type byte (AlistT, SIMANT_DATA_GROUP offset 0x2f62) is\n * saved and cleared together with its LifeA cell; the defender's index\n * comes from the far FindInAList(nx, ny) and, when found, GetWinner (near)\n * decides the outcome from the defender's type and the saved attacker\n * type.  The defender's type becomes the winner's colour bit plus 0x70,\n * its LifeA cell is rewritten the same way, its mode (AlistM, 0x2b78)\n * becomes 0xa and its stamina (AlistS, 0x334c) the winner value, and an\n * alarm of strength 0x28 is raised at the cell (near AlarmHere2).  All\n * three list bytes are reached through one selector slot, so the segment\n * object is a single far byte addressed by offset.\n */\nextern unsigned char near LifeA[];\nextern int far FindInAList(int x, int y);\nextern int near GetWinner(int defender, int attacker);\nextern void near AlarmHere2(int x, int y, int level);\nextern unsigned char far Dx8;\n#define AT(off) ((&Dx8)[off])\n\nvoid near StartFightA(int ant, int x, int y, int nx, int ny)\n{\n    int loser;\n    int type;\n    int winner;\n\n    type = AT(ant + 0x2f62);\n    AT(ant + 0x2f62) = 0;\n    LifeA[x * 64 + y] = 0;\n    loser = FindInAList(nx, ny);\n    if (loser >= 0) {\n        winner = GetWinner(AT(loser + 0x2f62), type);\n        AT(loser + 0x2f62) = (winner & 0x80) + 0x70;\n        LifeA[nx * 64 + ny] = (winner & 0x80) + 0x70;\n        AT(loser + 0x2b78) = 0xa;\n        AT(loser + 0x334c) = winner;\n        AlarmHere2(nx, ny, 0x28);\n    }\n}\n",
+        "/*\n * StartFightA: an A-list ant at (x, y) attacks the ant occupying (nx, ny).\n * The attacker's type byte (AlistT, SIMANT_DATA_GROUP offset 0x2f62) is\n * saved and cleared together with its LifeA cell; the defender's index\n * comes from the far FindInAList(nx, ny) and, when found, GetWinner (near)\n * decides the outcome from the defender's type and the saved attacker\n * type.  The defender's type becomes the winner's colour bit plus 0x70,\n * its LifeA cell is rewritten the same way, its mode (AlistM, 0x2b78)\n * becomes 0xa and its stamina (AlistS, 0x334c) the winner value, and an\n * alarm of strength 0x28 is raised at the cell (near AlarmHere2).  All\n * three list bytes are reached through one selector slot, so the segment\n * object is a single far byte addressed by offset.\n */\nextern unsigned char near LifeA[];\nextern int far FindInAList(int x, int y);\nextern int near GetWinner(int defender, int attacker);\nextern void near AlarmHere2(int x, int y, int level);\nextern unsigned char far AlistT[];\nextern unsigned char far AlistM[];\nextern unsigned char far AlistS[];\n\nvoid near StartFightA(int ant, int x, int y, int nx, int ny)\n{\n    int loser;\n    int type;\n    int winner;\n\n    type = AlistT[ant];\n    AlistT[ant] = 0;\n    LifeA[x * 64 + y] = 0;\n    loser = FindInAList(nx, ny);\n    if (loser >= 0) {\n        winner = GetWinner(AlistT[loser], type);\n        AlistT[loser] = (winner & 0x80) + 0x70;\n        LifeA[nx * 64 + ny] = (winner & 0x80) + 0x70;\n        AlistM[loser] = 0xa;\n        AlistS[loser] = winner;\n        AlarmHere2(nx, ny, 0x28);\n    }\n}\n"
+      ],
+      "rationale": "Selector-slot sharing across AlistT/AlistM/AlistS"
+    }
+  ],
+  "semantic_summary": "Batch: list bytes addressed through a single far scalar Dx8 by offset (one selector slot) versus three named far arrays",
+  "binding_evidence": [],
+  "publics": [
+    "_StartFightA"
+  ]
+}

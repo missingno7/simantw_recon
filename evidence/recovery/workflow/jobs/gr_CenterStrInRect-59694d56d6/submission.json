@@ -1,0 +1,36 @@
+{
+  "symbol": "_gr_CenterStrInRect",
+  "source": "build/grind/gcsr2_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "func",
+      "marker": "@@FUNC@@",
+      "values": [
+        "void far gr_CenterStrInRect(struct WinRect far *rect, char far *string)\n{\n    int width;\n    int x;\n    struct WinRect r;\n\n    r = *rect;\n    width = font_StringWidth(string);\n    x = (r.right - width + r.left) / 2;\n    if (x < r.left) {\n        r.left = x = r.left;\n        r.right = x + width;\n    }\n    r.top += (r.bottom - font_FontHeight() - r.top) / 2;\n    r.bottom = r.top + font_FontHeight();\n    font_PrintStr(r.left, r.top, string);\n}\n",
+        "void far gr_CenterStrInRect(struct WinRect far *rect, char far *string)\n{\n    int width;\n    int x;\n    struct WinRect r;\n\n    r = *rect;\n    width = font_StringWidth(string);\n    x = (r.right - width + r.left) / 2;\n    if (x < r.left) {\n        x = r.left;\n        r.left = x;\n        r.right = x + width;\n    }\n    (void)x;\n    r.top += (r.bottom - font_FontHeight() - r.top) / 2;\n    r.bottom = r.top + font_FontHeight();\n    font_PrintStr(r.left, r.top, string);\n}\n",
+        "void far gr_CenterStrInRect(struct WinRect far *rect, char far *string)\n{\n    int width;\n    int x;\n    struct WinRect r;\n\n    r = *rect;\n    width = font_StringWidth(string);\n    x = (r.right - width + r.left) / 2;\n    if (x < r.left) {\n        x = r.left;\n        r.left = x;\n        r.right = x + width;\n        x = x;\n    }\n    r.top += (r.bottom - font_FontHeight() - r.top) / 2;\n    r.bottom = r.top + font_FontHeight();\n    font_PrintStr(r.left, r.top, string);\n}\n",
+        "void far gr_CenterStrInRect(struct WinRect far *rect, char far *string)\n{\n    int width;\n    int x;\n    struct WinRect r;\n\n    r = *rect;\n    width = font_StringWidth(string);\n    x = (r.right - width + r.left) / 2;\n    if (x < r.left)\n        x = r.left;\n    r.left = x;\n    r.right = x + width;\n    r.top += (r.bottom - font_FontHeight() - r.top) / 2;\n    r.bottom = r.top + font_FontHeight();\n    font_PrintStr(r.left, r.top, string);\n}\n",
+        "void far gr_CenterStrInRect(struct WinRect far *rect, char far *string)\n{\n    int width;\n    int x;\n    struct WinRect r;\n\n    r = *rect;\n    width = font_StringWidth(string);\n    x = (r.right - width + r.left) / 2;\n    if (x < r.left) {\n        x = r.left;\n        r.left = x;\n        r.right = x + width;\n    } else\n        x = x;\n    r.top += (r.bottom - font_FontHeight() - r.top) / 2;\n    r.bottom = r.top + font_FontHeight();\n    font_PrintStr(r.left, r.top, string);\n}\n",
+        "void far gr_CenterStrInRect(struct WinRect far *rect, char far *string)\n{\n    int width;\n    register int x;\n    struct WinRect r;\n\n    r = *rect;\n    width = font_StringWidth(string);\n    x = (r.right - width + r.left) / 2;\n    if (x < r.left) {\n        x = r.left;\n        r.left = x;\n        r.right = x + width;\n    }\n    (void)x;\n    r.top += (r.bottom - font_FontHeight() - r.top) / 2;\n    r.bottom = r.top + font_FontHeight();\n    font_PrintStr(r.left, r.top, string);\n}\n"
+      ],
+      "rationale": "Reads of x that the optimizer folds but that keep its frame stores"
+    }
+  ],
+  "semantic_summary": "Batch: keep the centring x local live (chained assignment, void read, self-assignment, both-path assignment, register hint) so its two frame stores survive",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_gr_CenterStrInRect"
+  ],
+  "max_categories": null
+}

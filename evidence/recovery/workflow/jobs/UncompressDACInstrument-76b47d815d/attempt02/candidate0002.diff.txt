@@ -1,0 +1,64 @@
+Whole-member issues: GR_MODULE literal bytes differ
+Target | Candidate | Difference
+0000 enter 0x16, 0 | 0000 enter 0x16, 0 | 
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 mov byte ptr [bp - 1], 0x80 | 0006 mov byte ptr [bp - 1], 0x80 | 
+000a mov ax, word ptr [bp + 6] | 000a mov ax, word ptr [bp + 6] | 
+000d mov dx, word ptr [bp + 8] | 000d mov dx, word ptr [bp + 8] | 
+0010 mov cx, 8 |  | instruction_shape
+0013 push ds | 0010 push ds | 
+0014 lea di, [bp - 0x16] | 0011 lea di, [bp - 0x16] | 
+0017 mov si, ax | 0014 mov si, ax | 
+0019 push ss | 0016 push ss | 
+001a pop es | 0017 pop es | 
+001b mov ds, dx | 0018 mov ds, dx | 
+ | 001a mov cx, 8 | instruction_shape
+001d rep movsw word ptr es:[di], word ptr [si] | 001d rep movsw word ptr es:[di], word ptr [si] | 
+001f pop ds | 001f pop ds | 
+0020 add word ptr [bp + 6], 0x10 | 0020 add word ptr [bp + 6], 0x10 | 
+0024 xor di, di | 0024 mov word ptr [bp - 6], 0 | instruction_shape
+0026 mov word ptr [bp - 6], di | 0029 mov word ptr [bp - 4], 0 | instruction_shape
+0029 shr word ptr [bp + 0xe], 1 | 002e shr word ptr [bp + 0xe], 1 | 
+002c cmp word ptr [bp + 0xe], di | 0031 cmp word ptr [bp + 0xe], 0 | instruction_shape
+002f je 0x7b | 0035 je 0x85 | branch_target
+0031 mov word ptr [bp - 4], di | 0037 mov si, word ptr [bp - 4] | instruction_shape
+ | 003a mov di, word ptr [bp - 6] | instruction_shape
+ | 003d mov cx, word ptr [bp + 0xa] | instruction_shape
+0034 mov si, di | 0040 mov ds, dx | register_allocation
+0036 les cx, ptr [bp + 0xa] | 0042 mov es, word ptr [bp + 0xc] | instruction_shape
+0039 mov ds, dx |  | instruction_shape
+003b mov bx, word ptr [bp + 6] | 0045 mov bx, word ptr [bp + 6] | 
+003e add bx, di | 0048 add bx, di | 
+0040 mov bl, byte ptr [bx] | 004a mov bl, byte ptr [bx] | 
+0042 mov ax, bx | 004c mov ax, bx | 
+0044 shr bl, 4 | 004e shr bl, 4 | 
+0047 sub bh, bh | 0051 sub bh, bh | 
+0049 lea dx, [bp - 0x16] | 0053 lea dx, [bp - 0x16] | 
+004c add bx, dx | 0056 add bx, dx | 
+004e mov dl, byte ptr ss:[bx] | 0058 mov dl, byte ptr ss:[bx] | 
+0051 add byte ptr [bp - 1], dl | 005b add byte ptr [bp - 1], dl | 
+0054 mov dl, byte ptr [bp - 1] | 005e mov dl, byte ptr [bp - 1] | 
+0057 mov bx, cx | 0061 mov bx, cx | 
+0059 mov byte ptr es:[bx + si], dl | 0063 mov byte ptr es:[bx + si], dl | 
+005c mov bl, al | 0066 mov bl, al | 
+005e and bx, 0xf | 0068 and bx, 0xf | 
+0061 lea ax, [bp - 0x16] | 006b lea ax, [bp - 0x16] | 
+0064 add bx, ax | 006e add bx, ax | 
+0066 add dl, byte ptr ss:[bx] | 0070 add dl, byte ptr ss:[bx] | 
+0069 mov byte ptr [bp - 1], dl | 0073 mov byte ptr [bp - 1], dl | 
+006c mov bx, cx | 0076 mov bx, cx | 
+006e inc si | 0078 inc si | 
+006f mov byte ptr es:[bx + si], dl | 0079 mov byte ptr es:[bx + si], dl | 
+0072 inc si | 007c inc si | 
+0073 inc di | 007d inc di | 
+0074 cmp di, word ptr [bp + 0xe] | 007e cmp di, word ptr [bp + 0xe] | 
+0077 jb 0x3b | 0081 jb 0x45 | branch_target
+0079 push ss | 0083 push ss | 
+007a pop ds | 0084 pop ds | 
+007b mov ax, word ptr [bp + 0xa] | 0085 mov ax, word ptr [bp + 0xa] | 
+007e mov dx, word ptr [bp + 0xc] | 0088 mov dx, word ptr [bp + 0xc] | 
+0081 pop si | 008b pop si | 
+0082 pop di | 008c pop di | 
+0083 leave  | 008d leave  | 
+0084 retf  | 008e retf  | 

@@ -1,0 +1,33 @@
+{
+  "symbol": "_win_MakeGroupSelectable",
+  "source": "build/grind/wmgs2_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "func",
+      "marker": "@@FUNC@@",
+      "values": [
+        "void far win_MakeGroupSelectable(int objectNumber, int group)\n{\n    struct WinObject far * far *entry;\n    int count;\n    int i;\n    struct WinBucket far *bucket;\n    int window;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    bucket = win_handles[window >> 8];\n    i = 0;\n    if (bucket->count > 0) {\n        entry = bucket->objects;\n        count = bucket->count;\n        for (; i < count; i++) {\n            if ((*entry)->group == (unsigned char)group)\n                (*entry)->state |= 2;\n            entry++;\n        }\n    }\n    win_UnlockWin(objectNumber);\n}\n",
+        "void far win_MakeGroupSelectable(int objectNumber, int group)\n{\n    struct WinObject far * far *entry;\n    int count;\n    int i;\n    struct WinBucket far *bucket;\n    int window;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    bucket = win_handles[window >> 8];\n    i = 0;\n    if (bucket->count > 0) {\n        entry = bucket->objects;\n        count = bucket->count;\n        while (i < count) {\n            if ((*entry)->group == (unsigned char)group)\n                (*entry)->state |= 2;\n            entry++;\n            i++;\n        }\n    }\n    win_UnlockWin(objectNumber);\n}\n",
+        "void far win_MakeGroupSelectable(int objectNumber, int group)\n{\n    struct WinObject far * far *entry;\n    int count;\n    int i;\n    struct WinBucket far *bucket;\n    int window;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    bucket = win_handles[window >> 8];\n    i = 0;\n    if (bucket->count > 0) {\n        entry = bucket->objects;\n        count = bucket->count;\n        do {\n            if ((*entry)->group == (unsigned char)group)\n                (*entry)->state |= 2;\n            entry++;\n        } while (++i < count);\n    }\n    win_UnlockWin(objectNumber);\n}\n",
+        "void far win_MakeGroupSelectable(int objectNumber, int group)\n{\n    struct WinObject far * far *entry;\n    int count;\n    int i;\n    struct WinBucket far *bucket;\n    int window;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    bucket = win_handles[window >> 8];\n    i = 0;\n    if (bucket->count > 0) {\n        entry = bucket->objects;\n        count = bucket->count;\n        do {\n            if ((*entry)->group == (unsigned char)group)\n                (*entry)->state |= 2;\n            entry++;\n            i++;\n        } while (i < count);\n    }\n    win_UnlockWin(objectNumber);\n}\n"
+      ],
+      "rationale": "Reads of window, i and count keep their frame stores; loop spelling decides the CX countdown shape"
+    }
+  ],
+  "semantic_summary": "Batch: masked window number indexing win_handles, i zeroed before the guard, count local, loop spelled for/while/do-while (pre or post increment test)",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_win_MakeGroupSelectable"
+  ]
+}

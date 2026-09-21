@@ -1,0 +1,40 @@
+{
+  "symbol": "_MaintainSwarm",
+  "source": "build/grind/ms2_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "decl",
+      "marker": "@@DECL@@",
+      "values": [
+        "extern int far SwarmCntB;\nextern int far SwarmCntR;"
+      ],
+      "rationale": "Scalar far objects are register-cached across the compares"
+    },
+    {
+      "name": "body",
+      "marker": "@@BODY@@",
+      "values": [
+        "    if (SwarmCntB > 0) {\n        if (SwarmCntB >= 4)\n            n = SwarmCntB - (SwarmCntB >> 2);\n        else\n            n = SwarmCntB - 1;\n    } else\n        n = SwarmCntB;\n    if (QueenStorageB > n)\n        n = QueenStorageB;\n    if (n > 50)\n        n = 50;\n    SwarmCntB = n;\n\n    if (SwarmCntR > 0) {\n        if (SwarmCntR >= 4)\n            n = SwarmCntR - (SwarmCntR >> 2);\n        else\n            n = SwarmCntR - 1;\n    } else\n        n = SwarmCntR;\n    if (QueenStorageR > n)\n        n = QueenStorageR;\n    if (n > 50)\n        n = 50;\n    SwarmCntR = n;\n",
+        "    n = SwarmCntB > 0 ? (SwarmCntB >= 4 ? SwarmCntB - (SwarmCntB >> 2) : SwarmCntB - 1) : SwarmCntB;\n    if (QueenStorageB > n)\n        n = QueenStorageB;\n    if (n > 50)\n        n = 50;\n    SwarmCntB = n;\n\n    n = SwarmCntR > 0 ? (SwarmCntR >= 4 ? SwarmCntR - (SwarmCntR >> 2) : SwarmCntR - 1) : SwarmCntR;\n    if (QueenStorageR > n)\n        n = QueenStorageR;\n    if (n > 50)\n        n = 50;\n    SwarmCntR = n;\n",
+        "    n = SwarmCntB;\n    if (SwarmCntB > 0) {\n        if (SwarmCntB >= 4)\n            n = SwarmCntB - (SwarmCntB >> 2);\n        else\n            n = SwarmCntB - 1;\n    }\n    if (QueenStorageB > n)\n        n = QueenStorageB;\n    if (n > 50)\n        n = 50;\n    SwarmCntB = n;\n\n    n = SwarmCntR;\n    if (SwarmCntR > 0) {\n        if (SwarmCntR >= 4)\n            n = SwarmCntR - (SwarmCntR >> 2);\n        else\n            n = SwarmCntR - 1;\n    }\n    if (QueenStorageR > n)\n        n = QueenStorageR;\n    if (n > 50)\n        n = 50;\n    SwarmCntR = n;\n"
+      ],
+      "rationale": "Direct-global expression forms that keep the counter re-read for the subtraction"
+    }
+  ],
+  "semantic_summary": "Batch: scalar far counters (cached in BX for the compares) with the direct-global if/else chain, nested ternary, or copy-then-direct forms",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_MaintainSwarm"
+  ]
+}

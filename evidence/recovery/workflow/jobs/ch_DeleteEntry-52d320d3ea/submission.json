@@ -1,0 +1,44 @@
+{
+  "symbol": "_ch_DeleteEntry",
+  "source": "build/grind/cde3_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "extra",
+      "marker": "@@EXTRA@@",
+      "values": [
+        "    long addr;\n",
+        "    unsigned long addr;\n",
+        "    unsigned int bytes;\n",
+        "    long addr;\n    unsigned int bytes;\n"
+      ],
+      "rationale": "Extra locals: a long address temp and/or an unsigned byte offset (frame has one unused 4-byte slot)"
+    },
+    {
+      "name": "ages",
+      "marker": "@@AGES@@",
+      "values": [
+        "    addr = (long)table + (unsigned)((table->count + 1) * 4);\n    ages = (int far *)addr;",
+        "    addr = (long)table;\n    addr += (unsigned)((table->count + 1) * 4);\n    ages = (int far *)addr;",
+        "    bytes = (table->count + 1) * 4;\n    ages = (int far *)((long)table + bytes);",
+        "    bytes = (table->count + 1) * 4;\n    addr = (long)table + bytes;\n    ages = (int far *)addr;"
+      ],
+      "rationale": "Where the long add happens; combinations that reference an undeclared local simply fail to compile"
+    }
+  ],
+  "semantic_summary": "Batch: intermediate long/unsigned long address local and/or unsigned byte-offset local so the far pointer is composed from the live registers with a zero-extended 32-bit add",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_ch_DeleteEntry"
+  ]
+}

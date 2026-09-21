@@ -1,0 +1,59 @@
+Whole-member issues: conflicting private placement constraints _BSS; conflicting private placement constraints _DATA; SIMANT_MODULE unresolved/mismatched fixup at 0x67; SIMANT_MODULE unresolved/mismatched fixup at 0x53; SIMANT_MODULE unresolved/mismatched fixup at 0x4e; SIMANT_MODULE unresolved/mismatched fixup at 0x48; SIMANT_MODULE unresolved/mismatched fixup at 0x45; SIMANT_MODULE unresolved/mismatched fixup at 0x3f; SIMANT_MODULE unresolved/mismatched fixup at 0x35; SIMANT_MODULE unresolved/mismatched fixup at 0x29; SIMANT_MODULE unresolved/mismatched fixup at 0xa; SIMANT_MODULE uncovered NE relocations; SIMANT_MODULE literal bytes differ; unplaced contribution _DATA; unplaced contribution _BSS
+  SIMANT_MODULE+0x67: candidate {'kind': 'import', 'module': 'USER', 'ordinal': 249}; original loader []
+  SIMANT_MODULE+0x53: candidate {'kind': 'internal', 'segment': 2, 'offset': 18360}; original loader []
+  SIMANT_MODULE+0x4e: candidate {'kind': 'segment', 'name': '_BSS'}; original loader []
+  SIMANT_MODULE+0x48: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  SIMANT_MODULE+0x45: candidate {'kind': 'segment', 'name': '_BSS'}; original loader []
+  SIMANT_MODULE+0x3f: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  SIMANT_MODULE+0x35: candidate {'kind': 'internal', 'segment': 7, 'offset': 53312}; original loader []
+  SIMANT_MODULE+0x29: candidate {'kind': 'internal', 'segment': 2, 'offset': 18360}; original loader []
+  SIMANT_MODULE+0xa: candidate {'kind': 'internal', 'segment': 2, 'offset': 6316}; original loader []
+Target | Candidate | Difference
+0000 enter 6, 0 | 0000 enter 6, 0 | 
+0004 push si | 0004 push di | register_allocation
+ | 0005 push si | instruction_shape
+ | 0006 mov di, word ptr [bp + 6] | instruction_shape
+0005 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0009 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 6316}] | immediate_or_binding,immediate_or_binding
+000a mov word ptr [bp - 4], ax | 000e mov word ptr [bp - 4], ax | 
+000d mov word ptr [bp - 2], dx | 0011 mov word ptr [bp - 2], dx | 
+0010 mov ax, word ptr [bp + 6] | 0014 mov ax, di | instruction_shape
+0013 mov cx, 3 | 0016 mov cx, 3 | 
+0016 sub dx, dx | 0019 sub dx, dx | 
+0018 div cx | 001b div cx | 
+001a mov word ptr [bp - 6], ax | 001d mov word ptr [bp - 6], ax | 
+001d push word ptr [bp - 6] | 0020 push word ptr [bp - 6] | 
+0020 lea ax, [bp - 4] | 0023 lea ax, [bp - 4] | 
+0023 push ss | 0026 push ss | 
+0024 push ax | 0027 push ax | 
+0025 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0028 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 18360}] | immediate_or_binding,immediate_or_binding
+002a add sp, 6 | 002d add sp, 6 | 
+002d or ax, ax | 0030 or ax, ax | 
+002f jne 0x71 | 0032 jne 0x75 | branch_target
+0031 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 0}] | 0034 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 53312}] | immediate_or_binding,immediate_or_binding
+0036 or ax, ax | 0039 or ax, ax | 
+0038 jne 0x71 | 003b jne 0x75 | branch_target
+003a mov bx, word ptr [0x150a] | 003d mov <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | memory_operand
+003e shl bx, 1 | 0041 shl bx, 1 | 
+0040 push word ptr [bx - 0x350c] | 0043 push <resolved fixup> [{'kind': 'segment', 'name': '_BSS'}] | memory_operand
+0044 mov ax, word ptr [0x150a] | 0047 mov <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | memory_operand
+0047 shl ax, 2 | 004a shl ax, 2 | 
+004a add ax, 0xcad4 | 004d add <resolved fixup> [{'kind': 'segment', 'name': '_BSS'}] | immediate_or_binding
+004d push ds | 0050 push ds | 
+004e push ax | 0051 push ax | 
+004f lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0052 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 18360}] | immediate_or_binding,immediate_or_binding
+0054 add sp, 6 | 0057 add sp, 6 | 
+0057 or ax, ax | 005a or ax, ax | 
+0059 je 0x60 | 005c je 0x64 | branch_target
+005b mov si, 1 | 005e mov si, 1 | 
+005e jmp 0x6d | 0061 jmp 0x71 | branch_target
+ | 0063 nop  | instruction_shape
+0060 push 0x20 | 0064 push 0x20 | 
+0062 lcall <resolved fixup> [{'kind': 'import', 'module': 'USER', 'ordinal': 249}] | 0066 lcall <resolved fixup> [{'kind': 'import', 'module': 'USER', 'ordinal': 249}] | 
+0067 mov si, ax | 006b mov si, ax | 
+0069 and si, 0x8000 | 006d and si, 0x8000 | 
+006d or si, si | 0071 or si, si | 
+006f je 0x1d | 0073 je 0x20 | branch_target
+0071 pop si | 0075 pop si | 
+ | 0076 pop di | instruction_shape
+0072 leave  | 0077 leave  | 
+0073 retf  | 0078 retf  | 

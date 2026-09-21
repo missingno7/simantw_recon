@@ -1,0 +1,737 @@
+{
+  "symbol": "_win_SetGroupSelectedObj",
+  "spec": {
+    "symbol": "_win_SetGroupSelectedObj",
+    "source": "build/grind/sgso_template4.c",
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMTWO_MODULE"
+    ],
+    "max_candidates": 96,
+    "axes": [
+      {
+        "name": "vars",
+        "marker": "/*VARS*/",
+        "values": [
+          "REG int window;\n    REG int i;",
+          "REG int i;\n    REG int window;"
+        ],
+        "rationale": "window local instead of object induction variable"
+      },
+      {
+        "name": "init",
+        "marker": "/*INIT*/",
+        "values": [
+          "window = objectNumber & 0xff00;"
+        ],
+        "rationale": "window high byte"
+      },
+      {
+        "name": "loop",
+        "marker": "/*LOOP*/",
+        "values": [
+          "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }",
+          "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }",
+          "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }",
+          "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+        ],
+        "rationale": "direct index or explicit cursor; comparison direction"
+      }
+    ],
+    "semantic_summary": "Group-select one object: window+index as the call argument so the object number is an optimizer-derived induction value",
+    "binding_evidence": [],
+    "publics": [
+      "_win_SetGroupSelectedObj"
+    ]
+  },
+  "exe_sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+  "sym_sha256": "9d27f4d0872e483ddbf460bda8a2e34b7180f153c6d7c1a74d692720476c9a7f",
+  "candidates": 8,
+  "completed_candidates": 0,
+  "environment_launches": 0,
+  "cache": {
+    "hits": 0,
+    "misses": 8,
+    "environment_launches": 0
+  },
+  "exact_candidates": [],
+  "promotion": "NONE: independent rebuild and recipe review required",
+  "results": [
+    {
+      "candidate": 0,
+      "choices": {
+        "vars": "REG int window;\n    REG int i;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/880c3999d3376f74886a1f40a7665ba595fe592cb7db9d46275fd0c29b0fb3f2/INPUT.C",
+        "source_identity": {
+          "size": 1928,
+          "sha256": "9c38f70e3467bc12f64ffcb8d3b1a57b09ec4375799e1df0d3eb4b90e8c12aec"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W0_escn7lkq\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W0_escn7lkq/job0032/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 0,
+        "worker_session": "build/compiler-workers/W0_escn7lkq",
+        "batch_directory": "build/compiler-workers/W0_escn7lkq",
+        "batch_index": 31,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "18dbd8401f330a227f9bb04e34430acc4e0a897f7959a608113b55c9f8848de0"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.00789249999979802,
+          "compiler_execution_seconds": 0.2072256000010384,
+          "total_compile_request_seconds": 0.2237065999997867,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/d37c67ca254f4d3691e750af394b6ff0/INPUT.C",
+        "request_id": "d37c67ca254f4d3691e750af394b6ff0",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 1,
+      "choices": {
+        "vars": "REG int window;\n    REG int i;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/c25526f0406b03a53fda8338f39c6ab135886ff51e8b40cfeabef2adf76dc7cd/INPUT.C",
+        "source_identity": {
+          "size": 1928,
+          "sha256": "fc23c1de74241f078954a5ae467386fbed3f8b0b99e543c8bf1aaab365f5ace7"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W1_uq_hemcd\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W1_uq_hemcd/job0032/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 1,
+        "worker_session": "build/compiler-workers/W1_uq_hemcd",
+        "batch_directory": "build/compiler-workers/W1_uq_hemcd",
+        "batch_index": 31,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "c9a14eb2039d6688d95fda5b3e878f667b8a14cc11e8d32067763f5edf62de66"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.010069100000691833,
+          "compiler_execution_seconds": 0.2051856999987649,
+          "total_compile_request_seconds": 0.22222929999952612,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/f1a84f14cc634558a4327fc31592c42b/INPUT.C",
+        "request_id": "f1a84f14cc634558a4327fc31592c42b",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 2,
+      "choices": {
+        "vars": "REG int window;\n    REG int i;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/8855f9507905fbb75d7f564ddfca24723cf4b0c5ddb7114ea82d0c0a9d6b444b/INPUT.C",
+        "source_identity": {
+          "size": 1938,
+          "sha256": "1db525db1add3893eb731212fc2e6686d7c18897efb281aef6f870266d067337"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W3_by9yzoip\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W3_by9yzoip/job0033/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 3,
+        "worker_session": "build/compiler-workers/W3_by9yzoip",
+        "batch_directory": "build/compiler-workers/W3_by9yzoip",
+        "batch_index": 32,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "8e04b8e9e42f39e4ca1f69f1288544738986dc6d741faf485d05d884619a2d65"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.005567500000324799,
+          "compiler_execution_seconds": 0.2201788000002125,
+          "total_compile_request_seconds": 0.22976930000004359,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/db6f8452f72b416c8e345f902243f4c7/INPUT.C",
+        "request_id": "db6f8452f72b416c8e345f902243f4c7",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 3,
+      "choices": {
+        "vars": "REG int window;\n    REG int i;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/8dd531a681e87d8e1dfbd4808c46ba4b0227277590b5d9530c5139a4458a2fd9/INPUT.C",
+        "source_identity": {
+          "size": 1938,
+          "sha256": "147a96b55acf44cc0d0d8e6f2ed31732d204fcf800595158b72b101f2eaa51ed"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W3_by9yzoip\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W3_by9yzoip/job0032/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 3,
+        "worker_session": "build/compiler-workers/W3_by9yzoip",
+        "batch_directory": "build/compiler-workers/W3_by9yzoip",
+        "batch_index": 31,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "8e04b8e9e42f39e4ca1f69f1288544738986dc6d741faf485d05d884619a2d65"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.004970399999365327,
+          "compiler_execution_seconds": 0.20895820000077947,
+          "total_compile_request_seconds": 0.21899149999990186,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/27c0ef7554484ba8aa82da94adc19c62/INPUT.C",
+        "request_id": "27c0ef7554484ba8aa82da94adc19c62",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 4,
+      "choices": {
+        "vars": "REG int i;\n    REG int window;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/d363a35a5c54b0abd746939330ae77c2eaf202d27bb304610ad1060ec25a0c4a/INPUT.C",
+        "source_identity": {
+          "size": 1928,
+          "sha256": "d19371241ce3d76ed0fcd3c0c53bcf341f3c814c22f212fae50cc494b6c32d05"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W2_2wurgyko\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W2_2wurgyko/job0033/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 2,
+        "worker_session": "build/compiler-workers/W2_2wurgyko",
+        "batch_directory": "build/compiler-workers/W2_2wurgyko",
+        "batch_index": 32,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "3f14942e6f77b14685504bcb6ec67d97df82aa21ee394297c98688a35d1a0f91"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.005340400000932277,
+          "compiler_execution_seconds": 0.21556719999898633,
+          "total_compile_request_seconds": 0.2249654000006558,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/9b495705e7b2492c8d5c86d32ef097a9/INPUT.C",
+        "request_id": "9b495705e7b2492c8d5c86d32ef097a9",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 5,
+      "choices": {
+        "vars": "REG int i;\n    REG int window;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/fe343f9456056686b8040e97f87cb1e1e02903947bacecb46fd31f45bd6dfe5f/INPUT.C",
+        "source_identity": {
+          "size": 1928,
+          "sha256": "4ecd7905763440c8a0cca963515e83a4b2cf6fed11641194073ba0b3a1e33af1"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W1_uq_hemcd\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W1_uq_hemcd/job0033/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 1,
+        "worker_session": "build/compiler-workers/W1_uq_hemcd",
+        "batch_directory": "build/compiler-workers/W1_uq_hemcd",
+        "batch_index": 32,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "c9a14eb2039d6688d95fda5b3e878f667b8a14cc11e8d32067763f5edf62de66"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.005103499999677297,
+          "compiler_execution_seconds": 0.21731800000088697,
+          "total_compile_request_seconds": 0.22777300000052492,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/8d2bdae7ffa5400d8b4982728ad3a977/INPUT.C",
+        "request_id": "8d2bdae7ffa5400d8b4982728ad3a977",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2223: left of '->objects' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 6,
+      "choices": {
+        "vars": "REG int i;\n    REG int window;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/f2775c9453f67bceaee9521dc0a81bfddf0494ffa417acab2d6578b646469054/INPUT.C",
+        "source_identity": {
+          "size": 1938,
+          "sha256": "361f76e63e0c2284fa1685e998f4dec1b40b655e531c2d2030b4e229d1695623"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W0_escn7lkq\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W0_escn7lkq/job0033/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 0,
+        "worker_session": "build/compiler-workers/W0_escn7lkq",
+        "batch_directory": "build/compiler-workers/W0_escn7lkq",
+        "batch_index": 32,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "18dbd8401f330a227f9bb04e34430acc4e0a897f7959a608113b55c9f8848de0"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.005352300000595278,
+          "compiler_execution_seconds": 0.22075649999896996,
+          "total_compile_request_seconds": 0.23212989999956335,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/425d01c449a94b9a8221a24ba341fd79/INPUT.C",
+        "request_id": "425d01c449a94b9a8221a24ba341fd79",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    },
+    {
+      "candidate": 7,
+      "choices": {
+        "vars": "REG int i;\n    REG int window;",
+        "init": "window = objectNumber & 0xff00;",
+        "loop": "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/a75e62618a3523811dbb5ce8a50a8486e370409e8cc41d5774b6b652becb8f5d/INPUT.C",
+        "source_identity": {
+          "size": 1938,
+          "sha256": "c868f8e1d90de5e5932393530f2cd3052b43f8216307caa132148c17da72f7eb"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W2_2wurgyko\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 1,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W2_2wurgyko/job0032/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 2,
+        "worker_session": "build/compiler-workers/W2_2wurgyko",
+        "batch_directory": "build/compiler-workers/W2_2wurgyko",
+        "batch_index": 31,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "3f14942e6f77b14685504bcb6ec67d97df82aa21ee394297c98688a35d1a0f91"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.005202699998335447,
+          "compiler_execution_seconds": 0.20735790000071574,
+          "total_compile_request_seconds": 0.2192390999989584,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/14bf9bda66d8442f87c974e87e750e1e/INPUT.C",
+        "request_id": "14bf9bda66d8442f87c974e87e750e1e",
+        "service_instance": "f5d10f065cff4cefab5a09dad0819171"
+      },
+      "comparison": {
+        "result": "COMPILE_FAILED",
+        "issues": [
+          "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(36) : error C2065: 'REG' : undeclared identifier\ninput.c(36) : error C2143: syntax error : missing ';' before 'type'\ninput.c(37) : error C2143: syntax error : missing ';' before 'type'\ninput.c(38) : error C2143: syntax error : missing ';' before 'type'\ninput.c(42) : error C2065: 'window' : undeclared identifier\ninput.c(43) : error C2065: 'i' : undeclared identifier\ninput.c(44) : error C2065: 'bucket' : undeclared identifier\ninput.c(44) : warning C4047: '=' : different levels of indirection\ninput.c(45) : error C2065: 'p' : undeclared identifier\ninput.c(45) : error C2223: left of '->objects' must point to class/struct/union\ninput.c(45) : error C2223: left of '->count' must point to class/struct/union\ninput.c(46) : error C2100: illegal indirection\ninput.c(46) : error C2223: left of '->group' must point to class/struct/union\n"
+        ]
+      },
+      "timing": {}
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+ "symbol": "_FoodFall",
+ "source": "build/grind/ff_template6.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMONE_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "decl",
+   "marker": "/*DECL*/",
+   "values": [
+    "int col;\n    int row;\n    int off;\n    int step;\n    int cell;\n    int falling;\n    unsigned char near *p;",
+    "unsigned char near *p;\n    int col;\n    int row;\n    int off;\n    int step;\n    int cell;\n    int falling;"
+   ],
+   "rationale": "pointer declaration position"
+  },
+  {
+   "name": "init",
+   "marker": "/*INIT*/",
+   "values": [
+    "falling = 1;\n    col = x;\n    row = y;\n    off = col << 6;\n    step = dropDirX[DROPdir] << 6;"
+   ],
+   "rationale": "matched initialisation order"
+  },
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "p = &MapA[off + row];\n        cell = *p;\n        if (cell < 4) {\n            MapA[off + row] = (cell + 6) << 2;",
+    "p = &MapA[off + row];\n        cell = MapA[off + row];\n        if (cell < 4) {\n            *p = (cell + 6) << 2;",
+    "cell = MapA[off + row];\n        if (cell < 4) {\n            p = &MapA[off + row];\n            *p = (cell + 6) << 2;",
+    "p = MapA + off + row;\n        cell = MapA[off + row];\n        if (cell < 4) {\n            *p = (cell + 6) << 2;"
+   ],
+   "rationale": "which access goes through the pointer"
+  },
+  {
+   "name": "step",
+   "marker": "/*STEP*/",
+   "values": [
+    "off += step;\n        row += dropDirY[DROPdir];\n        col += dropDirX[DROPdir];"
+   ],
+   "rationale": "matched advance order"
+  }
+ ],
+ "semantic_summary": "FoodFall: mixed pointer/index cell access so the pointer stays a memory local cached in BX while off keeps DI",
+ "binding_evidence": [],
+ "publics": [
+  "_FoodFall"
+ ]
+}

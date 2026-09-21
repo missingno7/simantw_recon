@@ -1,0 +1,48 @@
+{
+ "symbol": "_win_SetGroupSelectedObj",
+ "source": "build/grind/sgso_template4.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "vars",
+   "marker": "/*VARS*/",
+   "values": [
+    "int window;\n    int i;",
+    "int i;\n    int window;"
+   ],
+   "rationale": "window local instead of object induction variable"
+  },
+  {
+   "name": "init",
+   "marker": "/*INIT*/",
+   "values": [
+    "window = objectNumber & 0xff00;"
+   ],
+   "rationale": "window high byte"
+  },
+  {
+   "name": "loop",
+   "marker": "/*LOOP*/",
+   "values": [
+    "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }",
+    "for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }",
+    "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (selectedObj == window + i)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }",
+    "for (p = bucket->objects; i < bucket->count; i++, p++) {\n        if ((*p)->group == (unsigned char)group) {\n            if (window + i == selectedObj)\n                win_SetObjSelectedStateI(window + i, 1);\n            else\n                win_SetObjSelectedStateI(window + i, 0);\n        }\n    }"
+   ],
+   "rationale": "direct index or explicit cursor; comparison direction"
+  }
+ ],
+ "semantic_summary": "Group-select one object: window+index as the call argument so the object number is an optimizer-derived induction value (macro-free declarations)",
+ "binding_evidence": [],
+ "publics": [
+  "_win_SetGroupSelectedObj"
+ ]
+}

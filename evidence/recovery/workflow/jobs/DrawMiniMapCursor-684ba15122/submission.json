@@ -1,0 +1,44 @@
+{
+ "symbol": "_DrawMiniMapCursor",
+ "source": "build/grind/dmmc_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTANTEDIT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "decl",
+   "marker": "/*DECL*/",
+   "values": [
+    "int ySize;\n    int xSize;\n    int top;\n    int left;",
+    "int size;\n    int edge;"
+   ],
+   "rationale": "separate or reused locals (mismatched pairs fail to compile)"
+  },
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "ySize = miniYSize;\n    top = ySize * MapPnt.y + miniMapRect.top;\n    miniMapCursorRect.top = top;\n    miniMapCursorRect.bottom = top + ySize * editHeight;\n    xSize = miniXSize;\n    left = xSize * MapPnt.x + miniJust + miniMapRect.left;\n    miniMapCursorRect.left = left;\n    miniMapCursorRect.right = left + xSize * editWidth;",
+    "size = miniYSize;\n    edge = size * MapPnt.y + miniMapRect.top;\n    miniMapCursorRect.top = edge;\n    miniMapCursorRect.bottom = edge + size * editHeight;\n    size = miniXSize;\n    edge = size * MapPnt.x + miniJust + miniMapRect.left;\n    miniMapCursorRect.left = edge;\n    miniMapCursorRect.right = edge + size * editWidth;",
+    "ySize = miniYSize;\n    miniMapCursorRect.top = top = ySize * MapPnt.y + miniMapRect.top;\n    miniMapCursorRect.bottom = top + ySize * editHeight;\n    xSize = miniXSize;\n    miniMapCursorRect.left = left = xSize * MapPnt.x + miniJust + miniMapRect.left;\n    miniMapCursorRect.right = left + xSize * editWidth;",
+    "size = miniYSize;\n    miniMapCursorRect.top = edge = size * MapPnt.y + miniMapRect.top;\n    miniMapCursorRect.bottom = edge + size * editHeight;\n    size = miniXSize;\n    miniMapCursorRect.left = edge = size * MapPnt.x + miniJust + miniMapRect.left;\n    miniMapCursorRect.right = edge + size * editWidth;",
+    "ySize = miniYSize;\n    top = MapPnt.y * ySize + miniMapRect.top;\n    miniMapCursorRect.top = top;\n    miniMapCursorRect.bottom = top + editHeight * ySize;\n    xSize = miniXSize;\n    left = MapPnt.x * xSize + miniJust + miniMapRect.left;\n    miniMapCursorRect.left = left;\n    miniMapCursorRect.right = left + editWidth * xSize;",
+    "size = miniYSize;\n    edge = MapPnt.y * size + miniMapRect.top;\n    miniMapCursorRect.top = edge;\n    miniMapCursorRect.bottom = edge + editHeight * size;\n    size = miniXSize;\n    edge = MapPnt.x * size + miniJust + miniMapRect.left;\n    miniMapCursorRect.left = edge;\n    miniMapCursorRect.right = edge + editWidth * size;",
+    "ySize = miniYSize;\n    miniMapCursorRect.top = top = MapPnt.y * ySize + miniMapRect.top;\n    miniMapCursorRect.bottom = top + editHeight * ySize;\n    xSize = miniXSize;\n    miniMapCursorRect.left = left = MapPnt.x * xSize + miniJust + miniMapRect.left;\n    miniMapCursorRect.right = left + editWidth * xSize;",
+    "size = miniYSize;\n    miniMapCursorRect.top = edge = MapPnt.y * size + miniMapRect.top;\n    miniMapCursorRect.bottom = edge + editHeight * size;\n    size = miniXSize;\n    miniMapCursorRect.left = edge = MapPnt.x * size + miniJust + miniMapRect.left;\n    miniMapCursorRect.right = edge + editWidth * size;"
+   ],
+   "rationale": "CSE through locals"
+  }
+ ],
+ "semantic_summary": "DrawMiniMapCursor: size and edge locals kept in scratch registers (no frame), operand order and chained-store forms",
+ "binding_evidence": [],
+ "publics": [
+  "_DrawMiniMapCursor"
+ ]
+}

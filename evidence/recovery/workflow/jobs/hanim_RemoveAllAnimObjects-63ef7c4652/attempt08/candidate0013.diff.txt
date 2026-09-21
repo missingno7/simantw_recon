@@ -1,0 +1,60 @@
+Whole-member issues: GR_MODULE unresolved/mismatched fixup at 0x75; GR_MODULE unresolved/mismatched fixup at 0x6a; GR_MODULE literal bytes differ
+  GR_MODULE+0x75: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader []
+  GR_MODULE+0x6a: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader []
+Target | Candidate | Difference
+0000 enter 0xa, 0 | 0000 enter 0xe, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 push word ptr [bp + 6] | 0006 push word ptr [bp + 6] | 
+0009 nop  | 0009 nop  | 
+000a push cs | 000a push cs | 
+000b call 0xffffedf0 | 000b call 0xffffedf0 | 
+000e add sp, 2 | 000e add sp, 2 | 
+0011 mov es, dx | 0011 mov es, dx | 
+0013 mov bx, ax | 0013 mov bx, ax | 
+0015 mov di, ax | 0015 mov si, ax | register_allocation
+0017 mov word ptr [bp - 6], es | 0017 mov word ptr [bp - 0xa], es | memory_operand,stack_local_layout
+001a push word ptr es:[bx + 2] | 001a push word ptr es:[bx + 2] | 
+001e nop  | 001e nop  | 
+001f push cs | 001f push cs | 
+0020 call 0xffffedf0 | 0020 call 0xffffedf0 | 
+0023 add sp, 2 | 0023 add sp, 2 | 
+ | 0026 mov word ptr [bp - 6], ax | instruction_shape
+ | 0029 mov word ptr [bp - 4], dx | instruction_shape
+0026 mov es, word ptr [bp - 6] | 002c mov es, word ptr [bp - 0xa] | memory_operand,stack_local_layout
+0029 cmp word ptr es:[di], 0 | 002f cmp word ptr es:[si], 0 | register_allocation
+002d jle 0x4f | 0033 jle 0x62 | branch_target
+ | 0035 xor cx, cx | instruction_shape
+ | 0037 mov ax, word ptr es:[si] | instruction_shape
+ | 003a mov word ptr [bp - 0xc], si | instruction_shape
+ | 003d mov si, cx | instruction_shape
+002f mov cx, word ptr es:[di] | 003f mov di, word ptr [bp - 6] | memory_operand
+0032 mov si, ax | 0042 mov cx, ax | register_allocation
+0034 mov word ptr [bp - 8], di | 0044 mov es, word ptr [bp - 4] | instruction_shape
+ | 0047 mov al, 1 | instruction_shape
+0037 mov ds, dx | 0049 mov bx, di | register_allocation
+0039 mov al, 1 | 004b add bx, si | instruction_shape
+003b mov byte ptr [si + 3], al | 004d mov byte ptr es:[bx + 3], al | memory_operand
+003e mov byte ptr [si + 5], al | 0051 mov byte ptr es:[bx + 5], al | memory_operand
+0041 mov byte ptr [si], 0 | 0055 mov byte ptr es:[bx], 0 | memory_operand
+0044 add si, 0x2c | 0059 add si, 0x2c | 
+0047 dec cx | 005c dec cx | 
+0048 jne 0x39 | 005d jne 0x47 | branch_target
+004a mov di, word ptr [bp - 8] | 005f mov si, word ptr [bp - 0xc] | memory_operand,stack_local_layout
+004d push ss |  | instruction_shape
+004e pop ds |  | instruction_shape
+004f mov es, word ptr [bp - 6] | 0062 mov es, word ptr [bp - 0xa] | memory_operand,stack_local_layout
+0052 push word ptr es:[di + 2] | 0065 push word ptr es:[si + 2] | register_allocation
+0056 nop  | 0069 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21916}] | instruction_shape
+0057 push cs |  | instruction_shape
+0058 call 0xffffedfe |  | instruction_shape
+005b add sp, 2 | 006e add sp, 2 | 
+005e push word ptr [bp + 6] | 0071 push word ptr [bp + 6] | 
+0061 nop  | 0074 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21916}] | instruction_shape
+0062 push cs |  | instruction_shape
+0063 call 0xffffedfe |  | instruction_shape
+0066 add sp, 2 | 0079 add sp, 2 | 
+0069 pop si | 007c pop si | 
+006a pop di | 007d pop di | 
+006b leave  | 007e leave  | 
+006c retf  | 007f retf  | 

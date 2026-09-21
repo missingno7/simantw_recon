@@ -1,0 +1,44 @@
+{
+ "symbol": "_win_SetColorFromObjNum",
+ "source": "build/grind/wscf_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "idxdecl",
+   "marker": "/*IDXDECL*/",
+   "values": [
+    "int index;",
+    "char index;",
+    "unsigned char index;",
+    ""
+   ],
+   "rationale": "index local type (empty for the inline form)"
+  },
+  {
+   "name": "index",
+   "marker": "/*INDEX*/",
+   "values": [
+    "index = (obj->flags & 4) ? obj->selectedColor : obj->color;\n    colorEntry = win_colors[index].entry;",
+    "index = (obj->flags & 4) ? obj->selectedColor : obj->color;\n    colorEntry = (char far *)win_colors + index * 6;",
+    "colorEntry = (char far *)win_colors + ((obj->flags & 4) ? obj->selectedColor : obj->color) * 6;",
+    "if (obj->flags & 4)\n        index = obj->selectedColor;\n    else\n        index = obj->color;\n    colorEntry = win_colors[index].entry;"
+   ],
+   "rationale": "index materialisation forms"
+  }
+ ],
+ "semantic_summary": "win_SetColorFromObjNum: named index local (int/char) and explicit *6 arithmetic to move the index temp into CX and home the object pointer",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_win_SetColorFromObjNum"
+ ]
+}

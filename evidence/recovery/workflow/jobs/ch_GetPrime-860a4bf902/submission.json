@@ -1,0 +1,35 @@
+{
+ "symbol": "_ch_GetPrime",
+ "source": "build/grind/cgp_template4.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "loop",
+   "marker": "/*LOOP*/",
+   "values": [
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        for (i = 0; i < count; i++)\n            if (candidate % primes[i] == 0)\n                goto next;\n        prime = candidate;\n        primes[count++] = candidate;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        for (i = 0; i < count; i++)\n            if (candidate % primes[i] == 0)\n                goto next;\n        prime = candidate;\n        primes[count] = candidate;\n        count++;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        for (p = primes, i = 0; i < count; i++, p++)\n            if (candidate % *p == 0)\n                goto next;\n        prime = candidate;\n        primes[count++] = candidate;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        for (p = primes, i = 0; i < count; i++, p++)\n            if (candidate % *p == 0)\n                goto next;\n        prime = candidate;\n        primes[count] = candidate;\n        count++;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        p = primes;\n        for (i = 0; i < count; i++)\n            if (candidate % p[i] == 0)\n                goto next;\n        prime = candidate;\n        primes[count++] = candidate;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        p = primes;\n        for (i = 0; i < count; i++)\n            if (candidate % p[i] == 0)\n                goto next;\n        prime = candidate;\n        primes[count] = candidate;\n        count++;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        for (p = primes; p < primes + count; p++)\n            if (candidate % *p == 0)\n                goto next;\n        prime = candidate;\n        primes[count++] = candidate;\n    next:\n        candidate++;\n    }",
+    "while (prime < limit) {\n        if (count >= 400)\n            break;\n        for (p = primes; p < primes + count; p++)\n            if (candidate % *p == 0)\n                goto next;\n        prime = candidate;\n        primes[count] = candidate;\n        count++;\n    next:\n        candidate++;\n    }"
+   ],
+   "rationale": "far pointer walk forms"
+  }
+ ],
+ "semantic_summary": "ch_GetPrime: pointer-walk inner loops and split store so the buffer segment is hoisted into ES for the outer loop",
+ "binding_evidence": [],
+ "publics": [
+  "_ch_GetPrime"
+ ]
+}

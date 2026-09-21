@@ -1,0 +1,73 @@
+Whole-member issues: GR_MODULE literal bytes differ
+Target | Candidate | Difference
+0000 push bp | 0000 push bp | 
+0001 mov bp, sp | 0001 mov bp, sp | 
+0003 push di | 0003 push di | 
+0004 push si | 0004 push si | 
+0005 mov bx, word ptr [bp + 0xe] | 0005 mov cx, word ptr [bp + 0xe] | register_allocation
+0008 or bx, bx | 0008 or cx, cx | register_allocation
+000a jge 0x22 | 000a jge 0x22 | 
+000c mov ax, bx | 000c mov ax, cx | register_allocation
+000e neg ax | 000e neg ax | 
+0010 les si, ptr [bp + 0x12] | 0010 les bx, ptr [bp + 0x12] | register_allocation
+0013 mov word ptr es:[si], ax | 0013 mov word ptr es:[bx], ax | register_allocation
+0016 mov ax, word ptr [bp + 0xc] | 0016 mov ax, word ptr [bp + 0xc] | 
+0019 les si, ptr [bp + 0x16] | 0019 les bx, ptr [bp + 0x16] | register_allocation
+001c mov word ptr es:[si], ax | 001c mov word ptr es:[bx], ax | register_allocation
+001f jmp 0x48 | 001f jmp 0x46 | 
+0021 nop  | 0021 nop  | 
+0022 les si, ptr [bp + 0x12] | 0022 les bx, ptr [bp + 0x12] | register_allocation
+0025 mov word ptr es:[si], 0 | 0025 mov word ptr es:[bx], 0 | register_allocation
+002a mov di, word ptr [bp + 8] | 002a mov bx, word ptr [bp + 8] | register_allocation
+002d mov cx, word ptr [bp + 0xc] | 002d mov di, word ptr [bp + 0xc] | register_allocation
+0030 mov ax, bx | 0030 mov ax, bx | 
+0032 add ax, cx | 0032 sub ax, cx | instruction_shape
+0034 cmp ax, di | 0034 cmp ax, di | 
+0036 jle 0x42 | 0036 jl 0x3c | instruction_shape
+ | 0038 mov ax, di | instruction_shape
+ | 003a jmp 0x40 | instruction_shape
+ | 003c mov ax, bx | instruction_shape
+0038 sub di, bx | 003e sub ax, cx | register_allocation
+003a les bx, ptr [bp + 0x16] |  | instruction_shape
+003d mov word ptr es:[bx], di |  | instruction_shape
+0040 jmp 0x48 |  | instruction_shape
+0042 les bx, ptr [bp + 0x16] | 0040 les si, ptr [bp + 0x16] | register_allocation
+0045 mov word ptr es:[bx], cx | 0043 mov word ptr es:[si], ax | register_allocation
+0048 mov bx, word ptr [bp + 0x10] | 0046 mov cx, word ptr [bp + 0x10] | register_allocation
+004b or bx, bx | 0049 or cx, cx | register_allocation
+004d jge 0x66 | 004b jge 0x64 | 
+004f mov ax, bx | 004d mov ax, cx | register_allocation
+0051 neg ax | 004f neg ax | 
+0053 les si, ptr [bp + 0x1a] | 0051 les bx, ptr [bp + 0x1a] | register_allocation
+0056 mov word ptr es:[si], ax | 0054 mov word ptr es:[bx], ax | register_allocation
+0059 mov ax, word ptr [bp + 0xa] | 0057 mov ax, word ptr [bp + 0xa] | 
+005c les si, ptr [bp + 0x1e] | 005a les bx, ptr [bp + 0x1e] | register_allocation
+005f mov word ptr es:[si], ax | 005d mov word ptr es:[bx], ax | register_allocation
+0062 pop si | 0060 pop si | 
+0063 pop di | 0061 pop di | 
+0064 leave  | 0062 leave  | 
+0065 retf  | 0063 retf  | 
+0066 les si, ptr [bp + 0x1a] | 0064 les bx, ptr [bp + 0x1a] | register_allocation
+0069 mov word ptr es:[si], 0 | 0067 mov word ptr es:[bx], 0 | register_allocation
+006e mov di, word ptr [bp + 6] | 006c mov bx, word ptr [bp + 6] | register_allocation
+0071 mov cx, word ptr [bp + 0xa] | 006f mov di, word ptr [bp + 0xa] | register_allocation
+0074 mov ax, bx | 0072 mov ax, bx | 
+0076 add ax, cx | 0074 sub ax, cx | instruction_shape
+0078 cmp ax, di | 0076 cmp ax, di | 
+007a jle 0x88 | 0078 jl 0x7e | instruction_shape
+ | 007a mov ax, di | instruction_shape
+ | 007c jmp 0x82 | instruction_shape
+ | 007e mov ax, bx | instruction_shape
+007c sub di, bx | 0080 sub ax, cx | register_allocation
+007e les bx, ptr [bp + 0x1e] | 0082 les si, ptr [bp + 0x1e] | register_allocation
+0081 mov word ptr es:[bx], di | 0085 mov word ptr es:[si], ax | register_allocation
+0084 pop si | 0088 pop si | 
+0085 pop di | 0089 pop di | 
+0086 leave  | 008a leave  | 
+0087 retf  | 008b retf  | 
+0088 les bx, ptr [bp + 0x1e] |  | instruction_shape
+008b mov word ptr es:[bx], cx |  | instruction_shape
+008e pop si |  | instruction_shape
+008f pop di |  | instruction_shape
+0090 leave  |  | instruction_shape
+0091 retf  |  | instruction_shape

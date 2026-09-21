@@ -1,0 +1,33 @@
+{
+ "symbol": "_InvalEuMap",
+ "source": "build/grind/iem_template.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTANTEDIT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "func",
+   "marker": "/*FUNC*/",
+   "values": [
+    "void far InvalEuMap(int left, int top, int right, int bottom)\n{\n    int row;\n    int col;\n    int cell;\n    \n\n    if (left < 0)\n        left = 0;\n    else if (right > 127)\n        right = 127;\n    if (top < 0)\n        top = 0;\n    else if (bottom > 63)\n        bottom = 63;\n    cell = editWidth * top + left;\n    for (row = top; row <= bottom; row++) {\n        for (col = left; col <= right; col++) {\n            if (col >= 0 && col < editWidth && row >= 0 && row < editHeight)\n                euMap[cell + col - left] = -1;\n        }\n        cell += editWidth;\n    }\n}\n",
+    "void far InvalEuMap(int left, int top, int right, int bottom)\n{\n    int row;\n    int col;\n    int cell;\n    int i;\n\n    if (left < 0)\n        left = 0;\n    else if (right > 127)\n        right = 127;\n    if (top < 0)\n        top = 0;\n    else if (bottom > 63)\n        bottom = 63;\n    cell = editWidth * top + left;\n    for (row = top; row <= bottom; row++) {\n        i = cell;\n        for (col = left; col <= right; col++, i++) {\n            if (col >= 0 && col < editWidth && row >= 0 && row < editHeight)\n                euMap[i] = -1;\n        }\n        cell += editWidth;\n    }\n}\n",
+    "void far InvalEuMap(int left, int top, int right, int bottom)\n{\n    int row;\n    int col;\n    int cell;\n    int far *p;\n\n    if (left < 0)\n        left = 0;\n    else if (right > 127)\n        right = 127;\n    if (top < 0)\n        top = 0;\n    else if (bottom > 63)\n        bottom = 63;\n    cell = editWidth * top + left;\n    for (row = top; row <= bottom; row++) {\n        p = euMap + cell;\n        for (col = left; col <= right; col++, p++) {\n            if (col >= 0 && col < editWidth && row >= 0 && row < editHeight)\n                *p = -1;\n        }\n        cell += editWidth;\n    }\n}\n",
+    "void far InvalEuMap(int left, int top, int right, int bottom)\n{\n    int row;\n    int col;\n    int cell;\n    int i;\n\n    if (left < 0)\n        left = 0;\n    else if (right > 127)\n        right = 127;\n    if (top < 0)\n        top = 0;\n    else if (bottom > 63)\n        bottom = 63;\n    cell = editWidth * top + left;\n    for (row = top; row <= bottom; row++) {\n        for (i = cell, col = left; col <= right; col++, i++) {\n            if (col >= 0 && col < editWidth && row >= 0 && row < editHeight)\n                euMap[i] = -1;\n        }\n        cell += editWidth;\n    }\n}\n"
+   ],
+   "rationale": "strength-reduced pointer per row"
+  }
+ ],
+ "semantic_summary": "InvalEuMap: cell index computed once and stepped by editWidth per row; inner index forms (offset expression, explicit index, per-row pointer)",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_InvalEuMap"
+ ]
+}

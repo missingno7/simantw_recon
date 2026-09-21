@@ -1,0 +1,40 @@
+{
+ "symbol": "_IsPillDead",
+ "source": "build/grind/ipd_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "decl",
+   "marker": "/*DECL*/",
+   "values": [
+    "int x;\n    int y;\n    int count;",
+    "int count;\n    int x;\n    int y;",
+    "register int count;\n    int x;\n    int y;"
+   ],
+   "rationale": "count register priority"
+  },
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "if (LIFE(x, y) != 0)\n                count++;",
+    "if (LIFE(x, y))\n                count += 1;",
+    "if (LIFE(x, y) != 0)\n                ++count;"
+   ],
+   "rationale": "increment spelling"
+  }
+ ],
+ "semantic_summary": "IsPillDead: conditional cell read macro; declaration order and increment forms for the count register",
+ "binding_evidence": [],
+ "publics": [
+  "_IsPillDead"
+ ]
+}

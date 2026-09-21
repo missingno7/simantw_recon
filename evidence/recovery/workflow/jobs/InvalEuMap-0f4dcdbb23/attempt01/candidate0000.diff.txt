@@ -1,0 +1,86 @@
+Whole-member issues: conflicting private placement constraints _BSS; ANTEDIT_MODULE unresolved/mismatched fixup at 0xa0; ANTEDIT_MODULE unresolved/mismatched fixup at 0x87; ANTEDIT_MODULE unresolved/mismatched fixup at 0x7d; ANTEDIT_MODULE unresolved/mismatched fixup at 0x50; ANTEDIT_MODULE unresolved/mismatched fixup at 0x4c; ANTEDIT_MODULE unresolved/mismatched fixup at 0x3f; ANTEDIT_MODULE literal bytes differ; unplaced contribution _BSS
+  ANTEDIT_MODULE+0xa0: candidate {'kind': 'internal', 'segment': 10, 'offset': 52352}; original loader []
+  ANTEDIT_MODULE+0x87: candidate {'kind': 'internal', 'segment': 10, 'offset': 52602}; original loader []
+  ANTEDIT_MODULE+0x7d: candidate {'kind': 'internal', 'segment': 10, 'offset': 52352}; original loader []
+  ANTEDIT_MODULE+0x50: candidate {'kind': 'segment', 'name': '_BSS'}; original loader []
+  ANTEDIT_MODULE+0x4c: candidate {'kind': 'segment', 'name': '_BSS'}; original loader []
+  ANTEDIT_MODULE+0x3f: candidate {'kind': 'internal', 'segment': 10, 'offset': 52352}; original loader []
+Target | Candidate | Difference
+0000 enter 0xc, 0 | 0000 enter 0x12, 0 | immediate_or_binding
+0004 push di |  | instruction_shape
+0005 push si | 0004 push di | register_allocation
+0006 cmp word ptr [bp + 6], 0 | 0005 cmp word ptr [bp + 6], 0 | 
+000a jge 0x14 | 0009 jge 0x12 | branch_target
+000c mov word ptr [bp + 6], 0 | 000b mov word ptr [bp + 6], 0 | 
+0011 jmp 0x1f | 0010 jmp 0x1d | branch_target
+0013 nop  |  | instruction_shape
+0014 cmp word ptr [bp + 0xa], 0x7f | 0012 cmp word ptr [bp + 0xa], 0x7f | 
+0018 jle 0x1f | 0016 jle 0x1d | branch_target
+001a mov word ptr [bp + 0xa], 0x7f | 0018 mov word ptr [bp + 0xa], 0x7f | 
+001f cmp word ptr [bp + 8], 0 | 001d cmp word ptr [bp + 8], 0 | 
+0023 jge 0x2a | 0021 jge 0x28 | branch_target
+0025 xor dx, dx | 0023 xor dx, dx | 
+0027 jmp 0x38 | 0025 jmp 0x36 | branch_target
+0029 nop  | 0027 nop  | 
+002a cmp word ptr [bp + 0xc], 0x3f | 0028 cmp word ptr [bp + 0xc], 0x3f | 
+002e jle 0x35 | 002c jle 0x33 | branch_target
+0030 mov word ptr [bp + 0xc], 0x3f | 002e mov word ptr [bp + 0xc], 0x3f | 
+0035 mov dx, word ptr [bp + 8] | 0033 mov dx, word ptr [bp + 8] | 
+0038 mov si, dx | 0036 mov di, dx | register_allocation
+003a cmp si, word ptr [bp + 0xc] | 0038 cmp di, word ptr [bp + 0xc] | register_allocation
+003d jg 0xa4 | 003b jg 0xa8 | branch_target
+003f mov ax, word ptr [0xcc80] | 003d mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52352}] | memory_operand
+ | 0041 mov ax, dx | instruction_shape
+0042 imul si | 0043 imul bx | register_allocation
+0044 add ax, word ptr [bp + 6] | 0045 add ax, word ptr [bp + 6] | 
+ | 0048 shl ax, 1 | instruction_shape
+ | 004a add <resolved fixup> [{'kind': 'segment', 'name': '_BSS'}] | instruction_shape
+ | 004e mov <resolved fixup> [{'kind': 'segment', 'name': '_BSS'}] | instruction_shape
+ | 0052 mov word ptr [bp - 0xe], ax | instruction_shape
+ | 0055 mov word ptr [bp - 0xc], dx | instruction_shape
+ | 0058 mov ax, bx | instruction_shape
+ | 005a shl ax, 1 | instruction_shape
+0047 mov word ptr [bp - 0xa], ax | 005c mov word ptr [bp - 0x12], ax | memory_operand,stack_local_layout
+004a mov bx, word ptr [bp - 0xa] | 005f mov ax, word ptr [bp + 6] | memory_operand,stack_local_layout
+004d mov ax, word ptr [bp + 6] | 0062 mov cx, word ptr [bp - 0xe] | memory_operand,stack_local_layout
+ | 0065 mov dx, word ptr [bp - 0xc] | instruction_shape
+0050 mov word ptr [bp - 2], ax | 0068 mov word ptr [bp - 6], cx | memory_operand,stack_local_layout
+ | 006b mov es, dx | instruction_shape
+0053 cmp word ptr [bp + 0xa], ax | 006d cmp word ptr [bp + 0xa], ax | 
+0056 jl 0xa0 | 0070 jl 0x99 | branch_target
+0058 mov ax, bx | 0072 mov cx, ax | register_allocation
+005a shl ax, 1 |  | instruction_shape
+005c add ax, word ptr [0x1442] |  | instruction_shape
+0060 mov dx, word ptr [0x1444] | 0074 mov bx, word ptr [bp - 6] | memory_operand
+0064 mov es, dx |  | instruction_shape
+0066 mov cx, word ptr [bp - 2] |  | instruction_shape
+0069 mov bx, ax |  | instruction_shape
+006b mov di, si |  | instruction_shape
+006d or cx, cx | 0077 or cx, cx | 
+006f jl 0x86 | 0079 jl 0x90 | branch_target
+0071 cmp word ptr [0xcc80], cx | 007b cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52352}] | memory_operand
+0075 jle 0x86 | 007f jle 0x90 | branch_target
+0077 or di, di | 0081 or di, di | 
+0079 jl 0x86 | 0083 jl 0x90 | branch_target
+007b cmp word ptr [0xcd7a], di | 0085 cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52602}] | memory_operand
+007f jle 0x86 | 0089 jle 0x90 | branch_target
+0081 mov word ptr es:[bx], 0xffff | 008b mov word ptr es:[bx], 0xffff | 
+0086 add bx, 2 | 0090 add bx, 2 | 
+0089 inc cx | 0093 inc cx | 
+008a cmp cx, word ptr [bp + 0xa] | 0094 cmp cx, word ptr [bp + 0xa] | 
+008d jle 0x6d | 0097 jle 0x77 | branch_target
+008f mov ax, word ptr [0xcc80] | 0099 mov ax, word ptr [bp - 0x12] | memory_operand
+0092 add word ptr [bp - 0xa], ax | 009c add word ptr [bp - 0xe], ax | memory_operand,stack_local_layout
+ | 009f mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52352}] | instruction_shape
+0095 inc di | 00a2 inc di | 
+0096 cmp di, word ptr [bp + 0xc] | 00a3 cmp di, word ptr [bp + 0xc] | 
+0099 jg 0xa4 | 00a6 jle 0x5f | instruction_shape
+009b mov si, di |  | instruction_shape
+009d jmp 0x4a |  | instruction_shape
+009f nop  |  | instruction_shape
+00a0 mov di, si |  | instruction_shape
+00a2 jmp 0x8f |  | instruction_shape
+00a4 pop si |  | instruction_shape
+00a5 pop di | 00a8 pop di | 
+00a6 leave  | 00a9 leave  | 
+00a7 retf  | 00aa retf  | 

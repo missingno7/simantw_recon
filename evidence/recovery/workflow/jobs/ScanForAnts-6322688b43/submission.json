@@ -1,0 +1,43 @@
+{
+  "symbol": "_ScanForAnts",
+  "source": "build/grind/sfa2_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "decl",
+      "marker": "@@DECL@@",
+      "values": [
+        "    int y;\n    int dx;\n    int tileX;\n    int count;\n    int tileY;\n    int dy;\n    register int x;\n",
+        "    register int y;\n    int dx;\n    int tileX;\n    int count;\n    int tileY;\n    int dy;\n    int x;\n",
+        "    register int y;\n    int dx;\n    int tileX;\n    int count;\n    int tileY;\n    int dy;\n    register int x;\n",
+        "    int y;\n    int dx;\n    register int tileX;\n    int count;\n    register int tileY;\n    int dy;\n    int x;\n",
+        "    register int y;\n    int dx;\n    register int tileX;\n    int count;\n    register int tileY;\n    int dy;\n    register int x;\n"
+      ],
+      "rationale": "register hints change which variables MSC homes in SI/DI and whether a hoisted assignment is evaluated through AX"
+    },
+    {
+      "name": "body",
+      "marker": "@@BODY@@",
+      "values": [
+        "    for (dx = -1; dx < 3; dx++) {\n        for (dy = -1; dy < 3; dy++) {\n            x = tileX + dx;\n            y = tileY + dy;\n            if (x >= 0 && x <= 0x7f && y >= 0 && y <= 0x3f &&\n                LifeA[x * 64 + y] != 0)\n                count++;\n        }\n    }\n",
+        "    for (dx = -1; dx < 3; dx++) {\n        for (dy = -1; dy < 3; dy++) {\n            y = tileY + dy;\n            x = tileX + dx;\n            if (x >= 0 && x <= 0x7f && y >= 0 && y <= 0x3f &&\n                LifeA[x * 64 + y] != 0)\n                count++;\n        }\n    }\n"
+      ],
+      "rationale": "Order of the two assignments in the inner body"
+    }
+  ],
+  "semantic_summary": "Batch: register storage class on x, y, both, tile coordinates, or all, x assignment order of x/y in the inner body, on the 45/46 named-variable form",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_ScanForAnts"
+  ]
+}

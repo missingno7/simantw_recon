@@ -1,0 +1,59 @@
+{
+ "symbol": "_hanim_RemoveAnimSet",
+ "source": "build/grind/hras_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTGR_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "decl",
+   "marker": "/*DECL*/",
+   "values": [
+    "struct AnimSet far *set;\n    struct AnimFrame far *frame;\n    int i;",
+    "register struct AnimSet far *set;\n    struct AnimFrame far *frame;\n    int i;",
+    "struct AnimSet far *set;\n    struct AnimFrame far *frame;\n    unsigned int i;"
+   ],
+   "rationale": "register hint on the set pointer; unsigned counter"
+  },
+  {
+   "name": "loop",
+   "marker": "/*LOOP*/",
+   "values": [
+    "for (i = 0; i < set->count; i++, frame++)\n        mem_Free(frame->bitmap);",
+    "for (i = 0; set->count > i; i++, frame++)\n        mem_Free(frame->bitmap);"
+   ],
+   "rationale": "comparison orientation"
+  },
+  {
+   "name": "unlock",
+   "marker": "/*UNLOCK*/",
+   "values": [
+    "extern int far mem_Unlock(unsigned int handle);",
+    "extern void far mem_Unlock(unsigned int handle);"
+   ],
+   "rationale": "void versus int return changes AX liveness around the unlock call"
+  },
+  {
+   "name": "free",
+   "marker": "/*FREE*/",
+   "values": [
+    "extern void far mem_Free(int handle);",
+    "extern void far mem_Free(unsigned int handle);"
+   ],
+   "rationale": "signedness of the freed handle"
+  }
+ ],
+ "semantic_summary": "Remove animation set: callee return/parameter types, register set pointer, unsigned counter and comparison orientation for the post-loop ES save",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_hanim_RemoveAnimSet"
+ ]
+}

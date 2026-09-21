@@ -1,0 +1,30 @@
+{
+ "symbol": "_CheckMyBestDirs",
+ "source": "build/grind/cmbd_template3.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT1_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "walk",
+   "marker": "/*WALK*/",
+   "values": [
+    "if (dir >= 0) {\n        nx = Dx8[dir] + x;\n        ny = Dy8[dir] + y;\n        while (dir >= 0 && count < 0x40) {\n            dir = GetMyBestDirs(plane, nx, ny, a, b);\n            if (dir >= 0) {\n                nx += Dx8[dir];\n                ny += Dy8[dir];\n            }\n            count++;\n        }\n    }",
+    "if (dir < 0)\n        goto done;\n    nx = Dx8[dir] + x;\n    ny = Dy8[dir] + y;\n    while (dir >= 0 && count < 0x40) {\n        dir = GetMyBestDirs(plane, nx, ny, a, b);\n        if (dir >= 0) {\n            nx += Dx8[dir];\n            ny += Dy8[dir];\n    }\n        count++;\n    }\ndone:",
+    "if (dir >= 0) {\n        nx = Dx8[dir] + x;\n        ny = Dy8[dir] + y;\n        while (count < 0x40 && dir >= 0) {\n            dir = GetMyBestDirs(plane, nx, ny, a, b);\n            if (dir >= 0) {\n                nx += Dx8[dir];\n                ny += Dy8[dir];\n            }\n            count++;\n        }\n    }"
+   ],
+   "rationale": "outer skip edge"
+  }
+ ],
+ "semantic_summary": "CheckMyBestDirs: walk nested under the first direction test (block or goto) so the skip edge loads the count into DI",
+ "binding_evidence": [],
+ "publics": [
+  "_CheckMyBestDirs"
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "symbol": "_InitSow",
+ "source": "build/grind/is_template4.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "decl",
+   "marker": "/*DECL*/",
+   "values": [
+    "extern struct { int v[3]; } far SowX, SowY, SowDir, SowSave;\nextern struct { unsigned char v[8]; } far SowTab;\n#define SOWX(i) SowX.v[i]\n#define SOWY(i) SowY.v[i]\n#define SOWDIR(i) SowDir.v[i]\n#define SOWSAVE(i) SowSave.v[i]\n#define SOWTAB(i) SowTab.v[i]"
+   ],
+   "rationale": "struct-wrapped far slot objects"
+  },
+  {
+   "name": "pdecl",
+   "marker": "/*PDECL*/",
+   "values": [
+    "int i;\n    int x;\n    int y;\n    int cell;\n    unsigned char near *p;",
+    "unsigned i;\n    int x;\n    int y;\n    int cell;\n    unsigned char near *p;"
+   ],
+   "rationale": "signed versus unsigned loop counter"
+  },
+  {
+   "name": "loop",
+   "marker": "/*LOOP*/",
+   "values": [
+    "for (i = 2; i != 0; i--) {\n        x = SRand1(128);\n        y = SRand1(64);\n        cell = (x << 6) + y;\n        if (MapA[cell] < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = MapA[cell];\n            MapA[cell] = SOWTAB(SOWDIR(i));\n        }\n    }",
+    "i = 2;\n    while (i) {\n        x = SRand1(128);\n        y = SRand1(64);\n        cell = (x << 6) + y;\n        if (MapA[cell] < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = MapA[cell];\n            MapA[cell] = SOWTAB(SOWDIR(i));\n        }\n        i--;\n    }",
+    "for (i = 2; i; i -= 1) {\n        x = SRand1(128);\n        y = SRand1(64);\n        cell = (x << 6) + y;\n        if (MapA[cell] < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = MapA[cell];\n            MapA[cell] = SOWTAB(SOWDIR(i));\n        }\n    }",
+    "i = 2;\n    do {\n        x = SRand1(128);\n        y = SRand1(64);\n        cell = (x << 6) + y;\n        if (MapA[cell] < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = MapA[cell];\n            MapA[cell] = SOWTAB(SOWDIR(i));\n        }\n    } while (i -= 1);",
+    "for (i = 2; i != 0; i--) {\n        x = SRand1(128);\n        y = SRand1(64);\n        p = MapA + (x << 6) + y;\n        if (*p < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = *p;\n            *p = SOWTAB(SOWDIR(i));\n        }\n    }",
+    "i = 2;\n    while (i) {\n        x = SRand1(128);\n        y = SRand1(64);\n        p = MapA + (x << 6) + y;\n        if (*p < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = *p;\n            *p = SOWTAB(SOWDIR(i));\n        }\n        i--;\n    }",
+    "for (i = 2; i; i -= 1) {\n        x = SRand1(128);\n        y = SRand1(64);\n        p = MapA + (x << 6) + y;\n        if (*p < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = *p;\n            *p = SOWTAB(SOWDIR(i));\n        }\n    }",
+    "i = 2;\n    do {\n        x = SRand1(128);\n        y = SRand1(64);\n        p = MapA + (x << 6) + y;\n        if (*p < 16) {\n            SOWX(i) = x;\n            SOWY(i) = y;\n            SOWDIR(i) = SRand1(8);\n            SOWSAVE(i) = *p;\n            *p = SOWTAB(SOWDIR(i));\n        }\n    } while (i -= 1);"
+   ],
+   "rationale": "cell temp form and loop test placement (original emits or si,si before je)"
+  }
+ ],
+ "semantic_summary": "InitSow: named integer cell index or pointer-arithmetic cell pointer; loop forms separating the decrement from the zero test; unsigned counter",
+ "binding_evidence": [],
+ "publics": [
+  "_InitSow"
+ ]
+}

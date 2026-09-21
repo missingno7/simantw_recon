@@ -1,0 +1,39 @@
+{
+ "symbol": "_GstrB",
+ "source": "build/grind/gstrb_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "far",
+   "marker": "/*FAR*/",
+   "values": [
+    "extern int far RedQueens;\nextern int far TilesDugB;\n#define QUEENS RedQueens\n#define DUG TilesDugB",
+    "extern int far RedQueens[];\nextern int far TilesDugB[];\n#define QUEENS RedQueens[0]\n#define DUG TilesDugB[0]",
+    "extern struct { int v; } far RedQueens;\nextern struct { int v; } far TilesDugB;\n#define QUEENS RedQueens.v\n#define DUG TilesDugB.v"
+   ],
+   "rationale": "far object declaration forms"
+  },
+  {
+   "name": "decl",
+   "marker": "/*DECL*/",
+   "values": [
+    "#define HEALTH HealthB",
+    "#define HEALTH health\n    register int health = HealthB;"
+   ],
+   "rationale": "health caching"
+  }
+ ],
+ "semantic_summary": "GstrB: half population as a shift; far PACK counters as scalars, arrays or struct objects to trigger the DS-reuse/SS addressing; health caching",
+ "binding_evidence": [],
+ "publics": [
+  "_GstrB"
+ ]
+}

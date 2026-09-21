@@ -1,0 +1,50 @@
+{
+  "symbol": "_ClearBookmarks",
+  "source": "build/grind/cb4_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "struct",
+      "marker": "@@STRUCT@@",
+      "values": [
+        "struct BookMark {\n    int object;\n    int plane;\n    long position;\n    int flags;\n};",
+        "struct BookMark {\n    int object;\n    int plane;\n    int x;\n    int y;\n    int flags;\n};"
+      ],
+      "rationale": "Record with a long field or five int fields; mismatched bodies fail to compile"
+    },
+    {
+      "name": "decl",
+      "marker": "@@DECL@@",
+      "values": [
+        "extern struct BookMark far bookMark[7];"
+      ],
+      "rationale": "Bounded far array"
+    },
+    {
+      "name": "func",
+      "marker": "@@FUNC@@",
+      "values": [
+        "void far ClearBookmarks(void)\n{\n    int i;\n    int none;\n\n    none = 0;\n    for (i = 0; i < 7; i++) {\n        bookMark[i].object = -1;\n        bookMark[i].flags = bookMark[i].position = bookMark[i].plane = none;\n        win_SetButtonBitmaps(0x2218 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2218 + i, 0);\n        win_SetButtonBitmaps(0x2313 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2313 + i, 0);\n    }\n}\n",
+        "void far ClearBookmarks(void)\n{\n    int i;\n    register int none;\n\n    none = 0;\n    for (i = 0; i < 7; i++) {\n        bookMark[i].object = -1;\n        bookMark[i].flags = bookMark[i].position = bookMark[i].plane = none;\n        win_SetButtonBitmaps(0x2218 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2218 + i, 0);\n        win_SetButtonBitmaps(0x2313 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2313 + i, 0);\n    }\n}\n",
+        "void far ClearBookmarks(void)\n{\n    int i;\n\n    for (i = 0; i < 7; i++) {\n        bookMark[i].object = -1;\n        bookMark[i].plane = 0;\n        bookMark[i].x = 0;\n        bookMark[i].y = 0;\n        bookMark[i].flags = 0;\n        win_SetButtonBitmaps(0x2218 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2218 + i, 0);\n        win_SetButtonBitmaps(0x2313 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2313 + i, 0);\n    }\n}\n",
+        "void far ClearBookmarks(void)\n{\n    int i;\n\n    for (i = 0; i < 7; i++) {\n        bookMark[i].object = -1;\n        bookMark[i].plane = 0;\n        bookMark[i].position = (long)bookMark[i].plane;\n        bookMark[i].flags = (int)bookMark[i].position;\n        win_SetButtonBitmaps(0x2218 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2218 + i, 0);\n        win_SetButtonBitmaps(0x2313 + i, 0x3899 + i, 0x3867 + i);\n        win_SetObjSelectedState(0x2313 + i, 0);\n    }\n}\n"
+      ],
+      "rationale": "Non-constant zero source through the chain, five int fields, or explicit widening copies"
+    }
+  ],
+  "semantic_summary": "Batch: chained zero from a zero-valued local (plain/register), five-int record, or explicit widening copies between fields",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_ClearBookmarks"
+  ]
+}

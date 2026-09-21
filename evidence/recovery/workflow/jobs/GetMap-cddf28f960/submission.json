@@ -1,0 +1,57 @@
+{
+ "symbol": "_GetMap",
+ "source": "build/grind/gm_template.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMONE_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "okw",
+   "marker": "/*OKW*/",
+   "values": [
+    "(x >= 0 && x <= 127 && y >= 0 && y <= 63)",
+    "(x >= 0 && x <= 127 && y >= 0 && y <= 63) ? 1 : 0"
+   ],
+   "rationale": "boolean versus explicit 1/0"
+  },
+  {
+   "name": "okn",
+   "marker": "/*OKN*/",
+   "values": [
+    "(x >= 0 && x <= 63 && y >= 0 && y <= 63)",
+    "(x >= 0 && x <= 63 && y >= 0 && y <= 63) ? 1 : 0"
+   ],
+   "rationale": "same for the narrow planes (mismatched pairs are harmless)"
+  },
+  {
+   "name": "test",
+   "marker": "/*TEST*/",
+   "values": [
+    "ok == 1",
+    "ok",
+    "ok != 0"
+   ],
+   "rationale": "the original tests the flag with dec/je (== 1)"
+  },
+  {
+   "name": "casedef",
+   "marker": "/*CASEDEF*/",
+   "values": [
+    "#define CASEBODY(v) return v;",
+    "#define CASEBODY(v) result = v; break;"
+   ],
+   "rationale": "direct return versus assign and break"
+  }
+ ],
+ "semantic_summary": "GetMap: plane-dependent range check flag, ok==1 test, switch with cases 0/1 shared; boolean materialisation and case body forms",
+ "binding_evidence": [],
+ "publics": [
+  "_GetMap"
+ ]
+}

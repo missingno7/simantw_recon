@@ -1,0 +1,30 @@
+{
+  "symbol": "_win_MakeGroupSelected",
+  "source": "build/grind/wmgsel_template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "func",
+      "marker": "@@FUNC@@",
+      "values": [
+        "void far win_MakeGroupSelected(int objectNumber, int group)\n{\n    int window;\n    int i;\n    struct WinBucket far *bucket;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    i = 0;\n    bucket = win_handles[objectNumber >> 8];\n    while (i < bucket->count) {\n        if (bucket->objects[i]->group == (unsigned char)group)\n            win_SetObjSelectedStateI(window + i, 1);\n        i++;\n    }\n    win_UnlockWin(objectNumber);\n}\n",
+        "void far win_MakeGroupSelected(int objectNumber, int group)\n{\n    int window;\n    int i;\n    struct WinBucket far *bucket;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    i = 0;\n    bucket = win_handles[objectNumber >> 8];\n    for (; i < bucket->count; i++) {\n        if (bucket->objects[i]->group == (unsigned char)group)\n            win_SetObjSelectedStateI(window + i, 1);\n    }\n    win_UnlockWin(objectNumber);\n}\n",
+        "void far win_MakeGroupSelected(int objectNumber, int group)\n{\n    struct WinObject far * far *entry;\n    int window;\n    int i;\n    struct WinBucket far *bucket;\n\n    win_LockWin(objectNumber);\n    window = objectNumber & 0xff00;\n    i = 0;\n    bucket = win_handles[objectNumber >> 8];\n    if (bucket->count > 0) {\n        entry = bucket->objects;\n        do {\n            if ((*entry)->group == (unsigned char)group)\n                win_SetObjSelectedStateI(window + i, 1);\n            entry++;\n            i++;\n        } while (i < bucket->count);\n    }\n    win_UnlockWin(objectNumber);\n}\n"
+      ],
+      "rationale": "Induction value window + i homed in the window slot; index in DI"
+    }
+  ],
+  "semantic_summary": "Batch: window + i as the running object number with indexed objects[i] (while/for) or an explicit far entry pointer",
+  "binding_evidence": [],
+  "publics": [
+    "_win_MakeGroupSelected"
+  ]
+}

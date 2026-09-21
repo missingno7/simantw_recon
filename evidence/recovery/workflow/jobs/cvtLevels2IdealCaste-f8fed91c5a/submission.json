@@ -1,0 +1,40 @@
+{
+ "symbol": "_cvtLevels2IdealCaste",
+ "source": "build/grind/cl2_template3.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "levels",
+   "marker": "/*LEVELS*/",
+   "values": [
+    "extern unsigned int far casteLevels[];",
+    "extern volatile unsigned int far casteLevels[];"
+   ],
+   "rationale": "volatile forces re-evaluation"
+  },
+  {
+   "name": "fourth",
+   "marker": "/*FOURTH*/",
+   "values": [
+    "(FIFTY * casteLevels[0] + 0x3fff) / 0xffff",
+    "(HUNDRED / 2 * casteLevels[0] + 0x3fff) / 0xffff",
+    "(25UL * 2 * casteLevels[0] + 0x3fff) / 0xffff",
+    "((unsigned long)(50) * casteLevels[0] + 0x3fff) / 0xffff"
+   ],
+   "rationale": "constant folding before CSE"
+  }
+ ],
+ "semantic_summary": "cvtLevels2IdealCaste: volatile level table or differently folded constants to keep the duplicate fourth computation",
+ "binding_evidence": [],
+ "publics": [
+  "_cvtLevels2IdealCaste"
+ ]
+}

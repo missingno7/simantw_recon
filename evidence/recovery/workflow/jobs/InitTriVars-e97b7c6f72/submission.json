@@ -1,0 +1,51 @@
+{
+ "symbol": "_InitTriVars",
+ "source": "build/grind/itv_template.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "hdecl",
+   "marker": "/*HDECL*/",
+   "values": [
+    "unsigned int halfWidth;\n#define HALF halfWidth",
+    "#define HALF triWidthL",
+    "#define HALF triWidthR"
+   ],
+   "rationale": "half width as a local or re-read far word"
+  },
+  {
+   "name": "half",
+   "marker": "/*HALF*/",
+   "values": [
+    "triWidthL = triWidthR = triWidth >> 1;",
+    "triWidthL = triWidthR = triWidth / 2;",
+    "triWidthR = triWidth >> 1;\n    triWidthL = triWidthR;",
+    "halfWidth = triWidth >> 1;\n    triWidthR = halfWidth;\n    triWidthL = halfWidth;"
+   ],
+   "rationale": "store order R then L"
+  },
+  {
+   "name": "slope",
+   "marker": "/*SLOPE*/",
+   "values": [
+    "((long)HALF << 8) / (long)triHeight",
+    "(HALF * 256L) / triHeight",
+    "((long)HALF << 8) / triHeight"
+   ],
+   "rationale": "operand order and long conversions"
+  }
+ ],
+ "semantic_summary": "InitTriVars: slope is (halfWidth << 8) / height with the divisor pushed second; triWidthR stored before triWidthL",
+ "binding_evidence": [],
+ "publics": [
+  "_InitTriVars"
+ ]
+}

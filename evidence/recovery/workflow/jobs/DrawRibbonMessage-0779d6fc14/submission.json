@@ -1,0 +1,42 @@
+{
+ "symbol": "_DrawRibbonMessage",
+ "source": "build/grind/drm_template.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "tick",
+   "marker": "/*TICK*/",
+   "values": [
+    "long",
+    "unsigned long"
+   ],
+   "rationale": "signed long compare in the original"
+  },
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "if (TickCount() > mapMessageRemoveTime) {\n        editMessage = 0L;\n        mapMessage = 0L;\n        win_FillObjRect(0x221f, ConvColor(12));\n    } else if (mapMessage != 0L) {\n        font_SetFont(2);\n        win_PrintfAtObj(0x221f, mapMessage);\n        font_SetFont(0);\n    } else {\n        win_FillObjRect(0x221f, ConvColor(12));\n    }",
+    "if ((long)TickCount() > mapMessageRemoveTime) {\n        editMessage = 0L;\n        mapMessage = 0L;\n        win_FillObjRect(0x221f, ConvColor(12));\n    } else if (mapMessage != 0L) {\n        font_SetFont(2);\n        win_PrintfAtObj(0x221f, mapMessage);\n        font_SetFont(0);\n    } else {\n        win_FillObjRect(0x221f, ConvColor(12));\n    }",
+    "if (TickCount() > mapMessageRemoveTime) {\n        editMessage = 0L;\n        mapMessage = 0L;\n    }\n    if (mapMessage != 0L) {\n        font_SetFont(2);\n        win_PrintfAtObj(0x221f, mapMessage);\n        font_SetFont(0);\n    } else {\n        win_FillObjRect(0x221f, ConvColor(12));\n    }",
+    "if ((long)TickCount() > mapMessageRemoveTime) {\n        editMessage = 0L;\n        mapMessage = 0L;\n    }\n    if (mapMessage != 0L) {\n        font_SetFont(2);\n        win_PrintfAtObj(0x221f, mapMessage);\n        font_SetFont(0);\n    } else {\n        win_FillObjRect(0x221f, ConvColor(12));\n    }",
+    "if (TickCount() > mapMessageRemoveTime) {\n        editMessage = 0L;\n        mapMessage = 0L;\n        win_FillObjRect(0x221f, ConvColor(12));\n    } else if (mapMessage == 0L) {\n        win_FillObjRect(0x221f, ConvColor(12));\n    } else {\n        font_SetFont(2);\n        win_PrintfAtObj(0x221f, mapMessage);\n        font_SetFont(0);\n    }",
+    "if ((long)TickCount() > mapMessageRemoveTime) {\n        editMessage = 0L;\n        mapMessage = 0L;\n        win_FillObjRect(0x221f, ConvColor(12));\n    } else if (mapMessage == 0L) {\n        win_FillObjRect(0x221f, ConvColor(12));\n    } else {\n        font_SetFont(2);\n        win_PrintfAtObj(0x221f, mapMessage);\n        font_SetFont(0);\n    }"
+   ],
+   "rationale": "if/else-if chain versus separate ifs; cast"
+  }
+ ],
+ "semantic_summary": "DrawRibbonMessage: expiry clears both messages then fills; branch structure and signed tick comparison forms",
+ "binding_evidence": [],
+ "publics": [
+  "_DrawRibbonMessage"
+ ]
+}

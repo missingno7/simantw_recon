@@ -1,0 +1,32 @@
+{
+ "symbol": "_win_Close",
+ "source": "build/grind/wc_template.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "func",
+   "marker": "/*FUNC*/",
+   "values": [
+    "void far win_Close(register int objectNumber)\n{\n    int next;\n    int top;\n    int window;\n    int near *handle;\n\n    window = objectNumber >> 8;\n    handle = &win_hwnd[objectNumber >> 8];\n    if (*handle != 0) {\n        win_handles[window]->flags &= 0xfd;\n        ShowWindow(*handle, 0);\n        next = GetTopWindow(rootWnd);\n        if (next == 0)\n            top = 0;\n        else {\n            while (!IsWindowVisible(next)) {\n                next = GetNextWindow(next, 2);\n                if (next == 0)\n                    break;\n            }\n            if (next != 0 && GetWindow(next, 4) != 0)\n                next = GetWindow(next, 4);\n            top = next;\n        }\n        if (top != 0) {\n            BringWindowToTop(top);\n            PostMessage(top, 0x86, activeAppFlag, 0L);\n        }\n    }\n}\n",
+    "void far win_Close(register unsigned int objectNumber)\n{\n    int next;\n    int top;\n    int window;\n    int near *handle;\n\n    window = objectNumber >> 8;\n    handle = &win_hwnd[objectNumber >> 8];\n    if (*handle != 0) {\n        win_handles[window]->flags &= 0xfd;\n        ShowWindow(*handle, 0);\n        next = GetTopWindow(rootWnd);\n        if (next == 0)\n            top = 0;\n        else {\n            while (!IsWindowVisible(next)) {\n                next = GetNextWindow(next, 2);\n                if (next == 0)\n                    break;\n            }\n            if (next != 0 && GetWindow(next, 4) != 0)\n                next = GetWindow(next, 4);\n            top = next;\n        }\n        if (top != 0) {\n            BringWindowToTop(top);\n            PostMessage(top, 0x86, activeAppFlag, 0L);\n        }\n    }\n}\n",
+    "void far win_Close(int objectNumber)\n{\n    int next;\n    int top;\n    int window;\n    int near *handle;\n\n    window = objectNumber >> 8;\n    handle = &win_hwnd[objectNumber >> 8];\n    if (*handle != 0) {\n        win_handles[window]->flags &= 0xfd;\n        ShowWindow(*handle, 0);\n        next = GetTopWindow(rootWnd);\n        if (next == 0)\n            top = 0;\n        else {\n            while (!IsWindowVisible(next)) {\n                next = GetNextWindow(next, 2);\n                if (next == 0)\n                    break;\n            }\n            if (next != 0 && GetWindow(next, 4) != 0)\n                next = GetWindow(next, 4);\n            top = next;\n        }\n        if (top != 0) {\n            BringWindowToTop(top);\n            PostMessage(top, 0x86, activeAppFlag, 0L);\n        }\n    }\n}\n"
+   ],
+   "rationale": "parameter storage class"
+  }
+ ],
+ "semantic_summary": "win_Close: register storage class on the object-number parameter (entry copy into DI before the shift)",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_win_Close"
+ ]
+}

@@ -1,0 +1,50 @@
+{
+ "symbol": "_win_CasteControlClosed",
+ "source": "build/grind/wccc_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "handle",
+   "marker": "/*HANDLE*/",
+   "values": [
+    "extern int far casteAnimHandle;"
+   ],
+   "rationale": "object type"
+  },
+  {
+   "name": "wrap",
+   "marker": "/*WRAP*/",
+   "values": [
+    "struct { int far *p; } h;",
+    "struct { unsigned int far *p; } h;",
+    "struct { int far *p; int spare; } h;",
+    "struct { volatile int far *p; } h;"
+   ],
+   "rationale": "wrapper shape controls folding of the pointer value"
+  },
+  {
+   "name": "assign",
+   "marker": "/*ASSIGN*/",
+   "values": [
+    "h.p = &casteAnimHandle;",
+    "h.p = (void far *)&casteAnimHandle;"
+   ],
+   "rationale": "cast may hide the constant address from the folder"
+  }
+ ],
+ "semantic_summary": "Caste control close: pointer-wrapper shapes (pointee type, spare member, volatile pointee) and assignment cast so the handle push stays es:[bx]",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_win_CasteControlClosed"
+ ]
+}
