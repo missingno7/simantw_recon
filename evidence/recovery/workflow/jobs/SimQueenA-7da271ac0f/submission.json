@@ -1,0 +1,39 @@
+{
+ "symbol": "_SimQueenA",
+ "source": "build/grind/sqa_template2.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMANT1_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "recdecl",
+   "marker": "/*RECDECL*/",
+   "values": [
+    "unsigned char far *rec;",
+    ""
+   ],
+   "rationale": "pointer local"
+  },
+  {
+   "name": "reads",
+   "marker": "/*READS*/",
+   "values": [
+    "rec = &Dx8 + ant;\n    y = rec[0x278e] & 0xff;\n    type = rec[0x2f62];\n    x = rec[0x23a4];",
+    "y = AT(ant + 0x278e) & 0xff;\n    type = AT(ant + 0x2f62);\n    x = AT(ant + 0x23a4);",
+    "y = (&Dx8)[ant + 0x278e] & 0xff;\n    type = (&Dx8)[ant + 0x2f62];\n    x = (unsigned char)(&Dx8)[ant + 0x23a4];"
+   ],
+   "rationale": "read forms (pointer form needs the declaration)"
+  }
+ ],
+ "semantic_summary": "SimQueenA: list reads through a far record pointer versus offset reads (register weights of ant, y and type)",
+ "binding_evidence": [],
+ "publics": [
+  "_SimQueenA"
+ ]
+}

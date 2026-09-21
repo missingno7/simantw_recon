@@ -1,0 +1,39 @@
+{
+ "symbol": "_GetRandDir",
+ "source": "build/grind/grd_t3.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "ret",
+   "marker": "/*RET*/",
+   "values": [
+    "(int)(unsigned char)(r - 1) & 7",
+    "(unsigned)(unsigned char)(r - 1) & 7",
+    "(unsigned char)(r - 1) % 8",
+    "((unsigned char)(r - 1)) & 0x07",
+    "(unsigned char)(r - 1) & 7L",
+    "7 & (unsigned char)(r - 1)",
+    "(unsigned char)(r - 1) & (unsigned)7",
+    "(unsigned char)(r - 1) & 0x0007u",
+    "((unsigned char)r - (unsigned char)1) & 7",
+    "(unsigned char)((unsigned char)r - 1) & 7",
+    "(r - 1 & 0xff) & 7",
+    "(unsigned char)r - 1 & 7"
+   ],
+   "rationale": "and ax,7 vs and al,7 / sub ah,ah depends on the operand widths of the AND"
+  }
+ ],
+ "semantic_summary": "GetRandDir: fold expression typing to get a word AND after the byte decrement",
+ "binding_evidence": [],
+ "publics": [
+  "_GetRandDir"
+ ]
+}

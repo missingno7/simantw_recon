@@ -2862,8 +2862,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoDebugWin — SIMANT_MODULE:1CBE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 179 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 179 bytes.
+Source: src/recovered/wf_DoDebugWin-501185d015.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 1CBE  57                       push di
@@ -17026,8 +17026,8 @@ C437  cb                       retf
 ```
 
 ## _BoundPointToTri — SIMANT_MODULE:C438
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 176 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 176 bytes.
+Source: src/recovered/wf_BoundPointToTri-0892cf4e80.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 C438  c8100000                 enter 0x10, 0
@@ -43936,8 +43936,8 @@ Source: src/recovered/wf_QueenBalloons-a57aa281b9.c. Flags: ['/AL', '/G2', '/Gs'
 ```
 
 ## _RestBalloons — ANTEDIT_MODULE:4AEE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 169 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 169 bytes.
+Source: src/recovered/wf_RestBalloons-17fb4c1bf3.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 4AEE  55                       push bp
@@ -106041,8 +106041,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetRandDir — SIMTWO_MODULE:0F72
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 179 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 179 bytes.
+Source: src/recovered/wf_GetRandDir-2664e9d7f9.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 0F72  c8020000                 enter 2, 0
