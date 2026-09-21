@@ -56,7 +56,15 @@ def split_items(text):
             i = j
             continue
         if c == '#':
-            raise FormatError('preprocessor directives are not composable')
+            j = text.find('\n', i)
+            j = n if j < 0 else j
+            line = text[i:j].strip()
+            if not line.startswith('#define'):
+                raise FormatError('only #define directives are composable: ' + line[:40])
+            name = re.match(r'#define\s+([A-Za-z_]\w*)', line)
+            items.append(dict(kind='declaration', names=[name.group(1)] if name else [], text=line, normalized=' '.join(line.split())))
+            i = j
+            continue
         start = i
         depth_brace = depth_paren = 0
         seen_brace = False
@@ -141,20 +149,25 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None):
     seen = {}
     conflicts = []
     definitions = []
+    emitted_overrides = set()
     for f in files:
         for it in f['items']:
             if it['kind'] == 'declaration':
                 key_names = it['names'] or [it['normalized']]
+                # A reviewed override replaces every declaration of that name
+                # with one recorded spelling, emitted at its first occurrence.
+                if any(name in overrides for name in key_names):
+                    for name in key_names:
+                        if name in overrides and name not in emitted_overrides:
+                            emitted_overrides.add(name)
+                            declarations.append(dict(kind='declaration', names=[name], text=overrides[name].strip(), normalized=' '.join(overrides[name].split()), origin='override'))
+                    continue
                 for name in key_names:
-                    if name in overrides:
-                        continue
                     previous = seen.get(name)
                     if previous is None:
                         seen[name] = (it['normalized'], f['symbol'])
                     elif previous[0] != it['normalized']:
                         conflicts.append(dict(name=name, first=previous[0], first_from=previous[1], other=it['normalized'], other_from=f['symbol']))
-                if all(name in overrides for name in key_names):
-                    continue
                 if any(seen[name][1] == f['symbol'] and seen[name][0] == it['normalized'] for name in key_names if name in seen):
                     if it['normalized'] not in [d['normalized'] for d in declarations]:
                         declarations.append(dict(it, origin=f['symbol']))
@@ -171,8 +184,6 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None):
               ' * in MAPSYM order. Internal evidence id, not a historical filename.',
               ' * Members: %s */' % ', '.join(order), '']
     lines = list(header)
-    for name, text in overrides.items():
-        lines.append(text.strip())
     if layout == 'preambles-first':
         for d in declarations:
             lines.append(d['text'])
@@ -244,9 +255,40 @@ def topology_units():
     return result
 
 
-def propose(min_functions=2):
-    """Components whose members all have preserved sources, ranked by unlock value."""
+def pool_words_in_code_order(symbol, functions):
+    """Selector-pool words a function loads, in code (first-use) order."""
+    return [int(w, 16) if isinstance(w, str) else w for w in functions[symbol]['slots']]
+
+
+def predicted_pool(order, functions):
+    """First-use order of pool words when the given functions are compiled together in this order."""
+    seen = []
+    for symbol in order:
+        for w in pool_words_in_code_order(symbol, functions):
+            if w not in seen:
+                seen.append(w)
+    return seen
+
+
+def assemblable(group, functions):
+    """A subset reproduces its pool only if its words are one contiguous original
+    block in the same order as the composed first-use order (predicted from code)."""
+    words = predicted_pool(group, functions)
+    if not words:
+        return True, 'no pool words'
+    expected = sorted(words)
+    if any(b - a != 2 for a, b in zip(expected, expected[1:])):
+        return False, 'pool words are not contiguous in the original: %s' % ' '.join('%04X' % w for w in expected)
+    if words != expected:
+        return False, 'composed first-use order %s differs from the original pool order' % ' '.join('%04X' % w for w in words)
+    return True, 'contiguous pool block %04X-%04X' % (expected[0], expected[-1])
+
+
+def propose(min_functions=1):
+    """Candidate unit groups per component: usable preserved sources whose selector
+    pool is predicted to reproduce, plus the missing introducers that block the rest."""
     sources = preserved_sources()
+    functions = read_json(TOPOLOGY)['functions']
     rows = []
     for cid, comp in topology_units().items():
         members = comp['publics']
@@ -254,23 +296,42 @@ def propose(min_functions=2):
             continue
         have = {m: sources.get(m) for m in members}
         usable = [m for m in members if have[m] and have[m]['basis'] in ('ADMITTED', 'BODY_MATCHED_BINDING_BLOCKED', 'EXACT_BODY_CANDIDATE')]
-        parked = [m for m in members if have[m] and have[m]['basis'] != 'ADMITTED']
-        # Longest prefix of the component with usable sources: a prefix unit
-        # reproduces the first words of the pool and can be admitted alone.
-        prefix = []
+        missing = [m for m in members if m not in usable]
+        # Greedy scan in code order: extend the group while the predicted pool
+        # still reproduces; a member that breaks it is skipped and its blocking
+        # words attributed to their original introducers.
+        # A composed unit's code is contiguous, so a group must be a run of
+        # consecutive members (a missing member ends the run) whose predicted
+        # pool block is contiguous and in order.
+        groups = []
+        current = []
+        blocked = {}
         for m in members:
-            if m in usable:
-                prefix.append(m)
+            if m not in usable:
+                if current:
+                    groups.append(current)
+                current = []
+                continue
+            ok, why = assemblable(current + [m], functions)
+            if ok:
+                current.append(m)
             else:
-                break
-        rows.append(dict(component=cid, segment=comp['segment'], range=comp['range'], members=members, usable=usable, missing=[m for m in members if m not in usable],
-                         prefix=prefix, parked_with_sources=parked, unlock=len([m for m in prefix if have[m]['basis'] != 'ADMITTED']),
-                         join_evidence=comp.get('join_evidence'), complete=len(usable) == len(members)))
-    rows.sort(key=lambda r: (-r['unlock'], -len(r['prefix']), r['component']))
+                if current:
+                    groups.append(current)
+                current = [m] if assemblable([m], functions)[0] else []
+                introducers = sorted({functions[x]['symbol'] for x in members for w in pool_words_in_code_order(m, functions) if w in pool_words_in_code_order(x, functions) and x in missing})
+                blocked[m] = dict(reason=why, missing_introducers=introducers)
+        if current:
+            groups.append(current)
+        groups = [g for g in groups if any(have[m]['basis'] != 'ADMITTED' for m in g)]
+        unlock = sum(1 for g in groups for m in g if have[m]['basis'] != 'ADMITTED')
+        rows.append(dict(component=cid, segment=comp['segment'], range=comp['range'], members=members, usable=usable, missing=missing,
+                         groups=groups, blocked=blocked, unlock=unlock, join_evidence=comp.get('join_evidence'), complete=not missing))
+    rows.sort(key=lambda r: (-r['unlock'], r['component']))
     return rows
 
 
-def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason=''):
+def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None):
     """Compose a candidate unit from preserved sources and write its evidence folder."""
     import compiler_profiles
     from recovery_workflow import cards
@@ -285,12 +346,16 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     if order != members:
         raise FormatError('members must be given in MAPSYM order')
     sources = preserved_sources()
+    for m, path in (source_overrides or {}).items():
+        if not (ROOT / path).exists() or not (ROOT / path).resolve().is_relative_to(ROOT):
+            raise FormatError('reviewed source override must be a repository file: ' + path)
+        sources[m] = dict(source=path, basis='REVIEWED_SOURCE_OVERRIDE')
     chosen = {}
     for m in members:
         if m not in sources:
             raise FormatError('no preserved source for ' + m)
         chosen[m] = sources[m]['source']
-    unit_id = re.sub(r'[^A-Za-z0-9]+', '_', component_id) + ('' if members == comp['publics'] else '_prefix%d' % len(members))
+    unit_id = re.sub(r'[^A-Za-z0-9]+', '_', component_id) + ('' if members == comp['publics'] else '_%s_%d' % (members[0].lstrip('_'), len(members)))
     folder = UNITS / unit_id
     folder.mkdir(parents=True, exist_ok=True)
     result = compose(chosen, order, unit_id, layout, overrides)
@@ -373,22 +438,23 @@ def unit_job(unit_id, reason):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest='action', required=True)
-    p = sub.add_parser('propose'); p.add_argument('--min', type=int, default=2); p.add_argument('--limit', type=int, default=40)
-    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--reason', default='')
+    p = sub.add_parser('propose'); p.add_argument('--min', type=int, default=1); p.add_argument('--limit', type=int, default=40)
+    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--reason', default='')
     p = sub.add_parser('test'); p.add_argument('unit')
     p = sub.add_parser('job'); p.add_argument('unit'); p.add_argument('--reason', required=True)
     args = ap.parse_args()
     if args.action == 'propose':
-        rows = propose(args.min)[:args.limit]
-        for r in rows:
-            print('%-14s unlock=%2d prefix=%2d/%2d usable=%2d missing=%s' % (r['component'], r['unlock'], len(r['prefix']), len(r['members']), len(r['usable']), ','.join(r['missing'])[:80]))
+        rows = propose(args.min)
+        for r in rows[:args.limit]:
+            print('%-14s unlock=%2d usable=%2d/%2d groups=%s blocked=%d' % (r['component'], r['unlock'], len(r['usable']), len(r['members']), [len(g) for g in r['groups']], len(r['blocked'])))
         write_json(UNITS / 'proposals.json', dict(generated=timestamp(), proposals=rows))
     elif args.action == 'build':
         overrides = {}
         for item in args.override:
             name, text = item.split('=', 1)
             overrides[name] = text
-        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason)
+        source_overrides = dict(item.split('=', 1) for item in args.source)
+        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides)
         print(json.dumps({k: v for k, v in result.items() if k not in ('sources',)}, indent=2))
     elif args.action == 'test':
         print(json.dumps(test_unit(args.unit), indent=2))

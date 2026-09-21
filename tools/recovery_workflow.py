@@ -218,7 +218,8 @@ def commit_core(values,job_id=None):
         recover_transaction();raise
 
 
-def promote(job_id,candidate=None,audit_only=False):
+def prepare_promotion(job_id,candidate,audit_only,current_recipes,manifest):
+    """Fresh compile and independent admission of one job; returns the manifest/recipe updates without committing."""
     directory,job=checked_job(job_id)
     if job['status']!='EXACT_CANDIDATE':raise FormatError('no exact candidate eligible for fresh admission')
     report=read_json(ROOT/job['attempts'][-1]['report']);candidate=report['exact_candidates'][0] if candidate is None else candidate
@@ -227,8 +228,6 @@ def promote(job_id,candidate=None,audit_only=False):
     validate_receipt(row['receipt']);source=ROOT/row['receipt']['source']
     # Check admitted source text and frozen assumptions, not an edited submission.
     spec=copy.deepcopy(report['spec']);spec.pop('template',None);spec['axes']=[];spec['source']=relative(source);check_submission(spec,job)
-    current_recipes=read_json(ROOT/'src/recovery.json');manifest=read_json(ROOT/'build/recovered/manifest.json')
-    verify(manifest,current_recipes['targets'],publish=False)
     destination=ROOT/'src/recovered'/('wf_'+job_id+'.c') if not audit_only else directory/'audit-source.c'
     if destination.exists() and destination.read_bytes()!=source.read_bytes():raise FormatError('destination exists with different source; refusing overwrite')
     shutil.copyfile(source,destination)
@@ -256,13 +255,40 @@ def promote(job_id,candidate=None,audit_only=False):
         if job.get('unit'):target['unit']=job['unit']
         current_recipes['targets'][name]=target
         game[name]=dict(symbol=name,object=relative(stored),identity=identity(stored),receipt=receipt)
-    manifest=dict(manifest,game_objects=list(game.values()))
+    manifest['game_objects']=list(game.values())
+    return dict(job=job_id,directory=directory,record=job,proof_path=proof_path,targets=targets,superseded=sorted(superseded))
+
+def promote(job_id,candidate=None,audit_only=False):
+    return promote_many([job_id],candidate,audit_only)
+
+def promote_many(job_ids,candidate=None,audit_only=False):
+    """One exclusive transaction admits every listed exact candidate and commits the core manifest once.
+
+    The pre-verification excludes only recipes explicitly superseded by the
+    listed unit jobs (a strengthened proof rule may reject exactly those);
+    the final verification covers the complete replaced manifest.
+    """
+    if len(job_ids)!=len(set(job_ids)):raise FormatError('duplicate job in promotion batch')
+    superseding=set()
+    for job_id in job_ids:
+        _,job=checked_job(job_id)
+        if job['status']!='EXACT_CANDIDATE':raise FormatError('no exact candidate eligible for fresh admission')
+        report=read_json(ROOT/job['attempts'][-1]['report']);chosen=report['exact_candidates'][0] if candidate is None else candidate
+        row=next((r for r in report['results'] if r['candidate']==chosen),None)
+        if row is None or row['comparison']['result'] not in GOOD:raise FormatError('selected candidate is not an exact member match')
+        if job.get('lane')=='TU_ASSEMBLY':superseding.update(job.get('supersedes',[]))
+    current_recipes=read_json(ROOT/'src/recovery.json');manifest=read_json(ROOT/'build/recovered/manifest.json')
+    verify(dict(manifest,game_objects=[g for g in manifest['game_objects'] if g['symbol'] not in superseding]),{k:v for k,v in current_recipes['targets'].items() if k not in superseding},publish=False)
+    prepared=[prepare_promotion(job_id,candidate,audit_only,current_recipes,manifest) for job_id in job_ids]
+    if audit_only:return prepared[0] if len(prepared)==1 else prepared
     verified=verify(manifest,current_recipes['targets'],publish=False)
     progress={k:v for k,v in verified.items() if k not in ('game','runtime')}
-    commit_core(dict(zip(CORE,[current_recipes,manifest,verified,progress])),job_id)
-    job.update(status='PROMOTED',promotion_evidence=relative(proof_path));atomic_json(directory/'job.json',job)
+    commit_core(dict(zip(CORE,[current_recipes,manifest,verified,progress])),job_ids[0] if len(job_ids)==1 else None)
+    for item in prepared:
+        item['record'].update(status='PROMOTED',promotion_evidence=relative(item['proof_path']));atomic_json(item['directory']/'job.json',item['record'])
     refresh()
-    return dict(job=job_id,status='PROMOTED',symbols=sorted(targets),progress=progress)
+    symbols=sorted(name for item in prepared for name in item['targets'])
+    return dict(job=job_ids[0] if len(job_ids)==1 else job_ids,status='PROMOTED',symbols=symbols,superseded=sorted({s for item in prepared for s in item['superseded']}),progress=progress)
 
 def defer(job_id,cause,reason,next_experiment):
     from blocker_ledger import TAXONOMY
@@ -373,7 +399,7 @@ def main():
     sub.add_parser('queue');sub.add_parser('doctor');sub.add_parser('refresh')
     p=sub.add_parser('next');p.add_argument('--symbol');p.add_argument('--lane',choices=['READY','GUIDED','LARGE'],default='READY')
     p=sub.add_parser('attempt');p.add_argument('job')
-    p=sub.add_parser('promote');p.add_argument('job');p.add_argument('--candidate',type=int);p.add_argument('--audit-only',action='store_true')
+    p=sub.add_parser('promote');p.add_argument('job',nargs='+');p.add_argument('--candidate',type=int);p.add_argument('--audit-only',action='store_true')
     p=sub.add_parser('defer');p.add_argument('job');p.add_argument('--cause',required=True);p.add_argument('--reason',required=True);p.add_argument('--next-experiment',required=True)
     args=ap.parse_args()
     with global_lock():
@@ -382,7 +408,11 @@ def main():
     if args.action=='attempt':
         with job_lock(args.job):result=run_attempt(args.job)
     elif args.action=='promote':
-        with job_lock(args.job),global_lock():result=promote(args.job,args.candidate,args.audit_only)
+        from contextlib import ExitStack
+        with ExitStack() as stack:
+            for job_id in args.job:stack.enter_context(job_lock(job_id))
+            stack.enter_context(global_lock())
+            result=promote_many(args.job,args.candidate,args.audit_only)
     elif args.action=='defer':
         with job_lock(args.job):result=defer(args.job,args.cause,args.reason,args.next_experiment)
     else:

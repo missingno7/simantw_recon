@@ -61,6 +61,19 @@ def compare_member(m,raw,n,s,imports):
  for si,poss in pending.items():
   if len(poss)==1:placements[si]=next(iter(poss));derived.append(si)
   else:issues.append('conflicting private placement constraints '+m['segments'][si-1]['name'])
+ # A BSS contribution carries no bytes, so its derived placement is only
+ # meaningful inside the original BSS region: LINK places class BSS after every
+ # DATA/CONST class, between the runtime's _edata and _end. A candidate static
+ # placed below _edata is initialised data (or another object's data) in the
+ # original and must be declared with its initialiser so its bytes are checked.
+ for si in list(derived):
+  ss=m['segments'][si-1]
+  if ss['class']!='BSS':continue
+  sg,off=placements[si]
+  lo=next(iter(names['_edata']))[1] if names['_edata'] else absolute.get('_edata')
+  hi=next(iter(names['_end']))[1] if names['_end'] else absolute.get('_end')
+  if sg!=10 or lo is None or hi is None or off<lo or off+ss['length']>hi:
+   issues.append(ss['name']+' contribution placed outside the original BSS region')
  if not any(m['segments'][si-1]['class']=='CODE' for si in placements):return None
  details=[];total=equal=fixequal=0;selectors_ok=set();pending_far_offsets=[]
  for ss in m['segments']:
