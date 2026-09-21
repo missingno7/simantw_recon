@@ -12,9 +12,7 @@
  * repositioned afterwards.
  *
  * Unit profile /Og: the frame switch lowers to MSC's SUB/JL/JO/DEC/DEC/JLE
- * range chains; the three PLACE_MOWER expansions have their coordinates
- * folded into BX/DX temporaries (unused frame homes) and their identical
- * reposition/create tails cross-jumped into one copy.
+ * range chains, and the two "BoyY + 15" tails are cross-jumped.
  */
 extern int near BoyHere;
 extern int near BoyFrame;
@@ -31,12 +29,11 @@ extern int far hanim_SetObjectPos(int right, int bottom, int size,
 extern int far hanim_AddAnimObject(int animation, int right, int bottom,
                                    int size, int layer);
 
-/* Place the mower object at (x, y): reposition it, or create it once. */
-#define PLACE_MOWER(x, y)     if (mowerObject != -1)         hanim_SetObjectPos(x, y, state + 0x2260, yardAnimHandle, mowerObject, -1);     else         mowerObject = hanim_AddAnimObject(yardAnimHandle, x, y, state + 0x2260, -1)
-
 void far DrawMower(void)
 {
     int state;
+    register int right;
+    register int bottom;
 
     state = 0;
     if (BoyHere == 3 || BoyHere == 4) {
@@ -63,10 +60,18 @@ void far DrawMower(void)
     }
 
     if (state == 0) {
-        PLACE_MOWER(0x62, 0xb5);
+        right = 0x62;
+        bottom = 0xb5;
     } else if (state == 1) {
-        PLACE_MOWER(BoyX + 0x13, BoyY + 0xf);
+        right = BoyX + 0x13;
+        bottom = BoyY + 0xf;
     } else {
-        PLACE_MOWER(BoyX - 0xf, BoyY + 0xf);
+        right = BoyX - 0xf;
+        bottom = BoyY + 0xf;
     }
+
+    if (mowerObject != -1)
+        hanim_SetObjectPos(right, bottom, state + 0x2260, yardAnimHandle, mowerObject, -1);
+    else
+        mowerObject = hanim_AddAnimObject(yardAnimHandle, right, bottom, state + 0x2260, -1);
 }

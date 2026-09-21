@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21T21:42:52.070671+00:00",
+  "generated": "2026-09-21T22:08:09.010367+00:00",
   "proposals": [
     {
       "component": "antedit:00F4",
@@ -48,6 +48,7 @@
         "_ResetEditScrollRange"
       ],
       "usable": [
+        "_OverlayTileSet",
         "_OpenEditWindow",
         "_MakeEditOpen",
         "_ForceUpdateEdit",
@@ -64,10 +65,10 @@
         "_QueenBalloons",
         "_RestBalloons",
         "_EditMsgBalloon",
-        "_PreDrawBalloons"
+        "_PreDrawBalloons",
+        "_ResetEditScrollRange"
       ],
       "missing": [
-        "_OverlayTileSet",
         "_LoadTiles",
         "_ClearEditDeltaTables",
         "_ProcEditEvent",
@@ -88,8 +89,7 @@
         "_DrawCurBalloons",
         "_DrawBalloons",
         "_DoEditScrollLine",
-        "_DoEditScroll",
-        "_ResetEditScrollRange"
+        "_DoEditScroll"
       ],
       "groups": [
         [
@@ -101,7 +101,19 @@
           "_DrawEdit"
         ]
       ],
-      "blocked": {},
+      "blocked": {
+        "_ResetEditScrollRange": {
+          "reason": "pool words are not contiguous in the original: BF92 C082",
+          "missing_introducers": [
+            "_CenterEdit",
+            "_DoEditScroll",
+            "_DrawCurBalloons",
+            "_DrawSpider",
+            "_PreDrawSpider",
+            "_UpdateEdit"
+          ]
+        }
+      },
       "unlock": 2,
       "join_evidence": {
         "shared_slot": 42,
@@ -4415,6 +4427,8 @@
         "WINMAIN"
       ],
       "usable": [
+        "_DoUserButtonUpdate",
+        "_UpdateUserButtons",
         "_ClearBookmarks",
         "_DrawRibbonMessage",
         "_HelpKeyDown",
@@ -4425,8 +4439,6 @@
         "_PatchColorArrays"
       ],
       "missing": [
-        "_DoUserButtonUpdate",
-        "_UpdateUserButtons",
         "_SetUserButton",
         "_DoUserButton",
         "_DoBookMark",
@@ -4449,6 +4461,15 @@
       ],
       "groups": [],
       "blocked": {
+        "_UpdateUserButtons": {
+          "reason": "composed first-use order BE70 BE6E differs from the original pool order",
+          "missing_introducers": [
+            "MYTIMERFUNC",
+            "WINMAIN",
+            "_DoUserButton",
+            "_SetUserButton"
+          ]
+        },
         "_DrawRibbonMessage": {
           "reason": "pool words are not contiguous in the original: BE7A BE80 BE82 BE84",
           "missing_introducers": [
@@ -6224,14 +6245,17 @@
         "_GetLife",
         "_GetMap",
         "_SetMap",
+        "_MoveMyLife",
         "_DoMapUpdateDraw",
         "_DoEditAndMapUpdateDraw",
         "_EndTargetMode",
         "_EndLifeTransferMode",
         "_ExchangeLives",
         "_PickupMyEgg",
+        "_PickupMyObject",
         "_IsNotBarrier",
-        "_IsLessThanHole"
+        "_IsLessThanHole",
+        "_IsLiftable"
       ],
       "missing": [
         "_IsClear3x3",
@@ -6243,7 +6267,6 @@
         "_ClearMyLife",
         "_SetQueenTail",
         "_SetMyLife",
-        "_MoveMyLife",
         "_TargetAnt",
         "_StartLifeTransfer",
         "_DoLifeExchange",
@@ -6258,13 +6281,11 @@
         "_EatMyFood",
         "_PickupMyFood",
         "_DropMyObject",
-        "_PickupMyObject",
         "_TileCanBeMovedOn",
         "_IsNotObstacle",
         "_IsItDigable",
         "_IsItYellow",
         "_IsSamePlane",
-        "_IsLiftable",
         "_TryMyDropOrLift"
       ],
       "groups": [],
@@ -6281,7 +6302,14 @@
           "missing_introducers": [
             "_DoLifeExchange",
             "_DropMyEgg",
-            "_PickupMyObject",
+            "_TryMyDropOrLift"
+          ]
+        },
+        "_PickupMyObject": {
+          "reason": "pool words are not contiguous in the original: C48C C4B2",
+          "missing_introducers": [
+            "_DoLifeExchange",
+            "_DropMyEgg",
             "_TryMyDropOrLift"
           ]
         }

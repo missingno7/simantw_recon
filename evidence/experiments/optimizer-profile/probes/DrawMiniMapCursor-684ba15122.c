@@ -23,8 +23,8 @@ extern int near win_hwnd[];
 extern int near editWidth;
 extern int near editHeight;
 extern int near mmapCursorState;
-extern int far miniXSize;
-extern int far miniYSize;
+extern volatile int far miniXSize;
+extern volatile int far miniYSize;
 extern int far miniJust;
 extern struct MapPoint far MapPnt;
 extern struct MiniMapRect far miniMapRect;
@@ -36,10 +36,16 @@ extern void far MSClipEnd(void);
 
 void far DrawMiniMapCursor(void)
 {
-    miniMapCursorRect.top = miniYSize * MapPnt.y + miniMapRect.top;
-    miniMapCursorRect.bottom = miniMapCursorRect.top + miniYSize * editHeight;
-    miniMapCursorRect.left = miniXSize * MapPnt.x + miniJust + miniMapRect.left;
-    miniMapCursorRect.right = miniMapCursorRect.left + miniXSize * editWidth;
+    int ySize, xSize, top, left;
+
+    ySize = miniYSize;
+    top = ySize * MapPnt.y + miniMapRect.top;
+    miniMapCursorRect.top = top;
+    miniMapCursorRect.bottom = top + ySize * editHeight;
+    xSize = miniXSize;
+    left = xSize * MapPnt.x + miniJust + miniMapRect.left;
+    miniMapCursorRect.left = left;
+    miniMapCursorRect.right = left + xSize * editWidth;
     MSClipStart(win_hwnd[20]);
     GRectInvOutline(&miniMapCursorRect, 1);
     MSClipEnd();

@@ -247,8 +247,8 @@ Source: src/recovered/wf_DoUserButtonUpdate-cf874c4e35.c. Flags: ['/AL', '/G2', 
 ```
 
 ## _UpdateUserButtons — SIMANT_MODULE:023A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 303 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 303 bytes.
+Source: src/recovered/wf_UpdateUserButtons-609b2b7960.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 023A  57                       push di
@@ -39687,8 +39687,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ProcEditEvent — ANTEDIT_MODULE:0B7A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 232 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 232 bytes.
+Source: src/recovered/wf_ProcEditEvent-1e056fd3ba.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0B7A  55                       push bp

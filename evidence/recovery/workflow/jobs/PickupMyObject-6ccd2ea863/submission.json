@@ -1,19 +1,23 @@
 {
   "symbol": "_PickupMyObject",
-  "source": "evidence/recovery/workflow/jobs/PickupMyObject-6ccd2ea863/candidate.c",
+  "source": "build/grind/agentS/_PickupMyObject.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMONE_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "* PickupMyObject: try to pick up whatever is at (plane, x, y) for the\n * player's ant. If MeType has bit 8 set (busy), fail immediately. If the\n * ant is idle (MeType==0x10) or too weak to carry (MeHealth<10), look\n * for an egg there via FindEggAt (far out-parameter gives the ant-list\n * index, the return value the egg's value/handle); MeEggCarried is\n * pre-set to the sentinel 0xfd. On success, SetAntIndex clears that\n * list slot, SetLife clears the cell when it isn't the ant's own tile,\n * and a weak ant just records MeFoodInType=3 and returns true, while a\n * healthy ant plays the pickup sound, records MeEggCarried and\n * MeType=8 (carrying an egg), and returns the egg value. Otherwise (no\n * egg found, or the gate above didn't apply), fall back to\n * PickupMyRock then PickupMyFood, returning whichever succeeds.",
+  "semantic_summary": "PickupMyObject: carrying ants fail; idle or weak ants look for an egg (MeEggCarried preset 0xfd, FindEggAt), clear its slot and cell, healthy ants record the egg and MeType 8 with the pickup sound while weak ants set MeFoodInType 3, result TRUE; otherwise result FALSE and PickupMyRock then PickupMyFood are tried",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "MeType/MeHealth/MeLocX/MeLocY exact MAPSYM DGROUP names",
+    "MeEggCarried (es:[0x8a6a]) and MeFoodInType (es:[0x8a6e]) far words in segment 8 with separate selector slots 0xc48c/0xc4b2",
+    "FindEggAt/SetAntIndex/SetLife/PickupMyRock/PickupMyFood same-segment near calls rewritten by LINK",
+    "myBeginSound cross-segment far call",
+    "profile probe evidence/experiments/optimizer-profile/probes/PickupMyObject-6ccd2ea863.json"
   ],
   "publics": [
     "_PickupMyObject"

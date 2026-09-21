@@ -9,7 +9,10 @@
  * sites) and kind 1.  The type word is always 3.  MaskMono2Tandy is
  * called on the width/height sub-record (object+8) of both the new and
  * source objects.  Both handles are unlocked and the source handle is
- * freed; the new handle is returned.
+ * freed; the new handle is returned.  (agentT: probe of the unit profile;
+ * the non-Tandy size multiplies height*width, matching MOV AX,DI / IMUL SI;
+ * the byte count is an unsigned int widened with a zero high word, and
+ * MaskMono2Tandy takes (source, destination).)
  */
 struct MaskObj {
     int type;
@@ -24,7 +27,7 @@ extern void far *mem_Lock(unsigned int handle);
 extern int far mem_Unlock(unsigned int handle);
 extern void far mem_Free(int handle);
 extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);
-extern void far MaskMono2Tandy(void far *dst, void far *src);
+extern void far MaskMono2Tandy(void far *src, void far *dst);
 
 unsigned int far ConvertMonoMaskToTandy(unsigned int handle)
 {
@@ -38,9 +41,9 @@ unsigned int far ConvertMonoMaskToTandy(unsigned int handle)
     width = src->width;
     height = src->height;
     if (displayType == 10)
-        newHandle = mem_Alloc((((width * 4 + 31) / 32) * height + 3) * 4, 1, "tdyballoon");
+        newHandle = mem_Alloc((unsigned int)((((width * 4 + 31) / 32) * height + 3) * 4), 1, "tdyballoon");
     else
-        newHandle = mem_Alloc(width * height / 2 + 12, 1, "tdyballoon");
+        newHandle = mem_Alloc((unsigned int)(height * width / 2 + 12), 1, "tdyballoon");
     dst = (struct MaskObj far *)mem_Lock(newHandle);
     dst->width = width;
     dst->height = height;
@@ -49,7 +52,7 @@ unsigned int far ConvertMonoMaskToTandy(unsigned int handle)
         dst->flag = 0x84;
     else
         dst->flag = 4;
-    MaskMono2Tandy((unsigned char far *)dst + 8, (unsigned char far *)src + 8);
+    MaskMono2Tandy((unsigned char far *)src + 8, (unsigned char far *)dst + 8);
     mem_Unlock(handle);
     mem_Unlock(newHandle);
     mem_Free(handle);

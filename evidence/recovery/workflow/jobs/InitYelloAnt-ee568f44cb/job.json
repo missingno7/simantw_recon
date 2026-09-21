@@ -1,7 +1,7 @@
 {
   "id": "InitYelloAnt-ee568f44cb",
   "symbol": "_InitYelloAnt",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T21:43:40.406157+00:00",
   "flags": [
     "/AL",
@@ -331,6 +331,81 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "383acd99ea6a9d23565924fcd93b869c3f9e955052f9b5563d15905d9fb58b68",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "f83f9082db7b83d5eb578e6a01a7bfb7100ef047ed7aa1a67995132373f4507f",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "9152c2ab9b4dd08646f91bfa2ee5be1675b83bd55b034377ea2b8c2a2c0a5cee",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "1b323db6271408b78dccbbfb52c04ba19964b5e2723e80ba7bfd564638763686",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "80382db582b7b505498202c64de1c37feb202037bdf7031a63c097e7bd5f6fc6",
+      "report": "evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Six explained attempts (one lost to a systemic 'proof/toolchain changed since task creation' environment error affecting many concurrent jobs, not this source) converge closely: best candidate matches target byte-for-byte in size (315/315), opcode_total 94/opcode_matches 92, zero register-only differences, only 1 branch-target offset drift and ~20 memory-operand differences that are entirely the expected isolated-compile CONST/selector-fixup noise (mov es,[slot] shows as an unresolved CONST target; same-segment SRand16/SRand8 self-calls show offset:0 vs offset:5646/5614) per the documented isolated-compile expectation, not semantic. The one remaining real difference is local-frame layout: the target places the CurGameType snapshot ('type') in the FURTHEST stack slot (bp-8) and the random-search locals x,y in the two closer slots (bp-4,bp-6), using AX directly for the first type==3 compare and only reloading type from memory for the later type==2 compare (a natural partial-spill, register survives the first use, gets spilled by the time of the second). A plain non-volatile 'type' local promotes fully into SI for both compares (91/94 opcodes, one register-only diff, no frame-size delta from target). Forcing memory residency with 'volatile int type' gets the exact byte count and zero register diffs but assigns type the CLOSEST slot (bp-4) and pushes x,y to bp-6/bp-8 -- the reverse of the target's order. Tried: reordering the C declarations of type vs x/y/col/count/tries, and giving x/y/col/count/tries genuine nested block scope matching their real usage depth (col/count/tries in an inner brace inside the x/y-holding else-branch) -- both produced byte-identical recompiles to the flat-declaration volatile version, so MSC7's og-profile slot assignment here is not driven by C declaration or block-scope order for this shape. Best candidate preserved at build/grind/agentJ/InitYelloAnt.c; attempt reports under evidence/recovery/workflow/jobs/InitYelloAnt-ee568f44cb/.",
+  "next_experiment": "Find what drives MSC7's slot order here given declaration/scope order don't: try making x and y assignments happen earlier in program order relative to 'type' (e.g. compute a throwaway use of x/y before the type==3 test) to see whether first-use order (not declaration order) governs slot placement; or try splitting the single volatile 'type' into two reads (one non-volatile local read once for the type==3 test, a second freshly-read volatile/memory local for the type==2 test) to reproduce the target's AX-then-reload asymmetry directly instead of forcing memory residency for both uses."
 }
