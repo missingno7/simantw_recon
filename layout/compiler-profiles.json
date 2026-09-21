@@ -20,35 +20,44 @@
       "flags": [
         "/Oeglw"
       ],
-      "parent": "baseline",
-      "description": "Baseline plus /Og global common-subexpression elimination and register write-through before calls. Discriminated by parked code-shape bodies; refuted for the win_SetColorFromObj object."
+      "description": "Baseline plus /Og global common-subexpression elimination and register write-through before calls. Discriminated by parked code-shape bodies; refuted for the win_SetColorFromObj object.",
+      "parents": [
+        "baseline"
+      ]
     },
     "ogi": {
       "flags": [
         "/Oegilw"
       ],
-      "parent": "og",
-      "description": "og plus /Oi intrinsic generation (inline memset/memcpy/strlen/strcat forms). Requires string-intrinsic fingerprints in the target."
+      "description": "og plus /Oi intrinsic generation (inline memset/memcpy/strlen/strcat forms). Requires string-intrinsic fingerprints in the target.",
+      "parents": [
+        "og"
+      ]
     },
     "ga": {
       "flags": [
         "/Oelw",
         "/GA"
       ],
-      "parent": "baseline",
-      "description": "Baseline plus /GA Windows application prologue optimisation. Requires exported-prologue evidence; invariant on the admitted corpus."
+      "description": "Baseline plus /GA Windows application prologue optimisation. Requires exported-prologue evidence; invariant on the admitted corpus.",
+      "parents": [
+        "baseline"
+      ]
     },
     "og-ga": {
       "flags": [
         "/Oeglw",
         "/GA"
       ],
-      "parent": "og",
-      "description": "og plus /GA. Requires both kinds of evidence."
+      "description": "og plus /GA. Requires both kinds of evidence.",
+      "parents": [
+        "og",
+        "ga"
+      ]
     }
   },
   "evidence_rules": {
-    "minimality": "A profile may only be assigned when its probe outcome improves on its parent profile (baseline < og < ogi; baseline < ga; og < og-ga); otherwise the parent is the minimal explanation.",
+    "minimality": "A profile may only be assigned when its probe outcome improves on every parent profile (og, ga over baseline; ogi over og; og-ga over both og and ga); otherwise a parent is the minimal explanation.",
     "og": "At least one member of the context reaches a strict GOOD member result under og but not under baseline (STRICT), or improves the search diagnostic without regressions (DIAGNOSTIC). Any admitted member of the context must be profile-invariant between baseline and og (invariance evidence).",
     "ogi": "Rules for og plus a target containing string-intrinsic fingerprints (rep stosb/movsb, repne scasb) that the baseline candidate can only produce through library calls.",
     "ga": "Original exported-function prologue evidence in the context that baseline cannot reproduce.",
@@ -90,6 +99,111 @@
       "source": "evidence/topology/build-topology.json",
       "basis": "Same-object component (shared selector pool / private data / contiguity)",
       "recorded": "2026-09-21T17:34:45.919706+00:00"
+    },
+    "simtwo:0000": {
+      "publics": [
+        "_GetStrategy",
+        "_GstrB",
+        "_SetCasteProd",
+        "_SetModeProd",
+        "_GstrR",
+        "_StartAttack",
+        "_ForceModeA",
+        "_ForceModeB",
+        "_Recruit",
+        "_UnRecruit",
+        "_RecruitRed",
+        "_UnRecruitRed",
+        "_GetNewMode",
+        "_GetNewModeB",
+        "_GetNewModeR",
+        "_GetForageDir",
+        "_GetNestDir",
+        "_GetAlarmDir",
+        "_GetRandDir",
+        "_GetDefendDir",
+        "_GetRedDefendDir"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:56:24.644590+00:00"
+    },
+    "antedit:9248": {
+      "publics": [
+        "OPENDLG",
+        "SAVEASDLG",
+        "_FileSelect",
+        "_SpecialTutorialInit",
+        "_DoPreLoadInits",
+        "_DoLoadInitializations",
+        "_LoadGame",
+        "_SaveGame",
+        "_ClearLastFileName"
+      ],
+      "segment": "ANTEDIT_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:56:26.816308+00:00"
+    },
+    "simtwo:C806": {
+      "publics": [
+        "_win_LoadAllWindows",
+        "_win_Open",
+        "_win_Close",
+        "_win_Events",
+        "_win_FindObject",
+        "_UpdateAllWindows",
+        "_win_GetEvent",
+        "_win_SetObjFormatStr",
+        "_win_ToTop",
+        "_win_Swap",
+        "_win_SetWinDrawHook",
+        "_win_SetObjBitmap",
+        "_win_CenterStrAtObj",
+        "_win_PrintfAtObj",
+        "_win_ClearObjToEOL",
+        "_win_ObjFormatPrint",
+        "_win_DrawHBar",
+        "_win_DrawVBar",
+        "_win_GetObjSize",
+        "_win_ObjInv",
+        "_win_GetProxEvent",
+        "__win_SetProxItem",
+        "INDIRECTDLGPROC",
+        "_win_DoProxMenu"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:56:29.030240+00:00"
+    },
+    "gr:6410": {
+      "publics": [
+        "_hanim_AddAnimObject",
+        "_hanim_RemoveAnimObject",
+        "_hanim_RemoveAllAnimObjects",
+        "_hanim_ActuallyRemoveAnimObjects",
+        "_hanim_HideObject",
+        "_hanim_ShowObject",
+        "_hanim_SetObjectPos",
+        "_hanim_MakeAnimSet",
+        "_hanim_RemoveAnimSet",
+        "_hanim_RenderAnimSet"
+      ],
+      "segment": "GR_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:57:53.780400+00:00"
+    },
+    "simtwo:BE30": {
+      "publics": [
+        "_win_DrawBitMapAtObj"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T17:57:56.019512+00:00"
     }
   },
   "assignments": [
@@ -116,6 +230,66 @@
       ],
       "reason": "SeparateFile reaches CONFIRMED_MEMBER only under /Og (probe); its object context is not yet located by selector-pool evidence, so the scope is the function's own component.",
       "reviewed": "2026-09-21T17:34:45.919706+00:00"
+    },
+    {
+      "id": "asg-simtwo-0000-og",
+      "context": "simtwo:0000",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/RecruitRed-253bf13685.json"
+      ],
+      "reason": "RecruitRed reaches a strict member result only under /Og (probe); the strategy/recruit object GetStrategy..GetRedDefendDir (25 shared-slot joins) shares one profile; admitted members are profile-invariant",
+      "reviewed": "2026-09-21T17:56:24.644590+00:00"
+    },
+    {
+      "id": "asg-antedit-9248-og",
+      "context": "antedit:9248",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/SpecialTutorialInit-e0cff25916.json"
+      ],
+      "reason": "SpecialTutorialInit reaches a strict member result only under /Og (probe); the file-dialog/load-save object OPENDLG..ClearLastFileName (10 shared-slot joins) shares one profile; SeparateFile next to it matched under og",
+      "reviewed": "2026-09-21T17:56:26.816308+00:00"
+    },
+    {
+      "id": "asg-simtwo-c806-ga",
+      "context": "simtwo:C806",
+      "profile": "ga",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json"
+      ],
+      "reason": "INDIRECTDLGPROC (exported dialog procedure) reaches a strict member result only with /GA (probe): the exported-prologue evidence; the window framework core win_LoadAllWindows..win_DoProxMenu is one object; all admitted members are /GA-invariant",
+      "reviewed": "2026-09-21T17:56:29.031242+00:00"
+    },
+    {
+      "id": "asg-gr-6410-og",
+      "context": "gr:6410",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/hanim_RemoveAnimSet-91a33c0781.json"
+      ],
+      "reason": "hanim_RemoveAnimSet reaches CONFIRMED_MEMBER only under /Og (probe); the hanim animation object (10 functions, shared slots BF74/BF76) shares one profile; hanim_MakeAnimSet admitted and /Og-invariant",
+      "reviewed": "2026-09-21T17:57:53.780400+00:00"
+    },
+    {
+      "id": "asg-simtwo-be30-og",
+      "context": "simtwo:BE30",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/win_DrawBitMapAtObj-9cde99b504.json"
+      ],
+      "reason": "win_DrawBitMapAtObj reaches CONFIRMED_MEMBER only under /Og (probe); its object is not yet joined to the ga-assigned framework core, so the scope is its own component",
+      "reviewed": "2026-09-21T17:57:56.019512+00:00"
     }
   ],
   "refutations": [

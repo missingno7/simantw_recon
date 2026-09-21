@@ -1,7 +1,7 @@
 {
   "id": "InitMapFunctions-70fb457ea5",
   "symbol": "_InitMapFunctions",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T10:41:58.527540+00:00",
   "flags": [
     "/AL",
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 12007,
-      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
+      "size": 15161,
+      "sha256": "9bd595930b3751f3c71cedd8415994725ed70512c49e3f388e4aca7b67c53fef"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,16 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8782,
-      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
+      "size": 10118,
+      "sha256": "7eb8da7b0f280730a2dc5d12f979a6ae48c558715db6835dfa85921c0e3b33ea"
     },
     "tools/factory_queue.py": {
       "size": 5170,
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24419,
-      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
+      "size": 30914,
+      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -84,8 +84,16 @@
       "sha256": "89b8a8a928a0d3708a8ca3912ebf21791fd9ee8b838e5a39173ad82dcf291338"
     },
     "tools/codegen_cache.py": {
-      "size": 2567,
-      "sha256": "2bd26c2de9e8025284a2a3fadd604166fa39d67267a2bae1bd539e09b83d8d9f"
+      "size": 2798,
+      "sha256": "a8db25e4be045a39c372ea05d52a8e076f4734e275478374d9c7bc3c720ebcc4"
+    },
+    "tools/compiler_profiles.py": {
+      "size": 16938,
+      "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
+    },
+    "tools/tu_assembly.py": {
+      "size": 25289,
+      "sha256": "d3230a6732ec71f3dcd5b0991a1463c555927ab4b97a5a310ffce0227e8aa008"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -98,6 +106,10 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
+    },
+    "layout/compiler-profiles.json": {
+      "size": 11708,
+      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -300,7 +312,7 @@
   "attempts": [
     {
       "number": 1,
-      "submission_digest": "781e9393fbdd69ccd73ef342080fe64097cb5289b1e94ab1b7312ab351fc6854",
+      "submission_digest": "781e9393fbdd69ccd73ef342080fe64097cb5289b1e94ab1b7312ab351fc6854:superseded-by-tool-replay",
       "report": "evidence/recovery/workflow/jobs/InitMapFunctions-70fb457ea5/attempt01/results.json",
       "completed": 1,
       "candidates": 1,
@@ -311,11 +323,44 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "781e9393fbdd69ccd73ef342080fe64097cb5289b1e94ab1b7312ab351fc6854",
+      "report": "evidence/recovery/workflow/jobs/InitMapFunctions-70fb457ea5/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "FAR_POINTER_TYPE"
   ],
-  "reason": "Body fully recovered (attempt01/candidate0000.c): 133/133 bytes, 34/34 instructions aligned; Ralloc calls, the three-argument mem_Alloc with the private literal 'Generated buffer window', mapYsize/mapXsize = 4 and the displayType-selected far function pointers makea/makeb all match, with the five PACK selector slots 0xc1e0..0xc1e8 resolving in first-use order. The only divergent bytes (candidate offsets 64/65, 105/106, 123/124) are the link-time offsets of far functions taken as data in another code segment: the original holds the literals 0x4674 (Windows_MakeTable4x4 = segment 4 offset 18036), 0x442c (WindowsMono_MakeTable4x4a = 17452) and 0x44b9 (WindowsMono_MakeTable4x4b = 17593), exactly the candidate's OMF loader-resolved offset fixup targets (location type 5), which the strict matcher reports as 'unsupported or unresolved target/frame' while the paired segment-word relocations resolve. This is a proof-tool evaluation gap, not a source or codegen difference; ordinary recovery must not modify the matcher. Budget 1/8 attempts, 1/192 candidates.",
-  "next_experiment": "Infrastructure: extend tools/library_match.py to evaluate offset-only (OMF location type 5) fixups to internal far code symbols against MAPSYM with fail-closed checks and regression tests, rerun handoff validation, then re-issue this job through the expert path; the preserved candidate should then admit unchanged."
+  "parked_reason": "Body fully recovered (attempt01/candidate0000.c): 133/133 bytes, 34/34 instructions aligned; Ralloc calls, the three-argument mem_Alloc with the private literal 'Generated buffer window', mapYsize/mapXsize = 4 and the displayType-selected far function pointers makea/makeb all match, with the five PACK selector slots 0xc1e0..0xc1e8 resolving in first-use order. The only divergent bytes (candidate offsets 64/65, 105/106, 123/124) are the link-time offsets of far functions taken as data in another code segment: the original holds the literals 0x4674 (Windows_MakeTable4x4 = segment 4 offset 18036), 0x442c (WindowsMono_MakeTable4x4a = 17452) and 0x44b9 (WindowsMono_MakeTable4x4b = 17593), exactly the candidate's OMF loader-resolved offset fixup targets (location type 5), which the strict matcher reports as 'unsupported or unresolved target/frame' while the paired segment-word relocations resolve. This is a proof-tool evaluation gap, not a source or codegen difference; ordinary recovery must not modify the matcher. Budget 1/8 attempts, 1/192 candidates.",
+  "parked_next_experiment": "Infrastructure: extend tools/library_match.py to evaluate offset-only (OMF location type 5) fixups to internal far code symbols against MAPSYM with fail-closed checks and regression tests, rerun handoff validation, then re-issue this job through the expert path; the preserved candidate should then admit unchanged.",
+  "budget_extensions": [
+    {
+      "kind": "TOOL_REPLAY",
+      "changed_tools": [
+        "tools/library_match.py",
+        "tools/grind.py",
+        "tools/recovery_workflow.py",
+        "tools/codegen_cache.py",
+        "tools/compiler_profiles.py",
+        "tools/tu_assembly.py",
+        "layout/compiler-profiles.json"
+      ],
+      "attempts": 1,
+      "candidates": 1,
+      "reviewed": "2026-09-21T17:59:00.693491+00:00",
+      "reason": "Strict matcher now validates LOC 5 far-code offsets with a paired selector; replay preserved candidate unchanged"
+    }
+  ],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/InitMapFunctions-70fb457ea5/promotion.json"
 }

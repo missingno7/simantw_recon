@@ -4,6 +4,23 @@ Use [the grinding prompt](cheap-model-prompt.md) to hand this workspace to a che
 
 Read [supervisor lessons](grinder-lessons.md) before a new target's first test: declaration choices, evidence-backed mismatch triage, admitted private-state examples and actionable escalation records. These lessons preserve automatic stop rules and strict proof requirements.
 
+## Build model: units, profiles and lanes
+
+The factory models the original build instead of one universal isolated-function experiment:
+
+```
+source translation unit -> declarations / private data / selector pool -> compiler profile -> object member -> LINK -> SIMANTW.EXE
+```
+
+- [build-topology.md](build-topology.md) reconstructs candidate units (objects) from the selector pools and private data the linker preserved; `python tools/build_topology.py` regenerates `evidence/topology/build-topology.json`.
+- `layout/compiler-profiles.json` is the catalog of admissible MSC 7.00 profiles. `baseline` (`/Oelw`) stays the default; `og`, `ogi`, `ga`, `og-ga` apply only through a reviewed assignment attached to a unit context with probe evidence (`python tools/compiler_profiles.py probe JOB`, `assign CONTEXT PROFILE --evidence ...`). Every job, recipe and promotion proof records its profile; `validate` fails closed on any recipe whose flags disagree with its declared profile.
+- `python tools/tu_assembly.py propose | build | test | job` composes preserved exact-body sources of a unit component into one candidate translation unit (contiguous run of publics, predicted contiguous selector block), strict-tests all contributions and issues a `TU_ASSEMBLY` job whose promotion may explicitly supersede isolated recipes of its members.
+- `python tools/parked_review.py` reclassifies every parked job by root cause (`evidence/recovery/parked-reclassification.json`): A profile, B unit layout (with the assemblable group or the missing introducers / static helpers), C matcher tooling, D semantic, E ABI/type, F structural, G unknown.
+- Expert replays: `tools/topology_retest.py JOB --profile-reissue` (assigned profile) and `--tool-replay` (validated proof-tool change) archive the previous job context and grant at most one recorded budget extension each.
+- Worker packets carry `compiler_profile`, `unit_context` and the matching `reconstruction_rules` from `layout/reconstruction-rules.json`.
+
+Grinders run in parallel: a short global lock covers queue allocation, shared evidence rebuilds and the core manifest transaction; each job has its own lock for attempts, deferral and promotion, and compilation runs outside the global lock. Interrupted attempts are detected by a free per-job lock, never by assuming a single process.
+
 ## Production loop
 
 ```powershell
@@ -24,6 +41,12 @@ The budget is **eight attempts, at most 96 variants per attempt and 192 candidat
 `accept` requires exactly the source identity of an exact tested candidate, then performs fresh compilation and the independent recovery admission procedure. It checks full original/candidate scope, public placement, ordinary bytes, semantic fixups, private contributions and the proposed complete manifest. Updates are transactional. Similarity scores, structural certificates and scaffold stubs never grant credit.
 
 When the budget expires or a concrete blocker is established, preserve the candidate and use `block`. The ledger records sources, scores, logs, failed variants and the next experiment. Do not keep retrying the same blocked draft. Testing an unchanged already-matched source is allowed as a regression and grants zero credit.
+
+## Proof rules added by the build model
+
+- OMF LOC 5 offsets of far code symbols (statically linked, no NE obligation) are validated only together with a validated selector fixup to the same symbol (`tests/test_far_code_offsets.py`).
+- A derived `_BSS` placement must lie in the original BSS region `[_edata, _end)`; a candidate static placed below `_edata` is initialised data or another object's public data in the original (`tests/test_bss_region.py`).
+- Promotion of several exact unit jobs happens in one core transaction (`recovery_workflow.py promote JOB [JOB ...]`); superseded recipes are archived in the promotion proof.
 
 ## Production and research states
 

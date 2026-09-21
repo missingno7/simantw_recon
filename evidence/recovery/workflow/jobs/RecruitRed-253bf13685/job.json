@@ -1,13 +1,13 @@
 {
   "id": "RecruitRed-253bf13685",
   "symbol": "_RecruitRed",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T09:33:38.401785+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "protected": {
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 12007,
-      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
+      "size": 15161,
+      "sha256": "9bd595930b3751f3c71cedd8415994725ed70512c49e3f388e4aca7b67c53fef"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,16 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8782,
-      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
+      "size": 10118,
+      "sha256": "7eb8da7b0f280730a2dc5d12f979a6ae48c558715db6835dfa85921c0e3b33ea"
     },
     "tools/factory_queue.py": {
       "size": 5170,
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24419,
-      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
+      "size": 30914,
+      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -84,8 +84,16 @@
       "sha256": "89b8a8a928a0d3708a8ca3912ebf21791fd9ee8b838e5a39173ad82dcf291338"
     },
     "tools/codegen_cache.py": {
-      "size": 2567,
-      "sha256": "2bd26c2de9e8025284a2a3fadd604166fa39d67267a2bae1bd539e09b83d8d9f"
+      "size": 2798,
+      "sha256": "a8db25e4be045a39c372ea05d52a8e076f4734e275478374d9c7bc3c720ebcc4"
+    },
+    "tools/compiler_profiles.py": {
+      "size": 16938,
+      "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
+    },
+    "tools/tu_assembly.py": {
+      "size": 25289,
+      "sha256": "d3230a6732ec71f3dcd5b0991a1463c555927ab4b97a5a310ffce0227e8aa008"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -98,6 +106,10 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
+    },
+    "layout/compiler-profiles.json": {
+      "size": 9673,
+      "sha256": "b2dbe9cf453d1ee21cbef0ee39a130c6876138549f376471bc33b4bed6453723"
     }
   },
   "fixture_identity": {
@@ -367,11 +379,38 @@
       },
       "best_candidate": 1,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "f8d2f2634fd591d85fffe14e9729a293e7ec08fad77428a129190520804d57a1",
+      "report": "evidence/recovery/workflow/jobs/RecruitRed-253bf13685/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
-  "blockers": [
+  "profile": {
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-0000-og",
+    "context": "simtwo:0000",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/RecruitRed-253bf13685.json"
+    ],
+    "component": "simtwo:0000",
+    "refuted_profiles": []
+  },
+  "parked_blockers": [
     "EXPRESSION_SHAPE"
   ],
-  "reason": "Semantics recovered and preserved (best: attempt02/candidate0000.c: named cur/mode temporaries, declaration order cur,need,i,type,mode): 115-byte target versus 112, 46/48 instructions aligned, frame (enter 4, need at [bp-4]), ListIndexA selector slot, DS switch to the Dx8 segment, loop rotation and all AlistT/AlistM/AlistS operands match. Single residual at target 0x38-0x3e: the original forms the AlistM element address in BX ('mov bx,si; add bx,0x2b78') and loads 'mov bl,[bx]' with no displacement, whereas every C7 candidate emits 'mov bl,[si+0x2b78]'. 62 candidates tried: inline versus named temporaries, byte/int types, declaration orders, array index / pointer-arithmetic / address-of-element / far pointer local / int index local / unsigned index / constant-first spellings, and a separately named far AlistM array (adds a selector load). Budget 5/8 attempts, 62/192 candidates.",
-  "next_experiment": "Find the C7 construct that dereferences a Dx8-segment byte through a computed BX offset with no displacement while DS already selects the segment: distinguishing observation is 'mov bx,si; add bx,0x2b78; mov bl,[bx]'. Untried: a __based(void) or _segment-typed pointer whose segment is the Dx8 selector, a union view of the list record, or TU-level context where AlistM is a based pointer variable rather than an array; do not repeat the 62 listed spellings."
+  "parked_reason": "Semantics recovered and preserved (best: attempt02/candidate0000.c: named cur/mode temporaries, declaration order cur,need,i,type,mode): 115-byte target versus 112, 46/48 instructions aligned, frame (enter 4, need at [bp-4]), ListIndexA selector slot, DS switch to the Dx8 segment, loop rotation and all AlistT/AlistM/AlistS operands match. Single residual at target 0x38-0x3e: the original forms the AlistM element address in BX ('mov bx,si; add bx,0x2b78') and loads 'mov bl,[bx]' with no displacement, whereas every C7 candidate emits 'mov bl,[si+0x2b78]'. 62 candidates tried: inline versus named temporaries, byte/int types, declaration orders, array index / pointer-arithmetic / address-of-element / far pointer local / int index local / unsigned index / constant-first spellings, and a separately named far AlistM array (adds a selector load). Budget 5/8 attempts, 62/192 candidates.",
+  "parked_next_experiment": "Find the C7 construct that dereferences a Dx8-segment byte through a computed BX offset with no displacement while DS already selects the segment: distinguishing observation is 'mov bx,si; add bx,0x2b78; mov bl,[bx]'. Untried: a __based(void) or _segment-typed pointer whose segment is the Dx8 selector, a union view of the list record, or TU-level context where AlistM is a based pointer variable rather than an array; do not repeat the 62 listed spellings.",
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/RecruitRed-253bf13685/promotion.json"
 }

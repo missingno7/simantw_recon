@@ -209,7 +209,10 @@ def probe(job_id, source=None):
     # profile: every additional switch must earn its place.
     base = results.get(cat['default_profile'], {})
     discriminating = {name: gain(r, base) for name, r in results.items() if name != cat['default_profile']}
-    minimal = {name: gain(r, results.get(cat['profiles'][name].get('parent', cat['default_profile']), {})) for name, r in results.items() if name != cat['default_profile']}
+    def over_parents(name, r):
+        outcomes = [gain(r, results.get(parent, {})) for parent in cat['profiles'][name].get('parents', [cat['default_profile']])]
+        return 'NONE' if any(o == 'NONE' for o in outcomes) else 'STRICT' if all(o == 'STRICT' for o in outcomes) else 'DIAGNOSTIC'
+    minimal = {name: over_parents(name, r) for name, r in results.items() if name != cat['default_profile']}
     record = dict(job=job_id, symbol=job['symbol'], segment=card['segment_name'], source=stable.relative_to(ROOT).as_posix(), source_identity=identity(stable),
                   origin=str(source.relative_to(ROOT).as_posix()), origin_candidate=row['candidate'] if row else None, checked=datetime.now(timezone.utc).isoformat(),
                   component=(component_of(job['symbol']) or {}).get('id'), string_ops=sorted({r['mnemonic'] for r in card['disassembly'] if any(x in r['mnemonic'] for x in ('stos', 'movs', 'scas', 'lods', 'cmps'))}),
@@ -248,9 +251,9 @@ def assign(context_id, profile, reason, evidence, symbols=None, strength=None):
         fingerprints.update(record.get('string_ops', []))
     if not strengths or all(s == 'NONE' for s in strengths):
         raise FormatError('evidence does not discriminate profile %s for this context' % profile)
-    parent = cat['profiles'][profile].get('parent', cat['default_profile'])
+    parents = cat['profiles'][profile].get('parents', [cat['default_profile']])
     if all(s == 'NONE' for s in minimal):
-        raise FormatError('evidence does not justify profile %s over its parent %s; assign the minimal profile' % (profile, parent))
+        raise FormatError('evidence does not justify profile %s over its parents %s; assign the minimal profile' % (profile, ', '.join(parents)))
     if 'i' in cat['profiles'][profile]['flags'][0][2:] and not fingerprints:
         raise FormatError('an intrinsic profile requires string-intrinsic fingerprints in the evidence targets')
     computed = 'STRICT' if 'STRICT' in strengths else 'DIAGNOSTIC'

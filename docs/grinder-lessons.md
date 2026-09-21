@@ -85,3 +85,21 @@ Diagnostics now expose `unresolved_member_obligations`, including failing privat
 Preserve a matching body when correcting bindings. The YellowHelp inline-conditional probe added a stack temporary, whereas simply renaming the original declaration to MeMode produced exact admission. Declaration identity and expression shape are separate hypotheses.
 
 The [segment-access and boolean scheduling review](../evidence/topology/supervisor-based-pack/review.md) preserves further negatives. Named PACK based externs do not reproduce ClrModePop's immediate selectors and DS restoration. InitSpider's nonzero expression produces CMP/SBB/INC, but scheduling and register use still differ despite equal contribution size. Neither is recovered; avoid repeating these declaration/type experiments without new evidence.
+
+## Reconstruction rules from the build model
+
+`layout/reconstruction-rules.json` is attached to every inspection packet (`reconstruction_rules`) by observed triggers. The rules in force:
+
+- LINK may rewrite same-segment far calls (NOP; PUSH CS; CALL near); write ordinary far calls.
+- Declaration order can determine DS versus ES code generation; the CONST selector pool follows first-reference order across the whole unit, so a function's pool conflicts in isolation are unit work, not body work.
+- The ant lists derive from one real `Dx8` object where selector evidence establishes it.
+- Parameters copied into locals can be required when the historical code holds values in SI/DI.
+- Explicit result variables reproduce historical `MOV DX,1` return tails.
+- Arrays are frequently word-indexed; preserve the observed element width.
+- Never invent a convenient symbol when MAPSYM provides the real one: `win_hwnd[25]`, not a private `yardWindow`.
+- A matching numeric offset does not establish object identity; far-object identity requires selector/segment evidence.
+- Private state is natural `static` data with an evidence-backed size, type and initializer (a BSS word can only live in the original BSS region; `MakeClip`'s tile mask was initialised data, never an uninitialised array).
+- Preserve an already matching body while solving its unit/data binding (`tools/tu_assembly.py`).
+- The compiler profile belongs to the unit context; report a code shape that only `/Og` explains as unit evidence instead of trying switches.
+
+Four earlier admissions (`DrawYard`, `UpdateYard`, `DoDebugWin`, `MakeClip`) had passed with a private BSS word bound into the win library's `win_hwnd[]` or an unchecked initialised mask; the BSS-region rule now rejects those drafts and they were re-admitted with the real declarations (`evidence/topology/supervisor-bss-region/`).

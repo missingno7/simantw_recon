@@ -28,6 +28,8 @@ def inspect(symbol):
                   compiler_profile=dict(compiler='msc700',flags=compiler_profiles.profile_flags(profile['name'],card['segment_name']),profile=profile,catalog='layout/compiler-profiles.json',note='Profile is attached to the object context; it is not a per-function switch and the grinder cannot change it'))
     packet['unit_context']=compiler_profiles.component_of(symbol)
     packet['reconstruction_rules']=relevant_rules(card,packet)
+    review_path=ROOT/'evidence/recovery/parked-reclassification.json'
+    packet['parked_review']=read_json(review_path)['functions'].get(symbol) if review_path.exists() else None
     matching=[c for c in all_cards if c['source'] and c['ownership']=='GAME' and c['segment']==card['segment']]
     matching.sort(key=lambda c:abs((c['extent']['size'] or 65536)-(card['extent']['size'] or 65536)))
     packet['similar_matched_functions']=[dict(symbol=c['symbol'],source=c['source'],size=c['extent']['size'],basis='Same code group and nearest size; similarity is not semantic proof') for c in matching[:5]]

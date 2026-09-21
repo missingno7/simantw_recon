@@ -1,13 +1,13 @@
 {
   "id": "hanim_RemoveAnimSet-91a33c0781",
   "symbol": "_hanim_RemoveAnimSet",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T11:30:26.908411+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTGR_MODULE"
   ],
   "protected": {
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 12007,
-      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
+      "size": 15161,
+      "sha256": "9bd595930b3751f3c71cedd8415994725ed70512c49e3f388e4aca7b67c53fef"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,16 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8782,
-      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
+      "size": 10118,
+      "sha256": "7eb8da7b0f280730a2dc5d12f979a6ae48c558715db6835dfa85921c0e3b33ea"
     },
     "tools/factory_queue.py": {
       "size": 5170,
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24419,
-      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
+      "size": 30914,
+      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -84,8 +84,16 @@
       "sha256": "89b8a8a928a0d3708a8ca3912ebf21791fd9ee8b838e5a39173ad82dcf291338"
     },
     "tools/codegen_cache.py": {
-      "size": 2567,
-      "sha256": "2bd26c2de9e8025284a2a3fadd604166fa39d67267a2bae1bd539e09b83d8d9f"
+      "size": 2798,
+      "sha256": "a8db25e4be045a39c372ea05d52a8e076f4734e275478374d9c7bc3c720ebcc4"
+    },
+    "tools/compiler_profiles.py": {
+      "size": 16938,
+      "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
+    },
+    "tools/tu_assembly.py": {
+      "size": 25289,
+      "sha256": "d3230a6732ec71f3dcd5b0991a1463c555927ab4b97a5a310ffce0227e8aa008"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -98,6 +106,10 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
+    },
+    "layout/compiler-profiles.json": {
+      "size": 11708,
+      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -339,11 +351,38 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "98ca765b81e042bd852d271a3b882c063986f08629760917e3e9833385739a32",
+      "report": "evidence/recovery/workflow/jobs/hanim_RemoveAnimSet-91a33c0781/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "CONFIRMED_MEMBER"
     }
   ],
-  "blockers": [
+  "profile": {
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-gr-6410-og",
+    "context": "gr:6410",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/hanim_RemoveAnimSet-91a33c0781.json"
+    ],
+    "component": "gr:6410",
+    "refuted_profiles": []
+  },
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Candidate evidence/recovery/workflow/jobs/hanim_RemoveAnimSet-91a33c0781/attempt01/candidate0000.c (145 vs 146 bytes) reproduces everything except one post-loop register decision: after 'mov si,bx / push es:[si+2]' the original saves the set segment with 'mov di,es' across mem_Unlock and restores 'mov es,di' before the second 'push es:[si+2]'; MSC7 here instead reloads 'mov es,word ptr [bp-8]' from the spill slot. Both halves of the set pointer, the frame pointer induction (add si,0x2c with the segment reloaded from [bp-2] each iteration), the count re-read through LES, the spill of the set offset to [bp-0xa] only on the loop path, and all seven calls match. Declaration order (all permutations), block-scoped or unsigned counter, for/while/index forms, comparison orientation, register hint on the set pointer, and void/int mem_Unlock or signed/unsigned mem_Free prototypes (attempts 01-03, 67 candidates) all produce the reload.",
-  "next_experiment": "Do not repeat declaration, scope, loop-form or prototype matrices. Test whether the post-loop accesses used a distinct register-resident pointer value (for example a second pointer variable assigned from set, or the frame-table handle read through a pointer returned by the loop) so the compiler treats the set segment as a fresh register value without a home slot and saves it in DI. Distinguishing observation: 'mov di,es' at +0x60 and 'mov es,di' at +0x6a instead of 'mov es,[bp-8]'."
+  "parked_reason": "Candidate evidence/recovery/workflow/jobs/hanim_RemoveAnimSet-91a33c0781/attempt01/candidate0000.c (145 vs 146 bytes) reproduces everything except one post-loop register decision: after 'mov si,bx / push es:[si+2]' the original saves the set segment with 'mov di,es' across mem_Unlock and restores 'mov es,di' before the second 'push es:[si+2]'; MSC7 here instead reloads 'mov es,word ptr [bp-8]' from the spill slot. Both halves of the set pointer, the frame pointer induction (add si,0x2c with the segment reloaded from [bp-2] each iteration), the count re-read through LES, the spill of the set offset to [bp-0xa] only on the loop path, and all seven calls match. Declaration order (all permutations), block-scoped or unsigned counter, for/while/index forms, comparison orientation, register hint on the set pointer, and void/int mem_Unlock or signed/unsigned mem_Free prototypes (attempts 01-03, 67 candidates) all produce the reload.",
+  "parked_next_experiment": "Do not repeat declaration, scope, loop-form or prototype matrices. Test whether the post-loop accesses used a distinct register-resident pointer value (for example a second pointer variable assigned from set, or the frame-table handle read through a pointer returned by the loop) so the compiler treats the set segment as a fresh register value without a home slot and saves it in DI. Distinguishing observation: 'mov di,es' at +0x60 and 'mov es,di' at +0x6a instead of 'mov es,[bp-8]'.",
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/hanim_RemoveAnimSet-91a33c0781/promotion.json"
 }

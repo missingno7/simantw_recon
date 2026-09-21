@@ -1,13 +1,13 @@
 {
   "id": "SpecialTutorialInit-e0cff25916",
   "symbol": "_SpecialTutorialInit",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T12:07:01.528031+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTANTEDIT_MODULE"
   ],
   "protected": {
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 12007,
-      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
+      "size": 15161,
+      "sha256": "9bd595930b3751f3c71cedd8415994725ed70512c49e3f388e4aca7b67c53fef"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,16 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8782,
-      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
+      "size": 10118,
+      "sha256": "7eb8da7b0f280730a2dc5d12f979a6ae48c558715db6835dfa85921c0e3b33ea"
     },
     "tools/factory_queue.py": {
       "size": 5170,
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24419,
-      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
+      "size": 30914,
+      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -84,8 +84,16 @@
       "sha256": "89b8a8a928a0d3708a8ca3912ebf21791fd9ee8b838e5a39173ad82dcf291338"
     },
     "tools/codegen_cache.py": {
-      "size": 2567,
-      "sha256": "2bd26c2de9e8025284a2a3fadd604166fa39d67267a2bae1bd539e09b83d8d9f"
+      "size": 2798,
+      "sha256": "a8db25e4be045a39c372ea05d52a8e076f4734e275478374d9c7bc3c720ebcc4"
+    },
+    "tools/compiler_profiles.py": {
+      "size": 16938,
+      "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
+    },
+    "tools/tu_assembly.py": {
+      "size": 25289,
+      "sha256": "d3230a6732ec71f3dcd5b0991a1463c555927ab4b97a5a310ffce0227e8aa008"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -98,6 +106,10 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
+    },
+    "layout/compiler-profiles.json": {
+      "size": 9673,
+      "sha256": "b2dbe9cf453d1ee21cbef0ee39a130c6876138549f376471bc33b4bed6453723"
     }
   },
   "fixture_identity": {
@@ -367,11 +379,38 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "e78cb659fc9f3db098d33a942a64fca9017ec4b15865f8a907a7d5a52a83bc28",
+      "report": "evidence/recovery/workflow/jobs/SpecialTutorialInit-e0cff25916/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
-  "blockers": [
+  "profile": {
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-antedit-9248-og",
+    "context": "antedit:9248",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/SpecialTutorialInit-e0cff25916.json"
+    ],
+    "component": "antedit:9248",
+    "refuted_profiles": []
+  },
+  "parked_blockers": [
     "EXPRESSION_SHAPE"
   ],
-  "reason": "Candidate evidence/recovery/workflow/jobs/SpecialTutorialInit-e0cff25916/attempt03/candidate0000.c (152 vs 153 bytes) matches all instructions except one operand form: in the non-tutorial branch the original passes the base-name far pointer as 'mov ax,[bp-2] / push ax / push si' while MSC7 emits 'push word ptr [bp-2] / push si'. Everything else matches: strrchr(name,0x5c) with the offset in SI and segment homed at [bp-2], the p+1/name selection, MiscStrs as a far pointer to the far string table (LES then push of the first entry), stricmp with the cmp/sbb/neg boolean into DI, GenerateTutorial, SetEditWinTitle(\"Tutorial Game\") from the DGROUP literal at 0x17dd, InitSimVars, SeedSRand, EditMessage(0L,-2,-1,1). Prototype variants (char/const/void far pointer, unprototyped, long/unsigned long), argument casts, ternary/temp forms of the base name and if-assignment forms (attempts 02-05, 49 candidates) all keep the direct memory push.",
-  "next_experiment": "Do not repeat prototype/cast/ternary matrices. Find why the segment word is loaded into AX before the push: test whether the base name lives in a register-cached far pointer whose segment is an rvalue at that point (for example base assigned from a second variable or a struct member, or the else call placed after the if with base re-derived), observing '8b 46 fe 50 56' at +0x86."
+  "parked_reason": "Candidate evidence/recovery/workflow/jobs/SpecialTutorialInit-e0cff25916/attempt03/candidate0000.c (152 vs 153 bytes) matches all instructions except one operand form: in the non-tutorial branch the original passes the base-name far pointer as 'mov ax,[bp-2] / push ax / push si' while MSC7 emits 'push word ptr [bp-2] / push si'. Everything else matches: strrchr(name,0x5c) with the offset in SI and segment homed at [bp-2], the p+1/name selection, MiscStrs as a far pointer to the far string table (LES then push of the first entry), stricmp with the cmp/sbb/neg boolean into DI, GenerateTutorial, SetEditWinTitle(\"Tutorial Game\") from the DGROUP literal at 0x17dd, InitSimVars, SeedSRand, EditMessage(0L,-2,-1,1). Prototype variants (char/const/void far pointer, unprototyped, long/unsigned long), argument casts, ternary/temp forms of the base name and if-assignment forms (attempts 02-05, 49 candidates) all keep the direct memory push.",
+  "parked_next_experiment": "Do not repeat prototype/cast/ternary matrices. Find why the segment word is loaded into AX before the push: test whether the base name lives in a register-cached far pointer whose segment is an rvalue at that point (for example base assigned from a second variable or a struct member, or the else call placed after the if with base re-derived), observing '8b 46 fe 50 56' at +0x86.",
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/SpecialTutorialInit-e0cff25916/promotion.json"
 }

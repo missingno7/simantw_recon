@@ -190,6 +190,18 @@ class TransactionTests(TemporaryWorkflow):
             with workflow.job_lock('a-1234567890'):
                 workflow.recover_interrupted_attempts()
         self.assertEqual(read_json(path)['status'],'RUNNING');refresh.assert_not_called()
+    def test_independent_jobs_lock_independently(self):
+        with patch.object(workflow,'LOCKS',self.root/'locks'):
+            with workflow.job_lock('a-1234567890'):
+                with workflow.job_lock('b-1234567890'):pass
+                with self.assertRaisesRegex(FormatError,'another process'):
+                    with workflow.job_lock('a-1234567890'):pass
+            with workflow.job_lock('a-1234567890'):pass
+    def test_global_lock_waits_then_times_out(self):
+        with patch.object(workflow,'ROOT',self.root):
+            with workflow.global_lock():
+                with self.assertRaisesRegex(FormatError,'shared-state'):
+                    with workflow.global_lock(timeout=0.2):pass
     def test_stale_attempt_result_is_not_recorded(self):
         # Another process changed the job while this attempt compiled: refuse to commit.
         spec=dict(symbol='_a',compiler='msc700',flags=list(FLAGS),template='int a(void) { return 1; }',semantic_summary='Return one',publics=['_a'],max_candidates=96)

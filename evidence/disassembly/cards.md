@@ -2822,8 +2822,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RedrawWindows — SIMANT_MODULE:1C68
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 86 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 86 bytes.
+Source: src/recovered/wf_RedrawWindows-14f4bb1c45.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 1C68  c8080000                 enter 8, 0
@@ -31513,8 +31513,8 @@ Source: src/recovered/wf_hanim_MakeAnimSet-ff5bff9d29.c. Flags: ['/AL', '/G2', '
 ```
 
 ## _hanim_RemoveAnimSet — GR_MODULE:6EAA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 146 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 146 bytes.
+Source: src/recovered/wf_hanim_RemoveAnimSet-91a33c0781.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTGR_MODULE'].
 
 ```asm
 6EAA  c80a0000                 enter 0xa, 0
@@ -51490,8 +51490,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SpecialTutorialInit — ANTEDIT_MODULE:9CEA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 153 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 153 bytes.
+Source: src/recovered/wf_SpecialTutorialInit-e0cff25916.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 9CEA  c8040000                 enter 4, 0
@@ -54991,8 +54991,8 @@ C19A  cb                       retf
 ```
 
 ## _InitMapFunctions — ANTEDIT_MODULE:C19C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 133 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 133 bytes.
+Source: src/recovered/wf_InitMapFunctions-70fb457ea5.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C19C  9ac859a4c1               lcall 0xc1a4, 0x59c8 ; _RallocMemorySoft
@@ -105274,8 +105274,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RecruitRed — SIMTWO_MODULE:0866
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 115 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 115 bytes.
+Source: src/recovered/wf_RecruitRed-253bf13685.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 0866  c8040000                 enter 4, 0
@@ -123334,8 +123334,8 @@ BE2F  cb                       retf
 ```
 
 ## _win_DrawBitMapAtObj — SIMTWO_MODULE:BE30
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 64 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 64 bytes.
+Source: src/recovered/wf_win_DrawBitMapAtObj-9cde99b504.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 BE30  55                       push bp
@@ -126844,8 +126844,8 @@ DDD0  cb                       retf
 ```
 
 ## INDIRECTDLGPROC — SIMTWO_MODULE:DDD2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 143 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 143 bytes.
+Source: src/recovered/wf_INDIRECTDLGPROC-3e701072c7.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/GA', '/NTSIMTWO_MODULE'].
 
 ```asm
 DDD2  8cd0                     mov ax, ss

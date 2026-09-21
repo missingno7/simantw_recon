@@ -4,7 +4,7 @@ This project reconstructs readable Win16 SimAnt C through authentic Microsoft-er
 
 For ordinary source recovery, read `docs/factory.md` and use `tools/grind.py`: `next`, `inspect`, `test`, `accept` or `block`. The lower-level `tools/recovery_workflow.py` owns budgets and strict admission; use its `doctor` command for readiness. The task queue and durable blocker ledger are authoritative for which targets to attempt. Preserve failed readable drafts.
 
-The operational baseline is MSC C/C++ 7.00 `/AL /G2 /Gs /Oelw /NT<original code group>`. Historical patch identity is not a generic recovery blocker. Variant searches must be bounded and semantically motivated. Ordinary recovery must not alter proof tools, protected hashes, recipes, manifests or counts by hand.
+The operational baseline is MSC C/C++ 7.00 `/AL /G2 /Gs /Oelw /NT<original code group>`; other catalogued profiles (`layout/compiler-profiles.json`) apply only to unit contexts with recorded evidence, never as a per-function flag search. Units, profiles and the unit-assembly lane are described in `docs/factory.md` and `docs/build-topology.md`. Historical patch identity is not a generic recovery blocker. Variant searches must be bounded and semantically motivated. Ordinary recovery must not alter proof tools, protected hashes, recipes, manifests or counts by hand.
 
 Never patch candidate object bytes or treat copied machine-code blobs as recovered C. Exact proof includes the complete target extent, ordinary bytes, semantic fixups and all private contributions. A semantic match, CFG estimate or scaffold stub earns no recovery credit. NE relocation chains are loader metadata, not source constants or real branch targets.
 
