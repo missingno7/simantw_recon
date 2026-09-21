@@ -1,7 +1,7 @@
 {
   "id": "win_DrawVBar-65c3178ad2",
   "symbol": "_win_DrawVBar",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:52:51.380590+00:00",
   "flags": [
     "/AL",
@@ -354,5 +354,10 @@
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ],
+  "reason": "Vertical twin of the parked win_DrawHBar (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/win_DrawVBar-65c3178ad2/attempt03/candidate0000.c, 203 vs 194 bytes, 79/85 opcodes): same rect fetch, ribbon growth and unlock, then mid = bottom - (long)(bottom - top) * fraction / 65536L, fill [mid, bottom] in _foreColor when mid < bottom and [top, mid] in _backColor when mid > top. The original loads the saved top into SI right after win_UnlockWin (+0x60) and keeps it there across the multiply/divide and both GRectFill calls with an 8-byte frame; /Oelw re-reads it into CX later and spills it to a new frame slot (frame 0xa/0xc) for inline, height-local, and declaration-order forms.",
+  "next_experiment": "Resolve with win_DrawHBar (same cross-statement SI retention); distinguishing observation: 'mov si,[bp-6]' at +0x60 with 'enter 8,0'."
 }

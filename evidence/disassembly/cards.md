@@ -49115,8 +49115,8 @@ Source: src/recovered/wf_IsItWall-da7d76733f.c. Flags: ['/AL', '/G2', '/Gs', '/O
 ```
 
 ## _FillDirtB — ANTEDIT_MODULE:8718
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 193 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 193 bytes.
+Source: src/recovered/wf_FillDirtB-b73109489f.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 8718  55                       push bp

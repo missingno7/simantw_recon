@@ -1,7 +1,7 @@
 {
   "id": "IsItFoodAt-3c34325c50",
   "symbol": "_IsItFoodAt",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:53:04.936199+00:00",
   "flags": [
     "/AL",
@@ -367,6 +367,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "244ab124110c18e6a06231dcd8b22de7b80443c6e16b541d01764d7350b6c392",
+      "report": "evidence/recovery/workflow/jobs/IsItFoodAt-3c34325c50/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best evidence/recovery/workflow/jobs/IsItFoodAt-3c34325c50/attempt02/candidate0000.c, 200 vs 193 bytes, 78/88 opcodes): validate (x, y) with the level-dependent bounds as IsItAHole, read the tile from MapA/MapB/MapR by level (else -1), return 0 for a negative tile, IsItFood(tile) for levels 0/1, else a DX result of tile in 0x10..0x13. The original keeps x in SI only (no DI push) and forms the MapR index as 'shl si,6 / add si,[bp+0xa] / mov bl,[si+0x58e8] / sub bh,bh / mov si,bx'; /Oelw homes x in DI with an extra push and computes the case-3 index through BX for switch/if-chain, declaration-order, case-order and tail-form variants.",
+  "next_experiment": "Factor the y bounds test out of the level branch so x becomes live first, and compare with the accepted IsItAHole register assignment; distinguishing observation: 'mov si,[bp+8]' at +0x10 with no 'push di'."
 }

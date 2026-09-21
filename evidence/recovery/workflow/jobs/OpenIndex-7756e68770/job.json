@@ -1,7 +1,7 @@
 {
   "id": "OpenIndex-7756e68770",
   "symbol": "_OpenIndex",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:52:46.413545+00:00",
   "flags": [
     "/AL",
@@ -339,6 +339,53 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "26d28be8b73dc372ad51fb650ef6d8f28c6f18034eb29e0284309cc0090e97c1",
+      "report": "evidence/recovery/workflow/jobs/OpenIndex-7756e68770/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "f8fc05fe3563498785d994d5601c26a03c182479f00a3c96763694fcbdb26192",
+      "report": "evidence/recovery/workflow/jobs/OpenIndex-7756e68770/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "9d4e6f38232f88ac11ed6697db706f72eb7173b3e694ae83a0a998b476c3d320",
+      "report": "evidence/recovery/workflow/jobs/OpenIndex-7756e68770/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/oix4.c, 185 vs 194 bytes, 61/75 opcodes): sprintf a file name from the two leading parameters, _lopen(name, 2), store the handle in the per-slot record (match_position + idx*0x7c + 0x747e), DosPunt on a non-positive handle, _lread a 20-byte header into the record at +0x745c, size = header word 0 << 3, mem_malloc(size) stored as a far pointer at +0x7458 with Punt on NULL, _lread size bytes into it, _lclose. The original copies idx into SI at entry, computes idx*0x7c once into BX ('imul bx,si,0x7c' at +0x30), spills it to [bp-0x6c] across DosPunt and keeps the handle in DI; /Oelw recomputes the product from the parameter per field access or, with an explicit record-base local, still assigns SI/DI differently and spills the far pointer instead.",
+  "next_experiment": "Copy idx into a local at entry (n = idx) AND compute base = n * 0x7c into a second local used for every record access, with the handle in a third local declared after them; distinguishing observation: 'mov si,[bp+0xa]' at +0x6, 'imul bx,si,0x7c' at +0x30 and the [bp-0x6c] spill."
 }

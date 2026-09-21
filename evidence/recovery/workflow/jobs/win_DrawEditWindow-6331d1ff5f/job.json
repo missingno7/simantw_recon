@@ -1,7 +1,7 @@
 {
   "id": "win_DrawEditWindow-6331d1ff5f",
   "symbol": "_win_DrawEditWindow",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:59:14.407180+00:00",
   "flags": [
     "/AL",
@@ -297,5 +297,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "4f6de97ada0b0f332017cf95d867a9fc02ff0bf5768bb18ac0b5eb88e7a3dc91",
+      "report": "evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "2ead9cfde21cb8f80eb5dc67b6e3edad3d514a418c3331ec597cf081f5a0c184",
+      "report": "evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "318a4bb20a64f50e3d005e8b50f7bdb24a0aa967209acb55d54f70ca2042cbde",
+      "report": "evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "4af32650c126b12ad0667611aacac2d919467b47695c812824c9555f784688f8",
+      "report": "evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt04/candidate0000.c, 201 vs 195 bytes, 57/69 opcodes): when flag bit 2 is set and editBuf is a valid handle and (updateRgn is empty or RectInRegion(updateRgn, &match rect)), lock editBuf and blit it at editTileRect x/y scaled by tileWidth*editWidth and tileHeight*editHeight through DoFastMonoBitmap (displayType & 1) or DoFastBitmap, unlock; then DrawEditGraphs() and win_GetObjRect(7, &rect). The original keeps the locked buffer's offset in SI across both blit branches and places editTileRect x/y at [bp-8]/[bp-6]; /Oelw spills the offset to [bp-4] and swaps the two slots for both declaration and assignment orders.",
+  "next_experiment": "Same frame-homed far pointer family as hanim_HideObject/gr_BitMapSize; test the buffer pointer declared first and the scaled sizes computed into the x/y locals in the target's order; distinguishing observation: 'mov si,ax' at +0x3e after mem_Lock and 'push dx / push si' for the blit argument."
 }

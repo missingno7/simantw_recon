@@ -1,7 +1,7 @@
 {
   "id": "DropWater-8e061e8e99",
   "symbol": "_DropWater",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:54:39.768574+00:00",
   "flags": [
     "/AL",
@@ -382,5 +382,10 @@
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/dwt1.c, 200 vs 195 bytes, 78/84 opcodes): for x = 0..63 in column y of MapB and MapR (near 64x64 planes 2/3) a cell equal to 0x4e becomes SRand1(8), any other cell loses 0x2f; then ZapEuMapAt(2, x, y) and ZapEuMapAt(3, x, y). The original keeps the cell value in AX with one shared store point per plane ('mov [bp-4],ax' at +0x39 and +0x7f, frame 6); /Oelw homes the temp in DX with split memory update paths and a 4-byte frame for if/else, ternary, unsigned char, two-temp and inverted-test forms.",
+  "next_experiment": "Try the update as one read-modify-write expression per plane without a full-scope temp (e.g. MapB[x][y] = MapB[x][y] == 0x4e ? SRand1(8) : MapB[x][y] - 0x2f, or a byte pointer p = &MapB[x][y] with *p updated) so the value stays transient in AX; distinguishing observation: 'sub ah,ah / cmp ax,0x4e' at +0x23 and the single 'mov [bp-4],ax' at +0x39."
 }
