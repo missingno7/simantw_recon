@@ -1,7 +1,7 @@
 {
   "id": "GetNewMode-ce88371833",
   "symbol": "_GetNewMode",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:47:04.340962+00:00",
   "flags": [
     "/AL",
@@ -325,6 +325,67 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "2441dc931e398b4e8e9087039eec78bc4e937dfcb0053b23c75c836290fc4ef0",
+      "report": "evidence/recovery/workflow/jobs/GetNewMode-ce88371833/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "fcdfaa5409fba9b1b94927df3f762f16a2e53b41e150e3d3ca19139a7302b259",
+      "report": "evidence/recovery/workflow/jobs/GetNewMode-ce88371833/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "ea1e1b7fa1de9fff3cc48d9088d8d08d4d7c6921f95b6a16de6bc26f83762346",
+      "report": "evidence/recovery/workflow/jobs/GetNewMode-ce88371833/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "06a1dc22b04fc59dbaf074b29538ab7d884928bc2feb58162bc1564082a8571c",
+      "report": "evidence/recovery/workflow/jobs/GetNewMode-ce88371833/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/gnm2.c, 186 vs 192 bytes, 52/68 opcodes): with flags & 0x80 the next mode is ModeTabWB[StrategicModeR][SRand8()] for mode 2, ModeTabSB[StrategicModeR][SRand8()] for mode 6, else CasteModeTabB[mode]; with ModeAuto == 1 the same three-way choice uses StrategicModeB; otherwise modes 2/6 return ModeMe and others CasteModeTabB[mode]. The original duplicates the mode tests per branch (mode reloaded into DI, SI, DI) but cross-jumps the identical lookup tails ('shl bx,3 / add bx,ax / mov es / mov al,[bx+off]' shared via 'jmp 0x21' and 'jmp 0x7f'); /Oelw emits both copies of each tail, and the single-dispatch rewrite (strat local, build/grind/gnm6.c) changes the register that carries the row (SI/AX instead of BX) and drops the duplicated tests.",
+  "next_experiment": "Keep the per-branch duplicated tests but make the two lookup tails textually identical (same table expression through a shared macro, row loaded into a temp before SRand8) so C7's cross-jumping merges them; distinguishing observation: 'jmp 0x21' at +0x6a into the shared 'shl bx,3' tail."
 }

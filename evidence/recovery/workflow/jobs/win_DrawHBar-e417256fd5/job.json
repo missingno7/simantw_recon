@@ -1,7 +1,7 @@
 {
   "id": "win_DrawHBar-e417256fd5",
   "symbol": "_win_DrawHBar",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:47:22.953711+00:00",
   "flags": [
     "/AL",
@@ -311,6 +311,67 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "69456b8266e5e1c2e9514cf2f5e5c6238472214c0cad2c16088972d2091b87cc",
+      "report": "evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "7220ba73cf06f9215af912ba6a09654d850583cab1259be0c88132a9455e6954",
+      "report": "evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "ab1fb98663ba301ca7d54301802fb8c40e3a8fdbdd205f69680308a5e967e9bb",
+      "report": "evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "30fd412147efcd8a2f83cf215b56cb28705d9d9e8a067e4d8700e8aabf701b0b",
+      "report": "evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt05/results.json",
+      "completed": 6,
+      "candidates": 6,
+      "cache": {
+        "hits": 0,
+        "misses": 6,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ],
+  "reason": "Semantics established (Sonnet grinder + supervisor, 5 attempts, best build/grind/whb4.c = evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt05/candidate0000.c, 192 vs 192 bytes, 80/81 opcodes): select the object colour, lock, copy the object rect from the bucket (four MOVSW), grow right/bottom under the ribbon bar, unlock, split the bar at left + (long)(right - left) * fraction / 65536L, fill the left part in _foreColor when non-empty and the rest to the old right edge in _backColor. The single difference: the original loads the saved right edge into SI immediately after win_UnlockWin (+0x60, before the 65536L/fraction pushes); /Oelw sinks that load to its first use after the pushes for every expression spelling (operand orders, >> 16, 0x10000L, int/long cast placements, declaration orders).",
+  "next_experiment": "Same cross-statement register retention as DrawMapCursor (the old rect.right kept in SI across the store that overwrites it); evaluate with that family, or test a source that reads rect.right for the split without a named copy and relies on the compiler caching it; distinguishing observation: 'mov si,[bp-4]' at +0x60 before 'push 1 / push 0'."
 }

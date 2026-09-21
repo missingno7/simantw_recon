@@ -1,7 +1,7 @@
 {
   "id": "win_DrawTitle-85696fc88d",
   "symbol": "_win_DrawTitle",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:52:19.327384+00:00",
   "flags": [
     "/AL",
@@ -297,5 +297,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "640a8f177df572d7013f8470519a4f59c791b05633bd380c00319bd66492fe50",
+      "report": "evidence/recovery/workflow/jobs/win_DrawTitle-85696fc88d/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "5f966b1779ddf86da141572def894b8545a690abb9595af8eef4a2b7d820eb85",
+      "report": "evidence/recovery/workflow/jobs/win_DrawTitle-85696fc88d/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "845c455683115b1c23082a45ddacbeb80d24d587223858828f060672db37f1fb",
+      "report": "evidence/recovery/workflow/jobs/win_DrawTitle-85696fc88d/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "e557993a436c787ccf6e0ebd6e6a0bc74c9f27797a6943d2e5f4670a033b203f",
+      "report": "evidence/recovery/workflow/jobs/win_DrawTitle-85696fc88d/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics established (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/win_DrawTitle-85696fc88d/attempt01/candidate0000.c, 196 vs 193 bytes, 60/78 opcodes): lock the window, walk bucket->objects[0..numChildren-1] (far pointers after the 0x2c-byte header); a type-12 child supplies its inline text at +0x2a, a type-18 child the text through the far pointer at +0x2a; after unlocking, SetWindowText(win_hwnd[objectNumber >> 8], text) when a title was found. The original keeps the bucket pointer in ES:DI and loads each child with 'lds si,es:[di]' (+0x4b) addressing members DS-relative, whereas /Oelw spills the pointers and uses LES BX / ES-prefixed member accesses with a smaller frame (0x10/0x12 vs 0x14) in pointer-walk, indexed, if/else and inlined forms.",
+  "next_experiment": "Same frame-homed far pointer family as hanim_HideObject/gr_BitMapSize (LDS into DS:SI for a loop-carried far object); test a child pointer local declared before the bucket pointer and read once per iteration into a second pointer used for both member reads; distinguishing observation: 'lds si,es:[di]' at +0x4b."
 }

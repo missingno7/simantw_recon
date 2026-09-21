@@ -1,0 +1,31 @@
+{
+  "symbol": "_IsItFoodAt",
+  "source": "build/grind/ifa_batch.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [
+    {
+      "name": "tail",
+      "marker": "/*TAIL*/",
+      "values": [
+        "if (tile < 0x10 || tile > 0x13)\n        return 0;\n    return 1;",
+        "if (tile >= 0x10 && tile <= 0x13)\n        valid = 1;\n    else\n        valid = 0;\n    return valid;"
+      ],
+      "rationale": "Supervisor requested direct-return tail vs dx-result-reuse tail per IsThisFood style"
+    }
+  ],
+  "semantic_summary": "IsItFoodAt v5: IsItAHole-exact shape (tile/valid only, no result local), batching two tail forms per supervisor guidance",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_IsItFoodAt"
+  ]
+}
