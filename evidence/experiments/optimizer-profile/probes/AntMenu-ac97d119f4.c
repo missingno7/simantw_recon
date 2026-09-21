@@ -11,10 +11,12 @@
  * command 3 while Shift (VK 0x10) is held.  The command goes to
  * YellowCommand and the raw menu selection is returned.
  *
- * Unit profile /Og: MeMode is read through a far pointer local homed on
+ * Unit profile /Og: MeMode's far address is computed once and homed on
  * the frame (reloaded via LES); the three win_DoProxMenu calls share one
  * cross-jumped call site.  The selection is copied into the command
- * variable (SI) and translated in place.
+ * variable (SI) and translated in place.  The target frame is 8 bytes:
+ * the &MeMode home at [bp-8] plus a 4-byte declared home at [bp-4] that
+ * no instruction touches (a dead zero-initialised pair deleted by /Og).
  */
 struct MouseEvent {
     int pad[4];
@@ -39,16 +41,17 @@ int far AntMenu(struct MouseEvent far *pt)
 {
     int result;
     int cmd;
-    int far *mode = &MeMode;
+    int x = 0;
+    int y = 0;
 
     WinPrintf("ANTMENU");
 
-    if (*mode == 0) {
+    if (MeMode == 0) {
         if (MeType == 0x40 && MeNestStarted == 0)
             result = win_DoProxMenu(0x800, -1, pt->x, pt->y);
         else
             result = win_DoProxMenu(0x700, -1, pt->x, pt->y);
-    } else if (*mode == 1) {
+    } else if (MeMode == 1) {
         result = win_DoProxMenu(0x2000, -1, pt->x, pt->y);
     } else {
         result = -1;
@@ -58,7 +61,7 @@ int far AntMenu(struct MouseEvent far *pt)
         return result;
 
     cmd = result;
-    if (*mode == 1) {
+    if (MeMode == 1) {
         cmd = mapCmds[cmd];
     } else {
         if (MeType == 0x40 && MeNestStarted == 0)

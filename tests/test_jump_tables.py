@@ -41,6 +41,26 @@ class JumpTables(unittest.TestCase):
         code=bytes.fromhex('3d0100'+'770a'+'d1e0'+'93'+'2effa70f00'+'cb90')+table(0x13,0x13)+bytes.fromhex('cb')
         self.assertEqual(solve(code,0,len(code))['status'],'AMBIGUOUS_TABLE')
 
+# two alignment NOPs before the table
+NOP2=bytes.fromhex('3d0100'+'770e'+'d1e0'+'93'+'2effa70f00'+'9090')+table(0x13,0x14)+bytes.fromhex('cbcb')
+# and ax,0x70 ; shr ax,3 ; cmp ax,2 ; ja default ; xchg bx,ax ; jmp cs:[bx+0x10] ; T[2] ; ret ; ret
+PRE=bytes.fromhex('257000'+'c1e803'+'3d0200'+'770a'+'93'+'2effa71100')+table(0x15,0x16)+bytes.fromhex('cbcb')
+
+class ReducedForms(unittest.TestCase):
+    def test_two_alignment_nops(self):
+        r=solve(NOP2,0,len(NOP2));self.assertEqual(r['end'],len(NOP2));self.assertEqual([g['classification'] for g in r['gaps']],['JUMP_TABLE'])
+    def test_three_nops_are_not_adjacent(self):
+        code=bytes.fromhex('3d0100'+'770f'+'d1e0'+'93'+'2effa71000'+'909090')+table(0x14,0x15)+bytes.fromhex('cbcb')
+        self.assertEqual(solve(code,0,len(code))['status'],'AMBIGUOUS_TABLE')
+    def test_prescaled_index_with_even_mask(self):
+        r=solve(PRE,0,len(PRE));self.assertEqual(r['end'],len(PRE));self.assertEqual(r['jump_tables'][0]['count'],2)
+    def test_prescaled_index_needs_even_mask(self):
+        odd=bytes.fromhex('257800')+PRE[3:]   # and ax,0x78: bit 3 survives the shift
+        self.assertEqual(solve(odd,0,len(odd))['status'],'AMBIGUOUS_TABLE')
+    def test_prescaled_index_needs_even_bound(self):
+        code=PRE[:6]+bytes.fromhex('3d0300')+PRE[9:]
+        self.assertEqual(solve(code,0,len(code))['status'],'AMBIGUOUS_TABLE')
+
 class DiagnosticTables(unittest.TestCase):
     def test_table_words_align_as_case_targets(self):
         r=solve(JA,0,len(JA));tables=[(t['table'],t['count']) for t in r['jump_tables']]

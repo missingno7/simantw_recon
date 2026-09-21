@@ -1,15 +1,20 @@
 /*
- * DrawMower: keep the yard's lawnmower animation object synced to the
- * boy's walk cycle.  Only while BoyHere is 3 or 4 (mowing) does the
- * mower move: if the game is paused it snaps straight to state 1;
- * otherwise the mower sound plays once and BoyFrame selects state 1
- * (frames 103-105, mower ahead-right of the boy) or state 2 (frames
- * 109-111, ahead-left) -- any other frame instead removes the shown
- * mower object (tagged "mower") and returns.  BoyHere not 3/4 leaves
- * state 0, the mower's fixed parked spot (0x62,0xb5); states 1/2 place
- * it at BoyX+19,BoyY+15 or BoyX-15,BoyY+15.  The object (animation
- * frame set 0x2260+state) is created the first time, repositioned
- * after.
+ * DrawMower: keep the yard's lawnmower animation object in step with the
+ * boy.  While BoyHere is 3 or 4 (the boy is mowing) the mower sound
+ * myBeginSound(0x40, 0, 0x24) is started unless the game is paused, and
+ * the boy's walk frame selects the mower state: frames 103..105 put the
+ * mower ahead-right (state 1, BoyX+19), frames 109..111 ahead-left
+ * (state 2, BoyX-15), both at BoyY+15; any other frame removes the shown
+ * mower object (tag "mower", DGROUP 0x1954) and clears the private
+ * handle (mowerObject, -1 sentinel at DGROUP 0x1890).  Outside 3/4 the
+ * mower stays parked at its fixed spot (0x62, 0xb5), state 0.  The
+ * object (frame set 0x2260 + state) is created on first use and
+ * repositioned afterwards.
+ *
+ * Unit profile /Og: the frame switch lowers to MSC's SUB/JL/JO/DEC/DEC/JLE
+ * range chains; the three PLACE_MOWER expansions have their coordinates
+ * folded into BX/DX temporaries (unused frame homes) and their identical
+ * reposition/create tails cross-jumped into one copy.
  */
 extern int near BoyHere;
 extern int near BoyFrame;
@@ -21,52 +26,47 @@ static int near mowerObject = -1;
 
 extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);
 extern void far hanim_RemoveAnimObject(int animation, int object, char far *name);
-extern int far hanim_SetObjectPos(int right, int bottom, int size, int animation, int object, int layer);
-extern int far hanim_AddAnimObject(int animation, int right, int bottom, int size, int layer);
+extern int far hanim_SetObjectPos(int right, int bottom, int size,
+                                  int animation, int object, int layer);
+extern int far hanim_AddAnimObject(int animation, int right, int bottom,
+                                   int size, int layer);
+
+/* Place the mower object at (x, y): reposition it, or create it once. */
+#define PLACE_MOWER(x, y)     if (mowerObject != -1)         hanim_SetObjectPos(x, y, state + 0x2260, yardAnimHandle, mowerObject, -1);     else         mowerObject = hanim_AddAnimObject(yardAnimHandle, x, y, state + 0x2260, -1)
 
 void far DrawMower(void)
 {
     int state;
-    int bx, dx;
-    int frame;
 
     state = 0;
     if (BoyHere == 3 || BoyHere == 4) {
-        if (GamePaused != 0) {
-            state = 1;
-        } else {
+        if (GamePaused == 0)
             myBeginSound(0x40, 0, 0x24);
-            frame = BoyFrame - 103;
-            if (frame >= 0 && frame <= 2) {
-                state = 1;
-            } else {
-                frame -= 4;
-                if (frame >= 0 && frame <= 2) {
-                    state = 2;
-                } else {
-                    if (mowerObject == -1)
-                        return;
-                    hanim_RemoveAnimObject(yardAnimHandle, mowerObject, "mower");
-                    mowerObject = -1;
-                    return;
-                }
+        switch (BoyFrame) {
+        case 103:
+        case 104:
+        case 105:
+            state = 1;
+            break;
+        case 109:
+        case 110:
+        case 111:
+            state = 2;
+            break;
+        default:
+            if (mowerObject != -1) {
+                hanim_RemoveAnimObject(yardAnimHandle, mowerObject, "mower");
+                mowerObject = -1;
             }
+            return;
         }
     }
 
     if (state == 0) {
-        bx = 0x62;
-        dx = 0xb5;
+        PLACE_MOWER(0x62, 0xb5);
     } else if (state == 1) {
-        bx = BoyX + 0x13;
-        dx = BoyY + 0xf;
+        PLACE_MOWER(BoyX + 0x13, BoyY + 0xf);
     } else {
-        bx = BoyX - 0xf;
-        dx = BoyY + 0xf;
+        PLACE_MOWER(BoyX - 0xf, BoyY + 0xf);
     }
-
-    if (mowerObject != -1)
-        hanim_SetObjectPos(bx, dx, state + 0x2260, yardAnimHandle, mowerObject, -1);
-    else
-        mowerObject = hanim_AddAnimObject(yardAnimHandle, bx, dx, state + 0x2260, -1);
 }

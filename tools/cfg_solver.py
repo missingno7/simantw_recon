@@ -13,7 +13,7 @@ def switch_table(ins,chain,seen,code,start,limit,relocation_bytes):
     xchg bx,r|mov bx,r ; jmp word ptr cs:[bx+T]` and return its table.
 
     The table holds N+1 (`ja`) or N (`jae`/`jnb`) near code offsets stored
-    directly after the jump (one alignment NOP allowed). Every entry must lie
+    directly after the jump (up to two alignment NOPs allowed). Every entry must lie
     inside the symbol bound and no table byte may carry a loader obligation.
     Anything else stays an unresolved indirect jump.
     """
@@ -22,7 +22,7 @@ def switch_table(ins,chain,seen,code,start,limit,relocation_bytes):
     if ins.reg_name(mem.segment)!='cs' or ins.reg_name(mem.base)!='bx' or mem.index:return None
     table=mem.disp&65535
     after=ins.address+ins.size
-    if not (table==after or (table==after+1 and code[after:after+1]==b'\x90')):return None
+    if not (after<=table<=after+2 and all(b==0x90 for b in code[after:table])):return None
     # Walk backwards through the fall-through chain: index move, shift, then
     # the bound check. The shift may also be reached by the taken arm of
     # `jbe/jb` (`cmp ; jbe shift ; jmp default ; shift:`).
@@ -33,8 +33,15 @@ def switch_table(ins,chain,seen,code,start,limit,relocation_bytes):
         back.append(seen[pos])
     text=[(i.mnemonic,i.op_str) for i in back]
     if len(text)<2:return None
+    prescaled=False
     if text[0] in (('xchg','bx, ax'),('xchg','ax, bx'),('mov','bx, ax')) and text[1]==('shl','ax, 1'):shift=back[1]
     elif text[0]==('shl','bx, 1'):shift=back[0]
+    elif text[0] in (('xchg','bx, ax'),('xchg','ax, bx'),('mov','bx, ax')) and text[1][0] in ('ja','jae','jnb'):
+        # Strength-reduced form: `and ax,M ; shr ax,k` already yields the
+        # doubled index, so the bound is checked on even values and no
+        # shift precedes the move. Only admitted when the mask proves that
+        # every reachable index is even.
+        shift=back[0];prescaled=True
     else:return None
     # Predecessor of the shift: fall-through, or a conditional branch targeting it.
     pred=chain.get(shift.address)
@@ -49,6 +56,18 @@ def switch_table(ins,chain,seen,code,start,limit,relocation_bytes):
     if cmp_ins is None or cmp_ins.mnemonic!='cmp' or len(cmp_ins.operands)!=2 or cmp_ins.operands[1].type!=X86_OP_IMM:return None
     bound=cmp_ins.operands[1].imm
     count=bound+1 if branch.mnemonic in ('ja','jbe','jna') else bound
+    if prescaled:
+        pos=chain.get(cmp_ins.address);shr=seen.get(pos) if pos is not None else None
+        if shr is None or shr.mnemonic!='shr' or not shr.op_str.startswith('ax, ') or shr.operands[1].type!=X86_OP_IMM:return None
+        k=shr.operands[1].imm;mask=None
+        for _ in range(4):
+            pos=chain.get(pos)
+            if pos is None:break
+            prev=seen[pos]
+            if prev.mnemonic=='and' and prev.op_str.startswith('ax, ') and prev.operands[1].type==X86_OP_IMM:mask=prev.operands[1].imm;break
+            if prev.mnemonic not in ('test','cmp') and not prev.group(cs.CS_GRP_JUMP):break
+        if mask is None or (mask>>k)&1 or bound%2 or branch.mnemonic not in ('ja','jbe','jna'):return None
+        count=bound//2+1
     if not 1<=count<=256 or table+2*count>limit:return None
     if any(p in relocation_bytes for p in range(table,table+2*count)):return None
     targets=[int.from_bytes(code[table+2*i:table+2*i+2],'little') for i in range(count)]

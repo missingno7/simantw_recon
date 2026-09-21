@@ -405,6 +405,75 @@
       "source": "evidence/topology/build-topology.json",
       "basis": "Same-object component (shared selector pool / private data / contiguity)",
       "recorded": "2026-09-21T21:48:19.707951+00:00"
+    },
+    "antedit:67C6": {
+      "publics": [
+        "_EditToolsMenu",
+        "_win_DrawExamineWindow",
+        "_MagnifyMenu",
+        "_AntMenu",
+        "_SetExpTool"
+      ],
+      "segment": "ANTEDIT_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T22:00:45.780106+00:00"
+    },
+    "simone:5AD2": {
+      "publics": [
+        "_IsClear3x3",
+        "_IsClearTile",
+        "_AddAntToList",
+        "_SetLife",
+        "_IsThisEgg",
+        "_IsThisGrass",
+        "_IsThisFood",
+        "_IsThisPebble",
+        "_IsItNFood",
+        "_IsItFoodAt",
+        "_GetLife",
+        "_GetMap",
+        "_SetMap",
+        "_ClearLife",
+        "_ClearMyLife",
+        "_SetQueenTail",
+        "_SetMyLife",
+        "_MoveMyLife",
+        "_DoMapUpdateDraw",
+        "_DoEditAndMapUpdateDraw",
+        "_TargetAnt",
+        "_EndTargetMode",
+        "_StartLifeTransfer",
+        "_EndLifeTransferMode",
+        "_ExchangeLives",
+        "_DoLifeExchange",
+        "_DropMyFood",
+        "_DropPebble",
+        "_DropMyRock",
+        "_DropMyEgg",
+        "_PickupMyRock",
+        "_FindEggAt",
+        "_FindLifeAt",
+        "_SetMyHealth",
+        "_EatMyFood",
+        "_PickupMyEgg",
+        "_PickupMyFood",
+        "_DropMyObject",
+        "_PickupMyObject",
+        "_TileCanBeMovedOn",
+        "_IsNotBarrier",
+        "_IsNotObstacle",
+        "_IsItDigable",
+        "_IsItYellow",
+        "_IsLessThanHole",
+        "_IsSamePlane",
+        "_IsLiftable",
+        "_TryMyDropOrLift"
+      ],
+      "segment": "SIMONE_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T22:03:21.831872+00:00"
     }
   },
   "assignments": [
@@ -578,6 +647,30 @@
       ],
       "reason": "OverlayTileSet natural source (no pointer local) is STRONGLY_SUPPORTED_MEMBER under og/og-ga/ogi and NO_COMPLETE_MATCH under baseline/ga (56/70 opcodes, 216 bytes): the far-address home on the frame reloaded via LES is /Og global CSE. og is the minimal profile.",
       "reviewed": "2026-09-21T21:48:19.707951+00:00"
+    },
+    {
+      "id": "asg-antedit-67c6-og",
+      "context": "antedit:67C6",
+      "profile": "og",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/AntMenu-ac97d119f4.json"
+      ],
+      "reason": "AntMenu natural source (far MeMode global, selection translated in place through cmd) aligns 83/83 opcodes at the target size 232 bytes under og/og-ga/ogi versus 76/83 (226 bytes) under baseline/ga; the only remaining difference is the frame immediate (ENTER 8,0 vs 4,0: one extra untouched 4-byte home). og is the minimal profile explaining the &MeMode frame home + LES reloads and the cross-jumped win_DoProxMenu call site.",
+      "reviewed": "2026-09-21T22:00:45.780106+00:00"
+    },
+    {
+      "id": "asg-simone-5ad2-og",
+      "context": "simone:5AD2",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/MoveMyLife-f66a8c0d06.json"
+      ],
+      "reason": "MoveMyLife reaches STRONGLY_SUPPORTED_MEMBER only under /Og (probe: baseline keeps the defaulted plane in AX for the compare, /Og stores it to its frame home in both arms and compares memory, full opcode alignment 74/83 with only LINK far-call rewrites and fixups remaining); the IsClear3x3..TryMyDropOrLift terrain/life object (simone:5AD2-9C4A, one shared selector pool) shares one profile; admitted members (GetMap, IsThisEgg, IsThisPebble, IsNotBarrier, IsLessThanHole, IsSamePlane, DoMapUpdateDraw, EndTargetMode, EndLifeTransferMode, IsLiftable) are profile-invariant (IsLiftable probe: identical CONFIRMED_MEMBER under every catalog profile)",
+      "reviewed": "2026-09-21T22:03:21.831872+00:00"
     }
   ],
   "refutations": [

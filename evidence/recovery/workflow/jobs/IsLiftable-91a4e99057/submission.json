@@ -1,6 +1,6 @@
 {
   "symbol": "_IsLiftable",
-  "source": "build/grind/agentF/_IsLiftable.c",
+  "source": "build/grind/agentS/_IsLiftable.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -11,9 +11,12 @@
   ],
   "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "Reopen: prior block wrongly cited CONST diagnostics as a blocker per corrected brief guidance. Moved the tile=-1 sentinel assignment before the bounds check (matches target's instruction order right after FindEggAt returns), continuing toward opcode_matches==opcode_total.",
+  "semantic_summary": "IsLiftable: FindEggAt first; GetMap-shaped bounds flag (ok == TRUE) + plane switch into a frame-resident lookup result with -1 default, copied into a working tile; food/pebble/egg tests materialised in ok and gated by ok == FALSE so the liftable exits share the trailing return TRUE; egg class = (eggResult & 0x7f) in 1..7 as IsThisEgg",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "MapA/MapB/MapR exact MAPSYM names for the three DS map reads (0x28e8/0x48e8/0x58e8, 128x64 and 64x64 unsigned char rows)",
+    "FindEggAt same-segment near call rewritten by LINK from an ordinary far call",
+    "IsItFood cross-segment far call (segment 6)",
+    "profile probe evidence/experiments/optimizer-profile/probes/IsLiftable-91a4e99057.json: CONFIRMED_MEMBER under baseline and identical under every catalog profile (profile-invariant body)"
   ],
   "publics": [
     "_IsLiftable"

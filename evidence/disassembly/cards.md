@@ -3967,7 +3967,7 @@ Source: src/recovered/wf_LoadFancyCursor-9a23f6f0e0.c. Flags: ['/AL', '/G2', '/G
 ```
 
 ## _SetFancyCursor — SIMANT_MODULE:2880
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 175 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -4008,18 +4008,18 @@ Source: unrecovered. Flags: unresolved.
 28E1  2effa7e828               jmp word ptr cs:[bx + 0x28e8]
 28E6  90                       nop 
 28E7  90                       nop 
-28E8  f628                     imul byte ptr [bx + si]
-28EA  fc                       cld 
-28EB  2802                     sub byte ptr [bp + si], al
-28ED  2908                     sub word ptr [bx + si], cx
-28EF  290e2914                 sub word ptr [0x1429], cx
-28F3  291a                     sub word ptr [bp + si], bx
-28F5  29ff                     sub di, di
-28F7  3682cdeb                 or ch, 0xeb
-28FB  22ff                     and bh, bh
-28FD  3680cdeb                 or ch, 0xeb
-2901  1cff                     sbb al, 0xff
-2903  3684ce                   test dh, cl
+28E8  f628                     dw offset 0x28f6
+28EA  fc28                     dw offset 0x28fc
+28EC  0229                     dw offset 0x2902
+28EE  0829                     dw offset 0x2908
+28F0  0e29                     dw offset 0x290e
+28F2  1429                     dw offset 0x2914
+28F4  1a29                     dw offset 0x291a
+28F6  ff3682cd                 push word ptr [0xcd82] ; _magCursor
+28FA  eb22                     jmp 0x291e
+28FC  ff3680cd                 push word ptr [0xcd80] ; _rockCursor
+2900  eb1c                     jmp 0x291e
+2902  ff3684ce                 push word ptr [0xce84] ; _digCursor
 2906  eb16                     jmp 0x291e
 2908  ff3694ce                 push word ptr [0xce94] ; _antCursor
 290C  eb10                     jmp 0x291e
@@ -4038,7 +4038,6 @@ Source: unrecovered. Flags: unresolved.
 292C  5e                       pop si
 292D  c9                       leave 
 292E  cb                       retf 
-292F  90                       nop 
 ```
 
 ## MAINWNDPROC — SIMANT_MODULE:2930
@@ -23925,7 +23924,7 @@ Source: src/recovered/wf_Punt-840c7657cd.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw'
 ```
 
 ## _CreateMonoSolidBrush — GR_MODULE:1902
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 100 bytes.
 Source: src/recovered/CreateMonoSolidBrush.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
@@ -23941,13 +23940,13 @@ Source: src/recovered/CreateMonoSolidBrush.c. Flags: ['/AL', '/G2', '/Gs', '/Oel
 1917  93                       xchg bx, ax
 1918  2effa71e19               jmp word ptr cs:[bx + 0x191e]
 191D  90                       nop 
-191E  3419                     xor al, 0x19
-1920  3a19                     cmp bl, byte ptr [bx + di]
-1922  42                       inc dx
-1923  194a19                   sbb word ptr [bp + si + 0x19], cx
-1926  2c19                     sub al, 0x19
-1928  52                       push dx
-1929  195a19                   sbb word ptr [bp + si + 0x19], bx
+191E  3419                     dw offset 0x1934
+1920  3a19                     dw offset 0x193a
+1922  4219                     dw offset 0x1942
+1924  4a19                     dw offset 0x194a
+1926  2c19                     dw offset 0x192c
+1928  5219                     dw offset 0x1952
+192A  5a19                     dw offset 0x195a
 192C  68ff00                   push 0xff
 192F  6aff                     push -1
 1931  eb2c                     jmp 0x195f
@@ -24040,7 +24039,7 @@ Source: src/recovered/wf_GSetAttrib-bba4337448.c. Flags: ['/AL', '/G2', '/Gs', '
 ```
 
 ## _GBoxFill — GR_MODULE:19E6
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 203 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -24090,13 +24089,15 @@ Source: unrecovered. Flags: unresolved.
 1A48  7714                     ja 0x1a5e
 1A4A  93                       xchg bx, ax
 1A4B  2effa7501a               jmp word ptr cs:[bx + 0x1a50]
-1A50  661a6c1a                 sbb ch, byte ptr [si + 0x1a]
-1A54  741a                     je 0x1a70
-1A56  7c1a                     jl 0x1a72
-1A58  5e                       pop si
-1A59  1a841a8c                 sbb al, byte ptr [si - 0x73e6]
-1A5D  1a68ff                   sbb ch, byte ptr [bx + si - 1]
-1A60  006aff                   add byte ptr [bp + si - 1], ch
+1A50  661a                     dw offset 0x1a66
+1A52  6c1a                     dw offset 0x1a6c
+1A54  741a                     dw offset 0x1a74
+1A56  7c1a                     dw offset 0x1a7c
+1A58  5e1a                     dw offset 0x1a5e
+1A5A  841a                     dw offset 0x1a84
+1A5C  8c1a                     dw offset 0x1a8c
+1A5E  68ff00                   push 0xff
+1A61  6aff                     push -1
 1A63  eb2c                     jmp 0x1a91
 1A65  90                       nop 
 1A66  6a00                     push 0
@@ -24131,11 +24132,10 @@ Source: unrecovered. Flags: unresolved.
 1AAE  5f                       pop di
 1AAF  c9                       leave 
 1AB0  cb                       retf 
-1AB1  90                       nop 
 ```
 
 ## _GPatBox — GR_MODULE:1AB2
-Ownership: GAME (PROBABLE). Extent: AMBIGUOUS_TABLE, None bytes.
+Ownership: GAME (PROBABLE). Extent: PROBABLE, 205 bytes.
 Source: unrecovered. Flags: unresolved.
 
 ```asm
@@ -24185,13 +24185,13 @@ Source: unrecovered. Flags: unresolved.
 1B17  93                       xchg bx, ax
 1B18  2effa71e1b               jmp word ptr cs:[bx + 0x1b1e]
 1B1D  90                       nop 
-1B1E  341b                     xor al, 0x1b
-1B20  3a1b                     cmp bl, byte ptr [bp + di]
-1B22  42                       inc dx
-1B23  1b4a1b                   sbb cx, word ptr [bp + si + 0x1b]
-1B26  2c1b                     sub al, 0x1b
-1B28  52                       push dx
-1B29  1b5a1b                   sbb bx, word ptr [bp + si + 0x1b]
+1B1E  341b                     dw offset 0x1b34
+1B20  3a1b                     dw offset 0x1b3a
+1B22  421b                     dw offset 0x1b42
+1B24  4a1b                     dw offset 0x1b4a
+1B26  2c1b                     dw offset 0x1b2c
+1B28  521b                     dw offset 0x1b52
+1B2A  5a1b                     dw offset 0x1b5a
 1B2C  68ff00                   push 0xff
 1B2F  6aff                     push -1
 1B31  eb2c                     jmp 0x1b5f
@@ -24228,7 +24228,6 @@ Source: unrecovered. Flags: unresolved.
 1B7C  5f                       pop di
 1B7D  c9                       leave 
 1B7E  cb                       retf 
-1B7F  90                       nop 
 ```
 
 ## _BitmapImageSize — GR_MODULE:1B80
@@ -86775,8 +86774,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MoveMyLife — SIMONE_MODULE:65FA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 217 bytes.
+Source: src/recovered/wf_MoveMyLife-f66a8c0d06.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMONE_MODULE'].
 
 ```asm
 65FA  c8020000                 enter 2, 0
@@ -91957,8 +91956,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _IsLiftable — SIMONE_MODULE:97CA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 275 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 275 bytes.
+Source: src/recovered/wf_IsLiftable-91a4e99057.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 97CA  c8060000                 enter 6, 0

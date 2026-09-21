@@ -1,7 +1,7 @@
 {
   "id": "AddFood-f7e905ef68",
   "symbol": "_AddFood",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T21:49:27.464687+00:00",
   "flags": [
     "/AL",
@@ -44,8 +44,8 @@
       "sha256": "aea45ea7fcc31b121679fc7775d574404de9a0e47d5ed2ce4a0d2f4fe01c1aba"
     },
     "tools/cfg_solver.py": {
-      "size": 10399,
-      "sha256": "c8a24cac8b879f8f23b778135ad74fd8ed613a2eb5086e5052a37abfe7c560e6"
+      "size": 11595,
+      "sha256": "399cb02bbd38d0b13915af413473ad2fc848f72a0e05d32d248fca03704c6825"
     },
     "tools/ne.py": {
       "size": 11592,
@@ -359,6 +359,53 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "1fb42fdeb89380c9ec9700970c8d09e202c40e337f0720de0acb098184ee490a",
+      "report": "evidence/recovery/workflow/jobs/AddFood-f7e905ef68/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "e2a773379715628b8d2fe1249c1b6c9543ec482489ad1d4eee34d7618e033e40",
+      "report": "evidence/recovery/workflow/jobs/AddFood-f7e905ef68/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "0307e383494ae7876bfb257cf10d4073594b864db858708ad2c1266ead9adbda",
+      "report": "evidence/recovery/workflow/jobs/AddFood-f7e905ef68/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Six explained attempts converge on the correct algorithm and CFG shape (candidate_bytes now equal to target_bytes 513, opcode_total 195/opcode_matches 114, cfg loop/branch structure matches) but not exact bytes. Remaining differences are register-allocation/instruction-selection only, not semantic: (1) the drop-point branch assigns lastX (0x40 or SRand128()) to DI and lets num spill to memory (immediate mov to [bp-8]/[bp-6]) in the target, but our candidate keeps assigning lastX to SI and num stays register-resident, cascading into di/si swaps through the whole setup block (offsets 32-119 in aligned_asm); tried reordering local declarations and per-branch assignment order (lastX/lastY/num vs num/lastX/lastY) without forcing the target's DI/SI choice. (2) the fixed-point cos/sin index fold 'idx (+/-) 0x40' compiles in the target as SUB si,-0x40 (83 ee c0) but every source spelling we tried (idx+0x40, idx-(-0x40), idx-0xc0) compiles to either ADD si,0x40 (83 c6 40) or a 4-byte SUB si,0xc0 (81 ee c0 00), never the target's negative-immediate SUB form; marking idx volatile did fix the earlier register-vs-memory divergence for idx itself (raised opcode_matches from 109/196 to 134/193) and is kept. Best candidate preserved at build/grind/agentJ/AddFood.c (also build/grind/agentJ/AddFood-t6.json for the diagnostic).",
+  "next_experiment": "Try swapping the branch order of 'if (a<0) ... else ...' to 'if (a>=0) ... else ...' (compile the SRand128/SRand64 branch first) to see whether it flips which branch's lastX assignment claims DI vs SI; separately, try computing the cos-branch index via a signed subtraction expression whose type forces a byte-sized negative literal (e.g. an explicit (short)-0x40 or a helper local pre-loaded with -0x40) to obtain SUB reg,imm8 with a negative operand instead of ADD reg,imm8."
 }
