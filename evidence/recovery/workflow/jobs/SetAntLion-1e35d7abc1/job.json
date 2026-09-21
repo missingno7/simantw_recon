@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -321,11 +325,61 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "35647656b35d79cd90a30dc6bebecff11f29f499f5c368d08359978f14c2341c",
+      "report": "evidence/recovery/workflow/jobs/SetAntLion-1e35d7abc1/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
-  "reason": "The far-array reconstruction matches all 57 code bytes, CFG, immediates, register allocation, SetMap call and relocation shape; a pointer-vs-array variant worsens code generation. Strict proof is blocked only by the three original private selector/data bindings at DS:0xc58e, 0xc588 and 0xc586.",
-  "next_experiment": "Recover the original ant-lion record far-array declarations and DGROUP selector ordering for type/y/x, then rerun the exact array candidate with those private bindings."
+  "reason": "Named LionListX/LionListY/LionListT offsets resolve; attempt03 still fails CONST selector placement. See evidence/topology/supervisor-far-names/SetAntLion.json.",
+  "next_experiment": "Recover selector contribution and TU context connecting C586,C588,C58E; retain exact body and named arrays.",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 36,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 24,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 9,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }

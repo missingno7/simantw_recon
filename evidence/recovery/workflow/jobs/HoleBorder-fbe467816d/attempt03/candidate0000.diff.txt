@@ -1,0 +1,50 @@
+Whole-member issues: conflicting private placement constraints CONST; SIMONE_MODULE unresolved/mismatched fixup at 0x50; SIMONE_MODULE unresolved/mismatched fixup at 0x47; SIMONE_MODULE unresolved/mismatched fixup at 0x3e; SIMONE_MODULE unresolved/mismatched fixup at 0x1f; SIMONE_MODULE unresolved/mismatched fixup at 0x1a; SIMONE_MODULE unresolved/mismatched fixup at 0x10; SIMONE_MODULE unresolved/mismatched fixup at 0x9; SIMONE_MODULE literal bytes differ; unplaced contribution CONST
+  SIMONE_MODULE+0x50: candidate {'kind': 'internal', 'segment': 10, 'offset': 10472}; original loader []
+  SIMONE_MODULE+0x47: candidate {'kind': 'external', 'name': '_HoleValues'}; original loader []
+  SIMONE_MODULE+0x3e: candidate {'kind': 'internal', 'segment': 10, 'offset': 10472}; original loader []
+  SIMONE_MODULE+0x1f: candidate {'kind': 'internal', 'segment': 8, 'offset': 0}; original loader []
+  SIMONE_MODULE+0x1a: candidate {'kind': 'segment', 'name': 'CONST'}; original loader []
+  SIMONE_MODULE+0x10: candidate {'kind': 'internal', 'segment': 8, 'offset': 8}; original loader []
+  SIMONE_MODULE+0x9: candidate {'kind': 'segment', 'name': 'CONST'}; original loader []
+Target | Candidate | Difference
+0000 enter 2, 0 | 0000 push bp | instruction_shape
+ | 0001 mov bp, sp | instruction_shape
+0004 push di | 0003 push di | 
+0005 push si | 0004 push si | 
+0006 xor di, di | 0005 xor cx, cx | register_allocation
+0008 mov es, word ptr [0xc3fe] | 0007 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
+ | 000b mov bx, cx | instruction_shape
+000c mov al, byte ptr es:[di + 8] | 000d mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 8}] | memory_operand
+0011 cwde  | 0012 cwde  | 
+0012 mov si, ax | 0013 mov si, ax | 
+0014 add si, word ptr [bp + 8] | 0015 add si, word ptr [bp + 8] | 
+0017 mov es, word ptr [0xc400] | 0018 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
+001b mov al, byte ptr es:[di] | 001c mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | memory_operand
+0020 cwde  | 0021 cwde  | 
+0021 mov cx, ax | 0022 mov di, ax | register_allocation
+0023 add cx, word ptr [bp + 6] | 0024 add di, word ptr [bp + 6] | register_allocation
+0026 js 0x4c | 0027 js 0x58 | branch_target
+0028 cmp cx, 0x7f | 0029 cmp di, 0x7f | register_allocation
+002b jg 0x4c | 002c jg 0x58 | branch_target
+002d or si, si | 002e or si, si | 
+002f jl 0x4c | 0030 jl 0x58 | branch_target
+0031 cmp si, 0x3f | 0032 cmp si, 0x3f | 
+0034 jg 0x4c | 0035 jg 0x58 | branch_target
+0036 mov bx, cx | 0037 mov bx, di | register_allocation
+0038 shl bx, 6 | 0039 shl bx, 6 | 
+003b add bx, si |  | instruction_shape
+003d add bx, 0x28e8 |  | instruction_shape
+0041 cmp byte ptr [bx], 0x50 | 003c cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}] | memory_operand,immediate_or_binding
+0044 jae 0x4c | 0041 jae 0x58 | branch_target
+ | 0043 mov bx, cx | instruction_shape
+0046 mov al, byte ptr [di + 0x230c] | 0045 mov <resolved fixup> [{'kind': 'external', 'name': '_HoleValues'}] | memory_operand
+ | 0049 mov bx, di | instruction_shape
+ | 004b shl bx, 6 | instruction_shape
+004a mov byte ptr [bx], al | 004e mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}] | memory_operand
+004c inc di | 0052 inc cx | register_allocation
+004d cmp di, 8 | 0053 cmp cx, 8 | register_allocation
+0050 jl 8 | 0056 jl 7 | branch_target
+0052 pop si | 0058 pop si | 
+0053 pop di | 0059 pop di | 
+0054 leave  | 005a leave  | 
+0055 retf  | 005b retf  | 

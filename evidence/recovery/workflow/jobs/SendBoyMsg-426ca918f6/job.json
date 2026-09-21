@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -321,11 +325,61 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "d64c98e7e0c762c4cc5c6fa5539d964ac9deca6a3bda62648cc3cc0d585a364b",
+      "report": "evidence/recovery/workflow/jobs/SendBoyMsg-426ca918f6/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
-  "reason": "Attempt 02 matches the complete 59-byte extent, branch target, register allocation, MacTickCount call, 32-bit deadline arithmetic, and every store offset; strict proof differs only in the three private far-state selector/data bindings (target selectors DS:0xc4f6, DS:0xc504, DS:0xc52a with ES offsets 0x7d4a/0x99da/0x72f2), which compile as unresolved external far objects.",
-  "next_experiment": "Recover the SIMTWO_MODULE private far-state declarations and selector ordering for the boy timer, active flag, and message slot, then rerun strict acceptance."
+  "reason": "Named BoyMsgCnt/BoyMessOn/BoyMsgOffset operands resolve; attempt03 has matching body but conflicting CONST selector placement. See evidence/topology/supervisor-far-names/SendBoyMsg.json.",
+  "next_experiment": "Recover complete selector contribution linking C4F6,C504,C52A; do not repeat named-global or padded-struct probes.",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 49,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 38,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 25,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }

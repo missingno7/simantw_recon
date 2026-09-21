@@ -1,0 +1,54 @@
+Whole-member issues: SIMONE_MODULE unresolved/mismatched fixup at 0x59; SIMONE_MODULE literal bytes differ
+  SIMONE_MODULE+0x59: candidate {'kind': 'internal', 'segment': 10, 'offset': 10472}; original loader []
+Target | Candidate | Difference
+0000 enter 8, 0 | 0000 enter 8, 0 | 
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 mov di, word ptr [bp + 8] | 0006 mov cx, word ptr [bp + 8] | register_allocation
+0009 mov cx, word ptr [bp + 6] | 0009 mov dx, word ptr [bp + 6] | register_allocation
+000c cmp cx, di | 000c cmp cx, dx | register_allocation
+000e jg 0x51 | 000e jl 0x64 | instruction_shape
+ | 0010 mov bx, word ptr [bp + 0xc] | instruction_shape
+0010 mov bx, cx | 0013 mov ax, bx | register_allocation
+0012 shl bx, 6 |  | instruction_shape
+0015 mov dx, word ptr [bp + 0xa] |  | instruction_shape
+0018 mov word ptr [bp - 2], dx |  | instruction_shape
+001b mov ax, word ptr [bp + 0xc] | 0015 mov si, word ptr [bp + 0xa] | memory_operand,stack_local_layout
+001e sub ax, dx | 0018 sub ax, si | register_allocation
+0020 inc ax | 001a inc ax | 
+0021 mov word ptr [bp - 8], ax | 001b mov word ptr [bp - 4], ax | memory_operand,stack_local_layout
+0024 mov ax, di |  | instruction_shape
+0026 sub ax, cx | 001e sub cx, dx | register_allocation
+0028 inc ax | 0020 inc cx | register_allocation
+0029 mov word ptr [bp - 4], ax | 0021 mov word ptr [bp - 6], cx | memory_operand,stack_local_layout
+ | 0024 cmp si, bx | instruction_shape
+ | 0026 jg 0x64 | instruction_shape
+ | 0028 mov word ptr [bp - 8], si | instruction_shape
+ | 002b mov cx, dx | instruction_shape
+ | 002d shl cx, 6 | instruction_shape
+ | 0030 mov si, cx | instruction_shape
+ | 0032 mov ax, word ptr [bp - 6] | instruction_shape
+ | 0035 dec word ptr [bp - 6] | instruction_shape
+ | 0038 or ax, ax | instruction_shape
+ | 003a je 0x64 | instruction_shape
+002c mov ax, word ptr [bp + 0xa] | 003c mov ax, word ptr [bp + 0xa] | 
+002f cmp word ptr [bp + 0xc], ax | 003f cmp word ptr [bp + 0xc], ax | 
+0032 jl 0x49 | 0042 jl 0x5f | branch_target
+ | 0044 cmp word ptr [bp - 4], 0 | instruction_shape
+ | 0048 jle 0x5f | instruction_shape
+0034 mov al, byte ptr [bp + 0xe] | 004a mov al, byte ptr [bp + 0xe] | 
+0037 sub ah, ah | 004d sub ah, ah | 
+0039 mov si, word ptr [bp - 2] | 004f mov bx, word ptr [bp - 8] | memory_operand,stack_local_layout
+003c add si, bx | 0052 add bx, si | register_allocation
+003e mov cx, word ptr [bp - 8] | 0054 mov cx, word ptr [bp - 4] | memory_operand,stack_local_layout
+0041 lea di, [si + 0x28e8] | 0057 lea <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}] | memory_operand
+0045 push ds | 005b push ds | 
+0046 pop es | 005c pop es | 
+0047 rep stosb byte ptr es:[di], al | 005d rep stosb byte ptr es:[di], al | 
+0049 add bx, 0x40 | 005f add si, 0x40 | register_allocation
+004c dec word ptr [bp - 4] | 0062 jmp 0x32 | instruction_shape
+004f jne 0x2c |  | instruction_shape
+0051 pop si | 0064 pop si | 
+0052 pop di | 0065 pop di | 
+0053 leave  | 0066 leave  | 
+0054 retf  | 0067 retf  | 

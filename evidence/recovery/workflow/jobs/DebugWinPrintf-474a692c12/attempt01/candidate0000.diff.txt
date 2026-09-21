@@ -1,0 +1,55 @@
+Whole-member issues: conflicting private placement constraints _DATA; GR_MODULE unresolved/mismatched fixup at 0x5c; GR_MODULE unresolved/mismatched fixup at 0x59; GR_MODULE unresolved/mismatched fixup at 0x4a; GR_MODULE unresolved/mismatched fixup at 0x3f; GR_MODULE unresolved/mismatched fixup at 0x34; GR_MODULE unresolved/mismatched fixup at 0x31; GR_MODULE unresolved/mismatched fixup at 0x24; GR_MODULE unresolved/mismatched fixup at 0x7; GR_MODULE uncovered NE relocations; GR_MODULE literal bytes differ; unplaced contribution _DATA
+  GR_MODULE+0x5c: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}; original loader []
+  GR_MODULE+0x59: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  GR_MODULE+0x4a: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 90}; original loader []
+  GR_MODULE+0x3f: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}; original loader []
+  GR_MODULE+0x34: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}; original loader []
+  GR_MODULE+0x31: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  GR_MODULE+0x24: candidate {'kind': 'import', 'module': 'USER', 'ordinal': 421}; original loader []
+  GR_MODULE+0x7: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+Target | Candidate | Difference
+0000 enter 0x200, 0 | 0000 enter 0x200, 0 | 
+0004 push si | 0004 push si | 
+0005 cmp word ptr [0x8f2], 0 | 0005 cmp <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | memory_operand,immediate_or_binding
+000a je 0x60 | 000a jne 0x12 | instruction_shape
+ | 000c xor ax, ax | instruction_shape
+ | 000e pop si | instruction_shape
+ | 000f leave  | instruction_shape
+ | 0010 retf  | instruction_shape
+ | 0011 nop  | instruction_shape
+000c lea ax, [bp - 0x200] | 0012 lea ax, [bp - 0x200] | 
+0010 push ss | 0016 push ss | 
+0011 push ax | 0017 push ax | 
+0012 push word ptr [bp + 8] | 0018 push word ptr [bp + 8] | 
+0015 push word ptr [bp + 6] | 001b push word ptr [bp + 6] | 
+0018 lea cx, [bp + 0xa] | 001e lea cx, [bp + 0xa] | 
+001b push ss | 0021 push ss | 
+001c push cx | 0022 push cx | 
+001d lcall <resolved fixup> [{'kind': 'import', 'module': 'USER', 'ordinal': 421}] | 0023 lcall <resolved fixup> [{'kind': 'import', 'module': 'USER', 'ordinal': 421}] | 
+0022 cmp byte ptr [bp - 0x200], 0xa | 0028 cmp byte ptr [bp - 0x200], 0xa | 
+0027 jne 0x32 | 002d je 0x38 | instruction_shape
+0029 push ds | 002f push ds | 
+002a push 0x8f8 | 0030 push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+002d lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}] | 0033 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}] | 
+0032 lea ax, [bp - 0x200] | 0038 lea ax, [bp - 0x200] | 
+0036 push ss | 003c push ss | 
+0037 push ax | 003d push ax | 
+0038 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}] | 003e lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}] | 
+003d lea ax, [bp - 0x200] | 0043 lea ax, [bp - 0x200] | 
+0041 push ss | 0047 push ss | 
+0042 push ax | 0048 push ax | 
+0043 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 90}] | 0049 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 90}] | 
+0048 mov si, ax | 004e mov si, ax | 
+004a cmp byte ptr [bp + si - 0x201], 0xa | 0050 cmp byte ptr [bp + si - 0x201], 0xa | 
+004f jne 0x5a | 0055 je 0x60 | instruction_shape
+0051 push ds | 0057 push ds | 
+0052 push 0x8fa | 0058 push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+0055 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}] | 005b lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 115}] | 
+005a mov ax, 1 | 0060 mov ax, 1 | 
+005d pop si | 0063 pop si | 
+005e leave  | 0064 leave  | 
+005f retf  | 0065 retf  | 
+0060 xor ax, ax |  | instruction_shape
+0062 pop si |  | instruction_shape
+0063 leave  |  | instruction_shape
+0064 retf  |  | instruction_shape

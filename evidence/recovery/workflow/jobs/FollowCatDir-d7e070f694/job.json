@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -391,11 +395,61 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "c44e7511cbcbec51cd22838df8e8cedcb82a0dbdc31bbf81833eca7dbcc87e28",
+      "report": "evidence/recovery/workflow/jobs/FollowCatDir-d7e070f694/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
-  "reason": "Seven bounded experiments recover exact semantics and code layout: ENTER 2, AX-to-[BP-2] spill, signed direction thresholds 5 and 8, signed word gate with target JLE behavior, zero return, and status-byte low-two-bit result. The best candidate is exactly 67 bytes with all 27 opcodes, all branch targets, frame, and return paths aligned. Strict proof differs only at the six private far-state memory bindings: target selector slots 0xc55c, 0xc55e, and 0xc52c with direct offsets 0x77b0, 0x789c, and 0x7a5c; isolated readable externals produce unresolved symbol/fixup identities. The original translation-unit data-pointer context is required; no semantic blocker remains.",
-  "next_experiment": "Expert recover the original far-data pointer declarations or TU binding context for the three selector slots, then rerun independent acceptance without aliases, pragmas, or object patching."
+  "reason": "Named DogPx/DogPy/YardCycle operands now all resolve; attempt08 preserves exact body but CONST selector slots have conflicting private placement constraints. See evidence/topology/supervisor-far-names/FollowCatDir.json.",
+  "next_experiment": "Recover complete original selector-pool/TU ownership for C55C,C55E,C52C. Eight-attempt budget exhausted; no ordinary retry or fabricated padding.",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 56,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 40,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 6,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }

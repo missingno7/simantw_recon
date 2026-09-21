@@ -1,7 +1,7 @@
 {
   "id": "printf-41e459f08e",
   "symbol": "_printf",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-20T13:25:12.963192+00:00",
   "flags": [
     "/AL",
@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -307,11 +311,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "e8e99c93a4cd30c0a7260c913632ea55703533a51d97db8ace571bb681382292",
+      "report": "evidence/recovery/workflow/jobs/printf-41e459f08e/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "PRIVATE_CONST_LAYOUT"
   ],
   "reason": "Attempt 01 reproduces the complete 43-byte target body and all call/stack semantics: ENTER 0x200, WVSPrintf USER ordinal 421 with the far format and varargs pointer at BP+0xa, then WinPrintf with the formatted buffer. The sole difference is target push DS:0x8fc versus unresolved external _debugFormat in the ordinary candidate. The format object is private DGROUP data with no public symbol; literal-address pointer/data placement is not allowed. Exact proof requires original private data topology.",
-  "next_experiment": "Expert: recover the private debug-format object's symbolic declaration or TU data ordering at DS offset 0x8fc, then rerun the exact candidate."
+  "next_experiment": "Expert: recover the private debug-format object's symbolic declaration or TU data ordering at DS offset 0x8fc, then rerun the exact candidate.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/printf-41e459f08e/promotion.json"
 }

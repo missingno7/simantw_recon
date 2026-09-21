@@ -2,6 +2,8 @@
 
 Use [the grinding prompt](cheap-model-prompt.md) to hand this workspace to a cheaper model. The primary interface is `python tools/grind.py`; the model does not need to edit recovery manifests or understand worker internals. The working compiler remains MSC C/C++ 7.00 `/AL /G2 /Gs /Oelw /NT<original code group>`.
 
+Read [supervisor lessons](grinder-lessons.md) before a new target's first test: declaration choices, evidence-backed mismatch triage, admitted private-state examples and actionable escalation records. These lessons preserve automatic stop rules and strict proof requirements.
+
 ## Production loop
 
 ```powershell

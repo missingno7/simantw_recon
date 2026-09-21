@@ -91,6 +91,33 @@ def compare_code(target,candidate,target_bindings=None,candidate_bindings=None):
     return dict(target_bytes=len(target),candidate_bytes=len(candidate),instruction_layout_match=[(r['offset'],r['size']) for r in left]==[(r['offset'],r['size']) for r in right],cfg_shape_match=graph_match,opcode_total=max(len(left),len(right)),**counters,first_structural_difference=first,categories=categories,score=round((equal+.5*(counters['opcode_matches']-equal))/total,6),aligned_asm=display,target_blocks=lb,candidate_blocks=rb,scope='SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score')
 
 
+def unresolved_member_obligations(comparison, image):
+    """Expose whole-member failures even when the instruction body aligns."""
+    failures=[]
+    for contribution in comparison.get('contributions', []):
+        failed=[]
+        segment=contribution['original_segment']
+        base=contribution['original_offset']
+        for fixup in contribution['fixups']:
+            if fixup['equal']:
+                continue
+            offset=fixup['offset'];width=fixup['omf']['width']
+            loaders=[dict(site=site,source_type=r['source_type'],target=r['target'],
+                          additive=r.get('additive',False))
+                     for r in image['segments'][segment-1]['relocations']
+                     for site in r['sites'] if base+offset<=site<base+offset+width]
+            failed.append(dict(offset=offset,candidate_target=fixup['target'] or fixup['omf']['target'],
+                               original_loader_bindings=loaders,reason=fixup['reason']))
+        compared=contribution.get('literal_compared');equal=contribution.get('literal_equal')
+        different=compared-equal if compared is not None and equal is not None else None
+        if failed or different != 0:
+            failures.append(dict(segment=contribution.get('segment','UNKNOWN'),original_segment=segment,
+                                 original_offset=base,literal_differences=different,failed_fixups=failed))
+    return dict(strict_member_result=comparison['result'],issues=comparison.get('issues',[]),
+                contributions=failures,
+                scope='Whole-member obligations; instruction alignment does not discharge private data or selector failures')
+
+
 def diagnose(module,raw,image,symbols,symbol,comparison):
     segment,start=unique_symbol(symbols,symbol);ns=image['segments'][segment-1];data=raw[ns['file_offset']:ns['file_offset']+ns['logical_size']]
     upper=min([p['offset'] for p in symbols['segments'][segment-1]['symbols'] if p['offset']>start]+[len(data)])
@@ -128,12 +155,20 @@ def diagnose(module,raw,image,symbols,symbol,comparison):
             normalizations.append(dict(offset=pos,reason='Strictly validated LINK far-call/jump translation'))
     result=compare_code(data[start:end],bytes(view),tb,cb)
     result['diagnostic_normalizations']=normalizations
+    result['unresolved_member_obligations']=unresolved_member_obligations(comparison,image)
     result.update(exact_match=comparison['result'] in ('CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER') and extent['size'] is not None and extent['size']==ce['size'],strict_member_result=comparison['result'],fixups_equal=comparison.get('fixups_equal'),fixups_total=comparison.get('fixups_total'),extent_known=extent['end'] is not None,contribution_bytes=ss['length'],linker_transformations=[t for c in comparison.get('contributions',[]) for t in c['transformations']])
     return result
 
 
 def render(result,limit=100):
-    lines=['Target | Candidate | Difference']
+    obligations=result.get('unresolved_member_obligations',{})
+    lines=[]
+    if obligations.get('issues'):
+        lines.append('Whole-member issues: '+'; '.join(obligations['issues']))
+        for contribution in obligations.get('contributions',[]):
+            for fixup in contribution['failed_fixups']:
+                lines.append('  '+contribution['segment']+'+'+hex(fixup['offset'])+': candidate '+str(fixup['candidate_target'])+'; original loader '+str(fixup['original_loader_bindings']))
+    lines.append('Target | Candidate | Difference')
     for row in result['aligned_asm'][:limit]:
         left=('%04x '%row['target_offset']+row['target']) if row['target_offset'] is not None else ''
         right=('%04x '%row['candidate_offset']+row['candidate']) if row['candidate_offset'] is not None else ''

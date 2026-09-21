@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -307,11 +311,66 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "3c302e85a6bb50aea64a6b867d6a78cef703c22323ccc6e91b3f56ab183c96d3",
+      "report": "evidence/recovery/workflow/jobs/StartAttack-de5bd14747/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "d67a81070948a04f2667b2d524e87d79302975fdb0cb95458d1c012688918cb0",
+      "report": "evidence/recovery/workflow/jobs/StartAttack-de5bd14747/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
-  "reason": "One bounded attempt reproduces all 66 bytes in size, all 20 opcodes, all immediates, all three internal calls, stack cleanup, exact far-field offsets 0x78dc/0x7c94, and exact instruction/control-flow layout. Strict proof differs only at the two private far-state bindings: target direct DGROUP segment words 0xc4d0 and 0xc4ce with ES accesses, while isolated readable far-struct declarations emit segment/data fixups for attackState and attackWindows.",
-  "next_experiment": "Expert bind the original SIMTWO translation-unit far-state objects at DGROUP offsets 0xc4d0 and 0xc4ce, preserving fields 0x78dc and 0x7c94 without external data fixups, then rerun independent admission."
+  "reason": "Attempts02/03 resolve JustToBeMean and AdviceStrs offsets and preserve body; reversing extern declarations still leaves opposite selector order and conflicting CONST placement. Sources and reports retained under evidence/topology/supervisor-far-names and this job.",
+  "next_experiment": "Require new original TU or compiler selector-emission evidence; natural extern declaration reversal is negative. Do not repeat ordering-only probes or add synthetic selector padding.",
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 42,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 15,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }

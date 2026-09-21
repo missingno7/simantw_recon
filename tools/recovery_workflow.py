@@ -275,6 +275,10 @@ def doctor():
     if not validation.get('passed'):problems.append('Run tools/handoff_validate.py to establish infrastructure readiness')
     elif any(not (ROOT/p).exists() or identity(ROOT/p)!=expected for p,expected in validation['inputs'].items()):problems.append('Infrastructure changed since handoff validation; rerun tools/handoff_validate.py')
     if sum(r['status']=='EXACT_CANDIDATE' for r in work['functions']):problems.append('Exact candidates awaiting independent promotion')
+    current=protected()
+    for job in jobs():
+        if job['status'] in ('OPEN','NEEDS_REVISION','EXACT_CANDIDATE','RUNNING') and job.get('protected')!=current:
+            problems.append('Active job has stale proof/tool context: '+job['id']+'; expert review required')
     completed=[j for j in jobs() if j['status']=='PROMOTED'];escalated=[j for j in jobs() if j['status']=='ESCALATED']
     result=dict(status='READY_FOR_BOUNDED_HANDOFF' if completed and not problems else 'PILOT_REQUIRED' if not completed else 'ATTENTION',
                 checked=timestamp(),verified_functions=report['game_functions'],verified_runtime_members=report['runtime_members'],lane_counts=work['lane_counts'],

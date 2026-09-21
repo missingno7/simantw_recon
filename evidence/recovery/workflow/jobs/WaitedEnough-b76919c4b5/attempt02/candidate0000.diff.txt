@@ -1,0 +1,58 @@
+Whole-member issues: GR_MODULE unresolved/mismatched fixup at 0x54; GR_MODULE unresolved/mismatched fixup at 0x29; GR_MODULE literal bytes differ
+  GR_MODULE+0x54: candidate {'kind': 'internal', 'segment': 2, 'offset': 6316}; original loader []
+  GR_MODULE+0x29: candidate {'kind': 'internal', 'segment': 2, 'offset': 6316}; original loader []
+Target | Candidate | Difference
+0000 push bp | 0000 enter 6, 0 | instruction_shape
+0001 mov bp, sp |  | instruction_shape
+0003 push di |  | instruction_shape
+0004 push si | 0004 push si | 
+0005 mov di, word ptr [bp + 6] | 0005 mov si, word ptr [bp + 6] | register_allocation
+0008 nop  | 0008 nop  | 
+0009 push cs | 0009 push cs | 
+000a call 0xffffd0f4 | 000a call 0xffffd0f4 | 
+ | 000d mov word ptr [bp - 4], ax | instruction_shape
+ | 0010 mov word ptr [bp - 2], dx | instruction_shape
+000d mov es, word ptr [bp + 8] | 0013 mov es, word ptr [bp + 8] | 
+0010 cmp word ptr es:[di + 2], dx | 0016 cmp word ptr es:[si + 2], dx | register_allocation
+ | 001a jl 0x28 | instruction_shape
+0014 jg 0x42 | 001c jg 0x23 | branch_target
+0016 jl 0x1d |  | instruction_shape
+0018 cmp word ptr es:[di], ax | 001e cmp word ptr es:[si], ax | register_allocation
+001b ja 0x42 | 0021 jbe 0x28 | instruction_shape
+001d nop  | 0023 mov ax, 1 | instruction_shape
+001e push cs | 0026 jmp 0x4f | instruction_shape
+001f call 0xffffd0f4 | 0028 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 6316}] | instruction_shape
+0022 mov cx, ax | 002d mov word ptr [bp - 4], ax | instruction_shape
+ | 0030 mov word ptr [bp - 2], dx | instruction_shape
+0024 mov ax, word ptr [bp + 0xa] | 0033 mov ax, word ptr [bp + 0xa] | 
+0027 mov bx, dx |  | instruction_shape
+0029 cdq  | 0036 cdq  | 
+002a mov es, word ptr [bp + 8] | 0037 mov es, word ptr [bp + 8] | 
+002d add ax, word ptr es:[di] | 003a add ax, word ptr es:[si] | register_allocation
+0030 adc dx, word ptr es:[di + 2] | 003d adc dx, word ptr es:[si + 2] | register_allocation
+0034 cmp dx, bx | 0041 cmp dx, word ptr [bp - 2] | instruction_shape
+ | 0044 jg 0x4d | instruction_shape
+0036 jl 0x42 | 0046 jl 0x23 | branch_target
+0038 jg 0x3e | 0048 cmp ax, word ptr [bp - 4] | instruction_shape
+003a cmp ax, cx |  | instruction_shape
+003c jbe 0x42 | 004b jbe 0x23 | branch_target
+003e xor si, si | 004d xor ax, ax | register_allocation
+0040 jmp 0x45 |  | instruction_shape
+0042 mov si, 1 |  | instruction_shape
+0045 or si, si | 004f or ax, ax | register_allocation
+0047 je 0x58 | 0051 je 0x68 | 
+0049 nop  | 0053 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 6316}] | instruction_shape
+004a push cs |  | instruction_shape
+004b call 0xffffd0f4 |  | instruction_shape
+004e mov es, word ptr [bp + 8] | 0058 mov es, word ptr [bp + 8] | 
+0051 mov word ptr es:[di], ax | 005b mov word ptr es:[si], ax | register_allocation
+0054 mov word ptr es:[di + 2], dx | 005e mov word ptr es:[si + 2], dx | register_allocation
+0058 mov ax, si | 0062 mov ax, 1 | instruction_shape
+005a pop si |  | instruction_shape
+005b pop di | 0065 pop si | register_allocation
+005c leave  | 0066 leave  | 
+005d retf  | 0067 retf  | 
+ | 0068 xor ax, ax | instruction_shape
+ | 006a pop si | instruction_shape
+ | 006b leave  | instruction_shape
+ | 006c retf  | instruction_shape

@@ -1,7 +1,7 @@
 {
   "id": "PackMemoryToMemory-dd0c1b5be1",
   "symbol": "_PackMemoryToMemory",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-20T20:41:37.086522+00:00",
   "flags": [
     "/AL",
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 11661,
-      "sha256": "8ead286a16af3fc76c7c8dcb661820098029d9bcb022e47b0f5f24a6b086bd09"
+      "size": 12007,
+      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -68,8 +68,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 24141,
-      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+      "size": 24419,
+      "sha256": "c5bfb883eb49ad82b756cdef4143396d563bb8e57e63511acd5806596c2d7383"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -297,5 +297,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "3194f10cf1ca79c5cdef7cf7a2f75cdad7f16746d8901887e366200fabc22385",
+      "report": "evidence/recovery/workflow/jobs/PackMemoryToMemory-dd0c1b5be1/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "b49905c312453b99e66c1ddb7325404ea3fd6d63e6f534746dafcaadc9c7f468",
+      "report": "evidence/recovery/workflow/jobs/PackMemoryToMemory-dd0c1b5be1/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "PRIVATE_CONST_LAYOUT"
+  ],
+  "reason": "Two bounded probes preserve readable semantics but cannot discharge the complete member: target has a 78-byte body with a five-word forwarding call, direct DGROUP stores at 0xcc28/0xcc2a/0xcc34, two strategy offsets 0xa37c/0xa380 whose loader bindings point only to the unnamed segment, a same-segment far call to _Encode, and a typed far result at 0xcc46:0xcc48. Both candidates emit unresolved external fixups for the initializer, private callbacks, and state; the second still adds SI/frame differences, and the original callback entries lie in the unnamed gap after _PackFileToFile. No MAPSYM names or selector/member evidence identifies those private contributions.",
+  "next_experiment": "Recover the unnamed helper/strategy entries in the 65-byte gap between _PackFileToFile and _PackMemoryToMemory, and map the complete 0xcc28..0xcc4e private pack-state layout from PackWriteByte, PackReadByte, and Encode before a new same-segment C probe."
 }

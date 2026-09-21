@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 11661,
-      "sha256": "8ead286a16af3fc76c7c8dcb661820098029d9bcb022e47b0f5f24a6b086bd09"
+      "size": 12007,
+      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -321,11 +325,53 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "b78b405a4bb2fd82575962117f2202533ade2fbf788721fde0216dd81bf6dd67",
+      "report": "evidence/recovery/workflow/jobs/MultiMediaSong-f2993ef613/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "21aab439a78424b8578cf83012198fb33f143f37676067a8ba21539f3b6dc1ed",
+      "report": "evidence/recovery/workflow/jobs/MultiMediaSong-f2993ef613/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "e31c51070335f7ebc4539cc65cb22cf3848e882be70395e0fe646d75d98a049c",
+      "report": "evidence/recovery/workflow/jobs/MultiMediaSong-f2993ef613/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "FAR_POINTER_TYPE"
+    "REGISTER_ALLOCATION"
   ],
-  "reason": "Branch semantics are established: songsOnFlag must be nonzero; ES words 0x8d08 and 0x8d0a must be nonzero, 0x8d0c zero, and 0x8d0e nonzero. Ordinary far-array declarations emit selector/array relocations and wrong memory operands instead of target mov es,[0xbf78] plus direct ES accesses.",
-  "next_experiment": "Recover the original multimedia shared-state pointer declaration/private object at DS:0xbf78 so MSC7 emits direct ES:[0x8d08..0x8d0e] words, then rerun strict acceptance."
+  "reason": "Named-segment scalar, aggregate and far-lvalue probes (attempt03-05) all emit the same 50-byte body with early immediate segment load and different branch lowering, versus the original 51-byte selector-pool body. Shared handle identity is now solved by independently admitted availability siblings; this target remains a codegen blocker.",
+  "next_experiment": "Require new evidence for retaining delayed selector-pool ES loading across the songsOnFlag guard; do not repeat scalar/aggregate/far-cast forms. Three attempts remain; no guessed padding or widened search."
 }

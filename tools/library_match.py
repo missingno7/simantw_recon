@@ -49,7 +49,9 @@ def compare_member(m,raw,n,s,imports):
   if f['location_type']!=1 or f['self_relative']:continue
   target_seg=m['segments'][f['target_index']-1]
   if f['frame_method']==1 and m['groups'][f['frame_index']-1]['name']=='DGROUP':original_segment=10
-  elif f['frame_method']==0 and f['frame_index']==f['target_index']:
+  elif (f['frame_method']==0 and f['frame_index']==f['target_index']) or f['frame_method']==5:
+   # OMF F5 uses the target SEGDEF as its frame (TIS 1.1, OMF p45).
+   # Still require a unique independently named original segment; no guesses.
    options=[seg['number'] for seg in s['segments'] if seg['name']==target_seg['name']]
    if len(options)!=1:continue
    original_segment=options[0]

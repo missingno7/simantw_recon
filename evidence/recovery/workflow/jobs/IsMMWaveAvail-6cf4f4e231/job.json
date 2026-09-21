@@ -1,7 +1,7 @@
 {
   "id": "IsMMWaveAvail-6cf4f4e231",
   "symbol": "_IsMMWaveAvail",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-20T13:23:54.256802+00:00",
   "flags": [
     "/AL",
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 11661,
-      "sha256": "8ead286a16af3fc76c7c8dcb661820098029d9bcb022e47b0f5f24a6b086bd09"
+      "size": 12007,
+      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -307,11 +311,40 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c6a8ead31bf5e61bd4a8d4196916981de91b848de975248ad230845d387bc3ef",
+      "report": "evidence/recovery/workflow/jobs/IsMMWaveAvail-6cf4f4e231/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "37c0b18bbffb659ef7dcb7a14dc549625976ff8abe30d04a69072a1f7897e628",
+      "report": "evidence/recovery/workflow/jobs/IsMMWaveAvail-6cf4f4e231/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
-  "reason": "Attempt 01 matches all 42 bytes, CFG, GetProcAddress import ordinal 50, wave-name binding at DS:0x0b0c, FARPROC handling, indirect call, and zero fallback. The sole mismatch is the shared private handle-table word at ES:0x8d08, represented by unresolved _mmState while the target has a literal ES offset behind the resolved DS segment word at 0xbf78. Exact proof requires original private data topology; ordinary extern declarations cannot supply that private offset and literal pointer forms are prohibited.",
-  "next_experiment": "Expert: recover the shared private far-data declaration/order for ES:0x8d08, then rerun the exact candidate with the wave string at DS:0x0b0c."
+  "reason": "Named-segment scalar preserves complete body and uses MSC F5/T0 fixups to SIMANT_DATA_GROUP; current private-placement solver only handles equivalent explicit F0 frame. Preserve attempt02 for supervisor verifier review.",
+  "next_experiment": "Validate F5/T0 named-segment placement with adversarial tests and unchanged complete contribution checks; retest only after infrastructure validation.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/IsMMWaveAvail-6cf4f4e231/promotion.json"
 }

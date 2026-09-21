@@ -1,7 +1,7 @@
 {
   "id": "IsMMMidiAvail-25316c8456",
   "symbol": "_IsMMMidiAvail",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-20T13:19:42.701401+00:00",
   "flags": [
     "/AL",
@@ -16,8 +16,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 11661,
-      "sha256": "8ead286a16af3fc76c7c8dcb661820098029d9bcb022e47b0f5f24a6b086bd09"
+      "size": 12007,
+      "sha256": "0d3e4ad5db1a57fcaeadece0794992494819b0d74d2abe350050ab888e7fa48f"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -60,16 +60,20 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 8235,
-      "sha256": "6c5c75574cfe4352a9bd0532083525581840b90dce6e2dd20160a938f16b1f6c"
+      "size": 8782,
+      "sha256": "a950042f66d6b2da3002b236f571314cfe2789054e026c18370e90f3daa7c5f1"
     },
     "tools/factory_queue.py": {
-      "size": 4986,
-      "sha256": "8290fe5a57eef9c5b13282f5a18492c9063c3676f2e46d1cdecb6c2fd6b67c32"
+      "size": 5170,
+      "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 23239,
-      "sha256": "d09039c331f75b0a06fce0dc6984920ce29b9ad44e47a815a06dbc32af5ab591"
+      "size": 24141,
+      "sha256": "b77b56317110b20961270efcd36e72e15541bede9bab3ff9c706963f2dfb069c"
+    },
+    "tools/topology_diagnostics.py": {
+      "size": 2596,
+      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -321,11 +325,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "c6c9ea8d15277358cf895cb2dbcbe9f3fb414609e73ece42c65403d701daa5ff",
+      "report": "evidence/recovery/workflow/jobs/IsMMMidiAvail-25316c8456/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "DATA_LAYOUT"
   ],
   "reason": "Attempt 01 established the correct Multimedia semantics and import declaration, including ENTER 4, far GetProcAddress ordinal 50, local FARPROC test, indirect call return, and zero fallback; only the private handle-table operand differed. Attempt 02 matches the entire 42-byte layout and all bindings except target push word ptr ES:[0x8d08], which remains an external _mmState binding in ordinary C. The target segment selector at DS:0xbf78 resolves, but the private far-data offset 0x8d08 has no public symbol and literal-address pointer forms are not allowed. Exact proof requires recovering the original private MM state data topology.",
-  "next_experiment": "Expert: recover the private far-data declaration/order that places the handle word at ES:0x8d08 behind the segment word at DS:0xbf78, then rerun the already exact source expression."
+  "next_experiment": "Expert: recover the private far-data declaration/order that places the handle word at ES:0x8d08 behind the segment word at DS:0xbf78, then rerun the already exact source expression.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/IsMMMidiAvail-25316c8456/promotion.json"
 }
