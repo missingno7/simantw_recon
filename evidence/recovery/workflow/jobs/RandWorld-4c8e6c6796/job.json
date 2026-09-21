@@ -1,21 +1,24 @@
 {
   "id": "RandWorld-4c8e6c6796",
   "symbol": "_RandWorld",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T19:10:36.521622+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-5ab0-og",
+    "context": "simtwo:5AB0",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/PlaceBlackQueen-131a724e0a.json",
+      "evidence/experiments/optimizer-profile/probes/PlaceRedQueen-2890ea06d8.json"
+    ],
     "component": "simtwo:5AB0",
     "refuted_profiles": []
   },
@@ -25,8 +28,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 15161,
-      "sha256": "9bd595930b3751f3c71cedd8415994725ed70512c49e3f388e4aca7b67c53fef"
+      "size": 15458,
+      "sha256": "eeec488a151e53f859fc067f7b8ac47d4bb5ccdefe125ae759211ba3a4e22ed4"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -77,12 +80,12 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
-      "size": 2596,
-      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
+      "size": 2918,
+      "sha256": "042be9f6dae0b3588eb08c009c947723028bf12a99c03a05058b217dcc2f5d1c"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27981,
+      "sha256": "d0f67b2f8a36609e5e595322c901005c6e7ea379fcf11e29757e6ee89c0117f0"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -346,11 +345,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "8a695db16a6f93987cfea623b4580f3537b46140ab8c92c927b5f107b9d89f7e",
+      "report": "evidence/recovery/workflow/jobs/RandWorld-4c8e6c6796/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "TRANSLATION_UNIT_CONTEXT"
   ],
-  "reason": "This 1493-byte/494-instruction function is far beyond the other four targets in this batch; two full-function drafts were attempted and both achieve strong whole-body correspondence: attempt02 (evidence/recovery/workflow/jobs/RandWorld-4c8e6c6796/attempt02/results.json) aligns 406/494 opcodes (82%) with correct CFG shape for the vast majority of blocks, correct parameter layout (5 params at bp+6/8/a/c/e: seed, blackSize, redSize, mapWidth, mapKind), correct *1.25 scaling of blackSize/redSize, correct SetSRandSeed(seed,0)/InitSpider()/MakeMap(mapWidth,mapKind) call sequence (attempt01->02 fixed SetSRandSeed from a wrong long-promotion cdq/push to the target's literal push-0/push-seed two-int-param shape, a confirmed real fix), correct HoleMapR/HoleMapB clear-to-64, correct TileTot*/TileMass*/TilesDug*/WaterTable reset block using the exact_mapsym names from direct_data_bindings, correct conditional DigOutBNest(mapWidth<<4)/DigOutRNest(redSize<<4) near-calls, correct BuildAntListA/ClearListB/ClearListR/BlkQueens/RedQueens/LastBlackEgg/LastRedEgg reset, a correct inlined red-queen placement (same random-walk-then-chamber logic already solved and blocked as PlaceRedQueen, reusing DigTileR/AddAntToRList/Dx8[6]/Dy8[6] with dir=2), and a correct PlaceBlackQueen/InitYelloAnt/FoodB-R-A/AddFood(-1,0)-unless-CurGameType==3/HealthB=HealthR=100/EditMsgDelay/BlackLost/RedLost/Cycle/ClearHistory/CountAnts/InvalEuMap/MapPnt/AMapPnt/BMapPnt/RMapPnt tail. Remaining gap (target 1493 vs candidate 1435 bytes, 3/210 fixups equal): (1) the same CONST-selector-pool / far-segment-fixup wall seen in every other blocked target in this batch (DigOutRNest, PlaceBlackQueen, PlaceRedQueen) -- MapB/MapR/LifeB/LifeR/ExitMapB/ExitMapR/TERRAINset accesses show as 'unsupported or unresolved target/frame' CONST fixups in isolation even though the target's own bytes need no runtime fixup at all for the near/DGROUP ones (their DGROUP offset is a link-time constant, e.g. 'mov byte ptr [bx+0x48e8],al' with no masking), confirming this is an isolated-single-function-test artifact, not a semantic error; (2) a genuine unresolved register/local-count mismatch in the very first 64x64-grid clear loop's setup (target explicitly zeros FOUR locations -- ax, then bp-4, bp-2, and di -- before the loop, and reloads di from bp-2 at the top of a second border-seeding pass over the same grid; my draft's plain nested for(row,col) loop only carries two loop variables and never reproduces the bp-2 save/reload, so the second pass's exact row/column semantics for that reload are the least-confident part of this draft and are flagged as such in the header comment); (3) one still-unnamed near companion array immediately after LifeA (disp 30952 = LifeA+4096, exact_mapsym_names empty) declared here as LifeA[0x1000+i] rather than a real symbol, since blocker-families/inventory has no public name for it. Do not repeat the SetSRandSeed cdq/long-promotion mistake (attempt01, evidence/recovery/workflow/jobs/RandWorld-4c8e6c6796/attempt01/results.json) -- it is confirmed wrong; the two-int push-0/push-value shape (attempt02) is confirmed right.",
-  "next_experiment": "This is the single highest-value target in simtwo:5AB0 for tools/tu_assembly.py: it introduces or reuses nearly every selector word in the object (Dx8/Dy8/HoleMapB/HoleMapR/ExitMapB/ExitMapR/TERRAINset/CurGameType/TileTot*/TileMass*/BlkQueens/RedQueens/LastBlackEgg/LastRedEgg/HealthB/HealthR/FoodB/FoodR/FoodA/EditMsgDelay/BlackLost/RedLost/Cycle/EditRows/EditColumns/MapPnt/AMapPnt/BMapPnt/RMapPnt). Once DigOutBNest/DigOutRNest/PlaceBlackQueen/PlaceRedQueen have exact or near-exact drafts, propose a TU_ASSEMBLY job over the whole simtwo:5AB0 component with this draft as RandWorld's member so its selector pool resolves against the real cross-function reference order instead of an isolated CONST fixup; also verify the bp-2-reload border-seeding pass (offset 139-253 in the working packet) against MakeMap's own recovered source once available, since it may clarify whether that second pass indexes a genuinely different row/column shape than assumed here."
+  "parked_reason": "This 1493-byte/494-instruction function is far beyond the other four targets in this batch; two full-function drafts were attempted and both achieve strong whole-body correspondence: attempt02 (evidence/recovery/workflow/jobs/RandWorld-4c8e6c6796/attempt02/results.json) aligns 406/494 opcodes (82%) with correct CFG shape for the vast majority of blocks, correct parameter layout (5 params at bp+6/8/a/c/e: seed, blackSize, redSize, mapWidth, mapKind), correct *1.25 scaling of blackSize/redSize, correct SetSRandSeed(seed,0)/InitSpider()/MakeMap(mapWidth,mapKind) call sequence (attempt01->02 fixed SetSRandSeed from a wrong long-promotion cdq/push to the target's literal push-0/push-seed two-int-param shape, a confirmed real fix), correct HoleMapR/HoleMapB clear-to-64, correct TileTot*/TileMass*/TilesDug*/WaterTable reset block using the exact_mapsym names from direct_data_bindings, correct conditional DigOutBNest(mapWidth<<4)/DigOutRNest(redSize<<4) near-calls, correct BuildAntListA/ClearListB/ClearListR/BlkQueens/RedQueens/LastBlackEgg/LastRedEgg reset, a correct inlined red-queen placement (same random-walk-then-chamber logic already solved and blocked as PlaceRedQueen, reusing DigTileR/AddAntToRList/Dx8[6]/Dy8[6] with dir=2), and a correct PlaceBlackQueen/InitYelloAnt/FoodB-R-A/AddFood(-1,0)-unless-CurGameType==3/HealthB=HealthR=100/EditMsgDelay/BlackLost/RedLost/Cycle/ClearHistory/CountAnts/InvalEuMap/MapPnt/AMapPnt/BMapPnt/RMapPnt tail. Remaining gap (target 1493 vs candidate 1435 bytes, 3/210 fixups equal): (1) the same CONST-selector-pool / far-segment-fixup wall seen in every other blocked target in this batch (DigOutRNest, PlaceBlackQueen, PlaceRedQueen) -- MapB/MapR/LifeB/LifeR/ExitMapB/ExitMapR/TERRAINset accesses show as 'unsupported or unresolved target/frame' CONST fixups in isolation even though the target's own bytes need no runtime fixup at all for the near/DGROUP ones (their DGROUP offset is a link-time constant, e.g. 'mov byte ptr [bx+0x48e8],al' with no masking), confirming this is an isolated-single-function-test artifact, not a semantic error; (2) a genuine unresolved register/local-count mismatch in the very first 64x64-grid clear loop's setup (target explicitly zeros FOUR locations -- ax, then bp-4, bp-2, and di -- before the loop, and reloads di from bp-2 at the top of a second border-seeding pass over the same grid; my draft's plain nested for(row,col) loop only carries two loop variables and never reproduces the bp-2 save/reload, so the second pass's exact row/column semantics for that reload are the least-confident part of this draft and are flagged as such in the header comment); (3) one still-unnamed near companion array immediately after LifeA (disp 30952 = LifeA+4096, exact_mapsym_names empty) declared here as LifeA[0x1000+i] rather than a real symbol, since blocker-families/inventory has no public name for it. Do not repeat the SetSRandSeed cdq/long-promotion mistake (attempt01, evidence/recovery/workflow/jobs/RandWorld-4c8e6c6796/attempt01/results.json) -- it is confirmed wrong; the two-int push-0/push-value shape (attempt02) is confirmed right.",
+  "parked_next_experiment": "This is the single highest-value target in simtwo:5AB0 for tools/tu_assembly.py: it introduces or reuses nearly every selector word in the object (Dx8/Dy8/HoleMapB/HoleMapR/ExitMapB/ExitMapR/TERRAINset/CurGameType/TileTot*/TileMass*/BlkQueens/RedQueens/LastBlackEgg/LastRedEgg/HealthB/HealthR/FoodB/FoodR/FoodA/EditMsgDelay/BlackLost/RedLost/Cycle/EditRows/EditColumns/MapPnt/AMapPnt/BMapPnt/RMapPnt). Once DigOutBNest/DigOutRNest/PlaceBlackQueen/PlaceRedQueen have exact or near-exact drafts, propose a TU_ASSEMBLY job over the whole simtwo:5AB0 component with this draft as RandWorld's member so its selector pool resolves against the real cross-function reference order instead of an isolated CONST fixup; also verify the bp-2-reload border-seeding pass (offset 139-253 in the working packet) against MakeMap's own recovered source once available, since it may clarify whether that second pass indexes a genuinely different row/column shape than assumed here.",
+  "budget_extensions": []
 }

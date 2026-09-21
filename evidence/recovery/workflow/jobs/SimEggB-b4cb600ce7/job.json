@@ -7,15 +7,18 @@
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-2d4e-og",
+    "context": "simant1:2D4E",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoRecruitN-cac1aa103b.json",
+      "evidence/experiments/optimizer-profile/probes/DoRandB-ce86a18bea.json"
+    ],
     "component": "simant1:2D4E",
     "refuted_profiles": []
   },
@@ -77,8 +80,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -388,11 +387,139 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "2c16eab60666cd0d7728ab2775eb9bb9c8dde54d0c4bf72632f0a6ffc7958c28",
+      "report": "evidence/recovery/workflow/jobs/SimEggB-b4cb600ce7/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Five explained revisions converged to a near-exact match: candidate is 292 bytes against a 290-byte target, 81/88 opcodes matched, ZERO register-only differences; the 12 remaining 'branch_target' entries are all the SAME one-byte offset drift (e.g. every 'jmp 0xd8'->'jmp 0xd7' pair) propagating from a single missing prologue difference, not independent bugs. Revisions: (1) baseline with an explicit far pointer to Tindex (matching DoRestB's proven idiom) -- 274/290, 76/88 opcodes, 0 register diffs but a signed/unsigned shift mismatch (sar vs target's shr); (2) cast the >>7 shift to unsigned -- fixed the shr/sar gap, no byte change; (3) tried an explicit if/else instead of the mask ternary -- regressed to 66/88 opcodes and reintroduced register diffs, reverted; (4) took an explicit far pointer to Dx8[Tindex+0x3b22] in the mode==2 branch specifically, which stopped the compiler from merging its store with the GetNewModeB branch's store (the target keeps these as two independently duplicated LES-reload store sequences) -- jumped to 292/290, 80/88 opcodes; (5) cast only the shift to unsigned and the shift result back to int for the SGRand comparison (matching the target's shr-then-signed-jge combination exactly) -- 81/88, the jge/jae mismatch resolved. The one remaining real gap: target spills the far pointer to Tindex to [bp-8]/[bp-6] via two extra mov instructions immediately after taking its address, even though it is dereferenced on the very next line; every candidate variant's optimizer recognizes the immediate reuse and keeps it in registers instead, and this single 6-byte difference is the source of every remaining branch_target offset (all identical in pattern). This is the same isolated-candidate register/frame gap documented all session (DoDrownB/R, RaidInB/R, DoRandB/R, QueenMoveB/R, DoRestB/R, StayInR, DoRecruitN, DoFightA), not a CONST-pool issue (this function's CONST fixups are expected/non-blocking per the corrected brief guidance and are not cited as cause). Semantic body verified precise against the disassembly: attr starts as Dx8[Tindex+0x3d18] (BlistT); only when (Cycle & mask)==0 (mask 0x7f if BpopT>2 else 0x1f) does attr increment, and only when (attr&0xf)==8 does an egg try to hatch -- unless ModeAuto, a SGRand(255) roll against an unnamed segment9 word (match_position[0x4e3c]>>7, unsigned) can decline it (attr=0, TotalEggsDiedB++), else MakeMe sets mode, attr=(mode<<3)+2, and Dx8[Tindex+0x3b22] (BlistM) becomes 1 (mode==2) or GetNewModeB(mode)'s result; EggBalloons(x,y,2) runs only when BalloonModeFlag!=0 and no MakeMe roll happened (mode<0); the tail always stamps LifeB[(x<<6)+y], Dx8[Tindex+0x3d18] and clears Dx8[Tindex+0x3f0e] (BlistS) from the final attr regardless of path. Best candidate: build/grind/agentE/_SimEggB.c (source matches test5).",
-  "next_experiment": "Compare against DoRestB's own successful far-pointer-to-Tindex reproduction (that job's final candidate DID reproduce the immediate spill) to see what source-level difference (if any) triggered the spill there but not here; if none is found, this confirms the spill decision depends on later-in-function usage patterns an isolated single-function test cannot control, supporting a unit-level tu_assembly.py retest instead of further per-function source search."
+  "parked_reason": "Five explained revisions converged to a near-exact match: candidate is 292 bytes against a 290-byte target, 81/88 opcodes matched, ZERO register-only differences; the 12 remaining 'branch_target' entries are all the SAME one-byte offset drift (e.g. every 'jmp 0xd8'->'jmp 0xd7' pair) propagating from a single missing prologue difference, not independent bugs. Revisions: (1) baseline with an explicit far pointer to Tindex (matching DoRestB's proven idiom) -- 274/290, 76/88 opcodes, 0 register diffs but a signed/unsigned shift mismatch (sar vs target's shr); (2) cast the >>7 shift to unsigned -- fixed the shr/sar gap, no byte change; (3) tried an explicit if/else instead of the mask ternary -- regressed to 66/88 opcodes and reintroduced register diffs, reverted; (4) took an explicit far pointer to Dx8[Tindex+0x3b22] in the mode==2 branch specifically, which stopped the compiler from merging its store with the GetNewModeB branch's store (the target keeps these as two independently duplicated LES-reload store sequences) -- jumped to 292/290, 80/88 opcodes; (5) cast only the shift to unsigned and the shift result back to int for the SGRand comparison (matching the target's shr-then-signed-jge combination exactly) -- 81/88, the jge/jae mismatch resolved. The one remaining real gap: target spills the far pointer to Tindex to [bp-8]/[bp-6] via two extra mov instructions immediately after taking its address, even though it is dereferenced on the very next line; every candidate variant's optimizer recognizes the immediate reuse and keeps it in registers instead, and this single 6-byte difference is the source of every remaining branch_target offset (all identical in pattern). This is the same isolated-candidate register/frame gap documented all session (DoDrownB/R, RaidInB/R, DoRandB/R, QueenMoveB/R, DoRestB/R, StayInR, DoRecruitN, DoFightA), not a CONST-pool issue (this function's CONST fixups are expected/non-blocking per the corrected brief guidance and are not cited as cause). Semantic body verified precise against the disassembly: attr starts as Dx8[Tindex+0x3d18] (BlistT); only when (Cycle & mask)==0 (mask 0x7f if BpopT>2 else 0x1f) does attr increment, and only when (attr&0xf)==8 does an egg try to hatch -- unless ModeAuto, a SGRand(255) roll against an unnamed segment9 word (match_position[0x4e3c]>>7, unsigned) can decline it (attr=0, TotalEggsDiedB++), else MakeMe sets mode, attr=(mode<<3)+2, and Dx8[Tindex+0x3b22] (BlistM) becomes 1 (mode==2) or GetNewModeB(mode)'s result; EggBalloons(x,y,2) runs only when BalloonModeFlag!=0 and no MakeMe roll happened (mode<0); the tail always stamps LifeB[(x<<6)+y], Dx8[Tindex+0x3d18] and clears Dx8[Tindex+0x3f0e] (BlistS) from the final attr regardless of path. Best candidate: build/grind/agentE/_SimEggB.c (source matches test5).",
+  "parked_next_experiment": "Compare against DoRestB's own successful far-pointer-to-Tindex reproduction (that job's final candidate DID reproduce the immediate spill) to see what source-level difference (if any) triggered the spill there but not here; if none is found, this confirms the spill decision depends on later-in-function usage patterns an isolated single-function test cannot control, supporting a unit-level tu_assembly.py retest instead of further per-function source search.",
+  "budget_extensions": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 274,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 218,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 209,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 181,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 148,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 130,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 109,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 86,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 57,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 23,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 10,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  },
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source"
 }

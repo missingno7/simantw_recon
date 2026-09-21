@@ -1,21 +1,24 @@
 {
   "id": "DoRandB-ce86a18bea",
   "symbol": "_DoRandB",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T19:13:14.500736+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-2d4e-og",
+    "context": "simant1:2D4E",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoRecruitN-cac1aa103b.json",
+      "evidence/experiments/optimizer-profile/probes/DoRandB-ce86a18bea.json"
+    ],
     "component": "simant1:2D4E",
     "refuted_profiles": []
   },
@@ -77,8 +80,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -402,11 +401,27 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "eff1a15943c09a1d0e510b00934deb6dbc79c72e52bd2cd1db169d98774e643e",
+      "report": "evidence/recovery/workflow/jobs/DoRandB-ce86a18bea/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Extremely close but not exact: best candidate is 247 bytes against a 246-byte target (candidate_bytes/target_bytes), with every instruction matching except one spurious eager store 'mov word ptr [bp-8], 0' (candidate offset 47, no target counterpart) and the resulting enter-8 vs enter-6 frame difference. Semantic body is otherwise fully reproduced: SRand32()==0 mode-refresh via GetNewModeB, cell=&LifeB[(x<<6)+y], yellow-ant fight via IsYellowAnt/YellowFight(2,Tindex), ant-list fight via FindInBList(x,y,ant)/GetWinner(ant,attr) (CheckNestFightB's stamina/type/*cell/mode-0xa pattern), then two TryMoveDirB attempts. Tried 6 explained variants for the 'handled' result flag: (1) declared as a plain int with a single early handled=0 default before the if/else-if chain -- matches target's si-resident ant-then-1/dec;je pattern for the return test exactly, but the compiler hoists an unconditional stack store for handled anyway (247/246, first difference only the extra store); (2) removed the flag entirely in favor of direct early 'return;' in each success branch -- the compiler then builds THREE separate epilogues instead of the target's one shared dec;je exit, regressing to 239/246; (3) explicit handled=1/handled=0 in every leaf of an if/else-if/else (no early default) -- this DOES free handled into a register with no stack store, but the compiler then allocates DI to 'ant' instead of 'handled', bumping the x parameter (which the target keeps resident in di for later TryMoveDirB/FindInBList calls) out to a memory-reloaded form, regressing to 249/246; (4) declaring handled first among the locals -- no effect, byte-identical to (1); (5) folding the flag into 'ant' itself (reusing that variable for the 0/1 result since its last real use precedes the flag's first write) -- same DI/x conflict as (3), 241/246; (6) 'register int handled' hint on variant (1) -- no effect, byte-identical to (1). Variant (1)/(4)/(6) (identical, 247/246) is the closest and is the preserved candidate. Best candidate: build/grind/agentE/_DoRandB.c.",
-  "next_experiment": "Investigate whether MSC7's actual register-interference-graph coloring for this specific unit (simant1:2D4E) assigns a shared si slot to two variables whose live ranges are adjacent-but-not-overlapping (ant then handled) only when a THIRD variable (x) is guaranteed di for its own, LONGER, multi-call-spanning live range -- i.e. whether allocation order/priority is driven by total reference count across calls rather than any source-level restructuring; this is the fourth function in simant1:2D4E (after _DoDrownB/_DoDrownR/_RaidInB/_RaidInR) where an isolated single-function candidate cannot reproduce the unit's real register/frame layout despite a semantically exact body, reinforcing that a tu_assembly.py unit-level compile (rather than further per-function declaration search) is the most promising next step."
+  "parked_reason": "Extremely close but not exact: best candidate is 247 bytes against a 246-byte target (candidate_bytes/target_bytes), with every instruction matching except one spurious eager store 'mov word ptr [bp-8], 0' (candidate offset 47, no target counterpart) and the resulting enter-8 vs enter-6 frame difference. Semantic body is otherwise fully reproduced: SRand32()==0 mode-refresh via GetNewModeB, cell=&LifeB[(x<<6)+y], yellow-ant fight via IsYellowAnt/YellowFight(2,Tindex), ant-list fight via FindInBList(x,y,ant)/GetWinner(ant,attr) (CheckNestFightB's stamina/type/*cell/mode-0xa pattern), then two TryMoveDirB attempts. Tried 6 explained variants for the 'handled' result flag: (1) declared as a plain int with a single early handled=0 default before the if/else-if chain -- matches target's si-resident ant-then-1/dec;je pattern for the return test exactly, but the compiler hoists an unconditional stack store for handled anyway (247/246, first difference only the extra store); (2) removed the flag entirely in favor of direct early 'return;' in each success branch -- the compiler then builds THREE separate epilogues instead of the target's one shared dec;je exit, regressing to 239/246; (3) explicit handled=1/handled=0 in every leaf of an if/else-if/else (no early default) -- this DOES free handled into a register with no stack store, but the compiler then allocates DI to 'ant' instead of 'handled', bumping the x parameter (which the target keeps resident in di for later TryMoveDirB/FindInBList calls) out to a memory-reloaded form, regressing to 249/246; (4) declaring handled first among the locals -- no effect, byte-identical to (1); (5) folding the flag into 'ant' itself (reusing that variable for the 0/1 result since its last real use precedes the flag's first write) -- same DI/x conflict as (3), 241/246; (6) 'register int handled' hint on variant (1) -- no effect, byte-identical to (1). Variant (1)/(4)/(6) (identical, 247/246) is the closest and is the preserved candidate. Best candidate: build/grind/agentE/_DoRandB.c.",
+  "parked_next_experiment": "Investigate whether MSC7's actual register-interference-graph coloring for this specific unit (simant1:2D4E) assigns a shared si slot to two variables whose live ranges are adjacent-but-not-overlapping (ant then handled) only when a THIRD variable (x) is guaranteed di for its own, LONGER, multi-call-spanning live range -- i.e. whether allocation order/priority is driven by total reference count across calls rather than any source-level restructuring; this is the fourth function in simant1:2D4E (after _DoDrownB/_DoDrownR/_RaidInB/_RaidInR) where an isolated single-function candidate cannot reproduce the unit's real register/frame layout despite a semantically exact body, reinforcing that a tu_assembly.py unit-level compile (rather than further per-function declaration search) is the most promising next step.",
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/DoRandB-ce86a18bea/promotion.json"
 }

@@ -1,21 +1,24 @@
 {
   "id": "PlaceBlackQueen-131a724e0a",
   "symbol": "_PlaceBlackQueen",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T18:56:42.433088+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-5ab0-og",
+    "context": "simtwo:5AB0",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/PlaceBlackQueen-131a724e0a.json",
+      "evidence/experiments/optimizer-profile/probes/PlaceRedQueen-2890ea06d8.json"
+    ],
     "component": "simtwo:5AB0",
     "refuted_profiles": []
   },
@@ -412,11 +415,130 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "788b195286c501e111dc8100ba059dd908659395fcad04994842c2f2ae650991",
+      "report": "evidence/recovery/workflow/jobs/PlaceBlackQueen-131a724e0a/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Supervisor for-loop form (attempt06) regresses to 117/138; the agent's do-while form (attempt03, 116/125) remains best. Target: SI=x, DI=y outside the loop and wobble inside, i in [bp-4], count in [bp-2], wobble home [bp-6]; y=i assigned only when the loop ran",
-  "next_experiment": "Keep the do-while; make y a separate variable initialised to 1 (count > y, i = y before the loop, y = i inside the if) while leaving wobble as a plain local initialised to 0; do not use for-loops"
+  "parked_reason": "Baseline shape exhausted; agentX probe shows the og form (build/grind/agentX/PlaceBlackQueen-og.c) reaches 125/125 with all non-fixup bytes equal; context simtwo:5AB0 now carries og",
+  "parked_next_experiment": "Profile reissue under og with the og form",
+  "budget_extensions": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 321,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 301,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 289,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 239,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 223,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 197,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 183,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 159,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 150,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 136,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  },
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source"
 }

@@ -7,15 +7,17 @@
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-5344-og",
+    "context": "simant1:5344",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoRandR-fc777553ef.json"
+    ],
     "component": "simant1:5344",
     "refuted_profiles": []
   },
@@ -77,8 +79,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +103,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +117,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -332,11 +330,103 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "6ed53be93f0dada5c1280c1e9cf6ab1988e8f3f54167f91ca74686b946cf3f84",
+      "report": "evidence/recovery/workflow/jobs/DoRestR-7ae72eaa8b/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Same systemic register/frame-layout gap as every other simant1:2D4E/R-twin target blocked this session (tenth confirmation): candidate is 298 bytes, matching the target's 298-byte size exactly, but first_structural_difference at target offset 9 -- 'enter 0xc,0' (three stack locals incl. the cell pointer and handled flag) vs candidate's 'enter 6,0', with di/si parameter homing swapped (target keeps si=y/di=x resident for the FindInRList/GetWinner calls; candidate loads x into bx and reloads y from [bp+8] memory) and an extra eager 'xor si,si' handled-flag store, the same class of symptom documented on DoRandB/DoRestB. Semantic body verified: mirrors admitted-structure twin DoRestB with DoRandR's fight-range-first/yellow-second ordering (ant in 8..0x67 -> FindInRList/GetWinner -> RlistS/RlistT/*cell/RlistM-0xa; else IsYellowAnt(ant)!=0 && MeColor==0 -> YellowFight(3,Tindex), the same inverted MeColor polarity seen in DoRandR), cell refresh from Dx8[Tindex+0x46e6] via the explicit far-pointer-to-Tindex idiom, 1-in-20 SRand1(20) GetNewMode mode recompute, and a RestBalloons(x,y,3) call gated by the same unnamed segment8:0x85fc word DoRestB reads (tested !=0 here vs ==1 there, matching each function's own observed comparison form). Best candidate: build/grind/agentE/_DoRestR.c (test1).",
-  "next_experiment": "Same as the other nine blocked simant1:2D4E/twin targets this session; re-test once the systemic isolated-candidate register/frame gap has an expert-level fix (unit-level tu_assembly.py compile or toolchain review)."
+  "parked_reason": "Same systemic register/frame-layout gap as every other simant1:2D4E/R-twin target blocked this session (tenth confirmation): candidate is 298 bytes, matching the target's 298-byte size exactly, but first_structural_difference at target offset 9 -- 'enter 0xc,0' (three stack locals incl. the cell pointer and handled flag) vs candidate's 'enter 6,0', with di/si parameter homing swapped (target keeps si=y/di=x resident for the FindInRList/GetWinner calls; candidate loads x into bx and reloads y from [bp+8] memory) and an extra eager 'xor si,si' handled-flag store, the same class of symptom documented on DoRandB/DoRestB. Semantic body verified: mirrors admitted-structure twin DoRestB with DoRandR's fight-range-first/yellow-second ordering (ant in 8..0x67 -> FindInRList/GetWinner -> RlistS/RlistT/*cell/RlistM-0xa; else IsYellowAnt(ant)!=0 && MeColor==0 -> YellowFight(3,Tindex), the same inverted MeColor polarity seen in DoRandR), cell refresh from Dx8[Tindex+0x46e6] via the explicit far-pointer-to-Tindex idiom, 1-in-20 SRand1(20) GetNewMode mode recompute, and a RestBalloons(x,y,3) call gated by the same unnamed segment8:0x85fc word DoRestB reads (tested !=0 here vs ==1 there, matching each function's own observed comparison form). Best candidate: build/grind/agentE/_DoRestR.c (test1).",
+  "parked_next_experiment": "Same as the other nine blocked simant1:2D4E/twin targets this session; re-test once the systemic isolated-candidate register/frame gap has an expert-level fix (unit-level tu_assembly.py compile or toolchain review).",
+  "budget_extensions": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 272,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 258,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 221,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 187,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 174,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 138,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 75,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  },
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source"
 }

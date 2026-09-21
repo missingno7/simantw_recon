@@ -7,15 +7,18 @@
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-2d4e-og",
+    "context": "simant1:2D4E",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoRecruitN-cac1aa103b.json",
+      "evidence/experiments/optimizer-profile/probes/DoRandB-ce86a18bea.json"
+    ],
     "component": "simant1:2D4E",
     "refuted_profiles": []
   },
@@ -77,8 +80,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +104,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +118,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -332,11 +331,103 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "f45eba30275052f3474a5f5033038c344be613125179fecdac5cea240bcaba85",
+      "report": "evidence/recovery/workflow/jobs/DoRestB-cf9cf4129b/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Extremely close: best candidate is 296 bytes against a 294-byte target (enter 0xa,0 vs enter 6,0), 261/296 bytes already matching. Same systemic register/frame gap as every other simant1:2D4E target blocked this session (_DoDrownB/R, _RaidInB/R, _DoRandB/R, _QueenMoveB/R): the compiler eagerly hoists an unconditional 'mov word ptr[bp-2],0' store for the handled flag (matching DoRandB's identical extra-store symptom) and keeps x resident in bx instead of di (reloading di's would-be value from [bp+6] via memory later), so the whole instruction stream shifts by a few bytes despite an otherwise-matching body. Semantic body fully reconstructed and verified structurally sound: cell=&LifeB[(x<<6)+y]; yellow-ant fight via IsYellowAnt/YellowFight(2,Tindex) or ant-list fight via FindInBList(x,y,ant)/GetWinner(ant,attacker) (CheckNestFightB's stamina/type/*cell/mode-0xa pattern) ends the call immediately; otherwise the cell is refreshed from Dx8[Tindex+0x3d18] via an explicit 'int far *tindexPtr = &Tindex;' local (matching the target's take-the-address-then-LES-dereference shape, itself new evidence for how &Tindex is expressed in this unit); a 1-in-20 SRand1(20) roll recomputes the mode field via the two-argument far GetNewMode(mode,fullValue) (distinct from the one-argument GetNewModeB used elsewhere in this unit); otherwise a segment8 word at offset 0x85fc (no MAPSYM public name resolved for this slot) gates a RestBalloons(x,y,2) call when it equals 1. Best candidate: build/grind/agentE/_DoRestB.c (test1).",
-  "next_experiment": "Ninth simant1:2D4E function this session with the identical isolated-candidate register/frame gap; additionally flag the unnamed segment8:0x85fc word for a supervisor named-far-operand pass (no cross-reference found in src/recovered or layout/private-data-topology.json for this offset) in case a future MAPSYM/topology refresh resolves its real name."
+  "parked_reason": "Extremely close: best candidate is 296 bytes against a 294-byte target (enter 0xa,0 vs enter 6,0), 261/296 bytes already matching. Same systemic register/frame gap as every other simant1:2D4E target blocked this session (_DoDrownB/R, _RaidInB/R, _DoRandB/R, _QueenMoveB/R): the compiler eagerly hoists an unconditional 'mov word ptr[bp-2],0' store for the handled flag (matching DoRandB's identical extra-store symptom) and keeps x resident in bx instead of di (reloading di's would-be value from [bp+6] via memory later), so the whole instruction stream shifts by a few bytes despite an otherwise-matching body. Semantic body fully reconstructed and verified structurally sound: cell=&LifeB[(x<<6)+y]; yellow-ant fight via IsYellowAnt/YellowFight(2,Tindex) or ant-list fight via FindInBList(x,y,ant)/GetWinner(ant,attacker) (CheckNestFightB's stamina/type/*cell/mode-0xa pattern) ends the call immediately; otherwise the cell is refreshed from Dx8[Tindex+0x3d18] via an explicit 'int far *tindexPtr = &Tindex;' local (matching the target's take-the-address-then-LES-dereference shape, itself new evidence for how &Tindex is expressed in this unit); a 1-in-20 SRand1(20) roll recomputes the mode field via the two-argument far GetNewMode(mode,fullValue) (distinct from the one-argument GetNewModeB used elsewhere in this unit); otherwise a segment8 word at offset 0x85fc (no MAPSYM public name resolved for this slot) gates a RestBalloons(x,y,2) call when it equals 1. Best candidate: build/grind/agentE/_DoRestB.c (test1).",
+  "parked_next_experiment": "Ninth simant1:2D4E function this session with the identical isolated-candidate register/frame gap; additionally flag the unnamed segment8:0x85fc word for a supervisor named-far-operand pass (no cross-reference found in src/recovered or layout/private-data-topology.json for this offset) in case a future MAPSYM/topology refresh resolves its real name.",
+  "budget_extensions": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 266,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 252,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 215,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 181,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 168,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 118,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 51,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  },
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source"
 }

@@ -7,15 +7,17 @@
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-1378-og",
+    "context": "simtwo:1378",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/FollowBoyDir-c4608a8423.json"
+    ],
     "component": "simtwo:1378",
     "refuted_profiles": []
   },
@@ -77,8 +79,8 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
       "size": 2596,
@@ -101,8 +103,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27564,
+      "sha256": "6456e100769f2ba8c955d8ab09086367bdfc9b28339fe943b1bf828fe97dbafd"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +117,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -360,11 +358,121 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "2027f88015f0e3bc1faa258f4ddcfe17addee19dc1986b08aea9dd0040eb4801",
+      "report": "evidence/recovery/workflow/jobs/FollowBoyDir-c4608a8423/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Body/control-flow, gating logic (BoyIsMowing/MapMode/YardMode/DogBarkDelay), sound-kind switch(1) dispatch and final direction chain all reproduce correctly (candidate 306 vs target 311 bytes, close); attempts 1-3 converged on correct semantics and instruction count but register allocation for the dx/dy vs adx/ady quartet does not match. Target keeps raw dy permanently in SI (never spilled) and its abs in a fresh DI, while dx is computed in AX and BOTH its raw and abs values are spilled to [bp-2]/[bp-4] with no persistent register; my candidate instead gives adx (derived from dx) the persistent SI slot and reloads dy from a spill into DI for ady, i.e. the SI/DI role-pair is swapped relative to source-identical dy=...;dx=...;adx=dx;if(adx<0)...;ady=dy;if(ady<0)... code. Reordering declarations (dy,dx vs dx,dy), reordering statements, and using an if/else-assignment idiom instead of assign-then-negate all reproduced the same or a worse split (confirmed via direct compiler-service probes outside the job budget). This is a register-scheduling artifact of MSC7's /Oe allocator for this four-value pattern, not a semantic error.",
-  "next_experiment": "Try computing dy's abs (ady) immediately adjacent to dy's own computation (before dx is touched at all), i.e. dy=...;ady=abs(dy) as back-to-back statements, then dx=...;adx=abs(dx) as a second back-to-back pair -- this was not yet tried (only the interleaved dy,dx,adx,ady and dy,ady,dx,adx orders were probed); also try forcing dx/adx through explicit register-hint idioms (e.g. volatile) or splitting into a helper inline pattern matching FollowCatDir's simpler structure."
+  "parked_reason": "Body/control-flow, gating logic (BoyIsMowing/MapMode/YardMode/DogBarkDelay), sound-kind switch(1) dispatch and final direction chain all reproduce correctly (candidate 306 vs target 311 bytes, close); attempts 1-3 converged on correct semantics and instruction count but register allocation for the dx/dy vs adx/ady quartet does not match. Target keeps raw dy permanently in SI (never spilled) and its abs in a fresh DI, while dx is computed in AX and BOTH its raw and abs values are spilled to [bp-2]/[bp-4] with no persistent register; my candidate instead gives adx (derived from dx) the persistent SI slot and reloads dy from a spill into DI for ady, i.e. the SI/DI role-pair is swapped relative to source-identical dy=...;dx=...;adx=dx;if(adx<0)...;ady=dy;if(ady<0)... code. Reordering declarations (dy,dx vs dx,dy), reordering statements, and using an if/else-assignment idiom instead of assign-then-negate all reproduced the same or a worse split (confirmed via direct compiler-service probes outside the job budget). This is a register-scheduling artifact of MSC7's /Oe allocator for this four-value pattern, not a semantic error.",
+  "parked_next_experiment": "Try computing dy's abs (ady) immediately adjacent to dy's own computation (before dx is touched at all), i.e. dy=...;ady=abs(dy) as back-to-back statements, then dx=...;adx=abs(dx) as a second back-to-back pair -- this was not yet tried (only the interleaved dy,dx,adx,ady and dy,ady,dx,adx orders were probed); also try forcing dx/adx through explicit register-hint idioms (e.g. volatile) or splitting into a helper inline pattern matching FollowCatDir's simpler structure.",
+  "budget_extensions": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 298,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 222,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 123,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 99,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 84,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 34,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 26,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 17,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMTWO_MODULE",
+        "offset": 8,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  },
+  "reason": "Body matches outside unresolved offset bindings; ordinary shape search stopped automatically",
+  "next_experiment": "Expert: group shared binding sites, reconstruct complete private contributions and retest the preserved source"
 }

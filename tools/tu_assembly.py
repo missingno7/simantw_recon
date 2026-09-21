@@ -113,13 +113,31 @@ def split_items(text):
             items.append(dict(kind='definition', name=name, text=item_text))
         else:
             names = declared_names(code)
-            items.append(dict(kind='declaration', names=names, text=item_text, normalized=' '.join(code.split())))
+            items.append(dict(kind='declaration', names=names, text=item_text, normalized=signature_form(code)))
     return items
+
+
+def signature_form(code):
+    """Declaration text with parameter names removed, so prototypes that differ
+    only in parameter naming compare equal."""
+    code = ' '.join(code.split())
+    def strip(m):
+        params = [p.strip() for p in m.group(1).split(',')]
+        out = []
+        for p in params:
+            tokens = p.replace('*', ' * ').split()
+            if len(tokens) >= 2 and re.fullmatch(r'[A-Za-z_]\w*', tokens[-1]) and tokens[-1] not in ('void', 'int', 'char', 'long', 'short', 'unsigned', 'signed', 'far', 'near', 'double', 'float'):
+                tokens = tokens[:-1]
+            out.append(' '.join(tokens).replace(' * ', '*'))
+        return '(' + ', '.join(out) + ')'
+    return re.sub(r'\(([^()]*)\)(?=\s*;)', strip, code)
 
 
 def declared_names(code):
     """Identifiers introduced by a declaration (extern, static, typedef, plain)."""
     code = ' '.join(code.split())
+    # __based(__segname("X")) is a storage qualifier, never the declared name.
+    code = re.sub(r'__based\s*\(\s*__segname\s*\(\s*"[^"]*"\s*\)\s*\)', ' ', code)
     if re.match(r'\s*typedef\b', code):
         m = re.search(r'([A-Za-z_]\w*)\s*(\[[^\]]*\])*\s*;\s*$', code)
         return [m.group(1)] if m else []

@@ -254,6 +254,109 @@
       "source": "evidence/topology/build-topology.json",
       "basis": "Same-object component (shared selector pool / private data / contiguity)",
       "recorded": "2026-09-21T20:40:34.701516+00:00"
+    },
+    "simtwo:1378": {
+      "publics": [
+        "_InitSimYard",
+        "_DoSimYard",
+        "_SendBoyMsg",
+        "_SimRain",
+        "_SimKidOutside",
+        "_GetMowDir",
+        "_NotMowed",
+        "_IsValidYard",
+        "_InitGrassMap",
+        "_SimKidInside",
+        "_SimBird",
+        "_SimCat",
+        "_SimDog",
+        "_FollowBoyDir",
+        "_FollowCatDir",
+        "_MakeBark",
+        "_FootFall",
+        "_MowerFall",
+        "_MaintainSwarm",
+        "_SimColonies",
+        "_GetNearbyPatches"
+      ],
+      "segment": "SIMTWO_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T20:46:57.386026+00:00"
+    },
+    "simant1:2D4E": {
+      "publics": [
+        "_DoAntSimB",
+        "_DoNestAntB",
+        "_RaidInB",
+        "_RaidOutB",
+        "_DoRestB",
+        "_DoDrownB",
+        "_DoRandB",
+        "_DoRecruitN",
+        "_DoNestFightB",
+        "_CheckNestFightB",
+        "_DropFoodB",
+        "_SimEggB",
+        "_SimQueenB",
+        "_GetBestDir",
+        "_QueenMoveB",
+        "_MakeNewTailB",
+        "_KillTailB",
+        "_LostHeadB",
+        "_LostTailB",
+        "_TryMoveDirB",
+        "_DoNestingB",
+        "_TryEatFoodB",
+        "_EatFoodB",
+        "_StealFoodB",
+        "_DecEatB",
+        "_DoFoodInB",
+        "_DoDigInB",
+        "_DoDigOutB",
+        "_LeaveNestB",
+        "_GetOutB"
+      ],
+      "segment": "SIMANT1_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T21:34:49.370583+00:00"
+    },
+    "simant1:5344": {
+      "publics": [
+        "_DoAntSimR",
+        "_DoNestAntR",
+        "_RaidInR",
+        "_StayInR",
+        "_RaidOutR",
+        "_DoRestR",
+        "_DoDrownR",
+        "_DoRandR",
+        "_DoNestFightR",
+        "_CheckNestFightR",
+        "_DropFoodR",
+        "_SimEggR",
+        "_SimQueenR",
+        "_QueenMoveR",
+        "_MakeNewTailR",
+        "_KillTailR",
+        "_LostHeadR",
+        "_LostTailR",
+        "_TryMoveDirR",
+        "_DoNestingR",
+        "_TryEatFoodR",
+        "_EatFoodR",
+        "_StealFoodR",
+        "_DecEatR",
+        "_DoFoodInR",
+        "_DoDigInR",
+        "_DoDigOutR",
+        "_GetOutR"
+      ],
+      "segment": "SIMANT1_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-21T21:34:52.121264+00:00"
     }
   },
   "assignments": [
@@ -378,6 +481,43 @@
       ],
       "reason": "FixExitMapR reaches a strict member result only under /Og (probe); the FixExitMapB/R twin object shares one profile",
       "reviewed": "2026-09-21T20:40:34.701516+00:00"
+    },
+    {
+      "id": "asg-simtwo-1378-og",
+      "context": "simtwo:1378",
+      "profile": "og",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/FollowBoyDir-c4608a8423.json"
+      ],
+      "reason": "FollowBoyDir reaches full opcode alignment with zero register differences (124/125, every non-fixup byte equal, the candidate only adds the trailing alignment nop) only under /Og: the abs if/else pair with dx/adx tracked in AX as memory locals, the constant-switch peephole and the direct memory compares of dx in the tail; under the baseline profile dx/dy take SI/DI and adx/ady go to memory (102/125, 5 register differences). The yard-simulation object simtwo:1378 shares one profile; its admitted members (InitSimYard unit, IsValidYard, InitGrassMap, MaintainSwarm, NotMowed) compile to identical objects under baseline and og (checked with the cached compiler service).",
+      "reviewed": "2026-09-21T20:46:57.386026+00:00"
+    },
+    {
+      "id": "asg-simant1-2d4e-og",
+      "context": "simant1:2D4E",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/DoRecruitN-cac1aa103b.json",
+        "evidence/experiments/optimizer-profile/probes/DoRandB-ce86a18bea.json"
+      ],
+      "reason": "DoRecruitN and DoRandB reach STRONGLY_SUPPORTED_MEMBER only under /Og (probes); the /Og CSE temporaries (&LifeB[(x<<6)+y], &Tindex) explain every parked near-miss in the black-colony object; all admitted members are /Og-invariant",
+      "reviewed": "2026-09-21T21:34:49.370583+00:00"
+    },
+    {
+      "id": "asg-simant1-5344-og",
+      "context": "simant1:5344",
+      "profile": "og",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/DoRandR-fc777553ef.json"
+      ],
+      "reason": "DoRandR reaches STRONGLY_SUPPORTED_MEMBER only under /Og (probe); the red-colony object mirrors the black one; admitted members are /Og-invariant",
+      "reviewed": "2026-09-21T21:34:52.121264+00:00"
     }
   ],
   "refutations": [

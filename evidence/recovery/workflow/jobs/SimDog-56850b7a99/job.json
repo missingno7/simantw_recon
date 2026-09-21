@@ -1,21 +1,23 @@
 {
   "id": "SimDog-56850b7a99",
   "symbol": "_SimDog",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T19:25:33.152675+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simtwo-1378-og",
+    "context": "simtwo:1378",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/FollowBoyDir-c4608a8423.json"
+    ],
     "component": "simtwo:1378",
     "refuted_profiles": []
   },
@@ -25,8 +27,8 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 15161,
-      "sha256": "9bd595930b3751f3c71cedd8415994725ed70512c49e3f388e4aca7b67c53fef"
+      "size": 15458,
+      "sha256": "eeec488a151e53f859fc067f7b8ac47d4bb5ccdefe125ae759211ba3a4e22ed4"
     },
     "tools/recovery_gate.py": {
       "size": 5073,
@@ -77,12 +79,12 @@
       "sha256": "809d8214be1ef18b75d6b6a16e532732103034b26bace1d89b8338dbc0cd3968"
     },
     "tools/recovery_workflow.py": {
-      "size": 30914,
-      "sha256": "0efc0e2360936e2ac00956d53120d4d27f379b058fec562b47c928b9b5975962"
+      "size": 30882,
+      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
     },
     "tools/topology_diagnostics.py": {
-      "size": 2596,
-      "sha256": "93b0581a938b1e06c2183508e85fe3c390c02ee88e361a9e96a6028590a643c1"
+      "size": 2918,
+      "sha256": "042be9f6dae0b3588eb08c009c947723028bf12a99c03a05058b217dcc2f5d1c"
     },
     "tools/codegen_grinder.py": {
       "size": 10125,
@@ -101,8 +103,8 @@
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
     },
     "tools/tu_assembly.py": {
-      "size": 27157,
-      "sha256": "b3a91d623b4b78659abda320c8d2e9c2111df5fb2b4c655f6b05d3f9ebd77f3c"
+      "size": 27981,
+      "sha256": "d0f67b2f8a36609e5e595322c901005c6e7ea379fcf11e29757e6ee89c0117f0"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -115,10 +117,6 @@
     "layout/runtime-ownership.json": {
       "size": 62095,
       "sha256": "02cddcaf49171b706f4a4bf4c531fe50e1031225599f6dd77ad97c3c180bb27d"
-    },
-    "layout/compiler-profiles.json": {
-      "size": 11708,
-      "sha256": "74b091e35339c704c105c18dc0f16defd9c021026491a1db6377d2973a3d8cd0"
     }
   },
   "fixture_identity": {
@@ -360,11 +358,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "7acd6931649dc1b7c009e6b25a4881bef0e0ceecc30ac4c4eb1705ceac311eed",
+      "report": "evidence/recovery/workflow/jobs/SimDog-56850b7a99/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "parked_blockers": [
     "FAR_POINTER_TYPE"
   ],
-  "reason": "Three real revisions converge on the same limitation: an isolated compile cannot express the target's far-pointer materialization. The target addresses DogTurnCnt/DogPx/DogDir/DogPy through explicit bp-relative far pointer locals built as 'mov bx,LITERAL_OFFSET; mov es,word ptr [CONST_SELECTOR]; store both to frame' (e.g. attempt01 candidate.c offset6: mov bx,0x7a5a is a plain immediate, not a relocation). Attempt02 (int far *p = &DogTurnCnt;, the natural C for that shape) and attempt03 (int far *p = DogTurnCnt; via a single-element far-array decay, matching the already-admitted Dx8-pointer idiom in wf_AddAntToBList-e7a166edf6.c) both instead emit TWO fixups for the same offset (mov <fixup>[seg9,off31322]; mov <fixup>[seg9,off31322] again, needing an extra mov es,cx/mov bx,ax pair) because the isolated compiler cannot pre-resolve the pointer's OFFSET half as a link-time literal the way it can for a direct memory-operand displacement. Attempt04 (this file, build/grind/agentI/_SimDog.c, plain named-extern accesses with no pointer locals) reaches the target's exact byte length (946) and 248/323 opcodes, but necessarily loses the pointer-indirection instruction shape at those four reused spots (dec word ptr es:[bx] vs dec <fixup>), which is a real, not merely CONST-fixup-content, difference. Evidence: evidence/recovery/workflow/jobs/SimDog-56850b7a99/attempt01..03 results and aligned_asm (candidate_offset 6-20 in each). The four private near tables at DGROUP 0x236a-0x2380 (dirDeltaX/dirDeltaY/dirJitter/dirMagnitude, sizes inferred 6/6/4/6 from address spacing) also have no surfaced byte evidence in the inspect packet, so their initializers are placeholder zeros pending that evidence; this is a secondary, separate gap.",
-  "next_experiment": "Determine whether this compile pipeline can pre-resolve an extern far object's link-time OFFSET into a pointer-materializing MOV as a plain immediate (matching direct memory-operand displacement resolution) rather than emitting a second external fixup; if so, retry int far *p = &DogTurnCnt; style locals. Separately, surface the raw private-data bytes at DGROUP 0x236a-0x2380 (or their MAPSYM/topology evidence) so dirDeltaX/dirDeltaY/dirJitter/dirMagnitude can be initialized from evidence instead of placeholders."
+  "parked_reason": "Three real revisions converge on the same limitation: an isolated compile cannot express the target's far-pointer materialization. The target addresses DogTurnCnt/DogPx/DogDir/DogPy through explicit bp-relative far pointer locals built as 'mov bx,LITERAL_OFFSET; mov es,word ptr [CONST_SELECTOR]; store both to frame' (e.g. attempt01 candidate.c offset6: mov bx,0x7a5a is a plain immediate, not a relocation). Attempt02 (int far *p = &DogTurnCnt;, the natural C for that shape) and attempt03 (int far *p = DogTurnCnt; via a single-element far-array decay, matching the already-admitted Dx8-pointer idiom in wf_AddAntToBList-e7a166edf6.c) both instead emit TWO fixups for the same offset (mov <fixup>[seg9,off31322]; mov <fixup>[seg9,off31322] again, needing an extra mov es,cx/mov bx,ax pair) because the isolated compiler cannot pre-resolve the pointer's OFFSET half as a link-time literal the way it can for a direct memory-operand displacement. Attempt04 (this file, build/grind/agentI/_SimDog.c, plain named-extern accesses with no pointer locals) reaches the target's exact byte length (946) and 248/323 opcodes, but necessarily loses the pointer-indirection instruction shape at those four reused spots (dec word ptr es:[bx] vs dec <fixup>), which is a real, not merely CONST-fixup-content, difference. Evidence: evidence/recovery/workflow/jobs/SimDog-56850b7a99/attempt01..03 results and aligned_asm (candidate_offset 6-20 in each). The four private near tables at DGROUP 0x236a-0x2380 (dirDeltaX/dirDeltaY/dirJitter/dirMagnitude, sizes inferred 6/6/4/6 from address spacing) also have no surfaced byte evidence in the inspect packet, so their initializers are placeholder zeros pending that evidence; this is a secondary, separate gap.",
+  "parked_next_experiment": "Determine whether this compile pipeline can pre-resolve an extern far object's link-time OFFSET into a pointer-materializing MOV as a plain immediate (matching direct memory-operand displacement resolution) rather than emitting a second external fixup; if so, retry int far *p = &DogTurnCnt; style locals. Separately, surface the raw private-data bytes at DGROUP 0x236a-0x2380 (or their MAPSYM/topology evidence) so dirDeltaX/dirDeltaY/dirJitter/dirMagnitude can be initialized from evidence instead of placeholders.",
+  "budget_extensions": []
 }

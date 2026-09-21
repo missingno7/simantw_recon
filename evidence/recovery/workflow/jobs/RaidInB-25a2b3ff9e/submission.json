@@ -1,19 +1,20 @@
 {
   "symbol": "_RaidInB",
-  "source": "evidence/recovery/workflow/jobs/RaidInB-25a2b3ff9e/candidate.c",
+  "source": "build/grind/agentY/RaidInB.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "index copied from x in a separate statement before the shift; since x,y are genuinely reused as TryMoveDirB/GetEnterDirB args, this should keep si=x/di=y intact and force a real bx+stack-local index, matching the target's mov bx,si;shl bx,6;add bx,di / [bp-4] pattern",
+  "semantic_summary": "Food-tile pickup on MapB 0x10..0x13 with LifeB refresh and return, else jittered TryMoveDirB, GetEnterDirB/SRand1 retry, enter-nest fallback; no index variable (subscript written at every use, /Og CSE temp at [bp-4])",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "evidence/experiments/optimizer-profile/probes/RaidInB-25a2b3ff9e.json",
+    "layout/compiler-profiles.json (og profile /Oeglw; baseline flags in job.json cannot produce the /Og common-subexpression temporaries the target frame holds)"
   ],
   "publics": [
     "_RaidInB"

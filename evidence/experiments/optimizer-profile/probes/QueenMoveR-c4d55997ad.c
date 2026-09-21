@@ -17,13 +17,18 @@
  * admitted twin QueenMoveB exactly, with GetBestDir's kind=3 (vs 2) and
  * the R-colony field offsets (0x4104/0x42fa/0x46e6) already used by
  * RlistT/DoAntSimR/ClearLifeR.
+ *
+ * Evidence (agentY): mirrors QueenMoveB (far GetBestDir, goto-style
+ * shared return-0 epilogue, dir == -1 giving inc si/jne under /Og); the
+ * same residual register/temporary gap as QueenMoveB remains.  Requires
+ * the og profile (/Oeglw).
  */
 extern int far TileMassXR;
 extern int far TileMassYR;
 extern char far Dx8[];
 extern char far Dy8[];
 extern unsigned char near LifeR[];
-extern int near GetBestDir(int kind, int x, int y, int targetX, int targetY);
+extern int far GetBestDir(int kind, int x, int y, int targetX, int targetY);
 extern int far SRand8(void);
 extern int far TryMoveDirR(int x, int y, int dir);
 extern int far FindInRList(int x, int y, int ant);
@@ -37,26 +42,28 @@ int far QueenMoveR(int x, int y, int dirHint)
     int index;
 
     dir = GetBestDir(3, x, y, TileMassXR, TileMassYR);
-    if (dir != -1) {
-        if (dir < 0)
-            dir = SRand8();
-        if (y >= 3 || (dir >= 3 && dir <= 5)) {
-            if (TryMoveDirR(x, y, dir) != 0) {
-                opp = (dirHint ^ 0xfc) & 7;
-                newRow = y + Dy8[opp + 8];
-                newCol = x + Dx8[opp];
-                LifeR[newCol * 64 + newRow] = 0;
-
-                index = FindInRList(newCol, newRow, (dirHint & 7) + 0xe8);
-                if (index >= 0 && Dx8[index + 0x46e6] != 0) {
-                    Dx8[index + 0x4104] = (char)x;
-                    Dx8[index + 0x42fa] = (char)y;
-                    Dx8[index + 0x46e6] = (char)(dir - 0x18);
-                    LifeR[x * 64 + y] = (unsigned char)(dir - 0x18);
-                }
-                return 1;
-            }
-        }
+    if (dir < 0) {
+        if (dir == -1)
+            goto fail;
+        dir = SRand8();
     }
+    if (y < 3 && (dir > 5 || dir < 3))
+        goto fail;
+    if (TryMoveDirR(x, y, dir) == 0)
+        goto fail;
+
+    opp = (dirHint ^ 0xfc) & 7;
+    newRow = y + Dy8[opp];
+    newCol = x + Dx8[opp];
+    LifeR[newRow + newCol * 64] = 0;
+    index = FindInRList(newCol, newRow, (dirHint & 7) + 0xe8);
+    if (index >= 0 && Dx8[index + 0x46e6] != 0) {
+        Dx8[index + 0x4104] = (char)x;
+        Dx8[index + 0x42fa] = (char)y;
+        Dx8[index + 0x46e6] = (char)(dir + 0xe8);
+        LifeR[x * 64 + y] = (unsigned char)(dir + 0xe8);
+    }
+    return 1;
+fail:
     return 0;
 }

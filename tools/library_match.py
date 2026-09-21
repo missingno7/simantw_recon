@@ -97,6 +97,12 @@ def compare_member(m,raw,n,s,imports):
     elif name in absolute:target={'kind':'absolute','offset':absolute[name]+add}
    elif f['target_method']==0 and f['target_index'] in placements:
     ts,to=placements[f['target_index']];target={'kind':'internal','segment':ts,'offset':to+add}
+   elif f['target_method']==0 and not m['segments'][f['target_index']-1]['length']:
+    # An empty named segment (extern __based(__segname("X")) declarations
+    # only) stands for the original segment of that unique MAPSYM name; its
+    # selector obligation is checked like any other independently named target.
+    options=[seg['number'] for seg in s['segments'] if seg['name']==m['segments'][f['target_index']-1]['name']]
+    if len(options)==1:target={'kind':'internal','segment':options[0],'offset':add}
    frame_ok=f['frame_method']==5 or (f['frame_method']==2 and f['frame_index']==f['target_index'] and f['target_method']==2)
    if f['target_method']==2 and f['target'].get('name') in ('FIDRQQ','FIERQQ','FIWRQQ','FICRQQ','FJCRQQ'):
     # LINK5.30 calibration covers compiler frame5 and SDK runtime frame4.
@@ -175,7 +181,7 @@ def compare_member(m,raw,n,s,imports):
   diffs=[i for i in positions if candidate[i]!=ref[i]];total+=len(positions);equal+=len(positions)-len(diffs)
   if diffs:issues.append(ss['name']+' literal bytes differ')
   details.append({'segment':ss['name'],'original_segment':sg,'original_offset':off,'length':ss['length'],'initialized_ranges':ss['initialized_ranges'],
-    'literal_compared':len(positions),'literal_equal':len(positions)-len(diffs),'divergences':diffs[:32],'fixups':fixrows,'transformations':transforms})
+    'literal_compared':len(positions),'literal_equal':len(positions)-len(diffs),'divergences':diffs[:512],'fixups':fixrows,'transformations':transforms})
  # A LOC 5 offset cannot establish which segment it addresses: equal offsets in
  # different segments are indistinguishable. Require a validated LOC 2 selector
  # fixup to the same external symbol somewhere in the member (immediate or

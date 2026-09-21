@@ -27,10 +27,14 @@ def classify(comparison):
                 return None
             if o['target'].get('kind') not in ('external', 'segment'):
                 return None
+            # The matcher resolved the target but the literal disagreed: that is
+            # a wrong index/displacement in the source, not an unresolved binding.
+            if f.get('target') is not None and f.get('reason') in ('resolved offset and frame', 'same-segment relative offset'):
+                return None
             allowed.update(range(f['offset'], f['offset'] + 2))
             failures.append(dict(contribution=c['segment'], offset=f['offset'],
                                  target=o['target'], reason=f['reason']))
-        # Matcher truncates divergence lists at 32: do not infer coverage then.
+        # Matcher truncates divergence lists at 512: do not infer coverage then.
         differences = c.get('literal_compared', 0) - c.get('literal_equal', 0)
         if differences != len(c.get('divergences', [])):
             return None

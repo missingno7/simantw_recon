@@ -94858,8 +94858,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRandB — SIMANT1_MODULE:3876
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 246 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 246 bytes.
+Source: src/recovered/wf_DoRandB-ce86a18bea.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 3876  c8060000                 enter 6, 0
@@ -94958,8 +94958,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRecruitN — SIMANT1_MODULE:396C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 232 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 232 bytes.
+Source: src/recovered/wf_DoRecruitN-cac1aa103b.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 396C  c8060000                 enter 6, 0
@@ -98616,8 +98616,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRandR — SIMANT1_MODULE:5F7A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 248 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 248 bytes.
+Source: src/recovered/wf_DoRandR-fc777553ef.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5F7A  c8080000                 enter 8, 0
@@ -113145,8 +113145,8 @@ Source: src/recovered/InitSimVars.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _RandWorld — SIMTWO_MODULE:5AB0
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 1493 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1493 bytes.
+Source: src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 5AB0  c8100000                 enter 0x10, 0
@@ -113646,8 +113646,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _RandYard — SIMTWO_MODULE:6086
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 476 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 476 bytes.
+Source: src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 6086  c8100000                 enter 0x10, 0
@@ -113807,8 +113807,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GenerateTutorial — SIMTWO_MODULE:6262
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 124 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 124 bytes.
+Source: src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 6262  56                       push si
@@ -113857,8 +113857,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DigOutBNest — SIMTWO_MODULE:62DE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 218 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 218 bytes.
+Source: src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 62DE  c8080000                 enter 8, 0
@@ -113944,8 +113944,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DigOutRNest — SIMTWO_MODULE:63B8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 218 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 218 bytes.
+Source: src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 63B8  c8080000                 enter 8, 0

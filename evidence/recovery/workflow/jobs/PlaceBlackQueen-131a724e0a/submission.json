@@ -1,19 +1,19 @@
 {
   "symbol": "_PlaceBlackQueen",
-  "source": "build/grind/agentX/PlaceBlackQueen.c",
+  "source": "build/grind/agentX/PlaceBlackQueen-og.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
   "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "Tunnel dig as do-while guarded by count > y with y its own variable, i = y copied into a memory row counter inside the if, y = i after the loop, wobble a plain local initialised to 0 before x/y; then diagonal, egg spot, chamber",
+  "semantic_summary": "Tunnel dig: y is the loop row (spilled in the loop), wobble a plain local re-rolled as SRand1(3)-1, column updated by x += wobble when the temporary sum wobble+x is in [8,0x38]; then diagonal, egg spot, chamber",
   "binding_evidence": [
-    "target frame: [bp-2]=count, [bp-4]=i (written from DI only inside the if arm), [bp-6]=wobble home loaded into DI at loop entry; SI=x throughout, DI=y before and after the loop (mov di,1 / cmp ax,di / mov di,[bp-4])"
+    "usage-weight evidence: single-expression wobble (loop weight 3) takes DI, x += wobble (loop weight 4) keeps x in SI and spills y to [bp-4]; probe reproduces enter/SI/DI/frame slots and 124/125 aligned opcodes"
   ],
   "publics": [
     "_PlaceBlackQueen"
