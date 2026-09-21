@@ -1,0 +1,32 @@
+{
+ "symbol": "_DrawMapCursor",
+ "source": "build/grind/dmc_t3.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTANTEDIT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "expr",
+   "marker": "/*EXPR*/",
+   "values": [
+    "mapCursorRect.bottom = (mapCursorRect.top = mapYsize * MapPnt.y + mapTileRect.top) + mapYsize * editHeight;\n    mapCursorRect.right = (mapCursorRect.left = mapXsize * MapPnt.x + mapTileRect.left + just) + mapXsize * editWidth;",
+    "mapCursorRect.bottom = mapYsize * editHeight + (mapCursorRect.top = mapYsize * MapPnt.y + mapTileRect.top);\n    mapCursorRect.right = mapXsize * editWidth + (mapCursorRect.left = mapXsize * MapPnt.x + mapTileRect.left + just);",
+    "mapCursorRect.bottom = (mapCursorRect.top = MapPnt.y * mapYsize + mapTileRect.top) + editHeight * mapYsize;\n    mapCursorRect.right = (mapCursorRect.left = MapPnt.x * mapXsize + mapTileRect.left + just) + editWidth * mapXsize;"
+   ],
+   "rationale": "target: mov cx,ax / imul / add / store / mov dx,ax / mov ax,cx / mov bx,dx / imul / add bx,ax"
+  }
+ ],
+ "semantic_summary": "DrawMapCursor: bottom/right computed in one expression with the embedded top/left assignment (local CSE keeps the tile size in CX)",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_DrawMapCursor"
+ ]
+}

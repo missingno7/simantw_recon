@@ -1,0 +1,51 @@
+{
+ "symbol": "_SeparateFile",
+ "source": "build/grind/sf_t5.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTANTEDIT_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "patht",
+   "marker": "/*PATHT*/",
+   "values": [
+    "char far *",
+    "const char far *",
+    "void far *",
+    "unsigned char far *"
+   ],
+   "rationale": "a conversion may materialise the left operand in AX"
+  },
+  {
+   "name": "pdecl",
+   "marker": "/*PDECL*/",
+   "values": [
+    "char far *p;",
+    "register char far *p;"
+   ],
+   "rationale": "register hint"
+  },
+  {
+   "name": "cmp",
+   "marker": "/*CMP*/",
+   "values": [
+    "p > path",
+    "p > (void far *)path"
+   ],
+   "rationale": "compare operand typing"
+  }
+ ],
+ "semantic_summary": "SeparateFile: parameter/pointer type conversions in the start-of-string compare",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_SeparateFile"
+ ]
+}

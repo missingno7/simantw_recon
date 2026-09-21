@@ -105084,8 +105084,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _Recruit — SIMTWO_MODULE:06D2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 184 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 184 bytes.
+Source: src/recovered/wf_Recruit-bed37927bb.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 06D2  55                       push bp

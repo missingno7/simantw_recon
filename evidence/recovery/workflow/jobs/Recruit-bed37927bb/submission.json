@@ -1,0 +1,34 @@
+{
+ "symbol": "_Recruit",
+ "source": "build/grind/rc_t.c",
+ "compiler": "msc700",
+ "flags": [
+  "/AL",
+  "/G2",
+  "/Gs",
+  "/Oelw",
+  "/NTSIMTWO_MODULE"
+ ],
+ "max_candidates": 96,
+ "axes": [
+  {
+   "name": "body",
+   "marker": "/*BODY*/",
+   "values": [
+    "void far Recruit(int count)\n{\n    int i;\n    int n;\n    int type;\n    int caste;\n\n    n = count;\n    i = ListIndexA;\n    while (i > 0) {\n        if (n <= 0)\n            break;\n        i--;\n        type = AlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (AlistM(i) != 6) {\n                    AlistM(i) = 6;\n                    AlistS(i) = 0;\n                    n--;\n                }\n            }\n        }\n    }\n    i = ListIndexB;\n    while (i > 0) {\n        if (n <= 0)\n            break;\n        i--;\n        type = BlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (BlistM(i) != 6) {\n                    BlistM(i) = 6;\n                    BlistS(i) = 0;\n                    n--;\n                }\n            }\n        }\n    }\n}\n",
+    "void far Recruit(int count)\n{\n    int i;\n    int type;\n    int caste;\n\n    \n    for (i = ListIndexA; i > 0 && count > 0; ) {\n        i--;\n        type = AlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (AlistM(i) != 6) {\n                    AlistM(i) = 6;\n                    AlistS(i) = 0;\n                    count--;\n                }\n            }\n        }\n    }\n    for (i = ListIndexB; i > 0 && count > 0; ) {\n        i--;\n        type = BlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (BlistM(i) != 6) {\n                    BlistM(i) = 6;\n                    BlistS(i) = 0;\n                    count--;\n                }\n            }\n        }\n    }\n}\n",
+    "void far Recruit(int count)\n{\n    int i;\n    int type;\n    int caste;\n\n    \n    i = ListIndexA;\n    while (i > 0 && count > 0) {\n        i--;\n        type = AlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (AlistM(i) != 6) {\n                    AlistM(i) = 6;\n                    AlistS(i) = 0;\n                    count--;\n                }\n            }\n        }\n    }\n    i = ListIndexB;\n    while (i > 0 && count > 0) {\n        i--;\n        type = BlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (BlistM(i) != 6) {\n                    BlistM(i) = 6;\n                    BlistS(i) = 0;\n                    count--;\n                }\n            }\n        }\n    }\n}\n",
+    "void far Recruit(int count)\n{\n    int i;\n    int type;\n    int caste;\n\n    \n    i = ListIndexA;\n    while (i > 0 && count > 0) {\n        --i;\n        type = AlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (AlistM(i) != 6) {\n                    AlistM(i) = 6;\n                    AlistS(i) = 0;\n                    count--;\n                }\n            }\n        }\n    }\n    i = ListIndexB;\n    while (i > 0 && count > 0) {\n        --i;\n        type = BlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (BlistM(i) != 6) {\n                    BlistM(i) = 6;\n                    BlistS(i) = 0;\n                    count--;\n                }\n            }\n        }\n    }\n}\n",
+    "void far Recruit(int count)\n{\n    int i;\n    int n;\n    int type;\n    int caste;\n\n    n = count;\n    for (i = ListIndexA; i > 0 && n > 0; ) {\n        i--;\n        type = AlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (AlistM(i) != 6) {\n                    AlistM(i) = 6;\n                    AlistS(i) = 0;\n                    n--;\n                }\n            }\n        }\n    }\n    for (i = ListIndexB; i > 0 && n > 0; ) {\n        i--;\n        type = BlistT(i);\n        if (type != 0 && !(type & 0x80)) {\n            caste = (type & 0x78) >> 3;\n            if (caste == 2 || caste == 6) {\n                if (BlistM(i) != 6) {\n                    BlistM(i) = 6;\n                    BlistS(i) = 0;\n                    n--;\n                }\n            }\n        }\n    }\n}\n"
+   ],
+   "rationale": "target loads DI from the parameter at entry and re-tests it at the loop head"
+  }
+ ],
+ "semantic_summary": "Recruit: loop condition forms and count copied to a local so count is a register variable loaded at entry",
+ "binding_evidence": [
+  "Candidate declarations and source comments; inspect packet bindings before acceptance"
+ ],
+ "publics": [
+  "_Recruit"
+ ]
+}
