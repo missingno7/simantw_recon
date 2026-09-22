@@ -35,8 +35,6 @@ int far GetMyDir(int p1, int p2, int p3, int p4, int p5, int p6)
     int tmp;
     int tx, ty;
 
-    pcount = &match_position[0];
-
     if (p1 <= 1) {
         if (p4 <= 1)
             goto family1;
@@ -63,6 +61,7 @@ int far GetMyDir(int p1, int p2, int p3, int p4, int p5, int p6)
     }
 
 family2:
+    pcount = &match_position[0];
     if (*pcount >= 0) {
         chk = CheckMyBestDirs(p1, p2, p3, tx, ty, &tmp);
         if (chk == -2) {
@@ -88,6 +87,7 @@ family2:
     return dir;
 
 family1:
+    pcount = &match_position[0];
     if (*pcount >= 0) {
         chk = CheckMyBestDirs(p1, p2, p3, p5, p6, &tmp);
         if (chk != -2) {

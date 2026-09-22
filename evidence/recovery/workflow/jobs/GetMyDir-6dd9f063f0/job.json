@@ -1,7 +1,7 @@
 {
   "id": "GetMyDir-6dd9f063f0",
   "symbol": "_GetMyDir",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:55:33.026056+00:00",
   "flags": [
     "/AL",
@@ -328,6 +328,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "5394188bbf5ca273a34da666d75e5e2cf84a223178f45372819c70fc940a5973",
+      "report": "evidence/recovery/workflow/jobs/GetMyDir-6dd9f063f0/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Very large dispatcher (788 bytes, 45 basic blocks) fully traced by hand from the disassembly: p1<=1 vs p1>1 selects one of two symmetric regions; within each, p4<=1 (or p4==p1) targets (p5,p6) directly (family1: shared GetMyBestDirs/CheckMyBestDirs+GetMyRandDirs blocks reused by both p1<=1 and p1>1 entries, matching the SAME control-flow graph blocks 3/4/5/7/18/19/21/23/24/25/26), while p4>1 (or p4!=p1) targets one of four fixed landmarks (LastNewHoleB/R keyed by p4==2 on the p1<=1 side, LastNewExitB/R keyed by p1==2 on the p1>1 side; family2: shared blocks 13/14/15/29/30/32/34/36/37/38/39/40/41/42/43/44), each family using match_position[0] as an armed(>=0)/disarmed(<0) counter exactly like GetMyBestDir's idiom (armed: CheckMyBestDirs gates a GetMyBestDirs-commit-with-decrement vs a GetMyRandDirs-reuse fallback; disarmed: GetMyBestDirs is tried directly, and only a -2 that still equals the counter reseeds MeCrazyDir/MeCrazyRot via GetDir before GetMyRandDirs). First candidate (2 attempts) captured this control-flow correctly (the block-sharing hypothesis is confirmed structurally) but scored only 45-66/296 opcodes: the goto-based source puts each 'if (cond) goto family; <else-branch code>' with the WRONG polarity relative to target, so the compiler places the wrong region as physical fallthrough at the very first branch (function-relative offset 0x17, right after the outer p1<=1/p1>1 and p4<=1/p4>1 checks) -- target's fallthrough at that point is the p4<=1 case (pcount setup for the (p5,p6) target), while the candidate's fallthrough is the p4>1 landmark-selection case, since 'if (p4<=1) goto family1' jumps away on the condition target keeps inline. This single polarity mismatch cascades through the whole function's block layout.",
+  "next_experiment": "Rewrite every outer branch as 'if (p4 > 1) goto <landmark case, defined immediately next>; <p4<=1 / family1 body inlined right here>' (and the p1>1 mirror likewise) so the compiler's fallthrough matches target block-for-block, instead of 'if (cheap-condition) goto shared-label; else inline-the-other-case'; re-verify the shared-block hypothesis (family1/family2 reused across both entry sides) only after the fallthrough ordering is fixed, since right now it cannot be distinguished from a duplication requirement given the observed byte layout."
 }
