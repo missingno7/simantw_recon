@@ -233,8 +233,12 @@ def prepare_promotion(job_id,candidate,audit_only,current_recipes,manifest):
     shutil.copyfile(source,destination)
     obj,receipt=compile_source(relative(destination),job['flags'],'msc700');validate_receipt(receipt)
     module=omf.parse(obj.read_bytes());raw=fixture('SIMANTW.EXE');image=ne.parse(raw);symbols=mapsym.parse(fixture('SIMANTW.SYM'));imports=import_symbols(ROOT/'toolchain/sdk300/WLIB/LIBW.LIB')
-    public_names={p['name'] for p in module['publics'] if p['segment'] and module['segments'][p['segment']-1]['class']=='CODE'}
+    # Pool scaffolding (stand-in functions in the reserved segment) is never part of the promotion scope.
+    from library_match import SCAFFOLD_SEGMENT
+    scaffold=[s['index'] for s in module['segments'] if s['name']==SCAFFOLD_SEGMENT and s['class']=='CODE']
+    public_names={p['name'] for p in module['publics'] if p['segment'] and module['segments'][p['segment']-1]['class']=='CODE' and p['segment'] not in scaffold}
     if public_names!=set(spec['publics']):raise FormatError('compiled code publics differ from declared promotion scope')
+    if scaffold and job.get('lane')!='TU_ASSEMBLY':raise FormatError('pool scaffolding is only admissible inside a unit assembly job')
     inventory={x['name']:x for x in read_json(ROOT/'evidence/symbols/inventory.json')['symbols']}
     if any(inventory.get(name,{}).get('ownership')!='GAME' for name in public_names):raise FormatError('runtime/unknown ownership cannot receive game-source promotion')
     # Already-admitted publics may only be re-admitted inside a unit job that
@@ -245,7 +249,7 @@ def prepare_promotion(job_id,candidate,audit_only,current_recipes,manifest):
     if profile['name']!=profile_name:raise FormatError('job flags disagree with its recorded compiler profile')
     targets=admission_targets(module,raw,image,symbols,sorted(public_names));comparison=check_member(module,raw,image,symbols,imports,targets)
     proof=dict(job=job_id,candidate=candidate,admitted=True,audit_only=audit_only,semantic_summary=spec['semantic_summary'],binding_evidence=spec.get('binding_evidence',[]),receipt=receipt,comparison=comparison,targets=targets,
-               compiler_profile=dict(profile,flags=job['flags']),unit=job.get('unit'),superseded_recipes=superseded,scope='Exact readable reconstruction, not original text or filename')
+               compiler_profile=dict(profile,flags=job['flags']),unit=job.get('unit'),scaffold=job.get('scaffold'),superseded_recipes=superseded,scope='Exact readable reconstruction, not original text or filename')
     proof_path=directory/('audit.json' if audit_only else 'promotion.json');write_json(proof_path,proof)
     if audit_only:return dict(job=job_id,admission='PASSED',promotion='NONE',evidence=relative(proof_path))
     stored=ROOT/'build/recovered'/('wf_'+job_id+'.obj');shutil.copyfile(obj,stored)
@@ -253,6 +257,7 @@ def prepare_promotion(job_id,candidate,audit_only,current_recipes,manifest):
     for name,target in targets.items():
         target.update(source=relative(destination),compiler='msc700',flags=job['flags'],profile=profile['name'],profile_evidence=profile.get('assignment'),promotion_evidence=relative(proof_path))
         if job.get('unit'):target['unit']=job['unit']
+        if job.get('scaffold'):target['scaffold']=job['scaffold']
         current_recipes['targets'][name]=target
         game[name]=dict(symbol=name,object=relative(stored),identity=identity(stored),receipt=receipt)
     manifest['game_objects']=list(game.values())

@@ -7,6 +7,7 @@ Constraint-derived private placement lowers proof strength. BSS is not bytes.
 from collections import Counter,defaultdict
 from common import ROOT,fixture,write_json,identity,FormatError,Reader
 import omf,ne,mapsym
+SCAFFOLD_SEGMENT='POOLSTUB_TEXT'  # reserved code segment for pool-order stand-ins; never compared, never credited
 
 LIBS=['sdk300/CLIB/LLIBCW.LIB','sdk300/CLIB/MLIBCW.LIB','sdk310/LIB/LLIBCW.LIB','sdk310/LIB/MLIBCW.LIB',
       'sdk300/CLIB/LLIBFPW.LIB','sdk310/LIB/LLIBFPW.LIB','msc6ax/LIB/LLIBCE.LIB','msc700/LIB/LLIBCW.LIB']
@@ -75,11 +76,19 @@ def compare_member(m,raw,n,s,imports):
   if sg!=10 or lo is None or hi is None or off<lo or off+ss['length']>hi:
    issues.append(ss['name']+' contribution placed outside the original BSS region')
  if not any(m['segments'][si-1]['class']=='CODE' for si in placements):return None
- details=[];total=equal=fixequal=0;selectors_ok=set();pending_far_offsets=[]
+ details=[];total=equal=fixequal=0;selectors_ok=set();pending_far_offsets=[];scaffold=[]
  for ss in m['segments']:
   si=ss['index']
   if not ss['length']:continue
   if si not in placements:
+   # A unit may carry pool scaffolding: stand-in functions in the reserved
+   # code segment that only reproduce the selector-pool allocation order of
+   # members not claimed by the unit. Their code asserts nothing and is not
+   # compared; the pool words they allocate are still validated below through
+   # the CONST contribution's selector fixups, and claimed members are
+   # anchored and compared byte for byte as always.
+   if ss['name']==SCAFFOLD_SEGMENT and ss['class']=='CODE' and not any(p['segment']==si and len(names[p['name']])==1 for p in m['publics']):
+    scaffold.append(ss['name']);continue
    issues.append('unplaced contribution '+ss['name']);continue
   sg,off=placements[si];candidate=bytearray.fromhex(ss['data_hex']);ref=reference(si)
   # Common/BSS ranges may be initialized by another member; only this member's
@@ -197,7 +206,7 @@ def compare_member(m,raw,n,s,imports):
  return {'result':'STRONGLY_SUPPORTED_MEMBER' if not issues and derived else 'CONFIRMED_MEMBER' if not issues else 'NO_COMPLETE_MATCH',
   'issues':issues,'placements':{str(k):list(v) for k,v in placements.items()},'private_constraint_placements':derived,'anchors':dict(anchors),'contributions':details,
   'literal_compared':total,'literal_equal':equal,'fixups_equal':fixequal,'fixups_total':len(m['fixups']),
-  'publics':[p['name'] for p in m['publics']]}
+  'publics':[p['name'] for p in m['publics']],'scaffold_segments':scaffold}
 
 def main():
  raw=fixture('SIMANTW.EXE');n=ne.parse(raw);s=mapsym.parse(fixture('SIMANTW.SYM'));imports=import_symbols(ROOT/'toolchain/sdk300/WLIB/LIBW.LIB')
