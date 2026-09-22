@@ -1,7 +1,7 @@
 {
   "id": "DrawMap-374d74fe75",
   "symbol": "_DrawMap",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T20:24:56.061502+00:00",
   "flags": [
     "/AL",
@@ -77,8 +77,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 31905,
-      "sha256": "28a8af7ec5ed930caf0086b04e8f33b4f7ef74c7d090caf99d272faa80e1bdb2"
+      "size": 31882,
+      "sha256": "8f23a441dc9dd18f1c7149ab133bb62906a6fd82810ea38061e0658c7bd49cca"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +99,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 79142,
-      "sha256": "f4fba7712c5366b3e55bb571c4380c580721d0b7751528ba81c849949c3d2495"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -330,11 +326,6 @@
       "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "SEMANTICS_UNKNOWN"
-  ],
-  "reason": "One attempt, 88/91 opcodes matched (96.7%), zero register/branch/memory/stack differences -- every InvalidateRect border-strip rect (top/bottom/left/right, all 4 field-assignment orders verified against aligned_asm), win_hwnd[1], UpdateWindow, DrawMapData and clip_Off match exactly. The sole gap (candidate_offset 33, target 'nop; push cs; call 0xa62' vs candidate 'lcall <external CalcMapCursorRect>') is that this near-call's target (segment 3 / ANTEDIT_MODULE offset 55200 = 0xd7a0) falls in a genuinely unresolved region of the structural evidence: evidence/disassembly/cfg-extents.json has no function spanning 55199-56350 (Mini_DrawMapI ends at 55199, the next cataloged public _MapToolsMenu starts at 56350 -- an 1151-byte structural gap). Checked docs/blocker-families.md and build-topology.md for a plausible name (DrawMapCursor was considered since it shares mapCursorRect's selector slots with AllocateMapBuffer, but its own known offset is 50770, nowhere near 55200, ruling it out) and cards.jsonl/cards.md around that address (0xD7A0 there falls mid-instruction inside an unrelated EndLifeTransferMode/EndTargetMode-calling function, confirming the address space is occupied by something not yet boundary-resolved). Without a real MAPSYM/CFG-confirmed symbol at that address, the C source cannot direct LINK's same-segment near-call rewrite (the matcher only applies it to calls it can prove target the same code segment), so any invented extern name compiles as an ordinary far call -- 3 extra/different opcodes, matching exactly the size of the expected nop;push-cs;call-near idiom.",
-  "next_experiment": "Run the structural extent solver (cfg_solver.py / build_topology.py) over ANTEDIT_MODULE offset 55200-56350 to resolve the missing function boundary and its real name (likely a small DrawMapCursor-family helper given it recomputes mapCursorRect from the same segment-9 fields ToggleMapCursor uses), then retest with that name so the near-call rewrite is recognized.",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape under the current profile (88/91 opcodes, 264/264 bytes)",
@@ -347,5 +338,29 @@
   },
   "previous_blockers": [
     "SEMANTICS_UNKNOWN"
-  ]
+  ],
+  "budget_extensions": [
+    {
+      "kind": "NEAR_EXACT_LANE",
+      "attempts": 4,
+      "candidates": 4,
+      "reviewed": "2026-09-22T08:23:30.439933+00:00",
+      "reason": "near-exact lane: NEAR_SHAPE family, 88/91 opcodes under baseline",
+      "fresh_root_cause": {
+        "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+        "cause": "instruction shape under the current profile (88/91 opcodes, 264/264 bytes)",
+        "profile": "baseline",
+        "stale_profile": false,
+        "mirror_partner": null,
+        "partner_state": null,
+        "classified": "2026-09-22T05:17:31.940377+00:00",
+        "evidence": "evidence/recovery/blocked-reclassification.json"
+      }
+    }
+  ],
+  "parked_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "parked_reason": "One attempt, 88/91 opcodes matched (96.7%), zero register/branch/memory/stack differences -- every InvalidateRect border-strip rect (top/bottom/left/right, all 4 field-assignment orders verified against aligned_asm), win_hwnd[1], UpdateWindow, DrawMapData and clip_Off match exactly. The sole gap (candidate_offset 33, target 'nop; push cs; call 0xa62' vs candidate 'lcall <external CalcMapCursorRect>') is that this near-call's target (segment 3 / ANTEDIT_MODULE offset 55200 = 0xd7a0) falls in a genuinely unresolved region of the structural evidence: evidence/disassembly/cfg-extents.json has no function spanning 55199-56350 (Mini_DrawMapI ends at 55199, the next cataloged public _MapToolsMenu starts at 56350 -- an 1151-byte structural gap). Checked docs/blocker-families.md and build-topology.md for a plausible name (DrawMapCursor was considered since it shares mapCursorRect's selector slots with AllocateMapBuffer, but its own known offset is 50770, nowhere near 55200, ruling it out) and cards.jsonl/cards.md around that address (0xD7A0 there falls mid-instruction inside an unrelated EndLifeTransferMode/EndTargetMode-calling function, confirming the address space is occupied by something not yet boundary-resolved). Without a real MAPSYM/CFG-confirmed symbol at that address, the C source cannot direct LINK's same-segment near-call rewrite (the matcher only applies it to calls it can prove target the same code segment), so any invented extern name compiles as an ordinary far call -- 3 extra/different opcodes, matching exactly the size of the expected nop;push-cs;call-near idiom.",
+  "parked_next_experiment": "Run the structural extent solver (cfg_solver.py / build_topology.py) over ANTEDIT_MODULE offset 55200-56350 to resolve the missing function boundary and its real name (likely a small DrawMapCursor-family helper given it recomputes mapCursorRect from the same segment-9 fields ToggleMapCursor uses), then retest with that name so the near-call rewrite is recognized."
 }

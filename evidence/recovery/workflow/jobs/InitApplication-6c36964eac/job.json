@@ -1,7 +1,7 @@
 {
   "id": "InitApplication-6c36964eac",
   "symbol": "_InitApplication",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-22T03:02:04.290962+00:00",
   "flags": [
     "/AL",
@@ -77,8 +77,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 31905,
-      "sha256": "28a8af7ec5ed930caf0086b04e8f33b4f7ef74c7d090caf99d272faa80e1bdb2"
+      "size": 31882,
+      "sha256": "8f23a441dc9dd18f1c7149ab133bb62906a6fd82810ea38061e0658c7bd49cca"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +99,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 75838,
-      "sha256": "78b894f6266827918ad9c0e8c4e7b192f2ad3f6c30d7a3eaccd30a4bdf512227"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -372,11 +368,6 @@
       "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "LOCAL_FRAME_LAYOUT"
-  ],
-  "reason": "Best candidate build/grind/agentV3/_InitApplication.c (3 named WNDCLASS locals wcRoot/wcGeneric/wcRibbon registered as AntRoot/GenericWindow/RibbonWindow, class-name and icon-name strings read directly from SIMANTW.EXE DGROUP bytes at DS:0x675/0x67c/0x684/0x692) reaches opcode_total 90/90 matched, instruction_layout_match true, cfg_shape_match true, register_only_differences 0, branch_target_differences 0, all 20/20 fixups resolve (import ordinals USER 173/174/57, GDI 87, internal MainWndProc code target, _DATA string targets) -- see build/grind/agentV3/_InitApplication.test2.json. The sole remaining defect is local frame size: target 'enter 0x138,0' (312 bytes) vs candidate 'enter 0x11e,0' (286 bytes), a uniform 26-byte (exactly one WNDCLASS-sized unit) deficit that shifts every wc field's bp-relative displacement by a constant 26, producing 33 memory_operand/stack_local differences with zero opcode/register/branch differences otherwise. Tried and rejected: (a) an initial draft with an extra 'int result' accumulator caused an extra DI register spill (register_only_differences 3) instead of matching -- fixed by returning RegisterClass(&wcRibbon)|RegisterClass(&wcGeneric)|RegisterClass(&wcRoot) directly, which is the change that produced the 90/90 match; (b) adding a 4th declared-but-unreferenced WndClass local ahead of the three real ones to test whether MSC7 reserves stack for unused locals -- result: the extra local was optimized away and, unexpectedly, the whole frame *shrank* by 26 bytes further (enter 0x104,0) with all three real structs shifting 26 bytes shallower, showing MSC7 /Oelw's stack-slot packing for this profile is not a simple first-declared-deepest accumulation; (c) a struct WndClass wc[3] array instead of three named locals -- frame ballooned to 'enter 0x30c,0' (780 bytes), far worse.",
-  "next_experiment": "Determine what MSC7 /AL /G2 /Gs /Oelw places in the 26 missing deep bytes of this frame: try a single named 4th local of a different plausible size/type (e.g. a scratch int/long or a smaller struct) positioned between the parameter-copy and the wc declarations, and probe whether wrapping the three field-by-field fills in explicit braces/blocks changes MSC7's per-block stack-slot packing (its packing rule visibly depends on more than simple declaration order, per experiment (b)).",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "frame layout under the current profile (90/90 opcodes, 315/315 bytes)",
@@ -389,5 +380,29 @@
   },
   "previous_blockers": [
     "LOCAL_FRAME_LAYOUT"
-  ]
+  ],
+  "budget_extensions": [
+    {
+      "kind": "NEAR_EXACT_LANE",
+      "attempts": 4,
+      "candidates": 4,
+      "reviewed": "2026-09-22T08:17:07.338172+00:00",
+      "reason": "near-exact lane: FRAME family, 90/90 opcodes under baseline",
+      "fresh_root_cause": {
+        "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+        "cause": "frame layout under the current profile (90/90 opcodes, 315/315 bytes)",
+        "profile": "baseline",
+        "stale_profile": false,
+        "mirror_partner": null,
+        "partner_state": null,
+        "classified": "2026-09-22T05:17:31.940377+00:00",
+        "evidence": "evidence/recovery/blocked-reclassification.json"
+      }
+    }
+  ],
+  "parked_blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "parked_reason": "Best candidate build/grind/agentV3/_InitApplication.c (3 named WNDCLASS locals wcRoot/wcGeneric/wcRibbon registered as AntRoot/GenericWindow/RibbonWindow, class-name and icon-name strings read directly from SIMANTW.EXE DGROUP bytes at DS:0x675/0x67c/0x684/0x692) reaches opcode_total 90/90 matched, instruction_layout_match true, cfg_shape_match true, register_only_differences 0, branch_target_differences 0, all 20/20 fixups resolve (import ordinals USER 173/174/57, GDI 87, internal MainWndProc code target, _DATA string targets) -- see build/grind/agentV3/_InitApplication.test2.json. The sole remaining defect is local frame size: target 'enter 0x138,0' (312 bytes) vs candidate 'enter 0x11e,0' (286 bytes), a uniform 26-byte (exactly one WNDCLASS-sized unit) deficit that shifts every wc field's bp-relative displacement by a constant 26, producing 33 memory_operand/stack_local differences with zero opcode/register/branch differences otherwise. Tried and rejected: (a) an initial draft with an extra 'int result' accumulator caused an extra DI register spill (register_only_differences 3) instead of matching -- fixed by returning RegisterClass(&wcRibbon)|RegisterClass(&wcGeneric)|RegisterClass(&wcRoot) directly, which is the change that produced the 90/90 match; (b) adding a 4th declared-but-unreferenced WndClass local ahead of the three real ones to test whether MSC7 reserves stack for unused locals -- result: the extra local was optimized away and, unexpectedly, the whole frame *shrank* by 26 bytes further (enter 0x104,0) with all three real structs shifting 26 bytes shallower, showing MSC7 /Oelw's stack-slot packing for this profile is not a simple first-declared-deepest accumulation; (c) a struct WndClass wc[3] array instead of three named locals -- frame ballooned to 'enter 0x30c,0' (780 bytes), far worse.",
+  "parked_next_experiment": "Determine what MSC7 /AL /G2 /Gs /Oelw places in the 26 missing deep bytes of this frame: try a single named 4th local of a different plausible size/type (e.g. a scratch int/long or a smaller struct) positioned between the parameter-copy and the wc declarations, and probe whether wrapping the three field-by-field fills in explicit braces/blocks changes MSC7's per-block stack-slot packing (its packing rule visibly depends on more than simple declaration order, per experiment (b))."
 }

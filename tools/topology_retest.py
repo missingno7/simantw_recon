@@ -8,6 +8,40 @@ from common import ROOT, FormatError, read_json, write_json, identity
 import recovery_workflow as wf
 
 
+NEAR_EXACT_ATTEMPTS = 4
+
+
+def near_exact_reopen(job_id, reason):
+    """Reopen an escalated job whose fresh classification is a near-exact
+    source-shape mismatch (>= 95% opcode agreement under the current profile)
+    with one recorded extension of NEAR_EXACT_ATTEMPTS attempts, so the
+    near-exact lane can iterate on frame/idiom/binding variants through the
+    ordinary grinder path. Granted once per job; the parked context is kept."""
+    if not re.fullmatch(r'[A-Za-z0-9_]+-[a-f0-9]{10}', job_id):
+        raise FormatError('invalid job ID')
+    directory = wf.STATE / 'jobs' / job_id
+    job = read_json(directory / 'job.json')
+    if job['status'] != 'ESCALATED':
+        raise FormatError('only an escalated job can be reopened for the near-exact lane')
+    root = job.get('root_cause') or {}
+    lane = read_json(ROOT / 'evidence/recovery/near-exact-lane.json') if (ROOT / 'evidence/recovery/near-exact-lane.json').exists() else {}
+    if job['symbol'] not in {r['symbol'] for r in lane.get('rows', [])}:
+        raise FormatError('symbol is not in the recorded near-exact lane (evidence/recovery/near-exact-lane.json)')
+    extensions = list(job.get('budget_extensions', []))
+    if any(e.get('kind') == 'NEAR_EXACT_LANE' for e in extensions):
+        raise FormatError('near-exact lane extension already granted for this job')
+    extensions.append(dict(kind='NEAR_EXACT_LANE', attempts=NEAR_EXACT_ATTEMPTS, candidates=NEAR_EXACT_ATTEMPTS, reviewed=wf.timestamp(), reason=reason, fresh_root_cause=root))
+    new_job = dict(job, status='NEEDS_REVISION', protected=wf.protected(), fixture_identity=read_json(ROOT / 'layout/fixtures.json'), budget_extensions=extensions)
+    for key in ('blockers', 'reason', 'next_experiment'):
+        if key in new_job:
+            new_job['parked_' + key] = new_job.pop(key)
+    write_json(directory / 'near-exact-reopen.json', dict(previous_job=job, reason=reason, reviewed=wf.timestamp(), recovery_credit=0))
+    wf.atomic_json(directory / 'job.json', new_job)
+    with wf.global_lock():
+        wf.refresh()
+    return dict(job=job_id, status='NEEDS_REVISION', attempts_granted=NEAR_EXACT_ATTEMPTS)
+
+
 def reissue(job_id, spec_path, reason):
     if not re.fullmatch(r'[A-Za-z0-9_]+-[a-f0-9]{10}', job_id):
         raise FormatError('invalid job ID')
@@ -205,16 +239,19 @@ if __name__ == '__main__':
     ap.add_argument('--refresh-unattempted', action='store_true')
     ap.add_argument('--profile-reissue', action='store_true', help='replay the preserved candidate under the assigned unit profile')
     ap.add_argument('--tool-replay', action='store_true', help='replay the preserved candidate unchanged after a validated proof-tool change')
+    ap.add_argument('--near-exact', action='store_true', help='reopen a near-exact source-shape job with one recorded bounded extension')
     args = ap.parse_args()
     if args.refresh_unattempted and args.spec:
         ap.error('context-only refresh does not take a spec')
-    if not args.refresh_unattempted and not args.profile_reissue and not args.tool_replay and not args.spec:
+    if not args.refresh_unattempted and not args.profile_reissue and not args.tool_replay and not args.near_exact and not args.spec:
         ap.error('reissue requires a spec')
     with wf.global_lock():
         wf.recover_transaction()
     with wf.job_lock(args.job):
         if args.refresh_unattempted:
             result = refresh_unattempted(args.job, args.reason)
+        elif args.near_exact:
+            result = near_exact_reopen(args.job, args.reason)
         elif args.profile_reissue:
             result = profile_reissue(args.job, args.reason, args.spec)
         elif args.tool_replay:

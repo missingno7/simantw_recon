@@ -1,7 +1,7 @@
 {
   "id": "InitAntLions-95b016e60a",
   "symbol": "_InitAntLions",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-22T03:29:17.034632+00:00",
   "flags": [
     "/AL",
@@ -77,8 +77,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 31905,
-      "sha256": "28a8af7ec5ed930caf0086b04e8f33b4f7ef74c7d090caf99d272faa80e1bdb2"
+      "size": 31882,
+      "sha256": "8f23a441dc9dd18f1c7149ab133bb62906a6fd82810ea38061e0658c7bd49cca"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +99,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 75838,
-      "sha256": "78b894f6266827918ad9c0e8c4e7b192f2ad3f6c30d7a3eaccd30a4bdf512227"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -386,11 +382,6 @@
       "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "LOCAL_FRAME_LAYOUT"
-  ],
-  "reason": "Best candidate build/grind/agentU3/InitAntLions.c (attempt05, evidence/recovery/workflow/jobs/InitAntLions-95b016e60a/attempt05/results.json): 121/123 opcodes aligned, cfg_shape_match true, score 0.890244, instruction TYPE/COUNT fully aligned position-for-position (every target instruction has a matching candidate instruction of the same opcode). Semantics fully understood and confirmed by exact_mapsym_names (_AntsEatenByLions, _InitialLions, _LionListX/Y/M/S/T, adjacent _Dx8/_Dy8, the near byte table at DGROUP+0x25e8 matching AddAntLion's lionRing[8]={1,2,4,7,6,5,3,0}, and LionIndex via an explicit far pointer built from a literal segment8 offset): clamp count to <=10, then for each of up to 10 lions retry up to 200 times (two summed SRand1 calls per axis) until IsClear3x3 accepts outright or IsClearTile accepts after >=100 tries, then stamp the center (SetMap plane1 value 0x38), ring the 8 Dx8/Dy8 neighbours through IsClearTile/SetMap with lionRing[i]+0x30, record into LionListX/Y and zero LionListM/S/T at LionIndex, bump LionIndex under 9, and finally InitialLions=clamped count. The remaining gap is purely local-frame size: target's enter is 0x12 (9 words) but the candidate's is 0xc (6 words) -- 3 words smaller -- which only shifts the numeric frame-slot constants for the LionIndex far-pointer local (bp-0x10/-0xe vs candidate bp-4/-2) and one SRand1-sum temporary (bp-0x12 vs bp-0xc); every other instruction, branch, call and store already matches exactly. Tried and had zero effect on the byte-identical output (all still NO_COMPLETE_MATCH, same 203/316 literal bytes): two genuinely unused padding int locals (eliminated as dead code, confirming the gap is not simple padding); combining the IsClearTile/tries>=100 check from a nested if into a single && condition.",
-  "next_experiment": "Find what 3 extra words (6 bytes) of automatic storage the original reserved that produce no visible extra store/load in the disassembly -- try declaring lx/ly (or a Dy8[i]/Dx8[i] signed-char intermediate) with a wider or differently-scoped type, or introduce a second explicit far-pointer copy for LionIndex (mirroring the DoSow-95b0... pattern where a reused far pointer gets re-saved into a second frame slot after intervening calls) reused for the final increment at the end instead of a third LES reload from the same slot.",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape, frame layout under the current profile (121/123 opcodes, 353/347 bytes)",
@@ -403,5 +394,29 @@
   },
   "previous_blockers": [
     "LOCAL_FRAME_LAYOUT"
-  ]
+  ],
+  "budget_extensions": [
+    {
+      "kind": "NEAR_EXACT_LANE",
+      "attempts": 4,
+      "candidates": 4,
+      "reviewed": "2026-09-22T08:20:13.674790+00:00",
+      "reason": "near-exact lane: NEAR_SHAPE family, 121/123 opcodes under baseline",
+      "fresh_root_cause": {
+        "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+        "cause": "instruction shape, frame layout under the current profile (121/123 opcodes, 353/347 bytes)",
+        "profile": "baseline",
+        "stale_profile": false,
+        "mirror_partner": null,
+        "partner_state": null,
+        "classified": "2026-09-22T05:17:31.940377+00:00",
+        "evidence": "evidence/recovery/blocked-reclassification.json"
+      }
+    }
+  ],
+  "parked_blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "parked_reason": "Best candidate build/grind/agentU3/InitAntLions.c (attempt05, evidence/recovery/workflow/jobs/InitAntLions-95b016e60a/attempt05/results.json): 121/123 opcodes aligned, cfg_shape_match true, score 0.890244, instruction TYPE/COUNT fully aligned position-for-position (every target instruction has a matching candidate instruction of the same opcode). Semantics fully understood and confirmed by exact_mapsym_names (_AntsEatenByLions, _InitialLions, _LionListX/Y/M/S/T, adjacent _Dx8/_Dy8, the near byte table at DGROUP+0x25e8 matching AddAntLion's lionRing[8]={1,2,4,7,6,5,3,0}, and LionIndex via an explicit far pointer built from a literal segment8 offset): clamp count to <=10, then for each of up to 10 lions retry up to 200 times (two summed SRand1 calls per axis) until IsClear3x3 accepts outright or IsClearTile accepts after >=100 tries, then stamp the center (SetMap plane1 value 0x38), ring the 8 Dx8/Dy8 neighbours through IsClearTile/SetMap with lionRing[i]+0x30, record into LionListX/Y and zero LionListM/S/T at LionIndex, bump LionIndex under 9, and finally InitialLions=clamped count. The remaining gap is purely local-frame size: target's enter is 0x12 (9 words) but the candidate's is 0xc (6 words) -- 3 words smaller -- which only shifts the numeric frame-slot constants for the LionIndex far-pointer local (bp-0x10/-0xe vs candidate bp-4/-2) and one SRand1-sum temporary (bp-0x12 vs bp-0xc); every other instruction, branch, call and store already matches exactly. Tried and had zero effect on the byte-identical output (all still NO_COMPLETE_MATCH, same 203/316 literal bytes): two genuinely unused padding int locals (eliminated as dead code, confirming the gap is not simple padding); combining the IsClearTile/tries>=100 check from a nested if into a single && condition.",
+  "parked_next_experiment": "Find what 3 extra words (6 bytes) of automatic storage the original reserved that produce no visible extra store/load in the disassembly -- try declaring lx/ly (or a Dy8[i]/Dx8[i] signed-char intermediate) with a wider or differently-scoped type, or introduce a second explicit far-pointer copy for LionIndex (mirroring the DoSow-95b0... pattern where a reused far pointer gets re-saved into a second frame slot after intervening calls) reused for the final increment at the end instead of a third LES reload from the same slot."
 }
