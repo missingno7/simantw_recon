@@ -200,9 +200,40 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
         path = ROOT / sources[symbol]
         items = split_items(path.read_text(encoding='latin1'))
         definitions = [it for it in items if it['kind'] == 'definition']
-        if not any(it['name'] == symbol.lstrip('_') for it in definitions):
+        # Pascal exports are upper-cased in MAPSYM (INDIRECTDLGPROC for IndirectDlgProc).
+        if not any(it['name'] == symbol.lstrip('_') or (not symbol.startswith('_') and it['name'].upper() == symbol) for it in definitions):
             raise FormatError('source for %s does not define it: %s' % (symbol, sources[symbol]))
         files.append(dict(symbol=symbol, source=sources[symbol], identity=identity(path), items=items))
+    # Two preserved sources may define the same struct tag with different
+    # layouts (each exact for its own member). A tag has no object identity:
+    # every later spelling is renamed, in that source's items only, to
+    # `<tag>_<n>`; the member's text changes in type names alone.
+    tag_texts = {}
+    for f in files:
+        for it in f['items']:
+            if it['kind'] == 'declaration' and len(it['names']) == 1 and it['names'][0].startswith(('struct ', 'union ')):
+                tag_texts.setdefault(it['names'][0], {}).setdefault(it['normalized'], []).append(f['symbol'])
+    tag_renames = {}
+    for tag, variants in tag_texts.items():
+        if len(variants) < 2:
+            continue
+        keyword, name = tag.split(' ', 1)
+        for n, spelling in enumerate(list(variants)[1:], start=2):
+            for symbol in variants[spelling]:
+                tag_renames.setdefault(symbol, {})[tag] = '%s %s_%d' % (keyword, name, n)
+    for f in files:
+        renames = tag_renames.get(f['symbol'])
+        if not renames:
+            continue
+        for it in f['items']:
+            for tag, new_tag in renames.items():
+                pattern = re.compile(chr(92) + 'b' + re.escape(tag.split(' ', 1)[0]) + chr(92) + 's+' + re.escape(tag.split(' ', 1)[1]) + chr(92) + 'b')
+                if 'text' in it:
+                    it['text'] = pattern.sub(new_tag, it['text'])
+                if 'normalized' in it:
+                    it['normalized'] = pattern.sub(new_tag, it['normalized'])
+                if it.get('names') == [tag]:
+                    it['names'] = [new_tag]
     declarations = []
     seen = {}
     conflicts = []
@@ -281,7 +312,7 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
                 # dropped when the caller scaffolds them instead.
                 if any(d['name'] == it['name'] for d in definitions) or it['name'] in exclude_definitions:
                     continue
-                if it['name'] == f['symbol'].lstrip('_') or ('_' + it['name']) in sources:
+                if it['name'] == f['symbol'].lstrip('_') or ('_' + it['name']) in sources or it['name'].upper() in sources:
                     definitions.append(dict(it, origin=f['symbol']))
                 else:
                     # A helper (e.g. static function) defined by a preserved source.
@@ -310,7 +341,10 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
         if pragmas:
             lines.append('')
         rank = {m.lstrip('_'): i for i, m in enumerate(rank_order or order)}
-        placed = [dict(d, rank=rank.get(d['name'], len(rank))) for d in definitions] + [dict(kind='definition', name=x['name'], text=x['text'], origin='scaffold', rank=x['rank'] if x.get('rank') is not None else rank.get(x['rank_name'].lstrip('_'), len(rank))) for x in extra_definitions]
+        for i, m in enumerate(rank_order or order):
+            if not m.startswith('_'):
+                rank.setdefault(m.upper(), i)
+        placed = [dict(d, rank=rank.get(d['name'], rank.get(d['name'].upper(), len(rank)))) for d in definitions] + [dict(kind='definition', name=x['name'], text=x['text'], origin='scaffold', rank=x['rank'] if x.get('rank') is not None else rank.get(x['rank_name'].lstrip('_'), len(rank))) for x in extra_definitions]
         macros_of = {f['symbol']: f['macros'] for f in files}
         views_of = {f['symbol']: f['views'] for f in files}
         for d in sorted(placed, key=lambda d: d['rank']):
@@ -341,7 +375,7 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
                     lines.append('')
     return dict(status='COMPOSED', text='\n'.join(lines) + '\n', files=[{k: v for k, v in f.items() if k not in ('items', 'macros', 'views')} for f in files],
                 declarations=len(declarations), definitions=[d['name'] for d in definitions], layout=layout, overrides=sorted(overrides), per_definition_macros=sorted(per_definition_macros),
-                shape_views={name: sorted(set(c['views'].values())) for name, c in canonical.items()},
+                shape_views={name: sorted(set(c['views'].values())) for name, c in canonical.items()}, tag_renames=tag_renames,
                 declaration_items=[dict(names=d['names'], text=d['text']) for d in declarations], definition_items=[dict(name=d['name'], text=d['text']) for d in definitions])
 
 
@@ -771,7 +805,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
                 shared_words={'%04X' % k: sorted(v) for k, v in shared.items()}, symbol_overrides=symbol_overrides)
 
 
-def scaffold_text(plan, declared_texts):
+def scaffold_text(plan, declared_texts, c_names=None):
     """Declarations, alloc_text pragmas and stand-in definitions for a plan."""
     decls = []
     prototypes = []
@@ -801,8 +835,9 @@ def scaffold_text(plan, declared_texts):
                 ' * segment %s, which the matcher never compares or credits. */' % SCAFFOLD_SEGMENT,
                 'void far %s(void)' % fname, '{', '    volatile int t;', ''] + body + ['}']
         definitions.append(dict(name=fname, text='\n'.join(text), rank_name=stub['function'], rank=stub['position']))
+    c_names = c_names or {}
     for k, run in enumerate(plan['runs'][1:], start=2):
-        names = [m.lstrip('_') for m in run]
+        names = [c_names.get(m, m.lstrip('_')) for m in run]
         for i in range(0, len(names), 4):
             pragmas.append('#pragma alloc_text(RUN%d_TEXT, %s)' % (k, ', '.join(names[i:i + 4])))
     return dict(declarations=decls, prototypes=prototypes, pragmas=pragmas, definitions=definitions)
@@ -958,8 +993,13 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
             plan = scaffold_plan(component_id, members, flags, plan_declared, declared_texts=declared_texts, folder=folder)
             if plan['symbol_overrides']:
                 overrides = dict(overrides or {}, **plan['symbol_overrides'])
-            parts = scaffold_text(plan, declared_texts)
-            prototypes = parts['prototypes'] + [re.sub(r'\s+', ' ', d['text'][:d['text'].index('{')]).strip() + ';' for d in first['definition_items'] if ('_' + d['name']) in [m for run in plan['runs'][1:] for m in run]]
+            # MAPSYM name -> C definition name (Pascal exports are upper-cased in MAPSYM).
+            c_names = {}
+            for m in members:
+                c_names[m] = m.lstrip('_') if m.startswith('_') else next((d['name'] for d in first['definition_items'] if d['name'].upper() == m), m)
+            parts = scaffold_text(plan, declared_texts, c_names)
+            later = {c_names[m] for run in plan['runs'][1:] for m in run}
+            prototypes = parts['prototypes'] + [re.sub(chr(92) + 's+', ' ', d['text'][:d['text'].index('{')]).strip() + ';' for d in first['definition_items'] if d['name'] in later]
             result = compose(chosen, order, unit_id, layout, overrides, extra_definitions=parts['definitions'], exclude_definitions=unclaimed,
                              pragmas=parts['declarations'] + [''] + prototypes + [''] + parts['pragmas'], rank_order=comp['publics'],
                              header_notes=['SCAFFOLDED: unclaimed members %s are stand-ins in %s (pool order only, never compared).' % (', '.join(s['function'] for s in plan['stubs']), SCAFFOLD_SEGMENT)] if plan['stubs'] else ['SCAFFOLDED: claimed members in %d code runs; no pool stand-ins were needed.' % len(plan['runs'])])

@@ -89,6 +89,50 @@ class ComposerScaffoldTests(unittest.TestCase):
         self.assertLess(text.index('#pragma alloc_text'), text.index('void far A(void)'))
 
 
+class ComposerConflictTests(unittest.TestCase):
+    def write(self, name, lines):
+        folder = ROOT / 'build/tests/scaffold'
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / name).write_text(chr(10).join(lines) + chr(10), encoding='latin1')
+        return (folder / name).relative_to(ROOT).as_posix()
+
+    def test_shape_variants_become_per_member_views(self):
+        a = self.write('a.c', ['extern unsigned char near LifeB[];', 'extern int far Flag;', 'void far A(void)', '{', '    LifeB[3] = Flag;', '}'])
+        b = self.write('b.c', ['extern unsigned char near LifeB[128][64];', 'extern int far Flag[];', 'void far B(void)', '{', '    LifeB[1][2] = Flag[0];', '}'])
+        r = tu.compose({'_A': a, '_B': b}, ['_A', '_B'], 'unit')
+        self.assertEqual(r['status'], 'COMPOSED')
+        text = r['text']
+        self.assertIn('extern unsigned char near LifeB[128][64];', text)
+        self.assertNotIn('extern unsigned char near LifeB[];', text)
+        self.assertIn('#define LifeB ((unsigned char near *)LifeB)', text)
+        self.assertIn('#define Flag ((Flag)[0])', text)
+        self.assertLess(text.index('#define LifeB'), text.index('void far A(void)'))
+        self.assertLess(text.index('void far A(void)'), text.index('#undef LifeB'))
+        self.assertLess(text.index('#undef LifeB'), text.index('void far B(void)'))
+
+    def test_element_type_views_and_distance_conflicts(self):
+        a = self.write('c.c', ['extern int far Map[];', 'void far A(void)', '{', '    Map[1] = 2;', '}'])
+        b = self.write('d.c', ['extern unsigned char far Map[];', 'void far B(void)', '{', '    Map[1] = 2;', '}'])
+        r = tu.compose({'_A': a, '_B': b}, ['_A', '_B'], 'unit')
+        self.assertEqual(r['status'], 'COMPOSED')
+        self.assertTrue('#define Map ((int far *)Map)' in r['text'] or '#define Map ((unsigned char far *)Map)' in r['text'])
+        c = self.write('e.c', ['extern int near Map[];', 'void far C(void)', '{', '    Map[1] = 2;', '}'])
+        r = tu.compose({'_A': a, '_C': c}, ['_A', '_C'], 'unit')
+        self.assertEqual(r['status'], 'DECLARATION_CONFLICT')
+
+    def test_struct_tags_are_renamed_per_source_and_function_macros_do_not_clash(self):
+        a = self.write('f.c', ['struct Bucket { int count; };', 'extern struct Bucket far *far handles[];', 'extern unsigned char far T[];', 'void far A(void)', '{', '    handles[0]->count = T[1];', '}'])
+        b = self.write('g.c', ['struct Bucket { int other; int count; };', 'extern struct Bucket far *far handles[];', '#define T(i) (i)', 'void far B(void)', '{', '    handles[1]->count = T(3);', '}'])
+        r = tu.compose({'_A': a, '_B': b}, ['_A', '_B'], 'unit')
+        self.assertEqual(r['status'], 'COMPOSED', r.get('conflicts'))
+        text = r['text']
+        self.assertIn('struct Bucket_2 {', text)
+        self.assertEqual(r['tag_renames'], {'_B': {'struct Bucket': 'struct Bucket_2'}})
+        self.assertIn('#define T(i) (i)', text)
+        self.assertLess(text.index('void far A(void)'), text.index('#define T(i) (i)'))
+        self.assertIn('#undef T', text)
+
+
 class SubmissionPragmaTests(unittest.TestCase):
     def submission(self, lines, scaffold):
         import recovery_workflow as wf
