@@ -1,7 +1,7 @@
 {
   "id": "win_EditChanged-885bec0d1d",
   "symbol": "_win_EditChanged",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:57:48.519470+00:00",
   "flags": [
     "/AL",
@@ -316,5 +316,109 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "1e44a0553c2cc22eae82317778e6403316a1a48a5a8db7a5d8610b244d4ab84b",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "1458761fce0a4ccd2564f4eee097f34cc38e44c4b6f0a3f6652be3a9e45cb398",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "559763fe14cf1e2e239a1ac0b153d40714a7e988b1b566df4b8c3bebf3ef713f",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "5dbd1af46ac25d20004545f729e8474c45054f4c911a31b4275a5ad796b41711",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "a12e44e6e1877b557aace1a47be069123a8e95b091f06ccd01775e4137235e27",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "cd082ab7b3a0b80681c16fa16f5540b953083d5af490bfa69d48bd8c5295046b",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "321cbe946bff1063d999581de877cc0731efb3aa3dd08f9bfebd6c3e64b6204f",
+      "report": "evidence/recovery/workflow/jobs/win_EditChanged-885bec0d1d/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Target 3170-3628 (458 bytes, enter 0xa,0 = only 10 bytes/5 words of locals, single push di, no push si). Semantics fully recovered across 7 attempts, converging from 100/150 to 136/157 opcode matches (best: attempt06/07): win_GetObjRect(4,&editTileRect); editHeight/editWidth = ceil-to-tile of editTileRect's span; editTileRect.right/bottom grown back to the whole-tile size; two private SIMANT_DATA_GROUP based-word handles (0x8df2/0x8df4, the unnamed gap directly before public _editBufInvalidFlag at 0x8df6 per assets/SIMANTW.SYM segment 8) freed via mem_Unlock/mem_Free if set, then both mem_Alloc'd (second at double the byte count) and mem_Lock'd into confirmed near far-pointer tileDsp (0x143e/0x1440) and an unnamed sibling pointer at 0x1442/0x1444 (named tileMask here); tileMask is filled with 0xFF via a for-loop that does compile to rep stosb (attempt06 confirmed target_features.string_ops=['rep stosb'] reproduced); editBufInvalidFlag[0] cleared; MapPnt clamped into [0,limit-editWidth]x[0,0x40-editHeight] where limit is 0x80 for MapPlane in {0,1} else 0x40; ResetEditScrollRange() called. Remaining unresolved shape differences: (1) target's MapPlane<=1 test compiles to a 5-instruction or/jl/jo/dec/jle idiom my  and  phrasings both fail to reproduce (both produce a shorter cmp/jbe or cmp/jle instead). (2) The two private handles: target holds their far address across the mem_Unlock/mem_Free/mem_Free pair in exactly 2 stack words each ([bp-6]/[bp-4] and [bp-0xa]/[bp-8], 8 bytes total) with NO other spilled locals (total frame 10 bytes = 8 + one more word); every C phrasing tried (single reused far pointer, two distinct far pointers, direct based-variable access with no explicit pointer) either collapses the frame to 0 (register-allocates everything, attempt01/02) or, once the tileMask fill loop and h/w/count/limit locals are added for other reasons, balloons the frame well past 10 bytes (attempt06/07 reach ~0x1a+). (3) target does not use SI at all (only DI); every variant here ends up needing SI too. The based-handle declarations () and all named-pointer/rect declarations are otherwise stable and unchallenged by the diagnostics (no complaints on their shape, only on frame size/register choice).",
+  "next_experiment": "Try isolating the two handle-free blocks into their own file-scope static helper (e.g. static void freeHandle(unsigned int far *based-word-address) call sites) so each block's far pointer is argument-passed rather than a local temp, which may reproduce the tight 2-word-per-handle stack shape without register-allocating it away. Separately, try writing the MapPlane limit test as a computed array index (e.g. static const int limits[2]={0x80,0x40}; limit = limits[(unsigned)(MapPlane-0) > 1];) to see whether that reproduces the or/jl/jo/dec/jle guard idiom MSC7 uses for a 2-valued unsigned-range test. Keep build/grind/agentL3/win_EditChanged.c (current version, 136/157 opcodes, rep stosb reproduced) as the base; all data-object declarations and the overall call sequence are confirmed correct, only frame/register allocation for the two threads (handle pointers, limit) remains open."
 }

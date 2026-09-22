@@ -1,7 +1,7 @@
 {
   "id": "win_CasteControlChanged-02d01ea344",
   "symbol": "_win_CasteControlChanged",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:00:53.199477+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "afeed4b45b61d73adece386b93bec9d56b62550fe53faaeade0fd3bbb74cfed7",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlChanged-02d01ea344/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c8cbddc32d60b84feead80518788e418d5990fe2bcd59920477979bd31ff18f4",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlChanged-02d01ea344/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "42a9f0bcbd591c515c53d0374607a7e19fca435201f0f45b8777f5b7c900f79d",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlChanged-02d01ea344/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "db55548ba45965f92e032660f07e989fa0d93a0acbad88ab90bdc96ae9867454",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlChanged-02d01ea344/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics fully derived and matches target closely (opcode_matches up to 143/176, cfg_shape_match true in attempt1-2, score ~0.60-0.61): win_GetObjRect(0x130d,&rect); triWidth/triWidthR/triWidthL/triHeight/leftYSlope=(long)triHeight/((long)triWidthR<<8); casteVerts[0..2] apex/BL/BR; casteKnobPnt.y=((0xffff-casteLevels[0])*(triHeight-2))/0xffff+casteVerts[0].y; di=(casteLevels[0]*triWidthL)/0xffff; si=triWidth-2*di; if(frac!=0xffff && si>=3) knobPnt.x=verts[1].x+(casteLevels[2]*(si-3))/(0xffff-casteLevels[0])+di+2 else verts[0].x+2; hanim_RemoveAnimSet(casteAnimHandle) guarded+cleared; bitmap redraw via gr_BitMapSize/mem_Lock/DrawBitMapToBuffer(buffer->pixels,0,0,h,w,0x120c,&rowBytes,&planes)/mem_Unlock matching the exact-matched win_CasteControlClosed shape. Remaining mismatch is pure register allocation/frame layout: target keeps the post-shr triWidth>>1 value live in AX across the triWidthR/triWidthL stores and the leftYSlope shift-trick with NO extra spill, and re-reads far globals (triWidth, casteLevels[0]) fresh from memory at each later use instead of caching; every C shape I tried (plain sequential stmts, chained assignment triWidthL=triWidthR=expr, an explicit int half local, an explicit int far *pTriWidthL cache for triWidthL, with/without an extracted int frac local, with/without volatile on casteLevels) produces an extra 'mov cx,ax' immediately after the first triWidth store (candidate offset ~36, before shr) that the target does not have, cascading into a different bp-relative local frame (rect lands at bp-0x14 instead of bp-8) and ~30-40 fewer target bytes than needed. Best candidates and diagnostics: evidence/recovery/workflow/jobs/win_CasteControlChanged-02d01ea344/attempt01..04/results.json; source build/grind/agentN3/win_CasteControlChanged.c.",
+  "next_experiment": "Try writing si=triWidth-2*di via a value NOT re-referencing the named triWidth global a second time (e.g. recompute from rect.right-rect.left again, or introduce a same-named local shadowing that forces MSC7 to treat the two triWidth reads as unrelated), to see whether that stops the early 'mov cx,ax' pre-caching; alternatively probe whether the twin win_ModeControlChanged (same size, same shape, no casteBitmap volatile ambiguity) reveals the same residue to confirm it is source-shape-independent before spending more budget on declaration variants."
 }

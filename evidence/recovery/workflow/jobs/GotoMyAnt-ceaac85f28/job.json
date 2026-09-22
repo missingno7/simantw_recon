@@ -1,7 +1,7 @@
 {
   "id": "GotoMyAnt-ceaac85f28",
   "symbol": "_GotoMyAnt",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:57:51.756920+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,81 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "c554de2829fa1bec60f308d8c98dcc34c6d756f6d5b1e19d876d7f811b9525f9",
+      "report": "evidence/recovery/workflow/jobs/GotoMyAnt-ceaac85f28/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "f5b5b00f86f1955269fca5fa2e93478b268b51dbf4e5e4ed66dd008ea336cc1a",
+      "report": "evidence/recovery/workflow/jobs/GotoMyAnt-ceaac85f28/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "6d0f718560f58d61c988c6940d826f549b3407a1b84ab0da372f2b42a480ac44",
+      "report": "evidence/recovery/workflow/jobs/GotoMyAnt-ceaac85f28/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "e7d8dd54037b269d6a4692a3e5a7ed80fba4d4e3254253ec3ff5de82314ee5f2",
+      "report": "evidence/recovery/workflow/jobs/GotoMyAnt-ceaac85f28/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "e341db1e09d7981031c75bb91f8db789ab0fba6d483d15520fcb074bd2f159f7",
+      "report": "evidence/recovery/workflow/jobs/GotoMyAnt-ceaac85f28/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate build/grind/agentK3/GotoMyAnt.c is byte-for-byte exact except one instruction: target has 'mov word ptr [bp-2], si' at offset 0x92 (the else-branch join point reached by both the MapPlane!=plane and plane<=0 failure edges of the guard, right before pushing ex/ey/plane as SetMapPlaneLocation's args), a dead store (si is pushed directly afterward, [bp-2] is never read). Every other byte, opcode, fixup and branch target matches exactly (224/224 target bytes accounted for, only this 3-byte gap). Tried across 5 explained revisions on job GotoMyAnt-ceaac85f28 (attempts 1,3,4,5 all reproduce the identical single-instruction gap regardless of source shape): (1) plane as an explicit int local assigned once before the branch (attempt01, closest match) (2) using the MePlane global directly at both use sites instead of a local, matching the InitYelloAnt CSE-temp lesson (attempt02) -- this instead caused two independent global rereads with no SI reuse at all, a worse mismatch (3) reordering local declarations ex,ey,plane vs plane,ex,ey (attempt03, no effect on the gap) (4) inverting the guard to a positive OR-condition guarding the SetMapPlaneLocation branch directly, CenterEdit as else (attempt04, identical gap) (5) an explicit block-scoped 'int p = plane;' copy inside the else branch before the call (attempt05, optimized away, identical gap). Remaining budget/candidates not spent on further guesses. Attempt budget used: 5/8.",
+  "next_experiment": "Try forcing a live-range boundary at the else-branch entry another way: e.g. declare plane as 'volatile int' only for this experiment (expect extra reads too, informative even if it overshoots), or check whether the unit's other admitted SIMANT_MODULE siblings (CenterAnt, GotoMapPoint) show this same join-point spill for any similarly-guarded local to see if it is a systematic /Oelw register-allocator behavior at 2-incoming-edge blocks rather than something this function's C source can avoid."
 }

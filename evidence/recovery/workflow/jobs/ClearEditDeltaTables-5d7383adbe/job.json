@@ -1,7 +1,7 @@
 {
   "id": "ClearEditDeltaTables-5d7383adbe",
   "symbol": "_ClearEditDeltaTables",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:56:27.199715+00:00",
   "flags": [
     "/AL",
@@ -316,5 +316,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "59f798180e59d9b84ac76561e6f8d3f9ebd50261937571ef6cd9f172ef8de27b",
+      "report": "evidence/recovery/workflow/jobs/ClearEditDeltaTables-5d7383adbe/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c6e750bf428be4c4e98f7115ad96d216ed2e691fc8b7f8f00428f99c73e63d6c",
+      "report": "evidence/recovery/workflow/jobs/ClearEditDeltaTables-5d7383adbe/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "502a54defd66cfa2dfdd9a896843cedfd48a9c805f30ea1261e69e5473069d52",
+      "report": "evidence/recovery/workflow/jobs/ClearEditDeltaTables-5d7383adbe/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "0eb422ae4b2fa9f68389e36075571ad928ec73833e175b36616babe42cc54448",
+      "report": "evidence/recovery/workflow/jobs/ClearEditDeltaTables-5d7383adbe/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Target 2690-2937 (247 bytes, enter 8,0 = 4 words: p1 far ptr at [bp-4]/[bp-2], p2 far ptr at [bp-8]/[bp-6]), semantics fully recovered: frees/reallocates the same two private SIMANT_DATA_GROUP based handles as win_EditChanged (0x8df2 'tileDspHandle', 0x8df4 'tileMaskHandle', the unnamed words directly before public editBufInvalidFlag at 0x8df6, confirmed via assets/SIMANTW.SYM segment 8), locks results into confirmed near far pointers tileDsp(0x143e/0x1440) and an unnamed sibling tileMask(0x1442/0x1444), fills tileMask with 0xFF and clears editBufInvalidFlag[0] -- no editTileRect/MapPnt work (unlike win_EditChanged). Attempt01 (direct based-variable access, no explicit pointer locals) and attempt02/03 (explicit p1/p2 far-pointer locals, plain and array-indexed) all let the compiler recompute the based address fresh via a CONST/SIMANT_DATA_GROUP fixup after each call instead of spilling+reloading, producing far too many opcodes (63-69/86-89) and no frame match. Attempt04 (p1/p2 declared ) finally forces the target's own shape -- les bx,ptr[bp-X] reload after each call, matching target's instruction pattern -- but the two pointers land on the WRONG stack slots: candidate puts p1 (tileHandles[0]/tileDsp side, defined and used first) at [bp-8] and p2 at [bp-4], while target has p1 at [bp-4] (closer to bp) and p2 at [bp-8] (farther), i.e. exactly reversed. This is the same directional swap already blocked on _PreDrawSpider (job PreDrawSpider-24cd159a90): the first-defined/first-used local temp lands on the FARTHER stack slot in every candidate tried here, never the closer one, regardless of declaration order (untried here since PreDrawSpider already proved declaration order has zero effect on slot assignment in this toolchain). Best candidate (attempt04): opcode 61/89, stack_local_differences 6, all from this one p1/p2 swap; every other instruction (the mem_Unlock/mem_Free/mem_Alloc/mem_Lock call sequence, the rep-stosb fill loop, editBufInvalidFlag[0]=0) matches in shape.",
+  "next_experiment": "Same experiment as PreDrawSpider's open next-experiment: this looks like a systemic register-allocator/spill-slot-ordering quirk in the og(/Oeglw) profile's isolated-compile path, not a per-function C phrasing issue (2 independent functions, 2 independent variable pairs, same reversed-slot symptom). Worth a supervisor check on whether the compiler_service/worker driving this profile's spill-slot numbering differs from the historical toolchain in traversal direction; if confirmed toolchain-side, both this job and PreDrawSpider-24cd159a90 should be retested together after a fix via topology_retest.py --refresh-unattempted once budgets allow. Keep build/grind/agentL3/ClearEditDeltaTables.c (attempt04, volatile p1/p2) as the base -- only the two stack slot assignments need to flip."
 }

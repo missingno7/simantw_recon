@@ -1,0 +1,24 @@
+{
+  "symbol": "_win_DrawEndGameWindow",
+  "source": "build/grind/agentO3/win_DrawEndGameWindow.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "max_candidates": 1,
+  "axes": [],
+  "semantic_summary": "CurGameType is PACK-segment (segment 9) state; declaring it __based(__segname(\"PACK\")) (matching RandYard's seed pointer and the admitted multimedia private-state pattern) instead of plain far should make &CurGameType resolve through the same PACK selector as every other PACK dereference in this unit, instead of isolated-compile folding both halves into unresolved immediate fixups.",
+  "binding_evidence": [
+    "RandYard: int __based(__segname(\"SIMANT_DATA_GROUP\")) *seed; seed = &YMapSeeds[0][0]; (src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c)",
+    "IsMMWaveAvail/IsMMMidiAvail admitted private state: static int __based(__segname(\"SIMANT_DATA_GROUP\")) mmModule = 0;",
+    "mapsym segment table: segment 9 name is PACK (tools/mapsym.py parse of SIMANTW.SYM)",
+    "packet direct_data_bindings for _win_DrawEndGameWindow: CurGameType/match_position selector_loader_target segment 9, matching PACK"
+  ],
+  "publics": [
+    "_win_DrawEndGameWindow"
+  ]
+}

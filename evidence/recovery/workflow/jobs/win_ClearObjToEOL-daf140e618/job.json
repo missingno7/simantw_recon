@@ -1,7 +1,7 @@
 {
   "id": "win_ClearObjToEOL-daf140e618",
   "symbol": "_win_ClearObjToEOL",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:56:17.729281+00:00",
   "flags": [
     "/AL",
@@ -317,5 +317,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "69abcd0bc97c996138ec4688e95db92216314a3eae63f3c74b20d546eec95197",
+      "report": "evidence/recovery/workflow/jobs/win_ClearObjToEOL-daf140e618/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "f5454b9dc6af6a3bde2aefaa58121ca36af408a345c83b20704ed3bec9f8cb2e",
+      "report": "evidence/recovery/workflow/jobs/win_ClearObjToEOL-daf140e618/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "830090e46fdb4fa1b6e94a47acd7cd8a38d13b53aad7b2f8fd4980fe416052b5",
+      "report": "evidence/recovery/workflow/jobs/win_ClearObjToEOL-daf140e618/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "09a4dc52918499cb905ce07ae32c4438770998af5ab79d6672bb1e96113b459e",
+      "report": "evidence/recovery/workflow/jobs/win_ClearObjToEOL-daf140e618/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Full semantics mapped and verified across 4 attempts post-refresh (best candidate build/grind/agentQ3/win_ClearObjToEOL.c, evidence build/grind/agentQ3/ClearObjToEOL_t1c.json / t4.json, both 96/117 opcodes, cfg_shape_match true, target 290 vs candidate 299 bytes): win_LockWin(objectNumber) called twice (literal duplicate, confirmed same call target both times); bucket=win_handles[objectNumber>>8], rect=*bucket->rects[(unsigned char)objectNumber] grown by one on right/bottom under ribbonBarHeight (byte-identical match, offsets 57-101 align perfectly including the DS/SS movsw switch and the ribbon je); win_UnlockWin; then the SAME win_handles[objectNumber>>8] entry reread and reinterpreted as the win_ObjAddr bucket shape (objectCount@0xc, objects[]@0x2c) with the identical Punt('Attempt to get obj address outsize window') bounds check (string content verified byte-for-byte from assets/SIMANTW.EXE DGROUP offset 0xbd12; the candidate's copy lands at a different isolated-TU address, which is the expected/ignorable private-CONST-placement divergence, not a real difference); object->color (WinColorObject.color at +0x26, matching win_SetColorFromObj's struct) indexes PACK win_colors[][6] byte 2 (mono) or byte 3 (colour) under displayType&1, replicated by *0x101 exactly as win_SetColorFromObj; lastStrPos (far PACK StrPos, matching font_PrintStr's declaration) supplies (x,y) for a GBoxFill(x, max(y,rect.top), rect.right, rect.bottom, color) clipped to rect.bottom>y and rect.left<=x<rect.right. Remaining divergence is register-allocation only: target explicitly caches (unsigned char)objectNumber and the near address &win_handles[objectNumber>>8] into two named frame slots (bp-0x16, bp-0x14) reused via a fused 'es:[bx+si+0x2c]' dual-index addressing mode and re-LES'd per later use; every source variant tried (bucket as a plain assigned far-pointer variable, an explicit unsigned char objIndex temp, an explicit near-pointer-to-far-pointer 'slot' temp, and fully inlined chained expressions with no temps at all) instead makes the compiler either fuse the load into a single 'les <fixup>' (best case, 96/117, matches everywhere except this address-caching idiom) or emit visibly worse/diverging code (drops to 90-93/117, or moves the CFG out of shape in one variant). This is the same REGISTER_ALLOCATION class already evidenced on _win_Swap (same unit, same compiler profile) where the identical sar-vs-byte-load idiom substitution proved resistant to source restructuring.",
+  "next_experiment": "Investigate whether the fused dual bx+si addressing (target offsets 33-61) is only reachable when a SECOND independent far array access exists earlier in the same statement chain (unlike this isolated one-function test); or try an explicit two-statement split that reads the WORD at win_handles[idx] into a temporary BEFORE any struct-typed cast is applied (untyped 'int far *raw = (int far *)&win_handles[objectNumber>>8]; unsigned tmp = *(unsigned near*)&objectNumber_byte;' style) to see whether avoiding the struct-pointer type at the point of first use changes the optimizer's addressing-mode choice."
 }

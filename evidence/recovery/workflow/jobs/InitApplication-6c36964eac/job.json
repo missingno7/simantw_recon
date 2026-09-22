@@ -1,7 +1,7 @@
 {
   "id": "InitApplication-6c36964eac",
   "symbol": "_InitApplication",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:02:04.290962+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "42b4fa1aac157de733cf6ef387e25bffc20620f66b76cb414cb0a67a38094a2e",
+      "report": "evidence/recovery/workflow/jobs/InitApplication-6c36964eac/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "801587ca40910f8711c606d7f70dfa823bf7cc664b9906ff9ca7659cb6823660",
+      "report": "evidence/recovery/workflow/jobs/InitApplication-6c36964eac/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "fe14fe0123d7bd0bf5f09e68f3ae491de1a0fbea583dc58dee9cb8aa19a34db6",
+      "report": "evidence/recovery/workflow/jobs/InitApplication-6c36964eac/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "c3ebd8fb5f4bdece59f2a93d16591d74f1a48ac5f4bf05140deb9e57ec9734c7",
+      "report": "evidence/recovery/workflow/jobs/InitApplication-6c36964eac/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Best candidate build/grind/agentV3/_InitApplication.c (3 named WNDCLASS locals wcRoot/wcGeneric/wcRibbon registered as AntRoot/GenericWindow/RibbonWindow, class-name and icon-name strings read directly from SIMANTW.EXE DGROUP bytes at DS:0x675/0x67c/0x684/0x692) reaches opcode_total 90/90 matched, instruction_layout_match true, cfg_shape_match true, register_only_differences 0, branch_target_differences 0, all 20/20 fixups resolve (import ordinals USER 173/174/57, GDI 87, internal MainWndProc code target, _DATA string targets) -- see build/grind/agentV3/_InitApplication.test2.json. The sole remaining defect is local frame size: target 'enter 0x138,0' (312 bytes) vs candidate 'enter 0x11e,0' (286 bytes), a uniform 26-byte (exactly one WNDCLASS-sized unit) deficit that shifts every wc field's bp-relative displacement by a constant 26, producing 33 memory_operand/stack_local differences with zero opcode/register/branch differences otherwise. Tried and rejected: (a) an initial draft with an extra 'int result' accumulator caused an extra DI register spill (register_only_differences 3) instead of matching -- fixed by returning RegisterClass(&wcRibbon)|RegisterClass(&wcGeneric)|RegisterClass(&wcRoot) directly, which is the change that produced the 90/90 match; (b) adding a 4th declared-but-unreferenced WndClass local ahead of the three real ones to test whether MSC7 reserves stack for unused locals -- result: the extra local was optimized away and, unexpectedly, the whole frame *shrank* by 26 bytes further (enter 0x104,0) with all three real structs shifting 26 bytes shallower, showing MSC7 /Oelw's stack-slot packing for this profile is not a simple first-declared-deepest accumulation; (c) a struct WndClass wc[3] array instead of three named locals -- frame ballooned to 'enter 0x30c,0' (780 bytes), far worse.",
+  "next_experiment": "Determine what MSC7 /AL /G2 /Gs /Oelw places in the 26 missing deep bytes of this frame: try a single named 4th local of a different plausible size/type (e.g. a scratch int/long or a smaller struct) positioned between the parameter-copy and the wc declarations, and probe whether wrapping the three field-by-field fills in explicit braces/blocks changes MSC7's per-block stack-slot packing (its packing rule visibly depends on more than simple declaration order, per experiment (b))."
 }

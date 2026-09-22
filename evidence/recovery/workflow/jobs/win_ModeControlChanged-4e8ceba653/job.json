@@ -1,7 +1,7 @@
 {
   "id": "win_ModeControlChanged-4e8ceba653",
   "symbol": "_win_ModeControlChanged",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:00:58.182828+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "b995030b4f1338d8f5b4da08b62e88e7e01a4d36fda1a81b6d449ed9fe9e4377",
+      "report": "evidence/recovery/workflow/jobs/win_ModeControlChanged-4e8ceba653/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Exact twin of win_CasteControlChanged (same size 500 bytes, same shape family simant:B324); the mode-window translation of the identical semantics (win_GetObjRect(0x120d,&rect); triWidth/triWidthR/triWidthL/triHeight/leftYSlope; modeVerts[0..2] apex/BL/BR; modeKnobPnt.y from modeLevels[0]; modeKnobPnt.x via the frac!=0xffff&&si>=3 branch using modeLevels[2]; hanim_RemoveAnimSet(modeAnimHandle); bitmap redraw via gr_BitMapSize(&size,0x11f8)/mem_Lock(modeBitmap)/DrawBitMapToBuffer(buffer->pixels,0,0,h,w,0x11f8,&rowBytes,&planes)/mem_Unlock) reproduces byte-for-byte the SAME divergence as win_CasteControlChanged-02d01ea344 (opcode_matches 140/176, score 0.599432, first structural difference at the identical candidate offset 36: an extra 'mov cx,ax' right after the first triWidth store that the target does not have). This confirms the residue is source-shape-independent (a pure MSC7 /Oe register-allocation/CSE decision around triWidth's later re-use in si=triWidth-2*di, not a declaration or semantic error) rather than something specific to either twin. See build/grind/agentN3/win_ModeControlChanged.c and evidence/recovery/workflow/jobs/win_ModeControlChanged-4e8ceba653/attempt01/results.json; full derivation and prior variants tried are recorded on the caste twin's job win_CasteControlChanged-02d01ea344 (attempts 1-4).",
+  "next_experiment": "Same experiment proposed for the caste twin: find a C phrasing of si=triWidth-2*di that does not textually re-reference the named triWidth global a second time (or otherwise suppresses MSC7's eager register caching of the post-shr value), then re-derive both twins together once a working shape is found."
 }

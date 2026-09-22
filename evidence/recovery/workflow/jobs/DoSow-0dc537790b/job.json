@@ -1,7 +1,7 @@
 {
   "id": "DoSow-0dc537790b",
   "symbol": "_DoSow",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:06:36.067171+00:00",
   "flags": [
     "/AL",
@@ -342,6 +342,95 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "af5932ae29fd41dd3f12453d7160823d32aeed91c9827bb5f3c7a5b46feb2f90",
+      "report": "evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "b298e020dbda5d5863bd077693fc50e8f7470856ea3824c7ac10dd141d873305",
+      "report": "evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "dc49f6cfd5795eba2ef30d623a3a63213f2650ce6e9fe6ee7e354fe3c20844dd",
+      "report": "evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "4a39197e3e6ab6142e888e81307c0aed5ede0ba006a4079d9c55bf4f1c8769a9",
+      "report": "evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "20d1fb012e07f1e5d0392283eefd9dd73a2f9b9f832af6451ce36a77a8adbdac",
+      "report": "evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "297f2ffb50435c75fdf8cf0997d45bca17cb790db883465f446facd47e90d84c",
+      "report": "evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate build/grind/agentU3/DoSow.c (attempt08, evidence/recovery/workflow/jobs/DoSow-0dc537790b/attempt08/results.json): 87/104 opcodes aligned, cfg_shape_match true, score 0.682692, 8/8 attempts and budget used. Semantics fully understood and confirmed by exact_mapsym_names (_MapA +0x28e8, _LifeA +0x68e8, _Dx8/_Dy8 adjacent 8-byte tables, _SowX/_SowY/_SowDir/_SowSave/_SowTab far arrays): per-slot random move with facing nudge, restamp, restore/save terrain via SowSave, matches target from enter through offset~92 and again from ~offset153 to the end (IsValidA call, LifeA/MapA checks, restore/save/stamp, final SowX/SowY writes) byte for byte once psx/psy far pointers are reused (les reload) for the restore read instead of plain array indexing. The one remaining gap: target builds the &SowX[i] and &SowY[i] far pointers lazily, each right at its own first use (SowDir read+Dy8 lookup, THEN build &SowY[i]; dir restore+Dx8 lookup, THEN build &SowX[i]); with two named far-pointer locals assigned back to back (or via a comma expression) MSC7 /Oelw instead hoists whichever one is written by the textually SECOND statement to run immediately after the SowDir/Dir-adjust block, before the first statement's own SowDir/Dy8 work -- reproduced identically regardless of which local (psx vs psy) is written first, regardless of extern declaration order, and regardless of local declaration order (8 controlled attempts: separate statements each order, comma-expression each order, swapped extern order, swapped local decl order, plus the reuse-line fix -- see attempt01..attempt08 evidence).",
+  "next_experiment": "Try computing newX/newY through a single combined far-pointer struct-typed local (e.g. a 2-element far int array/struct indexed by 0=X,1=Y) so the compiler has only ONE address to materialize instead of two independent locals competing for eager scheduling; or try an intermediate dummy statement between the two pointer materializations that consumes a register to discourage the scheduler from hoisting the second one early."
 }

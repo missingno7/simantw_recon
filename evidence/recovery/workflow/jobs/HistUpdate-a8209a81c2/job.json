@@ -1,7 +1,7 @@
 {
   "id": "HistUpdate-a8209a81c2",
   "symbol": "_HistUpdate",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:07:53.405567+00:00",
   "flags": [
     "/AL",
@@ -328,6 +328,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "bd8cd37755ca77af8f046110e36f45e15ee91a960090880f1bfc74e05868a5fb",
+      "report": "evidence/recovery/workflow/jobs/HistUpdate-a8209a81c2/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate (attempt02, build/grind/agentR3/HistUpdate.c) matches CFG shape and almost all opcodes (84/93); HistStart(0x9e6e)/HistCnt(seg8 0x8670)/BAntsExpired(0x9b26)/BAntsEaten(0x76a0)/BAntsKilled(0x99e0) reads and the win_IsWinOpen/clip_SetWin/MSClipStart/ConvColor/win_FillObjRect/drawHistGraph/MSClipEnd/clip_Off calls all resolve correctly (evidence/recovery/workflow/jobs/HistUpdate-a8209a81c2/attempt02/results.json). Same root cause as the sibling job ClearHistory-2a7aae3cf9 (see its block reason): the function writes today's BpopT/RpopT/HealthB/HealthR/BAntsEaten/BAntsExpired/BAntsKilled (truncated to int) plus 3 further unnamed int scalars (far reads at PACK 0x9ea4, 0x72de, 0x9e84 -- no exact_mapsym_names) into 10 PACK circular history buffers at index HistStart (word bases 0x4ef5=match_position, 0x4f56, 0x4e79, 0x39c1, 0x4ff8, 0x4f98, 0x3ebb, 0x3e4c, 0x3b04, 0x397d -- the SAME 10 ranges ClearHistory zeroes each match). This function is strong NEW evidence for those ranges' identity/order (unlike ClearHistory's STOSW form, here each buffer is indexed by a shared bx=HistStart*2 with a plain-literal [bx+DISP] displacement, one 64-word buffer per stat, written in order BpopT,RpopT,u3(0x9ea4),u2(0x72de),HealthB,HealthR,u1(0x9e84),BAntsExpired,BAntsEaten,BAntsKilled). As in ClearHistory, only match_position (a real extern with known evidence) resolves; the other 9 buffers have no public MAPSYM name so an invented extern's DI/DISP literal cannot be verified, and static/based declarations get their ES reload merged by the compiler's legitimate same-object CSE (tested and rejected for ClearHistory, applies identically here). The residual register/branch diffs (missing push di, a few branch-target byte-count shifts) are downstream of this same unresolved-symbol byte-count drift, not a separate bug.",
+  "next_experiment": "Same as ClearHistory-2a7aae3cf9: assemble simant:8A76 (tu_assembly.py, members _ProcHistoryEvent/_ToggleHistButton/_ClearHistory/_win_DrawHistoryWindow/_drawHistGraph/_HistUpdate) so the 9 unnamed PACK buffers' real selector-pool slots/placement can be validated against the unit's NE relocation table instead of isolated single-function fixup resolution; this job's exact field-to-buffer mapping (listed above) is ready to reuse directly."
 }

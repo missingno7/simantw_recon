@@ -1,7 +1,7 @@
 {
   "id": "InitPillar-0f95fd17ec",
   "symbol": "_InitPillar",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:55:54.449195+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,109 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "8b1cacdb89a668e8459f2948a821c00e6eb3badb49d0bd9c384d25aa20246f3c",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "8177d15360e61ff114b23051ff7e016c3cfe348652ecbd1a58e46678ba8737bc",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "8c0fc36d04dd5a1e2c5b57d6e8d049434b7fcd7443899fb463ba04f8a2daaf45",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "02235a075c95d264280808e3a449824702839958eb75d4b88756a89cbec49474",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "093ab632359b4208a5dad9387d4ea4ba2c54ff213d15e1414d396cb78e07209e",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "60e117fb48ef6320a9df12893d9f662bc0607b10775e308c5b8f7f8ea06adae7",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "ad82839070328af2c336dcc53c910b65de33b9b625ba231437787ac216a32220",
+      "report": "evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate build/grind/agentU3/InitPillar.c (attempt07, evidence/recovery/workflow/jobs/InitPillar-0f95fd17ec/attempt07/results.json): 76/82 opcodes aligned, score 0.707317, cfg_shape_match true. Semantics fully understood and confirmed: guard word check, then a 2-slot (index 2 and 1, word-array SowX/SowY/SowDir/SowSave) random placement of a sowbug/pillbug onto a clear MapA tile, matching target exactly from function entry through the guard check and again from the reset-word zeroing onward -- once the three leading far words are declared as three DISTINCT far scalars (sowReset0/1/2, matching the target's per-word ES reload; a single 3-element array let the compiler cache one ES load and diverged). The one remaining gap: right after the first SRand1(0x80) call (x = SRand1(0x80)), target keeps the result live in DI for the rest of the function (mov di,ax, no frame store) and only spills the SECOND call's result (y) to [bp-2]; my candidate instead spills the FIRST result (x) to a frame slot immediately (mov word ptr [bp-2],ax) and only y ends up in the frame/register roles resemble a swapped assignment. Tried and NOT effective (identical compiled bytes, all NO_COMPLETE_MATCH at opcode 76/82): register storage-class hint on x; reordering the x/p/y local declarations; folding p's assignment and y's assignment into the if-condition expression (assignment-in-expression, several orderings); giving the two loops (reset-loop and placement-loop) separate index variables instead of reusing one. This is a pure register-allocation/spill-choice mismatch, not a semantic error -- same calls, same stores, same branches, same private far reset words once declared as distinct scalars.",
+  "next_experiment": "Try eliminating the named y local altogether (inline the second SRand1(0x40) call directly as a subexpression of the MapA index, e.g. MapA[SRand1(0x40)+x*64], and instead read the y value back out of *(bp-2) is not possible in plain C -- alternatively try computing y first into a throwaway expression that is stored directly into SowY[i] later without ever naming a separate y variable, since the compiler may be choosing to spill whichever of the two SRand1 results is bound to a plain named int local first in declaration order regardless of use order); or try splitting into two smaller helper-shaped statements (e.g. an explicit near-pointer cast style matching wf_tu_simtwo_4CDC_StorePillarMap_4_scaffold's PillGetLife use of a bare index expression) to see whether removing the named pointer local changes which SRand1 result gets the register."
 }

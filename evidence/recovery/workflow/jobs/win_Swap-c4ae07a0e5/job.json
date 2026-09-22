@@ -1,7 +1,7 @@
 {
   "id": "win_Swap-c4ae07a0e5",
   "symbol": "_win_Swap",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:04:26.584496+00:00",
   "flags": [
     "/AL",
@@ -317,5 +317,81 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "588d282ef94cd0f675889b9328e4f0ec9ba508cb0cc1950a7ce606b2657d8cb8",
+      "report": "evidence/recovery/workflow/jobs/win_Swap-c4ae07a0e5/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c9edca76e97605518a5858b29327f137356f92d8868d1e6fcd10dd647c2caa09",
+      "report": "evidence/recovery/workflow/jobs/win_Swap-c4ae07a0e5/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "e997aaa3a71862f3224c7c9c21f09f862fa3cc95f5991238e5e0ae05931b34b2",
+      "report": "evidence/recovery/workflow/jobs/win_Swap-c4ae07a0e5/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "ce588f65e137f4d70d87bf12a3e22f2526aa136d90551e4eb01515028fcebaac",
+      "report": "evidence/recovery/workflow/jobs/win_Swap-c4ae07a0e5/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "UNSUPPORTED_COMPARISON"
+    },
+    {
+      "number": 5,
+      "submission_digest": "b7381528ba956ed7053eb89b6da5e5653e47a41b74c33cf27a0125a8206621cc",
+      "report": "evidence/recovery/workflow/jobs/win_Swap-c4ae07a0e5/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics fully mapped and verified across 5 attempts (T1-T5, best candidate build/grind/agentQ3/win_Swap.c): bucket=win_handles[objectNumber>>8] (far ptr, spilled to a named frame slot and reused 3x: info[0]->savedRect copy, own rect copy, flags&=~2 clear); otherBucket=win_handles[otherObjectNumber>>8] likewise reused for otherInfo=otherBucket->info[0] (far WindowInfo* with rect@0/savedRect@8/newRect@0x10), otherInfo->savedRect.left/top writes, a genuine two-step otherBucket->rect=rect; otherInfo->rect=otherBucket->rect memory-to-memory chain, otherBucket->newRect={left,top,right,bottom} from the caller, win_Recalc, flags|=2; then SetProp(*hwndSlot,\"INDEX\",otherObjectNumber) (INDEX literal confirmed byte-for-byte from assets/SIMANTW.EXE DGROUP offset 0xbdd4, same string INDIRECTDLGPROC uses at a different address), win_hwnd slot move/clear, ShowWindow, InvalidateRect. Frame size now matches exactly (enter 0x20 vs candidate 0x1c-0x20 across attempts; T3/T5 reach 0x1c) and opcode match reached 105/148 (best: build/grind/agentQ3/Swap_t3.json, Swap_t5.json) with a 0x20-byte-consistent set of 7 locals (bucketIndex, hwndSlot near*, rect, savedRect, otherInfo, bucket, otherBucket) matching every observed frame slot (-0x20,-0x1e,-0x1c,-0x14,-0xc,-8,-4). Remaining divergence is purely register-allocation/expression-shape for ONE expression: target computes bucketIndex=objectNumber>>8 as 'mov bx,[bp+6]; sar bx,8' (word load + arithmetic shift, BX), candidate consistently compiles the identical source line as 'mov al,[bp+7]; cwde' (direct high-byte load + sign-extend, AX) in every variant tried (explicit int bucketIndex var, combined decl+init, reordered declarations, with/without a separate hwndSlot pointer). Removing the bucketIndex variable entirely (relying on bare CSE of repeated objectNumber>>8 subexpressions, attempt 4) instead produced UNSUPPORTED_COMPARISON/contribution-outside-original (candidate grew past the target extent), so an explicit named int is required for correctness, just not with the target's exact idiom.",
+  "next_experiment": "Try forcing the word-based sar idiom by making the low byte of objectNumber observably read elsewhere first (e.g. an early no-op use of (unsigned char)objectNumber, mirroring how ClearObjToEOL's (unsigned char)objectNumber index keeps the compiler on a full-word load), or probe whether an /Oe variant without the unused 7th 'reserved' int parameter changes the heuristic (register/frame pressure diagnostic only, not a flag change since the profile is fixed)."
 }

@@ -1,7 +1,7 @@
 {
   "id": "PreDrawSpider-24cd159a90",
   "symbol": "_PreDrawSpider",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:57:31.480376+00:00",
   "flags": [
     "/AL",
@@ -316,5 +316,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "9fbf338074d25bdda2901255f02571fd3b2b212d1f92f709e6cd541bd51aa94c",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "997fc39272b83884aea59148e87000b11c5c79eb47efabec881afe821e7bf586",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "a1dc78deb4e6c09bc34a83911947d043c1cd9e975f6ae93ddb180d15cbdb4cff",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "31ad02d21762b95e586408b3f7f227889a581c26cfe6320851de400b8c4b7d8b",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Target 7192-7529 (337 bytes): candidate reaches exact byte-for-byte match modulo expected CONST/DGROUP selector fixups (candidate_bytes==target_bytes==337, opcode_matches 116/116, register_only/immediate/branch differences all 0). The only remaining diagnostic is 4 stack_local_layout differences, all from one systematic swap: target stores MapPnt.x at [bp-6] and MapPnt.y at [bp-8] (offsets 59/73, both later reread at offsets 253/279 for spiderTileLeft/spiderTileTop), while every candidate variant instead assigns MapPnt.x to [bp-8] and MapPnt.y to [bp-6] -- reversed. editTileRect-scale temporaries px=x*tileWidth and py=y*tileHeight (shorter-lived, used only in the nearby bounds checks) correctly land at [bp-2]/[bp-4] in every variant, matching target exactly. Tried and rejected: (1) declaration order x,y,px,py -- x/y swapped; (2) declaration order px,py,x,y -- identical swap, proving slot assignment ignores C declaration order; (3) declaration order y,x,py,px -- identical swap again; (4) restructuring the assignments to compute px=MapPnt.x*tileWidth before storing x=MapPnt.x (probing whether statement order, not declaration order, drives allocation) -- this changed instruction count/shape entirely (114/118 opcodes, extra cx shuttling, all branch targets shifted +4 bytes), confirming the original x-then-px, y-then-py statement order is otherwise correct and should not be touched. All CONST/segment-fixup differences (es selector loads, DGROUP near fixups) are the expected isolated-compile placeholders per grinder-lessons.md and are not counted here.",
+  "next_experiment": "Try forcing MSC7's og(/Oeglw) global allocator to prefer [bp-6] for the first-defined long-lived temporary over [bp-8]: e.g. give x and y disjoint live ranges from px/py by moving the SpidX/SpidY si/di loads (sx=SpidX; sy=SpidY;) to occur between the x/px pair and the y/py pair instead of after both, or try declaring x/y as a 2-element array (int origin[2]; origin[0]=MapPnt.x; origin[1]=MapPnt.y;) so the allocator cannot independently reorder the pair. Keep build/grind/agentL3/PreDrawSpider.c (current x,y,px,py decl / x;px;y;py; statement order) as the base for any retry -- it is otherwise a body-exact candidate."
 }

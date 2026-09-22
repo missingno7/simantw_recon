@@ -31,7 +31,7 @@ PROTECTED=['tools/matcher.py','tools/library_match.py','tools/recovery_gate.py',
            'tools/compiler.py','tools/cfg_solver.py','tools/ne.py','tools/omf.py',
            'tools/compiler_worker.py','tools/compiler_service.py','tools/compiler_wait.asm','layout/compiler-service.json','tools/grind.py','tools/factory_queue.py',
            'tools/recovery_workflow.py','tools/topology_diagnostics.py','tools/codegen_grinder.py','tools/codegen_transforms.py','tools/codegen_cache.py',
-           'tools/compiler_profiles.py','tools/tu_assembly.py',
+           'tools/compiler_profiles.py',
            'layout/toolchain.json','layout/fixtures.json','layout/runtime-ownership.json']
 CORE=['src/recovery.json','build/recovered/manifest.json','evidence/recovery/verified-objects.json','docs/progress.json']
 MAX_ATTEMPTS=8

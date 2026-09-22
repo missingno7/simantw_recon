@@ -1,7 +1,7 @@
 {
   "id": "DrawSimKid-f6afe9f402",
   "symbol": "_DrawSimKid",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:11:19.588008+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "1142c7278fc3b11c2de7af14805df8c2296011dad2a05e739b2ca641844d84d6",
+      "report": "evidence/recovery/workflow/jobs/DrawSimKid-f6afe9f402/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "b9202e261e18a6e9731d366e31894fac6e35330722df73992022cbd6928a9425",
+      "report": "evidence/recovery/workflow/jobs/DrawSimKid-f6afe9f402/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "6ebd8dfa61e99fcbb2937082dc9138a6b706efadd59c9199f81a83c286088081",
+      "report": "evidence/recovery/workflow/jobs/DrawSimKid-f6afe9f402/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Three explained attempts converge on the same gap: opcode_matches 143/160 (best, attempt02), candidate_bytes 519 vs target 507. Movement/table logic, BoyFrame caching order, hanim_*AnimObject calls, GamePaused/MacTickCount signed-compare (jl/jg) all match exactly. The remaining 12-byte, ~17-opcode gap is structural: target spills the far address of yardBalloonHandle (segment 8 disp 0x9f24) and yardBalloon (0x9f20) into stack-frame far-pointer locals (mov bx,0x9f24; mov es,[slot]; mov [bp-0xc],bx; mov [bp-0xa],es; ... les bx,ptr[bp-0xc] to reload after each intervening far call to hanim_RemoveAnimObject/mem_Unlock/mem_Free), giving ENTER 0x10 (16 bytes: two 4-byte far-pointer locals + right/bottom). In every isolated compile attempted -- direct repeated global access (attempt02), and explicit local far-pointer variables re-assigned at each use site to discourage folding (attempt03) -- MSC7 /Oelw instead recomputes bx=imm16/es=[CONST slot] fresh after each call and never allocates the bp-0xc/bp-0xa (or bp-0x10/bp-0xe) spill slots; enter shrinks to 6-8 bytes. Declaration phrasing (plain extern far scalar vs explicit int far * local, single vs repeated address-of) made no difference across attempts, so this is not a naming/declaration-order question.",
+  "next_experiment": "Reissue only inside the antedit:A998 unit-assembly (tu_assembly.py) alongside DrawDog/DrawSimBird/DrawSimCat/DrawMower, which also touch segment-8 PACK objects at neighboring offsets (0x9f20/0x9f24/0x9f26): the fuller selector-pool pressure across the whole unit may be exactly what makes MSC7 choose to spill the far pointer instead of recomputing it, an effect isolated single-function compiles cannot reproduce."
 }

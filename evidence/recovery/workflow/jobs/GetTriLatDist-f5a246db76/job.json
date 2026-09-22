@@ -1,7 +1,7 @@
 {
   "id": "GetTriLatDist-f5a246db76",
   "symbol": "_GetTriLatDist",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:00:47.597526+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "fea12b00c8ec824dc046f2b3c16a0d7a76c8e0adbd9af734542f097d30135610",
+      "report": "evidence/recovery/workflow/jobs/GetTriLatDist-f5a246db76/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "dd80ab699d2d00c298449bba807ea695218577399f4281eeccb961732d36dbaf",
+      "report": "evidence/recovery/workflow/jobs/GetTriLatDist-f5a246db76/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics fully derived and cross-checked against the admitted cvtLevels2IdealCaste's div push-order (first-pushed operand = denominator, closest-to-call = numerator, verified from its own disassembly): dx=pt->x-rect->right, dy=pt->y-rect->top; if dy(unsigned)<=triHeight-2(unsigned) then level->frac=((triHeight-dy-2)*0xffff)/(triHeight-2) via native mul (constant 0xffff) + signed __aFldiv, else frac=0 (both paths converge at a shared di=(frac*triWidthL)/0xffffUL, matching the win_CasteControlChanged/ModeControlChanged twins' inverse formula); remaining=triWidth-2*di; if remaining>2: localA=dx-frac, if localA>=remaining-2 weight=0xffff-frac, else if localA<=2 weight=0, else weight=(localA*(0xffff-frac))/(remaining-2) via far __aFulmul/__aFldiv (all three converge into one shared store); unused2=0xffff-weight-frac always; else unused2=weight=0. Confirmed edges (extent.edges 61->76,74->114,156->176,192->206,203->277,215->228,226->281) match this control flow exactly and the byte-level la/ax push order matched at every division site I checked. The remaining gap is pure register allocation for the struct-pointer parameter dereferences: pt->x/pt->y/rect->right/rect->top compile via a single LES-fused far-pointer load in my candidate, while the target loads bx/es (pt) and cx-then-si/es (rect) as separate word movs and reuses cx/si across both rect field reads; tried both direct member access and pre-extracting rectRight/rectTop locals, both produce the identical opcode_matches=69/116, score=0.474 result (first structural diff at candidate offset 9, an les bx instruction the target never uses). Source: build/grind/agentN3/GetTriLatDist.c; diagnostics: evidence/recovery/workflow/jobs/GetTriLatDist-f5a246db76/attempt01-02/results.json.",
+  "next_experiment": "Try loading rect's offset word into a plain int local FIRST (mimicking the target's cx=[bp+0xa] read of rect's raw offset field before any ES/far dereference), then build the far access manually via that cached offset + a fresh ES load per field, instead of natural pt->field/rect->field member syntax which MSC7 seems to always fuse into LES."
 }

@@ -156,13 +156,13 @@ def declaration_shape(normalized, name):
     """(base type, distance keyword, dims) of `extern T [near|far] NAME[d]...;` or None.
 
     `char` and `signed char` are the same MSC 7 type (no /J in any profile)."""
-    m = re.match(r'extern\s+(.*?)\s*\b(near|far)\b\s*' + re.escape(name) + r'\s*((?:\[[^\]]*\]\s*)*);$', normalized)
+    m = re.match(r'extern\s+(.*?)\s*\b(near|far)\b\s*((?:(?:const|volatile)\s+)*)' + re.escape(name) + r'\s*((?:\[[^\]]*\]\s*)*);$', normalized)
     if not m:
         return None
-    base = ' '.join(m.group(1).split())
+    base = ' '.join((m.group(1) + ' ' + (m.group(3) or '')).split())
     if base == 'char':
         base = 'signed char'
-    dims = re.findall(r'\[([^\]]*)\]', m.group(3) or '')
+    dims = re.findall(r'\[([^\]]*)\]', m.group(4) or '')
     return dict(base=base, distance=m.group(2), dims=dims)
 
 
@@ -173,6 +173,11 @@ def view_macro(name, own, canonical):
     the flattened element pointer for a 1-D view of an N-D array, the address
     for an array view of a scalar. The self-reference expands once."""
     if own['distance'] != canonical['distance']:
+        return None
+    strip = lambda b: ' '.join(w for w in b.split() if w not in ('volatile', 'const'))
+    if strip(own['base']) == strip(canonical['base']) and own['base'] != canonical['base']:
+        # volatile/const are object properties for the whole translation unit
+        # in MSC 7: no per-member view can give one reader a different one.
         return None
     same = own['base'] == canonical['base']
     if not own['dims']:
@@ -268,7 +273,10 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
         shapes = {s: declaration_shape(s, name) for s in variants}
         if any(v is None for v in shapes.values()):
             continue
-        best = max(shapes, key=lambda s: (len(shapes[s]['dims']), sum(1 for d in shapes[s]['dims'] if d.strip()), len(variants[s]), -list(shapes).index(s)))
+        # Widest shape, explicit sizes, unqualified base (a volatile view is
+        # applied per member; a volatile canonical would change every reader),
+        # then the spelling most members use.
+        best = max(shapes, key=lambda s: (len(shapes[s]['dims']), sum(1 for d in shapes[s]['dims'] if d.strip()), -sum(q in shapes[s]['base'].split() for q in ('volatile', 'const')), len(variants[s]), -list(shapes).index(s)))
         if all(s == best or view_macro(name, shapes[s], shapes[best]) for s in shapes):
             canonical[name] = dict(text=best, shape=shapes[best], views={s: view_macro(name, shapes[s], shapes[best]) for s in shapes if s != best})
     for f in files:
@@ -416,6 +424,15 @@ def preserved_sources():
     result = {}
     recipes = read_json(ROOT / 'src/recovery.json')['targets']
     for symbol, target in recipes.items():
+        if target.get('scaffold'):
+            # A scaffolded unit source carries stand-ins and per-member macros;
+            # the member's own text is its superseded isolated recipe or its
+            # exact body candidate (searched below).
+            proof = read_json(ROOT / target['promotion_evidence']) if target.get('promotion_evidence') and (ROOT / target['promotion_evidence']).exists() else {}
+            old = (proof.get('superseded_recipes') or {}).get(symbol)
+            if old and (ROOT / old['source']).exists() and not old.get('scaffold'):
+                result[symbol] = dict(source=old['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'), unit=target.get('unit'))
+            continue
         result[symbol] = dict(source=target['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'))
     families = ROOT / 'evidence/recovery/blocker-families.json'
     if families.exists():
@@ -423,11 +440,12 @@ def preserved_sources():
             if symbol in result:
                 continue
             if f.get('preserved_source'):
-                result[symbol] = dict(source=f['preserved_source'], basis='BODY_MATCHED_BINDING_BLOCKED')
+                result[symbol] = dict(source=f['preserved_source'], basis='ADMITTED' if symbol in recipes else 'BODY_MATCHED_BINDING_BLOCKED')
     for path in (ROOT / 'evidence/recovery/workflow/jobs').glob('*/job.json'):
         job = read_json(path)
         if job['symbol'] in result or job.get('lane') == 'TU_ASSEMBLY' or not job.get('attempts'):
             continue
+        admitted_in_unit = job['symbol'] in recipes
         best = None
         for attempt in job['attempts']:
             report_path = ROOT / attempt['report']
@@ -449,7 +467,7 @@ def preserved_sources():
                 if source.exists() and (best is None or key > best[0]):
                     best = (key, source.relative_to(ROOT).as_posix(), exact_body)
         if best:
-            result[job['symbol']] = dict(source=best[1], basis='EXACT_BODY_CANDIDATE' if best[2] else 'BEST_CANDIDATE_NOT_EXACT')
+            result[job['symbol']] = dict(source=best[1], basis=('ADMITTED' if admitted_in_unit and best[2] else 'EXACT_BODY_CANDIDATE' if best[2] else 'BEST_CANDIDATE_NOT_EXACT'))
     return result
 
 
@@ -692,7 +710,15 @@ def member_data_pieces(member, source, flags, folder=None):
     isolated object."""
     from codegen_grinder import run
     recipes = read_json(ROOT / 'src/recovery.json')['targets']
-    proof = read_json(ROOT / recipes[member]['promotion_evidence']) if member in recipes and recipes[member].get('promotion_evidence') and (ROOT / recipes[member]['promotion_evidence']).exists() else {}
+    proof = {}
+    recipe = recipes.get(member)
+    if recipe and recipe.get('promotion_evidence') and (ROOT / recipe['promotion_evidence']).exists():
+        proof = read_json(ROOT / recipe['promotion_evidence'])
+        if recipe.get('scaffold'):
+            # A unit proof describes the whole unit's data; the member's own
+            # piece is in its superseded isolated proof, else its isolated object.
+            old = (proof.get('superseded_recipes') or {}).get(member) or {}
+            proof = read_json(ROOT / old['promotion_evidence']) if old.get('promotion_evidence') and (ROOT / old['promotion_evidence']).exists() and not old.get('scaffold') else {}
     if proof.get('comparison'):
         comparison = proof['comparison']
     else:
@@ -755,15 +781,18 @@ def data_fillers(pieces, comp, functions, mode='definitions'):
                     # Statics are word aligned but string literals are not: an
                     # unaligned or string-terminated gap is reproduced as a
                     # literal referenced from a stand-in function (its data is
-                    # emitted while that function is compiled).
-                    if chunk[-1:] != b'\x00':
+                    # emitted while that function is compiled). Bytes after the
+                    # last NUL become a word-aligned static filler.
+                    cut = chunk.rfind(b'\x00') + 1
+                    if cut == 0 or (cut < len(chunk) and (gap_lo + cut) % 2):
                         raise FormatError('DGROUP %04X-%04X: unaligned private data that is not a string cannot be reproduced' % (gap_lo, gap_hi))
-                    literal = ''.join('\\%03o' % x for x in chunk[:-1])
+                    literal = ''.join('\\%03o' % x for x in chunk[:cut - 1])
                     text = ['/* SCAFFOLD, not recovered source: %s. */' % note, 'void far %s(void)' % name, '{', '    volatile char far *p;', '', '    p = "%s";' % literal, '}']
                     literals.append(dict(name=name, text=chr(10).join(text), before=b['member'], rank_member=b['member']))
+                    if cut < len(chunk):
+                        rest = chunk[cut:]
+                        fillers.setdefault(b['member'], []).append('/* SCAFFOLD, not recovered source: %s (word-aligned tail). */\n' % note + 'static unsigned char %s_tail[%d] = {%s};' % (name, len(rest), ', '.join('0x%02X' % x for x in rest)))
                     continue
-                if gap_lo % 2:
-                    raise FormatError('DGROUP %04X-%04X: unaligned private data cannot be reproduced by a static filler' % (gap_lo, gap_hi))
                 body = ', '.join('0x%02X' % x for x in chunk)
                 text = '/* SCAFFOLD, not recovered source: %s. */\n' % note + 'static unsigned char %s[%d] = {%s};' % (name, len(chunk), body)
             else:
@@ -1107,9 +1136,23 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     segment = comp['segment']
     flags = compiler_profiles.profile_flags(profile, segment)
     harmonized = None
+    excluded_by_conflict = []
     if harmonize_conflicts:
         harmonized = harmonize(component_id, members, flags, folder, layout, overrides)
         overrides = dict(harmonized['overrides'])
+        if scaffold and harmonized.get('unresolved'):
+            # A genuine conflict (no spelling keeps every user exact) excludes
+            # the members of the minority spelling from this unit; they stay
+            # exact bodies for a later, separately reviewed unit.
+            for c in harmonized['unresolved']:
+                users = sorted(c['spellings'].items(), key=lambda kv: -len(kv[1]))
+                for spelling, syms in users[1:]:
+                    excluded_by_conflict += [s for s in syms if s not in excluded_by_conflict]
+            members = [m for m in members if m not in excluded_by_conflict]
+            if not members:
+                raise FormatError('declaration conflicts exclude every member')
+            order = [m for m in comp['publics'] if m in members]
+            chosen = {m: chosen[m] for m in members}
     plan = None
     if scaffold:
         if layout != 'preambles-first':
@@ -1155,7 +1198,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
                 profile=profile, flags=flags, layout=layout, overrides=overrides or {}, reason=reason, created=timestamp(),
                 topology=dict(join_evidence=comp.get('join_evidence'), range=comp['range']), status=result['status'])
     if harmonized is not None:
-        spec['harmonization'] = dict(overrides=harmonized['overrides'], unresolved=harmonized.get('unresolved', []), trials=len(harmonized['trials']), evidence=(folder / 'harmonize.json').relative_to(ROOT).as_posix())
+        spec['harmonization'] = dict(overrides=harmonized['overrides'], unresolved=harmonized.get('unresolved', []), trials=len(harmonized['trials']), excluded_members=excluded_by_conflict, evidence=(folder / 'harmonize.json').relative_to(ROOT).as_posix())
     if plan is not None:
         spec['members'] = plan['claimed']
         spec['scaffold'] = dict(segment=SCAFFOLD_SEGMENT, stubs=plan['stubs'], runs=plan['runs'], unclaimed_after_last=plan['unclaimed_after_last'], shared_words=plan['shared_words'], symbol_overrides=plan['symbol_overrides'], orphan_words=plan['orphan_words'],

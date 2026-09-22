@@ -1,7 +1,7 @@
 {
   "id": "ProcHistoryEvent-6311944997",
   "symbol": "_ProcHistoryEvent",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:56:00.831815+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "ff3bf8c471589c884e21e87cc2aebc217fc8d5f76c79943d811b37edc0f53fde",
+      "report": "evidence/recovery/workflow/jobs/ProcHistoryEvent-6311944997/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "7dd51601dbf1e6dff71109b046bf9da54e45be5c567736478feba1ba4300c75e",
+      "report": "evidence/recovery/workflow/jobs/ProcHistoryEvent-6311944997/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "0dc1f096a6af692e6f61eefc7dbe1fb2f4ab3248e123c6061265b3b4a82bdd81",
+      "report": "evidence/recovery/workflow/jobs/ProcHistoryEvent-6311944997/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "7b2217acf785f2300ddbcde4ffb3d5b0a8fde248cea8cdb6cf29a84f67d010ab",
+      "report": "evidence/recovery/workflow/jobs/ProcHistoryEvent-6311944997/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Four explained attempts, all NO_COMPLETE_MATCH: (1) plain if-chain (message==0x150d / message==0x150e / range&&) -- opcode 57/96, target's early dispatch uses register arithmetic (sub ax,0x150d;je; dec ax;je) not cmp/jne. (2) switch with range cases listed first -- 64/96, but the range-check block got compiled first (sub ax,0x1503;jge;...;sub ax,9;jle;dec;je;dec;je), reordered relative to target's singles-first layout: CFG shape itself differs. (3) explicit 'message-0x150d==0' / 'message-0x150d-1==0' zero-tests -- compiler normalized straight back to cmp/jne (57/96), the SUB-then-JE idiom could not be forced this way. (4) switch with 0x150d/0x150e cases declared before the range's default block -- best so far, 67/96, branch_target/register differences remain (les loads into si in target vs bx/cx in every candidate; frame is enter 6,0/3 locals in target vs enter 2,0/1-2 locals in every candidate, since v1/v2 never get separate slots). Dispatch semantics (0x150d->DoWinHelp(0x150f); 0x150e->redraw graph via win_FillObjRect/Dx8[0x8e54..0x8e5c) loop with drawHistGraph flag 1 then StillDown() wait then flag 0/MSClipEnd/clip_Off; 0x1503-0x150c->ToggleHistButton(message)) and every callee/global binding (win_hwnd[21]=0xbcd0, Dx8, DoWinHelp, clip_SetWin/Off, MSClipStart/End, ConvColor, win_FillObjRect, StillDown, drawHistGraph, ToggleHistButton) are not in question -- every attempt's calls/pushes/cleanup for the body match exactly once reached. The unresolved piece is purely the front dispatch's exact register/frame shape for the two singleton cases ahead of the range test; best candidate preserved at build/grind/agentR3/ProcHistoryEvent.c (evidence/recovery/workflow/jobs/ProcHistoryEvent-6311944997/attempt04/results.json).",
+  "next_experiment": "Try 'register' hints or an explicit local declared before Dx8/win_hwnd references to coax si (not bx) for the LES load and a 3-word frame (v1/v2 kept in separate slots even though not simultaneously live); or try the dense-switch idiom from docs/grinder-lessons.md written as 'if (message == 0x150d) ...; else if (message == 0x150e) ...; else if ((unsigned)(message-0x1503) <= 9) ToggleHistButton(message);' (unsigned-range collapse), which the switch-jump-table rule notes MSC7 sometimes prefers for a mixed singleton+range case set."
 }

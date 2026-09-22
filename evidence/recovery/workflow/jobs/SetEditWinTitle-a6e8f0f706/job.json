@@ -1,7 +1,7 @@
 {
   "id": "SetEditWinTitle-a6e8f0f706",
   "symbol": "_SetEditWinTitle",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:55:07.173482+00:00",
   "flags": [
     "/AL",
@@ -330,6 +330,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "2fe816effebcf45fc123de8fce20d72aa60f04d23ca96ffa762f9c21aa6e2275",
+      "report": "evidence/recovery/workflow/jobs/SetEditWinTitle-a6e8f0f706/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "UNSUPPORTED_COMPARISON"
     }
-  ]
+  ],
+  "blockers": [
+    "STRING_INTRINSIC_IDIOM"
+  ],
+  "reason": "Target 6918-7150 (232 bytes) inlines two runtime strcat idioms and one strcpy-of-literal directly in the function body: target_features.string_ops = 3x movsw + movsb (7-byte literal copy into buf), then repne scasb + rep movsw + rep movsb twice more (concatenating MiscStrs[15] and ScenarioNameStrs[CurGameType] into buf), with zero calls in that span. Attempt01 (strcpy/strcat library calls) compiles under the assigned og(/Oeglw) profile to a real lcall into a runtime segment (candidate 172 vs target 232 bytes, opcode_matches 36/106, first_structural_difference at offset 4): NO_COMPLETE_MATCH. Attempt02 (hand-written NUL-scan + copy while-loops replacing strcat) compiles to an ordinary compare/branch loop, not REP-prefixed opcodes, and overshoots the target extent: UNSUPPORTED_COMPARISON (contribution outside original). Neither library-call nor manual-loop C phrasing reproduces the target's inlined string ops under og; layout/compiler-profiles.json's ogi profile (og + /Oi) is defined exactly for 'repne scasb/rep movsb...fingerprints the baseline/og candidate can only produce through library calls', which is exactly this target's shape. The assigned profile for antedit:00F4 is og, not ogi; the object/frame layout, pointer-load selectors (MiscStrs at 0x7294, ScenarioNameStrs at 0x7a4a via LES, CurGameType at 0x80b4) and control-flow shape (NULL far-pointer check, join at the win_SetObjFormatStr(1,text) call, then a guarded clip_Push/clip_SetWin/win_DrawTitle(1)/clip_Pop block matching SetMapTitle's shape) are otherwise fully hypothesised and unchanged between attempts.",
+  "next_experiment": "Supervisor: probe antedit:00F4 for the ogi profile per layout/compiler-profiles.json evidence_rules.ogi (tools/compiler_profiles.py probe/assign) using this target's repne scasb/rep movsw/rep movsb fingerprint as the discriminating member; if assigned, retest build/grind/agentL3/SetEditWinTitle.c (attempt01's strcpy(buf,\"literal\"); strcat(buf, MiscStrs[15]); strcat(buf, ScenarioNameStrs[CurGameType]); text=buf; shape) unchanged under ogi."
 }

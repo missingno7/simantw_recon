@@ -1,7 +1,7 @@
 {
   "id": "ClearHistory-2a7aae3cf9",
   "symbol": "_ClearHistory",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:02:47.458928+00:00",
   "flags": [
     "/AL",
@@ -328,6 +328,67 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "3f9cbaed8948d0b9788432378d7baede370aaa9854336b5c8d5a7eea0ef277c8",
+      "report": "evidence/recovery/workflow/jobs/ClearHistory-2a7aae3cf9/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "56fac3d5372ab9122db0873c5b7a47e5877d11dea97f2fecd450d514896c46e6",
+      "report": "evidence/recovery/workflow/jobs/ClearHistory-2a7aae3cf9/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "7657434c3f79e00114b80e5f885b13b8eeacb9958377c0a5e7947dfc001cd431",
+      "report": "evidence/recovery/workflow/jobs/ClearHistory-2a7aae3cf9/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "60cadfa0db756fd616a62d3a8c6b23275b00fc139d5e2f246b01d8995ebf6b22",
+      "report": "evidence/recovery/workflow/jobs/ClearHistory-2a7aae3cf9/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate (attempt03, build/grind/agentR3/ClearHistory.c) reaches 90/90 opcode matches, instruction_layout_match=true, cfg_shape_match=true, zero register/branch/memory-operand/stack differences; only 9 immediate_or_binding diffs remain (evidence/recovery/workflow/jobs/ClearHistory-2a7aae3cf9/attempt03/results.json). Target zeroes match_position[0x4ef5..0x4ef5+0x40) (PACK, exact_mapsym_names=[_match_position]) then 9 more 64-word PACK ranges at word-bases 0x4f56,0x4e79,0x39c1,0x4ff8,0x4f98,0x3ebb,0x3e4c,0x3b04,0x397d (all addressed_segment=9/PACK, exact_mapsym_names=[] in direct_data_bindings). Each of the 9 reloads ES from its OWN CONST slot (0xc088..0xc0a2, never reused) with a PLAIN literal DI immediate (mov di,0x9eac etc, no fixup) -- unlike match_position's own DI (needs+gets a real symbol fixup). Tried: (1) 10x match_position[BASE+i] repeated -- compiler correctly CSEs the ES reload away after the first use (0 reloads for ranges 2-10), wrong shape. (2) static __based(__segname(\"PACK\")) per range -- offset becomes a correct plain literal, but the compiler also CSEs the ES reload across same-__segname statics (only the very first range reloads). (3) extern __based(__segname(\"PACK\")) per range -- same CSE-merge as (2), plus the offset becomes an unresolved external fixup again. (4) plain static far per range -- same CSE-merge as (2)/(3). (5) extern far per range (best, attempt03) -- correctly stops the ES-merge (\u6bcf distinct extern symbol gets its own fresh CONST slot, matching target's reload-every-time shape and opcode/CFG layout exactly), but since these 9 ranges have no known public MAPSYM name my invented extern symbols have no resolvable address, so the DI literal cannot be verified and shows as a residual difference. No declaration shape available to a single isolated compile reproduces both 'fresh ES per range' and 'plain resolvable DI literal' at once for an unnamed private object; this needs the real unit build (simant:8A76, TU_ASSEMBLY with the other claimed publics _ToggleHistButton/_win_DrawHistoryWindow/_drawHistGraph/_HistUpdate) or a supervisor pass with the real named/private-placement evidence for these 9 ranges.",
+  "next_experiment": "Assemble simant:8A76 as a scaffolded/claimed unit (tu_assembly.py) so the private PACK placement of the 9 unnamed 64-word ranges can be validated against the unit's real CONST selector-pool order and NE relocation table instead of an isolated single-function compile; alternatively obtain MAPSYM/selector evidence naming these 9 ranges directly."
 }
