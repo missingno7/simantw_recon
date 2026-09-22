@@ -19,7 +19,7 @@ def verify(manifest=None,recipes=None,publish=True):
         if row['identity']!=row['receipt']['object_identity']:raise FormatError('object differs from compile receipt')
         if row['receipt']['source']!=target['source'] or row['receipt']['flags']!=target['flags'] or row['receipt']['compiler']!=target['compiler']:raise FormatError('stale build recipe')
         m=omf.parse((ROOT/row['object']).read_bytes())
-        result=check_member(m,raw,n,s,imports,{row['symbol']:target}) if target['comparison']=='member' else compare(m,raw,n,s,dict(target,symbol=row['symbol']))
+        result=check_member(m,raw,n,s,imports,{row['symbol']:target},scaffold=bool(target.get('scaffold'))) if target['comparison']=='member' else compare(m,raw,n,s,dict(target,symbol=row['symbol']))
         if not result or result['result'] not in good:raise FormatError('recovery mismatch '+row['symbol'])
         game.append(dict(symbol=row['symbol'],source=target['source'],object=row['object'],receipt=row['receipt'],comparison=result,size=target['size']))
     ledger=read_json(ROOT/'layout/runtime-ownership.json')

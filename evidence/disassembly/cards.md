@@ -8751,7 +8751,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoWinHelp — SIMANT_MODULE:5AAC
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 30 bytes.
-Source: src/recovered/DoWinHelp.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_5530_DoWinHelp_4_scaffold-e0e0435c97.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 5AAC  55                       push bp
@@ -9362,8 +9362,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetDefaultWindPrompt — SIMANT_MODULE:60CC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 141 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 141 bytes.
+Source: src/recovered/wf_tu_simant_5530_DoWinHelp_4_scaffold-e0e0435c97.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 60CC  55                       push bp
@@ -9418,7 +9418,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _PictStrnDialog — SIMANT_MODULE:615A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 155 bytes.
-Source: src/recovered/wf_PictStrnDialog-d2f52b0e98.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_5530_DoWinHelp_4_scaffold-e0e0435c97.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 615A  c8060000                 enter 6, 0
@@ -9482,7 +9482,7 @@ Source: src/recovered/wf_PictStrnDialog-d2f52b0e98.c. Flags: ['/AL', '/G2', '/Gs
 
 ## _win_DrawPictureWindow — SIMANT_MODULE:61F6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 198 bytes.
-Source: src/recovered/wf_win_DrawPictureWindow-9fe716872a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_5530_DoWinHelp_4_scaffold-e0e0435c97.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 61F6  c8100000                 enter 0x10, 0

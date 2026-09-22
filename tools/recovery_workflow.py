@@ -123,7 +123,11 @@ def check_submission(spec,job):
     for source,_ in candidates:
         code=re.sub(r'/\*.*?\*/|//[^\n]*','',source,flags=re.S)
         if 'TODO' in source or not code.strip():raise FormatError('unfinished source')
-        if re.search(r'\b(?:__asm|_asm|asm|_emit|__emit|incbin)\b|#\s*(?:include|pragma)',code,re.I):raise FormatError('handoff lane requires self-contained ordinary C, without assembly or compiler pragmas')
+        # A scaffolded unit may only carry `#pragma alloc_text(...)` placements
+        # (stand-ins into the reserved segment, later code runs into RUNk_TEXT).
+        allowed_pragmas=re.compile(r'#\s*pragma\s+alloc_text\s*\(\s*(?:POOLSTUB_TEXT|RUN\d+_TEXT)\s*,[^()]*\)') if job.get('lane')=='TU_ASSEMBLY' and job.get('scaffold') else None
+        stripped=allowed_pragmas.sub('',code) if allowed_pragmas else code
+        if re.search(r'\b(?:__asm|_asm|asm|_emit|__emit|incbin)\b|#\s*(?:include|pragma)',stripped,re.I):raise FormatError('handoff lane requires self-contained ordinary C, without assembly or compiler pragmas')
         if re.search(r'\([^)]*\*[^)]*\)\s*(?:0x[0-9a-f]+|[1-9][0-9]*)',code,re.I):raise FormatError('literal-address pointer cast requires expert review')
     # Only catalogued compiler profiles are admissible; no free flag search.
     compiler_profiles.identify_profile(job['flags'])
@@ -247,7 +251,7 @@ def prepare_promotion(job_id,candidate,audit_only,current_recipes,manifest):
     if superseded and (job.get('lane')!='TU_ASSEMBLY' or set(superseded)-set(job.get('supersedes',[]))):raise FormatError('promotion would silently replace admitted recipes: '+', '.join(sorted(superseded)))
     profile_name,segment=compiler_profiles.identify_profile(job['flags']);profile=job.get('profile') or compiler_profiles.resolve(job['symbol'])
     if profile['name']!=profile_name:raise FormatError('job flags disagree with its recorded compiler profile')
-    targets=admission_targets(module,raw,image,symbols,sorted(public_names));comparison=check_member(module,raw,image,symbols,imports,targets)
+    targets=admission_targets(module,raw,image,symbols,sorted(public_names),scaffold=bool(job.get('scaffold')));comparison=check_member(module,raw,image,symbols,imports,targets,scaffold=bool(job.get('scaffold')))
     proof=dict(job=job_id,candidate=candidate,admitted=True,audit_only=audit_only,semantic_summary=spec['semantic_summary'],binding_evidence=spec.get('binding_evidence',[]),receipt=receipt,comparison=comparison,targets=targets,
                compiler_profile=dict(profile,flags=job['flags']),unit=job.get('unit'),scaffold=job.get('scaffold'),superseded_recipes=superseded,scope='Exact readable reconstruction, not original text or filename')
     proof_path=directory/('audit.json' if audit_only else 'promotion.json');write_json(proof_path,proof)

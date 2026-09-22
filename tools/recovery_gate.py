@@ -10,7 +10,10 @@ from library_match import compare_member
 
 GOOD={'CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER'}
 
-def check_coverage(module, symbols, targets):
+def check_coverage(module, symbols, targets, scaffold=False):
+    # A scaffolded unit compiles later runs of claimed members into RUNk_TEXT;
+    # their placement is still fixed by the MAPSYM anchors of every public.
+    import re
     for name,target in targets.items():
         segment,offset=unique_symbol(symbols,name)
         if (segment,offset)!=(target['segment'],target['offset']):raise FormatError('recipe address differs from MAPSYM: '+name)
@@ -18,17 +21,17 @@ def check_coverage(module, symbols, targets):
         pubs=[p for p in module['publics'] if p['name']==name]
         if len(pubs)!=1 or not 1<=pubs[0]['segment']<=len(module['segments']):raise FormatError('requested public missing/ambiguous: '+name)
         pub=pubs[0];seg=module['segments'][pub['segment']-1]
-        if seg['class']!='CODE' or seg['name']!=target['code_segment']:raise FormatError('wrong code group: '+name)
+        if seg['class']!='CODE' or not (seg['name']==target['code_segment'] or (scaffold and re.fullmatch(r'RUN\d+_TEXT',seg['name']))):raise FormatError('wrong code group: '+name)
         begin=pub['offset'];end=begin+target['size']
         if end>seg['length'] or not any(a<=begin and end<=b for a,b in seg['initialized_ranges']):raise FormatError('incomplete requested function coverage: '+name)
 
-def check_member(module, raw, image, symbols, imports, targets):
-    check_coverage(module,symbols,targets)
+def check_member(module, raw, image, symbols, imports, targets, scaffold=False):
+    check_coverage(module,symbols,targets,scaffold)
     result=compare_member(module,raw,image,symbols,imports)
     if not result or result['result'] not in GOOD:raise FormatError('complete member comparison failed: '+str(result and result.get('issues')))
     return result
 
-def admission_targets(module,raw,image,symbols,names):
+def admission_targets(module,raw,image,symbols,names,scaffold=False):
     """Derive bounded promotion scopes only for closed original AND candidate CFGs.
 
     This does not claim a historical filename or uniquely prove TU boundaries.
@@ -51,7 +54,7 @@ def admission_targets(module,raw,image,symbols,names):
         if ce['end'] is None or ce['status']!='PROBABLE' or ce['size']!=original['size']:raise FormatError('candidate CFG does not cover full original function: '+name)
         targets[name]=dict(segment=segment,offset=offset,size=original['size'],code_segment=original_segment['name'],extent_status='CONFIRMED',
                            extent_evidence='Closed original and candidate recursive CFGs, explicit NOP gaps, full initialized coverage and exact complete-member comparison',comparison='member',historical_filename=None,proof='BYTE_MATCHED_RECONSTRUCTION')
-    check_coverage(module,symbols,targets)
+    check_coverage(module,symbols,targets,scaffold)
     # Recompute cross-entry branch evidence from the original; a closed local
     # graph alone cannot establish that a tail has a single owner.
     for source_segment in symbols['segments']:

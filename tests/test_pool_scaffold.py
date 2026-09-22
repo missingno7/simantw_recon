@@ -88,5 +88,31 @@ class ComposerScaffoldTests(unittest.TestCase):
         self.assertLess(text.index('#pragma alloc_text'), text.index('void far A(void)'))
 
 
+class SubmissionPragmaTests(unittest.TestCase):
+    def submission(self, lines, scaffold):
+        import recovery_workflow as wf
+        folder = ROOT / 'build/tests/scaffold'
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / 'sub.c').write_text(chr(10).join(lines) + chr(10), encoding='latin1')
+        flags = ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE']
+        job = dict(symbol='_A', flags=flags, lane='TU_ASSEMBLY', publics=['_A'], scaffold=dict(unit='x') if scaffold else None)
+        spec = dict(symbol='_A', compiler='msc700', flags=flags, publics=['_A'], semantic_summary='test', max_candidates=1, axes=[], source=(folder / 'sub.c').relative_to(ROOT).as_posix())
+        return lambda: wf.check_submission(spec, job)
+
+    def test_alloc_text_allowed_only_for_scaffolded_units(self):
+        from common import FormatError
+        lines = ['void far A(void);', '#pragma alloc_text(POOLSTUB_TEXT, A)', 'void far A(void)', '{', '}']
+        self.submission(lines, True)()
+        with self.assertRaises(FormatError):
+            self.submission(lines, False)()
+
+    def test_other_pragmas_stay_forbidden_in_scaffolded_units(self):
+        from common import FormatError
+        with self.assertRaises(FormatError):
+            self.submission(['#pragma pack(1)', 'void far A(void)', '{', '}'], True)()
+        with self.assertRaises(FormatError):
+            self.submission(['void far A(void);', '#pragma alloc_text(_TEXT, A)', 'void far A(void)', '{', '}'], True)()
+
+
 if __name__ == '__main__':
     unittest.main()
