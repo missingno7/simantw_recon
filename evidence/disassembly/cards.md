@@ -15147,7 +15147,7 @@ Source: src/recovered/wf_DialogAbortAll-1f3ea4f9f2.c. Flags: ['/AL', '/G2', '/Gs
 
 ## _AddSomeAnts — SIMANT_MODULE:9D04
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 90 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9D04  55                       push bp
@@ -15319,7 +15319,7 @@ Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Fla
 
 ## _SetMapModeAnt — SIMANT_MODULE:9E82
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 274 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9E82  55                       push bp
@@ -15944,7 +15944,7 @@ A528  cb                       retf
 
 ## _GotoMapPoint — SIMANT_MODULE:A52A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 160 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A52A  55                       push bp
@@ -16103,7 +16103,7 @@ A6DE  cb                       retf
 
 ## _CenterAnt — SIMANT_MODULE:A6E0
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 132 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A6E0  680001                   push 0x100
@@ -16228,7 +16228,7 @@ A843  cb                       retf
 
 ## _GotoSpider — SIMANT_MODULE:A844
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 205 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A844  c8040000                 enter 4, 0
@@ -16299,7 +16299,7 @@ A910  cb                       retf
 
 ## _GotoQueen — SIMANT_MODULE:A912
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 420 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A912  c8040000                 enter 4, 0
@@ -34317,7 +34317,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _IsMMMidiAvail — GR_MODULE:7712
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 42 bytes.
-Source: src/recovered/wf_IsMMMidiAvail-25316c8456.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 7712  c8040000                 enter 4, 0
@@ -34341,7 +34341,7 @@ Source: src/recovered/wf_IsMMMidiAvail-25316c8456.c. Flags: ['/AL', '/G2', '/Gs'
 
 ## _IsMMWaveAvail — GR_MODULE:773C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 42 bytes.
-Source: src/recovered/wf_IsMMWaveAvail-6cf4f4e231.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 773C  c8040000                 enter 4, 0
@@ -35417,7 +35417,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _MusicInit — GR_MODULE:827C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
-Source: src/recovered/MusicInit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 827C  1e                       push ds
@@ -35431,7 +35431,7 @@ Source: src/recovered/MusicInit.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_
 
 ## _SysBeep — GR_MODULE:828A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 8 bytes.
-Source: src/recovered/SysBeep.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 828A  6a00                     push 0
@@ -35441,7 +35441,7 @@ Source: src/recovered/SysBeep.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MO
 
 ## _myBeginSoundList — GR_MODULE:8292
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
-Source: src/recovered/myBeginSoundList.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8292  cb                       retf 
@@ -35551,7 +35551,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _ExtractDWord — GR_MODULE:83A4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 81 bytes.
-Source: src/recovered/wf_ExtractDWord-f367d1b9bc.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 83A4  55                       push bp
@@ -35589,7 +35589,7 @@ Source: src/recovered/wf_ExtractDWord-f367d1b9bc.c. Flags: ['/AL', '/G2', '/Gs',
 
 ## _ExtractWord — GR_MODULE:83F6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 68 bytes.
-Source: src/recovered/ExtractWord.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 83F6  55                       push bp
@@ -35716,7 +35716,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _Extract24BitVal — GR_MODULE:8518
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 118 bytes.
-Source: src/recovered/wf_Extract24BitVal-523b60cef9.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8518  55                       push bp
@@ -38473,7 +38473,7 @@ A186  cb                       retf
 
 ## _mySoundIsDone — GR_MODULE:A188
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 4 bytes.
-Source: src/recovered/mySoundIsDone.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A188  b80100                   mov ax, 1
@@ -38482,7 +38482,7 @@ A18B  cb                       retf
 
 ## _myBeginSoundReverse — GR_MODULE:A18C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 19 bytes.
-Source: src/recovered/myBeginSoundReverse.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A18C  55                       push bp
@@ -56846,7 +56846,7 @@ C19A  cb                       retf
 
 ## _InitMapFunctions — ANTEDIT_MODULE:C19C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 133 bytes.
-Source: src/recovered/wf_InitMapFunctions-70fb457ea5.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C19C  9ac859a4c1               lcall 0xc1a4, 0x59c8 ; _RallocMemorySoft
@@ -57313,7 +57313,7 @@ C645  cb                       retf
 
 ## _OpenMapWindow — ANTEDIT_MODULE:C646
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
-Source: src/recovered/OpenMapWindow.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C646  680001                   push 0x100
@@ -57513,8 +57513,8 @@ C852  cb                       retf
 ```
 
 ## _DrawMapData — ANTEDIT_MODULE:CB60
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 397 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 397 bytes.
+Source: src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 CB60  c80c0000                 enter 0xc, 0
@@ -57662,8 +57662,8 @@ CCEC  cb                       retf
 ```
 
 ## _AllocateMapBuffer — ANTEDIT_MODULE:CCEE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 79 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 79 bytes.
+Source: src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 CCEE  833eaa1900               cmp word ptr [0x19aa], 0 ; _mapBuf
@@ -84667,8 +84667,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _KillSpider — SIMONE_MODULE:53D4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 34 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 34 bytes.
+Source: src/recovered/wf_tu_simone_4668_KillSpider_1_scaffold-37d274226a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 53D4  8e0648c4                 mov es, word ptr [0xc448]
@@ -100369,7 +100369,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoAntSimR — SIMANT1_MODULE:5344
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 95 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5344  56                       push si
@@ -101105,7 +101105,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _RaidInR — SIMANT1_MODULE:5B2A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 235 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5B2A  c8040000                 enter 4, 0
@@ -101197,7 +101197,7 @@ Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flag
 
 ## _StayInR — SIMANT1_MODULE:5C16
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 249 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5C16  c8040000                 enter 4, 0
@@ -101291,7 +101291,7 @@ Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flag
 
 ## _RaidOutR — SIMANT1_MODULE:5D10
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 110 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5D10  55                       push bp
@@ -101346,7 +101346,7 @@ Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flag
 
 ## _DoRestR — SIMANT1_MODULE:5D7E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 298 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5D7E  c80c0000                 enter 0xc, 0
@@ -101540,7 +101540,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoRandR — SIMANT1_MODULE:5F7A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 248 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5F7A  c8080000                 enter 8, 0
@@ -101755,8 +101755,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _CheckNestFightR — SIMANT1_MODULE:61A2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 160 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 160 bytes.
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 61A2  c8060000                 enter 6, 0
@@ -101871,7 +101871,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _SimEggR — SIMANT1_MODULE:62A6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 223 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 62A6  c8080000                 enter 8, 0
@@ -102839,7 +102839,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DecEatR — SIMANT1_MODULE:6C6A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 34 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_8_scaffold-5f66a96585.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 6C6A  b8c860                   mov ax, 0x60c8 ; _match_position

@@ -447,8 +447,11 @@ def preserved_sources():
             continue
         admitted_in_unit = job['symbol'] in recipes
         best = None
-        for attempt in job['attempts']:
-            report_path = ROOT / attempt['report']
+        # Fresh recompilations under the current object profile
+        # (blocked_reclassification) count like attempts: same strict matcher.
+        fresh = ROOT / 'build/reclassify' / job['symbol'].lstrip('_') / 'results.json'
+        reports = [ROOT / a['report'] for a in job['attempts']] + ([fresh] if fresh.exists() else [])
+        for report_path in reports:
             if not report_path.exists():
                 continue
             report = read_json(report_path)
@@ -460,14 +463,27 @@ def preserved_sources():
                 # differing literal is an unresolved offset binding. A resolved
                 # fixup with a wrong literal (e.g. Dx8/Dy8 swapped) is a
                 # semantic difference even when the instruction layout aligns.
-                from topology_diagnostics import classify
-                exact_body = classify(row['comparison']) is not None
-                key = (exact_body, d['opcode_matches'], -abs(d.get('candidate_bytes', 0) - d.get('target_bytes', 0)))
+                exact_body = body_exact(row['comparison'])
+                strict = row['comparison'].get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')
+                # A strict isolated success outranks an exact body whose data
+                # or bindings still differ (e.g. an earlier attempt with the
+                # same code but a wrong string literal).
+                key = (strict, exact_body, d['opcode_matches'], -abs(d.get('candidate_bytes', 0) - d.get('target_bytes', 0)))
                 source = ROOT / row['receipt']['source']
                 if source.exists() and (best is None or key > best[0]):
                     best = (key, source.relative_to(ROOT).as_posix(), exact_body)
         if best:
             result[job['symbol']] = dict(source=best[1], basis=('ADMITTED' if admitted_in_unit and best[2] else 'EXACT_BODY_CANDIDATE' if best[2] else 'BEST_CANDIDATE_NOT_EXACT'))
+    # Ledger drafts without a workflow job: only their fresh recompilation counts.
+    for fresh in (ROOT / 'build/reclassify').glob('*/results.json') if (ROOT / 'build/reclassify').exists() else []:
+        report = read_json(fresh)
+        symbol = report.get('spec', {}).get('symbol')
+        if not symbol or symbol in result:
+            continue
+        row = report['results'][0]
+        source = ROOT / row['receipt']['source']
+        if source.exists() and (row.get('comparison') or {}).get('diagnostic'):
+            result[symbol] = dict(source=source.relative_to(ROOT).as_posix(), basis='EXACT_BODY_CANDIDATE' if body_exact(row['comparison']) else 'BEST_CANDIDATE_NOT_EXACT')
     return result
 
 
@@ -562,9 +578,26 @@ SCAFFOLD_SEGMENT = 'POOLSTUB_TEXT'
 
 
 def body_exact(comparison):
-    """Strict GOOD result, or a body that differs only in unresolved offset bindings."""
+    """Strict GOOD result, a body the binding classifier accepts, or an opcode-
+    and byte-exact body with zero register/branch/frame differences whose
+    only failures are unresolved (not wrongly resolved) bindings and private
+    placement: everything a scaffolded unit can still prove."""
     from topology_diagnostics import classify
-    return comparison.get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER') or classify(comparison) is not None
+    if comparison.get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER') or classify(comparison) is not None:
+        return True
+    d = comparison.get('diagnostic') or {}
+    if not d or d.get('opcode_total') is None:
+        return False
+    if not (d.get('opcode_matches') == d.get('opcode_total') and d.get('candidate_bytes') == d.get('target_bytes') and d.get('instruction_layout_match') is True):
+        return False
+    if any(d.get(k, 1) != 0 for k in ('register_only_differences', 'branch_target_differences', 'stack_local_differences')):
+        return False
+    if any('instruction_shape' in r['differences'] for r in d.get('aligned_asm', [])):
+        return False
+    failed = [f for c in comparison.get('contributions', []) for f in c.get('fixups', []) if not f['equal']]
+    if any(f.get('target') is not None and f.get('reason') in ('resolved offset and frame', 'same-segment relative offset') for f in failed):
+        return False
+    return True
 
 
 def slot_segments():
@@ -889,7 +922,10 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
         if f in functions:
             for w in functions[f]['introduced']['pool']:
                 introducer.setdefault(w, f)
-    block = sorted(int(x, 16) for x in comp.get('pool_words', [])) or sorted(introducer)
+    listed = sorted(int(x, 16) for x in comp.get('pool_words', [])) or sorted(introducer)
+    # The block is contiguous: words the topology could not attribute to any
+    # public (static helpers, other load forms) are still allocated in it.
+    block = list(range(listed[0], listed[-1] + 2, 2)) if listed else []
     stop = max(w for m in claimed for w in functions[m]['slots']) if any(functions[m]['slots'] for m in claimed) else None
     reattributed = []
     # Allocation is sequential, so introducer code positions never decrease

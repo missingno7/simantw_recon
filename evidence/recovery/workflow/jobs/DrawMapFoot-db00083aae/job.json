@@ -1,7 +1,7 @@
 {
   "id": "DrawMapFoot-db00083aae",
   "symbol": "_DrawMapFoot",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:52:57.948271+00:00",
   "flags": [
     "/AL",
@@ -310,5 +310,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "af53b0d224dc8f0ee5046489f146a42c5639e42d7d57e0e513e45846328acead",
+      "report": "evidence/recovery/workflow/jobs/DrawMapFoot-db00083aae/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c16292b3aade4a45d3565bf24b31137fbaa55a044ed15c8b558991e6e6392a74",
+      "report": "evidence/recovery/workflow/jobs/DrawMapFoot-db00083aae/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "f73110901af511f5b744a2cc7c24c0f53a1f74e43f06bdd3c81be24aa696eb74",
+      "report": "evidence/recovery/workflow/jobs/DrawMapFoot-db00083aae/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Three explained attempts, best opcode_matches 141/174 (target_bytes 484, candidate 521). Confirmed and fixed along the way: mem_Lock(mapBuf) happens unconditionally before the FootHere gate (the target never unlocks on that early-exit path -- reproduced exactly); mapBuf is near here (no ES prefix), unlike the far declaration used successfully elsewhere in this unit; the foot-bitmap DrawBitMapToBuffer call (bitmapID=(BoyDir&3)+0x4b0, x4=FootX<<2, y4=FootY<<2, mapYsize<<6/mapXsize<<7), its mapTileRect-relative InvalidateRect(win_hwnd[1]), the BoyHere==3||BoyHere==4 gated second DrawBitMapToBuffer/InvalidateRect pair for the mow bitmap (bitmapID=(~BoyDir&1)+0x4ba, MowX/MowY), and mem_Unlock(mapBuf)+newMapForce=1 at the end are all evidenced and structurally present. Two unresolved compiler-behavior gaps, both already evidenced this session on the closely related DrawMapSpider (same antedit:C19C unit, same DrawBitMapToBuffer/InvalidateRect idiom, blocked REGISTER_ALLOCATION) and DrawSimKid (LOCAL_FRAME_LAYOUT): (1) the target preloads y4 into si (surviving the whole DrawBitMapToBuffer call for later reuse in the rect.top calc) while computing x4 into di late, right before its own push, also surviving for rect.left; every source ordering of the two shift statements tried here reproduced neither half correctly. (2) The trailing dashed-fill tail against match_position[0] (used here as a memory handle, confirmed via exact_mapsym_names) needs the same explicit stack-cached far-pointer-address spill (les bx,ptr[bp-x] reload after the intervening mem_Lock) that plain C would not reproduce in DrawSimKid or DrawMapSpider.",
+  "next_experiment": "Reissue inside the antedit:C19C unit-assembly alongside DrawMap/DrawMapSpider/win_DrawMapWindow (all touch the same match_position/segment-8-9 selector pool and the same DrawBitMapToBuffer idiom); the fuller register pressure and selector density across the whole unit is the recorded hypothesis (same as DrawMapSpider's block) for why isolated compiles cannot reproduce the observed si/di preload split or the far-pointer stack caching."
 }

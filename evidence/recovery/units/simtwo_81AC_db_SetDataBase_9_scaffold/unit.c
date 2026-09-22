@@ -6,7 +6,6 @@
 extern int near db_numOfHandles;
 extern int near db_cacheTable;
 extern int far db_handles[];
-static int near db_closed = 1;
 extern int far sprintf(char far *buffer, char far *format, ...);
 extern int far access(char far *path, int mode);
 extern void far Punt(char far *message);
@@ -39,6 +38,7 @@ void db_SaveObject(int object, int type, int arg3, int arg4, int arg5, int arg6)
 #pragma alloc_text(RUN2_TEXT, db_PurgeObject, db_PurgeHandle, db_ReleaseHandle, db_ReleaseObject)
 #pragma alloc_text(RUN2_TEXT, db_UnhookObject, db_CloseDataBase, db_ReplaceObject, db_SaveObject)
 
+static int near db_closed = 1;
 int far db_SetDataBase(char far *name)
 {
     char path[32];

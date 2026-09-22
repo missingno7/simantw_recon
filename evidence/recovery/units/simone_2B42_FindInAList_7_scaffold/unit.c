@@ -1,7 +1,7 @@
 /* Candidate translation unit simone_2B42_FindInAList_7_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
  * Members: _FindInAList, _FindInBList, _FindInRList, _AddAntToBList, _AddAntToRList, _ClearListB, _ClearListR
- * SCAFFOLDED: unclaimed members _RemoveFromAList, _ExitHole are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
+ * SCAFFOLDED: unclaimed members _RemoveFromAList are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern unsigned int far AListState[];
 extern unsigned char far Dx8[];
@@ -12,18 +12,14 @@ extern unsigned char near LifeB[];
 extern unsigned char near LifeR[];
 
 extern int far AlistX;  /* scaffold reference for pool word C424 (segment 8, MAPSYM_SITE_NAME) */
-extern int far Dy8;  /* scaffold reference for pool word C42C (segment 8, MAPSYM_SITE_NAME) */
-extern int far Dx9;  /* scaffold reference for pool word C42E (segment 8, SEGMENT_REPRESENTATIVE) */
 
 void far pool_stub_RemoveFromAList(void);
-void far pool_stub_ExitHole(void);
 void far AddAntToBList(int life, int column, int attribute, int state, int direction);
 void far AddAntToRList(int life, int column, int attribute, int state, int direction);
 void ClearListB(void);
 void ClearListR(void);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_RemoveFromAList)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_ExitHole)
 #pragma alloc_text(RUN2_TEXT, AddAntToBList, AddAntToRList)
 #pragma alloc_text(RUN3_TEXT, ClearListB, ClearListR)
 
@@ -82,18 +78,6 @@ int FindInRList(int firstKey, int secondKey, int thirdKey)
             return index;
     }
     return -1;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _ExitHole.
- * It only reproduces the object's selector-pool allocation order for the
- * words C42C C42E; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_ExitHole(void)
-{
-    volatile int t;
-
-    t = Dy8;
-    t = Dx9;
 }
 
 void far AddAntToBList(int life, int column, int attribute,
