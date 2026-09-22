@@ -345,5 +345,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics recovered and preserved (best: attempt02/candidate0000.c: departure patch from MigrateX/MigrateY, arrival patch from the pixel position with the 12x16 bounds check, half of the departure population byte moved to the arrival byte with the 0xfa cap; 154 vs 139 bytes, 54/62 aligned; guards, divisions, bounds tests and immediate segment loads all match). Residuals: the original switches DS to the Dx8 segment first and reads MigrateY through ES, addresses the arrival byte through a register pointer whose offset already includes 0xa4 ([bx] read and write) while indexing the departure byte as [bx+0xa4], keeps the moved half in AX with the sum in CX, and has an 8-byte frame (two more slotted locals than any candidate). 12 candidates: named scalars with Dx8 offsets, match_position indexes, named 2-D YMapPopB, source/destination offset locals in five declaration orders, destination far pointer local (declared/computed before or after the source update) and a rebased pointer spelling. Budget 3/8 attempts, 12/192 candidates.",
-  "next_experiment": "Find the construct that makes MSC C7 take DS for the Dx8 segment before the MigrateY read and address the arrival byte through a pointer including the 0xa4 base: distinguishing observation is 'mov ds,ax(Dx8); ... mov es,ax(PACK); add bx,es:[0x9d72]; ... add bx,0xa4; mov cl,[bx]'. Untried: a based pointer typed on the Dx8 segment for the arrival byte, the population grid declared as a far pointer variable rather than an array, or a TU-level helper shared with StartMigrate; do not repeat the 12 listed spellings."
+  "next_experiment": "Find the construct that makes MSC C7 take DS for the Dx8 segment before the MigrateY read and address the arrival byte through a pointer including the 0xa4 base: distinguishing observation is 'mov ds,ax(Dx8); ... mov es,ax(PACK); add bx,es:[0x9d72]; ... add bx,0xa4; mov cl,[bx]'. Untried: a based pointer typed on the Dx8 segment for the arrival byte, the population grid declared as a far pointer variable rather than an array, or a TU-level helper shared with StartMigrate; do not repeat the 12 listed spellings.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (54/62 opcodes, 151/139 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

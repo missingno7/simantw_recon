@@ -411,5 +411,18 @@
     "DATA_LAYOUT"
   ],
   "reason": "All 8 bounded attempts converge on the same data-layout boundary: the target has exactly two selector fixups for _match_position at segment 9 offset 0, then DS-relative [bx] accesses at 0x7408..0x75f8 with no slot offset fixups. A far match_position/openDBData array reproduces the selector load but emits extra offset fixups for each byte access; an explicit near openDBData declaration removes DS switching and resolves the wrong offset; symbol-derived far-to-near casts drop the selector; MSC __based PACK pointers reproduce DS-relative stores but add saved-register/segment-name fixups and cannot match the target selector identity. The private initialized flag and unsigned loop/return shape were independently matched. Evidence: attempts 01-08 results.json and aligned ASM in this job.",
-  "next_experiment": "Expert should recover the historical declaration or segment-based type that makes PACK data near after a selector-only DS load\u2014likely a module/header-level data-segment convention or compiler-supported based declaration\u2014and then rerun an independent candidate with the existing readable hypothesis."
+  "next_experiment": "Expert should recover the historical declaration or segment-based type that makes PACK data near after a selector-only DS load\u2014likely a module/header-level data-segment convention or compiler-supported based declaration\u2014and then rerun an independent candidate with the existing readable hypothesis.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout under the current profile (24/30 opcodes, 73/72 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "DATA_LAYOUT"
+  ]
 }

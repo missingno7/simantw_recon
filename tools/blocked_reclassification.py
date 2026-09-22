@@ -224,6 +224,7 @@ def render(report, components, recipes, states, exact):
         by_comp[r['component'] or '?'].append(r)
     def fanout(cid):
         return sum(1 for r in by_comp[cid] if r['category'] in ('BODY_EXACT_LAYOUT_BLOCKED', 'TU_SCAFFOLD_CANDIDATE', 'MIRRORED_SOURCE_PAIR', 'PROFILE_CONTEXT_RETEST'))
+    functions = read_json(ROOT / 'evidence/topology/build-topology.json')['functions']
     for cid in sorted(by_comp, key=lambda c: (-fanout(c), -len(by_comp[c]), c)):
         comp = components.get(cid, {})
         publics = comp.get('publics', [])
@@ -232,10 +233,23 @@ def render(report, components, recipes, states, exact):
         exact_here = sum(1 for p in publics if p in exact and p not in recipes)
         mirrored = sum(1 for r in by_comp[cid] if r['mirror_partner'])
         cats = Counter(r['category'] for r in by_comp[cid])
-        lines.append('### %s — %d members, %d matched, %d blocked, %d ready; profile %s; exact bodies %d; mirrored %d; pool words %d; data words %d' % (
-            cid, len(publics), matched, len(by_comp[cid]), ready, (by_comp[cid][0]['profile'] if by_comp[cid] else '?'), exact_here, mirrored, len(comp.get('pool_words', [])), len(comp.get('data_words', []))))
+        # Selector-pool completeness: words introduced by admitted or exact members.
+        pool = [int(x, 16) for x in comp.get('pool_words', [])]
+        introducer = {}
+        for f in publics:
+            for w in functions.get(f, {}).get('introduced', {}).get('pool', []):
+                introducer.setdefault(w, f)
+        known = sum(1 for w in pool if introducer.get(w) in recipes or introducer.get(w) in exact)
+        # Next missing introducer: first unclaimed public (code order) that introduces pool words.
+        missing = next((f for f in publics if f not in recipes and f not in exact and functions.get(f, {}).get('introduced', {}).get('pool')), None)
+        data_state = 'private data words %d (%s)' % (len(comp.get('data_words', [])), 'reproduced' if not comp.get('data_words') or any(p in recipes for p in publics if functions.get(p, {}).get('introduced', {}).get('data')) else 'open')
+        lines.append('### %s — %d members, %d matched, %d blocked, %d ready; profile %s' % (cid, len(publics), matched, len(by_comp[cid]), ready, (by_comp[cid][0]['profile'] if by_comp[cid] else '?')))
         lines.append('')
-        lines.append('Fresh causes: ' + ', '.join('%s %d' % kv for kv in cats.most_common()))
+        lines.append('- exact bodies awaiting admission: %d; mirrored blocked members: %d' % (exact_here, mirrored))
+        lines.append('- selector pool: %d/%d words introduced by admitted or exact members; %s' % (known, len(pool), data_state))
+        lines.append('- likely next missing introducer: %s' % (missing or 'none (all introducers known)'))
+        lines.append('- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): %d' % fanout(cid))
+        lines.append('- fresh causes: ' + ', '.join('%s %d' % kv for kv in cats.most_common()))
         lines.append('')
         lines.append('| symbol | size | fresh category | cause | previous | partner |')
         lines.append('|---|---|---|---|---|---|')
@@ -245,9 +259,37 @@ def render(report, components, recipes, states, exact):
     return '\n'.join(lines) + '\n'
 
 
+def write_back(report=None):
+    """Record the fresh root cause on each blocked job (status and the
+    historical `blockers` list are left untouched; `root_cause` is the
+    current classification, `previous_blockers` the label it replaces)."""
+    import recovery_workflow as wf
+    report = report or read_json(OUT)
+    jobs = {j['symbol']: j for j in wf.jobs()}
+    changed = 0
+    for r in report['rows']:
+        job = jobs.get(r['symbol'])
+        if not job:
+            continue
+        path = wf.STATE / 'jobs' / job['id'] / 'job.json'
+        current = read_json(path)
+        cause = dict(category=r['category'], cause=r['cause'], profile=r['profile'], stale_profile=r['stale_profile'], mirror_partner=r['mirror_partner'], partner_state=r['partner_state'], classified=report['generated'], evidence='evidence/recovery/blocked-reclassification.json')
+        if current.get('root_cause') == cause:
+            continue
+        current['root_cause'] = cause
+        current.setdefault('previous_blockers', current.get('blockers', []))
+        wf.atomic_json(path, current)
+        changed += 1
+    return changed
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('symbols', nargs='*')
     p.add_argument('--limit', type=int)
+    p.add_argument('--write-back', action='store_true', help='record root_cause on each blocked job from the saved report')
     args = p.parse_args()
-    main(args.symbols or None, args.limit)
+    if args.write_back:
+        print('jobs updated:', write_back())
+    else:
+        main(args.symbols or None, args.limit)

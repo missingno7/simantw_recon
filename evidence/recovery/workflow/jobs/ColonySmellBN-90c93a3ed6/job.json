@@ -313,5 +313,18 @@
     "FAR_POINTER_TYPE"
   ],
   "reason": "Attempt 01 establishes the semantics and broad loop: switch DS to the _Dx8 segment, walk 0x800 bytes in 0x20-byte bands, decrement each nonzero byte, restore DS, and return near. The candidate matches the segment setup, loop bounds, increments, and cleanup but emits relocatable far-array operands at internal offset 0x62d2, allocates the index registers in the opposite order, uses unsigned JB branches, and is 50 bytes versus the 46-byte target. Exact proof requires the original declaration that makes the private 0x62d2 table near after the DS switch and preserves signed loop types.",
-  "next_experiment": "Expert: recover the _Dx8 translation-unit declaration/private table base and signed loop variable types, then retest the source with a DS-local table pointer."
+  "next_experiment": "Expert: recover the _Dx8 translation-unit declaration/private table base and signed loop variable types, then retest the source with a DS-local table pointer.",
+  "root_cause": {
+    "category": "ABI_TYPE_INFERENCE",
+    "cause": "call/pointer-shape differences (FAR_POINTER_TYPE)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "FAR_POINTER_TYPE"
+  ]
 }

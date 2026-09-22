@@ -362,5 +362,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Best candidate (build/grind/agentN/win_AutoSize.c, goto-shared variant) reaches 51/87 opcodes, correct enter-4,0 frame, correct default-case rect-delta body and correct gr_BitMapSize call args, after 3 attempts (naive duplicated cases 49/87 bytes 154-166 vs target 176; unsigned->signed char type field fixed the cwde/cbw sign-extend mismatch; goto from case5/12 into case17's font_StringWidth/font_FontHeight call site raised the match and fixed the enter 4,0 frame but the remaining differences are all branch_target drift from two compounding causes: (1) the private static result (declared 'static struct BitmapSize near AutoSizeResult;' for the unnamed DS 0xcc5e/0xcc60 scratch words - unit simtwo:E406 has win_AutoSize as its sole public, so no MAPSYM name exists) reports 'conflicting private placement constraints _BSS' and compiles as a linker fixup instead of the target's literal DS displacement, shifting every following byte offset; (2) case 9's font_StringWidth/font_FontHeight call is a byte-for-byte duplicate of the case5/12+17 shared call, but the target keeps it as a fully separate, non-shared instance (own table slot 0x70 vs the shared 0x52/0xa6) while our compiler-observed behaviour under goto sharing was only exercised for the 5/12->17 direction; whether 9 could/should also join the shared call, or the exact source shape that produces three call-site instances from five case labels, is unresolved. Full diagnostics: build/grind/agentN/_scratch/was_test1.json, was_test2.json, was_test3.json (kept under build/grind/agentN/_scratch).",
-  "next_experiment": "Determine whether the 0xcc5e/0xcc60 BSS conflict is resolvable in isolation (try a plain external 'int near' pair with a synthetic evidence-backed name instead of a function-private static, or accept it only resolves via tu_assembly at the unit level) and, separately, try case 9 also written to jump into the same callWidth label (i.e. cases 5/9/12 all set p and goto case 17's body) to see whether the compiler then produces the exact 3-instance layout (0x52 shared-setup, one shared call body, 0x70 as a second jump-in point) instead of a 4th duplicate."
+  "next_experiment": "Determine whether the 0xcc5e/0xcc60 BSS conflict is resolvable in isolation (try a plain external 'int near' pair with a synthetic evidence-backed name instead of a function-private static, or accept it only resolves via tu_assembly at the unit level) and, separately, try case 9 also written to jump into the same callWidth label (i.e. cases 5/9/12 all set p and goto case 17's body) to see whether the compiler then produces the exact 3-instance layout (0x52 shared-setup, one shared call body, 0x70 as a second jump-in point) instead of a 4th duplicate.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (51/87 opcodes, 185/225 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

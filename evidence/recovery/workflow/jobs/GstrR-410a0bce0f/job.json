@@ -406,5 +406,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Twin of admitted GstrB with a shared JustToBeMean/BlueQueens/TilesDugR match_position[]-relative state block; 63/124 opcodes match (317/332 bytes), all data bindings resolved to the correct named objects (match_position[0x403c]=MeanTimer, match_position[0x3c74]=BlueQueens, match_position[0x3d2b]=TilesDugR, JustToBeMean/AdviceStrs reused verbatim from the admitted StartAttack, PACK-based MeanArmPopA/MeanArmPopB for the ss:[0xaca6]/ss:[0xaca8] cooldown-arm sum). Two residual compiler-internal differences persist across 7 explained revisions (nested-if flattening, PACK vs plain near declarations, match_position[] vs scalar far extern): (1) the very first far-segment load at offset 8 is 'mov ds,ax' in the target but 'mov es,ax' in every candidate variant tried, even though the target's later BpopT/RpopT/HealthR accesses need ss: overrides consistent with DS being borrowed for match_position; (2) the target falls straight through from the first (HealthR<10 && ...) trigger directly into the SRand1/myBeginSong/EditMessage 'mean' block with no jump, while every candidate that shares that block with the two later goto-reached trigger points (population dominance, rare SRand32/SRand128 double roll) emits a spurious 'jmp' to an out-of-line copy for the first occurrence too. Best candidate at build/grind/agentM3/GstrR.c; full diagnostics in evidence/recovery/workflow/jobs/GstrR-410a0bce0f/attempt07/results.json.",
-  "next_experiment": "Try forcing the compiler to treat match_position as the DS-resident far object by making it the ONLY far reference before any near-DGROUP access (e.g. hoist a dummy match_position touch before the JustToBeMean CSE pair), or try splitting the shared mean-trigger into two physically adjacent copies (one for the first trigger inline, one shared by the other two) to see whether MSC7 selects fallthrough for the near copy while still byte-matching the far one."
+  "next_experiment": "Try forcing the compiler to treat match_position as the DS-resident far object by making it the ONLY far reference before any near-DGROUP access (e.g. hoist a dummy match_position touch before the JustToBeMean CSE pair), or try splitting the shared mean-trigger into two physically adjacent copies (one for the first trigger inline, one shared by the other two) to see whether MSC7 selects fallthrough for the near copy while still byte-matching the far one.",
+  "root_cause": {
+    "category": "MIRRORED_SOURCE_PAIR",
+    "cause": "counterpart matched is MATCHED; derive mechanically",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": "_GstrB",
+    "partner_state": "MATCHED",
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

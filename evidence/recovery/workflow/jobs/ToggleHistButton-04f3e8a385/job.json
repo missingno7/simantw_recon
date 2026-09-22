@@ -334,5 +334,18 @@
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "One thorough attempt (build/grind/agentR3/ToggleHistButton.c, evidence/recovery/workflow/jobs/ToggleHistButton-04f3e8a385/attempt01/results.json): 93/138 opcodes match, but CONTROL_FLOW differs (cfg_shape_match=false) -- this 400-byte function is a large, unusual body (temporary DS reassignment to Dx8's segment for a linear search and two memmove() calls manipulating the 4-slot active-colony list Dx8[0x8e54..0x8e5c), a private per-button byte flag array at Dx8[idx+0x8e38] (es:[si-0x71c8]), and a second private byte/word table at Dx8[idx*2+0x8e10] (es:[si-0x71f0], read as a shift-count byte then used to set/clear a bit in a bitmask word at Dx8[0x8e5c]) -- none of these three private Dx8-relative sub-objects have MAPSYM names, so their true C types/widths are hypotheses. Confirmed/matching semantics: clip_SetWin(0x1500) guard, MSClipStart(win_hwnd[21])/win_FillObjRect(0x150e,ConvColor(0))/drawHistGraph(v,0,i) loop over Dx8[0x8e54..0x8e5c)/MSClipEnd()/clip_Off() tail (byte-identical shape to ProcHistoryEvent's and HistUpdate's own copy of this same redraw sequence), win_MakeObjUnselected(evictedIndex+0x1503) call, and the overall on/off branch selected by the per-button flag byte. Not yet resolved: the exact memmove() argument/byte-count expressions (candidate's shift math differs from target's 'sub di,4;neg di;shl di,1' idiom) and the bitmask-word read/write shape (target uses inline shl/or/and on a word at Dx8[0x8e5c], not compared against a computed mask the way this candidate encodes it). This needs the real Dx8 sub-layout (segment 8) evidence -- the same private-data class of problem as ClearHistory/HistUpdate's unnamed PACK buffers -- before further isolated-compile guessing is productive.",
-  "next_experiment": "Obtain or derive the real layout of Dx8's 0x8e38.. and 0x8e10.. sub-ranges (private per-button flag/shift tables) from a unit assembly of simant:8A76, or from any other admitted function touching the same Dx8+0x8e5a/0x8e5c bitmask/eviction-pointer pair, before re-attempting the memmove byte-count and bitmask expressions."
+  "next_experiment": "Obtain or derive the real layout of Dx8's 0x8e38.. and 0x8e10.. sub-ranges (private per-button flag/shift tables) from a unit assembly of simant:8A76, or from any other admitted function touching the same Dx8+0x8e5a/0x8e5c bitmask/eviction-pointer pair, before re-attempting the memmove byte-count and bitmask expressions.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (93/138 opcodes, 341/400 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ]
 }

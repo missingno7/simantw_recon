@@ -334,5 +334,18 @@
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "Semantics substantially derived (opcode_matches 173/216=80%, score 0.61, candidate 558 vs target 538 bytes): font_SetFont(4); win_GetObjRect((window_hi<<8)|0x0c,&rect) via a dl=0x0c/dh=ch(window's own high byte) byte construction (my (window&0xff00)|0x0c C expression compiles to a different, wrong 'and cl,0xc;or cl,0xc' shape -- first real divergence, candidate offset 26); widthPer5=(rect.right-rect.left)/5; for window==0x1200 total=ModePopB[0]+[1]+[2] and field=modeLevels, else total=CastePopB[0] (a single far word, not summed) and field=casteLevels; per row 0..2 object=(window_hi<<8)+row+9, text is win_PrintfAtObj(object,fmt,(100*field[row]+0x3fff)/0xffff) when level!=0 else (total*field[row]+0x3fff)/0xffff, then win_ClearObjToEOL(object); a bar segment is filled (GRectFill) in modeColors[row]/casteColors[row] (near byte arrays at DGROUP 0x159a/0x1596) with height proportional to field[row], outlined via GSetAttrib(ConvColor(15),ConvColor(15),0)+GRectOutline; final GRectFill(ConvColor(0)|0x40) over the whole bar rect. Named bindings confirmed via evidence/symbols/symbol-address-map.json (_ModePopB seg9:0x9e70 array, _CastePopB seg10:0xac94 array, _modeColors/_casteColors seg10:0x159a/0x1596, _CastePopB DS-direct read matches the single binding the packet reported). Two private near format strings (pushed as ds:0x15cb/0x15d2, no MAPSYM name) are guessed as '%ld%%'/'%ld' static locals -- unverified content is a real residual unknown. The bar-fill proportional-width sub-expression at target offset 337-372 (a pending long divisor built from 'push -1; push 1', i.e. not the familiar 'push 0; push -1'=0xffff pattern) is not fully resolved; my (widthPer5-1)*field[row]/0xffff guess is unverified. Source: build/grind/agentN3/DrawControlLevels.c; diagnostics: evidence/recovery/workflow/jobs/DrawControlLevels-2032040683/attempt01/results.json.",
-  "next_experiment": "Resolve the object-number byte-construction idiom first (try a union/byte-pun or (window&0xff00)+0x0c using unsigned short vs a hi/lo split matching dl=0xc;dh=ch exactly), then decode the exact pending-long-divisor bytes at target offset 337-345 (push -1; push 1) against the raw target bytes to recover the true bar-fill formula and the two private format strings' real content from the target's initialized data before another attempt."
+  "next_experiment": "Resolve the object-number byte-construction idiom first (try a union/byte-pun or (window&0xff00)+0x0c using unsigned short vs a hi/lo split matching dl=0xc;dh=ch exactly), then decode the exact pending-long-divisor bytes at target offset 337-345 (push -1; push 1) against the raw target bytes to recover the true bar-fill formula and the two private format strings' real content from the target's initialized data before another attempt.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (173/216 opcodes, 557/538 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ]
 }

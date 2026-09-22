@@ -418,5 +418,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate (attempt07, build/grind/agentW/DigTileThemB.c) reaches 119/135 opcode matches, matching CFG shape for every guard clause, the shared bad: return-0 tail, the MakeNewHoleB/SRand8 branch, and the TileTotXB/TileTotYB/TilesDugB accumulation; the frame is enter 6,0 in both target and candidate (locals slot for cnt plus the promoted-long temp are reserved identically). The sole remaining structural difference is a single dead store: target offset 0xb1 has 'mov word ptr [bp-2], ax' (spilling cnt=++TilesDugB to its frame slot) immediately before 'or ax,ax; jle' and the two TileMassXB/TileMassYB divisions, none of which ever read [bp-2] back (confirmed: bp-2 is written exactly once and never read anywhere in the 328-byte target). Every subsequent target/candidate byte difference after 0xb1 is exactly this 3-byte shift plus the already-expected CONST/selector fixup normalization (see reconstruction_rules). Seven explained revisions failed to reproduce this dead store from equivalent C: 'cnt = ++TilesDugB; if (cnt>0)', 'if ((cnt=++TilesDugB)>0)', separate '++TilesDugB; cnt=TilesDugB;', a nested block 'int cnt=++TilesDugB;' at point of use, and a guard-clause 'if (cnt<=0) goto smooth;' all get the store eliminated by the compiler (326-byte candidate, matches 119/135 opcodes). Declaring cnt 'volatile' does force the store (328-byte candidate) but also forces an unwanted reload ('mov ax,[bp-2]' before the compare and again before the second division's cdq) that the target does not have, dropping the match to 115/135. No plain-C phrasing tried reproduces write-without-reload for this value under compiler_profile msc700 /AL /G2 /Gs /Oelw /NTSIMONE_MODULE.",
-  "next_experiment": "Try forcing the spill without the extra reload via inline asm-free tricks such as splitting the value into two named locals (one written for the record, kept unread; one used for arithmetic) with careful statement ordering, or check whether an adjacent sibling in unit simone:16AE (e.g. DigTileThemR once solved) reveals the exact statement shape MSC7 needs to keep the store but drop only the immediately-following redundant load."
+  "next_experiment": "Try forcing the spill without the extra reload via inline asm-free tricks such as splitting the value into two named locals (one written for the record, kept unread; one used for arithmetic) with careful statement ordering, or check whether an adjacent sibling in unit simone:16AE (e.g. DigTileThemR once solved) reveals the exact statement shape MSC7 needs to keep the store but drop only the immediately-following redundant load.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout under the current profile (119/135 opcodes, 326/328 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": "_DigTileThemR",
+    "partner_state": "MATCH_BLOCKED",
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

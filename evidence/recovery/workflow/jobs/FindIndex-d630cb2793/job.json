@@ -366,5 +366,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics fully established (62/88 opcodes, target 237 vs candidate 224 bytes): binary_search index idx's sorted 8-byte records (pad[4], int value@+4, byte caste@+6) for a lower-bound position (a record that is caste>target, or caste==target with value>=target, moves high down; else low up), using two unnamed DGROUP static scratch words (low, and the last-probed far record pointer) reset at entry, then checks whether the settled position (bounded by maxIndex=originalCount-1) holds an exact (value,caste) match, returning a far pointer to it or NULL. Four attempts tried: plain AT() byte-cast macro re-deriving match_position's far pointer per access; hoisting match_position's cast into a single 'mp' local (identical compiled result -- the compiler already treats the repeated cast as one subexpression); caching the caste parameter into a local before the loop (produced UNSUPPORTED_COMPARISON / contribution-outside-original -- the extra code pushed the candidate past the original extent); reverting to the mp-local form as the best result. The two remaining structural differences are both about how the SAME shared far object (match_position/its record array) keeps its segment live across the whole function: (1) target loads match_position's segment into BOTH ES and DS at function entry ('mov <matchpos>,ax; mov es,ax; mov <matchpos>,ax; mov ds,ax', restored via 'push ss; pop ds' at the end) so every later match_position access is unprefixed DS-relative, while no candidate variant produces this DS-wide load -- matching the identical unresolved pattern already logged against ExtractVariableLen's cursor pointer this session; (2) the caste parameter is loaded into DI once at target offset0x35 and reused unprefixed for every comparison, while the candidate reloads it from the stack each time (attempting to cache it broke the extent instead). Best candidate: build/grind/agentH/_FindIndex.c.",
-  "next_experiment": "Compile together with its unit_context siblings (simtwo:9A86: OpenIndex, CreateIndex, CloseIndex, DeleteCurrentIndex, AddIndex, DeleteIndex) via tools/tu_assembly.py -- the recurring 'compiler keeps a shared far array's segment resident in DS/ES for a whole function' pattern (also seen on ExtractVariableLen, and CloseIndex's two-selector question) most likely reflects whole-unit register/segment pressure that isolated single-function /Oe compilation cannot reproduce."
+  "next_experiment": "Compile together with its unit_context siblings (simtwo:9A86: OpenIndex, CreateIndex, CloseIndex, DeleteCurrentIndex, AddIndex, DeleteIndex) via tools/tu_assembly.py -- the recurring 'compiler keeps a shared far array's segment resident in DS/ES for a whole function' pattern (also seen on ExtractVariableLen, and CloseIndex's two-selector question) most likely reflects whole-unit register/segment pressure that isolated single-function /Oe compilation cannot reproduce.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (62/88 opcodes, 224/237 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -358,5 +358,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate build/grind/agentU3/AddIndex.c (attempt03, evidence/recovery/workflow/jobs/AddIndex-d99a3d380f/attempt03/results.json): 106/166 opcodes aligned, score 0.478916. Semantics understood: pack (payload far ptr, p2 word, p3/p4 bytes) into an 8-byte entry local, Punt+return 0 if FindIndex(recIndex,p2,p3) already finds a match (FindIndex returns a far pointer -- dx:ax pair per the or-dx,ax test, confirmed against _DeleteIndex's identical call), bump IndexArray[recIndex].count, mem_malloc(size,tag) a new buffer (same (size,tag) evidence as _DeleteIndex/_DeleteCurrentIndex: 3 words pushed, add sp,6), then either (count==1) free any stale old buffer and struct-copy the entry in, or (general case) byte-copy [0,lastTop) unchanged, struct-copy the new entry in at lastTop, byte-copy the old tail up by one slot, and free the old buffer; finally store through a cached &IndexArray[recIndex].data and return 1. The remaining gap: target computes bx=recIndex*0x7c as literally the FIRST instruction (before si=recIndex is even used for FindIndex) and caches it in one frame word ([bp-0x18]) reused three more times (for the count field at three separate points); the candidate's plain repeated  struct access recomputes the imul at each of those points instead of reusing one cached word, and the entry-local's frame layout also does not match ([bp-0x12..-0xb] in target vs the candidate's own layout). Tried and scored about the same or worse (0.49 and 0.49): caching the record via an explicit far pointer local; caching only the raw byte offset via manual (char far*)IndexArray+recOff+N casts (introduced extra register shuffling, e.g the recIndex value getting copied through di/ax/si before the imul, that the target does not have).",
-  "next_experiment": "Try declaring a single plain  parameter used directly as the imul operand with NO intervening pointer casts (si = recIndex; bx = si*0x7c type shape, matching target's si-then-imul sequence exactly), caching only that raw int in a local reused via a macro like #define REC(off) (*(TYPE far *)((char far *)IndexArray + recWord + (off))) rather than casting through IndexArray each time; also verify the packed entry struct's exact field order/widths against the frame slot deltas (payload at -0x12/-0x10, p2 at -0xe, p3 at -0xc, p4 at -0xb) since the candidate's frame layout for the entry differs."
+  "next_experiment": "Try declaring a single plain  parameter used directly as the imul operand with NO intervening pointer casts (si = recIndex; bx = si*0x7c type shape, matching target's si-then-imul sequence exactly), caching only that raw int in a local reused via a macro like #define REC(off) (*(TYPE far *)((char far *)IndexArray + recWord + (off))) rather than casting through IndexArray each time; also verify the packed entry struct's exact field order/widths against the frame slot deltas (payload at -0x12/-0x10, p2 at -0xe, p3 at -0xc, p4 at -0xb) since the candidate's frame layout for the entry differs.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (106/162 opcodes, 427/351 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

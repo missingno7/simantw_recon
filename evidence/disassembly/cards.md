@@ -79982,8 +79982,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _FixExitMapB — SIMONE_MODULE:284E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 198 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 198 bytes.
+Source: src/recovered/wf_FixExitMapB-54c05d603e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMONE_MODULE'].
 
 ```asm
 284E  c8060000                 enter 6, 0

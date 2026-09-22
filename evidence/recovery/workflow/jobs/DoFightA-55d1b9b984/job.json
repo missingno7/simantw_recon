@@ -380,5 +380,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Four explained revisions tried: (1) baseline with explicit far-pointer tp=&AlistT[index] computed before the SRand1(7) jitter (223/217 bytes, 60/73 opcodes); (2) removed an intermediate 'val' local, reading/writing through *tp/*cell directly (best: 62/73 opcodes, same 223/217 byte gap, instruction_layout_match still false); (3) added an explicit 'dir' local to force SRand1(7)'s result to be stored before computing tp, matching the target's exact operation order -- this regressed to 62/78 opcodes (more instructions, not fewer) by introducing extra register shuffling (di/dx) the target doesn't have; (4) replaced the explicit far-pointer local with plain AlistT[index] array indexing throughout -- also regressed, to 59/73. Variant (2)/final is the best candidate and is preserved. The core observed gap: target computes x=AlistX[index]/y=AlistY[index] with a plain 2-instruction-per-field read, calls SRand1(7), THEN computes bx=si+0x2f62 (the AlistT far pointer) and does the mask+add+store using cl/al directly with no extra register traffic; every candidate variant instead interleaves an extra selector-load/address computation between the y-read and the SRand1 call, or (when reordered to match) adds register-shuffling overhead instead of removing it -- the same class of isolated-candidate register/instruction-selection gap documented all session (DoDrownB/R, RaidInB/R, DoRandB/R, QueenMoveB/R, DoRestB/R, StayInR, DoRecruitN), not resolved by CONST-pool fixup slack (this function's CONST-pool fixups are expected/non-blocking per the corrected brief guidance and are not cited as the cause here). Semantic body verified precise against the disassembly: x/y from AlistX/AlistY[index]; AlistT[index]'s low 3 bits replaced by SRand1(7) (high bits preserved), written to both *tp and the LifeA cell at (x,y); on SRand16()==0, AlistS[index] instead overwrites the LifeA cell and *tp, AlistM[Tindex] gets a freshly computed mode via two-argument GetNewMode, and AlistS[index] is cleared; DeadAntHere(x,y,*tp&0x80) always runs (LINK-translated far call); FightBalloons(x,y,1) runs when the shared segment8:0x85fc flag equals 1. Best candidate: build/grind/agentE/_DoFightA.c (source matches test2).",
-  "next_experiment": "Compare against admitted MakeRedInitiator/AddAntToBList/AddAntToRList (same simant1:0000 unit, similar far-pointer-taking idioms) for the exact source shape that reproduces a bare 'bx=si;add bx,const;mov es,[slot]' sequence without an intervening selector reload; if a unit-level tu_assembly.py compile of simant1:0000 (DoFightA alongside DoRepoExit/GoInNest/TallyModePop/MakeRedInitiator/DoToNestAnt/DoRandAntAA) reproduces the target's tighter register use, that would confirm this is the same isolated-compile limitation rather than a per-function declaration problem."
+  "next_experiment": "Compare against admitted MakeRedInitiator/AddAntToBList/AddAntToRList (same simant1:0000 unit, similar far-pointer-taking idioms) for the exact source shape that reproduces a bare 'bx=si;add bx,const;mov es,[slot]' sequence without an intervening selector reload; if a unit-level tu_assembly.py compile of simant1:0000 (DoFightA alongside DoRepoExit/GoInNest/TallyModePop/MakeRedInitiator/DoToNestAnt/DoRandAntAA) reproduces the target's tighter register use, that would confirm this is the same isolated-compile limitation rather than a per-function declaration problem.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (62/73 opcodes, 225/217 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

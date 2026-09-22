@@ -1,34 +1,22 @@
 {
- "symbol": "_hanim_HideObject",
- "source": "build/grind/hho_t6.c",
- "compiler": "msc700",
- "flags": [
-  "/AL",
-  "/G2",
-  "/Gs",
-  "/Oelw",
-  "/NTGR_MODULE"
- ],
- "max_candidates": 96,
- "axes": [
-  {
-   "name": "body",
-   "marker": "/*BODY*/",
-   "values": [
-    "{ char far *p;\n    p = (char far *)objects;\n    index = 0;\n    if (set->count <= 0)\n        goto fail;\nscan:\n    if (*(int far *)(p + 0x20) == objectNumber)\n        goto found;\n    p += 0x2c;\n    ++index;\n    if (set->count > index)\n        goto scan;\nfail:\n    objects = (struct HanimObject far *)0;\n    goto done;\nfound:\n    objects = (struct HanimObject far *)p;\ndone:\n    }",
-    "for (index = 0; index < set->count; index++) {\n        if (objects[index].objectNumber == objectNumber) {\n            objects += index;\n            goto done;\n        }\n    }\n    objects = (struct HanimObject far *)0;\ndone:",
-    "index = 0;\n    while (index < set->count) {\n        if (objects[index].objectNumber == objectNumber)\n            break;\n        index++;\n    }\n    if (index >= set->count)\n        objects = (struct HanimObject far *)0;\n    else\n        objects += index;",
-    "{ unsigned seg;\n    seg = FP_SEG(objects);\n    index = 0;\n    if (set->count <= 0)\n        goto fail;\nscan:\n    if (objects[index].objectNumber == objectNumber)\n        goto found;\n    ++index;\n    if (set->count > index)\n        goto scan;\nfail:\n    objects = (struct HanimObject far *)0;\n    goto done;\nfound:\n    objects = (struct HanimObject far *)MK_FP(seg, FP_OFF(objects + index));\ndone:\n    }",
-    "{ struct HanimObject far *p;\n    index = 0;\n    p = objects;\n    if (set->count <= 0)\n        goto fail;\nscan:\n    if (p->objectNumber == objectNumber)\n        goto found;\n    p++;\n    ++index;\n    if (set->count > index)\n        goto scan;\nfail:\n    objects = (struct HanimObject far *)0;\n    goto done;\nfound:\n    objects = objects + index;\ndone:\n    }"
-   ],
-   "rationale": "keep objects in SI across the loop with a BX induction temp and a [bp-2] segment copy"
-  }
- ],
- "semantic_summary": "hanim_HideObject: final budgeted batch: byte walker, objects += index hits, FP_SEG/MK_FP reassembly, walker plus index hit",
- "binding_evidence": [
-  "Candidate declarations and source comments; inspect packet bindings before acceptance"
- ],
- "publics": [
-  "_hanim_HideObject"
- ]
+  "symbol": "_hanim_HideObject",
+  "source": "evidence/recovery/workflow/jobs/hanim_HideObject-579ae04c92/profile-candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 1,
+  "axes": [],
+  "semantic_summary": "hanim_HideObject: final budgeted batch: byte walker, objects += index hits, FP_SEG/MK_FP reassembly, walker plus index hit",
+  "binding_evidence": [
+    "layout/compiler-profiles.json",
+    "asg-gr-6410-og"
+  ],
+  "publics": [
+    "_hanim_HideObject"
+  ]
 }

@@ -338,5 +338,18 @@
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "Partial reconstruction only: guarded by mode==2 (the map-mode parameter); YMapPopR/YMapPopB (byte arrays, segment8/9 far anchors resolved by MAPSYM name) classify each tile into 0..3 via the observed sbb/and/add and sbb/inc idioms (category=(popB!=0)?((popR==1)?3:2):((popR>=1)?1:0)); mapTileRect (segment9, exact offset) plus a per-tile row/col position offsets the 4-point patchRgn2 polygon (near, offset 0x18a4) into a local point buffer, filled via TrapFill with two ConvColor'd palette entries from a 4-entry colour table (offsets 0x1982/0x198a, word-indexed by category); myServiceSong() runs once per outer row. The exact loop structure is NOT yet correctly reconstructed: the original increments a single index by two DIFFERENT strides in ONE combined loop ([bp-0x10]+=0x10 tracking a row-origin and a SEPARATE si+=0x1c terminator, with the inner tile loop bounded by [bp-8]<0xa0 stepping the tile index and Y position by 0xa each time and X by 0x10), not the simple nested row/col loop tried here (candidate 93/222 literal bytes, 238 vs 247, CFG does not match). Preserving the candidate and the resolved bindings above; a correct reconstruction needs to trace the exact relationship between the row stride (0x10), the outer terminator stride (0x1c) and the 21-row/16-col grid before another attempt.",
-  "next_experiment": "Re-derive the exact loop bounds/strides from the masked disassembly offsets 15-241 instruction by instruction (particularly the three interacting counters at bp-0x10, bp-0x12/si and bp-0xa/bp-8) before writing a new candidate; compare against the twin _DrawColonyBars for the same grid stride constants."
+  "next_experiment": "Re-derive the exact loop bounds/strides from the masked disassembly offsets 15-241 instruction by instruction (particularly the three interacting counters at bp-0x10, bp-0x12/si and bp-0xa/bp-8) before writing a new candidate; compare against the twin _DrawColonyBars for the same grid stride constants.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (62/86 opcodes, 238/247 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ]
 }

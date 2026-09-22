@@ -387,5 +387,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/dwt1.c, 200 vs 195 bytes, 78/84 opcodes): for x = 0..63 in column y of MapB and MapR (near 64x64 planes 2/3) a cell equal to 0x4e becomes SRand1(8), any other cell loses 0x2f; then ZapEuMapAt(2, x, y) and ZapEuMapAt(3, x, y). The original keeps the cell value in AX with one shared store point per plane ('mov [bp-4],ax' at +0x39 and +0x7f, frame 6); /Oelw homes the temp in DX with split memory update paths and a 4-byte frame for if/else, ternary, unsigned char, two-temp and inverted-test forms.",
-  "next_experiment": "Try the update as one read-modify-write expression per plane without a full-scope temp (e.g. MapB[x][y] = MapB[x][y] == 0x4e ? SRand1(8) : MapB[x][y] - 0x2f, or a byte pointer p = &MapB[x][y] with *p updated) so the value stays transient in AX; distinguishing observation: 'sub ah,ah / cmp ax,0x4e' at +0x23 and the single 'mov [bp-4],ax' at +0x39."
+  "next_experiment": "Try the update as one read-modify-write expression per plane without a full-scope temp (e.g. MapB[x][y] = MapB[x][y] == 0x4e ? SRand1(8) : MapB[x][y] - 0x2f, or a byte pointer p = &MapB[x][y] with *p updated) so the value stays transient in AX; distinguishing observation: 'sub ah,ah / cmp ax,0x4e' at +0x23 and the single 'mov [bp-4],ax' at +0x39.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (78/84 opcodes, 200/195 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -366,5 +366,18 @@
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "Three revisions confirm two distinct residual gaps beyond the expected CONST-selector noise. (1) Local-frame layout: the target uses a frameless prologue (push si only, no bp/enter) because its whole body fits in registers, including the final si=redFactorA+redFactorB sum reused for both the <0x14 compare and the >>2/>>3 shift; every candidate that keeps that sum as a C local (plain or register-hinted) gets an enter 2,0 frame instead (attempts01/03, build/grind/agentI/_GetNewRedTask.t1.json, t3.json), and recomputing the sum inline to avoid the local instead duplicates the add and grows the body to 228 bytes (attempt02, t2.json) - target is 215. (2) Six operands at offsets 0x836a, 0x836c (Dx8's segment 8), 0x9bee, 0x9c22, 0x9e7a (match_position's segment 9) and 0xaca2, 0xaca4 (near DGROUP, SS-relative) have no exact_mapsym_names in direct_data_bindings; declaring them as invented plain extern names (redQueenX/Y, redAggro, redAggroLimit, redRecruitGate, redFactorA/B) makes the compiler emit unresolvable 'external' symbol fixups (attempt01 aligned_asm candidate_offset 106-164 shows 'kind': 'external' throughout that region) instead of the target's 'internal segment N offset 0' + literal-displacement form used for already-named PACK objects like Dx8/match_position/RedTask elsewhere in the same body. Best candidate build/grind/agentI/_GetNewRedTask.c (attempt01/t1): 53/72 opcodes, size 216 vs target 215, first_structural_difference at the prologue.",
-  "next_experiment": "Determine the real names (or the correct Dx8/match_position word-index expression, e.g. Dx8 redeclared int and indexed by byte-offset/2, matching the AddAntToBList list[count+CONST] idiom) for the six unnamed offsets, and separately check whether declaring redFactorA/B's shared sum with a differently-scoped or differently-typed local (or writing the >>2/>>3 choice as a single expression the optimizer folds without a stack slot) reproduces the target's frameless prologue."
+  "next_experiment": "Determine the real names (or the correct Dx8/match_position word-index expression, e.g. Dx8 redeclared int and indexed by byte-offset/2, matching the AddAntToBList list[count+CONST] idiom) for the six unnamed offsets, and separately check whether declaring redFactorA/B's shared sum with a differently-scoped or differently-typed local (or writing the >>2/>>3 choice as a single expression the optimizer folds without a stack slot) reproduces the target's frameless prologue.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (54/72 opcodes, 227/215 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ]
 }

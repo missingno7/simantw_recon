@@ -317,5 +317,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "The four row fills at +0x6..+0x5e are inline 'mov ax,<byte pair> / mov cx,0x20 / mov di,bx / push ds / pop es / rep stosw' over MapA rows (0..20 with 0x64, 21 with 0x7a, 22..23 with 0x7b, 23..127 with 0x03), i.e. MSC 7.00's intrinsic memset expansion; the reference candidate evidence/recovery/workflow/jobs/CarpetFloorL-1369f86e7a/attempt01/candidate0000.c with a memset call (187 vs 181 bytes) shows the locked /AL /G2 /Gs /Oelw profile emits the library call instead. The handoff lane forbids #pragma intrinsic and the /Oi profile variant (same family as the parked DecodeString strlen). The remainder (rows 23..127 random 0x3e/0x3f cells with SRand1(200)/SRand1(2), MakeOutletH(2,25), DROPdir = 1) also shows the write-only row-offset home store 'mov [bp-2],di' at +0x65 seen in the AddBlackAnts/AddRedAnts family.",
-  "next_experiment": "Supervisor decision shared with DecodeString: allow a documented /Oi (or #pragma intrinsic(memset)) profile for this unit and recompile the reference candidate; distinguishing observation is the byte-replicated AX immediate with 'rep stosw' at +0x13, +0x29, +0x3f and +0x55."
+  "next_experiment": "Supervisor decision shared with DecodeString: allow a documented /Oi (or #pragma intrinsic(memset)) profile for this unit and recompile the reference candidate; distinguishing observation is the byte-replicated AX immediate with 'rep stosw' at +0x13, +0x29, +0x3f and +0x55.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (45/74 opcodes, 187/181 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

@@ -348,5 +348,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Best candidate build/grind/agentV3/_AdjustWndMinMax.c (test1, build/grind/agentV3/_AdjustWndMinMax.test1.json) reaches 125/202 opcodes matched with the mem_Size+GlobalCompact 32-bit sum, the *3/4 shift sequence, and the width/height-from-client-rect setup byte-identical to the target (offsets 0-51 exact). Confirmed fixes found: maxBytes must be a signed long (target uses 'sar di,1' on the top word of the *3/4 shift, a signed arithmetic shift; an unsigned long produces 'shr'). Remaining open problems: (1) local frame size is 0x2c (44 bytes) in the target vs 0x30 (48 bytes) in the candidate -- a 4-byte LOCAL_FRAME_LAYOUT gap not yet explained; (2) the second dimension (height = GetSystemMetrics(0x21)*2+clientRect.bottom) is computed through AX in the target but DI in the candidate (REGISTER_ALLOCATION), even though the mirror-image width computation already matches via AX; (3) the sqrt-based clamp's two __aFldiv-generated divisions (one keeping width fixed and solving for height, one keeping height fixed and solving for width) have an unconfirmed operand order/shift-placement: the raw target ASM shows the width-fixed branch computing (width/2)/maxBytes with no post-multiply while the height-fixed branch computes (height/maxBytes)*2, an asymmetry not yet reproduced or fully understood; my 'long maxBytes' fix plus rewriting the displayType guard as an explicit ==0 test (test2, build/grind/agentV3/_AdjustWndMinMax.test2.json) regressed to 126/204 with an unrelated extra 'push 0; push 4' pair inserted before the mem_Size call, so test1's source is the better base to resume from, not test2's.",
-  "next_experiment": "Starting from test1's source (revert the test2 displayType-guard rewrite, keep maxBytes as unsigned long or retry 'long' in isolation to confirm the sar/shr fix alone), probe the frame-size gap by trying an additional 2-word (int or pointer) named local before the WinRect declarations, and separately compile just the two clamp-division branches in isolation (varying dividend/divisor order and pre/post *2 placement) against the raw target bytes at original offsets 246-260 and 265-284 to pin down __aFldiv's exact operand order for this profile."
+  "next_experiment": "Starting from test1's source (revert the test2 displayType-guard rewrite, keep maxBytes as unsigned long or retry 'long' in isolation to confirm the sar/shr fix alone), probe the frame-size gap by trying an additional 2-word (int or pointer) named local before the WinRect declarations, and separately compile just the two clamp-division branches in isolation (varying dividend/divisor order and pre/post *2 placement) against the raw target bytes at original offsets 246-260 and 265-284 to pin down __aFldiv's exact operand order for this profile.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (126/204 opcodes, 531/457 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

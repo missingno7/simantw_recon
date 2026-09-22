@@ -373,5 +373,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics established (Sonnet grinder, 5 attempts, best evidence/recovery/workflow/jobs/db_LoadObject-a858ed5ff7/attempt04/candidate0000.c, 192 vs 188 bytes, 73/81 opcodes): ch_LookUpId cache hit -> mem_SetType(handle, lock) and return; otherwise loop over db_numOfHandles calling DBRecall(match_position[i], object, kind, &dummy) until a handle returns, ch_AddEntry(object, kind, db_cacheTable, handle) with Punt on failure, return the handle; exhausted loop prints via WinPrintf and returns 0. Only difference: the original pushes the DBRecall result straight from AX for the ch_AddEntry argument (+0x7c) and reloads it from [bp-2] for the return; /Oelw copies it to SI first ('mov si,ax') in every form tried.",
-  "next_experiment": "Let AX flow directly into the push: 'if (ch_AddEntry(object, kind, db_cacheTable, handle = DBRecall(...)) == 0) Punt();' or return through a second variable assigned after ch_AddEntry; distinguishing observation: 'push ax' at +0x7c with no preceding 'mov si,ax'."
+  "next_experiment": "Let AX flow directly into the push: 'if (ch_AddEntry(object, kind, db_cacheTable, handle = DBRecall(...)) == 0) Punt();' or return through a second variable assigned after ch_AddEntry; distinguishing observation: 'push ax' at +0x7c with no preceding 'mov si,ax'.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (73/81 opcodes, 192/188 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

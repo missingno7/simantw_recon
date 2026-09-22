@@ -302,5 +302,18 @@
     "TOOLCHAIN_VARIANT_REQUIRED"
   ],
   "reason": "Hand-written assembly, not compiler output: MASM-style prologue (push bp; mov bp,sp; push si; push di; push ds), LES/LDS of the far arguments, a CS-relative lookup table read ('mov al, byte ptr cs:[bx-0x835]', a table inside the code segment before the routine), two-bit ROL extraction with BH/BL byte juggling, STOSB output, a four-way unrolled inner loop with DEC CX / JE exits, and an outer row loop on the fifth argument. Semantics (for the record): converts a packed 2-bpp mono source row of ((width+1)>>1) bytes... each source byte yields four table-mapped Tandy pixels, repeated for the row count. MSC C/C++ 7.00 /AL /G2 /Gs /Oelw cannot emit CS-relative data reads or this prologue, and the handoff lane excludes assembly and pragmas. No compile attempts spent.",
-  "next_experiment": "Expert MASM reconstruction outside the C lane: recover the 256-byte (or smaller) CS table at SIMTWO_MODULE offset (routine start - 0x835), assemble with the period MASM and compare the complete member including the table bytes; the C queue should not reschedule this symbol."
+  "next_experiment": "Expert MASM reconstruction outside the C lane: recover the 256-byte (or smaller) CS table at SIMTWO_MODULE offset (routine start - 0x835), assemble with the period MASM and compare the complete member including the table bytes; the C queue should not reschedule this symbol.",
+  "root_cause": {
+    "category": "UNKNOWN",
+    "cause": "no comparable candidate (compile failed or unmeasured)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "TOOLCHAIN_VARIANT_REQUIRED"
+  ]
 }

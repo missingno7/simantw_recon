@@ -334,5 +334,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Full semantic decode confirmed against direct_data_bindings (AlistX/Y/T/M/S share selector 49944; Dx8/Dy8/TurnTab/Barrier match the layout already used in build/grind/agentU/_DoDigOutAntA.c's block comment and the blocked _DoReturnFoodAnt sibling): TurnTab[(attribute&7)*8+SRand8()] vs Bounce(x,y)-overridden direction, Dx8/Dy8 step, digmode-not-in-{5,9} early GetNewMode-only return, digmode-in-{5,9}&&SRand8()==0 finish-in-place (AlistT-=0x18) return, Barrier/occupancy-gated turn-in-place vs committed move, AlistS-gated JamScentRN/JamScentBN by team bit. First candidate reached 111/170 opcodes (508/502 body bytes) with all branch shapes and call targets right; remaining differences are register-allocation noise (index ends up in BX with x's read routed through SI's word+and-0xff zero-extend, vs the target keeping index in SI throughout and reading each Alist field straight into AL) and consequent stack-slot renumbering (bp-0xc vs bp-0xe etc.), not semantic gaps. Best candidate: build/grind/agentU/_DoDigOutAntA.c.",
-  "next_experiment": "Try reading x/y/attribute through three separate plain 'AlistX[index]'-style array subscripts on three distinctly-named byte arrays sharing the same selector (rather than one real array plus AT-offset macros for y/attribute) to see whether that steers the allocator to keep 'index' in SI and route each byte read through AL the way build/grind/agentU/_DoReturnFoodAnt.c's final attempt did for its own AlistY/AlistT reads; compare against DoRandAntA (same unit, not yet inspected) which likely shares this exact field-read prologue."
+  "next_experiment": "Try reading x/y/attribute through three separate plain 'AlistX[index]'-style array subscripts on three distinctly-named byte arrays sharing the same selector (rather than one real array plus AT-offset macros for y/attribute) to see whether that steers the allocator to keep 'index' in SI and route each byte read through AL the way build/grind/agentU/_DoReturnFoodAnt.c's final attempt did for its own AlistY/AlistT reads; compare against DoRandAntA (same unit, not yet inspected) which likely shares this exact field-read prologue.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (111/170 opcodes, 512/502 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

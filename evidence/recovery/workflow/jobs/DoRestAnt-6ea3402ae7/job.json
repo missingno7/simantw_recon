@@ -331,5 +331,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Best candidate evidence/recovery/workflow/jobs/DoRestAnt-6ea3402ae7/attempt02/candidate0000.c (166 vs 168 bytes): list row/column loads through the Dx8 selector slot, IsValidA, the TERRAINset split (nest code 0x50 versus 0x80..0x8f), the nest flag tested with dec/jne, near GoInNest, SRand4 with mode 2 (0x2b78), OptionStates[5] and RestBalloons(x,y,1) all match; only the tail-merged placement of the flag assignments differs: the original keeps the first 'xor dx,dx' (invalid cell) block and the last 'mov dx,1' (code range) block, MSC7 keeps the first 'mov dx,1' and the last 'xor dx,dx'; boolean expressions, ternaries, nested ifs, explicit if/else per branch and the negated polarity (which duplicates the decision tail instead) do not reproduce it (attempts 01-02, 6 candidates). Independently the CONST slots (list 0xc318, TERRAINset 0xc320, OptionStates 0xc322) are non-adjacent, so an exact body would still escalate as DATA_LAYOUT.",
-  "next_experiment": "Do not repeat flag-assignment polarity matrices. Test forms where the zero result is produced once at the top (a goto to a shared 'inNest = 0' or an early-return structure with GoInNest inside the valid branch) and compare the tail-merge direction; distinguishing observation 'xor dx,dx / jmp' at +0x2c and 'mov dx,1' at +0x61. Resolve the SIMANT1 selector-pool gap first."
+  "next_experiment": "Do not repeat flag-assignment polarity matrices. Test forms where the zero result is produced once at the top (a goto to a shared 'inNest = 0' or an early-return structure with GoInNest inside the valid branch) and compare the tail-merge direction; distinguishing observation 'xor dx,dx / jmp' at +0x2c and 'mov dx,1' at +0x61. Resolve the SIMANT1 selector-pool gap first.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (60/66 opcodes, 166/168 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

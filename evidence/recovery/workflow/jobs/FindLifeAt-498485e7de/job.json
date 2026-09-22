@@ -332,5 +332,18 @@
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "Best candidate build/grind/agentU3/FindLifeAt.c (attempt01): only 37/189 opcodes aligned, score 0.166667. This is a large (473-byte), intricate function with an unresolved coordinate-validation and mask-selection prelude (roughly offsets 0-380 in the packet): it validates a (di,cx) coordinate pair against two different bound pairs (127x63 or 63x63) depending on the leading parameter, dispatches on ANOTHER copy of that same parameter (values 1/2/3/other) to read a masking byte from LifeA[di][cx], LifeB[di][cx] or LifeR[di][cx] (confirmed named globals, exact MAPSYM bindings) or default to -1, and on at least one path falls through to call the already-admitted FindLifeIndex(list,matchLife,matchColumn,low,high,mask) (src/recovered/wf_FindLifeIndex-3b1fa0607c.c) with constants low=1,high=0x7f,mask=0x7f and the ORIGINAL (unvalidated) parameters rather than the locally computed di/cx -- but other paths clearly use the locally-validated di/cx and the computed mask instead, and I was not able to fully disambiguate which path is taken when within the time available. The tail (once FindLifeIndex returns a non-negative index) calls the already-admitted GetAntIndex(list,index,&life,&column,&attribute,&state,&direction) (src/recovered/wf_GetAntIndex-a8eba5e594.c) with five stack-local out-parameters, stores the index through the far out-parameter [bp+6], and returns the life field; on failure it stores -1 and returns -1. This candidate only captures that tail shape (hence the low score); the prelude was not modeled at all. Only one attempt was spent given the scale of remaining assigned targets.",
-  "next_experiment": "Fully trace the prelude using the packet's edges (available in the job's factory-packet.json: branches at relative offsets 11,17,22,24,27,30,32,34,36,39,41,44,46,49,51,60,63,65,67,70,73,76,79,81,83,85,86,88,89,91,92,94,97,100,102,105,107,111,113,...,153,155,158,...,190,194,...,308,313,316,319,321,323,325,328,...,374,375,377,380..443) against a fresh disassembly read; in particular resolve why offset70's 'cmp di,0x3f' result is discarded by the unconditional jmp at 73 to offset30's 'cmp di,0x7f' (dead comparison, or a genuine reuse of the wrong bound for the second coordinate-validation branch), and whether the offset153/155 'jge 158 else jmp 380' path is the SAME direct-FindLifeIndex-with-constants call used by the offset181 path, before writing the corrected C."
+  "next_experiment": "Fully trace the prelude using the packet's edges (available in the job's factory-packet.json: branches at relative offsets 11,17,22,24,27,30,32,34,36,39,41,44,46,49,51,60,63,65,67,70,73,76,79,81,83,85,86,88,89,91,92,94,97,100,102,105,107,111,113,...,153,155,158,...,190,194,...,308,313,316,319,321,323,325,328,...,374,375,377,380..443) against a fresh disassembly read; in particular resolve why offset70's 'cmp di,0x3f' result is discarded by the unconditional jmp at 73 to offset30's 'cmp di,0x7f' (dead comparison, or a genuine reuse of the wrong bound for the second coordinate-validation branch), and whether the offset153/155 'jge 158 else jmp 380' path is the SAME direct-FindLifeIndex-with-constants call used by the offset181 path, before writing the corrected C.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, frame layout under the current profile (37/189 opcodes, 98/473 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ]
 }

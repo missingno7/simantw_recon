@@ -334,5 +334,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Full semantic decode confirmed against direct_data_bindings, reusing the _DoReturnFoodAnt/_DoRandAntAA (both blocked, same unit) template: inline IsItHole test + GoInNest; new for this target, IsCarryCaste[caste*2]==1 gates replacing the caste nibble with UnCarryCaste[caste] (direction+team bits preserved via &0x87) to drop whatever the ant was carrying; GetNestDir(x,y,dirlow,attribute^0x80) -- team bit flipped to seek the *enemy* nest; Dx8/Dy8 step; Barrier-gated turn-in-place; empty-cell commit (no stamina/scent, matching DoRandAntAA); IsYellowAnt/MeColor-gated YellowFight vs turn-in-place; else StartFightA-shaped combat (FindInAList/GetWinner/AlarmHere2). First candidate reached 135/240 opcodes (671/640 bytes) with every call target, branch shape and constant right. Weaker byte match than the simpler DoRandAntAA sibling (87%) because of the added caste-transform block's register pressure carrying into the rest of the body -- same recurring register-allocation/frame-layout residue already logged for _DoReturnFoodAnt, _DoDigOutAntA and _DoRandAntAA in this session, not a semantic gap. Best candidate: build/grind/agentU/_DoAttackAnt.c.",
-  "next_experiment": "Once the shared hole-check merge-point / frame-size pattern is solved for the simpler siblings (_DoReturnFoodAnt, _DoDigOutAntA, _DoRandAntAA), reapply that fix here first, then focus specifically on the caste-transform block (candidate first diverges at offset 13, before the transform even runs, suggesting the AlistT word-read-into-DI-then-and-0xff idiom needs the same explicit-local treatment used elsewhere for SI-destination byte reads)."
+  "next_experiment": "Once the shared hole-check merge-point / frame-size pattern is solved for the simpler siblings (_DoReturnFoodAnt, _DoDigOutAntA, _DoRandAntAA), reapply that fix here first, then focus specifically on the caste-transform block (candidate first diverges at offset 13, before the transform even runs, suggesting the AlistT word-read-into-DI-then-and-0xff idiom needs the same explicit-local treatment used elsewhere for SI-destination byte reads).",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (135/240 opcodes, 671/640 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

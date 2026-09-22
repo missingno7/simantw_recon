@@ -334,5 +334,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Solid partial match on first candidate: 161/318 opcodes (51%), 933/915 bytes -- lower than the simpler siblings this session because this is the largest target (915 bytes) and the pickup-food branch's exact attribute encoding is not fully verified (the candidate ORs newtile|flags|8 into the picked-up-food AlistT/LifeA value; the target's [bp-0xe] source for that OR may actually be nx or another saved local rather than newtile -- this needs re-derivation against the target's own register trace, not copied from the DoDigOutAntA/DoRecruitAnt siblings by analogy). The rest of the body is confirmed against direct_data_bindings and matches the established unit template: inline IsItHole+GoInNest; flags/digmode/dirlow split; GetNestDir(x,y,dirlow,attribute) (4-arg form, like the blocked _DoReturnFoodAnt); Dx8/Dy8 step; inline IsItFood (0x48-0x4b/0x18-0x27 bands per src/recovered/wf_IsItFood-c02f58780a.c) gated by digmode in {2,6} triggering PickupFoodA/AlistM=3/AlistS=0xc8; Barrier-gated turn; empty-cell commit with AlistS-gated JamScentRN/JamScentBN (matching the blocked _DoDigOutAntA); IsYellowAnt/MeColor gate; MeWantFood==1 gated DoTroph-then-turn (matching the blocked _DoRecruitAnt, which uses !=0 instead of ==1); else StartFightA-shaped combat. Best candidate: build/grind/agentU/_DoToNestAnt.c.",
-  "next_experiment": "Re-derive the pickup-food attribute expression precisely from the target's own instruction trace at offset ~294-305 (mov si,di;shl si,6; mov al,[bp-0xe]; or al,[bp-0xc]; or al,8) before anything else -- confirm what [bp-0xe] actually holds at that point (candidate for nx, saved earlier around offset199) rather than assuming it equals newtile; then apply whatever fixes the shared IsItHole-merge-point/frame-size pattern already logged for the other blocked siblings in this session."
+  "next_experiment": "Re-derive the pickup-food attribute expression precisely from the target's own instruction trace at offset ~294-305 (mov si,di;shl si,6; mov al,[bp-0xe]; or al,[bp-0xc]; or al,8) before anything else -- confirm what [bp-0xe] actually holds at that point (candidate for nx, saved earlier around offset199) rather than assuming it equals newtile; then apply whatever fixes the shared IsItHole-merge-point/frame-size pattern already logged for the other blocked siblings in this session.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (161/318 opcodes, 933/915 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

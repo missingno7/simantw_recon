@@ -393,5 +393,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "5 attempts used. Best candidate (build/grind/agentP/_DoDigOutB.c, test2) reaches 199/234 opcodes matched, target_bytes=686 vs candidate_bytes=694; the direction-pick branch polarity (if(dir>0) dir--; else dir=RandTurn(...);) is confirmed correct and byte-exact through offset49. Remaining differences are frame-size (candidate enter 0x18 vs target 0x14, i.e. 2 extra stack words) and downstream register-allocation drift once ny fails to land in DI (candidate keeps it split across AX/a stack slot while target uses DI directly, offsets131/155), plus the resulting cascade of stack-local-layout renumbering for the two cached index locals (oldIdx=x*64+y, newIdx=nx*64+ny) that the target itself visibly caches (les/store to fixed bp-offsets reused many times in the fight/tail logic) so they cannot simply be inlined -- removing either as a named local (tried both) changes unrelated register choices elsewhere (x got hoisted into DI before the first call) rather than shrinking the frame cleanly. All semantic/structural pieces reached by the aligned diff (GetExitDirB/RandTurn dir pick, Dx8/Dy8 move, boundary checks, obstacle tile>=0x30 ExitMapB--/cx-dispatch, IsItDirt-solid bare fail) are confirmed correct.",
-  "next_experiment": "Find another admitted /Oeglw function in this unit with two far-indexed byte locals cached across a call-heavy middle section (a 'before' and 'after' cell index) to see what local layout/ordering keeps them in exactly a 20-byte frame; try declaring nx/ny as the FIRST locals (before dir/attr) since the target computes them right after dir."
+  "next_experiment": "Find another admitted /Oeglw function in this unit with two far-indexed byte locals cached across a call-heavy middle section (a 'before' and 'after' cell index) to see what local layout/ordering keeps them in exactly a 20-byte frame; try declaring nx/ny as the FIRST locals (before dir/attr) since the target computes them right after dir.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (201/240 opcodes, 700/686 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": "_DoDigOutR",
+    "partner_state": "MATCH_BLOCKED",
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

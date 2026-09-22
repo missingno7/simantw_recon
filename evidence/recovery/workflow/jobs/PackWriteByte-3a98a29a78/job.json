@@ -327,5 +327,18 @@
     "DATA_LAYOUT"
   ],
   "reason": "The semantic reconstruction writes through the current far buffer, increments the private cursor/count, flushes at the limit with the next far buffer, installs that buffer, and resets the count. Two bounded attempts exposed a strict private-layout blocker: the target directly accesses five DGROUP words and an indirect far callback at 0xcc30/0xcc3a/0xcc44/0xcc4a/0xcc4c/0xcc4e/0xcc50 with no relocations; safe external declarations produce 26 fixups and a 111-byte candidate versus 64 target bytes. Readable candidate and evidence are preserved.",
-  "next_experiment": "Expert reconstruction of the original packed-buffer DGROUP declarations, including the split far-pointer words and indirect callback slot, then retest without external-symbol fixups."
+  "next_experiment": "Expert reconstruction of the original packed-buffer DGROUP declarations, including the split far-pointer words and indirect callback slot, then retest without external-symbol fixups.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout under the current profile (17/30 opcodes, 111/64 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "DATA_LAYOUT"
+  ]
 }

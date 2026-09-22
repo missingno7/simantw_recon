@@ -378,5 +378,18 @@
     "LOCAL_FRAME_LAYOUT"
   ],
   "reason": "Target 7192-7529 (337 bytes): candidate reaches exact byte-for-byte match modulo expected CONST/DGROUP selector fixups (candidate_bytes==target_bytes==337, opcode_matches 116/116, register_only/immediate/branch differences all 0). The only remaining diagnostic is 4 stack_local_layout differences, all from one systematic swap: target stores MapPnt.x at [bp-6] and MapPnt.y at [bp-8] (offsets 59/73, both later reread at offsets 253/279 for spiderTileLeft/spiderTileTop), while every candidate variant instead assigns MapPnt.x to [bp-8] and MapPnt.y to [bp-6] -- reversed. editTileRect-scale temporaries px=x*tileWidth and py=y*tileHeight (shorter-lived, used only in the nearby bounds checks) correctly land at [bp-2]/[bp-4] in every variant, matching target exactly. Tried and rejected: (1) declaration order x,y,px,py -- x/y swapped; (2) declaration order px,py,x,y -- identical swap, proving slot assignment ignores C declaration order; (3) declaration order y,x,py,px -- identical swap again; (4) restructuring the assignments to compute px=MapPnt.x*tileWidth before storing x=MapPnt.x (probing whether statement order, not declaration order, drives allocation) -- this changed instruction count/shape entirely (114/118 opcodes, extra cx shuttling, all branch targets shifted +4 bytes), confirming the original x-then-px, y-then-py statement order is otherwise correct and should not be touched. All CONST/segment-fixup differences (es selector loads, DGROUP near fixups) are the expected isolated-compile placeholders per grinder-lessons.md and are not counted here.",
-  "next_experiment": "Try forcing MSC7's og(/Oeglw) global allocator to prefer [bp-6] for the first-defined long-lived temporary over [bp-8]: e.g. give x and y disjoint live ranges from px/py by moving the SpidX/SpidY si/di loads (sx=SpidX; sy=SpidY;) to occur between the x/px pair and the y/py pair instead of after both, or try declaring x/y as a 2-element array (int origin[2]; origin[0]=MapPnt.x; origin[1]=MapPnt.y;) so the allocator cannot independently reorder the pair. Keep build/grind/agentL3/PreDrawSpider.c (current x,y,px,py decl / x;px;y;py; statement order) as the base for any retry -- it is otherwise a body-exact candidate."
+  "next_experiment": "Try forcing MSC7's og(/Oeglw) global allocator to prefer [bp-6] for the first-defined long-lived temporary over [bp-8]: e.g. give x and y disjoint live ranges from px/py by moving the SpidX/SpidY si/di loads (sx=SpidX; sy=SpidY;) to occur between the x/px pair and the y/py pair instead of after both, or try declaring x/y as a 2-element array (int origin[2]; origin[0]=MapPnt.x; origin[1]=MapPnt.y;) so the allocator cannot independently reorder the pair. Keep build/grind/agentL3/PreDrawSpider.c (current x,y,px,py decl / x;px;y;py; statement order) as the base for any retry -- it is otherwise a body-exact candidate.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "frame layout under the current profile (116/116 opcodes, 337/337 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ]
 }

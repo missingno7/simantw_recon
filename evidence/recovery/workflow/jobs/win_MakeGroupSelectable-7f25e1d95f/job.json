@@ -331,5 +331,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "Semantics recovered and preserved (attempt01/candidate0000.c: lock, masked window number, bucket lookup, indexed walk of the object table setting state bit 1 for matching group bytes, unlock; all fixups and the win_handles binding resolve). Durable evidence of a different optimisation profile for this source file: the original stores never-read locals ('mov ax,si; sub al,al; mov [bp-0xe],ax' for objectNumber & 0xff00, 'mov [bp-8],0' for the index, 'mov [bp-6],ax' for the count, plus the bucket and table pointer homes) while still caching them in registers and forming a CX countdown, whereas C7 /Oelw eliminates those dead stores in every candidate (5 candidates: index loop as for/while/do-while with pre- or post-increment, window read in the handle index; 112 vs 125 bytes, best 34/52). The twin win_MakeGroupInvisible shows the same kept dead store ('mov [bp-6],si') whereas the sibling pair win_SetGroupSelectableState / win_SetGroupVisibleState (parked separately) does not, consistent with two source files in SIMTWO_MODULE compiled with different /O settings. Budget 2/8 attempts, 5/192 candidates.",
-  "next_experiment": "Expert compiler-profile experiment for the win_MakeGroup* source file: compile the preserved body with the register optimisation removed (/Olw, keeping loop optimisation and the aliasing assumption) or with /Oe replaced by explicit register declarations, and compare; distinguishing observation is the reappearance of the frame stores for window, index and count with the DS:SI countdown walk unchanged. Apply the same profile to win_MakeGroupInvisible and win_MakeGroupUnselectable/Visible."
+  "next_experiment": "Expert compiler-profile experiment for the win_MakeGroup* source file: compile the preserved body with the register optimisation removed (/Olw, keeping loop optimisation and the aliasing assumption) or with /Oe replaced by explicit register declarations, and compare; distinguishing observation is the reappearance of the frame stores for window, index and count with the DS:SI countdown walk unchanged. Apply the same profile to win_MakeGroupInvisible and win_MakeGroupUnselectable/Visible.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (34/52 opcodes, 112/125 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

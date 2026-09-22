@@ -352,5 +352,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Semantics established from the admitted GRectPartialOutline/GMixedFill/GMixedFillBox siblings (85/119 opcodes, target 291 vs candidate 279 bytes): zero thickness returns immediately; when foreColor==backColor and displayType bit0 is set, delegates to the admitted GRectPartialOutline(rect,thick,sides,foreColor); otherwise GSetAttrib(foreColor,backColor,0x20), then for each requested side (sides&2 top / &8 bottom / &1 left / &4 right, same box geometry as GRectPartialOutline) GPatBox with the checker pattern (((_foreColor>>8)+0x10)<<8)|0x20 recomputed fresh at each call site (no local cache, matching target's zero-byte stack frame -- inlining the pattern expression per call, rather than a cached local, improved the match from 70/119 to 85/119). Two attempts given session time constraints; remaining differences are instruction/register scheduling around the two early-exit branch layouts (jne+jmp vs a single conditional, the same family of branch-shape difference seen on win_DrawBitMap/CloseIndex this session) and stack-frame register choices, not uncovered semantics. Best candidate: build/grind/agentH/_GRectPartialMixedOutline.c.",
-  "next_experiment": "Rewrite the two early-exit tests (thick==0; colors-equal-and-mono) as guard-clause early returns with no shared join point, matching the old-style 'push bp; mov bp,sp' zero-local frame more literally, and verify whether the GRectPartialOutline delegation call's argument push order changes when written as a tail call."
+  "next_experiment": "Rewrite the two early-exit tests (thick==0; colors-equal-and-mono) as guard-clause early returns with no shared join point, matching the old-style 'push bp; mov bp,sp' zero-local frame more literally, and verify whether the GRectPartialOutline delegation call's argument push order changes when written as a tail call.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (85/119 opcodes, 279/291 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

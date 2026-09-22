@@ -333,5 +333,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics substantially mapped in 1 attempt (build/grind/agentQ3/win_ObjFormatPrint.c, evidence build/grind/agentQ3/ObjFormatPrint_t1c.json: 124/226 opcodes, 55%): void far win_ObjFormatPrint(int objectNumber, ...) draws a window object's cached format string, combining win_ObjAddr's Punt bounds check with win_CenterStrAtObj's draw tail. bucket=win_handles[objectNumber>>8]; Punt('Attempt to get obj address outsize window', verified byte-for-byte at DGROUP 0xbd12) if bucket->count<=(unsigned char)objectNumber; obj=bucket->objects[idx], a FormatObject with flags@0x24 (bit0 gates the whole format step), fontId@0x28, and buf@0x2a. When flags&1: vsprintf(localBuf,obj->fmt(+0x2e),&firstVararg) is called TWICE with byte-identical arguments (confirmed duplicate call in the raw disassembly, mirroring the win_LockWin-x2 quirk already seen in _win_ClearObjToEOL from the same unit); len=strlen(buf)+1; obj->buf is a Ralloc 'handle' -- a far pointer to ANOTHER far pointer holding the real text (confirmed by the raw bytes: the 'existing size' check dereferences TWO words at *buf before strlen-ing them, exactly the double-indirection the independent, unverified agentH/_win_SetObjFormatStr.c draft also hypothesized for the same object family) -- created via Ralloc(1,len+8,'formatStr') if null (tag string verified at DGROUP 0xbe05), or RallocRealloc(1,len+4,'formatStr') if the existing text's strlen+2<len; strcpy(*obj->buf,localBuf); font_SetFont(obj->fontId). Then win_SetColorFromObjNum, a second win_LockWin/bucket->rects[idx] fetch+ribbon-adjust+win_UnlockWin exactly like win_CenterStrAtObj, and SaveDC(clipDC)/IntersectClipRect/gr_CenterStrInRectClear(&rect,localBuf)/RestoreDC(clipDC,-1)/font_SetFont(0)/win_UnlockWin. Remaining divergence is REGISTER_ALLOCATION/EXPRESSION_SHAPE (same class as every function in this unit this session, e.g. _win_ClearObjToEOL's identical bucket/Punt-check register-caching mismatch): first structural difference is inside the bucket lookup itself (candidate offset17, before the Punt check), the same address-caching idiom _win_ClearObjToEOL was blocked on. Not pursued to convergence given session time; the semantic shape (struct offsets, Punt/Ralloc evidence, duplicate vsprintf, double-indirection buf handle, draw tail) is well evidenced even though several low-level register/frame choices are unmatched.",
-  "next_experiment": "Apply whatever bucket/Punt-check source shape is found to fix _win_ClearObjToEOL's identical divergence (same unit, same idiom) to this function's opening section first, since they share the exact same win_ObjAddr-style bounds check; then focus remaining attempts on the vsprintf/Ralloc-handle section's frame layout, which is unique to this function."
+  "next_experiment": "Apply whatever bucket/Punt-check source shape is found to fix _win_ClearObjToEOL's identical divergence (same unit, same idiom) to this function's opening section first, since they share the exact same win_ObjAddr-style bounds check; then focus remaining attempts on the vsprintf/Ralloc-handle section's frame layout, which is unique to this function.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (124/226 opcodes, 504/552 bytes)",
+    "profile": "ga",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

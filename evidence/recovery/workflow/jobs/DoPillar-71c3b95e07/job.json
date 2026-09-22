@@ -368,5 +368,18 @@
     "TRANSLATION_UNIT_CONTEXT"
   ],
   "reason": "Body/CFG/locals closely match the target: frame size exact (enter 0x1a,0), only 3 stack_local differences across 609 aligned opcodes (best candidate 399-403/607-609 opcode matches, score ~0.51). The entire remaining diff is explained by every one of this unit's 7 far-object ES-loads (TERRAINset 0xc59a/seg9, Dx8 0xc59c/seg8, PillarSeg 0xc59e/seg9, PillDir 0xc5a0/seg9, PillarY 0xc5a2/seg8, PillarX 0xc5a4/seg8, PillarMap 0xc5a6/seg9) compiling in a standalone single-function object as a CONST-immediate segment fixup instead of the target's DGROUP-selector-word indirect load (mov es, word ptr [ADDR]); every downstream register/immediate/branch-target difference cascades from that same root cause via instruction-size drift. This matches the already-recorded PRIVATE_CONST_LAYOUT family for this unit's StorePillarMap/ReplacePillarMap/PillFoodTile (evidence/recovery/blocker-families.json family 'binding-PillFoodTile', objects DGROUP:C5A0/DGROUP:C5A6): those single-far-segment members get the right ES-load mechanism but a standalone-compile address that does not match the original; DoPillar and MakePillFood additionally mix two NE segments (8 and 9) in one function and lose the indirect mechanism entirely in isolation. reconstruction_rules confirms this is unit work: 'the CONST selector pool follows first-reference order across the whole unit, so a function's pool conflicts in isolation are unit work, not body work.' Best candidate: build/grind/agentD/DoPillar.c (3 attempts used).",
-  "next_experiment": "Run tools/tu_assembly.py to compose DoPillar with StorePillarMap, ReplacePillarMap, PillFoodTile and MakePillFood into one candidate translation unit for simtwo:4CDC; DoPillar is this unit's first user of all seven selector slots (order: TERRAINset, Dx8, PillarSeg, PillDir, PillarY, PillarX, PillarMap), so assembling it first should let the shared selector pool reproduce the original per-slot addresses for the whole group instead of each member's own fresh, wrong allocation."
+  "next_experiment": "Run tools/tu_assembly.py to compose DoPillar with StorePillarMap, ReplacePillarMap, PillFoodTile and MakePillFood into one candidate translation unit for simtwo:4CDC; DoPillar is this unit's first user of all seven selector slots (order: TERRAINset, Dx8, PillarSeg, PillDir, PillarY, PillarX, PillarMap), so assembling it first should let the shared selector pool reproduce the original per-slot addresses for the whole group instead of each member's own fresh, wrong allocation.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (403/607 opcodes, 1652/1576 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "TRANSLATION_UNIT_CONTEXT"
+  ]
 }

@@ -317,5 +317,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "Semantics recovered and draft preserved (attempt01/candidate0000.c): bottom-up row copy with dstStride = ((width+31)/32)*4 and srcStride = (width+7)/8, matching stride arithmetic and loop structure. Durable toolchain blocker: the original's row copy is MSC's intrinsic memcpy expansion ('mov cx,n; shr cx,1; rep movsw; adc cx,cx; rep movsb' with a variable count), which C7 emits only under /Oi or #pragma intrinsic(memcpy); with the authentic /AL /G2 /Gs /Oelw baseline and the handoff lane's no-pragma rule the candidate calls _fmemcpy instead (see the Extract24BitVal attempt01 evidence for the same behaviour with a constant count). A struct assignment cannot express a variable-length copy. Budget 1/8 attempts, 1/192 candidates.",
-  "next_experiment": "Expert decision on intrinsic expansion for GR_MODULE: verify whether this TU was compiled with /Oi (or per-file #pragma intrinsic) by checking sibling functions CopyMonoMaskBitmap/DoMonoBitmap/DoFastBitmap for the same rep movsw/adc/rep movsb idiom, then run one controlled compiler-profile experiment with /Oi added for this TU outside the ordinary lane; distinguishing observation is the inline expansion replacing the _fmemcpy call with otherwise identical code."
+  "next_experiment": "Expert decision on intrinsic expansion for GR_MODULE: verify whether this TU was compiled with /Oi (or per-file #pragma intrinsic) by checking sibling functions CopyMonoMaskBitmap/DoMonoBitmap/DoFastBitmap for the same rep movsw/adc/rep movsb idiom, then run one controlled compiler-profile experiment with /Oi added for this TU outside the ordinary lane; distinguishing observation is the inline expansion replacing the _fmemcpy call with otherwise identical code.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (37/51 opcodes, 118/123 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

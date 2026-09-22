@@ -358,5 +358,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Three attempts, best opcode_matches 82/113 (target_bytes 280, candidate 318). DrawBitMapToBuffer's argument construction (buf/x4/y4/height/width/bitmapID/&outH/&outW, an 11-word/0x16-byte call matching gr_BitMapSize-style out-params) and the InvalidateRect rect build from mapTileRect+outW/outH are semantically right (push sequence, bitmapID=frame+0x44c, USER ordinal125 confirmed matching). Two independent, unresolved compiler-behavior gaps remain, both already evidenced elsewhere in this session: (1) target preloads both parameters into di=x(bp+6)/si=y(bp+8) as the very first two instructions regardless of use order (both are reused many times: di for the DrawBitMapToBuffer x4 arg and the later rect.left add; si for y4 and the trailing y-=2 loop index), but no source reordering (computing x's shift before y4, or copying params into explicit x/y locals) reproduced this -- MSC7 chose a different register for one of them every time tried, cascading into wrong registers for the whole call-argument sequence (register_allocation family). (2) The trailing dashed-fill loop against the far handle at PACK segment8+0x72ca (mem_Lock, byte-store loop advancing by tileStride, with a size/segment guard around si<0x40) needs the SAME explicit stack-cached far-pointer-address pattern (mov [bp-x],bx; mov [bp-y],es; ... les bx,ptr[bp-x] to reload after the intervening mem_Lock call) that DrawSimKid's yardBalloonHandle/yardBalloon access never reproduced from plain C in this compiler profile (see DrawSimKid's block, cause LOCAL_FRAME_LAYOUT) -- the same shared object (segment8:0x72ca) and idiom also appears unsolved in DrawMapFoot, which was not attempted this session for the same reason.",
-  "next_experiment": "Reissue inside the antedit:C19C unit-assembly alongside DrawMap/DrawMapFoot/win_DrawMapWindow, which all touch the same segment8:0x72ca handle and PACK selector pool; the fuller register pressure and selector-pool density across the whole unit may be exactly what makes MSC7 choose the observed di/si preload and far-pointer stack-caching that isolated single-function compiles cannot reproduce (same hypothesis already recorded for DrawSimKid and win_DrawYardWindow)."
+  "next_experiment": "Reissue inside the antedit:C19C unit-assembly alongside DrawMap/DrawMapFoot/win_DrawMapWindow, which all touch the same segment8:0x72ca handle and PACK selector pool; the fuller register pressure and selector-pool density across the whole unit may be exactly what makes MSC7 choose the observed di/si preload and far-pointer stack-caching that isolated single-function compiles cannot reproduce (same hypothesis already recorded for DrawSimKid and win_DrawYardWindow).",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (82/113 opcodes, 318/280 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

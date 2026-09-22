@@ -404,5 +404,18 @@
     "FAR_POINTER_TYPE"
   ],
   "reason": "Semantics converged (97-98/118 opcodes match; counter/circular-buffer, TERRAINset-conditional aging, SRand16/SRand4/SRand1 stamping, flat MapA/LifeA[x*64+y] via a shared tile local, and the far-pointer local for match_position[0x4f54] all reproduce the target's control flow and register reuse). Remaining first structural difference is at offset 9 (candidate build/grind/agentU/_DeadAntHere.c): capturing 'int far *slot = &match_position[0x4f54]' (or the equivalent match_position+0x4f54 pointer-arithmetic form) makes MSC7 load its ES half as a direct 'internal segment 9 offset 0' fixup, while the target loads ES for this SAME slot indirectly through the CONST selector-pool word at 0xc344 (mov es, word ptr [0xc344]), exactly like every other far-object ES load in this function. Both forms of taking the address produced byte-identical codegen (attempts 6 and 7), so the CONST-pool indirection is tied to how the far pointer is *stored/dereferenced* (three LES-based re-reads at offsets 33/124/237), not to the address expression's syntax. Best candidate: build/grind/agentU/_DeadAntHere.c (349-350/353 bytes, 97-98/118 opcodes, only register-allocation and expected far-fixup-representation differences remain).",
-  "next_experiment": "Try capturing the far pointer without ever dereferencing it through the compiler-visible C expression '*slot' for the counter increment (e.g. increment match_position[0x4f54] directly by index before taking &... for the LES-reload site), or try declaring 'slot' with an explicit __based/segment-qualified far pointer type so MSC treats the initial ES load like a normal far-object CONST-pool fetch instead of a compile-time segment constant; compare against src/recovered/wf_GetAntIndex-a8eba5e594.c's AT()-macro idiom, which was invented for this exact same segment-9 relocatable-fixup-vs-normal-fixup discrepancy."
+  "next_experiment": "Try capturing the far pointer without ever dereferencing it through the compiler-visible C expression '*slot' for the counter increment (e.g. increment match_position[0x4f54] directly by index before taking &... for the LES-reload site), or try declaring 'slot' with an explicit __based/segment-qualified far pointer type so MSC treats the initial ES load like a normal far-object CONST-pool fetch instead of a compile-time segment constant; compare against src/recovered/wf_GetAntIndex-a8eba5e594.c's AT()-macro idiom, which was invented for this exact same segment-9 relocatable-fixup-vs-normal-fixup discrepancy.",
+  "root_cause": {
+    "category": "ABI_TYPE_INFERENCE",
+    "cause": "call/pointer-shape differences (FAR_POINTER_TYPE)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "FAR_POINTER_TYPE"
+  ]
 }

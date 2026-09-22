@@ -354,5 +354,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Semantics established via the admitted hanim_RemoveAnimSet's exact record layout (70/107 opcodes best, target 260 vs candidate 257 bytes): lock the anim set (count@0, frames-handle@2) and its frame table (0x2c-byte AnimFrame entries, id@+0x20, matching hanim_RemoveAnimSet); scan up to set->count frames for id==objectId; if none found, sprintf an error string and pop a MessageBox(rootWnd,...,0x1010); if found, set its byte+5=1 and byte+0=0, then set byte+3=1 on it and every later frame; unlock both handles either way. Two attempts: an explicit int 'found' flag (best, 70/107); replacing it with goto-based control flow to mimic target's flag-free branch shape (regressed to 60/107 -- the goto version reloads/duplicates more stack state than the flag version). Given time constraints across the full assigned target list this session, stopping after two attempts with the flag-based candidate as best. Best candidate: build/grind/agentH/_hanim_RemoveAnimObject.c.",
-  "next_experiment": "Recover the exact sprintf format/caption strings from the DGROUP literal pool (offsets 0xa15 and 0xa45, as done for ConvertMonoMaskToTandy's tdyballoon tag) and the real MessageBox import ordinal/name, then retry with the goto-free control flow but locals ordered to match target's [bp-0xc]=table segment / [bp-0xa]=table offset stack layout precisely."
+  "next_experiment": "Recover the exact sprintf format/caption strings from the DGROUP literal pool (offsets 0xa15 and 0xa45, as done for ConvertMonoMaskToTandy's tdyballoon tag) and the real MessageBox import ordinal/name, then retry with the goto-free control flow but locals ordered to match target's [bp-0xc]=table segment / [bp-0xa]=table offset stack layout precisely.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (70/107 opcodes, 257/260 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

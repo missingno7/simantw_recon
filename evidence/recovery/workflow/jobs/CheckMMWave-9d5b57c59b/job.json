@@ -302,5 +302,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "The original inlines strlen as 'mov cx,0xffff / xor ax,ax / repne scasb / not cx / dec cx' (+0x1c..+0x25) over the 256-byte system-directory buffer; MSC 7.00 expands strlen inline only with /Oi or #pragma intrinsic, the job profile is locked to /AL /G2 /Gs /Oelw /NTGR_MODULE and the handoff lane forbids pragmas, so no ordinary candidate can match (same blocker as font_StringWidth-309d404150; no attempt spent). Recovered semantics for the eventual /Oi retest: GetSystemDirectory(path,256); lstrcat(path, path[strlen(path)-1]=='\\' ? \"system\\mmsystem.dll\" : \"\\system\\mmsystem.dll\"); if (access(path,0)==0) { hMM (far word at SIMANT_DATA_GROUP 0x8d08, unnamed, selector slot 0xbf78) = LoadLibrary(\"MMSYSTEM.DLL\"); if (hMM >= 0x20) { proc = GetProcAddress(hMM, \"waveOutGetNumDevs\"); if (proc && proc()) return hMM; } } return 0; the four literals live in DGROUP at 0xb0c/0xb1e/0xb32/0xb47.",
-  "next_experiment": "Supervisor decision on a documented /Oi (intrinsic) profile variant for the GR_MODULE string routines (with font_StringWidth), then test the recorded semantics with a far function pointer local for the GetProcAddress result ([bp-4]/[bp-2], called through 'lcall [bp-4]'). Distinguishing observation: bytes f2 ae f7 d1 49 at +0x21."
+  "next_experiment": "Supervisor decision on a documented /Oi (intrinsic) profile variant for the GR_MODULE string routines (with font_StringWidth), then test the recorded semantics with a far function pointer local for the GetProcAddress result ([bp-4]/[bp-2], called through 'lcall [bp-4]'). Distinguishing observation: bytes f2 ae f7 d1 49 at +0x21.",
+  "root_cause": {
+    "category": "UNKNOWN",
+    "cause": "no comparable candidate (compile failed or unmeasured)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

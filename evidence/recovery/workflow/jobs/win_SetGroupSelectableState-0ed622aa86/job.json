@@ -359,5 +359,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Semantics recovered and preserved (best: attempt01/candidate0000.c, 114 vs 118 bytes, 40/51 aligned; loop body, DS switch, group compare, flag xor-mask, lock/unlock and win_handles fixup all match). Residuals at entry: (1) the original evaluates 'mov ax,si; sub al,al' (objectNumber & 0xff00) and discards it - every C7 spelling of a masked window number (statement, declaration initializer, register, dead first assignment of the reused counter, masked shift index) is eliminated; (2) the original loads the bucket pointer as a DX:AX value ('mov ax,[bx-0x3166]; mov dx,[bx-0x3164]; mov di,ax; mov es,dx'), keeps it in ES:DI and forms the object-table pointer in CX before repointing DI, whereas C7 uses LES and spills the bucket to [bp-0xe] across the count read; far-pointer table, long table, void far table, long handle local, long cast of the element and MAKELP-style seg/off assembly (44/51, 122 bytes) were tried. Budget 4/8 attempts, 35/192 candidates.",
-  "next_experiment": "Find the construct that yields a discarded 'objectNumber & 0xff00' plus a value-style far pointer load: distinguishing observation is 'mov ax,si; sub al,al; mov bx,si; sar bx,8; shl bx,2; mov ax,[..]; mov dx,[..+2]'. Untried: a helper-like macro that receives the masked window number and returns the bucket through a long/union, a union of long and far pointer for the bucket local, or TU context where win_handles is a private array of unions; do not repeat the 35 listed spellings."
+  "next_experiment": "Find the construct that yields a discarded 'objectNumber & 0xff00' plus a value-style far pointer load: distinguishing observation is 'mov ax,si; sub al,al; mov bx,si; sar bx,8; shl bx,2; mov ax,[..]; mov dx,[..+2]'. Untried: a helper-like macro that receives the masked window number and returns the bucket through a long/union, a union of long and far pointer for the bucket local, or TU context where win_handles is a private array of unions; do not repeat the 35 listed spellings.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation under the current profile (44/51 opcodes, 121/118 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

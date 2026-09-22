@@ -348,5 +348,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate (attempt02, build/grind/agentW/DigTileThemR.c) matches CFG shape exactly (cfg_shape_match true) and reaches 117/133 opcodes with correct fixups; the entire remaining difference is register_only_differences=27 (SI/DI swapped throughout) plus the same category of dead-store/shift issue already documented on the DigTileThemB twin. The target's prologue is 'mov si,[bp+8]; mov di,[bp+6]' i.e. x (bp+6) lives in DI and y (bp+8) lives in SI throughout the body (confirmed via the row-multiply 'mov bx,di;shl bx,6' indexing MapR[x][*]). An isolated compile of the semantically identical body (same parameter order, same statement order, same expression shapes as the twin DigTileThemB, which itself matches its target with x=SI/y=DI, the compiler's apparent default of param1->SI, param2->DI) always assigns x->SI, y->DI here too, the opposite of the DigTileThemR target. Two attempts tried: (1) the literal twin of the accepted-shape DigTileThemB body, (2) reordering the extern declaration block (call declarations before data declarations, mirroring the declaration-order-affects-codegen rule) -- both produced byte-identical SI/DI assignment (x=SI,y=DI), unchanged from attempt 1. Parameter naming/declaration order cannot affect this: both parameters bind to bp+6/bp+8 purely by call-site push order regardless of C parameter names, so no source-level lever changes which stack slot the compiler homes into SI vs DI in an isolated compile; this only differs from the sibling DigTileThemB by which physical register got chosen, suggesting the true allocation was influenced by the function's real position/neighbors in its historical translation unit (unit simone:16AE), which an isolated single-function compile cannot reproduce. Aside from the SI/DI swap, first_structural_difference at target offset 0xad (173) is the identical dead 'mov word ptr [bp-2],ax' (cnt=++TilesDugR spill) already documented and unresolved on DigTileThemB; see that block's evidence for the exhausted C-phrasing attempts (goto-tail, assignment-in-condition, split statements, nested block, guard-clause inversion, volatile) that could not reproduce it without adding an unwanted reload.",
-  "next_experiment": "Once DigTileThemB/DigTileThemR/MakeNewHoleB/MakeNewHoleR/DigMyTile/DigTileB/CreateNewHole are all attempted, try tools/tu_assembly.py to assemble the simone:16AE unit from the preserved exact-body drafts; compiling the whole translation unit together (rather than each function in isolation) may reproduce the SI/DI allocation and the dead cnt store that a single-function compile does not, since MSC7 /Oe performs whole-file global register allocation."
+  "next_experiment": "Once DigTileThemB/DigTileThemR/MakeNewHoleB/MakeNewHoleR/DigMyTile/DigTileB/CreateNewHole are all attempted, try tools/tu_assembly.py to assemble the simone:16AE unit from the preserved exact-body drafts; compiling the whole translation unit together (rather than each function in isolation) may reproduce the SI/DI allocation and the dead cnt store that a single-function compile does not, since MSC7 /Oe performs whole-file global register allocation.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (117/133 opcodes, 315/318 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": "_DigTileThemB",
+    "partner_state": "MATCH_BLOCKED",
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

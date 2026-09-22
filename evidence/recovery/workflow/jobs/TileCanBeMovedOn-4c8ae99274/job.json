@@ -350,5 +350,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate (attempt02, build/grind/agentR/_TileCanBeMovedOn.c) matches the target's control-flow shape closely: surface branch (TERRAINset-banded MapA threshold) and the underground MapB/MapR bounds-check-and-switch plus the full tile-range classification (open <=0x18, pebble 0x30-0x31, diggable dirt 0x1c-0x2e requiring canDig) all align opcode-for-opcode through target offset 0xa9 (169/349 bytes), including all six named-binding fixups (MapA/MapB/MapR/TERRAINset). 119/143 opcodes match overall. Remaining divergence starts at target offset 0xd5: the target spills its needsDig flag to a persistent frame word (mov word ptr [bp-2], dx on both the pass_dig and pass_open tails, reloaded later) while the candidate keeps the equivalent value in a register (cx) across the same span, giving a 4-byte enter frame instead of the target's 6-byte enter frame and a cascade of register-allocation-only diffs (dx/cx swaps) through the rest of the post-classification adjacency logic (plane/row/x/y checks against curPlane/curX/curY and the dig-required ceiling recheck), which is otherwise semantically identical to the target (see evidence/topology/supervisor-far-names and the aligned diff in evidence/recovery/workflow/jobs/TileCanBeMovedOn-4c8ae99274/attempt02/candidate0000.diff.txt). No amount of goto/label restructuring tried so far (attempt01 combined result/needsDig elif chain; attempt02 direct per-range gotos to shared pass_open/pass_dig/fail_tile/haveResult tails) reproduced the forced bp-2 spill.",
-  "next_experiment": "Try forcing the needsDig spill by giving it a longer explicit live range (e.g. an intermediate copy into a third named local read only at the final adjacency checks, mirroring the map->tile copy idiom that fixed IsClearTile's analogous bp-2 store-before-test gap), or try declaring result/needsDig in the opposite order to shift MSC7's slot preference toward spilling needsDig instead of keeping it in cx."
+  "next_experiment": "Try forcing the needsDig spill by giving it a longer explicit live range (e.g. an intermediate copy into a third named local read only at the final adjacency checks, mirroring the map->tile copy idiom that fixed IsClearTile's analogous bp-2 store-before-test gap), or try declaring result/needsDig in the opposite order to shift MSC7's slot preference toward spilling needsDig instead of keeping it in cx.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (119/143 opcodes, 338/349 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -338,5 +338,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Body is an exact instruction match: opcode_matches == opcode_total (90/90), candidate_bytes == target_bytes (259 == 259), zero register/branch/immediate/stack differences. Mirrors the admitted-shape sibling GSetBigFont in the same unit_context (gr:1560): AddFontResource(\"fontres.fon\") gates SendMessage(-1,0x1d,0,0L) on success only, CreateFont(8,8,0,0,400,0,0,0,0,2,1,2,1,\"Gaia8x8\") and the GetDC/SelectObject/GetTextMetrics/SetMapperFlags/ReleaseDC sequence always run when smallFontH==0; the two width/height scratch bytes (avgWidthByte in DGROUP, shared with GSetBigFont; smallFontHeightByte at its own PACK offset via __based) and the clipDC/savedFont selection logic are identical in shape to GSetBigFont, differing only in the named globals (smallFontH vs bigFontH) and literal constants. The only residual issues are the same isolated-compile literal-pool placement noise on the two string literals already documented on GSetBigFont. One attempt was sufficient to reach a fully opcode-exact body. Best candidate: build/grind/agentH/_GSetSmallFont.c.",
-  "next_experiment": "Same as GSetBigFont: compile the two sibling functions together via tools/tu_assembly.py so both literal strings and the shared savedFont/avgWidthByte statics land at their real historical offsets."
+  "next_experiment": "Same as GSetBigFont: compile the two sibling functions together via tools/tu_assembly.py so both literal strings and the shared savedFont/avgWidthByte statics land at their real historical offsets.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "frame layout under the current profile (90/90 opcodes, 259/259 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

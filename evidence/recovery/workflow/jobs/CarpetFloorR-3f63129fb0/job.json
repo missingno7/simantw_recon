@@ -302,5 +302,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "Mirror of the parked CarpetFloorL: the row fills at +0x6, +0x57, +0x6f and +0x85 are inline 'mov ax,<byte pair> / mov cx,0x20 / mov di,bx / push ds / pop es / rep stosw' over MapA rows (rows 0..105 with 0x03, row 106 with 0x7c, rows 104..105 with 0x7b, rows 106..127 with 0x64), MSC 7.00's intrinsic memset expansion, which the locked /AL /G2 /Gs /Oelw profile emits as a memset library call (CarpetFloorL reference candidate, 187 vs 181 bytes). The random 0x3e/0x3f scatter over rows 0..105 (SRand1(200), SRand1(2)), MakeOutletH(0x71, 0x23) and DROPdir = 3 are the remaining semantics; the write-only row home store 'mov [bp-2],di' at +0x22 belongs to the AddBlackAnts/AddRedAnts family. No candidate compiled here; the CarpetFloorL evidence covers the family.",
-  "next_experiment": "Resolve with CarpetFloorL and DecodeString under a documented /Oi (or #pragma intrinsic(memset)) profile decision for SIMONE_MODULE; distinguishing observation is the byte-replicated AX immediate followed by 'rep stosw' at +0x13, +0x64, +0x7a and +0x90."
+  "next_experiment": "Resolve with CarpetFloorL and DecodeString under a documented /Oi (or #pragma intrinsic(memset)) profile decision for SIMONE_MODULE; distinguishing observation is the byte-replicated AX immediate followed by 'rep stosw' at +0x13, +0x64, +0x7a and +0x90.",
+  "root_cause": {
+    "category": "UNKNOWN",
+    "cause": "no comparable candidate (compile failed or unmeasured)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

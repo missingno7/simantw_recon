@@ -341,5 +341,18 @@
     "DATA_LAYOUT"
   ],
   "reason": "Attempt 02 reproduces the complete 68-byte body: private-state selector load shape, reverse index loop, all three Dx8 field accesses, nonzero occupancy predicate, branches, DS restoration, and both return paths. Strict proof differs only at the A-list state contribution: the safe far-array declaration produces an external _AListState fixup/data contribution instead of the target private selector-backed ES:[0x80f0] word. Attempt 03 tested the evidence-backed far-pointer declaration and worsened the body to 74 bytes with LES and indexed ES access. The readable far-array candidate and all diagnostics remain preserved.",
-  "next_experiment": "Recover the original SIMONE_MODULE A-list private/far state declaration and translation-unit ordering that places the selector-backed count word at DS:0xc426 with ES offset 0x80f0, then rerun independent acceptance."
+  "next_experiment": "Recover the original SIMONE_MODULE A-list private/far state declaration and translation-unit ordering that places the selector-backed count word at DS:0xc426 with ES offset 0x80f0, then rerun independent acceptance.",
+  "root_cause": {
+    "category": "BODY_EXACT_LAYOUT_BLOCKED",
+    "cause": "exact body; private placement / contribution issues only",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "DATA_LAYOUT"
+  ]
 }

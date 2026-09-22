@@ -380,5 +380,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Reopened per corrected policy (CONST/selector-slot fixup noise in isolated compiles is expected, not a blocker); four real revisions now tried (sprintf gated inside the flag check; sprintf unconditional before the flag check matching target order; plain int match_position[] indexing for the flag/handle fields; idx copied to an explicit local before the recBase=idx*0x7c multiply). Semantics, call sequence and record-field offsets are fully confirmed (target 222 vs candidate 220 bytes, ~80% opcode alignment once CONST-fixup lines are discounted). Residual differences are register-allocation choices independent of the CONST noise: (1) target computes recBase in two steps ('mov si,[bp+6]' then a separate 'imul ax,si,0x7c'), while every source form here still fuses idx directly into one imul (dead-store elimination removes the intermediate copy regardless of an added local); (2) target keeps the _lcreat handle in DI across every subsequent call (llseek/lwrite x2/lclose), copying it there explicitly ('mov di,ax') even though AX would otherwise suffice, while the candidate keeps it in AX/spills it to a stack temp instead -- the identical 'di not chosen for a cross-call value' pattern already observed and left unresolved on win_MakeObjUnselected and ConvertMonoMaskToTandy in this same session; (3) the flag-gated block compiles as inverted 'jne+jmp' here versus target's plain 'je'-skip, the same shape difference seen on win_DrawBitMap's branch layout. None of these responded to source-level restructuring across four attempts. Best candidate: build/grind/agentH/_CloseIndex.c.",
-  "next_experiment": "Compile together with its unit_context siblings (simtwo:9A86: OpenIndex, CreateIndex, FindIndex, DeleteCurrentIndex, AddIndex, DeleteIndex) via tools/tu_assembly.py; the recurring 'DI not chosen for a cross-call handle/pointer' and 'imul fused despite an explicit local' patterns across three unrelated jobs this session (CloseIndex, win_MakeObjUnselected, ConvertMonoMaskToTandy) suggest /Oe's GLOBAL register allocation depends on whole-unit register pressure that isolated single-function compilation cannot reproduce."
+  "next_experiment": "Compile together with its unit_context siblings (simtwo:9A86: OpenIndex, CreateIndex, FindIndex, DeleteCurrentIndex, AddIndex, DeleteIndex) via tools/tu_assembly.py; the recurring 'DI not chosen for a cross-call handle/pointer' and 'imul fused despite an explicit local' patterns across three unrelated jobs this session (CloseIndex, win_MakeObjUnselected, ConvertMonoMaskToTandy) suggest /Oe's GLOBAL register allocation depends on whole-unit register pressure that isolated single-function compilation cannot reproduce.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (66/91 opcodes, 244/222 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -359,5 +359,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics recovered and preserved (best: attempt02/candidate0000.c, nested guard form; 146 vs 138 bytes, 50/59 aligned): masked window word, signed high-byte test against far PACK win_numOfWindows or the 0x2800 special-window threshold, lock, bucket lookup, object-count check, far object pointer fetched before the unlock (offset in SI, segment spilled to [bp-0xa]) and word index returned, both failures falling into the shared 'return 0x8000' tail; all fixups resolve. Residual: the original forms the object index eagerly ('mov ax,si; sub ah,ah') right after win_LockWin and keeps it in AX, so the bucket is loaded with 'les bx,[win_handles+bx]', whereas C7 loads the bucket as a DX:AX value ('mov ax,..; mov dx,..; mov es,dx; mov bx,ax') and forms the index lazily into CX at the comparison. 13 candidates: early-return form, nested form, inline unsigned char cast at both uses, unsigned char index local, int local declared last, index formed before the lock call, register index, reversed comparison operands. Budget 4/8 attempts, 13/192 candidates.",
-  "next_experiment": "Find the construct that makes MSC C7 compute the low-byte index into AX before the bucket lookup: distinguishing observation is 'mov ax,si; sub ah,ah; mov bx,[bp-2]; sar bx,8; shl bx,2; les bx,[bx-0x3166]; cmp es:[bx+0xc],ax'. Untried: the index taken from a helper macro that reads the object number through a char pointer, the bucket lookup written on objectNumber >> 8 with a separate window word only for the lock calls, or a TU-level helper shared with win_GetArg/win_StringSize; do not repeat the 13 listed spellings."
+  "next_experiment": "Find the construct that makes MSC C7 compute the low-byte index into AX before the bucket lookup: distinguishing observation is 'mov ax,si; sub ah,ah; mov bx,[bp-2]; sar bx,8; shl bx,2; les bx,[bx-0x3166]; cmp es:[bx+0xc],ax'. Untried: the index taken from a helper macro that reads the object number through a char pointer, the bucket lookup written on objectNumber >> 8 with a separate window word only for the lock calls, or a TU-level helper shared with win_GetArg/win_StringSize; do not repeat the 13 listed spellings.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 146/138 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

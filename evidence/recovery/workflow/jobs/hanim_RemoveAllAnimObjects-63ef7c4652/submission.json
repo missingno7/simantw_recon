@@ -1,43 +1,20 @@
 {
   "symbol": "_hanim_RemoveAllAnimObjects",
-  "source": "build/grind/rao8_template.c",
+  "source": "evidence/recovery/workflow/jobs/hanim_RemoveAllAnimObjects-63ef7c4652/profile-candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTGR_MODULE"
   ],
-  "max_candidates": 96,
-  "axes": [
-    {
-      "name": "decl",
-      "marker": "@@DECL@@",
-      "values": [
-        "    struct HanimSet far *set;\n    unsigned char far *object;\n    int i;\n    unsigned char far *p;\n    struct HanimObject far *q;\n    int k;\n",
-        "    struct HanimSet far *set;\n    unsigned char far *object;\n    unsigned char far *p;\n    struct HanimObject far *q;\n    int k;\n    int i;\n",
-        "    int i;\n    struct HanimSet far *set;\n    unsigned char far *object;\n    unsigned char far *p;\n    struct HanimObject far *q;\n    int k;\n"
-      ],
-      "rationale": "Declaration order changes MSC frame slot assignment; target frame is 10 bytes"
-    },
-    {
-      "name": "body",
-      "marker": "@@BODY@@",
-      "values": [
-        "        object[i * 0x2c + 3] = 1;\n        object[i * 0x2c + 5] = 1;\n        object[i * 0x2c] = 0;\n",
-        "        object[i * sizeof(struct HanimObject) + 3] = 1;\n        object[i * sizeof(struct HanimObject) + 5] = 1;\n        object[i * sizeof(struct HanimObject)] = 0;\n",
-        "        p = object + i * 0x2c;\n        p[3] = 1;\n        p[5] = 1;\n        p[0] = 0;\n",
-        "        q = (struct HanimObject far *)(object + i * 0x2c);\n        q->removed = 1;\n        q->hidden = 1;\n        q->active = 0;\n",
-        "        k = i * 0x2c;\n        object[k + 3] = 1;\n        object[k + 5] = 1;\n        object[k] = 0;\n",
-        "        ((struct HanimObject far *)(object + i * 0x2c))->removed = 1;\n        ((struct HanimObject far *)(object + i * 0x2c))->hidden = 1;\n        ((struct HanimObject far *)(object + i * 0x2c))->active = 0;\n"
-      ],
-      "rationale": "Different spellings of record = base + i*0x2c change which subexpression the loop optimizer strength-reduces and anchors"
-    }
-  ],
+  "max_candidates": 1,
+  "axes": [],
   "semantic_summary": "Batch: byte-array indexing with i*0x2c as the common record-base subexpression (direct, sizeof, byte pointer, struct cast, int k) so the induction anchors at offset 0 and homes in DS:SI",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "layout/compiler-profiles.json",
+    "asg-gr-6410-og"
   ],
   "publics": [
     "_hanim_RemoveAllAnimObjects"

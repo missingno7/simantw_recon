@@ -331,5 +331,18 @@
     "PRIVATE_CONST_LAYOUT"
   ],
   "reason": "Two bounded probes preserve readable semantics but cannot discharge the complete member: target has a 78-byte body with a five-word forwarding call, direct DGROUP stores at 0xcc28/0xcc2a/0xcc34, two strategy offsets 0xa37c/0xa380 whose loader bindings point only to the unnamed segment, a same-segment far call to _Encode, and a typed far result at 0xcc46:0xcc48. Both candidates emit unresolved external fixups for the initializer, private callbacks, and state; the second still adds SI/frame differences, and the original callback entries lie in the unnamed gap after _PackFileToFile. No MAPSYM names or selector/member evidence identifies those private contributions.",
-  "next_experiment": "Recover the unnamed helper/strategy entries in the 65-byte gap between _PackFileToFile and _PackMemoryToMemory, and map the complete 0xcc28..0xcc4e private pack-state layout from PackWriteByte, PackReadByte, and Encode before a new same-segment C probe."
+  "next_experiment": "Recover the unnamed helper/strategy entries in the 65-byte gap between _PackFileToFile and _PackMemoryToMemory, and map the complete 0xcc28..0xcc4e private pack-state layout from PackWriteByte, PackReadByte, and Encode before a new same-segment C probe.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, frame layout under the current profile (17/26 opcodes, 81/78 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "PRIVATE_CONST_LAYOUT"
+  ]
 }

@@ -352,5 +352,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics fully established on the first attempt (71/85 opcodes, target 251 vs candidate 226 bytes): sprintf a '<name>.ndx' path from the far name parameter, _lcreat(path,0), store the handle at slot+0x747e (DosPunt(\"Can't create index file\", buf, errno) on a non-positive handle), zero the 20-byte header at slot+0x745c (count, a companion word, three long fields, two more words), _lread that header back (20 bytes), then when the header's leading word (record count) is nonzero mem_malloc(count*8,\"index\") stored as a far pointer at slot+0x7458, else null it, finally _lclose(handle). Second attempt (idx copied to an explicit local before the recBase=idx*0x7c multiply, matching the SI/DI-holds-parameter pattern used successfully elsewhere) produced byte-identical output -- the compiler's dead-store elimination removes the extra local regardless. Remaining differences are the same recurring register-allocation family documented on the CloseIndex/win_MakeObjUnselected/FindIndex jobs this session (idx fused directly into imul instead of a separate mov+imul; the handle/pointer values not kept in the same registers as target across the KERNEL calls) rather than any semantic gap. Best candidate: build/grind/agentH/_CreateIndex.c.",
-  "next_experiment": "Compile together with its unit_context siblings (simtwo:9A86: OpenIndex, CloseIndex, FindIndex, DeleteCurrentIndex, AddIndex, DeleteIndex) via tools/tu_assembly.py, consistent with the next-experiment already recorded on CloseIndex and FindIndex for this same family."
+  "next_experiment": "Compile together with its unit_context siblings (simtwo:9A86: OpenIndex, CloseIndex, FindIndex, DeleteCurrentIndex, AddIndex, DeleteIndex) via tools/tu_assembly.py, consistent with the next-experiment already recorded on CloseIndex and FindIndex for this same family.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (71/85 opcodes, 226/251 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

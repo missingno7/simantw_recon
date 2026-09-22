@@ -331,5 +331,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Candidate evidence/recovery/workflow/jobs/DrawMiniMapCursor-684ba15122/attempt02/candidate0000.c (168 vs 155 bytes) computes the cursor rectangle (miniYSize*MapPnt.y+miniMapRect.top, +miniYSize*editHeight; miniXSize*MapPnt.x+miniJust+miniMapRect.left, +miniXSize*editWidth), MSClipStart(win_hwnd[20]), GRectInvOutline(&miniMapCursorRect,1), MSClipEnd and mmapCursorState=1 with the same call sequence, but MSC7 re-reads miniYSize/miniXSize (with a second selector load) for the second product, whereas the original keeps each size in CX and the stored top/left in DX/BX across the far store. Direct expressions, operand order, chained stores and int locals for the sizes/edges (attempts 01-02, 11 candidates) are all copy-propagated back to far reloads. Independently the CONST slots are not in first-use order (miniYSize 0xc22e is used before MapPnt 0xc224; miniXSize 0xc230 after miniMapCursorRect 0xc234), so an exact body would still escalate as DATA_LAYOUT.",
-  "next_experiment": "Do not repeat local-copy or chained-store forms. Find a source form that stops copy propagation of the far size into a second load (for example a size local that is modified before its second use, or sizes passed as parameters), observing 'mov cx,ax' at +0xc and 'mov ax,cx' at +0x26 with no second selector load; resolve the ANTEDIT selector-pool order first."
+  "next_experiment": "Do not repeat local-copy or chained-store forms. Find a source form that stops copy propagation of the far size into a second load (for example a size local that is modified before its second use, or sizes passed as parameters), observing 'mov cx,ax' at +0xc and 'mov ax,cx' at +0x26 with no second selector load; resolve the ANTEDIT selector-pool order first.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation under the current profile (37/43 opcodes, 167/155 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

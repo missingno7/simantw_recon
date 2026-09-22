@@ -359,5 +359,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate evidence/recovery/workflow/jobs/CheckNestFightR-d32464ecf3/attempt03/candidate0000.c (160 bytes, equal size): LifeR cell code test 8..0x67, FindInRList, GetWinner(ant, attacker), the Rlist stamina/type/mode bytes through one Dx8 selector slot, the yellow-ant branch with YellowFight(3, Tindex) when MeColor is 0, and the register assignment x=SI, y=DI, ant/index in the frame all match. One difference remains: the original keeps the LifeR cell address in a frame word ([bp-6], enter 6) across the two calls and reloads it for the cell store, while MSC7 recomputes [bx+di+0x98e8]; a near cell pointer local reproduces the temp but then takes DI from y (attempts 01, 02, 04), and register hints on the parameters are ignored. Independently the two CONST selector slots (Tindex 0xc384, Rlist 0xc386) report conflicting placement under both declaration orders, so an exact body would still escalate as DATA_LAYOUT. 4 attempts, 26 candidates.",
-  "next_experiment": "Do not repeat pointer-local, parameter-type or declaration-order matrices. Compare with the accepted CheckNestFightB (long attacker, ant in SI, index in DI): find the source form under which MSC keeps a recomputable cell address in a frame temp across calls while x/y stay in SI/DI (for example the cell read through a helper macro that takes the address, or x/y used a third time); distinguishing observation 'mov word ptr [bp-6],bx' at +0x17 and 'mov si,word ptr [bp-6]' at +0x5e. Resolve the SIMANT1 selector-pool placement first."
+  "next_experiment": "Do not repeat pointer-local, parameter-type or declaration-order matrices. Compare with the accepted CheckNestFightB (long attacker, ant in SI, index in DI): find the source form under which MSC keeps a recomputable cell address in a frame temp across calls while x/y stay in SI/DI (for example the cell read through a helper macro that takes the address, or x/y used a third time); distinguishing observation 'mov word ptr [bp-6],bx' at +0x17 and 'mov si,word ptr [bp-6]' at +0x5e. Resolve the SIMANT1 selector-pool placement first.",
+  "root_cause": {
+    "category": "BODY_EXACT_LAYOUT_BLOCKED",
+    "cause": "exact body; only unresolved offset bindings (pool / private data / TU context)",
+    "profile": "og",
+    "stale_profile": true,
+    "mirror_partner": "_CheckNestFightB",
+    "partner_state": "MATCHED",
+    "classified": "2026-09-22T04:42:40.545959+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -387,5 +387,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "Semantics established (Sonnet grinder, 6 attempts, best evidence/recovery/workflow/jobs/SmoothAlarm-7dc5275417/attempt06/candidate0000.c, 173 vs 187 bytes, 69/79 opcodes): the 64x32 alarm grid at Dx8+0x52d2 is copied to the scratch grid at Dx8+0x4ad2, then each cell becomes (self + (sum of up to four orthogonal scratch neighbours >> 2)) >> 1, clamped to 0 when <= 8; loops, bounds tests and the shift arithmetic align. Remaining: the original stores the row induction variable to a frame home ('mov [bp-2],di' at +0xf; 'mov dx,di / mov [bp-6],dx' at +0x2f/+0x33) that is never read, and forms the three west/south/east cell addresses as 'mov bx,si / add bx,di' where /Oelw emits 'mov bx,di / add bx,si'. Standalone, for-init, function- and block-scoped copies of the index are all dead-store-eliminated, and operand order in source does not change the commutative add order.",
-  "next_experiment": "Same write-only frame-home family as AddBlackAnts/AddRedAnts/SetCasteProd/CarpetFloorL (row offset spilled to its home at loop entry under an optimizer profile the locked /Oelw does not reproduce); evaluate under the documented optimizer-profile decision. Distinguishing observation: 'mov [bp-2],di' at +0xf with no later load of [bp-2]."
+  "next_experiment": "Same write-only frame-home family as AddBlackAnts/AddRedAnts/SetCasteProd/CarpetFloorL (row offset spilled to its home at loop entry under an optimizer profile the locked /Oelw does not reproduce); evaluate under the documented optimizer-profile decision. Distinguishing observation: 'mov [bp-2],di' at +0xf with no later load of [bp-2].",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (69/79 opcodes, 173/187 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

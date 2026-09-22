@@ -317,5 +317,18 @@
     "DATA_LAYOUT"
   ],
   "reason": "Semantics recovered: x = RRand(128), y = RRand(64); far RxTab[i]/RyTab[i] record them; when MapA[x][y] < 0xe the cell becomes 0x74 and the half-resolution pheromone cells at index (x>>1)*32 + (y>>1) are cleared (PherMapA 0x52d2, PherMapF 0x5ad2, PherMapBT 0x6ad2, PherMapRT 0x7ad2) while PherMapBN (0x62d2) and PherMapRN (0x72d2) lose 0x14 or drop to zero. Best candidate evidence/recovery/workflow/jobs/PlaceDrop-89dd671bbf/attempt01/candidate0000.c (168 vs 170 bytes) matches the calls, stores and pheromone updates, but MSC7 rewrites the index as ((x & -2) << 4) + (y >> 1) in CX instead of the original's in-place 'sar si,1 / shl bx,5 / sar di,1' and does not spill the cell pointer and index to [bp-2]/[bp-4] (three index forms, attempt01). Independently the CONST slots are in reverse first-use order (RyTab 0xc2ec below RxTab 0xc2ee), a SIMONE unit-pool constraint.",
-  "next_experiment": "Supervisor/TU-level: admit with the SIMONE unit whose selector pool creates RyTab before RxTab (compare JamScentBN's accepted Dx8-offset convention). For the body, test halving x and y through separate statements whose results are used more than once so the in-place shifts survive, observing 'sar si,1' at +0x55 and the frame spills at +0x43/+0x60."
+  "next_experiment": "Supervisor/TU-level: admit with the SIMONE unit whose selector pool creates RyTab before RxTab (compare JamScentBN's accepted Dx8-offset convention). For the body, test halving x and y through separate statements whose results are used more than once so the in-place shifts survive, observing 'sar si,1' at +0x55 and the frame spills at +0x43/+0x60.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation under the current profile (52/58 opcodes, 168/170 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "DATA_LAYOUT"
+  ]
 }

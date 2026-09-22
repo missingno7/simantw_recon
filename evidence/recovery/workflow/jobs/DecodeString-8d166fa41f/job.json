@@ -302,5 +302,18 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "reason": "The original inlines strlen as 'mov cx,0xffff / xor ax,ax / repne scasb / not cx / dec cx' over the far input string (+0x33..+0x3c) to size the allocation; MSC 7.00 expands strlen inline only with /Oi or #pragma intrinsic, the job profile is locked to /AL /G2 /Gs /Oelw /NTSIMANT_MODULE and the handoff lane forbids pragmas, so no ordinary candidate can match (same blocker as font_StringWidth-309d404150 and CheckMMWave-9d5b57c59b; no attempt spent). Recovered semantics for the eventual /Oi retest: a private near handle word (DGROUP 0x142, unnamed, zero-initialised) is unlocked and freed when set, then set to mem_Alloc((unsigned long)strlen(text), 1, \"decode\") (the literal lives at DGROUP 0x144 right after the handle); out = mem_Lock(handle); for each byte c of text until NUL: out[i] = (c << 4) ^ (((c << 4) ^ (c >> 4)) & 0xf) computed in AL/DL/BL with the far input walked through DS:BX+SI and the output through ES:BX+SI; out[i] = 0; return out (DX:AX).",
-  "next_experiment": "Supervisor decision on a documented /Oi (intrinsic) profile variant for the string routines; then test the recorded semantics with the private handle and literal as adjacent private DGROUP contributions. Distinguishing observation: bytes f2 ae f7 d1 49 at +0x38."
+  "next_experiment": "Supervisor decision on a documented /Oi (intrinsic) profile variant for the string routines; then test the recorded semantics with the private handle and literal as adjacent private DGROUP contributions. Distinguishing observation: bytes f2 ae f7 d1 49 at +0x38.",
+  "root_cause": {
+    "category": "UNKNOWN",
+    "cause": "no comparable candidate (compile failed or unmeasured)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "OPTIMIZER_VARIANT_REQUIRED"
+  ]
 }

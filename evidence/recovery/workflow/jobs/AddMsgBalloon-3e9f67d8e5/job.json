@@ -1,21 +1,23 @@
 {
   "id": "AddMsgBalloon-3e9f67d8e5",
   "symbol": "_AddMsgBalloon",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T20:26:16.727731+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTANTEDIT_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-antedit-00f4-og",
+    "context": "antedit:00F4",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/OverlayTileSet-83853d3d3a.json"
+    ],
     "component": "antedit:00F4",
     "refuted_profiles": []
   },
@@ -366,11 +368,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "febd59e73fae40f5a1f4cd80a612c4cff2e54490d6fd127346641fc7e4c64953",
+      "report": "evidence/recovery/workflow/jobs/AddMsgBalloon-3e9f67d8e5/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
+  "root_cause": {
+    "category": "PROFILE_CONTEXT_RETEST",
+    "cause": "parked under /AL /G2 /Gs /Oelw /NTANTEDIT_MODULE, context profile is now og (/AL /G2 /Gs /Oeglw /NTANTEDIT_MODULE); fresh result: TRUE_SOURCE_SHAPE_MISMATCH: instruction shape, register allocation, branch layout, frame layout under the current profile (92/114 opcodes, 313/276 bytes)",
+    "profile": "og",
+    "stale_profile": true,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:10:41.241522+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
     "REGISTER_ALLOCATION"
   ],
-  "reason": "Target 19352-19628 (276 bytes). Fully recovered semantics: appends to the CurBalloonCnt/Pnts/Plane/Flags/Msgs parallel arrays (confirmed via assets/SIMANTW.SYM segment 9 PACK: CurBalloonCnt 0x9fd0, CurBalloonPnts 0x80d6 4-byte MapPoint stride, CurBalloonPlane 0x7d68 word, CurBalloonFlags 0x78be word, CurBalloonMsgs 0x7c24 4-byte far pointer), same tileWidth/tileHeight-scaled visibility shape as EggBalloons/FightBalloons/QueenBalloons/RestBalloons, style==10 vs tile-coordinate dual path. Best candidate (attempt02, current file): candidate_bytes==target_bytes==276, opcode_matches 88/100, 0 stack_local_differences, register_only_differences 3. Attempt01 (direct CurBalloonCnt access, no local pointer) reached 85/100 with wrong register usage (target pushes di+si and caches a far pointer p=&CurBalloonCnt at [bp-6]/[bp-4], reloaded via les/lds across mem-array-writing code; candidate kept everything in registers, never touching si). Attempt02 (explicit  reused throughout) matched the byte count exactly and improved to 88/100, but the compiler still declines to spill p to [bp-6]/[bp-4] the way target does (it finds an equally-sized alternative instead), so si stays unused. Attempt03 () forced spilling but overshot to 313 bytes / 92/114 opcodes (extra reloads). Attempt04 (explicit local  reused for all five array writes) regressed to 270 bytes / 86/100. Remaining differences in the best candidate (attempt02) are the same class already blocked on PreDrawSpider/ClearEditDeltaTables/win_EditChanged: si vs bx register choice for the CurBalloonPlane/Flags word-index shift, and recomputing (*p)*4 for CurBalloonMsgs instead of reusing a cached index the way target's [bp-8] slot does.",
-  "next_experiment": "Try the array-of-struct form (single struct CurBalloon { struct MapPoint pnt; int plane; int flags; char far *msg; } far CurBalloonList[6]; one combined index write) to see whether a single aggregate assignment reproduces the [bp-8]-cached *4 index and the si-based *2 shift target uses for the plane/flags half; keep build/grind/agentL3/AddMsgBalloon.c (attempt02 form, 88/100, exact byte count) as the base."
+  "parked_blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "parked_reason": "Target 19352-19628 (276 bytes). Fully recovered semantics: appends to the CurBalloonCnt/Pnts/Plane/Flags/Msgs parallel arrays (confirmed via assets/SIMANTW.SYM segment 9 PACK: CurBalloonCnt 0x9fd0, CurBalloonPnts 0x80d6 4-byte MapPoint stride, CurBalloonPlane 0x7d68 word, CurBalloonFlags 0x78be word, CurBalloonMsgs 0x7c24 4-byte far pointer), same tileWidth/tileHeight-scaled visibility shape as EggBalloons/FightBalloons/QueenBalloons/RestBalloons, style==10 vs tile-coordinate dual path. Best candidate (attempt02, current file): candidate_bytes==target_bytes==276, opcode_matches 88/100, 0 stack_local_differences, register_only_differences 3. Attempt01 (direct CurBalloonCnt access, no local pointer) reached 85/100 with wrong register usage (target pushes di+si and caches a far pointer p=&CurBalloonCnt at [bp-6]/[bp-4], reloaded via les/lds across mem-array-writing code; candidate kept everything in registers, never touching si). Attempt02 (explicit  reused throughout) matched the byte count exactly and improved to 88/100, but the compiler still declines to spill p to [bp-6]/[bp-4] the way target does (it finds an equally-sized alternative instead), so si stays unused. Attempt03 () forced spilling but overshot to 313 bytes / 92/114 opcodes (extra reloads). Attempt04 (explicit local  reused for all five array writes) regressed to 270 bytes / 86/100. Remaining differences in the best candidate (attempt02) are the same class already blocked on PreDrawSpider/ClearEditDeltaTables/win_EditChanged: si vs bx register choice for the CurBalloonPlane/Flags word-index shift, and recomputing (*p)*4 for CurBalloonMsgs instead of reusing a cached index the way target's [bp-8] slot does.",
+  "parked_next_experiment": "Try the array-of-struct form (single struct CurBalloon { struct MapPoint pnt; int plane; int flags; char far *msg; } far CurBalloonList[6]; one combined index write) to see whether a single aggregate assignment reproduces the [bp-8]-cached *4 index and the si-based *2 shift target uses for the plane/flags half; keep build/grind/agentL3/AddMsgBalloon.c (attempt02 form, 88/100, exact byte count) as the base.",
+  "budget_extensions": []
 }

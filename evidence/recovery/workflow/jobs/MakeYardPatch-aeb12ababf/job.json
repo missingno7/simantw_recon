@@ -334,5 +334,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate (attempt01, build/grind/agentW/MakeYardPatch.c) recovers full semantics at 98/160 opcodes matched: the TERRAINset-gated CurGndTileID=0x3e8 + OverlayTileSet(0,0x3e8) + full MapA[128][64] randomization via SRand16(), the unconditional AddRocks()/InitAntLions(SRand4()+1)/InitPillar() calls, and all four random-placement passes (20x 2x2 object at 0x20/0x21/0x22/0x23, 30x vertical pair with SRand1(2)-chosen tile, 100x single 0x28, 128x single 0x51, each gated on the target cells being < 0x18) land in the right order with the right constants and fixups (CurGndTileID at MAPSYM offset 34282, MapA reads/writes, all six external call targets). The remaining gap is the same register-allocation/dead-store family already exhausted on all eleven simone:16AE/simone:3120 siblings attempted so far, appearing repeatedly across this larger function: target 0x2c 'mov word ptr [bp-2], di' spills the outer fill-loop index across the SRand16() call even though it is never read back (bx is recomputed from the still-valid di register afterward, exactly like DigTileThemB's cnt and MakeNewHoleB's ringIndex), and the same pattern recurs at the other three counted-loop setups (0x14/0x1e/0x64/0x80 iteration counters land in different bp slots than the candidate's single reused slot). This is a single explained attempt; given the identical pattern's complete resistance to source rephrasing across ten prior functions in this session (up to seven explained revisions on one target), further single-function revisions were not attempted.",
-  "next_experiment": "Same as all eleven other simone:16AE/simone:3120 blocks: try tools/tu_assembly.py once MakeSink has a draft; whole-file /Oe global register allocation is the only untested lever for the recurring dead-store-across-call spill this project has now observed in every grinder-drafted function this session."
+  "next_experiment": "Same as all eleven other simone:16AE/simone:3120 blocks: try tools/tu_assembly.py once MakeSink has a draft; whole-file /Oe global register allocation is the only untested lever for the recurring dead-store-across-call spill this project has now observed in every grinder-drafted function this session.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (98/160 opcodes, 439/401 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -348,5 +348,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Best candidate build/grind/agentV3/_DoMenuEntry.c reaches 137/183 opcodes matched (up from 134 after fixing ProcMenu to a far pointer parameter matching the observed push-ss/push-ax pair) with zero register-only differences; see build/grind/agentV3/_DoMenuEntry.test2.json. The dominant remaining defect is expression shape: the fileWaitFlag dispatch (values 4,5,6,8 handled, others fall through) compiles in the original as a sequential decrement chain (sub ax,4; je; dec ax; jne; dec ax; jne; dec ax; dec ax; jne -- i.e. cases 4,5,6,8 each one dec apart, case 7 silently absent), but a C switch(fileWaitFlag){case 4: case 5: case 6: case 8: default:} on this compiler instead lowers the 6->8 gap as a direct 'sub ax,3' rather than two chained 'dec ax', producing a different branch-target/opcode shape (16 branch_target and 31 immediate_or_binding differences, first structural difference at offset 77). Secondary open questions: two internal near-calls at original offsets 130 and 149 (targets computed as huge wrap-around near offsets, no MAPSYM name) taking MePlane/YardMode as their single word argument -- currently guessed as SetMePlane/SetYardMode by analogy, unverified; and ProcMenu's own struct layout (the bp-0x10..bp-2 action buffer) is inferred only from the one bp-4=entry write observed in this function, not from ProcMenu's own recovered source (not yet admitted).",
-  "next_experiment": "Replace the switch with an explicit nested if-chain that forces 'fileWaitFlag - 4' then repeated decrement tests (or use recovery_workflow template equivalence-class generators) to reproduce the exact decrement-chain lowering instead of a combined subtraction; independently confirm the two unnamed near-call targets (offsets 130, 149) against a MAPSYM/entry-point census before trusting the SetMePlane/SetYardMode guess."
+  "next_experiment": "Replace the switch with an explicit nested if-chain that forces 'fileWaitFlag - 4' then repeated decrement tests (or use recovery_workflow template equivalence-class generators) to reproduce the exact decrement-chain lowering instead of a combined subtraction; independently confirm the two unnamed near-call targets (offsets 130, 149) against a MAPSYM/entry-point census before trusting the SetMePlane/SetYardMode guess.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout under the current profile (137/183 opcodes, 436/503 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

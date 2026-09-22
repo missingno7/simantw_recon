@@ -359,5 +359,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate evidence/recovery/workflow/jobs/ch_LookUpHandle-c1f11f3c62/attempt03/candidate0000.c (164 vs 163 bytes): mem_Lock, the count, the entry pointer at +4, the key array address formed as (unsigned)((count+1)*4) + (long)t (reproducing the sub dx,dx / add / adc carry into the segment), the DS-based entry walk, the -1 skip, the key compare with the key array cached in ES, the two result stores, mem_Unlock and both returns all match. The register roles of the two pointers are swapped: the original keeps the entry pointer as the register variable (DI, then DS:SI through the lds trick) and the key array base as a scratch ES:BX induction, while MSC7 makes the key base the register variable (ES:DI) and homes the entry pointer in the frame (DS:BX). Huge/far table pointer, four address forms, walked/indexed loops and an inline key expression (attempts 01-04, 16 candidates) do not flip the roles.",
-  "next_experiment": "Keep the addend-first (unsigned)offset + (long)pointer form (it is the carry idiom noted for ch_DeleteEntry/ch_RemoveEntry). Test forms that lower the key base's register weight without recomputation (for example computing it into a struct-wrapped or volatile-free memory local, or reading keys through an index off the entry pointer) and observe 'mov di,cx' at +0x1f followed by 'lds si,[bp-4]' at +0x3d."
+  "next_experiment": "Keep the addend-first (unsigned)offset + (long)pointer form (it is the carry idiom noted for ch_DeleteEntry/ch_RemoveEntry). Test forms that lower the key base's register weight without recomputation (for example computing it into a struct-wrapped or volatile-free memory local, or reading keys through an index off the entry pointer) and observe 'mov di,cx' at +0x1f followed by 'lds si,[bp-4]' at +0x3d.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (68/70 opcodes, 167/163 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

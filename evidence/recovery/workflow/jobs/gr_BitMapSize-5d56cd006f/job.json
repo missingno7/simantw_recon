@@ -373,5 +373,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Semantics established: db_LoadObject(object, 2, 1) gate (1x1 size and 0 on failure), mem_Lock, packed header (-1 marker) unpacked via UnpackInit(data+4, length)/Unpack(&header, 12) with the point at header+8 copied to the caller, else width/height words at +8/+10, mem_Unlock, db_ReleaseObject(object, 2), return 1. Best candidate evidence/recovery/workflow/jobs/gr_BitMapSize-5d56cd006f/attempt02/candidate0002.c (187 vs 185 bytes, 67/75 opcodes; every call, branch and the packed/unpacked stores align, with the caller pointer copied to a local so DI survives the unpack calls). The single remaining difference is the failure store: the original loads the caller pointer with 'les bx,[bp+6]' before 'mov ax,1' and the y/x stores (+0x1c), whereas MSC7 /Oelw loads BX then ES separately for the chained assignment; long/0x10001 stores give the LES but immediate stores, int-pointer, comma, volatile, typed-constant and local-copy forms give BX/ES loads (attempts 02-05, 33 candidates).",
-  "next_experiment": "Find a verified function whose chained constant store through a far pointer parameter compiles to 'les bx,[bp+N] / mov ax,imm / stores' and reuse its declaration and expression shape (perhaps a struct assignment from a register-held struct or a pascal-declared pointer type); do not repeat the store forms above. Distinguishing observation: LES at +0x1c followed by 'mov ax,1' and 'xor ax,ax' at +0x29."
+  "next_experiment": "Find a verified function whose chained constant store through a far pointer parameter compiles to 'les bx,[bp+N] / mov ax,imm / stores' and reuse its declaration and expression shape (perhaps a struct assignment from a register-held struct or a pascal-declared pointer type); do not repeat the store forms above. Distinguishing observation: LES at +0x1c followed by 'mov ax,1' and 'xor ax,ax' at +0x29.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout under the current profile (67/75 opcodes, 187/185 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

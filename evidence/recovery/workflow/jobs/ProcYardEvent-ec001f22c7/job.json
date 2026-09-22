@@ -390,5 +390,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Body/CFG and all case logic match (43-byte prefix and every subsequent instruction align modulo the expected isolated-compile CONST/selector fixups once the YardMode toggle if/else was corrected to the target's actual jge/fallthrough order in attempt03). The sole remaining divergence is the very first case (msg 0x1902, YardArea(event)): target pushes the far-pointer argument as 'mov ax,es; push ax; push si; nop; push cs; call near' (9 bytes, same-segment call translated by LINK per the switch-jump-table/link-far-call-translation rules), while every candidate (plain call, void-far-pointer-typed call, and an explicit local far-pointer copy before the call) instead compiles to 'push es; push si; lcall' (7 bytes, a genuine far call, still resolving to the correct segment 3 offset 49306 target but the wrong instruction shape). The resulting 2-byte shift cascades into every later branch_target/dw table offset for the rest of the 444-byte body, even though the underlying logic (SetYardMode toggle/2/3, the CurGameType==2 prompt branch with WindPromptStrs[5/6/15] and FlyAwayB, LayDownQueenMode set/clear, the win_MakeObjSelected/PlaceQueenInYard/Draw_SimYard/pascal UpdateWindow/DrawYardData select-redraw-deselect case, and DoWinHelp(0x1906)) is otherwise correct. Best candidate: build/grind/agentM/ProcYardEvent.c (evidence/recovery/workflow/jobs/ProcYardEvent-ec001f22c7/attempt05/candidate0000.diff.txt, attempt03-05 all show literal_equal 43/440 with the identical single instruction-shape divergence at contribution offset 0x42-0x48).",
-  "next_experiment": "Determine why MSC7 baseline emits 'mov ax,es;push ax' for this specific far-struct-pointer argument (as it does for the accepted ProcEditEvent/processEdit(event) call) instead of the 'push es' shortcut this isolated compile keeps choosing; try compiling YardArea's call as the LAST statement in a case that already uses ax for something else immediately beforehand, or check whether antedit:A51E actually needs a non-baseline profile (compiler-profile-is-unit-level rule) by comparing against other admitted A51E-range members once any exist."
+  "next_experiment": "Determine why MSC7 baseline emits 'mov ax,es;push ax' for this specific far-struct-pointer argument (as it does for the accepted ProcEditEvent/processEdit(event) call) instead of the 'push es' shortcut this isolated compile keeps choosing; try compiling YardArea's call as the LAST statement in a case that already uses ax for something else immediately beforehand, or check whether antedit:A51E actually needs a non-baseline profile (compiler-profile-is-unit-level rule) by comparing against other admitted A51E-range members once any exist.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (146/160 opcodes, 444/432 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

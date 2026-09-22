@@ -1,42 +1,20 @@
 {
   "symbol": "_EatFoodB",
-  "source": "build/grind/efb4_template.c",
+  "source": "evidence/recovery/workflow/jobs/EatFoodB-12979b5e79/profile-candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
-  "max_candidates": 96,
-  "axes": [
-    {
-      "name": "map",
-      "marker": "@@MAPDECL@@",
-      "values": [
-        "extern unsigned char near MapB[][64];",
-        "extern unsigned char near MapB[];"
-      ],
-      "rationale": "2-D versus 1-D declaration changes the address expression tree the optimizer sees"
-    },
-    {
-      "name": "body",
-      "marker": "@@BODY@@",
-      "values": [
-        "    if (MapB[x][y] == 0x10)\n        MapB[x][y] = SRand8();\n    else\n        MapB[x][y]--;\n",
-        "    unsigned char near *cell;\n\n    cell = &MapB[x][y];\n    if (*cell == 0x10)\n        *cell = SRand8();\n    else\n        (*cell)--;\n",
-        "    unsigned char near *cell;\n\n    cell = MapB[x] + y;\n    if (*cell == 0x10)\n        *cell = SRand8();\n    else\n        (*cell)--;\n",
-        "    if (*(MapB + x * 64 + y) == 0x10)\n        *(MapB + x * 64 + y) = SRand8();\n    else\n        (*(MapB + x * 64 + y))--;\n",
-        "    if (MapB[(x << 6) + y] == 0x10)\n        MapB[(x << 6) + y] = SRand8();\n    else\n        MapB[(x << 6) + y]--;\n",
-        "    if (MapB[y + x * 64] == 0x10)\n        MapB[y + x * 64] = SRand8();\n    else\n        MapB[y + x * 64]--;\n"
-      ],
-      "rationale": "Address spelling changes CSE and register choice; 2-D bodies only compile with the 2-D declaration"
-    }
-  ],
+  "max_candidates": 1,
+  "axes": [],
   "semantic_summary": "Batch: 2-D MapB[x][y] (direct, &MapB[x][y], MapB[x]+y) and 1-D address spellings (*(MapB+...), x<<6, y+x*64) to trigger the CSE temp for the cell address",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "layout/compiler-profiles.json",
+    "asg-simant1-2d4e-og"
   ],
   "publics": [
     "_EatFoodB"

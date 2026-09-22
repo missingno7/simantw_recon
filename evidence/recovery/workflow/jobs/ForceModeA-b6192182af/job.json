@@ -406,5 +406,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Body is close but not exact after 6 attempts (best: 61/74 opcodes matching, bytes 188-192 vs target 210, 6 register-only diffs, 27-28 fixup mismatches). Two persistent, source-rewrite-resistant codegen differences, tried with both array Dx8[] (RecruitRed/UnRecruit style, evidence/topology/... src/recovered/wf_tu_simtwo_0000_Recruit_3-04bd7dd52e.c) and scalar &Dx8 (GetAntIndex style) declarations, and both compound (+=/-=) and explicit (x=x+N) source forms: (1) 'AlistT(index) += 8' / '-= 8' / '-= 0x18' always compiles to a single 'add/sub <resolved fixup Dx8+CONST>,N' absolute-address instruction instead of the target's 'add/sub byte ptr es:[si+CONST],N' SI-indexed instruction -- the compiler drops si from this specific RMW addressing regardless of macro form. (2) the MapA clamp: a near-pointer local (p = &MapA[life*64+column+0x28e8]) reproduces the target's raw 'add bx,0x28e8' immediate and 'cmp/mov byte ptr [bx],0x48' bare-register form for the compare/store but the compiler allocates the pointer to DI (needing an extra push di / mov bx,di, giving 'enter 2,0' vs 'push bp;mov bp,sp;push di' framing) instead of keeping it in bx via the stack slot the target uses ([bp-2]); an int-typed cell index instead collapses MapA[cell] into a MapA-relative fixup at the cmp/mov instead of the target's plain [bx] register form. Best draft kept at build/grind/agentN/ForceModeA.c (array Dx8[] + near-pointer p, matching evidence/recovery/workflow/jobs/ForceModeA-b6192182af/attempt03 shape). Full diagnostics: evidence/recovery/workflow/jobs/ForceModeA-b6192182af/attempt0{1,2,3}/candidate0000.diff.txt.",
-  "next_experiment": "Try forcing the pointer local into bx explicitly (e.g. an inline near-pointer expression consumed immediately without a separate declared local, or reordering case-1/3/5 bodies so bx is already the only free near-pointer-sized register when p's live range starts) and, separately, probe whether declaring index as a local copy (int i = index;) before the AlistT compound adjustment restores the es:[si+CONST] RMW form instead of the absolute Dx8-fixup form."
+  "next_experiment": "Try forcing the pointer local into bx explicitly (e.g. an inline near-pointer expression consumed immediately without a separate declared local, or reordering case-1/3/5 bodies so bx is already the only free near-pointer-sized register when p's live range starts) and, separately, probe whether declaring index as a local copy (int i = index;) before the AlistT compound adjustment restores the es:[si+CONST] RMW form instead of the absolute Dx8-fixup form.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (61/74 opcodes, 197/210 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

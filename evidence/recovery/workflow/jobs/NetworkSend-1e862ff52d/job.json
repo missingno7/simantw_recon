@@ -344,5 +344,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Best candidate build/grind/agentV3/_NetworkSend.c (test2, build/grind/agentV3/_NetworkSend.test2.json) reaches 138/183 opcodes matched with 1 register-only difference, after discovering the four Nb* wrappers use the compiler's default C (caller-cleans, right-to-left push) convention rather than pascal -- confirmed by the 'add sp,N' cleanup after every call -- and reproducing the exact target push order by declaring each wrapper's parameters in the reverse of the observed push sequence (test1 without this fix matched only 39/183). The remaining defect is the same expression-shape family as DoMenuEntry's blocker: the received result-code dispatch (result<0 skip; <=1 four-chunk case; ==2 two-chunk case; ==3 two-chunk case; default skip) compiles in the target as 'mov ax,[bp-8]; or ax,ax; jge' followed by a register-resident decrement chain (dec ax;jle / dec ax;jne / dec ax;dec ax;jne, including an always-true 'jno' left over from the 'or ax,ax' flags), but a natural nested if(result>=0){if(result<=1){}else if(result==2){}else if(result==3){}} lowers to direct 'cmp word ptr[bp-6],N' memory comparisons instead, giving 6 branch_target and 33 immediate_or_binding differences with first structural difference at offset 61.",
-  "next_experiment": "Force the decrement-chain shape by reading 'result' into an explicit register-preferred local once (e.g. 'int v = result; if (v >= 0) { if (v <= 1) ... }') and keep every subsequent comparison against that SAME local rather than re-deriving from the far/near buffer index; if MSC still folds to cmp-against-memory, try restructuring as literal sequential 'if (--v <= 0)'-shaped tests mirroring DoMenuEntry's blocker to see if the same equivalence-class fix applies to both."
+  "next_experiment": "Force the decrement-chain shape by reading 'result' into an explicit register-preferred local once (e.g. 'int v = result; if (v >= 0) { if (v <= 1) ... }') and keep every subsequent comparison against that SAME local rather than re-deriving from the far/near buffer index; if MSC still folds to cmp-against-memory, try restructuring as literal sequential 'if (--v <= 0)'-shaped tests mirroring DoMenuEntry's blocker to see if the same equivalence-class fix applies to both.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (138/183 opcodes, 431/451 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

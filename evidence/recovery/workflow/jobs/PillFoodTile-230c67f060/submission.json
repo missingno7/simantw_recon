@@ -1,50 +1,20 @@
 {
   "symbol": "_PillFoodTile",
-  "source": "build/grind/pft5_template.c",
+  "source": "evidence/recovery/workflow/jobs/PillFoodTile-230c67f060/profile-candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
-  "max_candidates": 96,
-  "axes": [
-    {
-      "name": "head",
-      "marker": "@@HEAD@@",
-      "values": [
-        "void far PillFoodTile(int x, int y)",
-        "void far PillFoodTile(x, y)\nint y;\nint x;",
-        "void far PillFoodTile(register int x, register int y)"
-      ],
-      "rationale": "Parameter declaration style and K&R declaration order may change MSC SI/DI assignment for x and y"
-    },
-    {
-      "name": "tiledecl",
-      "marker": "@@TILEDECL@@",
-      "values": [
-        "    unsigned char near *tile;\n",
-        "    register unsigned char near *tile;\n"
-      ],
-      "rationale": "A register-declared pointer that cannot get SI/DI may fall back to a stack home, matching the observed [bp-2] store"
-    },
-    {
-      "name": "store",
-      "marker": "@@STORE@@",
-      "values": [
-        "            n %= 6;\n            MapA[x * 64 + y] = PillarMap[n][0];",
-        "            n = n % 6;\n            MapA[x * 64 + y] = PillarMap[n][0];",
-        "            MapA[x * 64 + y] = PillarMap[n % 6][0];",
-        "            {\n                int k;\n                k = n % 6;\n                MapA[x * 64 + y] = PillarMap[k][0];\n            }"
-      ],
-      "rationale": "A separate modulo statement evaluates the remainder before the array access, matching the selector load between idiv and the index shift"
-    }
-  ],
+  "max_candidates": 1,
+  "axes": [],
   "semantic_summary": "Batch: modulo as separate statement (n%=6 / n=n%6 / block k) vs inline, x register storage class on tile pointer, x parameter declaration style/order (ANSI, K&R y-then-x, register)",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "layout/compiler-profiles.json",
+    "asg-simtwo-4cdc-og"
   ],
   "publics": [
     "_PillFoodTile"

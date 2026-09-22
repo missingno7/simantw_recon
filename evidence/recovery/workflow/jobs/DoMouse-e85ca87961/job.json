@@ -334,5 +334,18 @@
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "First candidate build/grind/agentK/_DoMouse.c (attempt t1): a 1077-byte WM_LBUTTONDOWN/WM_MOUSEMOVE/WM_LBUTTONUP-style router (params window,message,keyFlags,x,y at bp+6/8/a/c/e). Confirmed structure from full manual disassembly: top-window guard against rootWnd/MyGetTopWindow/ribbonBarWnd; GetProp(window,farptr@DS:0x240)-tagged window close on flagsLo bit0; win_FindObject hit test; on message==0x201 a group/object selection toggle block (win_SetGroupSelectedObj / win_SetObjSelectedState) with three WinPrintf(farptr,...) debug traces at DS:0x246/0x261/0x282 bracketing a WaitHundredths(5); a lastProxObj-vs-object xor/win_SetProxItem resync; then a genuine 6-entry cs: jump table (offsets-0x201..+5, i.e. up to WM_LBUTTONDBLCLK-style variants) each running its OWN near-identical ~90-byte block of five GetKeyState/GetAsyncKeyState probes (VK 0x14/0x91/0x90/0x10/0x11/0x2d/0x2e) combined through repeated cmp/cmc/sbb boolean-encode idioms into a style word, ORed with a message-specific bit and stored into the global byte mouse_state (DS:0xcc70); finally an object-type exclusion (type 5/0x11/0xd) and a 16-byte (8-word) event record built via rep movsw and forwarded to near-call _DoEvent. My candidate only modeled 3 of the 6 jump-table cases as an if/else chain and returned early instead of reproducing the per-message key-state block for MOUSEMOVE/LBUTTONUP, so it compiled to 691 bytes versus the target's 1077 (187/394 opcodes matching, first structural difference at offset12 already, candidate missing roughly 400 bytes of duplicated key-state/style computation). Beyond the size gap, the function embeds at least four near-DS string/atom constants with no MAPSYM name and no recovered sibling source for their content: the GetProp atom at DS:0x240 and three WinPrintf format strings at DS:0x246/0x261/0x282, so even a byte-perfect control-flow match cannot close on those literal immediates without their real text. The DoEvent struct's field layout (fields at struct offsets 0,4 and 14 of the 16-byte record are never written in this function) is also only partly evidenced.",
-  "next_experiment": "Model all 6 jump-table cases explicitly (not an if/else collapse) so each duplicates its own GetKeyState probe block exactly as the target repeats it three times; separately, find or hypothesize with evidence the GetProp atom name at DS:0x240 and the three WinPrintf format strings at DS:0x246/0x261/0x282 (likely short ASCIZ debug strings for the group-select toggle), and confirm the DoEvent record's still-unaccounted struct offsets 0, 4 and 14 against another admitted caller of _DoEvent if one exists."
+  "next_experiment": "Model all 6 jump-table cases explicitly (not an if/else collapse) so each duplicates its own GetKeyState probe block exactly as the target repeats it three times; separately, find or hypothesize with evidence the GetProp atom name at DS:0x240 and the three WinPrintf format strings at DS:0x246/0x261/0x282 (likely short ASCIZ debug strings for the group-select toggle), and confirm the DoEvent record's still-unaccounted struct offsets 0, 4 and 14 against another admitted caller of _DoEvent if one exists.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (187/394 opcodes, 691/1077 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ]
 }

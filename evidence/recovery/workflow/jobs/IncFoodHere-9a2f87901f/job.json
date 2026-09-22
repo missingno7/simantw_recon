@@ -366,5 +366,18 @@
     "TRANSLATION_UNIT_CONTEXT"
   ],
   "reason": "Best candidate (attempt03, build/grind/agentB/_IncFoodHere.c): CFG and most operands match once the CONTROL-held/not-held branches were correctly split so that food is decremented (match_position array-indexed reads at bytes 0x9e84/0x9ea4/0x72de, i.e. match_position[0x4f42]/[0x4f52]/[0x394f]) only on the held path and incremented (through FoodA/FoodB/FoodR, each its own int far scalar) only on the not-held path -- 77/256 literal bytes, 6/26 fixups. Two remaining, evidence-backed mismatches, both isolated-compilation artifacts rather than semantic errors: (1) the target inserts 'push ss; pop ds' plus an explicit ss: segment-override read of MapPlane right before the food-decrement section (offsets 95-105), which ordinary DS-relative C does not reproduce -- this only appears once match_position's own segment has already been loaded via 'mov ax,SEG match_position; mov es,ax' earlier in the same function, suggesting DS tracking here depends on unit-level compilation state, not this function's body; (2) the final FoodA/FoodB/FoodR increments, each through its own named DGROUP selector slot (0xc27e/0xc280/0xc282 in the target) compile in isolation to a synthesized CONST-segment fixup instead of those three real slots -- the identical symptom independently blocked in ExpIncSmell (PherMapBN/BT/RN/RT/A) and ExpKillAnts (Dx8/match_position combined with ExpSubStates), all in this same unit context antedit:7022, while match_position's own array-indexed accesses (used for the read/decrement side of this very function) resolve correctly. A cosmetic register-order swap (cmp si,di vs cmp di,si around the two tile/threshold comparisons) persisted across both phrasings tried and did not affect the CFG shape or jump targets.",
-  "next_experiment": "Run IncFoodHere through the unit-assembly lane (tools/tu_assembly.py propose/build/test) for antedit:7022 together with DropWall, ExpAddFood, ExpIncSmell and ExpKillAnts so its FoodA/FoodB/FoodR selector slots and the ss:-prefixed MapPlane read resolve against the pool and DS state already established by the earlier unit members instead of a fresh isolated CONST fixup."
+  "next_experiment": "Run IncFoodHere through the unit-assembly lane (tools/tu_assembly.py propose/build/test) for antedit:7022 together with DropWall, ExpAddFood, ExpIncSmell and ExpKillAnts so its FoodA/FoodB/FoodR selector slots and the ss:-prefixed MapPlane read resolve against the pool and DS state already established by the earlier unit members instead of a fresh isolated CONST fixup.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (86/102 opcodes, 273/287 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "TRANSLATION_UNIT_CONTEXT"
+  ]
 }

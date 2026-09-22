@@ -358,5 +358,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate build/grind/agentU3/DeleteIndex.c (attempt01, evidence/recovery/workflow/jobs/DeleteIndex-21dae8d71d/attempt01/results.json): 69/104 opcodes aligned, score 0.514423. Semantics fully understood: FindIndex(recIndex,b,c) existence check (Punt if not found), then IndexArray[recIndex] (124-byte stride record; far data pointer at +0, count word at +4, evidence es:[bx+0x7458]/[bx+0x745a]/[bx+0x745c]) loses the entry at lastTop+1 from its dynamic 8-byte-entry array via decrement-count/mem_malloc(size,tag)/two byte-copies (0..lastTop inclusive, then lastTop+2..end)/mem_free(old). mem_malloc's (size,tag) parameter order and far-pointer-tag argument are confirmed by this call site's own push/cleanup evidence (3 words pushed, add sp,6), distinct from the simpler 1-arg mem_malloc.c wrapper (cross-TU prototype identity not proven). The remaining gap: target computes bx=recIndex*0x7c (the imul) and reuses that cached word ([bp-0xc]) across the mem_malloc call for a SECOND field read afterward, whereas plain repeated  array indexing recompiles the imul fresh at the second use instead of reusing a frame-resident cache. Tried and regressed the match further (scores 0.458 and 0.481, both worse than the plain baseline): caching the record via an explicit  far pointer (materializes 4 bytes too early, right after the FindIndex check); caching only the byte offset via  with manual (char far *)IndexArray+off+N casts (same early-hoist problem -- the compiler always hoists this computation immediately after the branch regardless of which statement position it is written at, unlike the target which computes it only after the mem_malloc tag string push).",
-  "next_experiment": "Try writing the cached offset assignment as part of the SAME expression/statement as the tag-string push or the mem_malloc call itself (matching that the target's imul appears textually after 'push ds;push tag' in the instruction stream), e.g. a comma expression or nesting the offset computation inside the mem_malloc call's own size argument so the optimizer cannot hoist it past the unrelated Punt/tag-push code."
+  "next_experiment": "Try writing the cached offset assignment as part of the SAME expression/statement as the tag-string push or the mem_malloc call itself (matching that the target's imul appears textually after 'push ds;push tag' in the instruction stream), e.g. a comma expression or nesting the offset computation inside the mem_malloc call's own size argument so the optimizer cannot hoist it past the unrelated Punt/tag-push code.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (72/106 opcodes, 283/245 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

@@ -364,5 +364,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Candidate (build/grind/agentR/_ClearMyLife.c, attempt02/03) matches the target closely: 151/190 opcodes, byte-identical from offset 0x04 through 0xbd (the entire current-cell clear: bounds check, IsValidLocation, LifeA/B/R switch-read with 0-folds-to--1, SetLife(...,0) on stale 0xff, ZapEuMapAt), including all main fixups (LifeA/B/R, SetLife, ZapEuMapAt, IsValidLocation). Two remaining gaps: (1) the prologue -- target uses 'enter 4,0' (a real 2-word frame) where the candidate compiles to 'push bp; mov bp,sp' (0-word frame), implying the target's ok/val locals really do need frame slots somewhere the candidate's register allocation avoids; (2) the queen tail-cell offset 'x += Dx8[dir^4]; y += Dy8[dir^4]' compiles differently from the target's based/far ES-selector dereference (target: load selector into ES, es:[bx] byte read at offset 0xdf-0xea) -- the candidate instead routes through a CONST-segment fixup with a different instruction shape (see evidence/recovery/workflow/jobs/ClearMyLife-02b01183e5/attempt02/candidate0000.diff.txt around offset 0xdf), even though the identical 'extern char far Dx8[]/Dy8[]' declaration and 'x + Dx8[dir^4]' expression is already admitted verbatim in the accepted wf_MoveMyLife-f66a8c0d06.c. Compound += vs x=x+... made no difference (attempt03 produced byte-identical output to attempt02).",
-  "next_experiment": "Compare this function's full unit_context/compiler_profile against MoveMyLife's to see whether the difference is really a Dx8/Dy8 selector-pool ordering issue (first-reference order across the unit) rather than expression shape -- e.g. try referencing Dy8 before Dx8, or referencing dir through a temporary local first; also try declaring two explicit int locals (savedX, savedY) instead of reusing the x,y parameters in place, since the target's 'enter 4,0' suggests real frame slots are used somewhere in this half that isolated compilation is not reproducing without the unit's frame layout."
+  "next_experiment": "Compare this function's full unit_context/compiler_profile against MoveMyLife's to see whether the difference is really a Dx8/Dy8 selector-pool ordering issue (first-reference order across the unit) rather than expression shape -- e.g. try referencing Dy8 before Dx8, or referencing dir through a temporary local first; also try declaring two explicit int locals (savedX, savedY) instead of reusing the x,y parameters in place, since the target's 'enter 4,0' suggests real frame slots are used somewhere in this half that isolated compilation is not reproducing without the unit's frame layout.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (151/190 opcodes, 467/465 bytes)",
+    "profile": "og",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

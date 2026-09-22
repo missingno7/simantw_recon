@@ -362,5 +362,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Best candidate (attempt02/attempt04, preserved in build/grind/agentO/YellowCommand.c): 195/227 opcodes aligned (86%), target/candidate bytes 625/606, literal_equal 26/598. The entire dense switch(cmd) 0..12 dispatch (jump table, all 13 case bodies including WinHelp's mode/MeType-dependent 0x0001/2/30100L long data matching the admitted wf_YellowHelp twin exactly, myBeginSong+Recruit/UnRecruit for 1-5, StartLifeTransfer for 6, the win_SetObjSelectedState/ELayerMode/InvalEuMap edit-layer toggle for 7, TryMyDropOrLift for 8, the Dx8/Dy8 opposite-direction YellowBirth spawn for 9, TargetAnt for 10, and the two match_position[0x7d60] toggle-with-distinct-sound cases 11/12) matches the target instruction-for-instruction from around target offset 350 onward, with only the expected CONST-selector-pool/branch-target cosmetics the brief marks as non-blocking. The sole real divergence is at the very top: target reserves an enter 0xe (14-byte) frame and explicitly stores MeMode into a stack slot (mov word ptr[bp-6],ax) that case 0 and case 7 both reload from memory (cmp word ptr[bp-6],...), while every source shape tried here (plain int local, function-level declaration order, and volatile int) keeps the value in a register across the many intervening far calls and only reserves a 6-byte (enter 6) frame -- a register-vs-stack allocation choice, not a semantic error. Three explained variants: (1) plain 'int mode = MeMode;' -- 193/227, enter 6, mode kept in cx/si; (2) 'volatile int mode = MeMode;' -- best, 195/227, still enter 6 (volatile reduced live-range assumptions but did not force the stack slot); (3) hoisting all case-scoped locals (flag, dir, x, y, data) to function scope alongside mode -- byte-identical to (1), confirming (as with ProcModeEvent/ProcCasteEvent and YellowCommandKey in this same session) that MSC7 /Oelw's frame layout here is insensitive to C declaration scope/order for this unit.",
-  "next_experiment": "Assemble the simant:6A38 unit (processEdit, DoLaserFire, processSpider, ResetYellowVars, SetGoalsY, YellowBirth, YellowDeath, SpecialXfer, LionDialog, YellowDialog, DoTroph, SetAlarmDropState, YellowCommandKey, YellowCommand, YellowHelp) via tools/tu_assembly.py to check whether whole-unit register-pressure context (rather than an isolated single-function compile) changes whether MeMode is spilled to the stack; alternatively probe whether MeMode is read through a different construct that defeats the register keep (e.g. re-reading the far global directly at each of the two use sites instead of caching it in any local, mirroring the '&msg->x re-read' fix that worked for ProcModeEvent's mouse loop)."
+  "next_experiment": "Assemble the simant:6A38 unit (processEdit, DoLaserFire, processSpider, ResetYellowVars, SetGoalsY, YellowBirth, YellowDeath, SpecialXfer, LionDialog, YellowDialog, DoTroph, SetAlarmDropState, YellowCommandKey, YellowCommand, YellowHelp) via tools/tu_assembly.py to check whether whole-unit register-pressure context (rather than an isolated single-function compile) changes whether MeMode is spilled to the stack; alternatively probe whether MeMode is read through a different construct that defeats the register keep (e.g. re-reading the far global directly at each of the two use sites instead of caching it in any local, mirroring the '&msg->x re-read' fix that worked for ProcModeEvent's mouse loop).",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout, frame layout under the current profile (195/227 opcodes, 606/625 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

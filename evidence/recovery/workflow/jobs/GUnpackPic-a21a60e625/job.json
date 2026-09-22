@@ -401,5 +401,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics established (Sonnet grinder, 7 attempts, best evidence/recovery/workflow/jobs/GUnpackPic-a21a60e625/attempt06/candidate0000.c, 173 vs 186 bytes, 51/79 opcodes): lock the packed block, mem_Alloc(block->size, 1, \"dst\") stored through the far out pointer and locked, UnpackInit(block+4, block->size), Unpack(dest, 12), Unpack(buffer, block->size - 16) reported with WinPrintf(\"GUnpackPic(%u)(%u)\\n\", size, result), unlock both; the two private strings are at DGROUP 0xbac4/0xbac8. The original copies the out-pointer offset into DI at entry ('mov di,[bp+0xa]' at +0x6) and reloads only ES from [bp+0xc] at each use, and homes the block pointer at [bp-8]/[bp-6]; /Oelw never hoists the far pointer offset (parameter-to-local copies in both orders, single-dereference block, cached size/pointer locals all give the same 51/79).",
-  "next_experiment": "Same far-pointer-offset-in-DI family as hanim_HideObject/gr_BitMapSize; test whether the out pointer is first used (stored through) before mem_Lock(handle) in the original ordering, or whether the block pointer is declared as a struct pointer whose size field is read through a second far pointer local. Distinguishing observation: 'mov di,[bp+0xa]' at +0x6 with 'mov es,[bp+0xc]' at +0x33 and +0xa8."
+  "next_experiment": "Same far-pointer-offset-in-DI family as hanim_HideObject/gr_BitMapSize; test whether the out pointer is first used (stored through) before mem_Lock(handle) in the original ordering, or whether the block pointer is declared as a struct pointer whose size field is read through a second far pointer local. Distinguishing observation: 'mov di,[bp+0xa]' at +0x6 with 'mov es,[bp+0xc]' at +0x33 and +0xa8.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, frame layout under the current profile (51/79 opcodes, 175/186 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

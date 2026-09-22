@@ -352,5 +352,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Two independent candidate forms (direct chained far-struct expressions, and explicit int locals ySize/xSize/top/left for the intermediate products) both compile to the identical 216-byte body vs the original's 155-byte block3 (extent 59726-59881): MSC7 reloads ES to the MapPnt selector slot and re-reads a far word before the bottom/right stores instead of reusing the cached CX value the original keeps live across 'mov cx,ax'(+0xc)/'mov ax,cx'(+0x26) (and the matching left/right pair), so the strict comparison fails at UNSUPPORTED_COMPARISON/'contribution outside original' before any opcode diff is even produced. This is the exact shared code block already ESCALATED for the neighbour _DrawMiniMapCursor (job DrawMiniMapCursor-684ba15122, cause EXPRESSION_SHAPE): its supervisor independently tried direct expressions, operand order, chained stores and int locals (11 candidates, attempts 01-02) and found the same far-reload-instead-of-cache behaviour, and separately noted the observed CONST selector slots (0xc22e/0xc224/0xc232/0xc234/0xc230/0xc236) are not in this function's own first-use order, so even an exact isolated body would still escalate as DATA_LAYOUT (the slot order was fixed earlier in the antedit:E100 unit by MapAreaEvent/Mini_MakeTable/OpenMiniMapWin, which run before DrawMiniMapCursor/ToggleMiniMapCursor in the TU). Preserving both candidates; not spending further isolated-compile budget on this known copy-propagation behaviour.",
-  "next_experiment": "Assemble the antedit:E100 unit (MapAreaEvent, Mini_MakeTable, OpenMiniMapWin, DrawMiniMapCursor, EraseMiniMapCursor, ToggleMiniMapCursor in that public order) with tools/tu_assembly.py so the real cross-function CONST selector-pool order and any resulting register-allocation context are fixed by whole-unit compilation instead of an isolated single-function compile."
+  "next_experiment": "Assemble the antedit:E100 unit (MapAreaEvent, Mini_MakeTable, OpenMiniMapWin, DrawMiniMapCursor, EraseMiniMapCursor, ToggleMiniMapCursor in that public order) with tools/tu_assembly.py so the real cross-function CONST selector-pool order and any resulting register-allocation context are fixed by whole-unit compilation instead of an isolated single-function compile.",
+  "root_cause": {
+    "category": "UNKNOWN",
+    "cause": "no comparable candidate (compile failed or unmeasured)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

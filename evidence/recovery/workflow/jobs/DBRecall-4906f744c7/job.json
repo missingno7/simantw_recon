@@ -330,5 +330,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Semantics fully mapped in 1 attempt (build/grind/agentQ3/DBRecall.c, evidence build/grind/agentQ3/DBRecall_t1.json: 151/178 opcodes, 85%): int far DBRecall(int handle, int object, int type, int far *size) -- note this 3-int-plus-outparam signature supersedes db_GetObjectSize.c's unverified 'char far *name' guess (byte-compatible from the caller side either way, wrong internally). *size=0; FindIndex miss returns 0. openDBData[handle].file (0x7c-byte PACK records) seeks to entry->offset+0xe and reads the 10-byte DBRecordHeader; its size field drives mem_Alloc('rrecall:%c%d',...) for a raw read buffer (Punt on failure), then _lread's the record body. entry->flags (byte at +7) bit0 gates handling; bit0&&bit2 does a memmove-right-2/write-0xffff-marker/length+=2 literal path; bit0&&!bit2 does UnpackInit/Unpack into a second mem_Alloc buffer, freeing the raw buffer afterward with a WinPrintf mismatch warning. Remaining divergence is REGISTER_ALLOCATION (same class as every other function this session): target spills the FindIndex result fully to two memory slots immediately, candidate keeps one word in di instead. Unresolved evidence gap: the second _lread call pushes only 3 words (buffer seg/off, count) with no visible file-handle push and no caller-side stack adjustment on either _lread call, while the first pushes 4 words also unadjusted -- both point to pascal _lread, but the missing file arg on call 2 is unexplained; candidate reuses the file variable there.",
-  "next_experiment": "Split the FindIndex result into two named locals right after the call to force an immediate two-slot spill; get an independent disassembly of _lread's declared frame to settle the missing file-handle push on the second call."
+  "next_experiment": "Split the FindIndex result into two named locals right after the call to force an immediate two-slot spill; get an independent disassembly of _lread's declared frame to settle the missing file-handle push on the second call.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (151/178 opcodes, 458/438 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

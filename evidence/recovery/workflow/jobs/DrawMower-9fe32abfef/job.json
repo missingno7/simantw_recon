@@ -408,5 +408,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Full semantics reconstructed and matches structurally (CFG shape, all call sequences hanim_SetObjectPos/hanim_AddAnimObject/hanim_RemoveAnimObject(yardAnimHandle,mowerObject,\"mower\")/myBeginSound(0x40,0,0x24), all globals resolved by exact name: BoyHere/BoyFrame/BoyX/BoyY/yardAnimHandle (near), GamePaused (far, segment9 via selector slot), and a private static near mowerObject=-1 matching the DrawForSale sentinel idiom; the 'mower' tag string at DGROUP+0x1954 read directly from the EXE and passed as a literal, matching the observed 'push ds;push 0x1954' far-pointer-to-DGROUP-string idiom). Six explained revisions (direct >=/<= range test, an explicit 'frame' local reused across both bounds, goto-based shared-exit control flow matching the target's single removal tail, with/without an intermediate subtraction variable) all failed to reproduce the target's specific BoyFrame-range test instructions: the target computes 'ax = BoyFrame - 103' ONCE, tests it with 'jl / jo' (both targeting the reject path, i.e. a combined signed-less-than+overflow check on the SUBTRACTION result), then narrows the SAME ax via 'dec ax; dec ax' (not a fresh comparison) for the upper bound 'jle', and repeats this ax-reuse pattern shifted by 4 for the second range; every candidate instead either recomputes/reloads BoyFrame fresh for the second bound (direct cmp/jge form, closest candidate attempt06, 252 vs 229 bytes) or spills an explicit int local to SI needing an extra push/pop (attempt02/03/05, 262 bytes, diverging in the prologue itself). Preserving the closest exact-shape candidate (attempt06) and the exact-CFG goto candidate (attempt04); the remaining gap is purely in how MSC7 chooses to express this specific two-range signed bound check, not in the declared symbols, calls or private data.",
-  "next_experiment": "Assemble the antedit:A998 unit (DrawYardCursor .. YardArea, in MAPSYM order) with tools/tu_assembly.py so whole-unit optimizer/register context (rather than an isolated single-function compile) can be checked against the BoyFrame subtract-reuse range-check idiom; alternatively try an explicit two-armed switch/goto shaped exactly like a Duff-style 'case 103: case 104: case 105:' grouping to see if MSC7's switch-table lowering reproduces the observed SUB/JL/JO/DEC/DEC/JLE chain."
+  "next_experiment": "Assemble the antedit:A998 unit (DrawYardCursor .. YardArea, in MAPSYM order) with tools/tu_assembly.py so whole-unit optimizer/register context (rather than an isolated single-function compile) can be checked against the BoyFrame subtract-reuse range-check idiom; alternatively try an explicit two-armed switch/goto shaped exactly like a Duff-style 'case 103: case 104: case 105:' grouping to see if MSC7's switch-table lowering reproduces the observed SUB/JL/JO/DEC/DEC/JLE chain.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, register allocation, branch layout under the current profile (55/90 opcodes, 256/229 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }

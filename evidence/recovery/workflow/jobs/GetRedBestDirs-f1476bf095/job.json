@@ -380,5 +380,18 @@
     "REGISTER_ALLOCATION"
   ],
   "reason": "Four revisions reached size-exact (220/220 bytes) and 62/89 opcodes matching, with the correct 7-arg TileCanBeMovedOn(plane,nx,ny,plane,a,b,0) call and GetLife/IsClearTile(plane,x,y) argument order recovered from the push sequence (attempt02/t2, attempt04/t4). The remaining gap is register allocation only: the target loads the 'plane' parameter into DI once at loop entry and reuses DI for every subsequent TileCanBeMovedOn/GetLife/IsClearTile call, while every candidate that references the 'plane' parameter directly re-fetches it from [bp+6] at each call site instead; introducing an explicit local (int p = plane; used throughout, attempt03/t3) did not trigger the same caching and instead grew the body past the target's 220-byte extent (226 bytes, UNSUPPORTED_COMPARISON/'contribution outside original'). No further C-level lever found to force this specific parameter-to-register caching within budget.",
-  "next_experiment": "Try caching plane in a register-hinted local declared and assigned only inside the for-loop body (narrower scope than the whole function), or reorder the parameter list / move the plane read to immediately before the loop's first use, to see whether a narrower live range convinces the allocator to keep it in DI without growing the frame."
+  "next_experiment": "Try caching plane in a register-hinted local declared and assigned only inside the for-loop body (narrower scope than the whole function), or reorder the parameter list / move the plane read to immediately before the loop's first use, to see whether a narrower live range convinces the allocator to keep it in DI without growing the frame.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape, branch layout, frame layout under the current profile (62/89 opcodes, 219/220 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "REGISTER_ALLOCATION"
+  ]
 }

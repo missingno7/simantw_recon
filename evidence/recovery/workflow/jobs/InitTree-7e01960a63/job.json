@@ -397,5 +397,18 @@
     "DATA_LAYOUT"
   ],
   "reason": "The semantics are established: InitTree fills a 0x100-word table and a contiguous 0x1000-word table with the 0x1000 unused-node sentinel, compiling to two REP STOSW sequences. Seven bounded ordinary-C attempts could not reproduce the complete 28-byte member: separate external far arrays produced 30-byte code with six unresolved external/segment fixups; TU-local far storage produced 25-26 byte code in CONST with private-placement conflicts; a unified far table and far-struct model produced the same 25-byte form with unresolved private data fixups. The only direct placement experiment using #pragma data_seg was rejected because the production lane forbids compiler pragmas. Evidence: attempt01 through attempt07 results.json and target ASM offsets 0x501a/0x521a with one ES segment load from 0xb8de.",
-  "next_experiment": "Expert: recover the original SIMTWO translation-unit data declarations or full-TU context that places the private contiguous tree tables in SIMANT_DATA_GROUP at offsets 0x501a and 0x521a, then retest the two REP STOSW source form without compiler pragmas and verify all segment/offset fixups independently."
+  "next_experiment": "Expert: recover the original SIMTWO translation-unit data declarations or full-TU context that places the private contiguous tree tables in SIMANT_DATA_GROUP at offsets 0x501a and 0x521a, then retest the two REP STOSW source form without compiler pragmas and verify all segment/offset fixups independently.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "instruction shape under the current profile (9/12 opcodes, 29/28 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "DATA_LAYOUT"
+  ]
 }

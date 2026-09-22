@@ -317,5 +317,18 @@
     "DATA_LAYOUT"
   ],
   "reason": "Body recovered: attempt01/candidate0000.c aligns every instruction (122 bytes: two private near lock flags at DGROUP 0xaf0/0xaf2 with GlobalUnlock/GlobalFree, --refcount==0 path resolving waveOutClose through GetProcAddress on the module handle and calling it with the wave handle through a far Pascal pointer local, then clearing the handle; KERNEL imports 19/17/50 and wSoundBlasterMsg+0x179 resolve). Durable whole-member blocker: the three private words live in a larger private sound-state block of this GR_MODULE TU in SIMANT_DATA_GROUP at 0x8d08 (module handle, the based static admitted in IsMMWaveAvail), 0x8d14 (wave handle) and 0x8d1a (reference count), with 12- and 6-byte gaps owned by other members; a single-function TU emits the three based statics adjacently, so the matcher reports 'conflicting private placement constraints SIMANT_DATA_GROUP' and the selector-slot fixup stays unresolved. Filling the gaps with synthetic padding is excluded by the supervisor lessons. Budget 1/8 attempts, 1/192 candidates.",
-  "next_experiment": "Supervisor TU-level experiment for the GR_MODULE multimedia state: reconstruct the whole private SIMANT_DATA_GROUP block 0x8d08..0x8d1c (module handle at +0, members at +2..+0xa used by IsMMMidiAvail/MciMessage/musSoundBlasterClose, wave handle at +0xc, +0xe..+0x10, reference count at +0x12) as one declaration order shared by the admitted IsMMWaveAvail/IsMMMidiAvail sources, then retest this preserved body; distinguishing observation is the disappearance of the placement conflict with unchanged code bytes."
+  "next_experiment": "Supervisor TU-level experiment for the GR_MODULE multimedia state: reconstruct the whole private SIMANT_DATA_GROUP block 0x8d08..0x8d1c (module handle at +0, members at +2..+0xa used by IsMMMidiAvail/MciMessage/musSoundBlasterClose, wave handle at +0xc, +0xe..+0x10, reference count at +0x12) as one declaration order shared by the admitted IsMMWaveAvail/IsMMMidiAvail sources, then retest this preserved body; distinguishing observation is the disappearance of the placement conflict with unchanged code bytes.",
+  "root_cause": {
+    "category": "BODY_EXACT_LAYOUT_BLOCKED",
+    "cause": "exact body; private placement / contribution issues only",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "DATA_LAYOUT"
+  ]
 }

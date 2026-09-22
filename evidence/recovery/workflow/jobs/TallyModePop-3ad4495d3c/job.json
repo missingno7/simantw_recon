@@ -338,5 +338,18 @@
     "PRIVATE_CONST_LAYOUT"
   ],
   "reason": "Exceptionally close, same class as _GoInNest: candidate is byte-length-identical to the target (230/230), instruction_layout_match=true, cfg_shape_match=true, 59/59 opcodes matched, ZERO register/immediate/branch differences (categories=['MEMORY_OPERAND'] only), and the MakeRedInitiator same-segment far-call translation (segment 6 offset 38524, resolved from the raw 'call 0xffff967c'/push-cs near-call bytes) is independently validated as a LINK transformation. The sole remaining gap is CONST/selector-pool placement: 28/58 fixups unresolved across the many match_position[] far-int references (each of the 19 distinct literal word-indices into the unnamed segment9 submode-count table, plus ModePopB/ModePopR/RedInitiator-condition slots) failing to resolve against the target's literal CONST immediates, the same 'conflicting private placement constraints CONST'/'unplaced contribution CONST' pattern seen on GoInNest, here at an even larger scale. Semantic body fully verified and matches the disassembly precisely: six ModePopB[] and six ModePopR[] slots are filled by summing or copying match_position[] submode counts (most pairs added, several copied singly, exact literal offsets confirmed byte-for-byte against the disassembly's es:[...] operands), then MakeRedInitiator() runs when match_position[0x3e05]<1. New corroborating evidence: MakeRedInitiator's own admitted source (src/recovered/MakeRedInitiator.c) declares AlistT[]/AlistM[]/AlistS[] as their OWN separate far byte-array externs (not routed through Dx8) -- this contradicts the Dx8-routing hypothesis used in the already-blocked _GoInNest candidate and should be applied there if GoInNest is ever revisited by an expert. This is a near (not far) helper (plain push bp/ret, no far-call gap in parameters), matching GoInNest's convention within the same simant1:0000 unit. Best candidate: build/grind/agentE/_TallyModePop.c (test1).",
-  "next_experiment": "Same as _GoInNest: the compiled instruction stream is already byte-length-identical and opcode-exact, so the next step is unit-level tu_assembly.py compilation (simant1:0000) rather than a body rewrite, to check whether assembling this function alongside its unit siblings resolves the unplaced CONST fixups; if GoInNest is revisited, also correct its AlistS/AlistM/AlistT declarations to standalone far arrays per MakeRedInitiator's admitted precedent instead of Dx8-routing."
+  "next_experiment": "Same as _GoInNest: the compiled instruction stream is already byte-length-identical and opcode-exact, so the next step is unit-level tu_assembly.py compilation (simant1:0000) rather than a body rewrite, to check whether assembling this function alongside its unit siblings resolves the unplaced CONST fixups; if GoInNest is revisited, also correct its AlistS/AlistM/AlistT declarations to standalone far arrays per MakeRedInitiator's admitted precedent instead of Dx8-routing.",
+  "root_cause": {
+    "category": "BODY_EXACT_LAYOUT_BLOCKED",
+    "cause": "exact body; only unresolved offset bindings (pool / private data / TU context)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "PRIVATE_CONST_LAYOUT"
+  ]
 }

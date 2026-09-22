@@ -338,5 +338,18 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "Body is an exact instruction match: opcode_matches == opcode_total (90/90), candidate_bytes == target_bytes (259 == 259), zero register/branch/immediate/stack differences across the whole aligned diff. Full call sequence confirmed: AddFontResource(\"fontres.fon\") gates a WM_FONTCHANGE broadcast SendMessage(-1,0x1d,0,0L) only on success but CreateFont/GetDC/SelectObject/GetTextMetrics/SetMapperFlags/ReleaseDC always run when bigFontH==0; CreateFont(14,8,0,0,400,0,0,0,0,2,1,2,1,\"Gaia8x14\"); tm.tmAveCharWidth+tm.tmMaxCharWidth and (tm.tmHeight+tm.tmAscent)/2 captured into two private scratch bytes (one DGROUP, one PACK-segment __based, matching the admitted IsMMWaveAvail/GetFreeHandle idiom); when clipDC!=0, SetMapperFlags(clipDC,0L) then SelectObject(clipDC,bigFontH), only storing the result into savedFont the first time (savedFont==0); fontWidth/fontHeight always updated from the scratch bytes at the end. The only residual issues are all 'unplaced contribution _DATA' / 'unresolved target _DATA' entries on the two string literals (\"fontres.fon\", \"Gaia8x14\") -- exactly the isolated-compile literal-pool placement noise (same class as ConvertMonoMaskToTandy's tdyballoon tag, recovered directly from the DGROUP literal pool but still not byte-placeable without the rest of the TU's literals). One attempt was sufficient to reach a fully opcode-exact body; this did not auto-escalate the job (unlike the selector-fixup cases), so recording it explicitly. Best candidate: build/grind/agentH/_GSetBigFont.c.",
-  "next_experiment": "Compile together with the sibling GSetSmallFont (same unit_context gr:1560, same fontres.fon/AddFontResource/CreateFont/GetTextMetrics shape with a Gaia8x8 face) via tools/tu_assembly.py so both literal strings land in the shared literal pool at their real historical offsets."
+  "next_experiment": "Compile together with the sibling GSetSmallFont (same unit_context gr:1560, same fontres.fon/AddFontResource/CreateFont/GetTextMetrics shape with a Gaia8x8 face) via tools/tu_assembly.py so both literal strings land in the shared literal pool at their real historical offsets.",
+  "root_cause": {
+    "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+    "cause": "frame layout under the current profile (90/90 opcodes, 259/259 bytes)",
+    "profile": "baseline",
+    "stale_profile": false,
+    "mirror_partner": null,
+    "partner_state": null,
+    "classified": "2026-09-22T05:17:31.940377+00:00",
+    "evidence": "evidence/recovery/blocked-reclassification.json"
+  },
+  "previous_blockers": [
+    "EXPRESSION_SHAPE"
+  ]
 }
