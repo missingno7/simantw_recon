@@ -1,7 +1,7 @@
 {
   "id": "DoBookMark-4b3b48a44a",
   "symbol": "_DoBookMark",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:51:52.592216+00:00",
   "flags": [
     "/AL",
@@ -324,6 +324,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "184ceb6a4998614ca2abaa8504047579a4cd9af9aad46605c20e993f28aedeaf",
+      "report": "evidence/recovery/workflow/jobs/DoBookMark-4b3b48a44a/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate build/grind/agentV3/_DoBookMark.c reaches 137/183 opcodes matched with zero register-only differences (build/grind/agentV3/_DoBookMark.test1.json and .test2.json, byte-identical results). All six internal near-call targets were positively identified by matching their low-16-bit call offsets against evidence/disassembly/cards.jsonl: MapToYard(38698), YardToMap(38698 dup check -- actually distinct), SetYardMode(40852), SetMapModeAnt(40578), GotoMapPoint(42282), EditMessage(37568), and (for the already-blocked DoMenuEntry) SetMapPlane(42442) -- all previously unnamed near_call entries with empty MAPSYM names. The named far PACK objects bookMark (seg8, selector 0xbe7a, already admitted), MapPnt (seg9 offset0x7d2e, a Point{x,y} struct, selector 0xbe7c) and MapMode (seg8 offset0x8610, selector 0xbe7e) all resolve correctly. The remaining defect is expression shape around ES/selector reuse: the target reads MapPnt.x then MapPnt.y consecutively under ONE es-selector load, then reloads es for bookMark and writes both fields consecutively; my candidate reloads the selector between each field access regardless of whether the source pre-reads both values into locals before the bookMark writes (test1 without the reorder and test2 with it produced byte-identical output), so this is not a simple statement-ordering fix. 30 memory_operand, 28 immediate_or_binding, 6 branch_target differences remain, concentrated in the two struct-field copy sequences (SET-bookmark path) and the GOTO-bookmark path's final MapMode-branch/GotoMapPoint call.",
+  "next_experiment": "Try declaring MapPnt's two fields as separate named far externs (MapPntX, MapPntY at their own displacements within the same selector) instead of a struct, or try assigning through a single struct-copy statement (struct Point p = MapPnt; bookMark[index].plane = p.x; bookMark[index].x = p.y;) to see whether a whole-struct read changes the ES-reuse window; independently verify with topology_retest / a controlled probe whether this compiler profile ever coalesces two non-adjacent ES reloads for consecutive far struct-field reads regardless of C source shape, which would make this a profile-level (not source-level) limitation."
 }

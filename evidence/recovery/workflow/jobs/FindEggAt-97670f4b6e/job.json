@@ -1,7 +1,7 @@
 {
   "id": "FindEggAt-97670f4b6e",
   "symbol": "_FindEggAt",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:59:48.391273+00:00",
   "flags": [
     "/AL",
@@ -312,5 +312,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "2fba414b4afa0b2e6249b51fa677911ebd6f09aafaa9e73142ab113680e255ca",
+      "report": "evidence/recovery/workflow/jobs/FindEggAt-97670f4b6e/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Best candidate build/grind/agentU3/FindEggAt.c (attempt01): only 37/199 opcodes aligned, score 0.158291. This function is structurally near-identical to _FindLifeAt (same calls list -- FindLifeIndex then GetAntIndex -- and identical direct_data_bindings: LifeA/LifeB/LifeR, ListIndexA/B/R), sharing the same unresolved coordinate-validation/mask-selection prelude documented in that job's blocker (roughly offsets 0-406). The one confirmed difference against _FindLifeAt: the FindLifeIndex call's 'high' argument is 7 here (push 0x7f; push 7; push 1 at offsets 406-410) instead of 0x7f, narrowing the accepted attribute range to [1,7] (consistent with selecting an egg-specific attribute band). This candidate only captures the well-evidenced tail (FindLifeIndex(list,x,y,1,7,0x7f) then, on success, GetAntIndex(list,index,&life,&column,&attribute,&state,&direction) with five stack-local out-parameters, storing the index through the far out-parameter and returning life; -1/-1 on failure), matching _FindLifeAt's low score for the same reason (the prelude, roughly 90% of the function's bytes, is not modeled). Only one attempt was spent given the scale of remaining assigned targets.",
+  "next_experiment": "Resolve _FindLifeAt's prelude first (see its blocker's next-experiment), then port the corrected C here verbatim except for the high=7 constant; the two functions are close enough in shape that a single validated prelude template should transfer directly, needing only local verification against this job's own aligned_asm diff."
 }

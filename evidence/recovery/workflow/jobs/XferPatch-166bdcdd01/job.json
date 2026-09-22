@@ -1,7 +1,7 @@
 {
   "id": "XferPatch-166bdcdd01",
   "symbol": "_XferPatch",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:40:23.813118+00:00",
   "flags": [
     "/AL",
@@ -338,6 +338,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "e60003efc6ac73f99e3a8fa5d07ee2e5380f83191e3534bf78dc436e01ba6055",
+      "report": "evidence/recovery/workflow/jobs/XferPatch-166bdcdd01/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "1dc84efc05468cbdcc159c234907c0d74c8d8e94facaf9b07b79f3ee86299b5a",
+      "report": "evidence/recovery/workflow/jobs/XferPatch-166bdcdd01/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate build/grind/agentK3/XferPatch.c matches target almost exactly: 124/137 opcodes, candidate_bytes==target_bytes (385/385), and the aligned diff has only 13 non-cascading rows, ALL confined to one region (isolated by filtering out branch_target/memory_operand/immediate_or_binding fixup noise, which is the expected CONST/selector-pool pattern for far objects in isolated compiles). Every other part of this large 385-byte function matches: the already-there no-op guard (x==CurYardPnt.x && y==CurYardPnt.y), the CurGameType!=2 and ColonyTotalBlack/BpopT guard dialogs (0x2710/0x2712), the YMapPopB/MeType/MeNestStarted guard dialog (0x2714), the myBeginSong/CurYardPnt-update/DrawMap/JustXfered/QueenStorage/SwarmCnt-reset/InvalQueenStorageDisp/MeNestStarted=1 success sequence, the unnamed same-segment helper call (hypothesis XferPatchHelper, segment1 offset 68264, no MAPSYM name anywhere in the project), and the final idx<=0x24 dialog choice (0x2717/0x2716) -- all confirmed byte-exact. The ONE remaining gap: target computes the tile index (di*16+si, i.e. x*16+y) into BX ('mov bx,di;shl bx,4;add bx,si;mov[bp-2],bx'), leaving DI(x)/SI(y) completely untouched for reuse in the myBeginSong/CurYardPnt/RandWorld/final-dialog code that follows; every candidate compile instead computes the index destructively into DI itself, forcing DI's original x value to be saved elsewhere (spilling to a stack slot, needing an extra frame word: enter 4,0 vs target's enter 2,0) and reloaded later -- register_only_differences=9, all in this one area. Job XferPatch-166bdcdd01, budget 4/8 attempts, all with a real structural change to the index expression: (1) plain 'idx = (x << 4) + y;' with YMapPnt/CurYardPnt declared __based(PACK) -- also missed the DS-swap prologue target uses for the initial YMapPnt/CurYardPnt reads (attempt01) (2) YMapPnt/CurYardPnt redeclared plain far (matching SetMapPlane's accepted style) and the y/x read order swapped to match target's actual instruction order -- this alone fixed the ENTIRE opening section (DS-swap prologue, both early-return guards, both dialog-guard branches) byte-for-byte, isolating the gap purely to the index computation (attempt02) (3) 'idx = x; idx = (idx << 4) + y;' via an explicit intermediate copy, hoping to hint a fresh register -- no change (attempt03) (4) fully split into target's literal 3 micro-steps 'idx = x; idx <<= 4; idx += y;' -- no change, byte-identical output to attempt03 (attempt04). The compiler consistently prefers reusing DI over allocating BX for this computation regardless of source phrasing.",
+  "next_experiment": "Try forcing BX specifically not via 'register' (parameters/simple locals ignore it under /Oe per prior findings) but via an explicit dummy use of di/si elsewhere just before the index computation to make the allocator treat them as still-needed-verbatim (e.g. an otherwise-harmless no-op reference), or try computing the index from freshly-reread YMapPnt.x/YMapPnt.y (based on the same PACK offsets) instead of the locals x/y at that one point, so the optimizer has no reason to reuse di itself. Do not repeat the intermediate-copy or split-statement expression rewrites, both already tried with zero effect."
 }

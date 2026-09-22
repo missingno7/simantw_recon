@@ -15147,7 +15147,7 @@ Source: src/recovered/wf_DialogAbortAll-1f3ea4f9f2.c. Flags: ['/AL', '/G2', '/Gs
 
 ## _AddSomeAnts — SIMANT_MODULE:9D04
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 90 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9D04  55                       push bp
@@ -15305,7 +15305,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _SetEditMode — SIMANT_MODULE:9E72
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 16 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9E72  55                       push bp
@@ -15319,7 +15319,7 @@ Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Fla
 
 ## _SetMapModeAnt — SIMANT_MODULE:9E82
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 274 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 9E82  55                       push bp
@@ -15944,7 +15944,7 @@ A528  cb                       retf
 
 ## _GotoMapPoint — SIMANT_MODULE:A52A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 160 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A52A  55                       push bp
@@ -16103,7 +16103,7 @@ A6DE  cb                       retf
 
 ## _CenterAnt — SIMANT_MODULE:A6E0
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 132 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A6E0  680001                   push 0x100
@@ -16228,7 +16228,7 @@ A843  cb                       retf
 
 ## _GotoSpider — SIMANT_MODULE:A844
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 205 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A844  c8040000                 enter 4, 0
@@ -16298,8 +16298,8 @@ A910  cb                       retf
 ```
 
 ## _GotoQueen — SIMANT_MODULE:A912
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 420 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 420 bytes.
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A912  c8040000                 enter 4, 0
@@ -16523,7 +16523,7 @@ AB82  cb                       retf
 
 ## _GotoRQueen — SIMANT_MODULE:AB84
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 12 bytes.
-Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_8_scaffold-bb155ac98b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 AB84  68e000                   push 0xe0

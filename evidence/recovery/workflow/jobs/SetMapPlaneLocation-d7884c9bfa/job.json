@@ -1,7 +1,7 @@
 {
   "id": "SetMapPlaneLocation-d7884c9bfa",
   "symbol": "_SetMapPlaneLocation",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:48:36.096265+00:00",
   "flags": [
     "/AL",
@@ -338,6 +338,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "79a8ab32f5ca94a3447ccdbf4c076d73d5afa4fb65d81e2f8cdaef204442153b",
+      "report": "evidence/recovery/workflow/jobs/SetMapPlaneLocation-d7884c9bfa/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "2613b785150970d012b75b5d4fff53fb5830f6f5b0a2d49893eb3a1cc77d5fea",
+      "report": "evidence/recovery/workflow/jobs/SetMapPlaneLocation-d7884c9bfa/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate build/grind/agentK3/SetMapPlaneLocation.c matches target almost exactly (122/133 opcodes, candidate 420 vs target 419 bytes -- 1 byte off) with only ONE persistent structural gap: the 'plane' parameter, kept resident in SI for the whole function in the target ('mov ax,si;dec ax' at the hScrollMax ternary, and a bare 'or si,si' reused directly at the third plane!=0 test before the CenterEdit/YMapPnt branch), instead gets spilled to a stack slot in every candidate compile ('mov word ptr[bp-N],si; dec si' and 'cmp word ptr[bp-N],0'). Every other part of the function -- the InvalEuMap/OldMapPlane guard polarity, the hScrollMax ternary shape, the CenterEdit/YMapPnt branch, the SetMapModeAnt call, and critically the whole 4-case switch(MapPlane) dispatching obj1/obj2/obj3 (ribbonBarWnd-gated toolbar object IDs) and the clip_SetWin/win_MakeObjSelected/win_MakeGroupUnselected tail -- now matches byte-for-byte (confirmed by isolating and fixing the obj2/obj3 stack-slot swap in attempt03). Job SetMapPlaneLocation-d7884c9bfa, 4 explained attempts: (1) plane as ordinary parameter, obj1/2/3 as plain locals -- baseline gap first observed (attempt01) (2) obj1/2/3 declared volatile -- forced them fully to memory matching target's slot USE but added an extra stack word and made opcode match worse (109->118 helped, but overall regressed to 424 bytes) (attempt02) (3) obj1/2/3 reverted to plain int, only the obj2/obj3 assignment-statement order swapped inside each switch case -- this alone fixed the ENTIRE switch/tail section to match exactly, isolating the remaining gap purely to 'plane' (attempt03) (4) obj1/2/3 moved into a nested block declared after the SetMapModeAnt call, to separate their scope from 'plane' during register allocation -- no effect, identical byte output to attempt03 (attempt04). SetMapPlane (a sibling in the same unit, already ESCALATED) uses the identical 'plane' parameter through 4 separate references including one far past the switch, and keeps it resident fine; the one structural difference in SetMapPlaneLocation is a SECOND conditional branch on plane's value (peer to the first 'if(plane!=0)' InvalEuMap/OldMapPlane guard) gating the CenterEdit/YMapPnt-copy choice -- three total branch-relevant references to plane, versus SetMapPlane's single branch plus straight-line reuses. Remaining budget: 4/8 attempts, candidates well under the 192 cap.",
+  "next_experiment": "Try restructuring the second plane!=0 branch to avoid a literal second C-level branch on the bare parameter -- e.g. compute the CenterEdit/YMapPnt choice via the SAME boolean/goto path as the first InvalEuMap/OldMapPlane branch (share one computed condition variable read once), or try MSC7 profile variants (og/ogi) on just this job via the catalogued compiler-profiles mechanism if unit evidence later supports it; do not repeat the obj1/2/3 volatile or nested-scope experiments, both already tried with no effect on the plane spill."
 }
