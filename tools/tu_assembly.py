@@ -310,7 +310,7 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
         if pragmas:
             lines.append('')
         rank = {m.lstrip('_'): i for i, m in enumerate(rank_order or order)}
-        placed = [dict(d, rank=rank.get(d['name'], len(rank))) for d in definitions] + [dict(kind='definition', name=x['name'], text=x['text'], origin='scaffold', rank=rank.get(x['rank_name'].lstrip('_'), len(rank))) for x in extra_definitions]
+        placed = [dict(d, rank=rank.get(d['name'], len(rank))) for d in definitions] + [dict(kind='definition', name=x['name'], text=x['text'], origin='scaffold', rank=x['rank'] if x.get('rank') is not None else rank.get(x['rank_name'].lstrip('_'), len(rank))) for x in extra_definitions]
         macros_of = {f['symbol']: f['macros'] for f in files}
         views_of = {f['symbol']: f['views'] for f in files}
         for d in sorted(placed, key=lambda d: d['rank']):
@@ -538,7 +538,16 @@ def member_slot_symbols(member, source, flags, target_bytes, folder=None):
         return {}
     code_seg = m['segments'][pub['segment'] - 1]
     code = bytes.fromhex(code_seg['data_hex'])
-    words = {f['offset']: f['target']['name'] for f in m['fixups'] if f['segment'] == const['index'] and f['location_type'] == 2 and f['target_method'] == 2}
+    # A pool word is a selector of an external symbol (T2) or, for
+    # `__based(__segname("X"))` objects, of the named segment itself (T0).
+    words = {}
+    for f in m['fixups']:
+        if f['segment'] != const['index'] or f['location_type'] != 2:
+            continue
+        if f['target_method'] == 2:
+            words[f['offset']] = f['target']['name']
+        elif f['target_method'] == 0 and f['target'].get('kind') == 'segment':
+            words[f['offset']] = '__segname:' + f['target']['name']
     mapping = {}
     for f in m['fixups']:
         if f['segment'] != code_seg['index'] or f['target_method'] != 0 or f['target_index'] != const['index'] or f['location_type'] != 1:
@@ -578,6 +587,7 @@ def unify_pool_symbols(shared, declared_texts, symbols):
             located.setdefault(x['name'], (seg['number'], x['offset']))
     overrides = {}
     for word, names in shared.items():
+        names = {n for n in names if not n.startswith('__segname:')}
         if len(names) < 2:
             continue
         rows = []
@@ -640,7 +650,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
         target = bytes.fromhex(''.join(r['bytes'] for r in by_symbol[m]['disassembly']))
         for slot, names in member_slot_symbols(m, sources[m]['source'], flags, target, folder).items():
             shared.setdefault(slot, set()).update(names)
-    used = set(declared) | {n.lstrip('_') for s in shared.values() for n in s}
+    used = set(declared) | {n.lstrip('_') for s in shared.values() for n in s if not n.startswith('__segname:')}
     symbol_overrides = unify_pool_symbols(shared, declared_texts or {}, symbols)
     located = {}
     for seg in symbols['segments']:
@@ -648,35 +658,104 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
             located.setdefault(x['name'], (seg['number'], x['offset']))
     sites = far_sites(card_list)
     last = publics.index(claimed[-1])
-    stubs = []
-    for idx, f in enumerate(publics[:last]):
-        if f in claimed or f not in functions:
-            continue
-        words = functions[f]['introduced']['pool']
-        if not words:
-            continue
-        refs = []
-        for w in words:
-            seg = segments.get(w)
-            if seg is None:
-                raise FormatError('pool word %04X of %s has no selector relocation' % (w, f))
-            if w in shared:
+    def reference(w, f):
+        seg = segments.get(w)
+        if seg is None:
+            raise FormatError('pool word %04X of %s has no selector relocation' % (w, f))
+        if w in shared:
+            based = [n for n in shared[w] if n.startswith('__segname:')]
+            if based:
+                # The claimed member addresses this word as a based segment:
+                # the stand-in reads through the same based segment.
+                name, basis = based[0], 'CLAIMED_MEMBER_SEGMENT'
+            else:
                 name = min(shared[w], key=lambda n: (located.get(n, (0, 1 << 16))[1], n)).lstrip('_')
                 basis = 'CLAIMED_MEMBER_NAME'
+        else:
+            site_names = sorted(n.lstrip('_') for n in sites.get(w, {}).get('names', ()) if n.startswith('_'))
+            site_names = [n for n in site_names if n not in used and sites[w]['segment'] == seg]
+            if site_names:
+                name, basis = site_names[0], 'MAPSYM_SITE_NAME'
             else:
-                site_names = sorted(n.lstrip('_') for n in sites.get(w, {}).get('names', ()) if n.startswith('_'))
-                site_names = [n for n in site_names if n not in used and sites[w]['segment'] == seg]
-                if site_names:
-                    name, basis = site_names[0], 'MAPSYM_SITE_NAME'
-                else:
-                    pool = [x['name'].lstrip('_') for x in sorted(symbols['segments'][seg - 1]['symbols'], key=lambda x: x['offset']) if x['name'].startswith('_')]
-                    pool = [n for n in pool if n not in used and re.fullmatch(r'[A-Za-z_]\w*', n)]
-                    if not pool:
-                        raise FormatError('no representative symbol for segment %d' % seg)
-                    name, basis = pool[0], 'SEGMENT_REPRESENTATIVE'
-                used.add(name)
-            refs.append(dict(word=w, segment=seg, name=name, basis=basis))
-        stubs.append(dict(function=f, position=idx, references=refs))
+                pool = [x['name'].lstrip('_') for x in sorted(symbols['segments'][seg - 1]['symbols'], key=lambda x: x['offset']) if x['name'].startswith('_')]
+                pool = [n for n in pool if n not in used and re.fullmatch(r'[A-Za-z_]\w*', n)]
+                if not pool:
+                    raise FormatError('no representative symbol for segment %d' % seg)
+                name, basis = pool[0], 'SEGMENT_REPRESENTATIVE'
+            used.add(name)
+        return dict(word=w, segment=seg, name=name, basis=basis)
+
+    # Walk the object's pool block in order. A word introduced by an unclaimed
+    # public goes into that public's stand-in; a word no public's ES sites
+    # introduce (a static helper's, or one loaded through another register)
+    # is an orphan and is attached, in block order, to the stand-in of the
+    # most recent introducer, or to a filler stand-in right after the claimed
+    # member that precedes it in code. A stand-in's references are in word
+    # order because first-use allocation is sequential.
+    introducer = {}
+    for f in publics:
+        if f in functions:
+            for w in functions[f]['introduced']['pool']:
+                introducer.setdefault(w, f)
+    block = sorted(int(x, 16) for x in comp.get('pool_words', [])) or sorted(introducer)
+    stop = max(w for m in claimed for w in functions[m]['slots']) if any(functions[m]['slots'] for m in claimed) else None
+    reattributed = []
+    # Allocation is sequential, so introducer code positions never decrease
+    # along the block. A recorded introducer later than a following word's
+    # introducer saw the word at a site the extractor missed earlier: the
+    # word is an orphan of the preceding introducer.
+    position_of = {f: i for i, f in enumerate(publics)}
+    recorded = [position_of.get(introducer.get(w)) for w in block]
+    suffix_min = [None] * len(block)
+    running = None
+    for i in range(len(block) - 1, -1, -1):
+        if recorded[i] is not None and (running is None or recorded[i] < running):
+            running = recorded[i]
+        suffix_min[i] = running
+    for i, w in enumerate(block):
+        if recorded[i] is not None and i + 1 < len(block) and suffix_min[i + 1] is not None and recorded[i] > suffix_min[i + 1]:
+            reattributed.append(dict(word='%04X' % w, recorded=introducer[w], owner=None))
+            del introducer[w]
+    # A function's words are one contiguous range of the block (they are
+    # allocated while it is compiled). A word inside another public's range
+    # whose visible ES sites belong to a later public was in fact first used
+    # by the range owner through a load the site extractor does not see.
+    ranges = {}
+    for w, f in introducer.items():
+        lo, hi = ranges.get(f, (w, w))
+        ranges[f] = (min(lo, w), max(hi, w))
+    def owner(w):
+        inside = [f for f, (lo, hi) in ranges.items() if lo < w < hi]
+        return min(inside, key=lambda f: ranges[f][1] - ranges[f][0]) if inside else None
+    stubs = {}
+    current = None
+    orphans = []
+    for w in block:
+        if stop is not None and w > stop:
+            break
+        f = introducer.get(w)
+        o = owner(w)
+        if o is not None and o != f:
+            if o in claimed:
+                raise FormatError('pool word %04X lies inside the block range of the claimed member %s but its source does not allocate it' % (w, o))
+            reattributed.append(dict(word='%04X' % w, recorded=f, owner=o))
+            f = o
+        if f is not None:
+            current = f
+            if f in claimed:
+                continue
+            stubs.setdefault(f, dict(function=f, position=float(publics.index(f)), references=[], filler=False))['references'].append(reference(w, f))
+        else:
+            orphans.append('%04X' % w)
+            if current is None or current in claimed:
+                key = 'after_' + (current or 'start')
+                position = publics.index(current) + 0.5 if current else -0.5
+                stubs.setdefault(key, dict(function=key, position=position, references=[], filler=True, after=current))['references'].append(reference(w, key))
+            else:
+                stubs[current]['references'].append(reference(w, current))
+    for s in stubs.values():
+        s['references'].sort(key=lambda r: r['word'])
+    stubs = sorted(stubs.values(), key=lambda s: s['position'])
     # Code runs must be physically contiguous in the original: an unclaimed
     # public or an unnamed static helper between two claimed members ends a run.
     runs = []
@@ -688,7 +767,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
             runs[-1].append(m)
         else:
             runs.append([m])
-    return dict(component=component_id, claimed=claimed, stubs=stubs, runs=runs, unclaimed_after_last=publics[last + 1:],
+    return dict(component=component_id, claimed=claimed, stubs=stubs, runs=runs, unclaimed_after_last=publics[last + 1:], orphan_words=orphans, reattributed_words=reattributed,
                 shared_words={'%04X' % k: sorted(v) for k, v in shared.items()}, symbol_overrides=symbol_overrides)
 
 
@@ -702,17 +781,26 @@ def scaffold_text(plan, declared_texts):
         fname = 'pool_stub_' + stub['function'].lstrip('_')
         body = []
         for r in stub['references']:
+            if r['basis'] == 'CLAIMED_MEMBER_SEGMENT':
+                seg = r['name'].split(':', 1)[1]
+                ref = 'pool_segment_ref_' + re.sub(r'[^A-Za-z0-9]', '_', seg)
+                decl = 'extern int __based(__segname("%s")) %s;  /* scaffold reference for pool word %04X (based segment) */' % (seg, ref, r['word'])
+                if decl not in decls:
+                    decls.append(decl)
+                body.append('    t = %s;' % ref)
+                continue
             if r['basis'] != 'CLAIMED_MEMBER_NAME':
                 decls.append('extern int far %s;  /* scaffold reference for pool word %04X (segment %d, %s) */' % (r['name'], r['word'], r['segment'], r['basis']))
             body.append('    t = %s;' % reference_expression(r['name'], declared_texts.get(r['name'])))
         prototypes.append('void far %s(void);' % fname)
         pragmas.append('#pragma alloc_text(%s, %s)' % (SCAFFOLD_SEGMENT, fname))
-        text = ['/* SCAFFOLD, not recovered source: stand-in for the unclaimed member %s.' % stub['function'],
+        what = ('stand-in for the pool words a static helper introduces after %s' % stub.get('after')) if stub.get('filler') else ('stand-in for the unclaimed member %s' % stub['function'])
+        text = ['/* SCAFFOLD, not recovered source: %s.' % what,
                 ' * It only reproduces the object\'s selector-pool allocation order for the',
                 ' * words %s; its code is compiled into the reserved' % ' '.join('%04X' % r['word'] for r in stub['references']),
                 ' * segment %s, which the matcher never compares or credits. */' % SCAFFOLD_SEGMENT,
                 'void far %s(void)' % fname, '{', '    volatile int t;', ''] + body + ['}']
-        definitions.append(dict(name=fname, text='\n'.join(text), rank_name=stub['function']))
+        definitions.append(dict(name=fname, text='\n'.join(text), rank_name=stub['function'], rank=stub['position']))
     for k, run in enumerate(plan['runs'][1:], start=2):
         names = [m.lstrip('_') for m in run]
         for i in range(0, len(names), 4):
@@ -885,7 +973,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     if harmonized is not None:
         spec['harmonization'] = dict(overrides=harmonized['overrides'], unresolved=harmonized.get('unresolved', []), trials=len(harmonized['trials']), evidence=(folder / 'harmonize.json').relative_to(ROOT).as_posix())
     if plan is not None:
-        spec['scaffold'] = dict(segment=SCAFFOLD_SEGMENT, stubs=plan['stubs'], runs=plan['runs'], unclaimed_after_last=plan['unclaimed_after_last'], shared_words=plan['shared_words'], symbol_overrides=plan['symbol_overrides'],
+        spec['scaffold'] = dict(segment=SCAFFOLD_SEGMENT, stubs=plan['stubs'], runs=plan['runs'], unclaimed_after_last=plan['unclaimed_after_last'], shared_words=plan['shared_words'], symbol_overrides=plan['symbol_overrides'], orphan_words=plan['orphan_words'],
                                 scope='Stand-ins reproduce only the selector-pool allocation order of unclaimed members; they are not recovered source and are never compared or credited')
     if result['status'] != 'COMPOSED':
         spec['conflicts'] = result['conflicts']

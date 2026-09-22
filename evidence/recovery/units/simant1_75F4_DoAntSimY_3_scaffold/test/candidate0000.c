@@ -1,7 +1,7 @@
 /* Candidate translation unit simant1_75F4_DoAntSimY_3_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
  * Members: _DoAntSimY, _EnterNest, _CheckMyBestDirs
- * SCAFFOLDED: unclaimed members _DoAntMoveY, _ExitNest, _GetMyDis are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
+ * SCAFFOLDED: unclaimed members _DoAntMoveY are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern int near MePlane;
 extern int near MeLocX;
@@ -13,8 +13,8 @@ extern int near MeColor;
 extern int far MeMode;
 extern unsigned char far Cycle;
 extern int far MeHealthCntDwn;
-extern char far Dy8[];
-extern char far Dx8[];
+extern unsigned char far Dy8[];
+extern unsigned char far Dx8[];
 extern int far GetMap(int plane, int x, int y);
 extern int far InNestBounds(int x, int y);
 extern void far SetMyLife(int plane, int x, int y, int type, int dir, int code);
@@ -53,23 +53,12 @@ extern int far OptionStates;  /* scaffold reference for pool word C3D4 (segment 
 extern int far WindPromptStrs;  /* scaffold reference for pool word C3D6 (segment 9, MAPSYM_SITE_NAME) */
 extern int far MeStartedFight;  /* scaffold reference for pool word C3D8 (segment 9, MAPSYM_SITE_NAME) */
 extern int far TERRAINset;  /* scaffold reference for pool word C3DA (segment 9, MAPSYM_SITE_NAME) */
-extern int far HoleMapB;  /* scaffold reference for pool word C3E2 (segment 8, MAPSYM_SITE_NAME) */
-extern int far HoleMapR;  /* scaffold reference for pool word C3E4 (segment 8, MAPSYM_SITE_NAME) */
-extern int far absSearchDirs;  /* scaffold reference for pool word C3E6 (segment 8, MAPSYM_SITE_NAME) */
-extern int far LastNewExitB;  /* scaffold reference for pool word C3EE (segment 8, MAPSYM_SITE_NAME) */
-extern int far LastNewHoleB;  /* scaffold reference for pool word C3F0 (segment 8, MAPSYM_SITE_NAME) */
-extern int far LastNewHoleR;  /* scaffold reference for pool word C3F2 (segment 8, MAPSYM_SITE_NAME) */
-extern int far LastNewExitR;  /* scaffold reference for pool word C3F4 (segment 8, MAPSYM_SITE_NAME) */
 
 void far pool_stub_DoAntMoveY(void);
-void far pool_stub_ExitNest(void);
-void far pool_stub_GetMyDis(void);
 void far EnterNest(void);
 int far CheckMyBestDirs(int far *steps, int plane, int x, int y, int a, int b);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoAntMoveY)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_ExitNest)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_GetMyDis)
 #pragma alloc_text(RUN2_TEXT, EnterNest)
 #pragma alloc_text(RUN3_TEXT, CheckMyBestDirs)
 
@@ -169,33 +158,8 @@ void far EnterNest(void)
     SetMyLife(MePlane, MeLocX, MeLocY, MeType, MeDir, 0xff);
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _ExitNest.
- * It only reproduces the object's selector-pool allocation order for the
- * words C3E2 C3E4 C3E6; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_ExitNest(void)
-{
-    volatile int t;
-
-    t = HoleMapB;
-    t = HoleMapR;
-    t = absSearchDirs;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _GetMyDis.
- * It only reproduces the object's selector-pool allocation order for the
- * words C3EE C3F0 C3F2 C3F4; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_GetMyDis(void)
-{
-    volatile int t;
-
-    t = LastNewExitB;
-    t = LastNewHoleB;
-    t = LastNewHoleR;
-    t = LastNewExitR;
-}
-
+#define Dx8 ((signed char far *)Dx8)  /* shape view of the unit declaration for this member only */
+#define Dy8 ((signed char far *)Dy8)  /* shape view of the unit declaration for this member only */
 int far CheckMyBestDirs(int far *steps, int plane, int x, int y, int a, int b)
 {
     int nx;
@@ -222,4 +186,6 @@ int far CheckMyBestDirs(int far *steps, int plane, int x, int y, int a, int b)
         dir = -1;
     return dir;
 }
+#undef Dx8
+#undef Dy8
 

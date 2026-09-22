@@ -1,7 +1,7 @@
 /* Candidate translation unit simone_5AD2_AddAntToList_19_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
  * Members: _AddAntToList, _IsThisEgg, _IsThisGrass, _IsThisFood, _IsItNFood, _GetLife, _GetMap, _SetMap, _MoveMyLife, _DoMapUpdateDraw, _DoEditAndMapUpdateDraw, _EndTargetMode, _EndLifeTransferMode, _ExchangeLives, _PickupMyEgg, _PickupMyObject, _IsNotBarrier, _IsLessThanHole, _IsLiftable
- * SCAFFOLDED: unclaimed members _IsClear3x3, _TargetAnt, _DoLifeExchange, _DropMyFood, _DropPebble, _PickupMyRock, _SetMyHealth, _EatMyFood, _PickupMyFood are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
+ * SCAFFOLDED: unclaimed members _IsClear3x3, _TargetAnt, _DoLifeExchange, _DropMyFood, _DropPebble, _PickupMyRock, _EatMyFood are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern int far ListIndexA;
 extern int far ListIndexB;
@@ -56,6 +56,7 @@ extern int far SuserX;  /* scaffold reference for pool word C492 (segment 9, MAP
 extern int far SuserY;  /* scaffold reference for pool word C494 (segment 9, MAPSYM_SITE_NAME) */
 extern int far SMode;  /* scaffold reference for pool word C496 (segment 9, MAPSYM_SITE_NAME) */
 extern int far MeSMode;  /* scaffold reference for pool word C498 (segment 9, MAPSYM_SITE_NAME) */
+extern int far NeverHungry;  /* scaffold reference for pool word C49A (segment 8, MAPSYM_SITE_NAME) */
 extern int far MeHealthCntDwn;  /* scaffold reference for pool word C49C (segment 9, MAPSYM_SITE_NAME) */
 extern int far MeWarnHealth;  /* scaffold reference for pool word C49E (segment 9, MAPSYM_SITE_NAME) */
 extern int far MeWantFood;  /* scaffold reference for pool word C4A0 (segment 9, MAPSYM_SITE_NAME) */
@@ -64,12 +65,8 @@ extern int far FoodB;  /* scaffold reference for pool word C4A4 (segment 9, MAPS
 extern int far FoodR;  /* scaffold reference for pool word C4A6 (segment 9, MAPSYM_SITE_NAME) */
 extern int far HoleMapB;  /* scaffold reference for pool word C4A8 (segment 8, MAPSYM_SITE_NAME) */
 extern int far HoleMapR;  /* scaffold reference for pool word C4AA (segment 8, MAPSYM_SITE_NAME) */
-extern int far NeverHungry;  /* scaffold reference for pool word C49A (segment 8, MAPSYM_SITE_NAME) */
 extern int far EditMsgDelay;  /* scaffold reference for pool word C4AE (segment 9, MAPSYM_SITE_NAME) */
 extern int far WindPromptStrs;  /* scaffold reference for pool word C4B0 (segment 9, MAPSYM_SITE_NAME) */
-extern int far LastNewHoleB;  /* scaffold reference for pool word C4B4 (segment 8, MAPSYM_SITE_NAME) */
-extern int far MeDis;  /* scaffold reference for pool word C4B6 (segment 9, MAPSYM_SITE_NAME) */
-extern int far MePrevDis;  /* scaffold reference for pool word C4B8 (segment 9, MAPSYM_SITE_NAME) */
 
 void far pool_stub_IsClear3x3(void);
 void far pool_stub_TargetAnt(void);
@@ -77,9 +74,7 @@ void far pool_stub_DoLifeExchange(void);
 void far pool_stub_DropMyFood(void);
 void far pool_stub_DropPebble(void);
 void far pool_stub_PickupMyRock(void);
-void far pool_stub_SetMyHealth(void);
 void far pool_stub_EatMyFood(void);
-void far pool_stub_PickupMyFood(void);
 int IsThisEgg(unsigned char value);
 int IsThisGrass(int category, int tile);
 int IsThisFood(int category, int tile);
@@ -105,9 +100,7 @@ int far IsLiftable(int plane, int x, int y);
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DropMyFood)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DropPebble)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_PickupMyRock)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_SetMyHealth)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_EatMyFood)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_PickupMyFood)
 #pragma alloc_text(RUN2_TEXT, IsThisEgg, IsThisGrass, IsThisFood)
 #pragma alloc_text(RUN3_TEXT, IsItNFood)
 #pragma alloc_text(RUN4_TEXT, GetLife, GetMap, SetMap)
@@ -347,7 +340,7 @@ void far ExchangeLives(int a, int b, int c)
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DoLifeExchange.
  * It only reproduces the object's selector-pool allocation order for the
- * words C48A C48C C48E C490 C492 C494 C496 C498 C49C C49E C4A0; its code is compiled into the reserved
+ * words C48A C48C C48E C490 C492 C494 C496 C498 C49A C49C C49E C4A0; its code is compiled into the reserved
  * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
 void far pool_stub_DoLifeExchange(void)
 {
@@ -361,6 +354,7 @@ void far pool_stub_DoLifeExchange(void)
     t = SuserY;
     t = SMode;
     t = MeSMode;
+    t = NeverHungry;
     t = MeHealthCntDwn;
     t = MeWarnHealth;
     t = MeWantFood;
@@ -402,17 +396,6 @@ void far pool_stub_PickupMyRock(void)
     t = (int)TERRAINset;
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _SetMyHealth.
- * It only reproduces the object's selector-pool allocation order for the
- * words C49A; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_SetMyHealth(void)
-{
-    volatile int t;
-
-    t = NeverHungry;
-}
-
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _EatMyFood.
  * It only reproduces the object's selector-pool allocation order for the
  * words C4AE C4B0; its code is compiled into the reserved
@@ -447,19 +430,6 @@ int far PickupMyEgg(int plane, int x, int y)
         }
     }
     return 0;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _PickupMyFood.
- * It only reproduces the object's selector-pool allocation order for the
- * words C4B4 C4B6 C4B8; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_PickupMyFood(void)
-{
-    volatile int t;
-
-    t = LastNewHoleB;
-    t = MeDis;
-    t = MePrevDis;
 }
 
 int far PickupMyObject(int plane, int x, int y)

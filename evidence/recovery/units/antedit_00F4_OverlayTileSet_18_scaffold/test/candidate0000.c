@@ -3,7 +3,7 @@
  * Members: _OverlayTileSet, _ProcEditEvent, _OpenEditWindow, _MakeEditOpen, _ForceUpdateEdit, _DoEditUpdateDraw, _UpdateEditWindow, _DrawEdit, _InvalidUpdateEdit, _ed_MoveTo, _BalloonIsVisible, _EggBalloons, _FightBalloons, _QueenBalloons, _RestBalloons, _EditMsgBalloon, _PreDrawBalloons, _ResetEditScrollRange
  * SCAFFOLDED: unclaimed members _LoadTiles, _win_EditChanged, _ScrollEditWindow, _DrawEditGraphs, _SetEditWinTitle, _PreDrawSpider, _DrawSpider, _DrawPalps, _DrawLegs, _DrawCurBalloons, _DoEditScroll are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
-extern int far editBufInvalidFlag[];
+static int __based(__segname("SIMANT_DATA_GROUP")) terrainSetState;
 extern int far TERRAINset;
 extern unsigned int far terrainTiles;
 extern int far Barrier;
@@ -36,6 +36,7 @@ extern int near scrollBarFlag;
 extern int near editForce;
 extern void far pascal InvalidateRect(int window, void far *rect,
                                       unsigned flags);
+extern int far editBufInvalidFlag[];
 extern int near edata[];
 struct BalloonPoint {
     int x;
@@ -83,6 +84,7 @@ extern int far match_position;  /* scaffold reference for pool word BF86 (segmen
 extern int far match_length;  /* scaffold reference for pool word BF88 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far tileDsp;  /* scaffold reference for pool word BF8C (segment 9, MAPSYM_SITE_NAME) */
 extern int far editTileRect;  /* scaffold reference for pool word BF90 (segment 9, MAPSYM_SITE_NAME) */
+extern int far spiderTileLeft;  /* scaffold reference for pool word BF94 (segment 9, MAPSYM_SITE_NAME) */
 extern int far Dx8;  /* scaffold reference for pool word BF96 (segment 8, MAPSYM_SITE_NAME) */
 extern int far Dy8;  /* scaffold reference for pool word BF98 (segment 8, SEGMENT_REPRESENTATIVE) */
 extern int far MeWarnHealth;  /* scaffold reference for pool word BF9A (segment 9, MAPSYM_SITE_NAME) */
@@ -90,7 +92,6 @@ extern int far BlkWarnHealth;  /* scaffold reference for pool word BF9C (segment
 extern int far MiscStrs;  /* scaffold reference for pool word BF9E (segment 9, MAPSYM_SITE_NAME) */
 extern int far CurGameType;  /* scaffold reference for pool word BFA0 (segment 9, MAPSYM_SITE_NAME) */
 extern int far ScenarioNameStrs;  /* scaffold reference for pool word BFA2 (segment 9, MAPSYM_SITE_NAME) */
-extern int far spiderTileLeft;  /* scaffold reference for pool word BF94 (segment 9, MAPSYM_SITE_NAME) */
 extern int far pack_buf;  /* scaffold reference for pool word BFA4 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far spiderTileTop;  /* scaffold reference for pool word BFA6 (segment 9, MAPSYM_SITE_NAME) */
 extern int far SpidOn;  /* scaffold reference for pool word BFA8 (segment 9, MAPSYM_SITE_NAME) */
@@ -260,8 +261,8 @@ void far OverlayTileSet(int type, int id)
         return;
 
     if (id == 0x3e9) {
-        if (editBufInvalidFlag[1] != 1) {
-            editBufInvalidFlag[1] = 1;
+        if (terrainSetState != 1) {
+            terrainSetState = 1;
             TERRAINset = 1;
             if (terrainTiles != 0)
                 mem_Free(terrainTiles);
@@ -270,8 +271,8 @@ void far OverlayTileSet(int type, int id)
         }
         Barrier = 0x90;
     } else if (id == 0x3e8) {
-        if (editBufInvalidFlag[1] != 0) {
-            editBufInvalidFlag[1] = 0;
+        if (terrainSetState != 0) {
+            terrainSetState = 0;
             TERRAINset = 0;
             if (terrainTiles != 0)
                 mem_Free(terrainTiles);
@@ -382,13 +383,14 @@ void DoEditUpdateDraw(void)
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _ScrollEditWindow.
  * It only reproduces the object's selector-pool allocation order for the
- * words BF92; its code is compiled into the reserved
+ * words BF92 BF94; its code is compiled into the reserved
  * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
 void far pool_stub_ScrollEditWindow(void)
 {
     volatile int t;
 
     t = *(int far *)&MapPnt;
+    t = spiderTileLeft;
 }
 
 void UpdateEditWindow(void)
@@ -439,13 +441,12 @@ void InvalidUpdateEdit(void)
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _PreDrawSpider.
  * It only reproduces the object's selector-pool allocation order for the
- * words BF94 BFA4 BFA6 BFA8 BFAA; its code is compiled into the reserved
+ * words BFA4 BFA6 BFA8 BFAA; its code is compiled into the reserved
  * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
 void far pool_stub_PreDrawSpider(void)
 {
     volatile int t;
 
-    t = spiderTileLeft;
     t = pack_buf;
     t = spiderTileTop;
     t = SpidOn;

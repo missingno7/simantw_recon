@@ -1,7 +1,7 @@
 /* Candidate translation unit antedit_C19C_InitMapFunctions_3_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
  * Members: _InitMapFunctions, _OpenMapWindow, _AllocateMapBuffer
- * SCAFFOLDED: unclaimed members _DrawMapCursor, _DrawMapData are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
+ * SCAFFOLDED: claimed members in 3 code runs; no pool stand-ins were needed. */
 
 typedef void (far *MakeTableProc)();
 extern unsigned char near displayType;
@@ -21,20 +21,10 @@ extern unsigned int near mapBuf;
 extern char near mapOwner[];
 extern long far BitmapImageSize(int width, int height, int planes);
 
-extern int far MapPnt;  /* scaffold reference for pool word C1F0 (segment 9, MAPSYM_SITE_NAME) */
-extern int far mapTileRect;  /* scaffold reference for pool word C1F2 (segment 9, MAPSYM_SITE_NAME) */
-extern int far mapCursorRect;  /* scaffold reference for pool word C1F4 (segment 9, MAPSYM_SITE_NAME) */
-extern int far just;  /* scaffold reference for pool word C1F6 (segment 9, MAPSYM_SITE_NAME) */
-extern int far BlkWarnHealth;  /* scaffold reference for pool word C1FC (segment 9, MAPSYM_SITE_NAME) */
-extern int far MeWarnHealth;  /* scaffold reference for pool word C1FE (segment 9, MAPSYM_SITE_NAME) */
 
-void far pool_stub_DrawMapCursor(void);
-void far pool_stub_DrawMapData(void);
 void OpenMapWindow(void);
 void AllocateMapBuffer(void);
 
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_DrawMapCursor)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_DrawMapData)
 #pragma alloc_text(RUN2_TEXT, OpenMapWindow)
 #pragma alloc_text(RUN3_TEXT, AllocateMapBuffer)
 
@@ -57,32 +47,6 @@ void far InitMapFunctions(void)
 void OpenMapWindow(void)
 {
     win_Open(0x100);
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DrawMapCursor.
- * It only reproduces the object's selector-pool allocation order for the
- * words C1F0 C1F2 C1F4 C1F6; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_DrawMapCursor(void)
-{
-    volatile int t;
-
-    t = MapPnt;
-    t = mapTileRect;
-    t = mapCursorRect;
-    t = just;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DrawMapData.
- * It only reproduces the object's selector-pool allocation order for the
- * words C1FC C1FE; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_DrawMapData(void)
-{
-    volatile int t;
-
-    t = BlkWarnHealth;
-    t = MeWarnHealth;
 }
 
 void AllocateMapBuffer(void)

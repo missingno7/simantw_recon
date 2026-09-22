@@ -25,7 +25,7 @@ extern void far GPutStr(int x, int y, char far *text);
 extern void far font_MakeImage(char far *text, int mode, FONTARG);
 extern void far GPutImgS(int x, int y, void far *image, int width, int height, int mode);
 
-extern int far Dx8;  /* scaffold reference for pool word C16A (segment 8, SEGMENT_REPRESENTATIVE) */
+extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;  /* scaffold reference for pool word C16A (based segment) */
 
 void far pool_stub_font_SetFont(void);
 
@@ -39,7 +39,7 @@ void far pool_stub_font_SetFont(void)
 {
     volatile int t;
 
-    t = Dx8;
+    t = pool_segment_ref_SIMANT_DATA_GROUP;
 }
 
 void far font_InitFonts(void)
