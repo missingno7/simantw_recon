@@ -1,7 +1,7 @@
 {
   "id": "DeadAntHere-a337cdab09",
   "symbol": "_DeadAntHere",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:07:26.967222+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,95 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "c3430b79554c5830a62c744d41d1d0501b1e53f5ba003cc247cf0e060cb968a0",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "b2b5f7d2eb3c2015cd8e8bf6ba0629c1b127675ebdec5ba7c81731afc3800d11",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "4918b71397fee09623672d5e0d3b414bb7f8afa8f00b797c261215590423b071",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "73baa73ba12dc6d25cbc55b61543ae72e02f3655df93a8d1ed2c17ba6c212594",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "08efb2849278634da9594a399abc17afcc611c9fe0de7b5c71db5a4ab0e3854f",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "b983911e0e361663433a6a24c94b319b5e17686b3d7c674d4120c665b72452ca",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "FAR_POINTER_TYPE"
+  ],
+  "reason": "Semantics converged (97-98/118 opcodes match; counter/circular-buffer, TERRAINset-conditional aging, SRand16/SRand4/SRand1 stamping, flat MapA/LifeA[x*64+y] via a shared tile local, and the far-pointer local for match_position[0x4f54] all reproduce the target's control flow and register reuse). Remaining first structural difference is at offset 9 (candidate build/grind/agentU/_DeadAntHere.c): capturing 'int far *slot = &match_position[0x4f54]' (or the equivalent match_position+0x4f54 pointer-arithmetic form) makes MSC7 load its ES half as a direct 'internal segment 9 offset 0' fixup, while the target loads ES for this SAME slot indirectly through the CONST selector-pool word at 0xc344 (mov es, word ptr [0xc344]), exactly like every other far-object ES load in this function. Both forms of taking the address produced byte-identical codegen (attempts 6 and 7), so the CONST-pool indirection is tied to how the far pointer is *stored/dereferenced* (three LES-based re-reads at offsets 33/124/237), not to the address expression's syntax. Best candidate: build/grind/agentU/_DeadAntHere.c (349-350/353 bytes, 97-98/118 opcodes, only register-allocation and expected far-fixup-representation differences remain).",
+  "next_experiment": "Try capturing the far pointer without ever dereferencing it through the compiler-visible C expression '*slot' for the counter increment (e.g. increment match_position[0x4f54] directly by index before taking &... for the LES-reload site), or try declaring 'slot' with an explicit __based/segment-qualified far pointer type so MSC treats the initial ES load like a normal far-object CONST-pool fetch instead of a compile-time segment constant; compare against src/recovered/wf_GetAntIndex-a8eba5e594.c's AT()-macro idiom, which was invented for this exact same segment-9 relocatable-fixup-vs-normal-fixup discrepancy."
 }

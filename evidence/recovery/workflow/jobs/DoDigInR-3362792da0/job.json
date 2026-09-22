@@ -1,7 +1,7 @@
 {
   "id": "DoDigInR-3362792da0",
   "symbol": "_DoDigInR",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T23:49:15.844137+00:00",
   "flags": [
     "/AL",
@@ -316,5 +316,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "c5ad6d4cbf050e4a5809c8bbbc1f31a8612fc628236a57ede3bf9c97a06290a1",
+      "report": "evidence/recovery/workflow/jobs/DoDigInR-3362792da0/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "355b10cc15ac74304d69852af1144126c5dffb82855e0af7291b8b5d449b8edc",
+      "report": "evidence/recovery/workflow/jobs/DoDigInR-3362792da0/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "ba9cea4c90065d6e1d04d325f578cd040f12db4d21c8be53eb3bdb7fe729e6c7",
+      "report": "evidence/recovery/workflow/jobs/DoDigInR-3362792da0/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "3 attempts used. Best candidate (build/grind/agentP/_DoDigInR.c, test2) reaches 220/283 opcodes matched, target_bytes=798 vs candidate_bytes=820, frame size differs by 2 bytes (enter 0x12 target vs 0x10 candidate). The full mode-check early-return path (offsets 0-51) is byte-exact including branch targets, confirming GetNewModeR/RlistM/Tindex bindings and declarations are correct. Divergence starts where the enter-direction result (GetEnterDirR/SRand8 fallback, our 'dir') is needed live past the attr computation: target keeps it in a stack slot ([bp-8], reloaded via 'or ax, word ptr [bp-8]') but our candidate always allocates it to DI regardless of declaration order (tried moving 'dir' to the last local decl) or 'volatile' (which changed spill pattern but did not reproduce the target's specific stack-slot reuse and made the match worse, 830 bytes). This is the mirror image of the B twin's blocker (DoDigInB was blocked REGISTER_ALLOCATION because target kept the same value in DI while our candidate spilled it) -- same root cause, opposite direction, suggesting the /Oeglw register allocator's choice for this particular live-across-call value is sensitive to something in the full live-range/register-pressure picture we have not identified. All fixed-up structural differences we can attribute to intentional C choices (LifeR[x][y]=RlistT[Tindex]=attr store, DigTileThemR==0 just zeroing RlistM[Tindex] with no GetNewModeR retry, GetWinner(cell,attr) defender using the target ant byte not the FindInRList index, the extra 0x14-tile AddAntToBList/LifeB spawn tail) are confirmed correct wherever the aligned_asm reaches them.",
+  "next_experiment": "Compare against an admitted /Oeglw function in this same unit that keeps a call result live across a subsequent conditional recompute in a stack slot (not a register) despite being used only twice, to find what discourages DI allocation; possibly try declaring 'dir' with a type or usage pattern (e.g. read through a pointer, or comma-expression) that matches whatever suppressed register promotion in the original."
 }

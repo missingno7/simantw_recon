@@ -1,7 +1,7 @@
 {
   "id": "DoFoodInR-8b4157f99e",
   "symbol": "_DoFoodInR",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T23:49:48.887751+00:00",
   "flags": [
     "/AL",
@@ -316,5 +316,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "47dc33a548a425f397b7887a1b2b2ebf1c7f2a80c031748c6c8c69c245d832c8",
+      "report": "evidence/recovery/workflow/jobs/DoFoodInR-8b4157f99e/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "412aa1c538593d9a7e8e0abe0795ff55a1335955f33d43c2f2242e078ff8696a",
+      "report": "evidence/recovery/workflow/jobs/DoFoodInR-8b4157f99e/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "2 attempts used. Candidate (build/grind/agentP/_DoFoodInR.c, test2) reaches 180/229 opcodes matched, target_bytes=640 vs candidate_bytes=671. Confirmed and fixed a polarity bug from the first attempt: the eat-in-place branch triggers on dir<0 OR SRand16()==0 (jne-taken/!=0 continues to the movement path), matching target exactly through offset47 once corrected. Remaining differences (frame size 0x1e vs target 0x1c, cascading branch-target/stack-local-layout renumbering) are register-allocation/frame-layout, not semantic; all reached structural pieces (eat-in-place MapR raise/increment, FoodR++, RlistT bit-3 gate + SRand1(100) vs HealthR wear/FoodR/EatCountR/HealthR bookkeeping, GetNewModeR into RlistM, and the movement branch's attr/LifeR/RlistT store, Dx8/Dy8 move, boundary/GetOutR, tile>=0x30 bare fail, DoDigInR-shaped fight resolution) are confirmed correct.",
+  "next_experiment": "Shrink the candidate frame by 2 bytes (one word): identify which local (dir/attr/nx/ny/newIdx/tile/index/winner/fought/cell) the target folds into an existing stack slot or register that our candidate keeps separate; compare against DoFoodInB's own best candidate for the same class of frame-size mismatch."
 }

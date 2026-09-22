@@ -1,7 +1,7 @@
 {
   "id": "DigMyTile-1ad541b93c",
   "symbol": "_DigMyTile",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:11:48.172415+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "a80bf22c1d68e906ef6612a0ceb541bea0fd4085422e23c02e32f7bae6a6ecf4",
+      "report": "evidence/recovery/workflow/jobs/DigMyTile-1ad541b93c/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "33f062c92b8b818d4f3741bc5ed0a0f67d8bbdde82b1b34fe52c5d13cd7d4ce1",
+      "report": "evidence/recovery/workflow/jobs/DigMyTile-1ad541b93c/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "badf64d0c3739e713a7359f55cd76fa3491d22dd057fc7f541b08fcfdebcf8bf",
+      "report": "evidence/recovery/workflow/jobs/DigMyTile-1ad541b93c/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (attempt02/03, build/grind/agentW/DigMyTile.c) matches CFG shape exactly (cfg_shape_match true) and reaches 160/195 opcodes with zero register-only differences: IsItDigable(type,x,y) gate, the type==2 (black) path (MapB[x][0]=0x18 + MakeNewHoleB(x) for y<=1, DigTileB(x,y) otherwise), and the red-colony path duplicated verbatim in source for the y==1-after-hole-creation case and the y>1-direct case (MapR[x][0]=0x18 + MakeNewHoleR(x); IsItDirt-gated MapR[x][y] overwrite with SRand8(); TileTotXR/TileTotYR accumulation; TilesDugR pre-increment; conditional TileMassXR/TileMassYR division; SmoothEdgesR x4; FixExitMapR) all land correctly -- duplicating the digging block in source (rather than sharing it after the y<=1 guard) was required and confirmed by attempt02 jumping cfg_shape_match from false to true and opcodes matched from 114 to 160/195. The remaining difference is the same register-allocation/dead-store family already exhausted on all four simone:16AE siblings attempted so far (DigTileThemB/R, MakeNewHoleB/R): target 0x5d 'mov word ptr [bp-2], bx' spills the partial row product x*64 (computed once for the 'MapR[x][0]=0x18' write) across the MakeNewHoleR(x) call so it can be reused unchanged at 0x118 ('mov bx,[bp-2]; add bx,si; add bx,0x58e8') for the y==1 dig's MapR[x][y] address; two source phrasings (a plain repeated 'MapR[x][y]' expression, and an explicit '&MapR[x][0]' pointer reused as 'row+y') both produced byte-identical candidates: the isolated compiler recomputes x<<6 fresh after the call instead of spilling-and-reloading it, exactly the same 'recompute over spill' preference seen with DigTileThemB's cnt and MakeNewHoleB's ringIndex.",
+  "next_experiment": "Same as the other four simone:16AE blocks: once DigTileB/CreateNewHole drafts exist, try tools/tu_assembly.py to compile the whole unit together; whole-file /Oe global register allocation may reproduce the exact spill-across-call behaviour that five separate isolated single-function compiles have now consistently avoided in favour of cheaper recomputation."
 }

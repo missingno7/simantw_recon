@@ -1,7 +1,7 @@
 {
   "id": "CreateNewHole-c7ec903cd5",
   "symbol": "_CreateNewHole",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:11:57.601322+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "a3ee122e78c81b2dabcbbe012f70c6640a6fdc03103363ce252bfdfd6eed1fe0",
+      "report": "evidence/recovery/workflow/jobs/CreateNewHole-c7ec903cd5/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "bdf91cbcc3b3eee17e957bf65258797aea377ec09e49e88221a42ae9870a82d2",
+      "report": "evidence/recovery/workflow/jobs/CreateNewHole-c7ec903cd5/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (attempt02, build/grind/agentW/CreateNewHole.c) matches CFG shape exactly (cfg_shape_match true), is byte-length nearly identical (502 vs 506), and reaches 154/182 opcodes: the bounds check (x in [1,126], y in [1,62], fixed to the exact >=0x7f/>=0x3f immediates the target uses), the TERRAINset-gated MapA[x][y]=0x59-or-0x50-plus-8-direction-HoleValues-stamp (identical shape to MakeNewHoleB/R's fallback neighbour stamp), the x<0x40 black-colony commit (HoleMapB[y]=x; DigTileB(y,1); LastNewHoleB/LastNewExitB writes at the correct MAPSYM offsets 33626/33618), and the x>=0x40 red-colony commit inlining the DigTileR-shaped row-1 dig (IsItDirt-gated MapR[y][1] overwrite, TileTotXR+=y/TileTotYR+=1 literal, TilesDugR pre-increment, conditional TileMassXR/TileMassYR division, SmoothEdgesR x4, FixExitMapR, LastNewHoleR/LastNewExitR writes) all land correctly with the right call argument shapes and far-object fixups. The remaining difference is register-only (16 register_only_differences, matching family already exhausted on all six simone:16AE siblings attempted so far): the 8-direction neighbour-stamp loop's three locals (k, newRow=Dx8[k]+x, newCol=Dy8[k]+y) land in cx/si/di in the target but cx/dx-with-a-spill/si-then-cx in the isolated candidate; two attempts (initial draft, then fixing the off-by-one bound immediates which raised the match from 152 to 154/182) left this specific three-register assignment unchanged, consistent with the parameter/local register-numbering being an isolated-compile default this project has repeatedly found unmovable by source phrasing alone (see DigTileThemR's SI/DI swap finding).",
+  "next_experiment": "Same as the other six simone:16AE blocks now attempted (DigTileThemB/R, MakeNewHoleB/R, DigMyTile, DigTileB): try tools/tu_assembly.py to compile the whole unit together once all seven drafts exist; whole-file /Oe global register allocation is the remaining untested hypothesis for these register-numbering and dead-store-spill differences that seven separate isolated single-function compiles have now consistently exhibited."
 }

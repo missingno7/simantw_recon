@@ -1,7 +1,7 @@
 {
   "id": "MakeNewHoleB-b9f12becd3",
   "symbol": "_MakeNewHoleB",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:11:34.952341+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "a9896dca1081f7c252f9231511ef80a9d40019981d1a2bdc4b57d97c11977dc7",
+      "report": "evidence/recovery/workflow/jobs/MakeNewHoleB-b9f12becd3/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "edcae6f8ea0b9621247bbea6504120e3b692eb780dfa0856a0578f7c38973c85",
+      "report": "evidence/recovery/workflow/jobs/MakeNewHoleB-b9f12becd3/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "54a247ef31d4a0c595a3a5b6c0d0186b6185f81f87c449ee85c1c3f08fa875b6",
+      "report": "evidence/recovery/workflow/jobs/MakeNewHoleB-b9f12becd3/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "9cb2c59e5eb70fa6eb9c754876923ea5747cfe28262f001be1c8bb3a5c382d2d",
+      "report": "evidence/recovery/workflow/jobs/MakeNewHoleB-b9f12becd3/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (attempt02/04, build/grind/agentW/MakeNewHoleB.c) recovers full semantics with 143/176 opcodes matched: SRand1(0x1f) roll, the TERRAINset-gated ring search r=(roll+j)%0x20+2 over MapA[r][x] reproducing CanBeHouseHole's exact lookup table inline (0->0x86; 2/3->0x8a [tail-merged via separate if-statements exactly like the admitted CanBeHouseHole, confirmed: target's cmp si,3;je jumps back into the cmp si,2 case's mov/jmp]; 0x5e..0x61->v+0x22; 0x66->0x85; 0x68->0x84; else 0), the IsClear3x3(1,r,x) fallback ring search when TERRAINset==0, the 8-direction Dx8/Dy8 HoleValues[] neighbour stamp (matches the blocked HoleBorder draft's shape), and the shared tail HoleMapB[x]=(byte)r; DigTileB(x,1). All of this is confirmed correct at the opcode/call/fixup level for the matched two-thirds of the function (calls to SRand1/IsClear3x3/DigTileB land correctly, MapA/HoleMapB/Dx8/Dy8/LastNewHoleB[2]/LastNewExitB[2] selector fixups at 33618/33626 resolve correctly once reached). The remaining difference is the same class of issue already documented and exhausted on DigTileThemB/DigTileThemR: (1) a dead store to a spill slot -- target 0x92 'mov word ptr [bp-8], di' (ringIndex=j) is written twice (offsets 0x6e and 0x92) but is NEVER read back for block A's own control flow (block A re-derives the loop-exhausted/found distinction by reading DI directly at 0xca 'mov si, di', not by reloading [bp-8]; only block B's tail at 0x18f 'mov si,[bp-8]' actually reads that slot) -- every source phrasing tried (else-if chain, goto-to-shared-check, explicit hole=0 defaults, declaration-order swap of roll/r) reproduces the semantics but the compiler eliminates this provably-dead store, shrinking the candidate by ~8-20 bytes and cascading into (2) reassigned stack slots for roll/r/hole/ringIndex (target: roll=bp-4, r=bp-6, hole=dx, ringIndex spills to bp-8 only reached via register; candidate reassigns roll/r to the opposite slots and hole to ax/cx) and (3) a shared branch-merge point (target's single 'or dx,dx;jne' at 0x64 reached by six separate jmp sites plus one fallthrough) that the candidate reproduces with a different, smaller merged check. Four explained revisions (attempt01 with || combining v==2/v==3, attempt02 with separate if/else-if branches matching CanBeHouseHole's own style, attempt03 with explicit goto to a shared 'check:' label, attempt04 swapping the roll/r local declaration order) all converge on the identical 143/176-opcode result once the || bug from attempt01 was fixed, confirming the remaining gap is register-allocation/dead-store, not a semantic or declaration error.",
+  "next_experiment": "Same next step as DigTileThemB/DigTileThemR: once the sibling simone:16AE members (DigTileB, DigMyTile, CreateNewHole, MakeNewHoleR) have drafts, try tools/tu_assembly.py to compile the whole unit together; MSC7 /Oe's whole-file global register allocation may reproduce the exact bp-4/bp-6/bp-8 slot assignment and the dead ringIndex spill that an isolated single-function compile does not."
 }

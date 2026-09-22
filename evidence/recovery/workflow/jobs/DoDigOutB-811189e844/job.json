@@ -1,7 +1,7 @@
 {
   "id": "DoDigOutB-811189e844",
   "symbol": "_DoDigOutB",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T23:49:28.207014+00:00",
   "flags": [
     "/AL",
@@ -317,5 +317,81 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "a423feaf57fb2dee4bf090ca9cd766b9e24167b40e6fd94654ce13000fe8a594",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutB-811189e844/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "b7c3695632023c3886656b5a47aa80ccfc647212dd3f75cf5ad9a3708dc8cf16",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutB-811189e844/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "ae97563d9e480cb383417e94744f98e46d2c6983f9983f908ceed6984455dd4a",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutB-811189e844/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "79e8c568ef82c6668058f733260f67e00a99a0868db9e46eb2042ec17231c349",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutB-811189e844/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "824a078987bf41779ef783c99544b93e7a235c618d024d249470189bde9db060",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutB-811189e844/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "5 attempts used. Best candidate (build/grind/agentP/_DoDigOutB.c, test2) reaches 199/234 opcodes matched, target_bytes=686 vs candidate_bytes=694; the direction-pick branch polarity (if(dir>0) dir--; else dir=RandTurn(...);) is confirmed correct and byte-exact through offset49. Remaining differences are frame-size (candidate enter 0x18 vs target 0x14, i.e. 2 extra stack words) and downstream register-allocation drift once ny fails to land in DI (candidate keeps it split across AX/a stack slot while target uses DI directly, offsets131/155), plus the resulting cascade of stack-local-layout renumbering for the two cached index locals (oldIdx=x*64+y, newIdx=nx*64+ny) that the target itself visibly caches (les/store to fixed bp-offsets reused many times in the fight/tail logic) so they cannot simply be inlined -- removing either as a named local (tried both) changes unrelated register choices elsewhere (x got hoisted into DI before the first call) rather than shrinking the frame cleanly. All semantic/structural pieces reached by the aligned diff (GetExitDirB/RandTurn dir pick, Dx8/Dy8 move, boundary checks, obstacle tile>=0x30 ExitMapB--/cx-dispatch, IsItDirt-solid bare fail) are confirmed correct.",
+  "next_experiment": "Find another admitted /Oeglw function in this unit with two far-indexed byte locals cached across a call-heavy middle section (a 'before' and 'after' cell index) to see what local layout/ordering keeps them in exactly a 20-byte frame; try declaring nx/ny as the FIRST locals (before dir/attr) since the target computes them right after dir."
 }

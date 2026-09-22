@@ -1,7 +1,7 @@
 {
   "id": "DoDigInB-488f6cee1d",
   "symbol": "_DoDigInB",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:07:33.155930+00:00",
   "flags": [
     "/AL",
@@ -317,5 +317,123 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "e93376da718624f457ee5df5de7e4103fe52b340dfa11035a448b3310bb09029",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "ae7c51b79fb516834c9c0da307c7da36ee2d6f0a7f440458b053db8bfb8cb24d",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "6e1481e0a7de252865e0d5b6891f4961edaacddbe01565f0dec4c67fdeb630e8",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "ef0a925920a383aa27946aeb3e49ec7a2223a56336b415ab33de7406bcd59146",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "1b46714b968b03f04b3bc3e732d9b337846bc178f4f3756a69aae1f0ed9c9753",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "03f28613303f0a085adbf5a7b4427a6088a750064705d4de1a6b766fcbea983a",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "afb048f42e2bcc2899befbf478628e61d843fb35654beefa808d11c010a8e435",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "aac19a33fd6164ce338a25f5b945fb66e4a43b9c42673a1f1032d3d409c82d56",
+      "report": "evidence/recovery/workflow/jobs/DoDigInB-488f6cee1d/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "8/8 attempts used. Best candidate (build/grind/agentP/_DoDigInB.c, test8) reaches 218/252 opcodes matched, target_bytes=735 vs candidate_bytes=753, and the entire first return path (mode!=2&&6 early exit, offsets 0-51) is byte-exact including branch targets. Remaining divergence starts at offset52: the enter-direction result (GetEnterDirB/SRand8 fallback, our local 'dir') is kept live in DI across the whole function in the target (mov di,ax; or di,di; jge; lcall SRand8; mov di,ax; ...; or ax,di) but our candidate always spills it to a stack temporary ([bp-8]) and reloads it, regardless of how the C source names/scopes the variable (tried a plain int local, and a value reused only within the same expression). This also shifts 'mov si,[bp+8]' one instruction later than target. All differences observed are REGISTER_ALLOCATION-shaped (register vs stack-local for the same live-across-call value) plus the resulting branch_target drift; opcodes/operands/immediates that are compared are otherwise correct (LifeB[x][y]=attr and BlistT[Tindex]=attr bug from earlier attempts is fixed and matches).",
+  "next_experiment": "Try forcing 'dir' to stay register-resident (e.g. declare it register int, or restructure so GetEnterDirB's result is only ever touched by 'or'/compare ops with no intervening stack-visible use) so /Oeglw does not spill it to [bp-8]; compare against wf_DoRandB's DI-resident register pattern for its own SRand8 fallback."
 }

@@ -1,7 +1,7 @@
 {
   "id": "DigTileB-b8c7ae515f",
   "symbol": "_DigTileB",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:11:52.596490+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,25 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "1e1f7a68e6281877d2670908e9dcf1c0e22c5aeeedbcc4b387b35a219ab227a0",
+      "report": "evidence/recovery/workflow/jobs/DigTileB-b8c7ae515f/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (attempt01, build/grind/agentW/DigTileB.c) matches CFG shape exactly (cfg_shape_match true), is byte-length nearly identical (504 vs 505), and reaches 143/196 opcodes with zero register-only differences: the IsItDirt-gated MapB[x][y] dig with SRand8, TileTotXB/TileTotYB/TilesDugB bookkeeping and conditional TileMassXB/TileMassYB division (matches the accepted-shape DigTileThemB body verbatim), the y>0x35 && SRand1(0x40)==0 gated cross into the red colony's tunnel (MapB[x][y]=0x14, IsItDirt-gated MapR[x][y] dig with its own TileTot/TilesDugR/TileMass bookkeeping, SmoothEdgesR x4, FixExitMapR, MapB[x][y]=0x14 again), and the always-run SmoothEdgesB x4 + FixExitMapB tail all land correctly in the right order with the right call argument shapes. The remaining difference is the identical register-allocation/dead-store family already exhausted on all five simone:16AE siblings attempted so far (DigTileThemB/R, MakeNewHoleB/R, DigMyTile): target 0x13 'mov word ptr [bp-2], bx' spills the computed MapB[x][y] byte address (x*64+y, i.e. 'add bx,si' folded into the base+index before the offset) across the IsItDirt call so it can be reloaded unchanged 7 more times later (writes/reads at 0x31,0xcc,0xcf,0xd4,0xef,0xf2,0x1af,0x1b2) for MapB[x][y] and MapR[x][y] (same bx, +0x10000 segment). The isolated compile instead recomputes x*64+y fresh at each of those 8 sites (matching plain repeated 'MapB[x][y]'/'MapR[x][y]' array-subscript C, which is the only reasonable source phrasing for eight independent accesses at the same index) rather than spilling-and-reloading, the same 'recompute over spill across a call' preference documented on DigTileThemB's cnt, MakeNewHoleB's ringIndex, and DigMyTile's row product.",
+  "next_experiment": "Same as the other five simone:16AE blocks: once CreateNewHole's draft exists, try tools/tu_assembly.py to compile the whole unit together; whole-file /Oe global register allocation may reproduce the exact spill-across-call behaviour that six separate isolated single-function compiles have now consistently avoided."
 }

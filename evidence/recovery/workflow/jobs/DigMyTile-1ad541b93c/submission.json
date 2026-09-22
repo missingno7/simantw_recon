@@ -11,8 +11,10 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "",
-  "binding_evidence": [],
+  "semantic_summary": "* DigMyTile(type, x, y): digs the tile at (x, y) for the ant's own colony\n * (type == 2 selects the black colony's MapB/MakeNewHoleB/DigTileB path,\n * anything else selects the red colony's MapR/MakeNewHoleR path, which\n * inlines DigTileR-shaped digging rather than calling it, mirroring the\n * accepted-shape MakeNewHoleR draft). IsItDigable(type, x, y) gates the\n * whole function: a false result returns immediately without touching any\n * map. For row y <= 1 both colonies first seed the surface nest-entrance\n * marker 0x18 at (x, 0) and open a new hole via MakeNewHoleB(x)/\n * MakeNewHoleR(x); when y != 1 that alone is the whole operation and the\n * function returns without digging further. Otherwise (y == 1, or y > 1\n * directly): the black path calls DigTileB(x, y) and returns; the red path\n * inlines the dig itself -- if MapR[x][y] is dirt (IsItDirt) it is\n * overwritten with SRand8(), TileTotXR += x and TileTotYR += y accumulate,\n * TilesDugR is pre-incremented, and while the resulting count is positive\n * TileMassXR/TileMassYR are recomputed as TileTotXR/TileTotYR divided by\n * that count (matches the accepted-shape DigTileThemR/MakeNewHoleR dig-total\n * bookkeeping, both MATCH_BLOCKED on an unrelated register-allocation\n * dead-store); the four orthogonal neighbours are re-smoothed with\n * SmoothEdgesR and the exit-flow map is refreshed with FixExitMapR\n * regardless of whether the cell was dirt. Declarations for MapB/MapR/\n * DigTileB/MakeNewHoleB/MakeNewHoleR/IsItDirt/SRand8/SmoothEdgesR/\n * FixExitMapR/TileTotX-Y/TileMassX-Y/TilesDugR are reused verbatim from the\n * RandWorld/DigOutBNest-DigOutRNest translation unit\n * (src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c) and the\n * accepted-shape MakeNewHoleB/MakeNewHoleR drafts\n * (build/grind/agentW/MakeNewHoleB.c, MakeNewHoleR.c, both MATCH_BLOCKED).\n * IsItDigable is not yet recovered in this unit (simone:16AE); its\n * signature is inferred from the exact 3-argument push order at the call\n * site (type, x, y).",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
   "publics": [
     "_DigMyTile"
   ]

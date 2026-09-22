@@ -11,8 +11,10 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "",
-  "binding_evidence": [],
+  "semantic_summary": "* DoDrownB: per-turn drowning check for a B ant at (x, y) with\n * direction/state byte dirArg.  If the MapB tile there is still\n * deep water (< 0x14), the ant just transitions state via\n * GetNewModeB((dirArg&0x78)>>3), stored into BlistM[Tindex], and\n * returns (still stuck in the water; the store-then-bare-return\n * shape matches DoDigInB's proven byte-exact mode-transition tail).\n * Otherwise (tile >= 0x14, shallow/opened ground) a new direction\n * byte is rolled: newAttr = ((SRand1(3) + dirArg - 1) & 7) |\n * (dirArg & 0xf8), stored into both BlistT[Tindex] and LifeB[x][y].\n * An SRand1(100) roll that comes back nonzero ends the turn there\n * (bare return).  The attribute parameter is copied to a local that is\n * updated in place (SI); the rolled direction is a char temporary (byte\n * add/dec in AL) and the cell index is an int local with a frame home; x is a register\n * parameter (kept in DI for the function's duration).  On a zero roll the ant drowns: LifeB[x][y] and\n * BlistT[Tindex] are cleared, and one of two far long tallies is\n * incremented depending on newAttr's high bit (0x80): RAntsExpired\n * when set, BAntsExpired when clear.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
   "publics": [
     "_DoDrownB"
   ]

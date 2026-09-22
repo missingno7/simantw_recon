@@ -1,7 +1,7 @@
 {
   "id": "MakeNewHoleR-b3e39dc044",
   "symbol": "_MakeNewHoleR",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:11:39.105134+00:00",
   "flags": [
     "/AL",
@@ -314,5 +314,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "bf6e0c18027ba0f9a6d4fe0eded32e12b46589925cc3cd65f248055273e1d840",
+      "report": "evidence/recovery/workflow/jobs/MakeNewHoleR-b3e39dc044/attempt01/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 2,
+      "submission_digest": "9489379147f669ffec0673a2e07ed4ecff99bca2c6999782ce1a291c819516be",
+      "report": "evidence/recovery/workflow/jobs/MakeNewHoleR-b3e39dc044/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (attempt02, build/grind/agentW/MakeNewHoleR.c) recovers full semantics with 207/254 opcodes matched: SRand1(0x1f) roll, the TERRAINset-gated ring search r=0x7e-(roll+j)%0x20 over MapA[r][x] with the same inline CanBeHouseHole-shaped lookup table as the sibling MakeNewHoleB, the IsClear3x3(1,r,x) fallback ring search, the 8-direction Dx8/Dy8 HoleValues[] neighbour stamp, LastNewHoleR[2]/LastNewExitR[2] position recording, and the inlined row-1 dig tail (HoleMapR[x]=(byte)r; IsItDirt-gated MapR[x][1] overwrite with SRand8(); TileTotXR+=x; TileTotYR+=1 [literal, since row is always 1]; TilesDugR pre-increment; conditional TileMassXR/TileMassYR = TileTot*/count; SmoothEdgesR(x,0)/(x+1,1)/(x,2)/(x-1,1); FixExitMapR(x,1)). All calls (SRand1/IsClear3x3/IsItDirt/SRand8/__aFldiv x2/SmoothEdgesR x4/FixExitMapR) and far-object fixups (MapA/HoleMapR/Dx8/Dy8/LastNewHoleR/LastNewExitR/TileTotXR/TileTotYR/TilesDugR/TileMassXR/TileMassYR) resolve correctly for the matched two-thirds of the function. The remaining gap is the identical register-allocation/dead-store family already exhausted on the sibling DigTileThemB/DigTileThemR/MakeNewHoleB (all four MATCH_BLOCKED with the same cause): target 0x94 'mov word ptr [bp-8], di' (ringIndex=j after the ring-lookup loop) is written twice but the isolated compile eliminates it and its paired shared branch-merge point (target's single 'or dx,dx;jne' at 0x64 reached by six jmp sites plus fallthrough, vs the candidate's smaller merged check at 0x82), cascading into reassigned stack slots for roll/r/hole (target: roll=bp-4,r=bp-6,hole=dx; candidate: roll=bp-8,r=bp-4,hole=ax) exactly as seen on MakeNewHoleB. Given MakeNewHoleB already spent 4 explained revisions (||-vs-separate-if, goto-to-shared-label, declaration-order swap) without moving past this specific compiler behavior in isolation, and DigTileThemB/R spent 7 and 2 respectively confirming the same wall, a second attempt here reproduced the identical pattern, confirming it is not specific to any one function's C phrasing.",
+  "next_experiment": "Same as the other three simone:16AE blocks: once DigTileB/DigMyTile/CreateNewHole drafts exist, try tools/tu_assembly.py to compile the whole unit together; whole-file /Oe global register allocation may reproduce the exact bp-4/bp-6/bp-8 slot assignment and the dead ringIndex spill that isolated single-function compiles consistently eliminate across all four siblings tried so far."
 }

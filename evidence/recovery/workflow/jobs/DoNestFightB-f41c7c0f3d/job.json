@@ -1,7 +1,7 @@
 {
   "id": "DoNestFightB-f41c7c0f3d",
   "symbol": "_DoNestFightB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:07:46.865383+00:00",
   "flags": [
     "/AL",
@@ -331,6 +331,109 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "3327da628eefe2bcfd8da6f163e14aa3544333cec5fee73831add816cff05ea0",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "4dd0c8c14bf232dfef5f1862375b7112e02e40a51d14c52e5b11518dfcd39cf9",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "21691525d9eccb9375ddac59f40f30f638e4065243180e693beb590b21bff3df",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "40487bce9cb24a18fa75bb87b73198555a4a0fafee067bf8325b6f907f485279",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "b8241d1438eafad7d3ff4f27b905d5db05a6f13620b1213fe877c81dd3e82d61",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "707a29a9d3f78b3734cc32ccc80d247cb3834277a91befa200c46d9d5fcc6e70",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "a247ec7c2442013047537244c6686e536cfdfccd069a0efacfc337a21350db6d",
+      "report": "evidence/recovery/workflow/jobs/DoNestFightB-f41c7c0f3d/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (attempt06/07, build/grind/agentQ/DoNestFightB.c) reaches exact target size (318/318 bytes), 81/292 literal bytes equal (rest are expected CONST-fixup differences per brief), and every instruction shape/opcode matches except one: after the SRand16()==0 block copies Dx8[Tindex+0x3f0e] into Dx8[Tindex+0x3d18] and tests (raw&0x78)==0x60, the target (enter 2,0) performs a genuine fresh far re-read of Dx8[Tindex+0x3d18] at offset 0x87 (after the compiler's own DS-restore 'push ss/pop ds' invalidates the DS-cached Tindex register), while every candidate tried (enter 4,0) instead spills the pre-branch AL value to a stack temporary (extra 'mov byte ptr [bp-4],al' at offset 0x6e) and reloads it from there post-branch. Tried: (1) inline duplicate subexpression Dx8[Tindex+0x3d18] at each use site -> same 3-byte spill; (2) explicit local 'raw' assigned once before the if -> same; (3) explicit local 'raw' assigned fresh inside the if body (single shared read for dir+attribute) -> identical spill, byte-identical objects to (1)/(2); (4) '*(volatile unsigned char far *)&Dx8[...]' cast at the inner read to force a genuine reload -> compiler instead materialized a full far pointer (les) and grew the body to 326-336 bytes, worse. All four are explained, semantically-motivated register/stack-allocation experiments; none reproduces the target's specific choice to re-fetch through ES/BX after the DS restore instead of caching across the branch.",
+  "next_experiment": "Try restructuring the SRand16()==0 body as two back-to-back if-statements around the (raw&0x78)==0x60 test (splitting the AddAntToBList call into its own guarded block written after, not nested inside, the mode-decode code) so the compiler's local CSE window for the pre-branch AL value ends at the call's own basic-block boundary instead of spanning the whole if-body; alternatively try moving the AddAntToBList argument evaluation order (attribute first, then life/column) since target pushes state/direction literals before reloading Tindex/BlistT, which may signal a different original statement order (e.g. two prior statements assigning to temporaries in push order) than the single function-call-expression this draft uses."
 }

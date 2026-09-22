@@ -1,0 +1,21 @@
+{
+  "symbol": "_DoNestAntR",
+  "source": "evidence/recovery/workflow/jobs/DoNestAntR-11b04b776f/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NTSIMANT1_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "* DoNestAntR: per-tick AI dispatcher for one R-colony ant, called once per\n * pending Dx8 list record by DoAntSimR(x, y, attr).  attr is the ant's own\n * attribute/type byte (RlistT): bit 0x80 selects one of two independent\n * halves of this dispatcher (colony colour), bits 0x78 (>>3) give a\n * \"mode0\" nibble passed on to several per-mode workers.  This is the R\n * twin of DoNestAntB; despite sharing the overall dispatch shape it is\n * not a pure constant swap: the own-colony default/mode14 bodies check\n * their own-list range before the yellow-ant test (opposite order from\n * B), YellowFight is always called with kind 3 and gated on MeColor==0\n * (opposite polarity from B's MeColor!=0), the opposing-colony high half\n * has its own attr<8/attr>0x6f thresholds and its own mode6 (StayInR,\n * MePlane==3) / mode7 (RaidInR) special cases, and GetExitDirR signals\n * \"no exit\" with 0 rather than a negative value.\n *\n * Low half (attr&0x80==0): the current ant's own RlistM mode is read, a\n * per-mode population counter (TemRModePop) is bumped, and unless\n * mode==9 a random death check (SRand256()==0 && SRand32()>HealthR) can\n * clear the ant (RlistT=0, LifeR cell=0, RAntsExpired++) and return.\n * Otherwise mode (0..17) dispatches to one of the per-mode R-colony\n * workers (DoNestingR, DoFoodInR, DoDigInR, DoDigOutR, SimEggR,\n * SimQueenR, DoNestFightR) or to inline attack/movement logic matching\n * the DoRandR/RaidOutR sibling bodies, reused inline rather than by\n * call (matching this codebase's copy-paste style between similar\n * dispatchers).\n *\n * High half (attr&0x80!=0): bumps TemBModePop, and either clears the\n * current record directly when attr<8 (an eaten/expired egg), or\n * resolves via DoNestFightR-style combat when attr>0x6f, or otherwise\n * inspects the ant sitting on the destination cell: an opposing B-list\n * ant in 0x81..0xe7 is looked up, an old position above 0xdf is\n * cleared, one below 0x88 is treated as eaten/expired, otherwise\n * GetWinner decides the fight; failing that, mode==6 with MePlane==3\n * calls StayInR, mode==7 raids in (RaidInR), and any other mode tries\n * GetExitDirR/TryMoveDirR movement before giving up.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_DoNestAntR"
+  ]
+}

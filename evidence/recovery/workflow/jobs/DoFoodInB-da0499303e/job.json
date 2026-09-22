@@ -1,7 +1,7 @@
 {
   "id": "DoFoodInB-da0499303e",
   "symbol": "_DoFoodInB",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T23:49:44.057864+00:00",
   "flags": [
     "/AL",
@@ -317,5 +317,39 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "d4839ed1f7eb941e3b54de697152c0d545528ce5a7a3736eb0523cbf6073e2cc",
+      "report": "evidence/recovery/workflow/jobs/DoFoodInB-da0499303e/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "7dc28584d849a1650fd2935fe51255fe5608574d8b2acf586473a9e0ab6f52bf",
+      "report": "evidence/recovery/workflow/jobs/DoFoodInB-da0499303e/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "2 attempts used (attempt 2 via topology_retest reopening after finding and byte-confirming a polarity bug via the R twin). Corrected candidate (build/grind/agentP/_DoFoodInB.c) now uses dir<0||SRand16()==0 for the eat-in-place branch (matching DoFoodInR's confirmed-correct polarity). Best result still NO_COMPLETE_MATCH; same class of register-allocation difference as documented in attempt 1 (target caches DI=y/SI=x at entry, candidate's /Oeglw allocator picks the opposite) persists and dominates the remaining diff.",
+  "next_experiment": "Same as attempt 1: determine what drives the DI/SI parameter-cache choice for a 2-param (x,y) function in this unit; the eat-in-place polarity is now resolved and should not need revisiting."
 }

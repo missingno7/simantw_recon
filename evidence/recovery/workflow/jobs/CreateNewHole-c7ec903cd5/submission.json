@@ -11,8 +11,10 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "",
-  "binding_evidence": [],
+  "semantic_summary": "* CreateNewHole(x, y): places a hole directly at MapA[x][y] (x is the row,\n * y the column, matching MakeNewHoleB/R's internal r/x roles) instead of\n * searching a ring like MakeNewHoleB/R do; out-of-range coordinates\n * (x < 1, x > 126, y < 1, y > 62) are rejected with no effect. When\n * TERRAINset != 0 the cell is simply marked 0x59; otherwise it is marked\n * 0x50 and the eight Dx8/Dy8 neighbours are stamped with the private\n * per-direction HoleValues[] table wherever in bounds and not already\n * >= 0x50 (identical shape to MakeNewHoleB/R's fallback neighbour stamp).\n * The hole is then committed to one colony by row: x < 0x40 is the black\n * colony (HoleMapB[y] = x; DigTileB(y, 1); LastNewHoleB[2] = {x, y};\n * LastNewExitB[2] = {y, 0}); x >= 0x40 is the red colony, which inlines the\n * DigTileR-shaped dig of row 1 at MapR[y][1] instead of calling it\n * (matches the accepted-shape MakeNewHoleR/DigMyTile tails): IsItDirt-gated\n * overwrite with SRand8(), TileTotXR += y and TileTotYR += 1 (row is\n * always 1), TilesDugR pre-increment, conditional TileMassXR/TileMassYR\n * division, SmoothEdgesR(y,0)/(y+1,1)/(y,2)/(y-1,1), FixExitMapR(y, 1),\n * then LastNewHoleR[2] = {x, y}; LastNewExitR[2] = {y, 0}. Declarations for\n * MapA/HoleMapB/HoleMapR/Dx8/Dy8/HoleValues/DigTileB/IsItDirt/SRand8/\n * SmoothEdgesR/FixExitMapR/TileTotX-Y/TileMassX-Y/TilesDugR are reused\n * verbatim from the RandWorld/DigOutBNest-DigOutRNest translation unit\n * (src/recovered/wf_tu_simtwo_5AB0_RandWorld_5-2079c82816.c) and the\n * accepted-shape MakeNewHoleB/MakeNewHoleR/DigTileB drafts\n * (build/grind/agentW/MakeNewHoleB.c, MakeNewHoleR.c, DigTileB.c, all\n * MATCH_BLOCKED on the same unrelated register-allocation dead-store).",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
   "publics": [
     "_CreateNewHole"
   ]

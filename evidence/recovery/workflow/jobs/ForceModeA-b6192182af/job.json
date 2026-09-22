@@ -1,7 +1,7 @@
 {
   "id": "ForceModeA-b6192182af",
   "symbol": "_ForceModeA",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T22:02:08.995837+00:00",
   "flags": [
     "/AL",
@@ -372,6 +372,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "97502a1f614736f06d081e220c82197640fbd0e33507a2b1c844ea170340c4f9",
+      "report": "evidence/recovery/workflow/jobs/ForceModeA-b6192182af/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "22603dcb005421d0c665de4e0abdd153e127bb064d7952adfea481c8c9de62bf",
+      "report": "evidence/recovery/workflow/jobs/ForceModeA-b6192182af/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Body is close but not exact after 6 attempts (best: 61/74 opcodes matching, bytes 188-192 vs target 210, 6 register-only diffs, 27-28 fixup mismatches). Two persistent, source-rewrite-resistant codegen differences, tried with both array Dx8[] (RecruitRed/UnRecruit style, evidence/topology/... src/recovered/wf_tu_simtwo_0000_Recruit_3-04bd7dd52e.c) and scalar &Dx8 (GetAntIndex style) declarations, and both compound (+=/-=) and explicit (x=x+N) source forms: (1) 'AlistT(index) += 8' / '-= 8' / '-= 0x18' always compiles to a single 'add/sub <resolved fixup Dx8+CONST>,N' absolute-address instruction instead of the target's 'add/sub byte ptr es:[si+CONST],N' SI-indexed instruction -- the compiler drops si from this specific RMW addressing regardless of macro form. (2) the MapA clamp: a near-pointer local (p = &MapA[life*64+column+0x28e8]) reproduces the target's raw 'add bx,0x28e8' immediate and 'cmp/mov byte ptr [bx],0x48' bare-register form for the compare/store but the compiler allocates the pointer to DI (needing an extra push di / mov bx,di, giving 'enter 2,0' vs 'push bp;mov bp,sp;push di' framing) instead of keeping it in bx via the stack slot the target uses ([bp-2]); an int-typed cell index instead collapses MapA[cell] into a MapA-relative fixup at the cmp/mov instead of the target's plain [bx] register form. Best draft kept at build/grind/agentN/ForceModeA.c (array Dx8[] + near-pointer p, matching evidence/recovery/workflow/jobs/ForceModeA-b6192182af/attempt03 shape). Full diagnostics: evidence/recovery/workflow/jobs/ForceModeA-b6192182af/attempt0{1,2,3}/candidate0000.diff.txt.",
+  "next_experiment": "Try forcing the pointer local into bx explicitly (e.g. an inline near-pointer expression consumed immediately without a separate declared local, or reordering case-1/3/5 bodies so bx is already the only free near-pointer-sized register when p's live range starts) and, separately, probe whether declaring index as a local copy (int i = index;) before the AlistT compound adjustment restores the es:[si+CONST] RMW form instead of the absolute Dx8-fixup form."
 }
