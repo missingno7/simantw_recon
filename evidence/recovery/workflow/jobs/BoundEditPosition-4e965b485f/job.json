@@ -1,7 +1,7 @@
 {
   "id": "BoundEditPosition-4e965b485f",
   "symbol": "_BoundEditPosition",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T07:12:30.928882+00:00",
   "flags": [
     "/AL",
@@ -402,5 +402,10 @@
   ],
   "parked_reason": "Four bounded readable forms establish the plane-dependent 64/128 limit, exact match_position offsets 0x7d2e/0x7d30, editWidth/editHeight clamps, and target early negative-y return. The best attempt is exact 107 bytes with 11/12 fixups and aligned clamp body; remaining proof fails on the historical MapPlane prelude (target OR/JL/JO/DEC/JLE with AX, candidate extra/reordered register logic) and its DS-assumed operand binding.",
   "parked_next_experiment": "Recover the original ANTEDIT MapPlane expression/declaration context that emits the single-AX overflow-aware prelude and DS-assumed MapPlane access, then retest the already matched match_position form; do not use numeric casts or object-byte edits.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "5 attempts, score plateaued at 0.72 (35/38 opcodes), agreement below 80%. The first genuine structural divergence is at target offset 0x07: after 'mov ax,[MapPlane]; or ax,ax; jl 0xc' (testing MapPlane<0), the target emits 'jo 0xc' -- a second conditional branch off the SAME or-ax,ax flags (OF is always 0 after OR, so this is the classic MSC idiom for a signed range/overflow-safe compare, not a live 'MapPlane-1>0' recomputation) -- while every candidate expression tried (MapPlane<0 || MapPlane-1>0, and prior attempt variants) instead emits a fresh 'mov ax,dx; or ax,ax; jg' sequence: a second real comparison, not a second branch on the same flags. This is a genuine source-expression-shape mismatch in the 64/128 boundary predicate, not fixup noise (the memory-operand/immediate 'unresolved fixup' vs literal-DGROUP-offset divergences at 0x02/0x18/0x1f/0x27/0x30/0x34/0x41/0x46/0x4e/0x56/0x5a/0x6a are the expected isolated-compile DS/ES binding artifact and are not the blocker).",
+  "next_experiment": "Try a single relational predicate that reuses the same flags for both branches, e.g. 'if ((unsigned)(MapPlane - 1) <= 0)' or 'if (MapPlane <= 0 || MapPlane == 1)' forms compiled under /Oeglw, and inspect whether MSC7 emits a bare 'or ax,ax'+'jl'+'jo' pair (two branches off one flag-setting instruction) instead of a second explicit comparison."
 }

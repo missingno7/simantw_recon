@@ -1,7 +1,7 @@
 {
   "id": "win_DrawEditWindow-6331d1ff5f",
   "symbol": "_win_DrawEditWindow",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:59:14.407180+00:00",
   "flags": [
     "/AL",
@@ -371,6 +371,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "41ed170ba20bd2dc1723709d91273f4213025d7e63659e0922b983523d28651a",
+      "report": "evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -402,5 +416,10 @@
   ],
   "parked_reason": "Semantics established (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/win_DrawEditWindow-6331d1ff5f/attempt04/candidate0000.c, 201 vs 195 bytes, 57/69 opcodes): when flag bit 2 is set and editBuf is a valid handle and (updateRgn is empty or RectInRegion(updateRgn, &match rect)), lock editBuf and blit it at editTileRect x/y scaled by tileWidth*editWidth and tileHeight*editHeight through DoFastMonoBitmap (displayType & 1) or DoFastBitmap, unlock; then DrawEditGraphs() and win_GetObjRect(7, &rect). The original keeps the locked buffer's offset in SI across both blit branches and places editTileRect x/y at [bp-8]/[bp-6]; /Oelw spills the offset to [bp-4] and swaps the two slots for both declaration and assignment orders.",
   "parked_next_experiment": "Same frame-homed far pointer family as hanim_HideObject/gr_BitMapSize; test the buffer pointer declared first and the scaled sizes computed into the x/y locals in the target's order; distinguishing observation: 'mov si,ax' at +0x3e after mem_Lock and 'push dx / push si' for the blit argument.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "6 attempts, best score 0.565 (57/69 opcodes), well below 80%. The first genuine structural divergence is at offset 0x04: the target pushes SI right after 'enter 0x10,0' and before testing the flags bit ('push si' / 'test byte ptr [bp+6],2'), while no candidate tried (including hoisting editBuf into a local 'eb' reused across the if-check/mem_Lock/mem_Unlock in attempt06, which instead regressed to 56/69) produces that extra push -- the whole body is then off by one byte throughout, cascading into every subsequent branch-target and (expected, isolated-compile) near/far literal-vs-fixup divergence. This means SI is live across the whole function in the original (a register-allocated variable, most likely editBuf/eb or buf, that /Oeglw keeps in SI rather than a stack slot), and no source shape tried has induced MSC7 to pick that allocation in isolation.",
+  "next_experiment": "Try declaring 'register unsigned int eb' explicitly (not just a plain local) for editBuf, and/or declaring 'buf' as the first local before rect/px/py so its live range across the two DoFastBitmap/DoFastMonoBitmap calls plus mem_Unlock biases /Oeglw's register allocator toward SI; compare the resulting prologue for the extra push si."
 }

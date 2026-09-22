@@ -1,7 +1,7 @@
 {
   "id": "win_DrawModeWindow-e75bc0ed83",
   "symbol": "_win_DrawModeWindow",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:21:16.424818+00:00",
   "flags": [
     "/AL",
@@ -352,6 +352,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "a400ef39feeee82b765a5a5c56da0092154d81fd93678897bbec206867908eef",
+      "report": "evidence/recovery/workflow/jobs/win_DrawModeWindow-e75bc0ed83/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -390,5 +404,10 @@
     "EXPRESSION_SHAPE"
   ],
   "parked_reason": "Best candidate (evidence/recovery/workflow/jobs/win_DrawModeWindow-*/attempt01 and attempt03, identical bytes) reaches 214/216 bytes exact, all 15 fixups equal, instruction_layout_match true, cfg_shape_match true: the only remaining difference is opcode selection for the two 'if (flags & 1)' bit-0 tests (window-clip guard and bitmap-redraw guard), each compiled from a struct-grouped local-frame source (struct rect (8B) + struct{int x,y;}pos (4B) + struct FastBitmap far *bits (4B, only its segment half spilled) = 16B frame, matching ENTER 0x10) that otherwise reproduces every instruction, stack offset and call/selector fixup exactly. The target's two mask=1 tests use 'mov ax,di / and al,1 / je' (destructive AND, write-back kept even though AL is dead), while every candidate source tried (plain '(char)flags & 1', '(int)((char)flags & 1)', an explicit 'bit = flags & 1; if (bit)' local, and a plain '==1' comparison) compiles to 'mov ax,di / test al,1 / je' (non-destructive TEST) instead -- MSC7 clearly CAN choose AND for this exact byte pattern, since the third test in the same function ('if (flags & 2)', mask=2) already matches the target exactly with 'test al,2' both here and in the target, so the AND/TEST choice is specific to mask=1 and not reproducible by varying the C expression around it. This is the identical unresolved difference already exhausted for the twin _win_DrawCasteWindow (job win_DrawCasteWindow-251d370ef3, ESCALATED after 8 attempts, cause SEMANTICS_UNKNOWN, best candidate attempt07 with the same 2-byte AND-vs-TEST gap). Preserving the near-exact candidate; not spending further isolated-compile budget re-guessing this one opcode choice.",
-  "parked_next_experiment": "Assemble the simant:B324 unit (InitTriVars, win_CasteControlChanged, win_ModeControlChanged, UpdateCasteWindow, UpdateModeWindow, OpenCasteWindow, OpenModeWindow, ProcCasteEvent, ProcModeEvent, IsPointInIsoTri, BoundPointToTri, win_DrawModeWindow, win_ModeControlClosed, win_DrawCasteWindow, win_CasteControlClosed, DrawControlLevels, cvtLevels2IdealCaste, GetTriLatDist, SetTriLatPoint, initControls) with tools/tu_assembly.py so whole-unit register/optimizer context (rather than an isolated single-function compile) can be checked against the AND-vs-TEST choice for the mask=1 guard tests."
+  "parked_next_experiment": "Assemble the simant:B324 unit (InitTriVars, win_CasteControlChanged, win_ModeControlChanged, UpdateCasteWindow, UpdateModeWindow, OpenCasteWindow, OpenModeWindow, ProcCasteEvent, ProcModeEvent, IsPointInIsoTri, BoundPointToTri, win_DrawModeWindow, win_ModeControlClosed, win_DrawCasteWindow, win_CasteControlClosed, DrawControlLevels, cvtLevels2IdealCaste, GetTriLatDist, SetTriLatPoint, initControls) with tools/tu_assembly.py so whole-unit register/optimizer context (rather than an isolated single-function compile) can be checked against the AND-vs-TEST choice for the mask=1 guard tests.",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate (the admitted-shape source: struct{int x,y;} pos;, plain '(char)flags & 1' guards) reproduces the target byte-for-byte in size (216/216) with 77/79 opcodes matching, stack_local_differences=0. Only 2 residual instructions, both at the bit-0 (mask=1) guard tests: target 'mov ax,di / and al,1 / je' (destructive AND, dead write-back kept) vs candidate 'mov ax,di / test al,1 / je' (non-destructive TEST) at offsets 11 and 40 -- identical in shape and offset to the twin win_DrawCasteWindow-251d370ef3's residual (same fix would apply to both; that job is blocked with the same evidence). This session tried 'flags & 1' with no char cast (not attempted in the prior 3-attempt history, which covered plain '(char)flags & 1', '(int)((char)flags & 1)', and an explicit 'bit = flags & 1; if (bit)' local): removing the cast made the match WORSE (75/79 opcodes, 170/176 literal bytes equal, extra divergence), confirming the char cast is required for the rest of the body to stay exact and is not the lever for the AND-vs-TEST choice. The third bit test in the same function ('if (flags & 2)', mask=2, no cast) already compiles to 'test al,2' matching the target exactly, so MSC7's choice tracks the immediate mask value and/or whole-unit register-liveness context, not the C-source phrasing of the mask=1 guard, and resists every isolated single-function recompile tried across both twins (13+ candidates total).",
+  "next_experiment": "Same as the twin: assemble the simant:B324 translation unit as a whole via tools/tu_assembly.py (not an isolated single-function compile) and check whether the AND-vs-TEST choice for the mask=1 guard tracks whole-unit register liveness/scheduling; do not keep varying the mask=1 C expression in isolation."
 }

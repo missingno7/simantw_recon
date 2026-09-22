@@ -1,7 +1,7 @@
 {
   "id": "win_ModeControlClosed-ffe821d4d8",
   "symbol": "_win_ModeControlClosed",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T11:39:11.218444+00:00",
   "flags": [
     "/AL",
@@ -353,5 +353,10 @@
     "EXPRESSION_SHAPE"
   ],
   "parked_reason": "Byte-for-byte twin of win_CasteControlClosed (modeAnimHandle at PACK 0x7ae2 through selector slot 0xc134, modeBitmap, bitmap 0x11f8). Candidate evidence/recovery/workflow/jobs/win_ModeControlClosed-ffe821d4d8/attempt01/candidate0000.c (151 vs 149 bytes, 53/53 opcodes aligned) has the same single difference as the sibling's parked candidate: the original pushes the animation handle as 'push word ptr es:[bx]' through the far pointer wrapper, MSC7 folds it to the absolute 'push word ptr es:[0x7ae2]'. The sibling's 21-candidate type/wrapper matrix (win_CasteControlClosed-2e01ad4e03 attempts 01-03) is not repeated here.",
-  "parked_next_experiment": "Solve win_CasteControlClosed first; whatever source form keeps the handle push through ES:BX applies verbatim here with modeAnimHandle/modeBitmap/0x11f8. Distinguishing observation: bytes 26 ff 37 at +0x18."
+  "parked_next_experiment": "Solve win_CasteControlClosed first; whatever source form keeps the handle push through ES:BX applies verbatim here with modeAnimHandle/modeBitmap/0x11f8. Distinguishing observation: bytes 26 ff 37 at +0x18.",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Byte-for-byte twin of win_CasteControlClosed-2e01ad4e03 (modeAnimHandle at PACK 0x7ae2 via selector slot 0xc134, modeBitmap, bitmap 0x11f8; same struct{int far *p;} h; wrapper idiom, same 53/53 opcodes, same 151 candidate vs 149 target bytes). The single residual is identical in shape and cause: the argument to hanim_RemoveAnimSet (*h.p read immediately after 'if (*h.p)', no intervening call) compiles to 'push <fixup> es:[0x7ae2]' (5-byte absolute PACK address) under every source variant, while the target uses 'push word ptr es:[bx]' (3 bytes, reusing the register already live from the load+test). The sibling job exhausted this exact idiom across 25 candidates this session and in prior attempts (direct global reference instead of *h.p -- breaks the whole body; goto-based shared tail instead of if-block -- byte-identical; struct initializer instead of assignment -- byte-identical; h.p[0] indexing, unsigned pointee, void-far cast, spare wrapper member, volatile pointee, comparison-form/signedness variants -- all byte-identical) without changing the folded operand, and was escalated there with cause EXPRESSION_SHAPE. Not repeating the same matrix here to conserve budget; see win_CasteControlClosed-2e01ad4e03's block record for the full candidate list.",
+  "next_experiment": "Same next experiment as the sibling: find a way to make *h.p not compile-time-foldable at just the call-argument site without adding instructions (opcode_total already matches at 53/53), e.g. by making the branch test and the call argument share one loaded value, or test whether an intervening no-op far call changes MSC7's choice; apply whatever solves win_CasteControlClosed here unchanged (modeAnimHandle/modeBitmap in place of casteAnimHandle/casteBitmap)."
 }

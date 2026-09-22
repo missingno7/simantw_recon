@@ -1,7 +1,7 @@
 {
   "id": "PreDrawSpider-24cd159a90",
   "symbol": "_PreDrawSpider",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:57:31.480376+00:00",
   "flags": [
     "/AL",
@@ -368,6 +368,76 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "0f6d6496f3b28a93e4ce928334e2aa9b547ce31f44188121590f4948c5dfa450",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "012ec03905eebe65dcd1f925cf683a15956afd038009812782e6964bd8b1e716",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "4279e5652825d3664b94820a2aacfd7cf9065077579707f2cdf73f9421e9bd39",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "5b8a729399c5e0353cea5ad24a17331e6af49d41ec629743912b312dff4c8d79",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "b01a4c53d1cd15c863f3041c7e3b1a4d1db4b86a07033db5151ab6a656585ded",
+      "report": "evidence/recovery/workflow/jobs/PreDrawSpider-24cd159a90/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -406,5 +476,10 @@
     "LOCAL_FRAME_LAYOUT"
   ],
   "parked_reason": "Target 7192-7529 (337 bytes): candidate reaches exact byte-for-byte match modulo expected CONST/DGROUP selector fixups (candidate_bytes==target_bytes==337, opcode_matches 116/116, register_only/immediate/branch differences all 0). The only remaining diagnostic is 4 stack_local_layout differences, all from one systematic swap: target stores MapPnt.x at [bp-6] and MapPnt.y at [bp-8] (offsets 59/73, both later reread at offsets 253/279 for spiderTileLeft/spiderTileTop), while every candidate variant instead assigns MapPnt.x to [bp-8] and MapPnt.y to [bp-6] -- reversed. editTileRect-scale temporaries px=x*tileWidth and py=y*tileHeight (shorter-lived, used only in the nearby bounds checks) correctly land at [bp-2]/[bp-4] in every variant, matching target exactly. Tried and rejected: (1) declaration order x,y,px,py -- x/y swapped; (2) declaration order px,py,x,y -- identical swap, proving slot assignment ignores C declaration order; (3) declaration order y,x,py,px -- identical swap again; (4) restructuring the assignments to compute px=MapPnt.x*tileWidth before storing x=MapPnt.x (probing whether statement order, not declaration order, drives allocation) -- this changed instruction count/shape entirely (114/118 opcodes, extra cx shuttling, all branch targets shifted +4 bytes), confirming the original x-then-px, y-then-py statement order is otherwise correct and should not be touched. All CONST/segment-fixup differences (es selector loads, DGROUP near fixups) are the expected isolated-compile placeholders per grinder-lessons.md and are not counted here.",
-  "parked_next_experiment": "Try forcing MSC7's og(/Oeglw) global allocator to prefer [bp-6] for the first-defined long-lived temporary over [bp-8]: e.g. give x and y disjoint live ranges from px/py by moving the SpidX/SpidY si/di loads (sx=SpidX; sy=SpidY;) to occur between the x/px pair and the y/py pair instead of after both, or try declaring x/y as a 2-element array (int origin[2]; origin[0]=MapPnt.x; origin[1]=MapPnt.y;) so the allocator cannot independently reorder the pair. Keep build/grind/agentL3/PreDrawSpider.c (current x,y,px,py decl / x;px;y;py; statement order) as the base for any retry -- it is otherwise a body-exact candidate."
+  "parked_next_experiment": "Try forcing MSC7's og(/Oeglw) global allocator to prefer [bp-6] for the first-defined long-lived temporary over [bp-8]: e.g. give x and y disjoint live ranges from px/py by moving the SpidX/SpidY si/di loads (sx=SpidX; sy=SpidY;) to occur between the x/px pair and the y/py pair instead of after both, or try declaring x/y as a 2-element array (int origin[2]; origin[0]=MapPnt.x; origin[1]=MapPnt.y;) so the allocator cannot independently reorder the pair. Keep build/grind/agentL3/PreDrawSpider.c (current x,y,px,py decl / x;px;y;py; statement order) as the base for any retry -- it is otherwise a body-exact candidate.",
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

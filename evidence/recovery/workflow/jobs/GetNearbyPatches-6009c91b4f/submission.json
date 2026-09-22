@@ -1,6 +1,6 @@
 {
   "symbol": "_GetNearbyPatches",
-  "source": "evidence/recovery/workflow/jobs/GetNearbyPatches-6009c91b4f/profile-candidate.c",
+  "source": "evidence/recovery/workflow/jobs/GetNearbyPatches-6009c91b4f/candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,12 +9,11 @@
     "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
-  "max_candidates": 1,
+  "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "Combined direct B-plane indexing with the retained shared offset for the R-plane, testing whether the historical compiler forms BX for the first far access while preserving a single cell computation and corrected R polarity.",
+  "semantic_summary": "* GetNearbyPatches: inspect the six nearby patch offsets (private byte\n * tables PatchX/PatchY), retain only coordinates inside the 12 by 16 local\n * map, and score the black/red population planes: +3 for an occupied\n * black cell, -3 for an occupied red cell.\n *\n * Binding: YMapPopB (MAPSYM seg8:0xA4) and YMapPopR (seg8:0x164) are two\n * 12x16 byte maps indexed (x << 4) + y; each symbol carries its own base\n * displacement, so the index is the bare cell offset with no constant\n * (the previous +0xA4/+0x164 doubled the base).  Each map is addressed\n * through its own selector word (C564 for B, C562 for R).",
   "binding_evidence": [
-    "layout/compiler-profiles.json",
-    "asg-simtwo-1378-og"
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],
   "publics": [
     "_GetNearbyPatches"

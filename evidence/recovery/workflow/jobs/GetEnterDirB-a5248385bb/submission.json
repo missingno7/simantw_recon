@@ -1,35 +1,21 @@
 {
- "symbol": "_GetEnterDirB",
- "source": "build/grind/gedb_template6.c",
- "compiler": "msc700",
- "flags": [
-  "/AL",
-  "/G2",
-  "/Gs",
-  "/Oelw",
-  "/NTSIMONE_MODULE"
- ],
- "max_candidates": 96,
- "axes": [
-  {
-   "name": "func",
-   "marker": "/*FUNC*/",
-   "values": [
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    int value;\n\n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    for (i = 0; i < 8; i++) {\n        if (back == i)\n            continue;\n        ny = Dy8[i] + y;\n        nx = Dx8[i] + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n        value = EXITMAP(nx, ny);\n        if (value == 0)\n            continue;\n        if (bestValue < value)\n            continue;\n        if (bestValue <= value && SRand2() == 0)\n            continue;\n        bestValue = value;\n        best = i;\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    int value;\n\n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    i = 0;\n    while (i < 8) {\n        if (back == i)\n            continue;\n        ny = Dy8[i] + y;\n        nx = Dx8[i] + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n        value = EXITMAP(nx, ny);\n        if (value == 0)\n            continue;\n        if (bestValue < value)\n            continue;\n        if (bestValue <= value && SRand2() == 0)\n            continue;\n        bestValue = value;\n        best = i;\n        i++;\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    \n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    for (i = 0; i < 8; i++) {\n        if (back == i)\n            continue;\n        ny = Dy8[i] + y;\n        nx = Dx8[i] + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n                if (EXITMAP(nx, ny) == 0)\n            continue;\n        if (bestValue < EXITMAP(nx, ny))\n            continue;\n        if (bestValue <= EXITMAP(nx, ny) && SRand2() == 0)\n            continue;\n        bestValue = EXITMAP(nx, ny);\n        best = i;\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    \n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    i = 0;\n    while (i < 8) {\n        if (back == i)\n            continue;\n        ny = Dy8[i] + y;\n        nx = Dx8[i] + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n                if (EXITMAP(nx, ny) == 0)\n            continue;\n        if (bestValue < EXITMAP(nx, ny))\n            continue;\n        if (bestValue <= EXITMAP(nx, ny) && SRand2() == 0)\n            continue;\n        bestValue = EXITMAP(nx, ny);\n        best = i;\n        i++;\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    int value;\n\n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    for (i = 0; i < 8; i++) {\n        if (back != i) {\n            ny = Dy8[i] + y;\n            nx = Dx8[i] + x;\n            if (nx >= 0 && nx <= 63 && ny >= 0 && ny <= 63) {\n                value = EXITMAP(nx, ny);\n                if (value != 0 && bestValue >= value) {\n                    if (bestValue > value || SRand2() != 0) {\n                        bestValue = value;\n                        best = i;\n                    }\n                }\n            }\n        }\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    int value;\n\n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    i = 0;\n    while (i < 8) {\n        if (back != i) {\n            ny = Dy8[i] + y;\n            nx = Dx8[i] + x;\n            if (nx >= 0 && nx <= 63 && ny >= 0 && ny <= 63) {\n                value = EXITMAP(nx, ny);\n                if (value != 0 && bestValue >= value) {\n                    if (bestValue > value || SRand2() != 0) {\n                        bestValue = value;\n                        best = i;\n                    }\n                }\n            }\n        }\n        i++;\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    \n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    for (i = 0; i < 8; i++) {\n        if (back != i) {\n            ny = Dy8[i] + y;\n            nx = Dx8[i] + x;\n            if (nx >= 0 && nx <= 63 && ny >= 0 && ny <= 63) {\n                                if (EXITMAP(nx, ny) != 0 && bestValue >= EXITMAP(nx, ny)) {\n                    if (bestValue > EXITMAP(nx, ny) || SRand2() != 0) {\n                        bestValue = EXITMAP(nx, ny);\n                        best = i;\n                    }\n                }\n            }\n        }\n    }\n    return best;\n}\n",
-    "int far GetEnterDirB(int x, int y, int dir)\n{\n    int back;\n    int bestValue;\n    int best;\n    int i;\n    int nx;\n    int ny;\n    \n    back = dir ^ 4;\n    best = -1;\n    bestValue = EXITMAP(x, y);\n    i = 0;\n    while (i < 8) {\n        if (back != i) {\n            ny = Dy8[i] + y;\n            nx = Dx8[i] + x;\n            if (nx >= 0 && nx <= 63 && ny >= 0 && ny <= 63) {\n                                if (EXITMAP(nx, ny) != 0 && bestValue >= EXITMAP(nx, ny)) {\n                    if (bestValue > EXITMAP(nx, ny) || SRand2() != 0) {\n                        bestValue = EXITMAP(nx, ny);\n                        best = i;\n                    }\n                }\n            }\n        }\n        i++;\n    }\n    return best;\n}\n"
-   ],
-   "rationale": "declaration order, names and initialisers were shown irrelevant; structure changes use weights"
-  }
- ],
- "semantic_summary": "GetEnterDirB: structural variants (continue chain versus nested ifs, named versus inline neighbour value, for versus while) to change the optimizer's frame slot weighting",
- "binding_evidence": [],
- "publics": [
-  "_GetEnterDirB"
- ]
+  "symbol": "_GetEnterDirB",
+  "source": "evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "* GetEnterDirB: choose the direction for a B-colony ant to enter the map\n * at (x, y) arriving from direction dir.  The reverse direction (dir ^ 4)\n * is never taken.  Every other of the eight neighbours inside the 64x64\n * far ExitMapB (SIMANT_DATA_GROUP byte map) with a nonzero exit value is\n * a candidate; the lowest value wins, starting from the value of the\n * current cell, and an equal value replaces the current choice only when\n * SRand2 says so.  Returns the chosen direction or -1.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "publics": [
+    "_GetEnterDirB"
+  ]
 }

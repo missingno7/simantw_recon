@@ -1,7 +1,7 @@
 {
   "id": "StartLifeTransfer-f7103d3305",
   "symbol": "_StartLifeTransfer",
-  "status": "NEEDS_REVISION",
+  "status": "PROMOTED",
   "created": "2026-09-20T18:58:07.895685+00:00",
   "flags": [
     "/AL",
@@ -399,6 +399,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "7dd7cddfbd4c0a8d2d832decefc061c98f15b7a00d9f8abaef42016b3b1db329",
+      "report": "evidence/recovery/workflow/jobs/StartLifeTransfer-f7103d3305/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "root_cause": {
@@ -430,5 +444,6 @@
   ],
   "parked_reason": "Six bounded attempts recover the toggle semantics and most control flow: CurGameTool mode 10 is cleared and SaveGamePaused is passed to PauseGame on re-entry; otherwise GamePaused is copied to SaveGamePaused, CurGameTool becomes 10, and PauseGame(1) is called. The target-specific blocker is far-data topology: target materializes CurGameTool as BX=0x7c22 plus selector-pool ES [0xc482], saves that far pointer at BP-4/BP-2, accesses PACK fields through ES, and restores the pointer before writing mode 10. Direct far globals produce offset fixups and no saved pointer; a far aggregate is optimized into direct accesses; volatile pointer variants add extra LES reloads. Attempts 01-06 and aligned ASM are retained.",
   "parked_next_experiment": "Expert should recover the historical pointer/segment declaration that forces address-of-CurGameTool to remain a frame-resident far pointer with selector-pool ES while preserving direct SaveGamePaused/GamePaused ES switches, then rerun independent proof.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/StartLifeTransfer-f7103d3305/promotion.json"
 }

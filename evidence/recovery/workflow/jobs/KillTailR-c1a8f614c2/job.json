@@ -1,7 +1,7 @@
 {
   "id": "KillTailR-c1a8f614c2",
   "symbol": "_KillTailR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T13:32:20.295874+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "4cd1eb77bb265d3ae92324a90e947b9f388c0895ec0e9e5197cf1b922f756538",
+      "report": "evidence/recovery/workflow/jobs/KillTailR-c1a8f614c2/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -360,5 +374,10 @@
   ],
   "parked_reason": "Attempt 01 recovers the same operation sequence as the target: clear Dx8[tail+0x46e6], read +0x42fa and word +0x4104, mask/shift the row, and clear the computed LifeR byte. The target emits one resolved _Dx8 segment load with ES-relative fields and a direct computed near-store [BX+SI-0x6718]; ordinary far-array syntax emits relocatable Dx8 field bindings and a resolved _LifeR symbol, with 44 bytes versus 45. Exact proof requires the historical based/far-pointer declaration and private LifeR data topology.",
   "parked_next_experiment": "Expert: recover the Dx8 record/based-pointer declaration and private LifeR array identity so MSC7 emits the target ES-relative fields and direct computed store.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Same register-mediated double-zero-store residue as the mirrored _KillTailB (blocked with identical evidence): 15/17 opcodes aligned (44 vs 45 bytes), first structural difference at offset 12/14. Target clears the R-list attribute byte Dx8[tail+0x46e6]=0 via xor al,al + a register-sourced mov byte ptr es:[si+0x46e6],al, keeping AL=0 alive across the direction (Dx8[tail+0x42fa]) and row (Dx8[tail+0x4104], word-loaded then masked to 0xff) reads, and reuses AL for the final LifeR[(row<<6)+direction]=0 store. The straightforward two-statement =0 candidate compiles the first store as an immediate byte store instead of xor+mov (confirmed via test, same shape as KillTailB attempt). Field offsets, LifeR indexing and semantics are correct and not in question. This is the same REGISTER_ALLOCATION residue as _KillTailB; do not repeat the declaration-order/local-variable experiments already exhausted there.",
+  "next_experiment": "Same as _KillTailB: try the chained assignment LifeR[(row<<6)+direction] = Dx8[tail+0x46e6] = 0; or a raw compiler probe outside the grinder budget to determine what source shape MSC7 /Oeglw needs to keep a doubly-stored byte constant in AL instead of folding the first use to an immediate."
 }

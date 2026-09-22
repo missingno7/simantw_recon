@@ -1,0 +1,550 @@
+{
+  "job": "DBReplace-da4c045f1a",
+  "candidate": 0,
+  "admitted": true,
+  "audit_only": false,
+  "semantic_summary": "* DBReplace: replace a record in an open database.  When FindIndex finds\n * the record's index entry (a far pointer whose first long is the\n * record's file offset) the old record is removed exactly as in DBDelete:  The database slot is the\n * far PACK openDBData entry for the handle (0x7c bytes each): its file is\n * positioned 0xe bytes into the record and the ten-byte record header is\n * read so that the header's size word plus ten gives the record length.\n * The current index entry is deleted, the slot's record count drops, its\n * wasted-byte long grows by the record length and its dirty flag is set.\n * The new record is then added with DBAdd.\n *\n * Binding (openDBData record layout, reconciled with DBAdd/DBRecall/DBPack):\n * the PACK array _openDBData starts at 0x7408 with a name/header field;\n * count @0x6c, freeBytes @0x6e, wastedBytes @0x72, file @0x78, dirty @0x7a.\n * Deleting a record therefore grows wastedBytes (es:[+0x747a/0x747c]), and\n * the file handle / dirty flag live at 0x7480 / 0x7482.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "receipt": {
+    "source": "src/recovered/wf_DBReplace-da4c045f1a.c",
+    "source_identity": {
+      "size": 2942,
+      "sha256": "1f64bd2196631d4a3deb8a0c8661054d51e163c25d554b17bf2fd8dd32f02172"
+    },
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMTWO_MODULE"
+    ],
+    "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+    "command": [
+      "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+      "-conf",
+      "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W0_ns5o1u2x\\work\\RUN.CONF",
+      "-fastlaunch",
+      "-nogui",
+      "-nomenu",
+      "-noconsole"
+    ],
+    "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+    "exit_code": 0,
+    "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+    "stderr": "",
+    "object": "build/compiler-workers/W0_ns5o1u2x/job0016/OUTPUT.OBJ",
+    "object_identity": {
+      "size": 545,
+      "sha256": "832a08f6cf8ecbb75330e2d547d09cfc8e21a04c1637db6ac4b68e10ebf2eb30"
+    },
+    "fixture_dependencies": [],
+    "unsupported_option": false,
+    "worker_id": 0,
+    "worker_session": "build/compiler-workers/W0_ns5o1u2x",
+    "batch_directory": "build/compiler-workers/W0_ns5o1u2x",
+    "batch_index": 15,
+    "worker_implementation": {
+      "tools/compiler_worker.py": {
+        "size": 7358,
+        "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+      },
+      "tools/compiler_wait.asm": {
+        "size": 658,
+        "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+      }
+    },
+    "configuration_identity": {
+      "size": 437,
+      "sha256": "56f1250bc38eb5a8489e2665f967c392162c14824d7c1581d8e1dade5ab21e31"
+    },
+    "wait_helper_identity": {
+      "size": 99,
+      "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+    },
+    "timing": {
+      "runner_startup_seconds": 0,
+      "environment_launches": 0,
+      "queue_dispatch_seconds": 0.004951199996867217,
+      "compiler_execution_seconds": 0.42125949999899603,
+      "total_compile_request_seconds": 0.43072879999817815,
+      "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+    },
+    "source_snapshot": "build/compiler-service/jobs/9ec7ba63cc374eefb494bec08392eea9/INPUT.C",
+    "request_id": "9ec7ba63cc374eefb494bec08392eea9",
+    "service_instance": "366a69abc8844b5187cf18dff396406c"
+  },
+  "comparison": {
+    "result": "STRONGLY_SUPPORTED_MEMBER",
+    "issues": [],
+    "placements": {
+      "1": [
+        7,
+        35654
+      ],
+      "3": [
+        10,
+        50824
+      ]
+    },
+    "private_constraint_placements": [
+      3
+    ],
+    "anchors": {
+      "1": [
+        [
+          7,
+          35654,
+          "_DBReplace"
+        ]
+      ]
+    },
+    "contributions": [
+      {
+        "segment": "SIMTWO_MODULE",
+        "original_segment": 7,
+        "original_offset": 35654,
+        "length": 170,
+        "initialized_ranges": [
+          [
+            0,
+            170
+          ]
+        ],
+        "literal_compared": 136,
+        "literal_equal": 136,
+        "divergences": [],
+        "fixups": [
+          {
+            "offset": 158,
+            "target": {
+              "kind": "internal",
+              "segment": 7,
+              "offset": 34186
+            },
+            "equal": true,
+            "reason": "LINK same-segment far call/jump translation",
+            "omf": {
+              "segment": 1,
+              "offset": 158,
+              "location_type": 3,
+              "width": 4,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 1,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_DBAdd"
+              }
+            }
+          },
+          {
+            "offset": 132,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 29826
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 132,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_openDBData"
+              }
+            }
+          },
+          {
+            "offset": 127,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 29820
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 127,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_openDBData"
+              }
+            }
+          },
+          {
+            "offset": 122,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 29818
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 122,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_openDBData"
+              }
+            }
+          },
+          {
+            "offset": 115,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 29812
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 115,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_openDBData"
+              }
+            }
+          },
+          {
+            "offset": 110,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 50824
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 110,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 101,
+            "target": {
+              "kind": "internal",
+              "segment": 7,
+              "offset": 40466
+            },
+            "equal": true,
+            "reason": "LINK same-segment far call/jump translation",
+            "omf": {
+              "segment": 1,
+              "offset": 101,
+              "location_type": 3,
+              "width": 4,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 6,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_DeleteCurrentIndex"
+              }
+            }
+          },
+          {
+            "offset": 83,
+            "target": {
+              "kind": "import",
+              "module": "KERNEL",
+              "ordinal": 82
+            },
+            "equal": true,
+            "reason": "NE pointer relocation",
+            "omf": {
+              "segment": 1,
+              "offset": 83,
+              "location_type": 3,
+              "width": 4,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_LREAD"
+              }
+            }
+          },
+          {
+            "offset": 70,
+            "target": {
+              "kind": "import",
+              "module": "KERNEL",
+              "ordinal": 84
+            },
+            "equal": true,
+            "reason": "NE pointer relocation",
+            "omf": {
+              "segment": 1,
+              "offset": 70,
+              "location_type": 3,
+              "width": 4,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_LLSEEK"
+              }
+            }
+          },
+          {
+            "offset": 44,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 29824
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 44,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_openDBData"
+              }
+            }
+          },
+          {
+            "offset": 35,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 50824
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 35,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 16,
+            "target": {
+              "kind": "internal",
+              "segment": 7,
+              "offset": 40228
+            },
+            "equal": true,
+            "reason": "LINK same-segment far call/jump translation",
+            "omf": {
+              "segment": 1,
+              "offset": 16,
+              "location_type": 3,
+              "width": 4,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 5,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_FindIndex"
+              }
+            }
+          }
+        ],
+        "transformations": [
+          {
+            "offset": 157,
+            "kind": "LINK same-segment far call/jump translation",
+            "target": {
+              "kind": "internal",
+              "segment": 7,
+              "offset": 34186
+            }
+          },
+          {
+            "offset": 100,
+            "kind": "LINK same-segment far call/jump translation",
+            "target": {
+              "kind": "internal",
+              "segment": 7,
+              "offset": 40466
+            }
+          },
+          {
+            "offset": 15,
+            "kind": "LINK same-segment far call/jump translation",
+            "target": {
+              "kind": "internal",
+              "segment": 7,
+              "offset": 40228
+            }
+          }
+        ]
+      },
+      {
+        "segment": "CONST",
+        "original_segment": 10,
+        "original_offset": 50824,
+        "length": 2,
+        "initialized_ranges": [
+          [
+            0,
+            2
+          ]
+        ],
+        "literal_compared": 0,
+        "literal_equal": 0,
+        "divergences": [],
+        "fixups": [
+          {
+            "offset": 0,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 29704
+            },
+            "equal": true,
+            "reason": "NE selector for independently named target",
+            "omf": {
+              "segment": 3,
+              "offset": 0,
+              "location_type": 2,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_openDBData"
+              }
+            }
+          }
+        ],
+        "transformations": []
+      }
+    ],
+    "literal_compared": 136,
+    "literal_equal": 136,
+    "fixups_equal": 13,
+    "fixups_total": 13,
+    "publics": [
+      "_DBReplace"
+    ],
+    "scaffold_segments": []
+  },
+  "targets": {
+    "_DBReplace": {
+      "segment": 7,
+      "offset": 35654,
+      "size": 169,
+      "code_segment": "SIMTWO_MODULE",
+      "extent_status": "CONFIRMED",
+      "extent_evidence": "Closed original and candidate recursive CFGs, explicit NOP gaps, full initialized coverage and exact complete-member comparison",
+      "comparison": "member",
+      "historical_filename": null,
+      "proof": "BYTE_MATCHED_RECONSTRUCTION"
+    }
+  },
+  "compiler_profile": {
+    "name": "baseline",
+    "basis": "DEFAULT",
+    "assignment": null,
+    "context": null,
+    "evidence": null,
+    "component": "simtwo:858A",
+    "refuted_profiles": [],
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMTWO_MODULE"
+    ]
+  },
+  "unit": null,
+  "scaffold": null,
+  "superseded_recipes": {},
+  "scope": "Exact readable reconstruction, not original text or filename"
+}

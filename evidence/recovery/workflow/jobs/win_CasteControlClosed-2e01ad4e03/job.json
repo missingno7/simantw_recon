@@ -1,7 +1,7 @@
 {
   "id": "win_CasteControlClosed-2e01ad4e03",
   "symbol": "_win_CasteControlClosed",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T11:36:06.010239+00:00",
   "flags": [
     "/AL",
@@ -343,6 +343,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "e0c72afea987743852e7dd93d40fc3b32f80d59704e43845c6d98bda5fdad1dd",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlClosed-2e01ad4e03/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "9c4f79a084ef8c1b3e31c183f295b1a82554d0db9e47909ebb11b883c21bcaf1",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlClosed-2e01ad4e03/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "ab58fcdea145c68ad8d4ea69b141af2128db68670d999897189c1bee5441ed48",
+      "report": "evidence/recovery/workflow/jobs/win_CasteControlClosed-2e01ad4e03/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -381,5 +423,10 @@
     "EXPRESSION_SHAPE"
   ],
   "parked_reason": "Candidate evidence/recovery/workflow/jobs/win_CasteControlClosed-2e01ad4e03/attempt01/candidate0000.c (151 vs 149 bytes; 53/53 opcodes aligned) matches everything except one operand: the original passes the caste animation handle as 'push word ptr es:[bx]' through the far pointer wrapper still held in ES:BX after the 'cmp word ptr es:[bx],0 / je', whereas MSC7 folds the second read to the absolute PACK address 'push word ptr es:[0x7c4a]' (two bytes longer). The wrapper store to [bp-0x10]/[bp-0xe], the LES reload after hanim_RemoveAnimSet, the clear, the casteBitmap path (gr_BitMapSize, mem_Lock into SI/[bp-2], width/height stores, DrawBitMapToBuffer(pixels,0,0,height,width,0x120c,&rowBytes,&planes), mem_Unlock) all match. Handle/parameter signedness, comparison form, h.p[0] access, unsigned pointee, spare wrapper member, void-far cast and volatile pointee (attempts 01-03, 21 candidates) do not change the folded operand.",
-  "parked_next_experiment": "Do not repeat type or wrapper-shape matrices. Find a source form where the pointer value is not a compile-time constant at the push (for example the wrapper assigned from a helper-returned address, or the handle test and argument written through a second pointer copy), and compare with win_YardClosed where intervening calls hid the constant. Distinguishing observation: bytes 26 ff 37 at +0x18 instead of 26 ff 36 4a 7c."
+  "parked_next_experiment": "Do not repeat type or wrapper-shape matrices. Find a source form where the pointer value is not a compile-time constant at the push (for example the wrapper assigned from a helper-returned address, or the handle test and argument written through a second pointer copy), and compare with win_YardClosed where intervening calls hid the constant. Distinguishing observation: bytes 26 ff 37 at +0x18 instead of 26 ff 36 4a 7c.",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Body is structurally exact (53/53 opcodes, CFG shape matches) but candidate is 151 bytes vs target 149 bytes because of exactly one instruction-encoding choice: at the argument to hanim_RemoveAnimSet (the read of *h.p taken immediately after 'if (*h.p)' with no intervening call), the target emits 'push word ptr es:[bx]' (3 bytes, reusing the bx already loaded by 'h.p = &casteAnimHandle;' and tested by the preceding cmp es:[bx],0), while MSC7 under our source always emits 'push <fixup> es:[0x7c4a]' (5 bytes, absolute PACK address via relocation) for that same read. All other bytes match exactly, including the initial far-pointer-wrapper load/store (bp-0x10/bp-0xe), the cmp test, the LES reload and clear after the call, and the entire casteBitmap/DrawBitMapToBuffer path. Compared against the admitted win_YardClosed, which uses the identical struct{int far *p;} h; wrapper idiom and folds correctly to es:[bx] for its post-call *h.p reads -- but only because a far call intervenes and forces a genuine LES reload right before each of those reads. win_CasteControlClosed's second *h.p read has no intervening call, and every source variant tried (this session: casteAnimHandle used directly instead of *h.p for the call argument -- broke the whole body, 25/148 bytes diverging from offset 23 onward; goto-based shared-tail instead of if-block -- byte-identical output; struct initializer 'h = { &casteAnimHandle }' instead of assignment -- byte-identical output; plus, from the prior job history, h.p[0] indexing, unsigned pointee, void-far cast, spare wrapper member, volatile pointee, comparison-form and signedness variants across 21 earlier candidates) reproduces the same 5-byte absolute-fixup push. 25 candidates total across this residual have not changed the folded operand.",
+  "next_experiment": "Try defeating MSC7's compile-time constant-folding of the pointer deref specifically at the call-argument position without adding instructions: e.g. read *h.p into AX via an inline expression that also feeds the branch condition (single evaluation reused for both test and argument, such as restructuring so the same loaded value is what's tested), or check whether a different /Oe sub-flag combination or a same-shape neighbour with an intervening no-op far call (e.g. an empty far stub) changes the fold -- but do not add real instructions since opcode_total already matches at 53/53."
 }

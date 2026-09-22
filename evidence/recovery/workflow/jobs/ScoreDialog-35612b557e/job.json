@@ -1,7 +1,7 @@
 {
   "id": "ScoreDialog-35612b557e",
   "symbol": "_ScoreDialog",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T02:55:12.915281+00:00",
   "flags": [
     "/AL",
@@ -310,5 +310,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "1c00c92d26c783e0632b548adb29e5be18fd6b9249acf51f926dc85c1ca117f9",
+      "report": "evidence/recovery/workflow/jobs/ScoreDialog-35612b557e/attempt01/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 2,
+      "submission_digest": "21b3f4d3a28c8f5565d354be086d0f2cad4a7cdb45113332b3e1534d2525d301",
+      "report": "evidence/recovery/workflow/jobs/ScoreDialog-35612b557e/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "a9a582d0fbfafdb2469e291f30aa27575620fa1c3bdc5e745573291cbd5fdac1",
+      "report": "evidence/recovery/workflow/jobs/ScoreDialog-35612b557e/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Body reaches 71/85 opcodes matching with matching CFG shape; the sole unresolved structural gap is a real (non-CONST-fixup) local-frame mismatch: target has ENTER 0x20,0 (32-byte frame) and an unread 'mov word ptr [bp-0x14], 0' store at target offset 0x82, immediately after the discarded MySetCapture(win_hwnd[24]) return and before font_SetFont(0); no candidate C source (int unused; ...; unused = 0;) reproduces this because MSC7 /Oe eliminates the store as dead once the local is never read, shrinking the frame to 8 bytes (ENTER 8,0) and shifting every following instruction/branch target by ~6 bytes (the only other diffs: 4 branch-target and 2 memory-operand deltas that all trace back to this same shift). The sibling _DoScenario source shows the analogous MySetCapture(...) return IS meaningfully captured into an int ('captured', later read by IsWindowVisible), but ScoreDialog's store is a literal 0, not the AX return, so that pattern does not directly transfer. All CONST/SIMANT_MODULE fixup complaints are expected isolated-compile selector-pool noise per docs/factory.md and are not part of this blocker. Best candidate: build/grind/agentG4/ScoreDialog.c. 3 attempts used.",
+  "next_experiment": "Find or derive the real purpose of the write-only word at bp-0x14 (check whether a neighbouring simant:5530 unit member reads an analogous private flag right after MySetCapture) so the local survives MSC7 dead-store elimination in its correct source position."
 }

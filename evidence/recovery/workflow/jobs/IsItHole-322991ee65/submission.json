@@ -1,6 +1,6 @@
 {
   "symbol": "_IsItHole",
-  "source": "evidence/recovery/workflow/jobs/IsItHole-322991ee65/candidate.c",
+  "source": "build/grind/agentOBJ/IsItHole.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,11 +9,12 @@
     "/Oelw",
     "/NTSIMANT1_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "Keep IsValidA's zero in a register and route it to the final epilogue; route terrain failures through a distinct no-hole return while preserving the target's 0x50 and 0x80..0x8f tests.",
+  "semantic_summary": "IsItHole(x,y): valid A-map cell is a nest hole when TERRAINset==0 and MapA tile==0x50, or in the alternate set when 0x80<=tile<=0x8f. Return-layout idiom: positive `== 0x50 -> return 1; return 0;` in the TERRAINset branch, then two separate `if (tile < 0x80) return 0; if (tile > 0x8f) return 0; return 1;` with an int tile local; `IsValidA(x,y) == 0` spelled explicitly.",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "TERRAINset selector slot C320 (segment 9 offset 39790) and near MapA (DGROUP 0x28e8) from grind.py inspect direct_data_bindings; IsValidA far call segment 5 offset 39938",
+    "raw probe build/grind/agentOBJ/probe/iih1/results.json: STRONGLY_SUPPORTED_MEMBER, 40/40 opcodes, 89/89 bytes, 6/6 fixups"
   ],
   "publics": [
     "_IsItHole"

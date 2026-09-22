@@ -1,7 +1,7 @@
 {
   "id": "win_FindObject-a60c7a4f68",
   "symbol": "_win_FindObject",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T05:30:12.195718+00:00",
   "flags": [
     "/AL",
@@ -386,6 +386,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "0d1b50ec30d1db787af7d42be024e6ae06c87cb390cad21ce768180dfeb4b433",
+      "report": "evidence/recovery/workflow/jobs/win_FindObject-a60c7a4f68/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -417,5 +431,10 @@
   ],
   "parked_reason": "Five bounded readable-C probes establish the win_handles[id>>8] topology, count/table offsets, flag test, descending hit-test, PointInRect call, and return semantics, but MSC 7.00 consistently allocates the encoded id/index as SI/DI instead of target DI/SI (or adds a two-byte spill); the target also uses a segment-level PointInRect binding that the named declaration does not reproduce.",
   "parked_next_experiment": "Recover the historical SIMTWO_MODULE declaration and expression order that force DI=id, SI=index and the original segment-level PointInRect relocation; retest one context-faithful source form without numeric casts.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "7 attempts, plateaued at score 0.739 (43/46 opcodes), below 80%. The genuine structural mismatch (not the expected isolated-compile near/far literal-vs-fixup noise) is a register swap plus an extra branch: target keeps the window pointer in DI and the loop index in SI throughout (mov di,[bp+6]; ...; mov ax,es:[bx+0xc]; dec ax; mov si,ax; or ax,ax; jl 0x5e), while every candidate tried (register and plain 'int index', explicit locals) allocates them the other way round (window in SI, index-related work in DI) and additionally fuses the top-of-loop bound check into the decrement itself ('dec di; js 0x60') instead of target's separate 'dec ax; mov si,ax; or ax,ax; jl' sequence -- i.e. target does NOT fuse the sign test with the decrement even though the value is already in a register, suggesting the source keeps 'index' un-fused from the count-1 computation. Declaring index without 'register' (attempt07) reproduced byte-for-byte the same result as the earlier 'register int index' form, ruling out the register-storage-class hint as the lever.",
+  "next_experiment": "Swap the declaration order (declare 'record' before 'window', or vice versa) and try computing 'index' as a separate statement from the bound check (e.g. 'count = window->objectCount; index = count - 1; if (index >= 0) { ... }' with count as its own local) to discourage MSC7 from fusing the dec-and-test into one instruction."
 }

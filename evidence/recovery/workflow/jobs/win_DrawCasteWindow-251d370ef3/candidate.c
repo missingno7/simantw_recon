@@ -40,11 +40,11 @@ void far win_DrawCasteWindow(int flags)
     struct { int x, y; } pos;
     struct FastBitmap far *bits;
 
-    if (((char)flags & 1) == 1) {
+    if ((char)flags & 1) {
         if (casteAnimHandle == 0)
             clip_SetWin(0x1300);
     }
-    if (((char)flags & 1) == 1) {
+    if ((char)flags & 1) {
         if (casteBitmap != 0) {
             bits = (struct FastBitmap far *)mem_Lock(casteBitmap);
             win_GetObjRect(0x1302, &rect);

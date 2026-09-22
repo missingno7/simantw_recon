@@ -1,7 +1,7 @@
 {
   "id": "KillTailB-76b57e07a0",
   "symbol": "_KillTailB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T13:29:53.780327+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "dcdd9fcbd84222d8152cb346c0acfd27590e045428a64d5ac5e8677bf62c20a0",
+      "report": "evidence/recovery/workflow/jobs/KillTailB-76b57e07a0/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "b21ee3c85d0de0a2cba22503b097c5ee14af792f6adc5196b9d8a7e0f3c44929",
+      "report": "evidence/recovery/workflow/jobs/KillTailB-76b57e07a0/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "7864d2cad01374cf862945789b0e3b587cbbfb7bbc3c78bf46c96c70b4d1acfc",
+      "report": "evidence/recovery/workflow/jobs/KillTailB-76b57e07a0/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "d0d631939c1f0c2b82d10589ccfd1a2082aac2e9e42d83eab12095bca017c276",
+      "report": "evidence/recovery/workflow/jobs/KillTailB-76b57e07a0/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -361,5 +417,10 @@
   ],
   "parked_reason": "Attempt 01 recovered the operation sequence and semantics: clear Dx8[tail+0x3d18], read the byte at +0x392c and word at +0x3736, mask the word to 8 bits, shift six, and clear the corresponding LifeB byte. The target uses one resolved _Dx8 segment load followed by ES-relative [SI+field] operands and a direct computed near-store [BX+SI-0x7718]. The ordinary far-array candidate instead emits separate relocatable memory operands for each Dx8 field and a resolved _LifeB binding, with 44 contribution bytes versus the 45-byte target. Exact proof requires the historical based/far-pointer declaration and private LifeB data topology.",
   "parked_next_experiment": "Expert: recover the Dx8 record/based-pointer declaration and private LifeB array identity so MSC7 emits the target ES-relative fields and direct computed store.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Body is 15/17 opcodes aligned (candidate 44 vs target 45 bytes), first structural difference at offset 12/14: target clears the B-list attribute byte (Dx8[tail+0x3d18]=0) through 'xor al,al' + a register-sourced 'mov byte ptr es:[si+0x3d18],al' (2 instrs, 7 bytes), keeping AL=0 alive across the direction/row reads and reusing it verbatim for the final LifeB[(row<<6)+direction]=0 store (offset 38, register-sourced, AL). Every source form tried (bare literal 0 twice, a shared local zero, an initialized local, and a redundant re-read of Dx8[tail+0x3d18] for the second store) compiles the first store as a single immediate byte store (c6 84 ...,0) instead of xor+mov, and the second store as BH-sourced (reusing the BH already cleared by the direction zero-extension, sub bh,bh) instead of AL-sourced -- confirmed by direct OMF/hex inspection of build/codegen-cache OUTPUT.OBJ files, all four produced byte-identical 44-byte bodies. Semantics, field offsets (0x3d18/0x392c/0x3736, cross-checked against DoAntSimB identical fields in the admitted simant1:2D4E unit), and the LifeB[row][direction] target are not in question; this is a pure register-allocation/store-form residue the compiler will not reproduce from an ordinary two-statement =0 pattern under /Oeglw.",
+  "next_experiment": "Try a chained assignment LifeB[(row<<6)+direction] = Dx8[tail+0x3d18] = 0; with direction/row still read as separate prior statements, to see whether MSC7 evaluates the inner Dx8-store first (materializing 0 in AL via xor because the assignment value is needed by the outer store) rather than folding to an immediate; if that still folds, the register-mediated double-store may require a raw compiler probe outside the grinder budget."
 }

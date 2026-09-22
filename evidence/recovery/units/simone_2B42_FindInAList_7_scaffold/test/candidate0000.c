@@ -3,7 +3,7 @@
  * Members: _FindInAList, _FindInBList, _FindInRList, _AddAntToBList, _AddAntToRList, _ClearListB, _ClearListR
  * SCAFFOLDED: unclaimed members _RemoveFromAList are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
-extern unsigned int far AListState[];
+extern int far ListIndexA;
 extern unsigned char far Dx8[];
 extern int far ListIndexB;
 extern int far ListIndexR;
@@ -32,14 +32,14 @@ void far pool_stub_RemoveFromAList(void)
     volatile int t;
 
     t = AlistX;
-    t = AListState[0];
+    t = (int)ListIndexA;
 }
 
 int FindInAList(int firstKey, int secondKey)
 {
     int index;
 
-    index = AListState[0x4078];
+    index = ListIndexA;
     while (index > 0) {
         --index;
         if (Dx8[index + 0x23a4] == firstKey &&
@@ -86,11 +86,11 @@ void far AddAntToBList(int life, int column, int attribute,
     int count;
     unsigned char far *list;
 
-    if (match_position[0x4cea] >= 500)
+    if (ListIndexB >= 500)
         return;
 
     list = Dx8;
-    count = match_position[0x4cea];
+    count = ListIndexB;
 
     list[count + 0x3736] = (unsigned char)life;
     list[count + 0x392c] = (unsigned char)column;
@@ -98,7 +98,7 @@ void far AddAntToBList(int life, int column, int attribute,
     list[count + 0x3d18] = (unsigned char)attribute;
     list[count + 0x3f0e] = (unsigned char)direction;
     LifeB[(life << 6) + column] = (unsigned char)attribute;
-    ++match_position[0x4cea];
+    ++ListIndexB;
 }
 
 void far AddAntToRList(int life, int column, int attribute,
@@ -107,11 +107,11 @@ void far AddAntToRList(int life, int column, int attribute,
     int count;
     unsigned char far *list;
 
-    if (match_position[0x3966] >= 500)
+    if (ListIndexR >= 500)
         return;
 
     list = Dx8;
-    count = match_position[0x3966];
+    count = ListIndexR;
 
     list[count + 0x4104] = (unsigned char)life;
     list[count + 0x42fa] = (unsigned char)column;
@@ -119,7 +119,7 @@ void far AddAntToRList(int life, int column, int attribute,
     list[count + 0x46e6] = (unsigned char)attribute;
     list[count + 0x48dc] = (unsigned char)direction;
     LifeR[(life << 6) + column] = (unsigned char)attribute;
-    ++match_position[0x3966];
+    ++ListIndexR;
 }
 
 void ClearListB(void)

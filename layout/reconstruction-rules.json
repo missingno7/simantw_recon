@@ -160,6 +160,75 @@
         "tests/test_jump_tables.py",
         "tools/cfg_solver.py"
       ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "triggers": [
+        "ant_list",
+        "far_data"
+      ],
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "triggers": [
+        "far_data",
+        "indexed_access"
+      ],
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "triggers": [
+        "far_data"
+      ],
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "triggers": [
+        "far_data"
+      ],
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "triggers": [
+        "far_data",
+        "private_data"
+      ],
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ]
+    },
+    {
+      "id": "based-list-fields-simant1-0000",
+      "rule": "In simant1:0000 the A-list fields are the public arrays AlistX/AlistY/AlistM/AlistT/AlistS addressed as `__based(__segname(\"SIMANT_DATA_GROUP\"))` (one segment word C318 with absolute displacements 0x23A4/0x2B78/0x2F62), while Dx8/Dy8 keep their own words (C31E/C31C). `tools/rebind_based_fields.py` rewrites `Dx8[i + 0xOFF]` spellings. Members that load the segment immediately (DoDefendNest) use no pool word and keep their spelling.",
+      "triggers": [
+        "ant_list"
+      ],
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/GoInNest.c",
+        "evidence/topology/build-topology.json"
+      ]
     }
   ]
 }

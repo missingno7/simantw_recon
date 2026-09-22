@@ -1,7 +1,7 @@
 {
   "id": "GetEnterDirB-a5248385bb",
   "symbol": "_GetEnterDirB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T11:50:27.989894+00:00",
   "flags": [
     "/AL",
@@ -385,6 +385,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "a5e45f8eda1a0c177b314989b7bd6a316089b560cb1682cf6a2e3f2ef27c6b4a",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "1c24f3481851465efbe386a6ae36da299b468e68d9f45e67561533b05f37ac5f",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "76d855dd8111fe60fb7722056d870413727256d7544ddd4d3019e4a37b43503a",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -423,5 +465,10 @@
     "LOCAL_FRAME_LAYOUT"
   ],
   "parked_reason": "Candidate evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/attempt02/candidate0000.c (152 bytes, equal size) matches every instruction, fixup and CONST slot (ExitMapB 0xc2f4, Dy8 0xc2f6, Dx8 0xc2f8) except the frame slots of two locals: the original keeps back=dir^4 at [bp-4] and the running best value at [bp-6]; MSC7 swaps them (best at [bp-8] and the unused [bp-2] word agree). Six attempts / 154 candidates showed the slot order is independent of declaration order (all permutations, attempt02/03), identifier names (96 name pairs, attempt04), declaration initialisers (attempt05) and loop/body structure (continue chain versus nested ifs, named or inline value, for/while, attempt06); the tie test needed 'bestValue <= value && SRand2() == 0' to reproduce jl/jg flag reuse.",
-  "parked_next_experiment": "Do not repeat declaration, name, initialiser or structure matrices. The slot order must come from the optimizer's use weighting: test forms that raise the weight of back relative to the best value (for example testing back twice, or computing it inside the loop) or that lower the best value's weight (a register-copy compare), and compare the resulting [bp-4]/[bp-6] assignment. Distinguishing observation: 'mov word ptr [bp-4],ax' at +0xb after 'xor al,4' and 'cmp word ptr [bp-6],di' at +0x75."
+  "parked_next_experiment": "Do not repeat declaration, name, initialiser or structure matrices. The slot order must come from the optimizer's use weighting: test forms that raise the weight of back relative to the best value (for example testing back twice, or computing it inside the loop) or that lower the best value's weight (a register-copy compare), and compare the resulting [bp-4]/[bp-6] assignment. Distinguishing observation: 'mov word ptr [bp-4],ax' at +0xb after 'xor al,4' and 'cmp word ptr [bp-6],di' at +0x75.",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

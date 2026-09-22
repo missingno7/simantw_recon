@@ -1,7 +1,7 @@
 {
   "id": "AddMsgBalloon-3e9f67d8e5",
   "symbol": "_AddMsgBalloon",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:26:16.727731+00:00",
   "flags": [
     "/AL",
@@ -382,6 +382,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "9854d4af1c4a4eff2f960d6fbc05bccc6d5b3aa4cfffeb7e4ffbd30bb3783f2f",
+      "report": "evidence/recovery/workflow/jobs/AddMsgBalloon-3e9f67d8e5/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "604cdc16f1f89d471f641c141cfc0f43548ee935a2a8b9f2192d1703db78a848",
+      "report": "evidence/recovery/workflow/jobs/AddMsgBalloon-3e9f67d8e5/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "6abeee1b43324f9bb24f36bd6077ed650acdbb5ac3834f13fecd3797c89fcc08",
+      "report": "evidence/recovery/workflow/jobs/AddMsgBalloon-3e9f67d8e5/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -402,5 +444,10 @@
   ],
   "parked_reason": "Target 19352-19628 (276 bytes). Fully recovered semantics: appends to the CurBalloonCnt/Pnts/Plane/Flags/Msgs parallel arrays (confirmed via assets/SIMANTW.SYM segment 9 PACK: CurBalloonCnt 0x9fd0, CurBalloonPnts 0x80d6 4-byte MapPoint stride, CurBalloonPlane 0x7d68 word, CurBalloonFlags 0x78be word, CurBalloonMsgs 0x7c24 4-byte far pointer), same tileWidth/tileHeight-scaled visibility shape as EggBalloons/FightBalloons/QueenBalloons/RestBalloons, style==10 vs tile-coordinate dual path. Best candidate (attempt02, current file): candidate_bytes==target_bytes==276, opcode_matches 88/100, 0 stack_local_differences, register_only_differences 3. Attempt01 (direct CurBalloonCnt access, no local pointer) reached 85/100 with wrong register usage (target pushes di+si and caches a far pointer p=&CurBalloonCnt at [bp-6]/[bp-4], reloaded via les/lds across mem-array-writing code; candidate kept everything in registers, never touching si). Attempt02 (explicit  reused throughout) matched the byte count exactly and improved to 88/100, but the compiler still declines to spill p to [bp-6]/[bp-4] the way target does (it finds an equally-sized alternative instead), so si stays unused. Attempt03 () forced spilling but overshot to 313 bytes / 92/114 opcodes (extra reloads). Attempt04 (explicit local  reused for all five array writes) regressed to 270 bytes / 86/100. Remaining differences in the best candidate (attempt02) are the same class already blocked on PreDrawSpider/ClearEditDeltaTables/win_EditChanged: si vs bx register choice for the CurBalloonPlane/Flags word-index shift, and recomputing (*p)*4 for CurBalloonMsgs instead of reusing a cached index the way target's [bp-8] slot does.",
   "parked_next_experiment": "Try the array-of-struct form (single struct CurBalloon { struct MapPoint pnt; int plane; int flags; char far *msg; } far CurBalloonList[6]; one combined index write) to see whether a single aggregate assignment reproduces the [bp-8]-cached *4 index and the si-based *2 shift target uses for the plane/flags half; keep build/grind/agentL3/AddMsgBalloon.c (attempt02 form, 88/100, exact byte count) as the base.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

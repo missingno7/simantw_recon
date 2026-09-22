@@ -1,7 +1,7 @@
 {
   "id": "StealFoodR-c54ac44331",
   "symbol": "_StealFoodR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T17:09:44.846870+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "eca6d04931f066c1e507d99ecbfbeb316465d613f83ee76d509bf47f0654db84",
+      "report": "evidence/recovery/workflow/jobs/StealFoodR-c54ac44331/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "310dfbe8a66c6022f5837378360bcfd2f0c28233e85a2255958293bca3e5e3dc",
+      "report": "evidence/recovery/workflow/jobs/StealFoodR-c54ac44331/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -360,5 +388,10 @@
   ],
   "parked_reason": "One bounded source attempt recovers the R-side semantics from ASM: position x*64+y+0x58e8, marker 0x10 replaced with SRand8, alternate byte decrement, and positive-only decrement at counter byte offset 0x72de. The target additionally requires ENTER 2 with DI/SI parameter allocation, BX pointer spill/reload, and private selector [0xc394]; isolated ordinary C emits a 54-byte SI-based body with external far-state bindings. The same target-family behavior is established from _StealFoodB, so repeating uninformative token variants is not justified.",
   "parked_next_experiment": "Expert compile both R/B routines in their original SIMANT1 translation-unit context with private map bases and counter declarations, then verify the shared DI/SI/BX spill and selector bindings independently.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics and field targets are established from the working packet: cell = &MapR[(x<<6)+y] (near, MapB/MapR unit declaration), reseed with (unsigned char)SRand8() when the cell is a fresh pile (0x10) else decrement in place, then FoodR-- while positive; matches CheckNestFightB/RaidInB's near-pointer/near-array idiom in the admitted simant1 unit and the far call target (segment 5 offset 0/5614 = SRand8). 19/26 (then 18/26) opcodes align, 54-56/67 bytes; the divergence is structural register allocation, not semantics: target reserves an explicit 'enter 2,0' stack slot, computes the cell address through DI(x)/BX (mov bx,di; shl bx,6; add bx,si; add bx,<MapR addr>), SPILLS that address to [bp-2], and RELOADS it from the stack after the far SRand8() call (mov bx,[bp-2]) before the *cell=al store; the same reload also feeds the else-branch dec and the final near array access. Every source form tried -- a plain 'unsigned char near *cell = &MapR[(x<<6)+y];' pointer local, the same with explicit xx/yy parameter-home locals, and a plain 'int index=(x<<6)+y;' with MapR[index] used three times -- all compile under /Oeglw to a single register-resident address (SI, no DI, no stack slot, no 'enter') kept live across the far call rather than spilled/reloaded; MSC7 evidently treats the far call as non-clobbering for this register under /Ow here regardless of how the address expression is written in ordinary C. Companion _StealFoodB (same shape, MapB/FoodB) shows the identical residue and was independently escalated (MATCH_BLOCKED, SEMANTICS_UNKNOWN, attempts exhausted) during this session.",
+  "next_experiment": "Determine what MSC7 /Oeglw source shape forces a stack-spilled near pointer across a far call with no arguments -- e.g. a second far call between the address computation and the first use (to see if two calls change the spill decision), or a raw single-source compiler probe outside the grinder budget comparing 'unsigned char near *' vs a struct/array-of-pointer local."
 }

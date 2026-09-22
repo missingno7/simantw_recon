@@ -5,18 +5,20 @@
  * removal/occupancy byte is nonzero; the first eligible index is returned
  * and an empty or exhausted list returns -1.
  *
- * The selector at AListState[0x80f0] is the private list-count word observed
- * in the target ES load.  Dx8's three fields are at the target record
- * displacements 0x23a4, 0x278e, and 0x2f62.
+ * The list bound is the public ListIndexA (PACK 0x80F0), as in the admitted
+ * FindInBList/FindInRList twins; the three Dx8 fields are AlistX (0x23a4),
+ * AlistY (0x278e) and AlistT (0x2f62), spelled as record displacements like
+ * the twins.  Unit review (simone:2B42): the earlier spelling bound the same
+ * word through an invented array name.
  */
-extern unsigned int far AListState[];
+extern int far ListIndexA;
 extern unsigned char far Dx8[];
 
 int FindInAList(int firstKey, int secondKey)
 {
     int index;
 
-    index = AListState[0x4078];
+    index = ListIndexA;
     while (index > 0) {
         --index;
         if (Dx8[index + 0x23a4] == firstKey &&

@@ -1,7 +1,7 @@
 {
   "id": "EndGameDialog-270d18fabc",
   "symbol": "_EndGameDialog",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:38:38.442505+00:00",
   "flags": [
     "/AL",
@@ -310,5 +310,67 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "f03fa51bce218929de07457ec769ad9a0bdbe1d9b209f4d8f52f36133221d1d9",
+      "report": "evidence/recovery/workflow/jobs/EndGameDialog-270d18fabc/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "0e880159d08f2b04623120d491f29954d1280a57da95007a981a9b4d08f98eaa",
+      "report": "evidence/recovery/workflow/jobs/EndGameDialog-270d18fabc/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "726046c312ddb5f51381b751992ec3db344345eaab8aa7bba4dbf2aec6ce00f0",
+      "report": "evidence/recovery/workflow/jobs/EndGameDialog-270d18fabc/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "300852b390da7cff514f6106a39b20f9cdc85f3fbe2da734a92298266b4243b4",
+      "report": "evidence/recovery/workflow/jobs/EndGameDialog-270d18fabc/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (build/grind/agentG4/EndGameDialog.c, from build/grind/agentO3/EndGameDialog.c) reaches 96/112 opcodes matching (candidate_bytes 310 vs target 312, score 0.72) after restructuring the wait loop from 'while(!clicked && win_IsWinOpen(0x400))' to 'while(win_IsWinOpen(0x400)){ if(clicked) break; ... }', which matches target's actual CFG shape (loop-top win_IsWinOpen test, then a separate clicked-in-SI test) and fixed the captured/songQueued frame offsets (bp-4/bp-2) exactly. The remaining 3 real diffs (not CONST/SIMANT_MODULE isolated-compile noise) are all one root cause: clicked=0 at function entry compiles to 'xor si,si' at offset 6 exactly like the target, but our compiler then keeps tracking 'si==0' as a live constant all the way to the EditMessage(0L,...) call and the later songQueued=0 store/reload, folding target's literal 'push 0'/'mov [bp-2],0'/'mov di,[bp-2]' into 'push si'/'mov [bp-2],si'/'mov di,si'. The target binary does NOT perform this fold despite si provably being 0 at every one of those points (nothing modifies si between offset 6 and offset 162's 'mov si,1'), so the original source or original compiler pass evidently scoped this value-tracking differently. Tried and rejected: moving clicked=0 next to the loop (regressed to 83/112, lost the offset-6 xor si,si entirely) and marking clicked/songQueued volatile (regressed to 85/112). All SIMANT_MODULE/_DATA CONST fixup complaints are expected isolated-compile selector-pool noise per docs/factory.md. 4 attempts / 192 used.",
+  "next_experiment": "Determine what, if anything, in the real source sits between clicked=0 and the EditMessage call/songQueued init that would stop MSC7 /Oe from treating si as a known-zero constant that long (e.g. an intervening call whose signature is not actually void-safe for si, or a different variable placement that gives songQueued the register and clicked the memory slot instead)."
 }

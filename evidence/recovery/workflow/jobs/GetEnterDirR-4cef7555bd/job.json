@@ -1,7 +1,7 @@
 {
   "id": "GetEnterDirR-4cef7555bd",
   "symbol": "_GetEnterDirR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T11:55:13.417066+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,76 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "3ccb1270a12653adcf13836540b1a8fac1080305f2904392a7c43bd2d0af3493",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "0c2cb06a7f1017da5ac39430530f96867b63b122aa43b19bd80be0028f0f50c6",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "e5cb2eda1742f9fe5152b87c870ade773e7606695a7f4a6222c70a45a5bc1e49",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "6018e6b88323b53ace81fb28b5decf65babc7c9dd6a827773ddab0dbdbaa6e2c",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "2a0ea1b33cec64bab41fba9fa924c3718e35e879877cd5a0059ff9dc0a94a9fe",
+      "report": "evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -367,5 +437,10 @@
     "LOCAL_FRAME_LAYOUT"
   ],
   "parked_reason": "Byte-for-byte twin of GetEnterDirB with ExitMapR (SIMANT_DATA_GROUP +0x13a4) and the same CONST slots. Candidate evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt02/candidate0000.c (152 bytes, equal size) has the sibling's single difference: the frame slots of back=dir^4 ([bp-4] in the original) and the running best value ([bp-6]) are swapped by MSC7. Duplicated reverse-direction tests (attempt02) do not change the weighting. The sibling's declaration/name/initialiser/structure matrices (GetEnterDirB-a5248385bb attempts 02-06) are not repeated.",
-  "parked_next_experiment": "Solve GetEnterDirB first; the same source applies here with ExitMapR. Distinguishing observation: 'mov word ptr [bp-4],ax' at +0xb and 'cmp word ptr [bp-6],di' at +0x75."
+  "parked_next_experiment": "Solve GetEnterDirB first; the same source applies here with ExitMapR. Distinguishing observation: 'mov word ptr [bp-4],ax' at +0xb and 'cmp word ptr [bp-6],di' at +0x75.",
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Byte-exact twin of _GetEnterDirB (mirror_partner, MATCH_BLOCKED). 60/60 opcodes, 152/152 bytes; only stack_local_differences=5/memory_operand_differences=5 remain: original places back=dir^4 at [bp-4] and the running best value at [bp-6], MSC7 swaps them ([bp-8]/[bp-4] etc). In-lane attempts this session: (1) if(i==back) operand-order flip -- unchanged result 127/132 literal bytes equal, same 5 stack diffs; (2) swapped best=-1/bestValue=EXITMAP(x,y) statement order -- worse (105/142, instruction_layout_match=false); (3) declared i immediately after back -- same 127/132 as (1); (4) declared i last (after value) -- same 127/132; (5) swapped nx/ny computation order -- same 127/132. None of declaration-order, statement-order, or operand-order changes move back/best off their MSC7-assigned slots; sibling _GetEnterDirB was driven to automatic ESCALATED status (root cause EXPRESSION_SHAPE, budget exhausted) via the identical set of experiments, confirming this is the same unresolved idiom, not a per-symbol quirk.",
+  "next_experiment": "Not declaration/name/initializer/structure/operand-order: the optimizer's use-weighting for back vs. best is unrecovered from source shape; would need MSC7 internals or a differently-shaped equivalent (e.g. restructure the tie-break as a single combined boolean without changing opcode count) to test."
 }

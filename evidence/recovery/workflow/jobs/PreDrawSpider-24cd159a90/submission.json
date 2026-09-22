@@ -11,7 +11,7 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "compute px/py from MapPnt directly before storing x/y",
+  "semantic_summary": "PreDrawSpider: prepare spider-drawing state before rendering an edit-window\n * frame. Clears the pending spider rect's top (sentinel 0x8000) and primes\n * spiderTileLeft/spiderTileTop to a large default (500), then bails out when\n * the spider is off (SpidOn==0). Projects SpidX/SpidY into edit-view pixel\n * space (a 3/4 scale in the isometric display mode, matching DrawSpider's\n * transform), requires the current MapPlane to be 0 or 1, and requires the\n * spider to be inside the visible edit-window rect (tileWidth*editWidth by\n * tileHeight*editHeight, from the MapPnt pixel origin). On success it\n * records the spider's screen-pixel origin (7*tileWidth/tileHeight, one\n * tile beyond the 6-tile sprite) in spiderBuf and its tile-space origin\n * (raw SpidX/SpidY divided by tile size, offset 3 tiles for the sprite\n * margin) in spiderTileLeft/spiderTileTop. Finally, if the edit buffer is\n * dirty and no scrollbar drag is in progress, forces an edit-window redraw\n * (same InvalidateRect shape as InvalidUpdateEdit).\n *\n * spiderRect confirmed via assets/SIMANTW.SYM segment 9 (PACK): ...\n * _hHelpCursor(0x72d0) _triBoundRun(0x72d2) _spiderRect(0x72d6, 8 bytes)\n * _FoodR(0x72de) -- an 8-byte rect {left,top,right,bottom}; only .top\n * (offset 2, 0x72d8) is written here.",
   "binding_evidence": [
     "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],

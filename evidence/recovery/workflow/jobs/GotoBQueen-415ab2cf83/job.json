@@ -1,7 +1,7 @@
 {
   "id": "GotoBQueen-415ab2cf83",
   "symbol": "_GotoBQueen",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:15:58.584260+00:00",
   "flags": [
     "/AL",
@@ -395,5 +395,10 @@
     "OPTIMIZER_VARIANT_REQUIRED"
   ],
   "parked_reason": "Semantics established (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/GotoBQueen-415ab2cf83/attempt01/candidate0000.c, 203 vs 205 bytes, 62/69 opcodes): when MeType == 0x60 scroll the map to the player's own MePlane/MeLocX/MeLocY as GotoMapPoint does (cursor erase/redraw inside MSClipStart/End, CenterEdit/UpdateEdit with UDMapFlip cleared on the current plane, else SetMapPlaneLocation + DrawMap), otherwise GotoQueen(0x60). The single difference: the original writes the SI-cached plane to a third frame word ('mov [bp-2],si' at +0x72) just before SetMapPlaneLocation and still pushes SI; /Oelw omits the write-through, and a reloaded local changes the frame layout instead. Same write-only frame-home family as GotoBQueen's siblings (AddBlackAnts, SmoothAlarm, CenterEdit).",
-  "parked_next_experiment": "Evaluate with the optimizer-profile evidence in evidence/experiments/optimizer-profile (write-through of register-cached values before calls appears only under /Og-class profiles); distinguishing observation: 'mov [bp-2],si' at +0x72 never re-read."
+  "parked_next_experiment": "Evaluate with the optimizer-profile evidence in evidence/experiments/optimizer-profile (write-through of register-cached values before calls appears only under /Og-class profiles); distinguishing observation: 'mov [bp-2],si' at +0x72 never re-read.",
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best result 67/69 opcodes (205/205 bytes) already reached by two prior source variants (plain 'SetMapPlaneLocation(plane,x,y)' reuse of the outer plane local, and the original 'int p = MePlane;' redeclaration) -- confirmed identical output when replaying both, plus a third 'int p; p = plane;' two-statement variant that hashed identical to a prior attempt. Residual: target reserves an extra frame word (enter 6,0 vs 4,0) and explicitly spills SI (which already holds 'plane', unclobbered across the intervening win_IsWinOpen/MSClipStart/EraseMapCursor/MSClipEnd far calls) to [bp-2] at the top of the else branch (offset114) before pushing it back out of the register for the SetMapPlaneLocation(plane,x,y) call (offset123 'push si'); our candidate never performs that defensive spill and instead either re-pushes the register directly (matching output, missing frame word) or re-reads the MePlane global via fixup at the call site. All three tried source shapes for the else-branch plane access produce byte-identical output, so this looks like a compiler-internal register-pressure/spill-scheduling choice at this specific branch-merge point, not a reachable source idiom.",
+  "next_experiment": "Try adding a second, later use of 'plane' after the else block (e.g. inside the trailing if(win_IsWinOpen(0x100)) tail) to see if extending its live range past the merge point forces the compiler to reserve a dedicated spill slot matching the target's enter 6,0 frame."
 }

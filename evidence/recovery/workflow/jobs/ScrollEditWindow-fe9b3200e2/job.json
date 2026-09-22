@@ -1,7 +1,7 @@
 {
   "id": "ScrollEditWindow-fe9b3200e2",
   "symbol": "_ScrollEditWindow",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T13:20:35.121077+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "c38ef310639c05e37355b123cf9a94570609d4fa0b8f25cbe9d9f8f6261e76e6",
+      "report": "evidence/recovery/workflow/jobs/ScrollEditWindow-fe9b3200e2/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -405,5 +419,10 @@
     ],
     "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
   },
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "3 attempts, plateaued at score 0.965 (57/57 opcodes, exact instruction layout and CFG match, only category MEMORY_OPERAND). The remaining 4 divergent bytes are the near-variable operands of tileWidth/tileHeight/editWidth/editHeight (offsets 0x2a,0x30,0x38,0x3c): the target has literal DGROUP-relative absolute addresses (e.g. 'mov ax, word ptr [0x143a]') with zero NE loader relocation, while any isolated compile of this function can only reference these same externs (correctly bound: the matcher's own resolved fixup identifies them by the right MAPSYM names _tileWidth/_tileHeight/_editWidth/_editHeight) through an unresolved-in-isolation offset fixup, since the real DGROUP layout is only fixed at full link. Swapping the multiplicand order (tileWidth*(nx-MapPnt.x) vs (nx-MapPnt.x)*tileWidth) produced an identical result, ruling out an expression-shape cause -- the divergence is purely in the literal near-data addresses these correctly-identified externs resolve to.",
+  "next_experiment": "Compose ScrollEditWindow into its real antedit:00F4 unit assembly (tu_assembly.py) alongside the other members that reference the same tileWidth/tileHeight/editWidth/editHeight pool words, so the near-variable offsets resolve against the unit's real DGROUP layout instead of an isolated per-function compile."
 }

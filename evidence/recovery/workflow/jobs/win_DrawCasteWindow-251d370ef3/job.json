@@ -1,7 +1,7 @@
 {
   "id": "win_DrawCasteWindow-251d370ef3",
   "symbol": "_win_DrawCasteWindow",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:18:59.356482+00:00",
   "flags": [
     "/AL",
@@ -460,5 +460,10 @@
     "SEMANTICS_UNKNOWN"
   ],
   "parked_reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
-  "parked_next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
+  "parked_next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate is the pos-struct frame shape (struct{int x,y;} pos; instead of separate int x,y; locals -- matching the admitted twin win_DrawModeWindow's frame exactly), plain '(char)flags & 1' guards, no '==1' comparison: this reproduces the target byte-for-byte in size (216/216) with 77/79 opcodes matching, stack_local_differences=0, and only 2 residual instructions, both at the bit-0 (mask=1) guard tests: target 'mov ax,di / and al,1 / je' (destructive AND, dead write-back kept) vs candidate 'mov ax,di / test al,1 / je' (non-destructive TEST) at offsets 11 and 40. This is byte-identical in shape and offset to the twin win_DrawModeWindow-e75bc0ed83's own unresolved residual (same fix would apply to both). Confirmed non-fixable by source rephrasing across a wide matrix already tried on both twins combined (13+ candidates): plain '(char)flags & 1', '(int)((char)flags & 1)', 'flags & 1' with no char cast (tried this session on the mode twin -- opcode match got WORSE, 75/79, extra literal divergence, so the cast is required for everything else to stay exact), an explicit 'bit = flags & 1; if (bit)' local, and '((char)flags & 1) == 1'. Notably the THIRD bit test in the same function ('if (flags & 2)', mask=2, no cast) already compiles to 'test al,2' matching the target exactly -- so MSC7's AND-vs-TEST choice tracks the immediate mask value (1 vs 2) and/or register-liveness context, not any C-source phrasing of the mask=1 guard, and resists every isolated single-function recompile tried. A prior note on the twin job recommends assembling the whole simant:B324 unit (InitTriVars, OpenCasteWindow/OpenModeWindow, win_CasteControlChanged/win_ModeControlChanged, UpdateCasteWindow/UpdateModeWindow, DrawControlLevels, etc.) via tools/tu_assembly.py so the real optimizer register-liveness context (rather than an isolated single-function compile) can be checked, which is out of scope for an isolated-file near-exact attempt.",
+  "next_experiment": "Assemble the simant:B324 translation unit as a whole (tu_assembly.py, not an isolated single-function compile) with win_DrawCasteWindow/win_DrawModeWindow alongside their real neighbours in source order, and see whether MSC7's AND-vs-TEST choice for the mask=1 guard tracks whole-unit register liveness/scheduling that an isolated compile can't reproduce; do not keep varying the mask=1 C expression in isolation, that space is exhausted."
 }

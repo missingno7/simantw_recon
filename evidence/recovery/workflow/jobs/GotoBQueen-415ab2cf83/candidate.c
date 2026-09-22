@@ -46,8 +46,10 @@ void far GotoBQueen(void)
                 UpdateEdit();
             UDMapFlip = 0;
         } else {
-            plane = MePlane;
-            SetMapPlaneLocation(plane, x, y);
+            int p;
+
+            p = plane;
+            SetMapPlaneLocation(p, x, y);
             if (win_IsWinOpen(0x100))
                 DrawMap();
         }

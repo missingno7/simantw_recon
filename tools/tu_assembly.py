@@ -707,6 +707,12 @@ def unify_pool_symbols(shared, declared_texts, symbols):
         names = {n for n in names if not n.startswith('__segname:')}
         if len(names) < 2:
             continue
+        # Two names on one word are one object only if neither name also
+        # owns another word of this block; otherwise one member binds the
+        # wrong symbol (simtwo:3EF8: Dx8 and Dy8 each have their own word).
+        elsewhere = {n for w2, ns in shared.items() if w2 != word for n in ns}
+        if names & elsewhere:
+            raise FormatError('pool word %04X is named %s by claimed members while %s also own other words: a member binds the wrong symbol (review the sources, do not merge)' % (word, sorted(names), sorted(names & elsewhere)))
         rows = []
         for n in sorted(names):
             if n not in located:
@@ -835,7 +841,7 @@ def data_fillers(pieces, comp, functions, mode='definitions'):
     return dict(fillers=fillers, excluded=excluded, pieces=kept, literals=literals, mode=mode, address_order=list(dict.fromkeys(order)))
 
 
-def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions'):
+def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions', chosen_sources=None):
     """Stand-in functions that reproduce the selector-pool allocation order of the
     component members the unit does not claim (evidence: original pool words,
     their NE selector relocations, the claimed members' own slot usage).
@@ -858,6 +864,9 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
     card_list = card_list or cards()
     by_symbol = {c['symbol']: c for c in card_list}
     sources = preserved_sources()
+    for m, path in (chosen_sources or {}).items():
+        # Reviewed overrides replace the preserved source for slot and data maps too.
+        sources[m] = dict(sources.get(m, {}), source=path, basis='REVIEWED_SOURCE_OVERRIDE')
     segments = slot_segments()
     symbols = mapsym.parse(fixture('SIMANTW.SYM'))
     pieces = []
@@ -1204,7 +1213,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
             for d in sorted(first['declaration_items'], key=lambda d: d['text'].lstrip().startswith('#define')):
                 for n in d['names']:
                     declared_texts.setdefault(n, d['text'])
-            plan = scaffold_plan(component_id, members, flags, plan_declared, declared_texts=declared_texts, folder=folder, data_layout=data_layout)
+            plan = scaffold_plan(component_id, members, flags, plan_declared, declared_texts=declared_texts, folder=folder, data_layout=data_layout, chosen_sources=chosen)
             if plan['symbol_overrides']:
                 overrides = dict(overrides or {}, **plan['symbol_overrides'])
             if plan['claimed'] != members:
@@ -1292,7 +1301,15 @@ def unit_job(unit_id, reason):
     job_id = 'tu_' + unit_id + '-' + key
     directory = wf.STATE / 'jobs' / job_id
     if directory.exists():
-        raise FormatError('unit job already exists: ' + job_id)
+        previous = read_json(directory / 'job.json')
+        if previous['status'] == 'PROMOTED':
+            raise FormatError('unit job already exists: ' + job_id)
+        # Same unit source, different admission context (e.g. members admitted
+        # since): archive the stale job and issue a fresh one.
+        import shutil
+        archive = wf.STATE / 'superseded-unit-jobs' / ('%s-%s' % (job_id, wf.timestamp().replace(':', '').replace('-', '')[:15]))
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(directory), str(archive))
     directory.mkdir(parents=True)
     candidate = directory / 'candidate.c'
     candidate.write_bytes((ROOT / spec['source']).read_bytes())

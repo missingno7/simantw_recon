@@ -1,7 +1,7 @@
 {
   "id": "UpdateEditIfBufInvalid-e0704d72b4",
   "symbol": "_UpdateEditIfBufInvalid",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T23:48:05.140314+00:00",
   "flags": [
     "/AL",
@@ -343,6 +343,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "e1667a948dda6c907a9f23c88cf2cee84cdfadd8f4ab30f6c1103352c7ad2e26",
+      "report": "evidence/recovery/workflow/jobs/UpdateEditIfBufInvalid-e0704d72b4/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "6d4c64e1586ac21bf41c5e35ba7fbb50a3379dda191796611b31802549584357",
+      "report": "evidence/recovery/workflow/jobs/UpdateEditIfBufInvalid-e0704d72b4/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "RULED_OUT_MEMBER"
     }
   ],
   "root_cause": {
@@ -374,5 +402,10 @@
   ],
   "parked_reason": "The corrected two-probe reconstruction exactly matches the 82-byte body, CFG, all 26 opcodes, globals, imports, and call ordering. Complete strict proof is blocked only by the target near call into unnamed ANTEDIT segment-3 code at offset 5844; the public _DrawEdit is at offset 5358 and is not the target binding.",
   "parked_next_experiment": "Recover the unnamed same-segment helper at ANTEDIT_MODULE offset 5844 and its original declaration/name, then replace the provisional DrawEdit binding and rerun fresh strict admission.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "CALLING_CONVENTION"
+  ],
+  "reason": "Body is otherwise exact: target_bytes==candidate_bytes==82, opcode_matches==opcode_total==26/26, instruction_layout_match and cfg_shape_match true, zero register/branch/stack differences. The sole divergence (offset 0x47-0x48) is the near CALL to DrawEdit: the target has a literal fixup-free 'call 0x238' (no OMF loader binding at all), while any isolated compile of this function necessarily emits a same-segment self-relative CALL fixup because DrawEdit is not defined in this compilation. Tried declaring DrawEdit extern (attempt04, same result as prior attempts) and defining it locally ahead of UpdateEditIfBufInvalid so its offset would be known at compile time (attempt05): that instead shifted the public's own placement and regressed to RULED_OUT_MEMBER (contribution grew to 84 bytes, 11 immediate/7 memory-operand differences, public offset mismatch). DrawEdit's own admitted recovery (src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c) is an empty body 'void DrawEdit(void) {}' in the same antedit:00F4 unit as this function; the literal call offset can only be reproduced by compiling both functions together in their real TU order, which is out of scope for an isolated per-symbol candidate.",
+  "next_experiment": "Compose UpdateEditIfBufInvalid into the antedit:00F4 unit assembly alongside DrawEdit (tu_assembly.py) in their real relative order so the same-segment call resolves to a compile-time literal instead of a fixup; retest as part of that unit rather than in isolation."
 }

@@ -1,7 +1,7 @@
 {
   "id": "win_Close-702e8021ab",
   "symbol": "_win_Close",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T13:38:33.597169+00:00",
   "flags": [
     "/AL",
@@ -372,6 +372,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "e4d94eff8e3df62734de11595ea32b05c2aa2f016137fb48a5178a4d4a9734cf",
+      "report": "evidence/recovery/workflow/jobs/win_Close-702e8021ab/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "70321c302644d5d56730ef79f302d8ed121920aba704fc096c95d098cbaeaf26",
+      "report": "evidence/recovery/workflow/jobs/win_Close-702e8021ab/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "3aaf502141e5ae8d7602245b94db8ea3369a0c63d8584689ed67aa355e0308c3",
+      "report": "evidence/recovery/workflow/jobs/win_Close-702e8021ab/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -403,5 +445,10 @@
   ],
   "parked_reason": "Best candidate evidence/recovery/workflow/jobs/win_Close-702e8021ab/attempt03/candidate0000.c (162 vs 168 bytes): the win_hwnd handle test, the bucket flag clear (byte +0x1d &= 0xfd), ShowWindow(handle,0), the GetTopWindow/IsWindowVisible/GetNextWindow(2) walk with next in SI, the GetWindow(4) owner substitution, BringWindowToTop and PostMessage(top,0x86,activeAppFlag,0L) with the far DGROUP activeAppFlag through its selector slot all match. Only the head differs: the original copies objectNumber into DI and shifts it in BX ('mov di,[bp+6] / mov bx,di / sar bx,8'), stores the window index at [bp-4] and the handle address at [bp-2] and reloads the latter after the flag clear, whereas MSC7 folds the shift into a byte load ('mov al,[bp+7] / cbw') and keeps the handle address in AX. Two separate shifts reproduce the DI copy but then enregister the handle (attempt02); explicit window/handle locals, declaration orders, loop forms, unsigned handles and register storage on the parameter (attempts 01-04, 15 candidates) keep the byte load.",
   "parked_next_experiment": "Do not repeat parameter-use or declaration matrices. Test forms where objectNumber is needed as a whole word besides the shift (for example passed to a helper or masked for the object index) so the DI copy is justified, while the window index and handle address stay frame locals; distinguishing observation '8b 7e 06 8b df c1 fb 08' at +0x6 and 'mov bx,[bp-2]' at +0x31.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

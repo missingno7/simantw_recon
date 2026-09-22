@@ -3,7 +3,7 @@
  * Members: _FindInAList, _FindInBList, _FindInRList, _AddAntToBList, _AddAntToRList, _ClearListB, _ClearListR
  * SCAFFOLDED: unclaimed members _RemoveFromAList are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
-extern unsigned int far AListState[];
+extern int far ListIndexA;
 extern unsigned char far Dx8[];
 extern int far ListIndexB;
 extern int far ListIndexR;
@@ -32,14 +32,14 @@ void far pool_stub_RemoveFromAList(void)
     volatile int t;
 
     t = AlistX;
-    t = AListState[0];
+    t = (int)ListIndexA;
 }
 
 int FindInAList(int firstKey, int secondKey)
 {
     int index;
 
-    index = AListState[0x4078];
+    index = ListIndexA;
     while (index > 0) {
         --index;
         if (Dx8[index + 0x23a4] == firstKey &&

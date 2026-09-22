@@ -123,6 +123,7 @@
       53310,
       53311
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 53312,
@@ -807,17 +808,17 @@
   "referenced_declarations": [
     {
       "declaration": "extern int near rootWnd;",
-      "source": "src/recovered/DoWinHelp.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern int near rootWnd;",
       "source": "src/recovered/Error.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern int near rootWnd;",
       "source": "src/recovered/PopMsg.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int near rootWnd;",
+      "source": "src/recovered/ProcMenuHelp.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -857,6 +858,16 @@
       "offset": 5110,
       "segment": 1,
       "symbol": "_DoMouse"
+    },
+    {
+      "offset": 10544,
+      "segment": 1,
+      "symbol": "MAINWNDPROC"
+    },
+    {
+      "offset": 10544,
+      "segment": 1,
+      "symbol": "MAINWNDPROC"
     },
     {
       "offset": 22936,
@@ -1316,38 +1327,223 @@
       "/G2",
       "/Gs",
       "/Oelw",
+      "/GA",
       "/NTSIMTWO_MODULE"
-    ]
+    ],
+    "profile": {
+      "name": "ga",
+      "basis": "ASSIGNED",
+      "assignment": "asg-simtwo-c806-ga",
+      "context": "simtwo:C806",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json"
+      ],
+      "component": "simtwo:C806",
+      "refuted_profiles": []
+    },
+    "catalog": "layout/compiler-profiles.json",
+    "note": "Profile is attached to the object context; it is not a per-function switch and the grinder cannot change it"
+  },
+  "unit_context": {
+    "id": "simtwo:C806",
+    "publics": [
+      "_win_LoadAllWindows",
+      "_win_Open",
+      "_win_Close",
+      "_win_Events",
+      "_win_FindObject",
+      "_UpdateAllWindows",
+      "_win_GetEvent",
+      "_win_SetObjFormatStr",
+      "_win_ToTop",
+      "_win_Swap",
+      "_win_SetWinDrawHook",
+      "_win_SetObjBitmap",
+      "_win_CenterStrAtObj",
+      "_win_PrintfAtObj",
+      "_win_ClearObjToEOL",
+      "_win_ObjFormatPrint",
+      "_win_DrawHBar",
+      "_win_DrawVBar",
+      "_win_GetObjSize",
+      "_win_ObjInv",
+      "_win_GetProxEvent",
+      "__win_SetProxItem",
+      "INDIRECTDLGPROC",
+      "_win_DoProxMenu"
+    ],
+    "segment": "SIMTWO_MODULE",
+    "range": "simtwo:B702-F85B"
+  },
+  "reconstruction_rules": [
+    {
+      "id": "declaration-order-ds-es",
+      "rule": "Declaration order can determine DS versus ES code generation: the compiler keeps the last-loaded far selector live, so the order in which far objects are first referenced in the source (not the extern declaration order) fixes ES reuse and the CONST selector-pool order. Reorder references, not declarations, to change selector traffic.",
+      "evidence": [
+        "evidence/topology/build-topology.json",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "parameter-copied-to-local",
+      "rule": "When the historical code holds a parameter's value in SI/DI throughout, an explicit local copy of the parameter (register variable candidate) can be required; the compiler does not enregister [bp+n] parameters directly.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "si_di_home"
+      ]
+    },
+    {
+      "id": "word-indexed-arrays",
+      "rule": "Arrays are frequently word-indexed (SHL 1 / ADD reg,reg before the displacement). Preserve the observed element width: declare int arrays for two-byte strides, char arrays for byte strides, eight-byte structs for SHL 3.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "mapsym-name-over-invented",
+      "rule": "Never invent a convenient symbol when MAPSYM provides the real one: use the exact name from direct_data_bindings; an unnamed operand inside a named public array is an index into that array, not a new private object.",
+      "evidence": [
+        "docs/grinder-lessons.md",
+        "evidence/topology/supervisor-far-names/bindings.json"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "offset-is-not-identity",
+      "rule": "A matching numeric offset does not establish object identity: equal offsets in different segments are different objects, and a BSS word placed by constraint inside another object's data proves nothing.",
+      "evidence": [
+        "tools/library_match.py",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "far-object-needs-selector",
+      "rule": "Far-object identity requires selector/segment evidence: an NE selector relocation on the slot or immediate that loads ES, resolved to the object's segment. Prefer the packet's addressed_segment and exact_mapsym_names.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "selector-pool-is-per-object",
+      "rule": "The CONST selector pool is private to one object and ordered by first reference across the whole unit; a function whose pool constraints conflict in isolation needs its unit context, and functions sharing a pool word belong to the same unit.",
+      "evidence": [
+        "evidence/topology/build-topology.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "compiler-profile-is-unit-level",
+      "rule": "The compiler profile belongs to the unit context (layout/compiler-profiles.json): use the packet profile as given; a code-shape mismatch that only /Og explains is profile evidence for the unit (report it), not a per-function flag to try.",
+      "evidence": [
+        "layout/compiler-profiles.json",
+        "evidence/experiments/optimizer-profile/README.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    }
+  ],
+  "parked_review": {
+    "job": "win_Close-702e8021ab",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "EXPRESSION_SHAPE"
+    ],
+    "attempts": 4,
+    "candidates": 13,
+    "best_report": "evidence/recovery/workflow/jobs/win_Close-702e8021ab/attempt04/results.json",
+    "detail": {
+      "blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 61,
+      "opcode_total": 66,
+      "candidate_bytes": 166,
+      "target_bytes": 168,
+      "register_only_differences": 3,
+      "branch_target_differences": 8,
+      "failed_fixup_reasons": {
+        "unsupported or unresolved target/frame": 8,
+        "resolved offset and frame": 4,
+        "NE selector for independently named target": 1
+      },
+      "issues": [
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x9e",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x97",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x88",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x7a",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x6e",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x5c",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x50",
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x3f"
+      ],
+      "probe": {
+        "strict": [],
+        "diagnostic": [],
+        "results": {
+          "baseline": "NO_COMPLETE_MATCH",
+          "ga": "NO_COMPLETE_MATCH",
+          "og": "NO_COMPLETE_MATCH",
+          "og-ga": "NO_COMPLETE_MATCH",
+          "ogi": "NO_COMPLETE_MATCH"
+        }
+      },
+      "unit_profile": {
+        "name": "ga",
+        "basis": "ASSIGNED",
+        "assignment": "asg-simtwo-c806-ga"
+      },
+      "note_profile": "unit context now carries profile ga; a fresh attempt inherits it"
+    }
   },
   "similar_matched_functions": [
     {
+      "symbol": "_IsPillDead",
+      "source": "src/recovered/wf_tu_simtwo_4CDC_StorePillarMap_4_scaffold-c16d27de40.c",
+      "size": 168,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_DBReplace",
+      "source": "src/recovered/wf_DBReplace-da4c045f1a.c",
+      "size": 169,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
       "symbol": "_goStepLeft",
-      "source": "src/recovered/wf_goStepLeft-5476adf047.c",
+      "source": "src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c",
+      "size": 163,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_goStepUp",
+      "source": "src/recovered/wf_tu_simtwo_6EFE-d6ff84e46b.c",
       "size": 163,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
       "symbol": "_GstrB",
-      "source": "src/recovered/wf_GstrB-b09a4bcc53.c",
+      "source": "src/recovered/wf_tu_simtwo_0000_GstrB_9_scaffold-1d3fbf27a4.c",
       "size": 162,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_win_CenterStrAtObj",
-      "source": "src/recovered/wf_win_CenterStrAtObj-57d14d8d10.c",
-      "size": 160,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_SetModeProd",
-      "source": "src/recovered/wf_SetModeProd-f696675003.c",
-      "size": 156,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_win_IsWinExposed",
-      "source": "src/recovered/wf_win_IsWinExposed-22083a86a9.c",
-      "size": 155,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

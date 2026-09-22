@@ -11,7 +11,7 @@
   ],
   "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "Windows CreateFont/GetTextMetrics font setup with AddFontResource, once-only build gated on bigFontH, clipDC font selection with savedFont caching",
+  "semantic_summary": "* GSetBigFont: create (once) the \"Gaia8x14\" big font from fontres.fon,\n * broadcast WM_FONTCHANGE, then measure it: GetDC(rootWnd), select the\n * font (saving the previous one), GetTextMetrics into a local buffer,\n * derive an average width byte and a signed rounded half-height byte\n * into private scratch, restore/select back and release the DC.  If a\n * clip DC exists, its previously-selected font (savedFont, reused across\n * calls) is selected there instead once; either way the font's average\n * width/height bytes are copied to the public fontWidth/fontHeight.",
   "binding_evidence": [
     "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],

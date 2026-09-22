@@ -89,6 +89,7 @@
       53523,
       53524
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 53525,
@@ -488,6 +489,11 @@
   "referenced_declarations": [
     {
       "declaration": "extern int far PointInRect(struct CursorPoint far *point, struct CursorRect far *rect);",
+      "source": "src/recovered/wf_win_IsPointInObj-538ab6cada.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far PointInRect(struct CursorPoint far *point, struct CursorRect far *rect);",
       "source": "src/recovered/win_IsCursorInObj.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
@@ -528,6 +534,11 @@
       "offset": 5110,
       "segment": 1,
       "symbol": "_DoMouse"
+    },
+    {
+      "offset": 10544,
+      "segment": 1,
+      "symbol": "MAINWNDPROC"
     }
   ],
   "prior_draft": null,
@@ -680,8 +691,186 @@
       "/G2",
       "/Gs",
       "/Oelw",
+      "/GA",
       "/NTSIMTWO_MODULE"
-    ]
+    ],
+    "profile": {
+      "name": "ga",
+      "basis": "ASSIGNED",
+      "assignment": "asg-simtwo-c806-ga",
+      "context": "simtwo:C806",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json"
+      ],
+      "component": "simtwo:C806",
+      "refuted_profiles": []
+    },
+    "catalog": "layout/compiler-profiles.json",
+    "note": "Profile is attached to the object context; it is not a per-function switch and the grinder cannot change it"
+  },
+  "unit_context": {
+    "id": "simtwo:C806",
+    "publics": [
+      "_win_LoadAllWindows",
+      "_win_Open",
+      "_win_Close",
+      "_win_Events",
+      "_win_FindObject",
+      "_UpdateAllWindows",
+      "_win_GetEvent",
+      "_win_SetObjFormatStr",
+      "_win_ToTop",
+      "_win_Swap",
+      "_win_SetWinDrawHook",
+      "_win_SetObjBitmap",
+      "_win_CenterStrAtObj",
+      "_win_PrintfAtObj",
+      "_win_ClearObjToEOL",
+      "_win_ObjFormatPrint",
+      "_win_DrawHBar",
+      "_win_DrawVBar",
+      "_win_GetObjSize",
+      "_win_ObjInv",
+      "_win_GetProxEvent",
+      "__win_SetProxItem",
+      "INDIRECTDLGPROC",
+      "_win_DoProxMenu"
+    ],
+    "segment": "SIMTWO_MODULE",
+    "range": "simtwo:B702-F85B"
+  },
+  "reconstruction_rules": [
+    {
+      "id": "declaration-order-ds-es",
+      "rule": "Declaration order can determine DS versus ES code generation: the compiler keeps the last-loaded far selector live, so the order in which far objects are first referenced in the source (not the extern declaration order) fixes ES reuse and the CONST selector-pool order. Reorder references, not declarations, to change selector traffic.",
+      "evidence": [
+        "evidence/topology/build-topology.json",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "parameter-copied-to-local",
+      "rule": "When the historical code holds a parameter's value in SI/DI throughout, an explicit local copy of the parameter (register variable candidate) can be required; the compiler does not enregister [bp+n] parameters directly.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "si_di_home"
+      ]
+    },
+    {
+      "id": "word-indexed-arrays",
+      "rule": "Arrays are frequently word-indexed (SHL 1 / ADD reg,reg before the displacement). Preserve the observed element width: declare int arrays for two-byte strides, char arrays for byte strides, eight-byte structs for SHL 3.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "mapsym-name-over-invented",
+      "rule": "Never invent a convenient symbol when MAPSYM provides the real one: use the exact name from direct_data_bindings; an unnamed operand inside a named public array is an index into that array, not a new private object.",
+      "evidence": [
+        "docs/grinder-lessons.md",
+        "evidence/topology/supervisor-far-names/bindings.json"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "offset-is-not-identity",
+      "rule": "A matching numeric offset does not establish object identity: equal offsets in different segments are different objects, and a BSS word placed by constraint inside another object's data proves nothing.",
+      "evidence": [
+        "tools/library_match.py",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "far-object-needs-selector",
+      "rule": "Far-object identity requires selector/segment evidence: an NE selector relocation on the slot or immediate that loads ES, resolved to the object's segment. Prefer the packet's addressed_segment and exact_mapsym_names.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "selector-pool-is-per-object",
+      "rule": "The CONST selector pool is private to one object and ordered by first reference across the whole unit; a function whose pool constraints conflict in isolation needs its unit context, and functions sharing a pool word belong to the same unit.",
+      "evidence": [
+        "evidence/topology/build-topology.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "compiler-profile-is-unit-level",
+      "rule": "The compiler profile belongs to the unit context (layout/compiler-profiles.json): use the packet profile as given; a code-shape mismatch that only /Og explains is profile evidence for the unit (report it), not a per-function flag to try.",
+      "evidence": [
+        "layout/compiler-profiles.json",
+        "evidence/experiments/optimizer-profile/README.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    }
+  ],
+  "parked_review": {
+    "job": "win_FindObject-a60c7a4f68",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "REGISTER_ALLOCATION"
+    ],
+    "attempts": 5,
+    "candidates": 5,
+    "best_report": "evidence/recovery/workflow/jobs/win_FindObject-a60c7a4f68/attempt02/results.json",
+    "detail": {
+      "blockers": [
+        "REGISTER_ALLOCATION"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 43,
+      "opcode_total": 46,
+      "candidate_bytes": 103,
+      "target_bytes": 101,
+      "register_only_differences": 13,
+      "branch_target_differences": 4,
+      "failed_fixup_reasons": {
+        "unsupported or unresolved target/frame": 1
+      },
+      "issues": [
+        "SIMTWO_MODULE unresolved/mismatched fixup at 0x43",
+        "SIMTWO_MODULE uncovered NE relocations",
+        "SIMTWO_MODULE literal bytes differ"
+      ],
+      "probe": {
+        "strict": [],
+        "diagnostic": [],
+        "results": {
+          "baseline": "NO_COMPLETE_MATCH",
+          "ga": "NO_COMPLETE_MATCH",
+          "og": "NO_COMPLETE_MATCH",
+          "og-ga": "NO_COMPLETE_MATCH",
+          "ogi": "NO_COMPLETE_MATCH"
+        }
+      },
+      "unit_profile": {
+        "name": "ga",
+        "basis": "ASSIGNED",
+        "assignment": "asg-simtwo-c806-ga"
+      },
+      "note_profile": "unit context now carries profile ga; a fresh attempt inherits it"
+    }
   },
   "similar_matched_functions": [
     {
@@ -697,6 +886,12 @@
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
+      "symbol": "_ReplacePillarMap",
+      "source": "src/recovered/wf_tu_simtwo_4CDC_StorePillarMap_4_scaffold-c16d27de40.c",
+      "size": 104,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
       "symbol": "_db_ReplaceObject",
       "source": "src/recovered/wf_db_ReplaceObject-8f64bec599.c",
       "size": 98,
@@ -705,12 +900,6 @@
     {
       "symbol": "_win_DrawBitMapAtObjNum",
       "source": "src/recovered/wf_win_DrawBitMapAtObjNum-4dd41620af.c",
-      "size": 98,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_win_GetObjSize",
-      "source": "src/recovered/wf_win_GetObjSize-35d87c4c75.c",
       "size": 98,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
