@@ -58,7 +58,6 @@ extern unsigned int near lastProxObj;
 #define WM_PAINT        0x000f
 #define WM_INITDIALOG   0x0110
 #define WM_LBUTTONDOWN  0x0201
-static int near dlgObject;
 extern long far PaintStuff(unsigned hwnd, unsigned msg, unsigned wParam, long lParam, long extra);
 extern int far pascal SetProp(unsigned hwnd, char far *name, unsigned data);
 extern unsigned far pascal SetCapture(unsigned hwnd);
@@ -198,6 +197,7 @@ unsigned int win_GetProxEvent(void)
     return lastProxObj;
 }
 
+static int near dlgObject;
 long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wParam, long lParam)
 {
     switch (msg) {

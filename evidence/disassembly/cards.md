@@ -193,7 +193,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoUserButtonUpdate — SIMANT_MODULE:01B6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 131 bytes.
-Source: src/recovered/wf_DoUserButtonUpdate-cf874c4e35.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 01B6  55                       push bp
@@ -364,8 +364,8 @@ Source: src/recovered/wf_UpdateUserButtons-609b2b7960.c. Flags: ['/AL', '/G2', '
 ```
 
 ## _SetUserButton — SIMANT_MODULE:036A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 345 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 345 bytes.
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 036A  c8040000                 enter 4, 0
@@ -1051,7 +1051,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _ClearBookmarks — SIMANT_MODULE:0AA8
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 125 bytes.
-Source: src/recovered/wf_ClearBookmarks-ffba50efd3.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 0AA8  57                       push di
@@ -1103,7 +1103,7 @@ Source: src/recovered/wf_ClearBookmarks-ffba50efd3.c. Flags: ['/AL', '/G2', '/Gs
 
 ## _DrawRibbonMessage — SIMANT_MODULE:0B26
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 156 bytes.
-Source: src/recovered/wf_DrawRibbonMessage-0779d6fc14.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 0B26  ff36eabc                 push word ptr [0xbcea]
@@ -1388,7 +1388,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _HelpKeyDown — SIMANT_MODULE:0DE6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 166 bytes.
-Source: src/recovered/wf_HelpKeyDown-18eb3b2e99.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 0DE6  55                       push bp
@@ -2377,7 +2377,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoNextWindow — SIMANT_MODULE:182C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 74 bytes.
-Source: src/recovered/wf_DoNextWindow-2eb2851645.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 182C  55                       push bp
@@ -2817,7 +2817,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _RedrawWindows — SIMANT_MODULE:1C68
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 86 bytes.
-Source: src/recovered/wf_RedrawWindows-14f4bb1c45.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 1C68  c8080000                 enter 8, 0
@@ -2857,7 +2857,7 @@ Source: src/recovered/wf_RedrawWindows-14f4bb1c45.c. Flags: ['/AL', '/G2', '/Gs'
 
 ## _DoDebugWin — SIMANT_MODULE:1CBE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 179 bytes.
-Source: src/recovered/wf_tu_simant_01B6_DoDebugWin_1-7ff3c7d28e.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 1CBE  57                       push di
@@ -3925,7 +3925,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _LoadFancyCursor — SIMANT_MODULE:280E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 113 bytes.
-Source: src/recovered/wf_LoadFancyCursor-9a23f6f0e0.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 280E  ff367ccc                 push word ptr [0xcc7c] ; _hInst
@@ -6029,7 +6029,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _PatchColorArrays — SIMANT_MODULE:3F0C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 206 bytes.
-Source: src/recovered/wf_PatchColorArrays-a1dab56f48.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
+Source: src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_11_scaffold-eb4b2d667c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 3F0C  c8100000                 enter 0x10, 0

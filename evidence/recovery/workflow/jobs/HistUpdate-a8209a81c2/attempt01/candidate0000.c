@@ -1,0 +1,3 @@
+void far HistUpdate(void)
+{
+}

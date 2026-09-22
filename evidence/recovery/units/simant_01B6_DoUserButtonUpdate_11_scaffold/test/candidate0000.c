@@ -1,15 +1,11 @@
 /* Candidate translation unit simant_01B6_DoUserButtonUpdate_11_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _DoUserButtonUpdate, _UpdateUserButtons, _SetUserButton, _ClearBookmarks, _DrawRibbonMessage, _HelpKeyDown, _DoNextWindow, _RedrawWindows, _DoDebugWin, _LoadFancyCursor, _PatchColorArrays
- * SCAFFOLDED: unclaimed members _DoUserButton, _DoBookMark, _DoMouse, _DoMenuEntry, _AdjustWndMinMax, _NetBIOSPost, _ProcessPost, _UpdateWindows, MYTIMERFUNC, _SetFancyCursor, MAINWNDPROC are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
+ * Members: _DoUserButtonUpdate, _SetUserButton, _ClearBookmarks, _DrawRibbonMessage, _HelpKeyDown, _DoNextWindow, _RedrawWindows, _DoDebugWin, _LoadFancyCursor, _PatchColorArrays
+ * SCAFFOLDED: unclaimed members after_start, _DoUserButton, _DoBookMark are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern int far GamePaused;
 extern int far OptionStates[];
 extern void far win_SetObjSelectedState(int object, int selected);
-extern int near mapUserButton[8];
-extern int near yardUserButton[8];
-static int near mapButtonsPending = 0;
-static int near yardButtonsPending = 0;
 struct WinButtonObject {
     unsigned char reserved1[0x24];
     unsigned char flags1;
@@ -63,10 +59,6 @@ extern int far pascal EnumChildWindows(int parent, WindowProc procedure,
                                        unsigned long parameter);
 extern int far pascal InvalidateRect(int window, void far *rect,
                                      unsigned flags);
-static long near lastTick = -1;
-static long near frames = 0;
-static long near total = 0;
-static char near debugFormat[] = "Ave Length: %lu Speed: %lu";
 extern unsigned long far pascal GetTickCount(void);
 extern unsigned int far pascal LoadCursor(unsigned int instance,
                                           char far *name);
@@ -89,40 +81,11 @@ extern int far match_position;  /* scaffold reference for pool word BE76 (segmen
 extern int far Dx8;  /* scaffold reference for pool word BE78 (segment 8, MAPSYM_SITE_NAME) */
 extern int far MapPnt;  /* scaffold reference for pool word BE7C (segment 9, MAPSYM_SITE_NAME) */
 extern int far MapMode;  /* scaffold reference for pool word BE7E (segment 8, MAPSYM_SITE_NAME) */
-extern int far lastProxObj;  /* scaffold reference for pool word BE88 (segment 10, MAPSYM_SITE_NAME) */
-extern int far editForce;  /* scaffold reference for pool word BE8A (segment 10, MAPSYM_SITE_NAME) */
-extern int far CurGameType;  /* scaffold reference for pool word BE8C (segment 9, MAPSYM_SITE_NAME) */
-extern int far editBuf;  /* scaffold reference for pool word BE8E (segment 10, MAPSYM_SITE_NAME) */
-extern int far ncbHead;  /* scaffold reference for pool word BE90 (segment 9, MAPSYM_SITE_NAME) */
-extern int far ncbSegment;  /* scaffold reference for pool word BE92 (segment 9, MAPSYM_SITE_NAME) */
-extern int far ncbOffset;  /* scaffold reference for pool word BE94 (segment 9, MAPSYM_SITE_NAME) */
-extern int far ncbTail;  /* scaffold reference for pool word BE96 (segment 9, MAPSYM_SITE_NAME) */
-extern int far UDcntr;  /* scaffold reference for pool word BE98 (segment 9, MAPSYM_SITE_NAME) */
-extern int far UDMapFlip;  /* scaffold reference for pool word BE9A (segment 9, MAPSYM_SITE_NAME) */
-extern int far IsGameOver;  /* scaffold reference for pool word BE9C (segment 9, MAPSYM_SITE_NAME) */
-extern int far BlackWon;  /* scaffold reference for pool word BE9E (segment 9, MAPSYM_SITE_NAME) */
-extern int far gameCycles;  /* scaffold reference for pool word BEA0 (segment 9, MAPSYM_SITE_NAME) */
-extern int far SimAntClientFlag;  /* scaffold reference for pool word BEA2 (segment 8, MAPSYM_SITE_NAME) */
-extern int far SimAntClientNum;  /* scaffold reference for pool word BEA4 (segment 9, MAPSYM_SITE_NAME) */
-extern int far MeMoveMe;  /* scaffold reference for pool word BEA6 (segment 9, MAPSYM_SITE_NAME) */
-extern int far CurGameTool;  /* scaffold reference for pool word BEA8 (segment 9, MAPSYM_SITE_NAME) */
-extern int far SpeedDelayVals;  /* scaffold reference for pool word BEAA (segment 8, MAPSYM_SITE_NAME) */
-extern int far SimAntServerFlag;  /* scaffold reference for pool word BEAC (segment 8, MAPSYM_SITE_NAME) */
-extern int far CurExpTool;  /* scaffold reference for pool word BEAE (segment 9, MAPSYM_SITE_NAME) */
-extern int far wSoundBlasterMsg;  /* scaffold reference for pool word BEB0 (segment 10, MAPSYM_SITE_NAME) */
 
+void far pool_stub_after_start(void);
 void far pool_stub_DoUserButton(void);
 void far pool_stub_DoBookMark(void);
-void far pool_stub_DoMouse(void);
-void far pool_stub_DoMenuEntry(void);
-void far pool_stub_AdjustWndMinMax(void);
-void far pool_stub_NetBIOSPost(void);
-void far pool_stub_ProcessPost(void);
-void far pool_stub_UpdateWindows(void);
-void far pool_stub_MYTIMERFUNC(void);
-void far pool_stub_SetFancyCursor(void);
-void far pool_stub_MAINWNDPROC(void);
-void far UpdateUserButtons(void);
+void far pool_data_fill_02C3(void);
 void far SetUserButton(int object, int button);
 void far ClearBookmarks(void);
 void far DrawRibbonMessage(void);
@@ -133,25 +96,28 @@ void far DoDebugWin(void);
 void far LoadFancyCursor(void);
 void far PatchColorArrays(void);
 
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_after_start)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoUserButton)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoBookMark)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoMouse)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoMenuEntry)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_AdjustWndMinMax)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_NetBIOSPost)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_ProcessPost)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_UpdateWindows)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_MYTIMERFUNC)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_SetFancyCursor)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_MAINWNDPROC)
-#pragma alloc_text(RUN2_TEXT, UpdateUserButtons)
-#pragma alloc_text(RUN3_TEXT, SetUserButton)
-#pragma alloc_text(RUN4_TEXT, ClearBookmarks, DrawRibbonMessage)
-#pragma alloc_text(RUN5_TEXT, HelpKeyDown)
-#pragma alloc_text(RUN6_TEXT, DoNextWindow)
-#pragma alloc_text(RUN7_TEXT, RedrawWindows, DoDebugWin)
-#pragma alloc_text(RUN8_TEXT, LoadFancyCursor)
-#pragma alloc_text(RUN9_TEXT, PatchColorArrays)
+#pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_02C3)
+#pragma alloc_text(RUN2_TEXT, SetUserButton)
+#pragma alloc_text(RUN3_TEXT, ClearBookmarks, DrawRibbonMessage)
+#pragma alloc_text(RUN4_TEXT, HelpKeyDown)
+#pragma alloc_text(RUN5_TEXT, DoNextWindow)
+#pragma alloc_text(RUN6_TEXT, RedrawWindows, DoDebugWin)
+#pragma alloc_text(RUN7_TEXT, LoadFancyCursor)
+#pragma alloc_text(RUN8_TEXT, PatchColorArrays)
+
+/* SCAFFOLD, not recovered source: stand-in for the pool words a static helper introduces after None.
+ * It only reproduces the object's selector-pool allocation order for the
+ * words BE6E; its code is compiled into the reserved
+ * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
+void far pool_stub_after_start(void)
+{
+    volatile int t;
+
+    t = (int)GamePaused;
+}
 
 void far DoUserButtonUpdate(int button, int object)
 {
@@ -177,62 +143,6 @@ void far DoUserButtonUpdate(int button, int object)
     case 13:
         win_SetObjSelectedState(object, OptionStates[4]);
         break;
-    }
-}
-
-void far UpdateUserButtons(void)
-{
-    int i;
-
-    if (mapButtonsPending || yardButtonsPending) {
-        for (i = 0; i < 8; i++) {
-            switch (mapUserButton[i]) {
-            case 5:
-                win_SetObjSelectedState(0x2210 + i, GamePaused);
-                break;
-            case 7:
-                win_SetObjSelectedState(0x2210 + i, OptionStates[1]);
-                break;
-            case 9:
-                win_SetObjSelectedState(0x2210 + i, OptionStates[2]);
-                break;
-            case 10:
-                win_SetObjSelectedState(0x2210 + i, OptionStates[5]);
-                break;
-            case 11:
-                win_SetObjSelectedState(0x2210 + i, OptionStates[0]);
-                break;
-            case 12:
-                win_SetObjSelectedState(0x2210 + i, OptionStates[3]);
-                break;
-            case 13:
-                win_SetObjSelectedState(0x2210 + i, OptionStates[4]);
-                break;
-            }
-            switch (yardUserButton[i]) {
-            case 5:
-                win_SetObjSelectedState(0x230b + i, GamePaused);
-                break;
-            case 7:
-                win_SetObjSelectedState(0x230b + i, OptionStates[1]);
-                break;
-            case 9:
-                win_SetObjSelectedState(0x230b + i, OptionStates[2]);
-                break;
-            case 10:
-                win_SetObjSelectedState(0x230b + i, OptionStates[5]);
-                break;
-            case 11:
-                win_SetObjSelectedState(0x230b + i, OptionStates[0]);
-                break;
-            case 12:
-                win_SetObjSelectedState(0x230b + i, OptionStates[3]);
-                break;
-            case 13:
-                win_SetObjSelectedState(0x230b + i, OptionStates[4]);
-                break;
-            }
-        }
     }
 }
 
@@ -390,17 +300,6 @@ int far HelpKeyDown(unsigned int window, int key)
     return 0;
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DoMouse.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE88; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_DoMouse(void)
-{
-    volatile int t;
-
-    t = lastProxObj;
-}
-
 void DoNextWindow(int window)
 {
     int nextWindow;
@@ -417,29 +316,6 @@ void DoNextWindow(int window)
     BringWindowToTop(window);
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DoMenuEntry.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE8A BE8C; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_DoMenuEntry(void)
-{
-    volatile int t;
-
-    t = editForce;
-    t = CurGameType;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _AdjustWndMinMax.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE8E; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_AdjustWndMinMax(void)
-{
-    volatile int t;
-
-    t = editBuf;
-}
-
 void far RedrawWindows(int window)
 {
     WindowProc procedure;
@@ -452,6 +328,10 @@ void far RedrawWindows(int window)
         InvalidateRect(ribbonBarWnd, (void far *)0, 0);
 }
 
+static long near lastTick = -1;
+static long near frames = 0;
+static long near total = 0;
+static char near debugFormat[] = "Ave Length: %lu Speed: %lu";
 void far DoDebugWin(void)
 {
     if (lastTick != -1) {
@@ -468,61 +348,15 @@ void far DoDebugWin(void)
     lastTick = GetTickCount();
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _NetBIOSPost.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE90 BE92 BE94; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_NetBIOSPost(void)
+/* SCAFFOLD, not recovered source: the 103 bytes of private data between _DoDebugWin and _LoadFancyCursor (DGROUP 02C3-032A, unclaimed members), copied from the image so the claimed pieces keep their layout. */
+void far pool_data_fill_02C3(void)
 {
-    volatile int t;
+    volatile char far *p;
 
-    t = ncbHead;
-    t = ncbSegment;
-    t = ncbOffset;
+    p = "\000\001\000\123\105\122\126\101\116\124\000\103\114\111\105\101\116\124\000\103\114\111\105\101\116\124\000\123\105\122\126\101\116\124\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\123\151\155\101\156\164\000\123\151\155\101\156\164\000\102\154\141\143\153\127\151\156\000\102\154\141\143\153\127\151\156\000\122\145\144\127\151\156\000\122\145\144\127\151\156\000\101\156\164\045\144";
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _ProcessPost.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE96; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_ProcessPost(void)
-{
-    volatile int t;
-
-    t = ncbTail;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _UpdateWindows.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE98 BE9A; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_UpdateWindows(void)
-{
-    volatile int t;
-
-    t = UDcntr;
-    t = UDMapFlip;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member MYTIMERFUNC.
- * It only reproduces the object's selector-pool allocation order for the
- * words BE9C BE9E BEA0 BEA2 BEA4 BEA6 BEA8 BEAA BEAC; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_MYTIMERFUNC(void)
-{
-    volatile int t;
-
-    t = IsGameOver;
-    t = BlackWon;
-    t = gameCycles;
-    t = SimAntClientFlag;
-    t = SimAntClientNum;
-    t = MeMoveMe;
-    t = CurGameTool;
-    t = SpeedDelayVals;
-    t = SimAntServerFlag;
-}
-
+#define hInst (*(unsigned int near *)&hInst)  /* shape view of the unit declaration for this member only */
 void far LoadFancyCursor(void)
 {
     magCursor = LoadCursor(hInst, "MagCursor");
@@ -533,28 +367,7 @@ void far LoadFancyCursor(void)
     dropCursor = LoadCursor(hInst, "DropCursor");
     sprayCursor = LoadCursor(hInst, "SprayCursor");
 }
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _SetFancyCursor.
- * It only reproduces the object's selector-pool allocation order for the
- * words BEAE; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_SetFancyCursor(void)
-{
-    volatile int t;
-
-    t = CurExpTool;
-}
-
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member MAINWNDPROC.
- * It only reproduces the object's selector-pool allocation order for the
- * words BEB0; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_MAINWNDPROC(void)
-{
-    volatile int t;
-
-    t = wSoundBlasterMsg;
-}
+#undef hInst
 
 void far PatchColorArrays(void)
 {
