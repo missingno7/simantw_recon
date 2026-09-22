@@ -1,7 +1,7 @@
 {
   "id": "SetCasteProd-95e6cfed26",
   "symbol": "_SetCasteProd",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T14:40:38.643914+00:00",
   "flags": [
     "/AL",
@@ -371,6 +371,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "b1a6beeb385fdf8e5b2381e5e985c572d966ca754c6aa67374f12e84a23c1d3d",
+      "report": "evidence/recovery/workflow/jobs/SetCasteProd-95e6cfed26/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -402,5 +416,10 @@
   ],
   "parked_reason": "Semantics established: totals of CastePopB[1..4] (near, DGROUP 0xac96) and IdealCaste[0..3] (far, 0x8622), per-caste percentages 100L*x/total with the runtime long division (zero when the total is not positive), most-negative pct-ideal difference selects MakeMe = CasteTabB[which]. Best candidate evidence/recovery/workflow/jobs/SetCasteProd-95e6cfed26/attempt02/candidate0000.c (174 vs 183 bytes, 66/74 opcodes; loop bodies, divisions and the final selector stores align). Remaining differences are allocation decisions: the original keeps total/ideal as frame variables ([bp-4]/[bp-6], stored back after the first loop while DI/CX carry them inside it), DI then serves as 'best' and [bp-4] as the chosen index, the frame has four scalar slots (0x1a), and the zero branches store an immediate 0 without sharing the result store. MSC7 /Oelw instead makes total a global DI register variable (no home store, frame 0x14) and cross-jumps the zero stores through AX. Plain, ternary, cast, register-hinted, block-scoped, chained and variable-reusing forms (attempts 01-04, 18 candidates) all give the same allocation.",
   "parked_next_experiment": "Same loop-enregistered-frame-variable signature as AddBlackAnts/AddRedAnts (register carried inside loops with a frame home stored at loop exit); evaluate it together under the documented optimizer-profile decision (/Og hypothesis) rather than more /Oelw source forms. Distinguishing observation: 'mov [bp-6],cx / mov [bp-4],di' at +0x24 after the summing loop and 'mov word ptr [bp+si-0x10],0' at +0x2e.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "6 attempts. All 74/74 opcodes match, opcode/CFG/layout identical, zero register/branch differences; the only remaining divergence is the stack frame size (target 'enter 0x1a,0' vs candidate 'enter 0x16,0', a constant 4-byte deficit) and the consequent constant-offset shift of the pct[]/want[] array operands (pct off by 2: [bp-0x10] vs [bp-0xe]; want off by 4: [bp-0x1a] vs [bp-0x16]). The asymmetry (want shifted 2 bytes more than pct) means target's frame holds two extra 2-byte slots not present in the current source: one somewhere before pct[], and a second between pct[] and want[]. Introducing an explicit 'diff' local for pct[i]-want[i] (attempt06) left opcodes and bytes unchanged (MSC7 keeps it in a register, never spilling it), ruling out that specific extra-local hypothesis; total/ideal's own stack caching already matches target exactly (both at [bp-6]/[bp-4]).",
+  "next_experiment": "Try splitting pct[4]/want[4] into two separate nested block scopes (each its own compound statement) instead of two function-level array declarations, to see whether MSC7's per-block frame allocation under /Oeglw leaves the two extra 2-byte gaps target shows; alternatively try widening 'best' or 'ideal' to long to see which one accounts for the first 2-byte shift before pct[]."
 }

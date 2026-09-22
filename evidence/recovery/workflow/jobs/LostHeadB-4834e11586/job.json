@@ -1,7 +1,7 @@
 {
   "id": "LostHeadB-4834e11586",
   "symbol": "_LostHeadB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T03:00:14.319819+00:00",
   "flags": [
     "/AL",
@@ -357,6 +357,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "f327a194c6c7f62f5e2fd7a127ab70142508517e7d079a32cc93929887e89c88",
+      "report": "evidence/recovery/workflow/jobs/LostHeadB-4834e11586/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "cf7d01fb866b27a3cfe2c83d132e3bb3a358b695c8558261074991ffcd58c9fe",
+      "report": "evidence/recovery/workflow/jobs/LostHeadB-4834e11586/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -389,5 +417,10 @@
   ],
   "parked_reason": "Two bounded probes recover the B-team lost-head predicate, 94-byte extent, life&7 selector, Dy8[index+8]/Dx8[index] coordinate mapping, life-=8 marker, LifeB row*64+column comparison, exact FindInBList(row,column,life) call, and return CFG. Strict proof is blocked by the original two private far-data selector slots: isolated Dx8/Dy8 declarations create CONST contributions and alter the target's selector-driven register lifetime, leaving unresolved private bindings despite the semantic body.",
   "parked_next_experiment": "Recover the original SIMANT1_MODULE declaration topology shared by Dx8, Dy8, LifeB, and FindInBList, then retest the unchanged in-place life-minus-eight wrapper.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics recovered and cross-checked with high confidence (36/41 opcodes, 96 vs 94 bytes): dir=attr&7 selects Dx8[dir]/Dy8[dir], the two small signed-byte direction-delta tables at the start of the shared Dx8 object (Dy8 = Dx8+8, its own MAPSYM site name, confirmed by matching selector-pool order -- Dy8 referenced first in source gets the first ES slot 0xc364, Dx8 the second 0xc366, exactly matching the target); headMarker=attr-8; newY/newX are the neighbour cell coordinates; the function returns 0 if LifeB[newX][newY]==headMarker or FindInBList(newX,newY,headMarker)>=0, else 1 -- confirmed via the far call target (segment5 offset11398=FindInBList) and its 3-arg push order (newX,newY,headMarker) matching FindInBList(x,y,ant)'s signature from the admitted simant1:2D4E unit. Two residual register-allocation/scheduling differences remain unresolved after four explained revisions: (1) MSC7 places headMarker's 'attr-8' computation as the very first instruction pair regardless of where the assignment appears in source (tried it in original textual position matching the target's interleaving, and forced with a volatile re-read to block hoisting -- the volatile version regressed to 38/43 with an extra spilled temporary and a 6-byte frame instead of 2); (2) the final index combine always shifts the FIRST-computed delta-derived local by 6 and adds the SECOND-computed (stack-spilled) one, while the target shifts and spills the SAME (second-computed, Dx8-derived) value and adds the first (si, Dy8-derived) unshifted -- confirmed by direct hex/capstone inspection of two compiled candidates (build/codegen-cache/cb0b19c6.../OUTPUT.OBJ among them); swapping which named C parameter is added in each branch (to correct an unrelated bp+6/bp+8 pairing bug) fixed the addend pairing but did not change this shift-operand selection, which appears to depend on the compiler's own evaluation-order/register-liveness heuristic rather than the source variable named in the <<6 expression.",
+  "next_experiment": "Try swapping only the ORDER of the two delta computations (Dx8/newX first, Dy8/newY second) while keeping Dy8 as the first lexical reference elsewhere (e.g. a dummy Dy8 use) to see whether the shifted/spilled operand follows evaluation order or lexical reference order; alternatively a raw single-source compiler probe outside the grinder budget directly comparing 'a=b+t1[i]; c=d+t2[i]; x=(c<<6)+a;' against the mirror-swapped form to isolate which shift the /Oeglw scheduler picks."
 }

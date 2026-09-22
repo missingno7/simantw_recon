@@ -1,7 +1,7 @@
 {
   "id": "LostTailR-03a4b4f237",
   "symbol": "_LostTailR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T03:48:04.138625+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "dd60627643fc7bff76d0b5006f226b5f73e58329590bef4d5c70db36e90693ac",
+      "report": "evidence/recovery/workflow/jobs/LostTailR-03a4b4f237/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -360,5 +374,10 @@
   ],
   "parked_reason": "One bounded probe recovers the 98-byte R-tail life-plus-eight predicate, Dy8[index+8]/Dx8[index] mapping, LifeR comparison, and repeated FindInRList(row,column,life) loop; strict proof is blocked by private selector slots at 0xc396/0xc398 and the resulting CONST/register placement differences.",
   "parked_next_experiment": "Recover the original SIMANT1_MODULE shared declaration topology for Dx8, Dy8, LifeR, and FindInRList, then retest the unchanged semantic wrapper.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Same shape and same evidence as companion _LostTailB (blocked): dir=(attr^0xfc)&7 into the shared Dx8/Dy8 tables, tailMarker=attr+8, return 0 if LifeR[newX][newY]==tailMarker or FindInRList(newX,newY,tailMarker)>=0 else 1 (far call segment5 offset11470=FindInRList). 38/43 opcodes, 100 vs 98 bytes; only the same two REGISTER_ALLOCATION residues established on LostHeadB/R/LostTailB remain (marker computation hoisted to the front; final combine shifts the first-computed delta instead of the second/spilled one).",
+  "next_experiment": "Same as LostHeadB/R/LostTailB: a controlled compiler probe outside the grinder budget."
 }

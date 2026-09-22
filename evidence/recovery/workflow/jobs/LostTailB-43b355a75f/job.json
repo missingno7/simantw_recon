@@ -1,7 +1,7 @@
 {
   "id": "LostTailB-43b355a75f",
   "symbol": "_LostTailB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T03:42:54.969882+00:00",
   "flags": [
     "/AL",
@@ -357,6 +357,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "d4ee4fa217fbe5eafd1997d06177758121e3a30f9e50b365e096793c50a8a90a",
+      "report": "evidence/recovery/workflow/jobs/LostTailB-43b355a75f/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -389,5 +403,10 @@
   ],
   "parked_reason": "Three probes recover the 98-byte life-plus-eight B-tail predicate, Dy8[index+8]/Dx8[index] coordinate mapping, LifeB row*64+column check, and repeated FindInBList(row,column,life) loop; strict proof remains blocked by the original private selector slots at 0xc364/0xc366 and the resulting register/CONST placement differences.",
   "parked_next_experiment": "Recover the original SIMANT1_MODULE shared declaration topology for Dx8, Dy8, LifeB, and FindInBList, then retest the unchanged semantic wrapper.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "LostHeadB's tail-side twin, same evidence class (blocked on LostHeadB/R): dir=(attr^0xfc)&7 (opposite-direction reversal, flips bit2 only) into the shared Dx8/Dy8 delta tables, tailMarker=attr+8 (not attr-8), return 0 if LifeB[newX][newY]==tailMarker or FindInBList(newX,newY,tailMarker)>=0 else 1; far call target (segment5 offset11398=FindInBList) and 3-arg push order confirmed. 38/43 opcodes, 100 vs 98 bytes; the xor/and direction-reversal and the +8 marker both compile exactly as observed (no diff reported on those instructions). The only residual differences are the same two REGISTER_ALLOCATION residues established on _LostHeadB with full evidence: the marker computation (di=attr;add di,8) is hoisted to the very first instruction pair regardless of source position, and the final (newX<<6)+newY combine shifts the first-computed delta-derived local (si) and spills the second (ax) where the target shifts and spills the same (second-computed) value into bx. The parameter-pairing fix from LostHeadB (swapping which named C parameter is added in each delta branch) was applied preemptively and is already correct here (no memory_operand mismatch on the additions).",
+  "next_experiment": "Same as _LostHeadB/_LostHeadR: a controlled compiler probe outside the grinder budget to isolate whether the shift-operand selection follows evaluation order or lexical reference order, and what source shape keeps a byte-derived constant computation textually positioned instead of hoisted."
 }

@@ -1,7 +1,7 @@
 {
   "id": "win_WinObjAddr-c6534cf7bd",
   "symbol": "_win_WinObjAddr",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T01:33:53.712068+00:00",
   "flags": [
     "/AL",
@@ -437,5 +437,10 @@
     "EXPRESSION_SHAPE"
   ],
   "parked_reason": "Three bounded probes reproduce the complete 87-byte bucket/far-pointer member, all memory operands, Punt message/fixup, branches, and return path. The signed source form differs only in MSC C7 choosing CX instead of the target AX for low-byte zero-extension; the unsigned type probe changes the target signed jg into ja and remains wrong. No remaining semantic or binding mismatch is present.",
-  "parked_next_experiment": "Recover the original signed low-byte predicate spelling that forces MSC C7's mov ax,si / sub ah,ah / signed jg sequence, then retest the already exact bucket body."
+  "parked_next_experiment": "Recover the original signed low-byte predicate spelling that forces MSC C7's mov ax,si / sub ah,ah / signed jg sequence, then retest the already exact bucket body.",
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Body/branch/frame fully match target (34/34 opcodes, 87/87 bytes); only residual is which register holds the truncated objectNumber before the objectCount comparison: target uses AX (mov ax,si; sub ah,ah; cmp es:[bx+0xc],ax) while every variant tried compiles to CX (mov cx,si; sub ch,ch; cmp es:[bx+0xc],cx). Tried: original inline-cast form (both uses), explicit unsigned char local reused for both casts (regressed the whole body), polarity-flipped comparison (>=), braced if-body, reordered local declarations (bucket before objectNumber), and (objectNumber & 0xff) instead of the cast -- all four real attempts reproduce the identical AX/CX swap with zero branch/stack differences.",
+  "next_experiment": "Try forcing AX via an explicit register-hint idiom: assign the truncated value to a temporary used immediately as a function-call argument or Punt varargs promotion, or restructure the Punt call to consume the value first so AX is the only free register when the comparison is emitted."
 }

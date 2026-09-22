@@ -1,7 +1,7 @@
 {
   "id": "IsItDigable-40b466471f",
   "symbol": "_IsItDigable",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:17:21.232260+00:00",
   "flags": [
     "/AL",
@@ -382,6 +382,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "1045e9506b597f3b5bbbdab7f4f0c742c113c4812e4717449ff9d41b2b6739cb",
+      "report": "evidence/recovery/workflow/jobs/IsItDigable-40b466471f/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -402,5 +416,10 @@
   ],
   "parked_reason": "Reopened per corrected guidance (prior block wrongly cited CONST/placement-conflict diagnostics). Tried two variants to defeat the apparent 3-way switch-arm merge into one shared pointer-based map read: differently-shaped lvalues per arm (2D index / flat pointer+offset / flat pointer index, attempt03, same source already tried pre-reopen) and local near-pointer variables per arm (attempt04, 61/113, worse than the plain switch's 68/113). Restored the plain switch form (best known: 68/113 opcodes) as the final candidate. 2 real revisions this reopened job (plus original pre-reopen attempts = well over 4 total across the job's history).",
   "parked_next_experiment": "The FixExitMapR precedent needed the differing-lvalue trick only for a 2-ARM if/else, not a 3-ARM switch; a supervisor should check whether MSC7's tail-merge threshold differs for 3+ arms, or whether the original truly used a switch (jump table) rather than sequential compares for this dispatch, since the aligned_asm's cascading dec/je/je/je pattern matches a sequential compare chain that a switch statement might compile differently.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidates across 6 attempts sit around 61-78/113 opcodes (54-69%) against the 240-byte target; register/branch shape still differs structurally, not just by binding. Detailed evidence: the first bounds gate (x<0||x>0x3f||y<0||y>0x3f) is NOT an early return in the target -- it is a genuine materialized boolean (xor bx,bx on every failing path vs mov bx,1 on success) that BOTH converge into the SAME shared 'or bx,bx; jne SUCCESS' test (the success path's unconditional jmp lands mid-instruction into the failure block's own test), exactly the pattern seen (and unresolved) in IsItYellow. The x<0 check specifically jumps to a block that still reloads cx=[bp+0xa] (y) because that failure fires before y's own load, while the later x>0x3f/y<0/y>0x3f failures share a target one instruction later that skips the redundant reload -- i.e. the failure/success dispatch block is built from four sequential compares against MASKED early-exit jumps, not a fused && expression, and every attempt so far (early return, fused &&, per-branch return 0) produced either a smaller/fused body or extra frame slots instead of this shared materialized-boolean shape. tile=-1 is set only AFTER this first gate succeeds, not before it (dead in the fail path). The plane<=1/plane>1 second-level bounds selection (offset63-108) is confirmed correct in shape by the 61-78 opcode matches already obtained; MapA/MapB/MapR bindings (segment10 offsets 10472/18664/22760) and the IsItDirt near-call (segment5 offset ~70018) are already exact matches in every attempt. Best draft preserved at build/grind/agentG1/IsItDigable.c.",
+  "next_experiment": "Rewrite the first bounds gate as an explicit int ok materialized via a sequential if/else-if chain (ok=0 on each individual out-of-range test, ok=1 only when all pass) rather than a fused || expression or an early 'return 0;', then gate the tile=-1 initialization and the rest of the body behind 'if (ok) { ... }' with no separate return in between, mirroring the shared-boolean pattern documented for IsItYellow; verify the x<0 failure path alone triggers the extra y-reload by ordering the y<0/y>0x3f checks after the x checks as separate statements (not one combined boolean)."
 }

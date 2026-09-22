@@ -3,8 +3,9 @@
  * Members: _IsMMMidiAvail, _IsMMWaveAvail, _MusicInit, _SysBeep, _myBeginSoundList, _ExtractDWord, _ExtractWord, _Extract24BitVal, _mySoundIsDone, _myBeginSoundReverse
  * SCAFFOLDED: claimed members in 5 code runs; no pool stand-ins were needed. */
 
+typedef int (far pascal *FARPROC)();
 typedef int (far *MMProc)(void);
-extern MMProc far pascal GetProcAddress(int handle, char far *name);
+extern FARPROC far pascal GetProcAddress(int handle, char far *name);
 static int __based(__segname("SIMANT_DATA_GROUP")) mmModule = 0;
 extern char near wSoundBlasterMsg[];
 extern void far WinPrintf(char far *text);
@@ -37,7 +38,7 @@ int IsMMMidiAvail(void)
 {
     MMProc proc;
 
-    proc = GetProcAddress(mmModule, wSoundBlasterMsg + 6);
+    proc = (MMProc)GetProcAddress(mmModule, wSoundBlasterMsg + 6);
     if (proc)
         return proc();
     return 0;
@@ -47,7 +48,7 @@ int IsMMWaveAvail(void)
 {
     MMProc proc;
 
-    proc = GetProcAddress(mmModule, wSoundBlasterMsg + 0x18);
+    proc = (MMProc)GetProcAddress(mmModule, wSoundBlasterMsg + 0x18);
     if (proc)
         return proc();
     return 0;

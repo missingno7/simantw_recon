@@ -7,6 +7,8 @@ extern int far pascal WVSPrintf(char far *buffer, char far *format,
                                 char far *arguments);
 extern void far pascal OutputDebugString(char far *text);
 extern int far pascal lstrlen(char far *text);
+/* SCAFFOLD, not recovered source: the 4 bytes of private data between _DebugWinPrintf and _DebugWinPrintf (DGROUP 08F4-08F8, unclaimed members), copied from the image so the claimed pieces keep their layout. */
+static unsigned char pool_data_fill_08F4[4] = {0x0D, 0x00, 0x0D, 0x00};
 static int near debugEnabled = 0;
 static char near debugCR[] = "\r";
 static char near debugLF[] = "\n";

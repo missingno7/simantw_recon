@@ -1,7 +1,7 @@
 {
   "id": "win_DrawHBar-e417256fd5",
   "symbol": "_win_DrawHBar",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:47:22.953711+00:00",
   "flags": [
     "/AL",
@@ -386,6 +386,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "beab0e17c01524322a81aa2978431aa300b2933039dde5a9ed8496b8f41bf097",
+      "report": "evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "43f8e527f6d29b765f35aa7fe8bfb51325f7be7c86c68c48f761e64821412ce1",
+      "report": "evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt08/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
     }
   ],
   "root_cause": {
@@ -417,5 +445,10 @@
   ],
   "parked_reason": "Semantics established (Sonnet grinder + supervisor, 5 attempts, best build/grind/whb4.c = evidence/recovery/workflow/jobs/win_DrawHBar-e417256fd5/attempt05/candidate0000.c, 192 vs 192 bytes, 80/81 opcodes): select the object colour, lock, copy the object rect from the bucket (four MOVSW), grow right/bottom under the ribbon bar, unlock, split the bar at left + (long)(right - left) * fraction / 65536L, fill the left part in _foreColor when non-empty and the rest to the old right edge in _backColor. The single difference: the original loads the saved right edge into SI immediately after win_UnlockWin (+0x60, before the 65536L/fraction pushes); /Oelw sinks that load to its first use after the pushes for every expression spelling (operand orders, >> 16, 0x10000L, int/long cast placements, declaration orders).",
   "parked_next_experiment": "Same cross-statement register retention as DrawMapCursor (the old rect.right kept in SI across the store that overwrites it); evaluate with that family, or test a source that reads rect.right for the split without a named copy and relies on the compiler caching it; distinguishing observation: 'mov si,[bp-4]' at +0x60 before 'push 1 / push 0'.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SOURCE_COMPILATION_ERROR"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: COMPILE_FAILED",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

@@ -1,7 +1,7 @@
 {
   "id": "DrawMap-374d74fe75",
   "symbol": "_DrawMap",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:24:56.061502+00:00",
   "flags": [
     "/AL",
@@ -362,5 +362,10 @@
     "SEMANTICS_UNKNOWN"
   ],
   "parked_reason": "One attempt, 88/91 opcodes matched (96.7%), zero register/branch/memory/stack differences -- every InvalidateRect border-strip rect (top/bottom/left/right, all 4 field-assignment orders verified against aligned_asm), win_hwnd[1], UpdateWindow, DrawMapData and clip_Off match exactly. The sole gap (candidate_offset 33, target 'nop; push cs; call 0xa62' vs candidate 'lcall <external CalcMapCursorRect>') is that this near-call's target (segment 3 / ANTEDIT_MODULE offset 55200 = 0xd7a0) falls in a genuinely unresolved region of the structural evidence: evidence/disassembly/cfg-extents.json has no function spanning 55199-56350 (Mini_DrawMapI ends at 55199, the next cataloged public _MapToolsMenu starts at 56350 -- an 1151-byte structural gap). Checked docs/blocker-families.md and build-topology.md for a plausible name (DrawMapCursor was considered since it shares mapCursorRect's selector slots with AllocateMapBuffer, but its own known offset is 50770, nowhere near 55200, ruling it out) and cards.jsonl/cards.md around that address (0xD7A0 there falls mid-instruction inside an unrelated EndLifeTransferMode/EndTargetMode-calling function, confirming the address space is occupied by something not yet boundary-resolved). Without a real MAPSYM/CFG-confirmed symbol at that address, the C source cannot direct LINK's same-segment near-call rewrite (the matcher only applies it to calls it can prove target the same code segment), so any invented extern name compiles as an ordinary far call -- 3 extra/different opcodes, matching exactly the size of the expected nop;push-cs;call-near idiom.",
-  "parked_next_experiment": "Run the structural extent solver (cfg_solver.py / build_topology.py) over ANTEDIT_MODULE offset 55200-56350 to resolve the missing function boundary and its real name (likely a small DrawMapCursor-family helper given it recomputes mapCursorRect from the same segment-9 fields ToggleMapCursor uses), then retest with that name so the near-call rewrite is recognized."
+  "parked_next_experiment": "Run the structural extent solver (cfg_solver.py / build_topology.py) over ANTEDIT_MODULE offset 55200-56350 to resolve the missing function boundary and its real name (likely a small DrawMapCursor-family helper given it recomputes mapCursorRect from the same segment-9 fields ToggleMapCursor uses), then retest with that name so the near-call rewrite is recognized.",
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Source already reaches 88/91 opcodes with byte-identical size (264/264): the sole residual is the CalcMapCursorRect() call at offset33 (already declared 'extern void far CalcMapCursorRect(void);' matching the packet's own doc-comment note that it is 'an unresolved near-call target in this code group -- no MAPSYM name is available'). Target shows this as a same-segment far-call rewrite (nop; push cs; call 0xa62, exactly 5 bytes), while our candidate emits a genuine lcall through an external fixup (also 5 bytes) because CalcMapCursorRect has not been admitted/placed in this build yet, so the linker cannot prove it lives in the same segment and perform the push-cs-call rewrite. This matches the hard-rule note that same-segment far calls are only rewritten by LINK once both sides are resolved; it is a binding/admission-state dependency on CalcMapCursorRect elsewhere, not a source-shape defect here.",
+  "next_experiment": "Once CalcMapCursorRect itself is admitted/placed in the SIMTWO_MODULE-adjacent segment, retest DrawMap unchanged -- the push-cs-call rewrite should appear automatically without any source edit."
 }

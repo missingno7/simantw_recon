@@ -1,7 +1,7 @@
 {
   "id": "MakeNewTailB-e4be29b176",
   "symbol": "_MakeNewTailB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T05:19:30.717651+00:00",
   "flags": [
     "/AL",
@@ -343,6 +343,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "4514d51a789df388fe54ca53acb6131b2706697edd682e20f5d0d3f6df9ee5fb",
+      "report": "evidence/recovery/workflow/jobs/MakeNewTailB-e4be29b176/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "bb596d0b81fdec248e19f960b4d5a122b0812c962b67b7f6fad8868b4d103d82",
+      "report": "evidence/recovery/workflow/jobs/MakeNewTailB-e4be29b176/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -375,5 +403,10 @@
   ],
   "parked_reason": "Two bounded readable probes establish the B-tail dataflow and right-to-left AddAntToBList arguments, but both remain 91 bytes versus the 101-byte target. The target's selector loads at CONST slots C352/C364/C366 and ES liveness across BlistT, BlistY, Dy8 and Dx8 are not reproduced by ordinary far-array declarations; strict proof reports unresolved private selector fixups plus the target-specific CX/BL byte-promotion/register choreography.",
   "parked_next_experiment": "Recover the historical SIMANT1_MODULE declarations for BlistT/BlistY/Dy8/Dx8, especially the three selector-slot bindings and the byte-promotion expression that preserves the attribute in CX, then run one new source experiment.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Semantics recovered with high confidence (28/40 opcodes, 83/101 bytes): attr=Dx8[tail+0x3d18] (exact MAPSYM _BlistT); marker=attr+8; dir=(attr&7)^4 (opposite-direction reversal, same trick as LostTailB); newY=(signed char)Dy8[dir]+Dx8[tail+0x392c] (exact MAPSYM _BlistY); newX=(signed char)Dx8[dir]+Dx8[tail+0x3736] (same per-ant field KillTailB reads as 'row', unsigned); calls AddAntToBList(newX,newY,marker,9,0) -- confirmed against the admitted 5-arg signature in src/recovered/wf_AddAntToList-44a11714fc.c and the exact push order (0,9 pushed first for the trailing a=9,b=0 args, then marker,newY,newX). Two residues remain unresolved after explained revisions: (1) EXPRESSION_SHAPE -- the target computes dir via 'and bl,7' THEN 'xor bl,4' (and-then-xor, byte-only BL), but every source form tried ('(attr&7)^4' as one expression, and split 'dir=attr&7; dir^=4;' with dir declared unsigned char) compiles to the OPPOSITE order 'xor bl,0xfc' THEN 'and bx,7' on a 16-bit BX -- the same xor-then-and idiom that matched LostTailB's own (attr^0xfc)&7 exactly, suggesting MSC7 normalizes this specific bit-twiddle to one canonical form regardless of source text, while the target's actual compiled form uses the other order; (2) REGISTER_ALLOCATION -- the target saves/restores ES three times via ax/cx (mov ax,es; mov es,<Dx8 selector>; mov cx,es; mov es,ax; ...; mov es,cx) to read Dx8[tail+0x3736] through a selector value it had already loaded earlier, while every source form keeps the accesses independent and lets the compiler issue fresh/simpler ES loads -- no C reordering reproduced the save/restore shuffle.",
+  "next_experiment": "A raw single-source compiler probe outside the grinder budget testing '(a&m1)^m2' vs '(a^m2)&m1' bit-twiddle forms directly (bypassing this project's C source generation) to determine whether MSC7 /Oeglw genuinely always normalizes to one canonical order, or whether a different m1/m2/type combination preserves the and-then-xor order; separately, investigate whether forcing three distinct named far pointer locals (rather than direct Dx8[...]/Dy8[...] indexing) reproduces the ES save/restore shuffle."
 }

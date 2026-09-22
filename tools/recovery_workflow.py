@@ -140,7 +140,8 @@ def experiment_digest(spec):
 
 
 def attempt_limit(job):
-    return MAX_ATTEMPTS+len(job.get('budget_extensions',[]))
+    # Every recorded extension grants the attempts it names (one when unstated).
+    return MAX_ATTEMPTS+sum(int(e.get('attempts',1)) if isinstance(e,dict) else 1 for e in job.get('budget_extensions',[]))
 
 def run_attempt(job_id):
     directory,job=checked_job(job_id)

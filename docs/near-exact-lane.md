@@ -1,6 +1,6 @@
 # Near-exact source-shape lane (>= 95% opcode agreement)
 
-Generated 2026-09-22T08:12:02.594885+00:00. 38 functions. Families: BINDING 7, BRANCH 1, FRAME 7, REGISTER 3, REGISTER_FRAME 2, NEAR_SHAPE 18
+Generated 2026-09-22T11:08:13.558068+00:00. 38 functions. Families: BINDING 7, BRANCH 1, FRAME 7, REGISTER 3, REGISTER_FRAME 2, NEAR_SHAPE 18
 
 | symbol | context | family | opcodes | bytes | reg/br/stack | siblings | first residual |
 |---|---|---|---|---|---|---|---|

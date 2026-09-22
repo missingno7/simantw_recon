@@ -1,0 +1,17 @@
+{
+ "component": "simant:4C24",
+ "members": [
+  "_SetMenuEntries",
+  "_PauseGame",
+  "_SetPause"
+ ],
+ "observation": "All three members load the same two menu strings by immediate address (DGROUP 0x900 'Un&pause<TAB>Shift+0', 0x911 '&Pause<TAB>Shift+0', unaligned and consecutive, followed at 0x920 by the ProcMenu literals). Each member is an exact body in isolation with its own literals; a unit compiles three copies (evidence/recovery/units/simant_4C24_SetMenuEntries_4_scaffold).",
+ "experiments": {
+  "literal_pooling": "MSC 7.00 never pools identical string literals: two functions with the same ?: literals give two copies under /Oelw, /Oeglw, /Ox, /Gf (accepted, ignored), /Zl, /Gt, /Ze, /Oa /Ow /Os /Ot /Oi /Op /Oz /Ol /Or /Ob0, /f, /f-, and under MSC 6.00a (build/scratch/pool/t1-t3.c). 46 duplicated literals elsewhere in DGROUP confirm that the original build did not pool either. Function-scope statics, comma-declared statics and pointer initialisers (p6-p8.c), the actual strings (t4.c) and the C++ front end (/Tp) also emit every copy.",
+  "static_arrays": "file-scope static char arrays (17 and 15 bytes) are word aligned in every spelling tried ([17]/[15], [], const, non-static, #pragma pack(1), /Zp1): the second string lands at +18; the original has +17.",
+  "char_2_17_table": "rows at +0/+17 as in the original; `?:` over the rows or over &row[0], a struct of two arrays, `(char *)row`, `table + 17` all add a frame temporary; if/else into a `char *text` local reproduces SetMenuEntries exactly (build/scratch/sup/SetMenuEntries_j.c) but PauseGame/SetPause then allocate a 4-byte frame (`enter 4,0`, 371 vs 369 bytes) in every local spelling tried (char *, char near *, register, block scope, declaration order, ?: into the local, if/else around the call; build/scratch/sup/PauseGame_n..s.c)."
+ },
+ "status": "unresolved: the object-level spelling that emits the two strings once (unaligned) and keeps all three bodies exact is not established; PauseGame/SetPause stay TU_SCAFFOLD_CANDIDATE with this negative evidence; the reviewed sources were withdrawn so the admitted SetMenuEntries recipe stands unchanged",
+ "next": "probe how MSC 7 orders literals used in static initialisers (`static char *const rows[2]`) and whether a far-pointer local can be kept out of the frame in PauseGame under /Oeglw; compare the frame behaviour of SetMenuEntries_j and PauseGame_q instruction by instruction",
+ "same_phenomenon_elsewhere": "simtwo:C806 _win_SetObjBitmap references 'Attempt to get obj address outsize window' at DGROUP 0xBD12, 200 bytes before its own second literal at 0xBDDA: the first literal is shared with an earlier member of the object (win_WinObjAddr's message). Two independent objects therefore show identical literals emitted once per TU; the isolated exact bodies are right, the unit-level spelling is the open question (member_data_anchors reports the shared piece outside the member's own data and data_fillers excludes the member)."
+}

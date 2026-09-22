@@ -1,7 +1,7 @@
 {
   "id": "FoodFall-508fed477a",
   "symbol": "_FoodFall",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T11:39:57.656695+00:00",
   "flags": [
     "/AL",
@@ -385,6 +385,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "77a09074e9b0905172b347efc983dc5ad5516a66315b1bfbd4017d3f7056686e",
+      "report": "evidence/recovery/workflow/jobs/FoodFall-508fed477a/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "97f9ef2e2fb6b80855318b5c6d9c8359e4c41326b9be220a0d993b94340f87ac",
+      "report": "evidence/recovery/workflow/jobs/FoodFall-508fed477a/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "fe67cb4919e7f5b7e90ba8987a3a393309a511966491add79cd92e02e1fad23e",
+      "report": "evidence/recovery/workflow/jobs/FoodFall-508fed477a/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -423,5 +465,10 @@
     "EXPRESSION_SHAPE"
   ],
   "parked_reason": "Best candidate evidence/recovery/workflow/jobs/FoodFall-508fed477a/attempt04/candidate0004.c (154 vs 150 bytes): local col/row/off/step copies, near MapA flat index, private unsigned direction tables {0,1,0,255}/{255,0,1,0}, far DROPdir/FoodA slot loads, byte food-code store, DX-select range checks and do-while all match, with the original register assignment (CX=col, SI=row, DI=off, hoisted step in [bp-6], falling in [bp-8], cell in [bp-2]). Two differences remain: (1) the original computes the cell address once as bx = off + row + OFFSET MapA and reuses [bx] for the load and the conditional store, whereas MSC7 recomputes bx = off + row and folds the base into [bx+0x28e8]; every pointer-variable form (attempts 02-06) instead gives DI to the pointer and spills off; (2) the original frame is 0xa bytes, one word more than any candidate without a pointer. Independently, the CONST selector slots are in reverse first-use order (FoodA 0xc2f0 below DROPdir 0xc2f2) and the private tables at DGROUP 0x22be report conflicting _DATA placement, so an exact body would still escalate as DATA_LAYOUT. 6 attempts, 80 candidates.",
-  "parked_next_experiment": "Do not repeat flat/2D index, pointer-variable, delta-local or declaration-order matrices. The distinguishing observation is 'add bx,0x28e8' at +0x2f followed by 'mov al,[bx]' and 'mov [bx],al': find a source form whose cell address is a memory-resident pointer temp that the optimizer caches in BX without competing for DI (for example an address computed by a helper macro yielding a pointer rvalue used twice, or a struct-wrapped pointer as in the win_YardClosed convention). Resolve the TU selector-pool and private-table placement before spending further attempts."
+  "parked_next_experiment": "Do not repeat flat/2D index, pointer-variable, delta-local or declaration-order matrices. The distinguishing observation is 'add bx,0x28e8' at +0x2f followed by 'mov al,[bx]' and 'mov [bx],al': find a source form whose cell address is a memory-resident pointer temp that the optimizer caches in BX without competing for DI (for example an address computed by a helper macro yielding a pointer rvalue used twice, or a struct-wrapped pointer as in the win_YardClosed convention). Resolve the TU selector-pool and private-table placement before spending further attempts.",
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

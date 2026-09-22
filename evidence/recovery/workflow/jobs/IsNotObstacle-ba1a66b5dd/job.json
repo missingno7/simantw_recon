@@ -1,7 +1,7 @@
 {
   "id": "IsNotObstacle-ba1a66b5dd",
   "symbol": "_IsNotObstacle",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:36:17.133604+00:00",
   "flags": [
     "/AL",
@@ -354,6 +354,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "b0fcd62ca824f05b136b30c52fecdc536cee5595557620cb51a9040c0042fce5",
+      "report": "evidence/recovery/workflow/jobs/IsNotObstacle-ba1a66b5dd/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "c4dcde1cfd83e1c35b463e712a2b68e54178cd628513b235324b906ddcd5bb53",
+      "report": "evidence/recovery/workflow/jobs/IsNotObstacle-ba1a66b5dd/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -374,5 +402,10 @@
   ],
   "parked_reason": "Reopened per corrected guidance (prior block wrongly cited CONST diagnostics). Semantics unchanged; moved the tile=-1 sentinel before the bounds check to match target's prologue shape (68->70/108 opcodes, attempt02). Target also uses a genuine 'enter N,0' prologue while the candidate still compiles a plain push-bp/mov-bp,sp prologue with no stack frame, meaning the compiler is still enregistering everything the candidate declares; a real stack-resident local (matching the frame-allocated sentinel) was not achieved by this reordering alone. 2 real revisions this reopened job (plus 1 before = 3 total).",
   "parked_next_experiment": "Try forcing a genuine stack-resident local (e.g. declaring tile as accessed through &tile somewhere, or splitting the plane<=1 vs plane>1 tile-selection switch into a form that keeps tile live across a call/branch the optimizer can't fully enregister) to reproduce target's 'enter 2,0' frame.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate (build/grind/agentG1/IsNotObstacle.c) reached 77/108 opcodes (71%) against the 255-byte target after two explained revisions this session (deferred unsigned-char tile widening matching IsItFoodAt's shape, and a real switch(plane){case 0/1: MapA; case 2: MapB; case 3: MapR; default: return 0;} replacing the if/else-if chain -- the target's tile-fetch dispatch is a genuine dense switch via decrement chain (or ax,ax/jl/jo bounds guard, dec/jle/dec/je/dec/je, default falling into the SAME epilogue code the bounds-check failure uses), confirmed by the target's mov ax,[bp+6] fresh reload immediately before the dispatch. Bindings for MapA/MapB/MapR (segment10 offsets 10472/18664/22760) and the shared bounds-check materialized-boolean pattern (xor dx,dx/dec dx/je vs mov dx,1/jmp into the same test, matching TargetAnt/StartLifeTransfer/IsItFoodAt's established idiom) are already reproduced correctly. Remaining residue: target keeps x in si throughout (loaded at both bounds-check branches into si, reused unchanged for the tile-index shl/add), while every candidate variant puts x in di instead, and target's switch(plane) value is a FRESH reload of [bp+6] into ax rather than a reused register from the earlier plane<=1 branch test -- our candidate's compiler keeps reusing whatever register last held plane (dx) and copies it (mov ax,dx) instead of reloading, producing extra jno/jmp instructions in place of the target's clean or ax,ax;jl;jo pair. The plane<=1 match_position/threshold logic (offsets 154-249 in target) has not been re-verified against a matching candidate section this session; it is unchanged from the original hypothesis's apparent-duplicate-check shape.",
+  "next_experiment": "Try writing x through an explicit int local assigned once right after the bounds-check success gate (e.g. int lx = x;) used for every subsequent map-index expression, to see whether that pushes the register allocator to si instead of di; separately, try referencing plane again via a fresh explicit expression at the switch statement (e.g. a helper that forces re-evaluation, or moving the switch before any other use of plane) to reproduce the observed fresh mov ax,[bp+6] instead of a copied register."
 }

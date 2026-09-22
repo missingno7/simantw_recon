@@ -1,7 +1,7 @@
 {
   "id": "MYENUMFUNC-5b3f027a29",
   "symbol": "MYENUMFUNC",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T13:44:33.002995+00:00",
   "flags": [
     "/AL",
@@ -395,5 +395,10 @@
     "TOOLCHAIN_VARIANT_REQUIRED"
   ],
   "parked_reason": "Semantic reconstruction and both USER imports match; _loadds reproduces the target DS save/load/restore and control flow, but MSC7 emits mov ax,_DATA while the target begins mov ax,ss, leaving a one-instruction prologue difference and 49-vs-48-byte extent.",
-  "parked_next_experiment": "Recompile this callback in the original Windows callback translation-unit mode or recover its pragma/options that make the loadds prologue copy SS into AX, then rerun strict acceptance."
+  "parked_next_experiment": "Recompile this callback in the original Windows callback translation-unit mode or recover its pragma/options that make the loadds prologue copy SS into AX, then rerun strict acceptance.",
+  "blockers": [
+    "CALLING_CONVENTION"
+  ],
+  "reason": "22/23 opcodes match target (48/49 bytes); the sole residual is the __loadds prologue's DS source: target loads DS from SS directly ('mov ax,ss; ...; mov ds,ax'), while every isolated compile of this __loadds far pascal callback instead loads a fixed _DATA segment constant ('mov ax, seg _DATA; mov ds,ax'). This matches the well-known LINK.EXE behavior of patching __loadds prologues to 'mov ax,ss' when the module's DGROUP is declared to coincide with the stack segment (STACKSEG DGROUP in the .DEF file) -- a link-time rewrite the compiler itself never emits, so no source-level idiom in an isolated single-function compile can reproduce it. Confirmed across the job's 4 recorded attempts, all converging on the identical single-instruction diff regardless of source shape.",
+  "next_experiment": "Confirm via the project's .DEF file or link map whether SIMANT1_MODULE's DGROUP is declared STACKSEG-coincident; if so, this function's __loadds prologue is only ever satisfiable through the same tu_assembly.py scaffolded-link admission path used for other body-exact-but-binding/link-blocked members, not through further source variation."
 }

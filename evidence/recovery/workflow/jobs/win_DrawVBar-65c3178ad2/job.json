@@ -1,7 +1,7 @@
 {
   "id": "win_DrawVBar-65c3178ad2",
   "symbol": "_win_DrawVBar",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:52:51.380590+00:00",
   "flags": [
     "/AL",
@@ -372,6 +372,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "11dca16cead2bff0f8923aefffd0a4a118c94a566c3f7fb3cd00877b5c2e2573",
+      "report": "evidence/recovery/workflow/jobs/win_DrawVBar-65c3178ad2/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "c4df8a4e5cff90ea4ce73ea346c65ae46c47eaa612b3cf646897f5746067c33f",
+      "report": "evidence/recovery/workflow/jobs/win_DrawVBar-65c3178ad2/attempt07/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 8,
+      "submission_digest": "563e6def101db5e637659de2ab5b3736d260960a724ed6ceedbb2bb8d3ef4bd0",
+      "report": "evidence/recovery/workflow/jobs/win_DrawVBar-65c3178ad2/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -403,5 +445,10 @@
   ],
   "parked_reason": "Vertical twin of the parked win_DrawHBar (Sonnet grinder, 4 attempts, best evidence/recovery/workflow/jobs/win_DrawVBar-65c3178ad2/attempt03/candidate0000.c, 203 vs 194 bytes, 79/85 opcodes): same rect fetch, ribbon growth and unlock, then mid = bottom - (long)(bottom - top) * fraction / 65536L, fill [mid, bottom] in _foreColor when mid < bottom and [top, mid] in _backColor when mid > top. The original loads the saved top into SI right after win_UnlockWin (+0x60) and keeps it there across the multiply/divide and both GRectFill calls with an 8-byte frame; /Oelw re-reads it into CX later and spills it to a new frame slot (frame 0xa/0xc) for inline, height-local, and declaration-order forms.",
   "parked_next_experiment": "Resolve with win_DrawHBar (same cross-statement SI retention); distinguishing observation: 'mov si,[bp-6]' at +0x60 with 'enter 8,0'.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

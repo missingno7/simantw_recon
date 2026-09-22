@@ -1,7 +1,7 @@
 {
   "id": "GetMowDir-6578367569",
   "symbol": "_GetMowDir",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T18:41:28.446081+00:00",
   "flags": [
     "/AL",
@@ -340,6 +340,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "7ab80badb4b04338600bda4567567a5f61ffc822fcb65dd49098335924773c4d",
+      "report": "evidence/recovery/workflow/jobs/GetMowDir-6578367569/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "585ff0a6db97693d7ea84682324051cbda7805d94b9665bcad2bd00ad064976c",
+      "report": "evidence/recovery/workflow/jobs/GetMowDir-6578367569/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "61c58678cbe6079a688dc9af4bd3b80d55817a4f3d45c07f33e118bf3bf32e5b",
+      "report": "evidence/recovery/workflow/jobs/GetMowDir-6578367569/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "parked_blockers": [
@@ -347,5 +389,10 @@
   ],
   "parked_reason": "Control flow, bounds checks, match_position bit test/clear idiom, and the boy-message/BoyHere/YardCycle&3 tail all reproduce correctly with the right opcodes and immediates (candidate 198 vs target 225 bytes, same shape once bindings are set aside). The one remaining real difference is register allocation for the per-direction candidate-square computation: target computes cx=mowDx[i]+x into SI first (kept live, never spilled) and cy=mowDy[i]+y into DI second, then tests si<0,di<0,si>0xb,di>0xf in that order. My candidate's compiler persistently evaluates the y-table expression (mowDy[i]+y) FIRST into SI and the x-table expression (mowDx[i]+x) SECOND into AX (spilled to [bp-2]), regardless of: C statement order (cx-then-cy vs cy-then-cx), the two static tables' declaration/memory order, the cx/cy local declaration order, replacing the && bounds condition with sequential if/continue statements matching the target's exact check order, or copying x/y into fresh locals before the loop (all six variants confirmed via direct compiler-service probes outside the job budget, same swap every time). The loop induction variable i also only lands on the stack ([bp-4], read through bx each iteration, matching target) in some of these variants and stays in a register in others, correlated with the same swap. This looks like a fixed MSC7 /Oe scheduling rule for this two-independent-array-index-plus-parameter expression shape that ordinary source restructuring does not control.",
   "parked_next_experiment": "Try forcing the x-table expression to materialize into SI via an intermediate volatile-like barrier (e.g. a dummy function call or volatile local between the two computations) so the compiler cannot freely interleave; or try computing only cx first, fully consuming it (bounds check it immediately, in its own if-block with an early continue) before cy is even mentioned in source, rather than computing both before any check.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate build/grind/agentG4/GetMowDir.c (attempt 1, preserved) reaches 81/92 opcodes (score 0.67, candidate 221 vs target 225 bytes). Full semantics derived by hand from the disassembly (base 0x1f5c) with strong evidence: 4-direction scan (dir=3..0) stepping (row,col) by signed byte deltas at match_position-segment offsets 0x25d4+dir/0x25d8+dir, in-range (0<=r<=0xb,0<=c<=0xf) + mow-bitmap bit test/clear (word array at match_position-0x5f4a, row*2-indexed, 1<<col mask) claims that direction; on total failure: row>10 returns 0, else col>14 returns 1, else col<1 queues BoyMsgCnt=MacTickCount()+300/BoyMessOn=1/BoyMsgOffset=6/BoyHere=4 and returns 2, else returns YardCycle&3 (all named symbols from direct_data_bindings, all confirmed against precedent in wf_InitSimYard-1f8979b97f.c for the exact BoyMsgCnt/BoyMessOn/BoyHere/BoyMsgOffset/YardCycle declarations). Remaining unresolved shape: two attempts to reach ES (target loads es once at the top from match_position's own selector, then reads the 0x25d4/0x25d8 direction-delta bytes through PLAIN DS-relative addressing -- no es: prefix at target offset 19/29 -- and only the -0x5f4a bitmap word reads/writes at target offset 79/88 use es:) instead produced 'mov ds,ax' for the direction-table access regardless of whether match_position was declared as a far array with pointer-cast macros or as a Dx8-style scalar with an AT()-style index macro; both forced the WRONG register for that specific access. 3 attempts / 192 used.",
+  "next_experiment": "Split the two accesses into genuinely separate C objects: keep 'match_position' (or an equivalently-named far scalar) ONLY for the -0x5f4a bitmap word array (so the compiler has a reason to hold its selector in ES across the whole loop body), and address the 0x25d4/0x25d8 direction-delta bytes through a completely unrelated near/DS-implicit declaration (e.g. a private static near array or an existing DGROUP near symbol at that absolute offset), so the compiler never needs to choose between DS and ES for one shared base pointer."
 }

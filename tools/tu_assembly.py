@@ -14,9 +14,11 @@ import argparse
 import json
 import re
 from datetime import datetime, timezone
+from pathlib import Path
 from common import ROOT, FormatError, read_json, write_json, identity, sha256
 
 UNITS = ROOT / 'evidence/recovery/units'
+REVIEWED = ROOT / 'evidence/topology/supervisor-unit-sources'
 TOPOLOGY = ROOT / 'evidence/topology/build-topology.json'
 
 
@@ -192,7 +194,58 @@ def view_macro(name, own, canonical):
     return '#define %s ((%s)%s)' % (name, pointer, target)
 
 
-def compose(sources, order, unit_id, layout='preambles-first', overrides=None, extra_definitions=None, pragmas=None, rank_order=None, header_notes=None, exclude_definitions=(), statics_with_definitions=False, fillers_before=None, statics_address_order=None):
+DECLARATION_ORDER = ROOT / 'layout/declaration-order.json'
+
+
+def declaration_order_constraints(component_id):
+    """Recorded object-level declaration-order facts for a component: pairs
+    (before, after) with evidence. MSC 7 orders the operands of commutative
+    expressions (and picks which of two symbols is the memory operand) by the
+    declaration order of the symbols, so a byte-exact body can depend on the
+    order two externs were declared in the original TU."""
+    if not DECLARATION_ORDER.exists():
+        return []
+    return read_json(DECLARATION_ORDER).get('components', {}).get(component_id, [])
+
+
+def apply_declaration_order(declarations, constraints):
+    """Reorder unit declarations so every recorded (before, after) pair holds:
+    the later-required declaration is moved to just after the earlier one."""
+    def index_of(name):
+        return next((i for i, d in enumerate(declarations) if name in (d.get('names') or []) and not d['text'].lstrip().startswith('#define')), None)
+    for c in constraints:
+        i, j = index_of(c['before']), index_of(c['after'])
+        if i is None or j is None or i < j:
+            continue
+        item = declarations.pop(j)
+        i = index_of(c['before'])
+        declarations.insert(i + 1, item)
+    return declarations
+
+
+def struct_key(normalized):
+    """Layout identity of a struct/union definition: the member sequence with
+    comma declarator lists split (`int x, y;` == `int x; int y;`)."""
+    m = re.match(r'(struct|union)\s+(\w+)\s*\{(.*)\}\s*;?\s*$', normalized)
+    if not m:
+        return normalized
+    members = []
+    for decl in m.group(3).split(';'):
+        decl = decl.strip()
+        if not decl:
+            continue
+        parts = [x.strip() for x in decl.split(',')]
+        mm = re.match(r'(.*?)([*\s]*)(\w+)((?:\s*\[[^\]]*\])*)\s*$', parts[0])
+        if not mm:
+            return normalized
+        base = ' '.join(mm.group(1).split())
+        members.append('%s %s%s%s' % (base, mm.group(2).strip(), mm.group(3), mm.group(4).replace(' ', '')))
+        for x in parts[1:]:
+            members.append('%s %s' % (base, x.replace(' ', '')))
+    return '%s %s {%s}' % (m.group(1), m.group(2), ';'.join(members))
+
+
+def compose(sources, order, unit_id, layout='preambles-first', overrides=None, extra_definitions=None, pragmas=None, rank_order=None, header_notes=None, exclude_definitions=(), statics_with_definitions=False, fillers_before=None, statics_address_order=None, declaration_order=None):
     """Merge preserved sources into one unit; conflicts are reported, not resolved.
 
     `extra_definitions` (scaffold stand-ins) are emitted at their component
@@ -217,7 +270,7 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
     for f in files:
         for it in f['items']:
             if it['kind'] == 'declaration' and len(it['names']) == 1 and it['names'][0].startswith(('struct ', 'union ')):
-                tag_texts.setdefault(it['names'][0], {}).setdefault(it['normalized'], []).append(f['symbol'])
+                tag_texts.setdefault(it['names'][0], {}).setdefault(struct_key(it['normalized']), []).append(f['symbol'])
     tag_renames = {}
     for tag, variants in tag_texts.items():
         if len(variants) < 2:
@@ -226,6 +279,18 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
         for n, spelling in enumerate(list(variants)[1:], start=2):
             for symbol in variants[spelling]:
                 tag_renames.setdefault(symbol, {})[tag] = '%s %s_%d' % (keyword, name, n)
+    # The kept spelling of a tag is the first source's text; the same-layout
+    # variants of the other sources are dropped (their members' text is unchanged).
+    tag_first = {}
+    for f in files:
+        for it in f['items']:
+            if it['kind'] == 'declaration' and len(it['names']) == 1 and it['names'][0].startswith(('struct ', 'union ')):
+                key = (it['names'][0], struct_key(it['normalized']))
+                if key in tag_first:
+                    it['normalized'] = tag_first[key]['normalized']
+                    it['text'] = tag_first[key]['text']
+                else:
+                    tag_first[key] = it
     for f in files:
         renames = tag_renames.get(f['symbol'])
         if not renames:
@@ -334,6 +399,8 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
     # Unresolved conflicts stop composition: a reviewed override must choose.
     if conflicts:
         return dict(status='DECLARATION_CONFLICT', conflicts=conflicts, files=[{k: v for k, v in f.items() if k not in ('items', 'macros', 'views')} for f in files])
+    if declaration_order:
+        declarations = apply_declaration_order(declarations, declaration_order)
     header = ['/* Candidate translation unit %s: composed from preserved exact-body sources' % unit_id,
               ' * in MAPSYM order. Internal evidence id, not a historical filename.',
               ' * Members: %s' % ', '.join(order)] + [' * ' + n for n in (header_notes or [])]
@@ -366,6 +433,7 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
             for text in fillers_before.get(m, []):
                 ordered.append(dict(kind='declaration', names=[], text=text, normalized=text, origin='scaffold'))
             ordered += [d for d in statics if d['origin'] == m]
+        ordered += [dict(kind='declaration', names=[], text=text, normalized=text, origin='scaffold') for text in fillers_before.get('__tail__', [])]
         declarations += ordered
         fillers_before = {}
     if layout == 'preambles-first':
@@ -419,6 +487,27 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
                 declaration_items=[dict(names=d['names'], text=d['text']) for d in declarations], definition_items=[dict(name=d['name'], text=d['text']) for d in definitions])
 
 
+def record_reviewed_source(symbol, path, note=''):
+    """Verify a reviewed isolated source strictly under the symbol's object
+    profile and record the outcome in the reviewed-source ledger. Only an exact
+    body (see body_exact) is offered to units; nothing is admitted here."""
+    import compiler_profiles as cp
+    from codegen_grinder import run
+    path = Path(path) if not isinstance(path, Path) else path
+    rel = path.relative_to(ROOT).as_posix() if path.is_absolute() else path.as_posix()
+    comp = cp.component_of(symbol) or {}
+    flags = cp.profile_flags(cp.resolve(symbol)['name'], comp.get('segment'))
+    report = run(dict(symbol=symbol, source=rel, compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[symbol]), 'build/experiments/reviewed/' + symbol.lstrip('_'), cache=True)
+    c = report['results'][0]['comparison']
+    row = dict(source=rel, identity=identity(ROOT / rel), flags=flags, result=c['result'], exact_body=body_exact(c), issues=[i for i in c.get('issues', []) if 'CONST' not in i][:4], note=note, checked=timestamp())
+    ledger = REVIEWED / 'reviewed.json'
+    rows = read_json(ledger) if ledger.exists() else {}
+    rows[symbol] = row
+    REVIEWED.mkdir(parents=True, exist_ok=True)
+    write_json(ledger, dict(sorted(rows.items())))
+    return row
+
+
 def preserved_sources():
     """Best preserved source per symbol: admitted recipe, else body-solved / best job candidate."""
     result = {}
@@ -428,9 +517,15 @@ def preserved_sources():
             # A scaffolded unit source carries stand-ins and per-member macros;
             # the member's own text is its superseded isolated recipe or its
             # exact body candidate (searched below).
-            proof = read_json(ROOT / target['promotion_evidence']) if target.get('promotion_evidence') and (ROOT / target['promotion_evidence']).exists() else {}
-            old = (proof.get('superseded_recipes') or {}).get(symbol)
-            if old and (ROOT / old['source']).exists() and not old.get('scaffold'):
+            # Units supersede units: walk the chain of superseded recipes back
+            # to the member's last isolated (non-scaffold) source.
+            old = target
+            seen = set()
+            while old and old.get('scaffold') and old.get('promotion_evidence') and old['promotion_evidence'] not in seen and (ROOT / old['promotion_evidence']).exists():
+                seen.add(old['promotion_evidence'])
+                proof = read_json(ROOT / old['promotion_evidence'])
+                old = (proof.get('superseded_recipes') or {}).get(symbol)
+            if old and not old.get('scaffold') and (ROOT / old['source']).exists():
                 result[symbol] = dict(source=old['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'), unit=target.get('unit'))
             continue
         result[symbol] = dict(source=target['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'))
@@ -441,6 +536,17 @@ def preserved_sources():
                 continue
             if f.get('preserved_source'):
                 result[symbol] = dict(source=f['preserved_source'], basis='ADMITTED' if symbol in recipes else 'BODY_MATCHED_BINDING_BLOCKED')
+    # Reviewed sources: isolated candidates rewritten by the supervisor tools
+    # (rebind_pack_index, rebind_based_fields, review_source) and verified as
+    # exact bodies under the object profile; the ledger records the check.
+    ledger = REVIEWED / 'reviewed.json'
+    if ledger.exists():
+        for symbol, row in read_json(ledger).items():
+            if symbol in result or not row.get('exact_body') or not (ROOT / row['source']).exists():
+                continue
+            if identity(ROOT / row['source']) != row.get('identity'):
+                continue
+            result[symbol] = dict(source=row['source'], basis='REVIEWED_EXACT_BODY', note=row.get('note'))
     for path in (ROOT / 'evidence/recovery/workflow/jobs').glob('*/job.json'):
         job = read_json(path)
         if job['symbol'] in result or job.get('lane') == 'TU_ASSEMBLY' or not job.get('attempts'):
@@ -484,6 +590,12 @@ def preserved_sources():
         source = ROOT / row['receipt']['source']
         if source.exists() and (row.get('comparison') or {}).get('diagnostic'):
             result[symbol] = dict(source=source.relative_to(ROOT).as_posix(), basis='EXACT_BODY_CANDIDATE' if body_exact(row['comparison']) else 'BEST_CANDIDATE_NOT_EXACT')
+    # A member first admitted inside a unit has no isolated recipe; its
+    # isolated text (reviewed source or exact candidate) still stands for it,
+    # and the member is admitted.
+    for symbol, target in recipes.items():
+        if symbol in result and result[symbol]['basis'] != 'ADMITTED' and target.get('scaffold'):
+            result[symbol] = dict(result[symbol], basis='ADMITTED', profile=target.get('profile', 'baseline'), unit=target.get('unit'), isolated_basis=result[symbol]['basis'])
     return result
 
 
@@ -538,7 +650,7 @@ def propose(min_functions=1):
         if len(members) < min_functions:
             continue
         have = {m: sources.get(m) for m in members}
-        usable = [m for m in members if have[m] and have[m]['basis'] in ('ADMITTED', 'BODY_MATCHED_BINDING_BLOCKED', 'EXACT_BODY_CANDIDATE')]
+        usable = [m for m in members if have[m] and have[m]['basis'] in ('ADMITTED', 'BODY_MATCHED_BINDING_BLOCKED', 'EXACT_BODY_CANDIDATE', 'REVIEWED_EXACT_BODY')]
         missing = [m for m in members if m not in usable]
         # Greedy scan in code order: extend the group while the predicted pool
         # still reproduces; a member that breaks it is skipped and its blocking
@@ -592,12 +704,41 @@ def body_exact(comparison):
         return False
     if any(d.get(k, 1) != 0 for k in ('register_only_differences', 'branch_target_differences', 'stack_local_differences')):
         return False
+    # A plain immediate that differs at a site without a fixup is a semantic
+    # difference (swapped switch-case bodies, a wrong constant), not a binding.
+    for r in d.get('aligned_asm', []):
+        if 'immediate_or_binding' in r.get('differences', []) and 'fixup' not in r.get('candidate', '') and 'fixup' not in r.get('target', ''):
+            return False
     if any('instruction_shape' in r['differences'] for r in d.get('aligned_asm', [])):
         return False
     failed = [f for c in comparison.get('contributions', []) for f in c.get('fixups', []) if not f['equal']]
     if any(f.get('target') is not None and f.get('reason') in ('resolved offset and frame', 'same-segment relative offset') for f in failed):
         return False
+    # An external the linker model cannot locate is an invented name, not an
+    # unresolved binding: no unit can ever resolve it.
+    for f in failed:
+        omf_target = (f.get('omf') or {}).get('target') or {}
+        if f.get('target') is None and omf_target.get('kind') == 'external' and not known_symbol(omf_target.get('name', '')):
+            return False
     return True
+
+
+_KNOWN_SYMBOLS = None
+
+
+def known_symbol(name):
+    """MAPSYM public (any segment, absolute) or import-library name."""
+    global _KNOWN_SYMBOLS
+    if _KNOWN_SYMBOLS is None:
+        import mapsym
+        from common import fixture
+        from library_match import import_symbols
+        s = mapsym.parse(fixture('SIMANTW.SYM'))
+        names = {x['name'] for seg in s['segments'] for x in seg['symbols']} | {x['name'] for x in s['absolute_symbols']}
+        names |= set(import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB'))
+        names |= {'FIDRQQ', 'FIERQQ', 'FIWRQQ', 'FICRQQ', 'FJCRQQ'}
+        _KNOWN_SYMBOLS = names
+    return name in _KNOWN_SYMBOLS
 
 
 def slot_segments():
@@ -753,11 +894,15 @@ def member_data_pieces(member, source, flags, folder=None):
     recipe = recipes.get(member)
     if recipe and recipe.get('promotion_evidence') and (ROOT / recipe['promotion_evidence']).exists():
         proof = read_json(ROOT / recipe['promotion_evidence'])
+        if not isinstance(proof, dict):
+            proof = {}  # an older proof format (a list of rows) carries no comparison
         if recipe.get('scaffold'):
             # A unit proof describes the whole unit's data; the member's own
             # piece is in its superseded isolated proof, else its isolated object.
             old = (proof.get('superseded_recipes') or {}).get(member) or {}
             proof = read_json(ROOT / old['promotion_evidence']) if old.get('promotion_evidence') and (ROOT / old['promotion_evidence']).exists() and not old.get('scaffold') else {}
+            if not isinstance(proof, dict):
+                proof = {}
     if proof.get('comparison'):
         comparison = proof['comparison']
     else:
@@ -766,6 +911,62 @@ def member_data_pieces(member, source, flags, folder=None):
         comparison = report['results'][0]['comparison']
     return [dict(segment=c['segment'], offset=c['original_offset'], length=c['length'], member=member)
             for c in comparison.get('contributions', []) if c['segment'] in ('_DATA', '_BSS') and c.get('length')]
+
+
+def member_data_anchors(member, source, flags, target_bytes, folder=None):
+    """Fine-grained private DATA/BSS pieces of a claimed member from its exact
+    isolated object: every code fixup into _DATA/_BSS gives (candidate offset
+    k, original address A) through the original literal at the same site;
+    runs of constant A-k are one contiguous piece. A piece whose bytes are a
+    NUL-terminated printable string is a body literal (emitted while the
+    function is compiled); everything else is a static (emitted where it is
+    declared). This is how an object whose data was split between top-level
+    statics and body literals is reproduced."""
+    import omf
+    from codegen_grinder import run
+    out = (folder or (UNITS / '_slots')) / ('slots_' + member.lstrip('_'))
+    report = run(dict(symbol=member, source=source, compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[member]), out.relative_to(ROOT).as_posix(), cache=True)
+    row = report['results'][0]
+    if not body_exact(row['comparison']):
+        raise FormatError('%s is not an exact body under the unit profile; no data anchors can be derived from %s' % (member, source))
+    m = omf.parse((ROOT / row['receipt']['object']).read_bytes())
+    pub = next((p for p in m['publics'] if p['name'] == member), None)
+    if pub is None:
+        return []
+    code_seg = m['segments'][pub['segment'] - 1]
+    code = bytes.fromhex(code_seg['data_hex'])
+    pieces = []
+    for cls in ('_DATA', '_BSS'):
+        seg = next((s for s in m['segments'] if s['name'] == cls and s['length']), None)
+        if seg is None:
+            continue
+        anchors = {}
+        for f in m['fixups']:
+            if f['segment'] != code_seg['index'] or f['target_method'] != 0 or f['target_index'] != seg['index'] or f['location_type'] != 1 or f['self_relative']:
+                continue
+            p = f['offset'] - pub['offset']
+            if not 0 <= p < len(target_bytes) - 1:
+                continue
+            k = (f['displacement'] + int.from_bytes(code[f['offset']:f['offset'] + 2], 'little')) & 0xFFFF
+            a = int.from_bytes(target_bytes[p:p + 2], 'little')
+            anchors.setdefault(k, set()).add((a - k) & 0xFFFF)
+        if not anchors or any(len(v) > 1 for v in anchors.values()):
+            continue
+        ks = sorted(anchors)
+        runs = []
+        for k in ks:
+            delta = next(iter(anchors[k]))
+            if runs and runs[-1]['delta'] == delta:
+                continue
+            runs.append(dict(start=k, delta=delta))
+        runs[0]['start'] = 0
+        data = bytes.fromhex(seg['data_hex']) if cls == '_DATA' else b''
+        for i, r in enumerate(runs):
+            end = runs[i + 1]['start'] if i + 1 < len(runs) else seg['length']
+            chunk = data[r['start']:end] if cls == '_DATA' else b''
+            literal = cls == '_DATA' and len(chunk) > 1 and chunk[-1:] == b'\x00' and all(32 <= b < 127 or b in (0, 9, 10, 13) for b in chunk)
+            pieces.append(dict(segment=cls, offset=(r['start'] + r['delta']) & 0xFFFF, length=end - r['start'], member=member, kind='literal' if literal else 'static', candidate_start=r['start']))
+    return pieces
 
 
 def data_fillers(pieces, comp, functions, mode='definitions'):
@@ -800,6 +1001,8 @@ def data_fillers(pieces, comp, functions, mode='definitions'):
         else:
             kept.append(piece)
     kept.sort(key=lambda p: (functions[p['member']]['offset'], p['offset']))
+    if mode == 'split':
+        return split_layout(kept, data, relocated, functions, excluded)
     for cls in ('_DATA', '_BSS'):
         rows = sorted([p for p in kept if p['segment'] == cls], key=lambda p: p['offset'])
         for a, b in zip(rows, rows[1:]):
@@ -841,6 +1044,78 @@ def data_fillers(pieces, comp, functions, mode='definitions'):
     return dict(fillers=fillers, excluded=excluded, pieces=kept, literals=literals, mode=mode, address_order=list(dict.fromkeys(order)))
 
 
+def split_layout(kept, data, relocated, functions, excluded):
+    """Layout for pieces with kinds: statics are emitted in the preamble in
+    address order (member groups, static fillers between them; the tail of the
+    static region before the first literal too), body literals follow in code
+    order with string stand-ins for the unclaimed members' literals between
+    them."""
+    def filler_static(lo, hi, note):
+        if any(lo <= s < hi for s in relocated):
+            raise FormatError('DGROUP %04X-%04X carries loader obligations; no data filler' % (lo, hi))
+        if lo % 2:
+            raise FormatError('DGROUP %04X-%04X: unaligned static gap cannot be reproduced by a static filler' % (lo, hi))
+        chunk = data[lo:hi]
+        return '/* SCAFFOLD, not recovered source: %s (DGROUP %04X-%04X), copied from the image so the claimed pieces keep their layout. */\n' % (note, lo, hi) + 'static unsigned char pool_data_fill_%04X[%d] = {%s};' % (lo, len(chunk), ', '.join('0x%02X' % x for x in chunk))
+    def filler_literal(lo, hi, note, before):
+        if any(lo <= s < hi for s in relocated):
+            raise FormatError('DGROUP %04X-%04X carries loader obligations; no data filler' % (lo, hi))
+        chunk = data[lo:hi]
+        if chunk[-1:] != b'\x00':
+            raise FormatError('DGROUP %04X-%04X: literal gap does not end in NUL' % (lo, hi))
+        name = 'pool_literal_fill_%04X' % lo
+        text = ['/* SCAFFOLD, not recovered source: %s (DGROUP %04X-%04X), unclaimed members\' body literals. */' % (note, lo, hi), 'void far %s(void)' % name, '{', '    volatile char far *p;', '', '    p = "%s";' % ''.join('\\%03o' % x for x in chunk[:-1]), '}']
+        return dict(name=name, text=chr(10).join(text), before=before, rank_member=before)
+    fillers = {}
+    literals = []
+    address_order = []
+    for cls in ('_DATA', '_BSS'):
+        statics = sorted([p for p in kept if p['segment'] == cls and p['kind'] == 'static'], key=lambda p: p['offset'])
+        lits = sorted([p for p in kept if p['segment'] == cls and p['kind'] == 'literal'], key=lambda p: p['offset'])
+        for a, b in zip(statics, statics[1:]):
+            lo, hi = a['offset'] + a['length'], b['offset']
+            if hi < lo:
+                raise FormatError('%s statics of %s and %s overlap' % (cls, a['member'], b['member']))
+            if hi > lo:
+                if cls == '_DATA':
+                    fillers.setdefault(b['member'], []).append(filler_static(lo, hi, 'static data of unclaimed members between %s and %s' % (a['member'], b['member'])))
+                else:
+                    fillers.setdefault(b['member'], []).append('/* SCAFFOLD, not recovered source: %d bytes of uninitialised private data between %s and %s (DGROUP %04X-%04X). */\n' % (hi - lo, a['member'], b['member'], lo, hi) + 'static unsigned char pool_bss_fill_%04X[%d];' % (lo, hi - lo))
+        for a, b in zip(lits, lits[1:]):
+            if functions[a['member']]['offset'] > functions[b['member']]['offset']:
+                raise FormatError('%s literals of %s and %s are not in code order' % (cls, a['member'], b['member']))
+            lo, hi = a['offset'] + a['length'], b['offset']
+            if hi < lo:
+                raise FormatError('%s literals of %s and %s overlap' % (cls, a['member'], b['member']))
+            if hi > lo:
+                literals.append(filler_literal(lo, hi, 'body literals between %s and %s' % (a['member'], b['member']), b['member']))
+        if statics and lits and cls == '_DATA':
+            last = statics[-1]
+            lo, hi = last['offset'] + last['length'], lits[0]['offset']
+            if hi < lo:
+                raise FormatError('static and literal regions of %s overlap' % cls)
+            if hi > lo:
+                # the tail of the static region and the first unclaimed literals
+                chunk = data[lo:hi]
+                cut = chunk.rfind(b'\x00') + 1
+                head_end = lo + cut if cut else hi
+                # bytes before the last NUL are literals (unaligned), the rest statics
+                first_static_nul = chunk.find(b'\x00')
+                if first_static_nul >= 0 and (lo % 2 == 0):
+                    # try: everything up to the first literal-looking run as static filler
+                    pass
+                if lo % 2 == 0 and cut and all(32 <= x < 127 or x == 0 for x in chunk[:cut]):
+                    literals.append(filler_literal(lo, lo + cut, 'unclaimed body literals before %s' % lits[0]['member'], lits[0]['member']))
+                    if lo + cut < hi:
+                        raise FormatError('DGROUP %04X-%04X: bytes after the last NUL between statics and literals' % (lo + cut, hi))
+                elif lo % 2 == 0:
+                    fillers.setdefault('__tail__', []).append(filler_static(lo, hi, 'static data of unclaimed members after %s' % last['member']))
+                else:
+                    literals.append(filler_literal(lo, hi, 'unclaimed body literals before %s' % lits[0]['member'], lits[0]['member']))
+        address_order += [p['member'] for p in statics]
+    return dict(fillers=fillers, excluded=excluded, pieces=kept, literals=literals, mode='split', address_order=list(dict.fromkeys(address_order)))
+
+
 def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions', chosen_sources=None):
     """Stand-in functions that reproduce the selector-pool allocation order of the
     component members the unit does not claim (evidence: original pool words,
@@ -869,16 +1144,52 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
         sources[m] = dict(sources.get(m, {}), source=path, basis='REVIEWED_SOURCE_OVERRIDE')
     segments = slot_segments()
     symbols = mapsym.parse(fixture('SIMANTW.SYM'))
+    # A member whose original calls an unnamed static helper (a near call to
+    # code no MAPSYM public owns) needs that helper recovered as a static
+    # function of the unit; until then it cannot be claimed.
+    helper_blocked = {}
+    for m in list(claimed):
+        if sources[m].get('basis') == 'ADMITTED':
+            continue  # already byte-exact in an admitted unit
+        targets = [c for c in by_symbol[m].get('calls', []) if c.get('kind') == 'near_call' and not c.get('names') and 0 <= c.get('offset', -1) < 0x10000]
+        if targets:
+            helper_blocked[m] = sorted({'%04X' % c['offset'] for c in targets})
+    if helper_blocked:
+        claimed = [m for m in claimed if m not in helper_blocked]
+        if not claimed:
+            raise FormatError('every claimed member calls an unrecovered static helper: %s' % helper_blocked)
     pieces = []
     for m in claimed:
-        pieces += member_data_pieces(m, sources[m]['source'], flags, folder)
+        target = bytes.fromhex(''.join(r['bytes'] for r in by_symbol[m]['disassembly']))
+        try:
+            anchored = member_data_anchors(m, sources[m]['source'], flags, target, folder)
+        except FormatError:
+            anchored = []
+        if data_layout == 'split':
+            pieces += anchored
+        elif anchored:
+            # One piece per contiguous run of the member's data (statics and
+            # literals of one member are adjacent in the definitions layout).
+            for cls in ('_DATA', '_BSS'):
+                rows = sorted([x for x in anchored if x['segment'] == cls], key=lambda x: x['offset'])
+                merged = []
+                for x in rows:
+                    if merged and merged[-1]['offset'] + merged[-1]['length'] == x['offset']:
+                        merged[-1]['length'] += x['length']
+                    else:
+                        merged.append(dict(segment=cls, offset=x['offset'], length=x['length'], member=m))
+                pieces += merged
+        else:
+            pieces += member_data_pieces(m, sources[m]['source'], flags, folder)
     data = data_fillers(pieces, comp, functions, data_layout)
     dropped = sorted({p['member'] for p in data['excluded']})
+    excluded_pieces = list(data['excluded'])
     if dropped:
         claimed = [m for m in claimed if m not in dropped]
         if not claimed:
             raise FormatError('every claimed member places private data outside the component block')
         data = data_fillers([p for p in pieces if p['member'] not in dropped], comp, functions, data_layout)
+        data['excluded'] = excluded_pieces
     shared = {}
     for m in claimed:
         target = bytes.fromhex(''.join(r['bytes'] for r in by_symbol[m]['disassembly']))
@@ -1004,7 +1315,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
             runs[-1].append(m)
         else:
             runs.append([m])
-    return dict(component=component_id, claimed=claimed, stubs=stubs, runs=runs, unclaimed_after_last=publics[last + 1:], orphan_words=orphans, reattributed_words=reattributed, publics_order=publics,
+    return dict(component=component_id, claimed=claimed, stubs=stubs, runs=runs, unclaimed_after_last=publics[last + 1:], orphan_words=orphans, reattributed_words=reattributed, publics_order=publics, helper_blocked=helper_blocked,
                 shared_words={'%04X' % k: sorted(v) for k, v in shared.items()}, symbol_overrides=symbol_overrides,
                 data_pieces=data['pieces'], data_fillers=data['fillers'], data_excluded=data['excluded'], data_literals=data['literals'], data_layout=data['mode'], data_address_order=data['address_order'])
 
@@ -1052,7 +1363,7 @@ def scaffold_text(plan, declared_texts, c_names=None):
     return dict(declarations=decls, prototypes=prototypes, pragmas=pragmas, definitions=definitions)
 
 
-def harmonize(component_id, members, flags, folder, layout='preambles-first', overrides=None):
+def harmonize(component_id, members, flags, folder, layout='preambles-first', overrides=None, source_overrides=None):
     """Resolve declaration conflicts by verification, never by preference.
 
     For a name spelled differently by the claimed sources, a spelling is
@@ -1067,8 +1378,11 @@ def harmonize(component_id, members, flags, folder, layout='preambles-first', ov
     comp = topology_units()[component_id]
     order = [m for m in comp['publics'] if m in members]
     chosen = {m: sources[m]['source'] for m in order}
+    for m, path in (source_overrides or {}).items():
+        if m in chosen:
+            chosen[m] = path  # reviewed sources take part in harmonization like any member text
     overrides = dict(overrides or {})
-    result = compose(chosen, order, 'harmonize', layout, overrides)
+    result = compose(chosen, order, 'harmonize', layout, overrides, declaration_order=declaration_order_constraints(component_id))
     if result['status'] == 'COMPOSED':
         return dict(status='COMPOSED', overrides=overrides, trials=[])
     parsed = {m: split_items((ROOT / chosen[m]).read_text(encoding='latin1')) for m in order}
@@ -1170,7 +1484,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
         if m not in sources:
             raise FormatError('no preserved source for ' + m)
         chosen[m] = sources[m]['source']
-    unit_id = re.sub(r'[^A-Za-z0-9]+', '_', component_id) + ('' if members == comp['publics'] else '_%s_%d' % (members[0].lstrip('_'), len(members))) + ('_scaffold' if scaffold else '') + ('_pre' if scaffold and data_layout == 'preamble' else '')
+    unit_id = re.sub(r'[^A-Za-z0-9]+', '_', component_id) + ('' if members == comp['publics'] else '_%s_%d' % (members[0].lstrip('_'), len(members))) + ('_scaffold' if scaffold else '') + ('_pre' if scaffold and data_layout == 'preamble' else '_split' if scaffold and data_layout == 'split' else '')
     folder = UNITS / unit_id
     folder.mkdir(parents=True, exist_ok=True)
     profiles = {m: compiler_profiles.resolve(m) for m in members}
@@ -1183,7 +1497,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     harmonized = None
     excluded_by_conflict = []
     if harmonize_conflicts:
-        harmonized = harmonize(component_id, members, flags, folder, layout, overrides)
+        harmonized = harmonize(component_id, members, flags, folder, layout, overrides, source_overrides)
         overrides = dict(harmonized['overrides'])
         if scaffold and harmonized.get('unresolved'):
             # A genuine conflict (no spelling keeps every user exact) excludes
@@ -1203,7 +1517,7 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
         if layout != 'preambles-first':
             raise FormatError('scaffolding requires the preambles-first layout')
         unclaimed = [m.lstrip('_') for m in comp['publics'] if m not in members]
-        first = compose(chosen, order, unit_id, layout, overrides, exclude_definitions=unclaimed)
+        first = compose(chosen, order, unit_id, layout, overrides, declaration_order=declaration_order_constraints(component_id), exclude_definitions=unclaimed)
         if first['status'] != 'COMPOSED':
             plan_declared = []
         else:
@@ -1214,15 +1528,30 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
                 for n in d['names']:
                     declared_texts.setdefault(n, d['text'])
             plan = scaffold_plan(component_id, members, flags, plan_declared, declared_texts=declared_texts, folder=folder, data_layout=data_layout, chosen_sources=chosen)
-            if plan['symbol_overrides']:
-                overrides = dict(overrides or {}, **plan['symbol_overrides'])
-            if plan['claimed'] != members:
-                # Members whose private data lies outside the component block
-                # cannot be claimed by this unit (their isolated binding is under review).
+            for _ in range(4):
+                if plan['claimed'] == members:
+                    break
+                # Members whose private data lies outside the component block,
+                # or whose original calls an unrecovered static helper, cannot
+                # be claimed by this unit (their isolated binding is under
+                # review). Their sources leave the unit entirely: the
+                # declarations they carried must not shape the claimed members.
                 members = plan['claimed']
                 order = [m for m in comp['publics'] if m in members]
                 chosen = {m: chosen[m] for m in members}
                 unclaimed = [m.lstrip('_') for m in comp['publics'] if m not in members]
+                first = compose(chosen, order, unit_id, layout, overrides, declaration_order=declaration_order_constraints(component_id), exclude_definitions=unclaimed)
+                if first['status'] != 'COMPOSED':
+                    break
+                plan_declared = [n for d in first['declaration_items'] for n in d['names']]
+                declared_texts = {}
+                for d in sorted(first['declaration_items'], key=lambda d: d['text'].lstrip().startswith('#define')):
+                    for n in d['names']:
+                        declared_texts.setdefault(n, d['text'])
+                plan = scaffold_plan(component_id, members, flags, plan_declared, declared_texts=declared_texts, folder=folder, data_layout=data_layout, chosen_sources=chosen)
+            if plan['symbol_overrides']:
+                overrides = dict(overrides or {}, **plan['symbol_overrides'])
+        if first['status'] == 'COMPOSED':
             # MAPSYM name -> C definition name (Pascal exports are upper-cased in MAPSYM).
             c_names = {}
             for m in members:
@@ -1230,15 +1559,15 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
             parts = scaffold_text(plan, declared_texts, c_names)
             later = {c_names[m] for run in plan['runs'][1:] for m in run}
             prototypes = parts['prototypes'] + [re.sub(chr(92) + 's+', ' ', d['text'][:d['text'].index('{')]).strip() + ';' for d in first['definition_items'] if d['name'] in later]
-            result = compose(chosen, order, unit_id, layout, overrides, extra_definitions=parts['definitions'], exclude_definitions=unclaimed,
+            result = compose(chosen, order, unit_id, layout, overrides, declaration_order=declaration_order_constraints(component_id), extra_definitions=parts['definitions'], exclude_definitions=unclaimed,
                              pragmas=parts['declarations'] + [''] + prototypes + [''] + parts['pragmas'], rank_order=comp['publics'],
                              statics_with_definitions=(data_layout == 'definitions'), fillers_before=plan['data_fillers'],
-                             statics_address_order=(plan['data_address_order'] if data_layout == 'preamble' else None),
+                             statics_address_order=(plan['data_address_order'] if data_layout in ('preamble', 'split') else None),
                              header_notes=['SCAFFOLDED: unclaimed members %s are stand-ins in %s (pool order only, never compared).' % (', '.join(s['function'] for s in plan['stubs']), SCAFFOLD_SEGMENT)] if plan['stubs'] else ['SCAFFOLDED: claimed members in %d code runs; no pool stand-ins were needed.' % len(plan['runs'])])
         else:
             result = first
     else:
-        result = compose(chosen, order, unit_id, layout, overrides)
+        result = compose(chosen, order, unit_id, layout, overrides, declaration_order=declaration_order_constraints(component_id))
     spec = dict(unit=unit_id, component=component_id, segment=segment, members=members, sources={m: dict(sources[m], identity=identity(ROOT / sources[m]['source'])) for m in members},
                 profile=profile, flags=flags, layout=layout, overrides=overrides or {}, reason=reason, created=timestamp(),
                 topology=dict(join_evidence=comp.get('join_evidence'), range=comp['range']), status=result['status'])
@@ -1330,7 +1659,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest='action', required=True)
     p = sub.add_parser('propose'); p.add_argument('--min', type=int, default=1); p.add_argument('--limit', type=int, default=40)
-    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--harmonize', action='store_true', help='resolve declaration conflicts by isolated exact-body verification'); p.add_argument('--data-layout', default='definitions', choices=['definitions', 'preamble'], help='where a scaffolded unit emits claimed statics: with their definitions or at the top in address order'); p.add_argument('--reason', default='')
+    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--harmonize', action='store_true', help='resolve declaration conflicts by isolated exact-body verification'); p.add_argument('--data-layout', default='definitions', choices=['definitions', 'preamble', 'split'], help='where a scaffolded unit emits claimed statics: with their definitions or at the top in address order'); p.add_argument('--reason', default='')
     p = sub.add_parser('test'); p.add_argument('unit')
     p = sub.add_parser('job'); p.add_argument('unit'); p.add_argument('--reason', required=True)
     args = ap.parse_args()

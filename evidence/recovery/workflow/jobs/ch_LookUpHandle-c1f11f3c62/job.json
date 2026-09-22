@@ -1,7 +1,7 @@
 {
   "id": "ch_LookUpHandle-c1f11f3c62",
   "symbol": "_ch_LookUpHandle",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T13:07:04.183098+00:00",
   "flags": [
     "/AL",
@@ -357,6 +357,34 @@
       },
       "best_candidate": 2,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "910fa6221e87c2f01f167b834bd23f580c5179cf9e0959a988a5abd0fc1f768d",
+      "report": "evidence/recovery/workflow/jobs/ch_LookUpHandle-c1f11f3c62/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "d7a419803f996fdbd8975758abfb09915198f805128d0828619e9c350f9f17af",
+      "report": "evidence/recovery/workflow/jobs/ch_LookUpHandle-c1f11f3c62/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -395,5 +423,10 @@
     "REGISTER_ALLOCATION"
   ],
   "parked_reason": "Best candidate evidence/recovery/workflow/jobs/ch_LookUpHandle-c1f11f3c62/attempt03/candidate0000.c (164 vs 163 bytes): mem_Lock, the count, the entry pointer at +4, the key array address formed as (unsigned)((count+1)*4) + (long)t (reproducing the sub dx,dx / add / adc carry into the segment), the DS-based entry walk, the -1 skip, the key compare with the key array cached in ES, the two result stores, mem_Unlock and both returns all match. The register roles of the two pointers are swapped: the original keeps the entry pointer as the register variable (DI, then DS:SI through the lds trick) and the key array base as a scratch ES:BX induction, while MSC7 makes the key base the register variable (ES:DI) and homes the entry pointer in the frame (DS:BX). Huge/far table pointer, four address forms, walked/indexed loops and an inline key expression (attempts 01-04, 16 candidates) do not flip the roles.",
-  "parked_next_experiment": "Keep the addend-first (unsigned)offset + (long)pointer form (it is the carry idiom noted for ch_DeleteEntry/ch_RemoveEntry). Test forms that lower the key base's register weight without recomputation (for example computing it into a struct-wrapped or volatile-free memory local, or reading keys through an index off the entry pointer) and observe 'mov di,cx' at +0x1f followed by 'lds si,[bp-4]' at +0x3d."
+  "parked_next_experiment": "Keep the addend-first (unsigned)offset + (long)pointer form (it is the carry idiom noted for ch_DeleteEntry/ch_RemoveEntry). Test forms that lower the key base's register weight without recomputation (for example computing it into a struct-wrapped or volatile-free memory local, or reading keys through an index off the entry pointer) and observe 'mov di,cx' at +0x1f followed by 'lds si,[bp-4]' at +0x3d.",
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best result 68/70 opcodes (167 vs target 163 bytes), reached with the pristine declaration order (t, entry, keys=..., loop) across 4 equivalent KEYS pointer-arithmetic expression forms (all 4 axis variants compiled byte-identical). Root cause: 'keys' (the carry-extended far pointer for the key array) computes its segment via 'adc ax,dx' and target keeps that value live in AX/register the whole way to the loop-entry test and the first iteration (offset52-64: 'adc ax,dx' then, unclobbered, 'mov es,ax' at offset64, reusing AX directly across the intervening 'or cx,cx;jle', 'mov[bp-4],di;lds si,[bp-4]' block). Our candidate always spills that computed segment to a stack slot immediately after computing it (extra 'mov word ptr[bp-6],ax' not in target) and reloads it later as ES, costing the frame word (enter 0x10 vs 0x14) and cascading every following branch target by 4 bytes. Tried: reordering the 'keys'/'entry' assignment statements (computing keys before entry) -- this regressed sharply to 61/76 and caused BOTH keys and entry to spill fully to memory instead of just one, confirming the original textual order is closer to correct. 'entry' itself is never over-spilled (it reuses the table's already-cached segment via the adjacent bp-2/bp-4 frame slots), only 'keys' 's freshly-computed carry-extended segment is spilled where target keeps it purely in AX/ES.",
+  "next_experiment": "Try computing keys' segment through an explicit '(unsigned)(count+1)*4 + (unsigned)t' / manual selector-carry idiom that avoids ever assigning the full far pointer to 'keys' before the loop starts -- e.g. split it into two named locals (an offset local and a carry/segment local) so the compiler has less reason to bundle them into a single spilled far-pointer local."
 }

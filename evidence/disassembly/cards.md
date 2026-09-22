@@ -14317,8 +14317,8 @@ Source: src/recovered/wf_SetMapTitle-b3c9718398.c. Flags: ['/AL', '/G2', '/Gs', 
 ```
 
 ## _ClearMapScentButtons — SIMANT_MODULE:95DE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 65 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 65 bytes.
+Source: src/recovered/wf_ClearMapScentButtons-11d8f7b573.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 95DE  680001                   push 0x100
@@ -38716,7 +38716,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _OverlayTileSet — ANTEDIT_MODULE:00F4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 227 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 00F4  c8040000                 enter 4, 0
@@ -39960,7 +39960,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _OpenEditWindow — ANTEDIT_MODULE:0E2C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 11 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0E2C  6a00                     push 0
@@ -39971,7 +39971,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _MakeEditOpen — ANTEDIT_MODULE:0E38
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 24 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0E38  6a00                     push 0
@@ -39987,7 +39987,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _ForceUpdateEdit — ANTEDIT_MODULE:0E50
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0E50  90                       nop 
@@ -39998,7 +39998,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _DoEditUpdateDraw — ANTEDIT_MODULE:0E56
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 0E56  90                       nop 
@@ -40605,7 +40605,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _UpdateEditWindow — ANTEDIT_MODULE:1496
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 1496  90                       nop 
@@ -40649,7 +40649,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DrawEdit — ANTEDIT_MODULE:14EE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 14EE  cb                       retf 
@@ -41110,7 +41110,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _InvalidUpdateEdit — ANTEDIT_MODULE:1BEE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 41 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 1BEE  8e068abf                 mov es, word ptr [0xbf8a]
@@ -41128,8 +41128,8 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 ```
 
 ## _PreDrawSpider — ANTEDIT_MODULE:1C18
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 337 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 337 bytes.
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 1C18  c8080000                 enter 8, 0
@@ -41736,7 +41736,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _ed_MoveTo — ANTEDIT_MODULE:22E4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 22 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 22E4  55                       push bp
@@ -45546,7 +45546,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _BalloonIsVisible — ANTEDIT_MODULE:48A8
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 72 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 48A8  55                       push bp
@@ -45581,7 +45581,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _EggBalloons — ANTEDIT_MODULE:48F0
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 169 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 48F0  55                       push bp
@@ -45651,7 +45651,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _FightBalloons — ANTEDIT_MODULE:499A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 169 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 499A  55                       push bp
@@ -45721,7 +45721,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _QueenBalloons — ANTEDIT_MODULE:4A44
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 169 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 4A44  55                       push bp
@@ -45791,7 +45791,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _RestBalloons — ANTEDIT_MODULE:4AEE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 169 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 4AEE  55                       push bp
@@ -46755,7 +46755,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _EditMsgBalloon — ANTEDIT_MODULE:5732
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 114 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 5732  c8000200                 enter 0x200, 0
@@ -46802,7 +46802,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 
 ## _PreDrawBalloons — ANTEDIT_MODULE:57A4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 6 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 57A4  90                       nop 
@@ -47613,7 +47613,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _ResetEditScrollRange — ANTEDIT_MODULE:6086
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 230 bytes.
-Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 6086  c8040000                 enter 4, 0
@@ -90693,8 +90693,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SetMyHealth — SIMONE_MODULE:8C70
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 105 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 105 bytes.
+Source: src/recovered/wf_SetMyHealth-5d15d1e8e5.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMONE_MODULE'].
 
 ```asm
 8C70  55                       push bp
@@ -91249,8 +91249,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DropMyObject — SIMONE_MODULE:91EC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 100 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 100 bytes.
+Source: src/recovered/wf_DropMyObject-9eb45c4e42.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMONE_MODULE'].
 
 ```asm
 91EC  55                       push bp
@@ -92725,7 +92725,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoSmells — SIMANT1_MODULE:02FA
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 79 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 02FA  8e060cc3                 mov es, word ptr [0xc30c]
@@ -92762,7 +92762,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flag
 
 ## _ClrModePop — SIMANT1_MODULE:034A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 67 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 034A  57                       push di
@@ -92795,7 +92795,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flag
 
 ## _TallyModePop — SIMANT1_MODULE:038E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 230 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 038E  8e0602c3                 mov es, word ptr [0xc302]
@@ -92860,8 +92860,8 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flag
 ```
 
 ## _FeedAnts — SIMANT1_MODULE:0474
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 100 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 100 bytes.
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 0474  8e060ec3                 mov es, word ptr [0xc30e]
@@ -93349,8 +93349,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _SimEggA — SIMANT1_MODULE:0A1C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 88 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 88 bytes.
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 0A1C  c8020000                 enter 2, 0
@@ -93456,7 +93456,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _LostHeadA — SIMANT1_MODULE:0B1E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 87 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 0B1E  55                       push bp
@@ -93574,8 +93574,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRepoLoit — SIMANT1_MODULE:0C1E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 91 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 91 bytes.
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 0C1E  55                       push bp
@@ -93692,8 +93692,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoRepoFly — SIMANT1_MODULE:0D4A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 172 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 172 bytes.
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 0D4A  55                       push bp
@@ -93760,7 +93760,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoDefendNest — SIMANT1_MODULE:0DF6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 112 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 0DF6  55                       push bp
@@ -95948,7 +95948,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _GoInNest — SIMANT1_MODULE:257A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 240 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 257A  55                       push bp
@@ -96032,7 +96032,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flag
 
 ## _StartFightA — SIMANT1_MODULE:266A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 137 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 266A  c8040000                 enter 4, 0
@@ -96172,8 +96172,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoFightA — SIMANT1_MODULE:27E6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 217 bytes.
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 27E6  c80a0000                 enter 0xa, 0
@@ -96378,7 +96378,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _RandTurn — SIMANT1_MODULE:2A22
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 30 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 2A22  55                       push bp
@@ -96632,7 +96632,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _IsItHole — SIMANT1_MODULE:2CC0
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 89 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 2CC0  55                       push bp
@@ -96679,7 +96679,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flag
 
 ## _IsItFood — SIMANT1_MODULE:2D1A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 51 bytes.
-Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 2D1A  55                       push bp
@@ -96708,7 +96708,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_10_scaffold-13ce956607.c. Flag
 
 ## _DoAntSimB — SIMANT1_MODULE:2D4E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 95 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 2D4E  56                       push si
@@ -97446,7 +97446,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _RaidInB — SIMANT1_MODULE:3524
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 235 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 3524  c8040000                 enter 4, 0
@@ -97538,7 +97538,7 @@ Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Fla
 
 ## _RaidOutB — SIMANT1_MODULE:3610
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 110 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 3610  55                       push bp
@@ -97593,7 +97593,7 @@ Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Fla
 
 ## _DoRestB — SIMANT1_MODULE:367E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 294 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 367E  c80a0000                 enter 0xa, 0
@@ -97786,7 +97786,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoRandB — SIMANT1_MODULE:3876
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 246 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 3876  c8060000                 enter 6, 0
@@ -97886,7 +97886,7 @@ Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Fla
 
 ## _DoRecruitN — SIMANT1_MODULE:396C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 232 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 396C  c8060000                 enter 6, 0
@@ -98113,7 +98113,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _CheckNestFightB — SIMANT1_MODULE:3BA2
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 154 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 3BA2  c8020000                 enter 2, 0
@@ -98224,7 +98224,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _SimEggB — SIMANT1_MODULE:3CA0
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 290 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 3CA0  c8080000                 enter 8, 0
@@ -99283,8 +99283,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _TryEatFoodB — SIMANT1_MODULE:47C6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 126 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 126 bytes.
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 47C6  c8020000                 enter 2, 0
@@ -99333,8 +99333,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EatFoodB — SIMANT1_MODULE:4844
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 112 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 112 bytes.
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 4844  c8020000                 enter 2, 0
@@ -99411,7 +99411,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DecEatB — SIMANT1_MODULE:48F8
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 50 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 48F8  b8d746                   mov ax, 0x46d7 ; _match_position
@@ -100177,7 +100177,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _LeaveNestB — SIMANT1_MODULE:515E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 172 bytes.
-Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_10_scaffold-f17e6a990c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 515E  55                       push bp
@@ -100369,7 +100369,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoAntSimR — SIMANT1_MODULE:5344
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 95 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5344  56                       push si
@@ -101105,7 +101105,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _RaidInR — SIMANT1_MODULE:5B2A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 235 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5B2A  c8040000                 enter 4, 0
@@ -101197,7 +101197,7 @@ Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flag
 
 ## _StayInR — SIMANT1_MODULE:5C16
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 249 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5C16  c8040000                 enter 4, 0
@@ -101291,7 +101291,7 @@ Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flag
 
 ## _RaidOutR — SIMANT1_MODULE:5D10
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 110 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5D10  55                       push bp
@@ -101346,7 +101346,7 @@ Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flag
 
 ## _DoRestR — SIMANT1_MODULE:5D7E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 298 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5D7E  c80c0000                 enter 0xc, 0
@@ -101540,7 +101540,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoRandR — SIMANT1_MODULE:5F7A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 248 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 5F7A  c8080000                 enter 8, 0
@@ -101756,7 +101756,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _CheckNestFightR — SIMANT1_MODULE:61A2
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 160 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 61A2  c8060000                 enter 6, 0
@@ -101871,7 +101871,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _SimEggR — SIMANT1_MODULE:62A6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 223 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 62A6  c8080000                 enter 8, 0
@@ -102711,8 +102711,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _TryEatFoodR — SIMANT1_MODULE:6B38
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 126 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 126 bytes.
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 6B38  c8020000                 enter 2, 0
@@ -102761,8 +102761,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _EatFoodR — SIMANT1_MODULE:6BB6
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 112 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 112 bytes.
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 6BB6  c8020000                 enter 2, 0
@@ -102839,7 +102839,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DecEatR — SIMANT1_MODULE:6C6A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 34 bytes.
-Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_9_scaffold-03367c8694.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 6C6A  b8c860                   mov ax, 0x60c8 ; _match_position
@@ -108251,8 +108251,8 @@ Source: src/recovered/wf_tu_simtwo_0000_GstrB_9_scaffold-1d3fbf27a4.c. Flags: ['
 ```
 
 ## _UnRecruitRed — SIMTWO_MODULE:08DA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 54 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 54 bytes.
+Source: src/recovered/wf_UnRecruitRed-63695ab07e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 08DA  56                       push si
@@ -109433,7 +109433,7 @@ Source: src/recovered/wf_Bounce-0d87abbf42.c. Flags: ['/AL', '/G2', '/Gs', '/Oel
 
 ## _InitSimYard — SIMTWO_MODULE:1378
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 304 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 1378  8e06f6c4                 mov es, word ptr [0xc4f6]
@@ -109517,7 +109517,7 @@ Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Fl
 
 ## _DoSimYard — SIMTWO_MODULE:14A8
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 262 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 14A8  b88915                   mov ax, 0x1589 ; _match_position
@@ -109609,7 +109609,7 @@ Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Fl
 
 ## _SendBoyMsg — SIMTWO_MODULE:15AE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 59 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 15AE  55                       push bp
@@ -109635,7 +109635,7 @@ Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Fl
 
 ## _SimRain — SIMTWO_MODULE:15EA
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 177 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 15EA  8e062ec5                 mov es, word ptr [0xc52e]
@@ -110520,7 +110520,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _IsValidYard — SIMTWO_MODULE:2072
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 36 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 2072  55                       push bp
@@ -110545,7 +110545,7 @@ Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Fl
 
 ## _InitGrassMap — SIMTWO_MODULE:2096
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 32 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 2096  57                       push di
@@ -111423,7 +111423,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _SimCat — SIMTWO_MODULE:2B24
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 663 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 2B24  55                       push bp
@@ -111967,7 +111967,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _FollowBoyDir — SIMTWO_MODULE:316E
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 311 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 316E  c8080000                 enter 8, 0
@@ -112098,7 +112098,7 @@ Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Fl
 
 ## _FollowCatDir — SIMTWO_MODULE:32A6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 67 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 32A6  c8020000                 enter 2, 0
@@ -112132,7 +112132,7 @@ Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Fl
 
 ## _MakeBark — SIMTWO_MODULE:32EA
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 155 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 32EA  55                       push bp
@@ -112399,7 +112399,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _MaintainSwarm — SIMTWO_MODULE:3580
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 119 bytes.
-Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_11_scaffold-af3668fd7e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 3580  b8ba35                   mov ax, 0x35ba ; _match_position
@@ -113056,8 +113056,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetNearbyPatches — SIMTWO_MODULE:3CE4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 103 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 103 bytes.
+Source: src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 3CE4  c8040000                 enter 4, 0
@@ -126577,8 +126577,8 @@ C0B0  cb                       retf
 ```
 
 ## _MyGetTopWindow — SIMTWO_MODULE:C0B2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 79 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 79 bytes.
+Source: src/recovered/wf_MyGetTopWindow-8cee2c18ed.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 C0B2  55                       push bp

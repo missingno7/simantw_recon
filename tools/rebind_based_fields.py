@@ -93,6 +93,7 @@ def main(symbol, verify=True, element='unsigned char'):
                      'build/experiments/rebind/' + symbol.lstrip('_'), cache=True)
         c = report['results'][0]['comparison']
         result = dict(result=c['result'], exact_body=tu.body_exact(c), issues=c.get('issues', [])[:4])
+        tu.record_reviewed_source(symbol, path, note=__doc__.strip().splitlines()[0])
     print(symbol, replaced, result)
     return dict(source=path.relative_to(ROOT).as_posix(), replaced=replaced, verification=result)
 

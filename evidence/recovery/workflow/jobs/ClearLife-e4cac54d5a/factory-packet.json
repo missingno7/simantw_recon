@@ -302,6 +302,7 @@
       25372,
       25373
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 25374,
@@ -1173,7 +1174,12 @@
   "referenced_declarations": [
     {
       "declaration": "extern void far SetLife(int plane, int x, int y, int type);",
-      "source": "src/recovered/wf_AddAntToList-44a11714fc.c",
+      "source": "src/recovered/wf_SetQueenTail-103d1d54cd.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern void far SetLife(int plane, int x, int y, int type);",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -1183,7 +1189,7 @@
     },
     {
       "declaration": "extern void far ZapEuMapAt(int plane, int x, int y);",
-      "source": "src/recovered/wf_SetMap-0b7117ef15.c",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -1191,13 +1197,13 @@
     {
       "symbol": "_GetMap",
       "offset": 24802,
-      "source": "src/recovered/wf_GetMap-cddf28f960.c",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
       "size": 152
     },
     {
       "symbol": "_SetMap",
       "offset": 24954,
-      "source": "src/recovered/wf_SetMap-0b7117ef15.c",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
       "size": 162
     },
     {
@@ -1209,7 +1215,7 @@
     {
       "symbol": "_SetQueenTail",
       "offset": 25840,
-      "source": null,
+      "source": "src/recovered/wf_SetQueenTail-103d1d54cd.c",
       "size": 70
     }
   ],
@@ -1726,15 +1732,17 @@
       "/AL",
       "/G2",
       "/Gs",
-      "/Oelw",
+      "/Oeglw",
       "/NTSIMONE_MODULE"
     ],
     "profile": {
-      "name": "baseline",
-      "basis": "DEFAULT",
-      "assignment": null,
-      "context": null,
-      "evidence": null,
+      "name": "og",
+      "basis": "ASSIGNED",
+      "assignment": "asg-simone-5ad2-og",
+      "context": "simone:5AD2",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/MoveMyLife-f66a8c0d06.json"
+      ],
       "component": "simone:5AD2",
       "refuted_profiles": []
     },
@@ -1860,10 +1868,89 @@
       "matched": [
         "always"
       ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "indexed_access"
+      ]
     }
   ],
-  "parked_review": null,
+  "parked_review": {
+    "job": "ClearLife-e4cac54d5a",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "EXPRESSION_SHAPE"
+    ],
+    "attempts": 2,
+    "candidates": 2,
+    "best_report": "evidence/recovery/workflow/jobs/ClearLife-e4cac54d5a/attempt01/results.json",
+    "detail": {
+      "blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 46,
+      "opcode_total": 103,
+      "candidate_bytes": 213,
+      "target_bytes": 258,
+      "register_only_differences": 9,
+      "branch_target_differences": 12,
+      "failed_fixup_reasons": {
+        "unsupported or unresolved target/frame": 1,
+        "LINK same-segment far call/jump translation": 1,
+        "resolved offset and frame": 3
+      },
+      "issues": [
+        "SIMONE_MODULE unresolved/mismatched fixup at 0xca",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0xbd",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0xa5",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x99",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x87",
+        "SIMONE_MODULE literal bytes differ"
+      ],
+      "probe": {
+        "strict": [],
+        "diagnostic": [],
+        "results": {
+          "baseline": "NO_COMPLETE_MATCH",
+          "ga": "NO_COMPLETE_MATCH",
+          "og": "NO_COMPLETE_MATCH",
+          "og-ga": "NO_COMPLETE_MATCH",
+          "ogi": "NO_COMPLETE_MATCH"
+        }
+      },
+      "unit_profile": {
+        "name": "og",
+        "basis": "ASSIGNED",
+        "assignment": "asg-simone-5ad2-og"
+      },
+      "note_profile": "unit context now carries profile og; a fresh attempt inherits it"
+    }
+  },
   "similar_matched_functions": [
+    {
+      "symbol": "_GetAntIndex",
+      "source": "src/recovered/wf_GetAntIndex-a8eba5e594.c",
+      "size": 269,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_PickupMyObject",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
+      "size": 241,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_IsLiftable",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
+      "size": 275,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
     {
       "symbol": "_FindLifeIndex",
       "source": "src/recovered/wf_FindLifeIndex-3b1fa0607c.c",
@@ -1871,27 +1958,9 @@
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_SetAntIndex",
-      "source": "src/recovered/wf_SetAntIndex-965b821698.c",
-      "size": 216,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_AddWater",
-      "source": "src/recovered/wf_AddWater-d30012f385.c",
-      "size": 201,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_IsItAHole",
-      "source": "src/recovered/wf_IsItAHole-fd9d6ad240.c",
-      "size": 184,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_GetExitDirB",
-      "source": "src/recovered/wf_GetExitDirB-2bfd4e5303.c",
-      "size": 164,
+      "symbol": "_MoveMyLife",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
+      "size": 217,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

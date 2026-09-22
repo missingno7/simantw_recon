@@ -1,16 +1,11 @@
 /* Candidate translation unit simtwo_81AC_db_SetDataBase_9_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _db_SetDataBase, _db_PurgeObject, _db_PurgeHandle, _db_ReleaseHandle, _db_ReleaseObject, _db_UnhookObject, _db_CloseDataBase, _db_ReplaceObject, _db_SaveObject
- * SCAFFOLDED: claimed members in 2 code runs; no pool stand-ins were needed. */
+ * Members: _db_PurgeObject, _db_PurgeHandle, _db_ReleaseHandle, _db_ReleaseObject, _db_UnhookObject, _db_CloseDataBase, _db_ReplaceObject, _db_SaveObject
+ * SCAFFOLDED: unclaimed members _db_SetDataBase are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern int near db_numOfHandles;
 extern int near db_cacheTable;
-extern int far db_handles[];
-extern int far sprintf(char far *buffer, char far *format, ...);
-extern int far access(char far *path, int mode);
 extern void far Punt(char far *message);
-extern int far ch_CreateTable(int size);
-extern int far OpenDB(char far *name);
 extern int far ch_LookUpId(int object, int type, int cacheTable);
 extern void far ch_DeleteEntry(int object, int type, int cacheTable);
 extern void far mem_Free(int handle);
@@ -19,6 +14,7 @@ extern int far ch_LookUpHandle(int handle, int cacheTable,
 extern void far WinPrintf(char far *format, ...);
 extern void far mem_SetType(unsigned int handle, unsigned int type);
 extern void far ch_RemoveEntry(int object, int type, int cacheTable);
+extern int far db_handles[];
 extern void far CloseDB(int handle);
 extern void far ch_PurgeCache(int cacheTable);
 extern void far DBDelete(int handle, int object, int type);
@@ -26,36 +22,19 @@ extern void far DBAdd(int handle, int arg4, int arg5, int arg6,
                       int object, int type, int arg3);
 
 
-void db_PurgeObject(int object, int type);
-void db_PurgeHandle(int handle);
-void db_ReleaseHandle(unsigned int handle);
-void db_ReleaseObject(unsigned int object, int type);
-void db_UnhookObject(int object, int type);
-void db_CloseDataBase(void);
-void db_ReplaceObject(int object, int type, int arg3, int arg4, int arg5, int arg6);
-void db_SaveObject(int object, int type, int arg3, int arg4, int arg5, int arg6);
+void far pool_stub_db_SetDataBase(void);
 
-#pragma alloc_text(RUN2_TEXT, db_PurgeObject, db_PurgeHandle, db_ReleaseHandle, db_ReleaseObject)
-#pragma alloc_text(RUN2_TEXT, db_UnhookObject, db_CloseDataBase, db_ReplaceObject, db_SaveObject)
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_db_SetDataBase)
 
-static int near db_closed = 1;
-int far db_SetDataBase(char far *name)
+/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _db_SetDataBase.
+ * It only reproduces the object's selector-pool allocation order for the
+ * words C686; its code is compiled into the reserved
+ * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
+void far pool_stub_db_SetDataBase(void)
 {
-    char path[32];
-    int handle;
+    volatile int t;
 
-    sprintf(path, "%s.dat", name);
-    if (access(path, 0) == 0) {
-        db_closed = 0;
-        if (db_cacheTable == 0)
-            db_cacheTable = ch_CreateTable(0);
-        db_handles[db_numOfHandles] = OpenDB(name);
-        handle = db_handles[db_numOfHandles++];
-        if (handle < 0)
-            Punt("Cannot open database %s", name);
-        return handle;
-    }
-    return -1;
+    t = db_handles[0];
 }
 
 void db_PurgeObject(int object, int type)

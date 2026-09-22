@@ -1,21 +1,24 @@
 {
   "id": "DoToNestAnt-028091c9ed",
   "symbol": "_DoToNestAnt",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-22T00:40:50.429698+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-0000-og",
+    "context": "simant1:0000",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoFightA-55d1b9b984.json",
+      "evidence/experiments/optimizer-profile/probes/DoReturnFoodAnt-82971198db.json"
+    ],
     "component": "simant1:0000",
     "refuted_profiles": []
   },
@@ -25,16 +28,16 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 15458,
-      "sha256": "eeec488a151e53f859fc067f7b8ac47d4bb5ccdefe125ae759211ba3a4e22ed4"
+      "size": 16224,
+      "sha256": "cb83893a773261c5b0f562b026f757589f7255806f079ff68eed0cfd90706b7b"
     },
     "tools/recovery_gate.py": {
-      "size": 5073,
-      "sha256": "acfb8518a51afaedad6ef86e751798465453f168ce285701a1fc2b01206f7d03"
+      "size": 5445,
+      "sha256": "e9254b8cecaeed3b6cc8bbece202a953186a03e79e38fe1637bbd52403e7bd5a"
     },
     "tools/verify_recovery.py": {
-      "size": 3316,
-      "sha256": "ff2b56405898a025e293ccd0122a910a2f82ba23b7ac2d6a016ec23f653debc7"
+      "size": 3354,
+      "sha256": "9debd93223ba33d9ae96e887747e98640b80821c9cc446a810522005ffeb3ebf"
     },
     "tools/compiler.py": {
       "size": 13938,
@@ -77,8 +80,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 30882,
-      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
+      "size": 32027,
+      "sha256": "cd18a799d3a3649b333478b940aceaf39c42b5563f39cba8b6c5e1d9c8b08a7e"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +102,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 27981,
-      "sha256": "d0f67b2f8a36609e5e595322c901005c6e7ea379fcf11e29757e6ee89c0117f0"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -328,13 +327,22 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "dcb39b02ed20de533c59e1d11489e90bdc7b30ba1d4a4dc9df05daf0292d3a98",
+      "report": "evidence/recovery/workflow/jobs/DoToNestAnt-028091c9ed/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "EXPRESSION_SHAPE"
-  ],
-  "reason": "Solid partial match on first candidate: 161/318 opcodes (51%), 933/915 bytes -- lower than the simpler siblings this session because this is the largest target (915 bytes) and the pickup-food branch's exact attribute encoding is not fully verified (the candidate ORs newtile|flags|8 into the picked-up-food AlistT/LifeA value; the target's [bp-0xe] source for that OR may actually be nx or another saved local rather than newtile -- this needs re-derivation against the target's own register trace, not copied from the DoDigOutAntA/DoRecruitAnt siblings by analogy). The rest of the body is confirmed against direct_data_bindings and matches the established unit template: inline IsItHole+GoInNest; flags/digmode/dirlow split; GetNestDir(x,y,dirlow,attribute) (4-arg form, like the blocked _DoReturnFoodAnt); Dx8/Dy8 step; inline IsItFood (0x48-0x4b/0x18-0x27 bands per src/recovered/wf_IsItFood-c02f58780a.c) gated by digmode in {2,6} triggering PickupFoodA/AlistM=3/AlistS=0xc8; Barrier-gated turn; empty-cell commit with AlistS-gated JamScentRN/JamScentBN (matching the blocked _DoDigOutAntA); IsYellowAnt/MeColor gate; MeWantFood==1 gated DoTroph-then-turn (matching the blocked _DoRecruitAnt, which uses !=0 instead of ==1); else StartFightA-shaped combat. Best candidate: build/grind/agentU/_DoToNestAnt.c.",
-  "next_experiment": "Re-derive the pickup-food attribute expression precisely from the target's own instruction trace at offset ~294-305 (mov si,di;shl si,6; mov al,[bp-0xe]; or al,[bp-0xc]; or al,8) before anything else -- confirm what [bp-0xe] actually holds at that point (candidate for nx, saved earlier around offset199) rather than assuming it equals newtile; then apply whatever fixes the shared IsItHole-merge-point/frame-size pattern already logged for the other blocked siblings in this session.",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (161/318 opcodes, 933/915 bytes)",
@@ -347,5 +355,11 @@
   },
   "previous_blockers": [
     "EXPRESSION_SHAPE"
-  ]
+  ],
+  "parked_blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "parked_reason": "Solid partial match on first candidate: 161/318 opcodes (51%), 933/915 bytes -- lower than the simpler siblings this session because this is the largest target (915 bytes) and the pickup-food branch's exact attribute encoding is not fully verified (the candidate ORs newtile|flags|8 into the picked-up-food AlistT/LifeA value; the target's [bp-0xe] source for that OR may actually be nx or another saved local rather than newtile -- this needs re-derivation against the target's own register trace, not copied from the DoDigOutAntA/DoRecruitAnt siblings by analogy). The rest of the body is confirmed against direct_data_bindings and matches the established unit template: inline IsItHole+GoInNest; flags/digmode/dirlow split; GetNestDir(x,y,dirlow,attribute) (4-arg form, like the blocked _DoReturnFoodAnt); Dx8/Dy8 step; inline IsItFood (0x48-0x4b/0x18-0x27 bands per src/recovered/wf_IsItFood-c02f58780a.c) gated by digmode in {2,6} triggering PickupFoodA/AlistM=3/AlistS=0xc8; Barrier-gated turn; empty-cell commit with AlistS-gated JamScentRN/JamScentBN (matching the blocked _DoDigOutAntA); IsYellowAnt/MeColor gate; MeWantFood==1 gated DoTroph-then-turn (matching the blocked _DoRecruitAnt, which uses !=0 instead of ==1); else StartFightA-shaped combat. Best candidate: build/grind/agentU/_DoToNestAnt.c.",
+  "parked_next_experiment": "Re-derive the pickup-food attribute expression precisely from the target's own instruction trace at offset ~294-305 (mov si,di;shl si,6; mov al,[bp-0xe]; or al,[bp-0xc]; or al,8) before anything else -- confirm what [bp-0xe] actually holds at that point (candidate for nx, saved earlier around offset199) rather than assuming it equals newtile; then apply whatever fixes the shared IsItHole-merge-point/frame-size pattern already logged for the other blocked siblings in this session.",
+  "budget_extensions": []
 }

@@ -317,6 +317,7 @@
       38339,
       38340
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 38341,
@@ -1220,17 +1221,17 @@
   "referenced_declarations": [
     {
       "declaration": "extern int far match_position[];",
-      "source": "src/recovered/wf_AddAntToBList-e7a166edf6.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern int far match_position[];",
-      "source": "src/recovered/wf_AddAntToRList-63e08ccbad.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern int far match_position[];",
       "source": "src/recovered/wf_CompactListA-2c6f7e42f7.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far match_position[];",
+      "source": "src/recovered/wf_CompactListB-6f09945019.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far match_position[];",
+      "source": "src/recovered/wf_CompactListR-17480d0ee2.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -1244,7 +1245,7 @@
     {
       "symbol": "_IsNotBarrier",
       "offset": 38048,
-      "source": "src/recovered/IsNotBarrier.c",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
       "size": 37
     },
     {
@@ -1769,15 +1770,17 @@
       "/AL",
       "/G2",
       "/Gs",
-      "/Oelw",
+      "/Oeglw",
       "/NTSIMONE_MODULE"
     ],
     "profile": {
-      "name": "baseline",
-      "basis": "DEFAULT",
-      "assignment": null,
-      "context": null,
-      "evidence": null,
+      "name": "og",
+      "basis": "ASSIGNED",
+      "assignment": "asg-simone-5ad2-og",
+      "context": "simone:5AD2",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/MoveMyLife-f66a8c0d06.json"
+      ],
       "component": "simone:5AD2",
       "refuted_profiles": []
     },
@@ -1933,10 +1936,136 @@
       "matched": [
         "always"
       ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "far_data",
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ],
+      "matched": [
+        "far_data"
+      ]
     }
   ],
-  "parked_review": null,
+  "parked_review": {
+    "job": "IsNotObstacle-ba1a66b5dd",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "LOCAL_FRAME_LAYOUT"
+    ],
+    "attempts": 2,
+    "candidates": 2,
+    "best_report": "evidence/recovery/workflow/jobs/IsNotObstacle-ba1a66b5dd/attempt02/results.json",
+    "detail": {
+      "blockers": [
+        "LOCAL_FRAME_LAYOUT"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 70,
+      "opcode_total": 108,
+      "candidate_bytes": 221,
+      "target_bytes": 255,
+      "register_only_differences": 16,
+      "branch_target_differences": 15,
+      "failed_fixup_reasons": {
+        "resolved offset and frame": 5,
+        "NE selector for independently named target": 1
+      },
+      "issues": [
+        "SIMONE_MODULE unresolved/mismatched fixup at 0xa1",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x94",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x8d",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x82",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x74",
+        "SIMONE_MODULE unresolved/mismatched fixup at 0x5f",
+        "SIMONE_MODULE uncovered NE relocations",
+        "SIMONE_MODULE literal bytes differ"
+      ],
+      "probe": {
+        "strict": [],
+        "diagnostic": [],
+        "results": {
+          "baseline": "NO_COMPLETE_MATCH",
+          "ga": "NO_COMPLETE_MATCH",
+          "og": "NO_COMPLETE_MATCH",
+          "og-ga": "NO_COMPLETE_MATCH",
+          "ogi": "NO_COMPLETE_MATCH"
+        }
+      },
+      "unit_profile": {
+        "name": "og",
+        "basis": "ASSIGNED",
+        "assignment": "asg-simone-5ad2-og"
+      },
+      "note_profile": "unit context now carries profile og; a fresh attempt inherits it"
+    }
+  },
   "similar_matched_functions": [
+    {
+      "symbol": "_GetAntIndex",
+      "source": "src/recovered/wf_GetAntIndex-a8eba5e594.c",
+      "size": 269,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_PickupMyObject",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
+      "size": 241,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_IsLiftable",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
+      "size": 275,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
     {
       "symbol": "_FindLifeIndex",
       "source": "src/recovered/wf_FindLifeIndex-3b1fa0607c.c",
@@ -1944,27 +2073,9 @@
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_SetAntIndex",
-      "source": "src/recovered/wf_SetAntIndex-965b821698.c",
-      "size": 216,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_AddWater",
-      "source": "src/recovered/wf_AddWater-d30012f385.c",
-      "size": 201,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_IsItAHole",
-      "source": "src/recovered/wf_IsItAHole-fd9d6ad240.c",
-      "size": 184,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_GetExitDirB",
-      "source": "src/recovered/wf_GetExitDirB-2bfd4e5303.c",
-      "size": 164,
+      "symbol": "_MoveMyLife",
+      "source": "src/recovered/wf_tu_simone_5AD2_AddAntToList_19_scaffold-42b0ff79cd.c",
+      "size": 217,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

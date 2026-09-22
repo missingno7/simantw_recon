@@ -1,21 +1,24 @@
 {
   "id": "DoRandAntAA-13a7984e3c",
   "symbol": "_DoRandAntAA",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-22T00:23:22.397939+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-0000-og",
+    "context": "simant1:0000",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoFightA-55d1b9b984.json",
+      "evidence/experiments/optimizer-profile/probes/DoReturnFoodAnt-82971198db.json"
+    ],
     "component": "simant1:0000",
     "refuted_profiles": []
   },
@@ -25,16 +28,16 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 15458,
-      "sha256": "eeec488a151e53f859fc067f7b8ac47d4bb5ccdefe125ae759211ba3a4e22ed4"
+      "size": 16224,
+      "sha256": "cb83893a773261c5b0f562b026f757589f7255806f079ff68eed0cfd90706b7b"
     },
     "tools/recovery_gate.py": {
-      "size": 5073,
-      "sha256": "acfb8518a51afaedad6ef86e751798465453f168ce285701a1fc2b01206f7d03"
+      "size": 5445,
+      "sha256": "e9254b8cecaeed3b6cc8bbece202a953186a03e79e38fe1637bbd52403e7bd5a"
     },
     "tools/verify_recovery.py": {
-      "size": 3316,
-      "sha256": "ff2b56405898a025e293ccd0122a910a2f82ba23b7ac2d6a016ec23f653debc7"
+      "size": 3354,
+      "sha256": "9debd93223ba33d9ae96e887747e98640b80821c9cc446a810522005ffeb3ebf"
     },
     "tools/compiler.py": {
       "size": 13938,
@@ -77,8 +80,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 30882,
-      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
+      "size": 32027,
+      "sha256": "cd18a799d3a3649b333478b940aceaf39c42b5563f39cba8b6c5e1d9c8b08a7e"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +102,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 27981,
-      "sha256": "d0f67b2f8a36609e5e595322c901005c6e7ea379fcf11e29757e6ee89c0117f0"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -342,13 +341,22 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "235fad7b513ec9820572a6a71ab0e48f45e4b57ce538810555b3493587aebdff",
+      "report": "evidence/recovery/workflow/jobs/DoRandAntAA-13a7984e3c/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "LOCAL_FRAME_LAYOUT"
-  ],
-  "reason": "Strong semantic match on first candidate: 192/220 opcodes (87%), 611/588 bytes. Full body decoded and reproduced: inline IsItHole test + GoInNest (identical shape to blocked _DoReturnFoodAnt), GetRandDir(x,y,dir)+Dx8/Dy8 step, Barrier-gated turn-in-place, empty-cell commit with no stamina/scent (this state has none), IsYellowAnt(occupant)==1 && (attribute^MeColor)&0x80 gating YellowFight(index,1), the (occupant^attribute)&0x80==0 friendly-turn case, and otherwise full StartFightA-shaped combat (FindInAList/GetWinner/AlarmHere2, colour/mode/stamina updates) -- all calls, operands and branch targets line up. Remaining differences are the exact same root cause as _DoReturnFoodAnt (also blocked LOCAL_FRAME_LAYOUT in this session): target computes the found/hole flag through one shared merge point (xor cx,cx / mov cx,1 / or cx,cx;je) reached from 3 places, giving it a 0x14-byte frame; every C shape tried (nested if/else-if, and an explicit goto to one shared check_hole label) still produces either 3 separate inlined found-checks (if/else, 192/220, kept as best) or a slightly worse layout (goto, 191/220) and an 0x12-byte frame. Best candidate: build/grind/agentU/_DoRandAntAA.c.",
-  "next_experiment": "Apply whatever C shape resolves _DoReturnFoodAnt's/\u200b_DoDigOutAntA's identical shared-merge-point and frame-size gap first (they are simpler standalone cases of the same pattern), then reapply it here; also try declaring 'found' as the same width/slot as the target's cx (a persistent word local touched by all three branches via straight assignment, never reused for anything else) to see if that alone recovers the missing 2 frame bytes.",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (192/220 opcodes, 611/588 bytes)",
@@ -361,5 +369,11 @@
   },
   "previous_blockers": [
     "LOCAL_FRAME_LAYOUT"
-  ]
+  ],
+  "parked_blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "parked_reason": "Strong semantic match on first candidate: 192/220 opcodes (87%), 611/588 bytes. Full body decoded and reproduced: inline IsItHole test + GoInNest (identical shape to blocked _DoReturnFoodAnt), GetRandDir(x,y,dir)+Dx8/Dy8 step, Barrier-gated turn-in-place, empty-cell commit with no stamina/scent (this state has none), IsYellowAnt(occupant)==1 && (attribute^MeColor)&0x80 gating YellowFight(index,1), the (occupant^attribute)&0x80==0 friendly-turn case, and otherwise full StartFightA-shaped combat (FindInAList/GetWinner/AlarmHere2, colour/mode/stamina updates) -- all calls, operands and branch targets line up. Remaining differences are the exact same root cause as _DoReturnFoodAnt (also blocked LOCAL_FRAME_LAYOUT in this session): target computes the found/hole flag through one shared merge point (xor cx,cx / mov cx,1 / or cx,cx;je) reached from 3 places, giving it a 0x14-byte frame; every C shape tried (nested if/else-if, and an explicit goto to one shared check_hole label) still produces either 3 separate inlined found-checks (if/else, 192/220, kept as best) or a slightly worse layout (goto, 191/220) and an 0x12-byte frame. Best candidate: build/grind/agentU/_DoRandAntAA.c.",
+  "parked_next_experiment": "Apply whatever C shape resolves _DoReturnFoodAnt's/\u200b_DoDigOutAntA's identical shared-merge-point and frame-size gap first (they are simpler standalone cases of the same pattern), then reapply it here; also try declaring 'found' as the same width/slot as the target's cx (a persistent word local touched by all three branches via straight assignment, never reused for anything else) to see if that alone recovers the missing 2 frame bytes.",
+  "budget_extensions": []
 }

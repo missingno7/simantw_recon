@@ -1,7 +1,7 @@
 {
   "id": "SubtractFood-84ee4fe3da",
   "symbol": "_SubtractFood",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T20:29:48.165115+00:00",
   "flags": [
     "/AL",
@@ -371,6 +371,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "fa6011b19d0939c3e370afc6f5c4a354dfb1b34badf9811ea070d84356b0ecfc",
+      "report": "evidence/recovery/workflow/jobs/SubtractFood-84ee4fe3da/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "9393a874cfc0e26e434ed7b854abbb3661c23dd296914f1f3432bbd4a0ceb29a",
+      "report": "evidence/recovery/workflow/jobs/SubtractFood-84ee4fe3da/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "4b3f448d47876db14991a41137199addacefdc63f7cb09ca94cc2cfc22c55358",
+      "report": "evidence/recovery/workflow/jobs/SubtractFood-84ee4fe3da/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -409,5 +451,10 @@
     "REGISTER_ALLOCATION"
   ],
   "parked_reason": "The bounded attempts establish the nested MapA traversal, IsItFood gate, SRand16 byte replacement, and FoodA reset. The best volatile-pointer draft reproduces the target's 4-byte frame, DI/SI counters, far calls, loop branches, and store shape, but exact proof remains blocked by historical DGROUP MapA placement/immediate binding, FoodA selector context, and one register/local-slot allocation difference. No safe direct-data name or ordinary-C declaration has closed those gaps.",
-  "parked_next_experiment": "Expert should recover the original TU declarations/ordering for MapA at DGROUP:0x28e8 and FoodA at segment 9:0x9e84, then retest the preserved volatile-pointer shape with exact compiler context; do not use numeric address casts or alter proof infrastructure."
+  "parked_next_experiment": "Expert should recover the original TU declarations/ordering for MapA at DGROUP:0x28e8 and FoodA at segment 9:0x9e84, then retest the preserved volatile-pointer shape with exact compiler context; do not use numeric address casts or alter proof infrastructure.",
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "31/32 opcodes match target across 4 tried variants (register/volatile declaration order: row,column,volatile-cell / column,row,volatile-cell / volatile-cell,column,row / row,column,register-volatile-cell). Two residuals persist in every variant: (1) the per-iteration cell-pointer computation target keeps in BX (mov bx,di; add bx,si; add bx,0x28e8) and spills to [bp-4], while every candidate variant computes it in AX and spills to [bp-2] instead, shifting every later reload (mov bx,[bp-4] vs [bp-2]); (2) the early-return jne target sits 28 bytes further out in every candidate (jne 0x2f target vs 0x4b/0x4c candidate), i.e. a genuine control-flow/frame-size mismatch beyond the register swap, not just a 2-byte shift. The FoodA clear fixup diff (segment10:50982 target vs segment9:40580 candidate) is stale-profile noise per the fresh MAPSYM binding evidence (current inspect confirms es:[0x9e84] resolves to _FoodA at segment9:40580, matching our candidate).",
+  "next_experiment": "Try dropping the register/volatile qualifiers entirely (plain int row, column; unsigned char near *cell;) to see whether the compiler's own frame allocation (not our hints) reproduces the bp-4 cell slot and BX-resident cursor, or try computing the cell pointer as MapA+row+column inline at both use sites instead of through a named pointer, matching how the ~28-byte-larger early-return path might come from a different epilogue register save set."
 }

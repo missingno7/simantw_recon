@@ -1,7 +1,7 @@
 {
   "id": "DropFoodR-8aa4dd5a08",
   "symbol": "_DropFoodR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T04:43:21.641618+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "1b909aff9dd709650957d782a0711df0a893554c104c8b973660cd10d2c21f9e",
+      "report": "evidence/recovery/workflow/jobs/DropFoodR-8aa4dd5a08/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -360,5 +374,10 @@
   ],
   "parked_reason": "The mirrored R semantic body and CFG are established, but strict proof is blocked by the private map base at DGROUP:0x58e8, FoodR/Tindex/Dx8 selector slots 0xc394/0xc384/0xc386, and the target's spilled far-pointer frame; named declarations produce mismatched private operands and selector bindings.",
   "parked_next_experiment": "Recover the SIMANT1 translation-unit declarations for the R map and selector-backed FoodR/Tindex/Dx8 objects, then rerun strict admission with their original shared layout.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Same shape and same evidence as companion _DropFoodB (blocked): cell=&MapR[(x<<6)+y]; level=*cell; 3-way pile-level branch (0x10/0x13) sets result; FoodR++; attrPtr=&Dx8[Tindex+0x46e6] (R-list attribute field), clear bit 8 if set; return result. 27/37 opcodes, 88 vs 100 bytes; only the same REGISTER_ALLOCATION residue as DropFoodB remains (the target spills the MapR cell pointer to bp-2 across the branch chain; every source form tried keeps it live in SI without spilling, same as StealFoodB/R).",
+  "next_experiment": "Same as _DropFoodB."
 }

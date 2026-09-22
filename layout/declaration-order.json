@@ -1,0 +1,54 @@
+{
+ "schema_version": 1,
+ "scope": "Object-level declaration-order facts (before/after pairs of unit declarations) with the evidence that established them; applied by tools/tu_assembly.compose",
+ "components": {
+  "antedit:00F4": [
+   {
+    "before": "editWidth",
+    "after": "tileWidth",
+    "evidence": "_PreDrawSpider: `tileWidth * editWidth` compiles to `mov ax,[tileWidth]; imul [editWidth]` only when editWidth is declared first (build/experiments/check/PreDrawSpider_d vs PreDrawSpider_a/b/c, byte-exact body)",
+    "rule": "commutative-operand-declaration-order"
+   },
+   {
+    "before": "editHeight",
+    "after": "tileHeight",
+    "evidence": "same as editWidth/tileWidth (_PreDrawSpider)",
+    "rule": "commutative-operand-declaration-order"
+   },
+   {
+    "before": "editWidth",
+    "after": "MapPnt",
+    "evidence": "_EggBalloons/_FightBalloons/_QueenBalloons/_RestBalloons: `x < MapPnt.x + editWidth` compiles to the original operand order only with editWidth declared before MapPnt (unit antedit_00F4_OverlayTileSet_19 exact vs unit 20 RUN7 fixups 0x75/0x79 swapped)",
+    "rule": "commutative-operand-declaration-order"
+   },
+   {
+    "before": "editHeight",
+    "after": "MapPnt",
+    "evidence": "same members, `y < MapPnt.y + editHeight`",
+    "rule": "commutative-operand-declaration-order"
+   }
+  ],
+  "simant1:2D4E": [
+   {
+    "before": "CastePopB",
+    "after": "BpopT",
+    "evidence": "_EatFoodB/_TryEatFoodB: `(BpopT + CastePopB[2]) >> 4` compiles to `mov ax,[BpopT]; add ax,[CastePopB+4]` only with CastePopB declared first (evidence/topology/supervisor-unit-sources/EatFoodB.c, reviewed.json)",
+    "rule": "commutative-operand-declaration-order"
+   },
+   {
+    "before": "CastePopR",
+    "after": "RpopT",
+    "evidence": "_EatFoodR/_TryEatFoodR, same expression",
+    "rule": "commutative-operand-declaration-order"
+   }
+  ],
+  "simant1:5344": [
+   {
+    "before": "CastePopR",
+    "after": "RpopT",
+    "evidence": "_EatFoodR/_TryEatFoodR: `(RpopT + CastePopR[2]) >> 4` compiles with CastePopR as the memory operand only when CastePopR is declared first (unit simant1_5344_DoAntSimR_11 RUN6 fixups swapped at 0x4e/0x52, 0xbe/0xc2)",
+    "rule": "commutative-operand-declaration-order"
+   }
+  ]
+ }
+}

@@ -1,7 +1,7 @@
 {
   "id": "DosPunt-d68e53715e",
   "symbol": "_DosPunt",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-20T14:21:24.499108+00:00",
   "flags": [
     "/AL",
@@ -357,6 +357,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "3649a568daec81be72961da4e7834e08d027775e1be152b172b82a78d395ed5a",
+      "report": "evidence/recovery/workflow/jobs/DosPunt-d68e53715e/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "c9562cc9deba6ccdcc58ec5af17aae0ef4fddab30a2b92eafd20d1a3ae903bd0",
+      "report": "evidence/recovery/workflow/jobs/DosPunt-d68e53715e/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "ebe1a9dc5fe42ee6fc7ce95d46df047f7e8abe168a6f504ade52268a57be7a47",
+      "report": "evidence/recovery/workflow/jobs/DosPunt-d68e53715e/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -395,5 +437,10 @@
     "PRIVATE_CONST_LAYOUT"
   ],
   "parked_reason": "Attempts 2-4 converge on the target branch, stack reset, argument order, and Punt calls; strict proof remains blocked by the private DOS error-string table and literal addresses (target 0xb4e4/0xb56a versus candidate _DATA bindings), plus the target's shared second Punt relocation-chain topology.",
-  "parked_next_experiment": "Recover the original CRT/DGROUP sys_errlist contribution and exact two format strings from the database translation unit, then rerun with the historical far-table declaration and verify both Punt relocation sites independently."
+  "parked_next_experiment": "Recover the original CRT/DGROUP sys_errlist contribution and exact two format strings from the database translation unit, then rerun with the historical far-table declaration and verify both Punt relocation sites independently.",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "20/21 opcodes match target (matches the string pushes, the two-word far-pointer index pushes, the DOS-error-0x18 shortcut call, and the final Punt call); the DATA-segment/external-symbol/lcall-offset diffs are the expected isolated-compile binding noise for string literals, dosErrorText, and Punt. The one real residual: target reads errno directly into BX with a single 'mov bx, word ptr [0xacf8]' before the shl-by-2 index scale, while every candidate variant compiles an extra leading 'mov ax/?, word ptr errno' before that same load -- one extra near-global read that never collapses away. Tried: caching errno in a named int local used for both the %d arg and the index, precomputing 'char far *errText = dosErrorText[errno]' before the call, and indexing via '*(dosErrorText + errno)' instead of subscript syntax -- all four compile to byte-identical output with the same extra mov.",
+  "next_experiment": "Try declaring errno access through a pointer-cast idiom (e.g. *(int near *)&errno) or moving the dosErrorText index computation into its own statement assigned to a register-qualified local, to see whether the compiler's default array-subscript-into-AX-then-BX codegen can be defeated only by changing how the index expression's type is spelled."
 }

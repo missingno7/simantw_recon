@@ -1,3 +1,6 @@
+/* Unit review (gr:7712): GetProcAddress returns the generic far procedure
+ * pointer FARPROC (KERNEL.50); each caller converts it to its own procedure
+ * type, so the two members share one declaration in the unit. */
 /*
  * vocMciClose: release the two voice buffers and, when the last user of
  * the multimedia module goes away, close the wave device.  Two private
@@ -13,6 +16,7 @@
  * IsMMWaveAvail) and, if found, the Pascal entry closes the wave handle
  * through a far pointer local; the handle is then cleared.
  */
+typedef int (far pascal *FARPROC)();
 typedef void (far pascal *MMCloseProc)(int handle);
 
 extern int far pascal GlobalUnlock(unsigned int handle);
@@ -41,7 +45,7 @@ void far vocMciClose(unsigned int buffer1, unsigned int buffer2)
         vocBufLocked1 = 0;
     }
     if (--mmRefCount == 0) {
-        proc = GetProcAddress(mmModule, wSoundBlasterMsg + 0x179);
+        proc = (MMCloseProc)GetProcAddress(mmModule, wSoundBlasterMsg + 0x179);
         if (proc)
             proc(mmWaveHandle);
         mmWaveHandle = 0;

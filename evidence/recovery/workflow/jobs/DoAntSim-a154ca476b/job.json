@@ -1,21 +1,24 @@
 {
   "id": "DoAntSim-a154ca476b",
   "symbol": "_DoAntSim",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-22T00:38:05.221300+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-0000-og",
+    "context": "simant1:0000",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoFightA-55d1b9b984.json",
+      "evidence/experiments/optimizer-profile/probes/DoReturnFoodAnt-82971198db.json"
+    ],
     "component": "simant1:0000",
     "refuted_profiles": []
   },
@@ -25,16 +28,16 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 15458,
-      "sha256": "eeec488a151e53f859fc067f7b8ac47d4bb5ccdefe125ae759211ba3a4e22ed4"
+      "size": 16224,
+      "sha256": "cb83893a773261c5b0f562b026f757589f7255806f079ff68eed0cfd90706b7b"
     },
     "tools/recovery_gate.py": {
-      "size": 5073,
-      "sha256": "acfb8518a51afaedad6ef86e751798465453f168ce285701a1fc2b01206f7d03"
+      "size": 5445,
+      "sha256": "e9254b8cecaeed3b6cc8bbece202a953186a03e79e38fe1637bbd52403e7bd5a"
     },
     "tools/verify_recovery.py": {
-      "size": 3316,
-      "sha256": "ff2b56405898a025e293ccd0122a910a2f82ba23b7ac2d6a016ec23f653debc7"
+      "size": 3354,
+      "sha256": "9debd93223ba33d9ae96e887747e98640b80821c9cc446a810522005ffeb3ebf"
     },
     "tools/compiler.py": {
       "size": 13938,
@@ -77,8 +80,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 30882,
-      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
+      "size": 32027,
+      "sha256": "cd18a799d3a3649b333478b940aceaf39c42b5563f39cba8b6c5e1d9c8b08a7e"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +102,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 27981,
-      "sha256": "d0f67b2f8a36609e5e595322c901005c6e7ea379fcf11e29757e6ee89c0117f0"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -328,13 +327,22 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "c7c1657ac94b97e195565df5d9738ab20d26fa19256186670c71dac1c927b05f",
+      "report": "evidence/recovery/workflow/jobs/DoAntSim-a154ca476b/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "SEMANTICS_UNKNOWN"
-  ],
-  "reason": "This is the master per-tick orchestrator (762 bytes, ~26 calls) rather than a per-ant state handler like this session's other targets. direct_data_bindings resolves only 7 of 68 far operand instructions to a MAPSYM name (_NextFeed, _match_position, _ModePopB, _ModePopR, _IsGameOver, _gGameNeedsSaving); the remaining ~60 are private, unnamed PACK words/counters -- AI-difficulty timers (decrementing ss:[0xac86]/[0xac88] with floor-at-0 clamps), a tick counter wrapping at 0x1000, per-plane population aggregation into at least six distinct 0x9e70-0x9e7a/0xa084-0xa08e destinations summed from pairs of 0x78xx/0x7bxx source words, two 0x14-word table clears gated by a status bit, and literal thresholds (0x96, 0x32, 1, 3) whose game-balance meaning is not evidenced locally. A structural placeholder candidate (build/grind/agentU/_DoAntSim.c) capturing only the confidently-evidenced DoAntSimA/B/R/Y + CompactListA/B/R plane-mode dispatch and the IsGameOver-gated Feedback/gGameNeedsSaving tail scored 34/232 opcodes (144/762 bytes) -- nowhere near convergence, confirming the gap is genuinely unresolved private semantics, not an expression-shape or register issue. Best candidate: build/grind/agentU/_DoAntSim.c.",
-  "next_experiment": "Cross-reference the ~60 unnamed PACK offsets (0x76a8/0x76aa two-word counter, 0x85fc mode flag, 0x7404/0xa07e/0x8122/0x7d44 zeroed words, 0x72c4/0x72c6, 0x79de/0x79e0, 0x80f4/0x80f6 dword pairs, 0xac86/0xac88 difficulty timers, 0x80b4 difficulty level, 0x8a60/0x8a62/0x9e84 feed-threshold trio, 0x7c44/0x8078 countdown timers, the 0x78xx/0x7bxx population source words, 0x7c0a, 0x9dda already named IsGameOver) against evidence/topology/private-data-topology.json and any admitted sibling that shares a selector with them, before attempting a full-body candidate again; this needs an expert data-topology pass, not further isolated-function search.",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape, branch layout under the current profile (34/232 opcodes, 144/762 bytes)",
@@ -347,5 +355,11 @@
   },
   "previous_blockers": [
     "SEMANTICS_UNKNOWN"
-  ]
+  ],
+  "parked_blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "parked_reason": "This is the master per-tick orchestrator (762 bytes, ~26 calls) rather than a per-ant state handler like this session's other targets. direct_data_bindings resolves only 7 of 68 far operand instructions to a MAPSYM name (_NextFeed, _match_position, _ModePopB, _ModePopR, _IsGameOver, _gGameNeedsSaving); the remaining ~60 are private, unnamed PACK words/counters -- AI-difficulty timers (decrementing ss:[0xac86]/[0xac88] with floor-at-0 clamps), a tick counter wrapping at 0x1000, per-plane population aggregation into at least six distinct 0x9e70-0x9e7a/0xa084-0xa08e destinations summed from pairs of 0x78xx/0x7bxx source words, two 0x14-word table clears gated by a status bit, and literal thresholds (0x96, 0x32, 1, 3) whose game-balance meaning is not evidenced locally. A structural placeholder candidate (build/grind/agentU/_DoAntSim.c) capturing only the confidently-evidenced DoAntSimA/B/R/Y + CompactListA/B/R plane-mode dispatch and the IsGameOver-gated Feedback/gGameNeedsSaving tail scored 34/232 opcodes (144/762 bytes) -- nowhere near convergence, confirming the gap is genuinely unresolved private semantics, not an expression-shape or register issue. Best candidate: build/grind/agentU/_DoAntSim.c.",
+  "parked_next_experiment": "Cross-reference the ~60 unnamed PACK offsets (0x76a8/0x76aa two-word counter, 0x85fc mode flag, 0x7404/0xa07e/0x8122/0x7d44 zeroed words, 0x72c4/0x72c6, 0x79de/0x79e0, 0x80f4/0x80f6 dword pairs, 0xac86/0xac88 difficulty timers, 0x80b4 difficulty level, 0x8a60/0x8a62/0x9e84 feed-threshold trio, 0x7c44/0x8078 countdown timers, the 0x78xx/0x7bxx population source words, 0x7c0a, 0x9dda already named IsGameOver) against evidence/topology/private-data-topology.json and any admitted sibling that shares a selector with them, before attempting a full-body candidate again; this needs an expert data-topology pass, not further isolated-function search.",
+  "budget_extensions": []
 }

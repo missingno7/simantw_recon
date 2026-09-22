@@ -1,7 +1,7 @@
 {
   "id": "ClearLife-e4cac54d5a",
   "symbol": "_ClearLife",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:36:28.259978+00:00",
   "flags": [
     "/AL",
@@ -354,6 +354,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "925dc25ae05c47d34d85d5016c353c217298ee05b2432b4e4e166f2c06877557",
+      "report": "evidence/recovery/workflow/jobs/ClearLife-e4cac54d5a/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "058c5da7a5a778f47867f93f5cb96b910f5ce3ef0d5e0e0b0f2c1c1fac5e0ba6",
+      "report": "evidence/recovery/workflow/jobs/ClearLife-e4cac54d5a/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -374,5 +402,10 @@
   ],
   "parked_reason": "Reopened per corrected guidance (prior block wrongly cited CONST diagnostics). Semantics unchanged. Tried rewriting the first duplicate bounds check as guard-clause ifs instead of a computed && expression (attempt02, 36/103, worse than the original if/else-assigned-flag form's 46/103) -- the duplicate-bounds-check shape (target performs the SAME 0<=x<=W/0<=y<=0x3f test twice with a real register-level difference between the two occurrences, not a pure copy) is not yet matched by either form tried. 2 real revisions this reopened job (plus 1 before = 3 total).",
   "parked_next_experiment": "Re-derive the exact duplicate-check control flow from the extent edges (as done for _MoveMyLife/_IsItDigable) rather than assuming a literal copy-paste duplicate; the two occurrences likely differ in which register survives from the outer 'plane<=1' test, which needs the precise edge list to reproduce.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best candidate this session (build/grind/agentG1/ClearLife.c) reaches 62/103 opcodes (60%, with a deferred unsigned-char byte accumulator for LifeA/B/R matching IsItFoodAt/IsNotObstacle's shape) or 57/103 (55%, plain int assignment, which correctly drops the extra enter-frame slot and matches the target's plain push-bp/mov-bp,sp prologue with no frame locals) against the 258-byte target across two explained revisions plus three prior attempts. Evidence: the target genuinely duplicates the whole (x,y) bounds check twice, as the original hypothesis's comment already notes, but the two copies are NOT identical in codegen -- the first duplicate caches x in bx (checked twice: or bx,bx / cmp bx,0x7f) while reading y straight from memory each time (cmp word ptr [bp+0xa],0 / cmp word ptr [bp+0xa],0x3f, no register), whereas every candidate variant caches BOTH x and y in registers (si/di), needing an extra push di the target never emits. The LifeA/LifeB/LifeR selection is confirmed to be a genuine dense switch (or ax,ax/jl/jo overflow guard, dec/jle/dec/je/dec/je dispatch matching IsNotObstacle's pattern, default falling into the same early-return code the bounds failures use) and this session's switch(plane){case 0/1:LifeA;case2:LifeB;case3:LifeR;default:return;} rewrite is confirmed structurally correct and already improved the match from the prior best (previously an if/else-if chain that mismatched the dispatch entirely). SetLife/ZapEuMapAt calls and their argument push order, and the LifeA/LifeB/LifeR bindings (segment10 offsets 26856/35048/39144) are unchanged and already correct in every attempt.",
+  "next_experiment": "Try writing the first bounds-check pass with x and y evaluated as two SEPARATE if-statements per axis (if (x<0) return; if (x>0x7f) return; if (y<0) return; if (y>0x3f) return;) instead of one fused && expression, since only x appears to get register-cached in the target -- this ordering may reproduce the observed asymmetry (x cached in bx, y read from memory) by giving the compiler fewer live ranges to juggle for y."
 }

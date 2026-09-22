@@ -8,7 +8,7 @@ extern int far pascal IsWindowVisible(int window);
 extern void far pascal InvalidateRect(int window, void far *rect,
                                       unsigned flags);
 
-int far pascal _loadds MYENUMFUNC(int target, int unused, int window)
+int far pascal __loadds MYENUMFUNC(int target, int unused, int window)
 {
     if (window != target && IsWindowVisible(target))
         InvalidateRect(target, (void far *)0, 0);

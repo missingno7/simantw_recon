@@ -1,7 +1,7 @@
 {
   "id": "InitApplication-6c36964eac",
   "symbol": "_InitApplication",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T03:02:04.290962+00:00",
   "flags": [
     "/AL",
@@ -366,6 +366,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "ee0d92429d2b6b03d4023d541bde636ea941e3bd1d1db521985d9b5559e8c901",
+      "report": "evidence/recovery/workflow/jobs/InitApplication-6c36964eac/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "8c82f16fe33e9c890d799c372481781cfcf707c3c15dfaa46273a14701688cdc",
+      "report": "evidence/recovery/workflow/jobs/InitApplication-6c36964eac/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -404,5 +432,10 @@
     "LOCAL_FRAME_LAYOUT"
   ],
   "parked_reason": "Best candidate build/grind/agentV3/_InitApplication.c (3 named WNDCLASS locals wcRoot/wcGeneric/wcRibbon registered as AntRoot/GenericWindow/RibbonWindow, class-name and icon-name strings read directly from SIMANTW.EXE DGROUP bytes at DS:0x675/0x67c/0x684/0x692) reaches opcode_total 90/90 matched, instruction_layout_match true, cfg_shape_match true, register_only_differences 0, branch_target_differences 0, all 20/20 fixups resolve (import ordinals USER 173/174/57, GDI 87, internal MainWndProc code target, _DATA string targets) -- see build/grind/agentV3/_InitApplication.test2.json. The sole remaining defect is local frame size: target 'enter 0x138,0' (312 bytes) vs candidate 'enter 0x11e,0' (286 bytes), a uniform 26-byte (exactly one WNDCLASS-sized unit) deficit that shifts every wc field's bp-relative displacement by a constant 26, producing 33 memory_operand/stack_local differences with zero opcode/register/branch differences otherwise. Tried and rejected: (a) an initial draft with an extra 'int result' accumulator caused an extra DI register spill (register_only_differences 3) instead of matching -- fixed by returning RegisterClass(&wcRibbon)|RegisterClass(&wcGeneric)|RegisterClass(&wcRoot) directly, which is the change that produced the 90/90 match; (b) adding a 4th declared-but-unreferenced WndClass local ahead of the three real ones to test whether MSC7 reserves stack for unused locals -- result: the extra local was optimized away and, unexpectedly, the whole frame *shrank* by 26 bytes further (enter 0x104,0) with all three real structs shifting 26 bytes shallower, showing MSC7 /Oelw's stack-slot packing for this profile is not a simple first-declared-deepest accumulation; (c) a struct WndClass wc[3] array instead of three named locals -- frame ballooned to 'enter 0x30c,0' (780 bytes), far worse.",
-  "parked_next_experiment": "Determine what MSC7 /AL /G2 /Gs /Oelw places in the 26 missing deep bytes of this frame: try a single named 4th local of a different plausible size/type (e.g. a scratch int/long or a smaller struct) positioned between the parameter-copy and the wc declarations, and probe whether wrapping the three field-by-field fills in explicit braces/blocks changes MSC7's per-block stack-slot packing (its packing rule visibly depends on more than simple declaration order, per experiment (b))."
+  "parked_next_experiment": "Determine what MSC7 /AL /G2 /Gs /Oelw places in the 26 missing deep bytes of this frame: try a single named 4th local of a different plausible size/type (e.g. a scratch int/long or a smaller struct) positioned between the parameter-copy and the wc declarations, and probe whether wrapping the three field-by-field fills in explicit braces/blocks changes MSC7's per-block stack-slot packing (its packing rule visibly depends on more than simple declaration order, per experiment (b)).",
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Opcode-exact (90/90), instruction_layout_match=true, cfg_shape_match=true, register_only_differences=0, branch_target_differences=0 across every declaration-order permutation tried. The sole defect is frame size: target 'enter 0x138,0' (312 bytes) vs best candidate 'enter 0x11e,0' (286 bytes) -- a uniform 26-byte (exactly one WndClass-sized unit) deficit that shifts every wc field's bp-relative displacement by a constant 26 (33 memory_operand/stack_local differences, otherwise zero). This session's attempts, on top of the job's earlier attempts01-04 (single-line decl, split wcRoot/wcGeneric/wcRibbon into separate int-style declarations, a 4th unreferenced wcUnused local, a wc[3] array): (5) split 'struct WndClass wcRoot, wcGeneric, wcRibbon;' into three separate 'struct WndClass wcX;' lines -- identical 33 stack diffs, byte-for-byte same divergence set as the combined declaration; (6) reordered declaration to match registration order (wcRibbon, wcGeneric, wcRoot) -- again byte-identical output to the original fill-order declaration. Declaration order and grouping are conclusively inert for this candidate under MSC7 baseline /AL /G2 /Gs /Oelw (matches the pattern independently confirmed on _GetEnterDirB/_GetEnterDirR in this same lane). No further source-shape experiment can add the missing 26 bytes without adding opcodes: a genuinely-unused scratch local of any type/size is eliminated by the optimizer (attempt03's wcUnused already proved this, and even repacked the three real structs shallower instead of adding the gap), and any local that IS referenced must emit real instructions, which would break the confirmed 90/90 opcode match.",
+  "next_experiment": "The missing 26 deep bytes likely come from something outside plain local declarations entirely -- e.g. an MSC7 /Oelw register-parameter home area, an EXTRA far-pointer-sized temp the optimizer allocates for one of the WNDPROC/lpsz far-pointer field stores (spilled once, reused across all three structs), or a compiler-internal scratch for the chained bitwise-OR return expression across three far pascal calls. Needs either a matcher-level instruction-address audit of exactly which store instruction consumes the deepest 26 bytes in the target binary (not yet isolated here), or MSC7 internals expertise on /Oelw's far-pointer temp allocation."
 }

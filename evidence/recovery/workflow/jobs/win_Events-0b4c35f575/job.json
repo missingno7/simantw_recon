@@ -1,7 +1,7 @@
 {
   "id": "win_Events-0b4c35f575",
   "symbol": "_win_Events",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T09:12:07.399507+00:00",
   "flags": [
     "/AL",
@@ -386,6 +386,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "ac1dd567ae283150504f13743e4e92b8ce34696e9dea25f172e0ee1072a6ee10",
+      "report": "evidence/recovery/workflow/jobs/win_Events-0b4c35f575/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "6a8749d31e92faa7005ad2cd50fcf04a031426e33a7157326148e3871326fbf3",
+      "report": "evidence/recovery/workflow/jobs/win_Events-0b4c35f575/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -417,5 +445,10 @@
   ],
   "parked_reason": "Semantics fully recovered and preserved (attempt01/candidate0000.c): 112-byte extent, all three USER imports (PeekMessage 109, TranslateMessage 113, DispatchMessage 114) resolved, rotated while-loop, message tests (0x201/0x202, 0x100 with wParam 0x20/0x2d) and epilogue align 46/47 instructions. Single residual: the original emits 'xor si,si' (result flag = 0) immediately after 'push si' and before 'lea ax,[bp-0x12]' for the first PeekMessage argument, whereas every C7 candidate defers the zero materialisation to just before the first 'push si' zero argument (lea; push ss; push ax; xor si,si). 21 candidates tried: statement vs declaration initializer, declaration order, register hint, for-init, !=0 / ==1 spellings, manual if/do-while rotation, condition assigned to a temp, zero arguments via the flag or a zero local, unsigned/char/unsigned char flag types, far-pointer NULL hwnd cast. Budget 5/8 attempts, 21/192 candidates.",
   "parked_next_experiment": "Find a construct that forces MSC to materialise the register flag before the PeekMessage argument evaluation: distinguishing observation is 'push si; xor si,si; lea ax,[bp-0x12]'. Candidates not yet tried: a preceding statement that reads the flag without code (e.g. the flag as a second result via a far pointer parameter), an int parameter to win_Events that is copied into the flag, or a TU-level context where msg is a static/global structure; do not repeat the 21 listed spellings.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

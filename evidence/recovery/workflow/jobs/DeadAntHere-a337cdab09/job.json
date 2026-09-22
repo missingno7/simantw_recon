@@ -1,21 +1,24 @@
 {
   "id": "DeadAntHere-a337cdab09",
   "symbol": "_DeadAntHere",
-  "status": "ESCALATED",
+  "status": "NEEDS_REVISION",
   "created": "2026-09-21T22:07:26.967222+00:00",
   "flags": [
     "/AL",
     "/G2",
     "/Gs",
-    "/Oelw",
+    "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
   "profile": {
-    "name": "baseline",
-    "basis": "DEFAULT",
-    "assignment": null,
-    "context": null,
-    "evidence": null,
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-0000-og",
+    "context": "simant1:0000",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoFightA-55d1b9b984.json",
+      "evidence/experiments/optimizer-profile/probes/DoReturnFoodAnt-82971198db.json"
+    ],
     "component": "simant1:0000",
     "refuted_profiles": []
   },
@@ -25,16 +28,16 @@
       "sha256": "6a458de2d74483a6eeea9df27064dcefceace8cbcad5e42d20491a8b226c379a"
     },
     "tools/library_match.py": {
-      "size": 15458,
-      "sha256": "eeec488a151e53f859fc067f7b8ac47d4bb5ccdefe125ae759211ba3a4e22ed4"
+      "size": 16224,
+      "sha256": "cb83893a773261c5b0f562b026f757589f7255806f079ff68eed0cfd90706b7b"
     },
     "tools/recovery_gate.py": {
-      "size": 5073,
-      "sha256": "acfb8518a51afaedad6ef86e751798465453f168ce285701a1fc2b01206f7d03"
+      "size": 5445,
+      "sha256": "e9254b8cecaeed3b6cc8bbece202a953186a03e79e38fe1637bbd52403e7bd5a"
     },
     "tools/verify_recovery.py": {
-      "size": 3316,
-      "sha256": "ff2b56405898a025e293ccd0122a910a2f82ba23b7ac2d6a016ec23f653debc7"
+      "size": 3354,
+      "sha256": "9debd93223ba33d9ae96e887747e98640b80821c9cc446a810522005ffeb3ebf"
     },
     "tools/compiler.py": {
       "size": 13938,
@@ -77,8 +80,8 @@
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 30882,
-      "sha256": "29ed26dfff617d4091f5f36872fe57586bc4a8e9829624200b0b8e1f849aa223"
+      "size": 32027,
+      "sha256": "cd18a799d3a3649b333478b940aceaf39c42b5563f39cba8b6c5e1d9c8b08a7e"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
@@ -99,10 +102,6 @@
     "tools/compiler_profiles.py": {
       "size": 16938,
       "sha256": "bbc644a79e77733bc8317eadbebfea3634ffb643722838cf8ca18aae25f52ed0"
-    },
-    "tools/tu_assembly.py": {
-      "size": 27981,
-      "sha256": "d0f67b2f8a36609e5e595322c901005c6e7ea379fcf11e29757e6ee89c0117f0"
     },
     "layout/toolchain.json": {
       "size": 120203,
@@ -398,13 +397,22 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "0e9a0eef3dca130db2556bc0f2005b39574dfeb6720c62c74d3bc68372fc3792",
+      "report": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
-  "blockers": [
-    "FAR_POINTER_TYPE"
-  ],
-  "reason": "Semantics converged (97-98/118 opcodes match; counter/circular-buffer, TERRAINset-conditional aging, SRand16/SRand4/SRand1 stamping, flat MapA/LifeA[x*64+y] via a shared tile local, and the far-pointer local for match_position[0x4f54] all reproduce the target's control flow and register reuse). Remaining first structural difference is at offset 9 (candidate build/grind/agentU/_DeadAntHere.c): capturing 'int far *slot = &match_position[0x4f54]' (or the equivalent match_position+0x4f54 pointer-arithmetic form) makes MSC7 load its ES half as a direct 'internal segment 9 offset 0' fixup, while the target loads ES for this SAME slot indirectly through the CONST selector-pool word at 0xc344 (mov es, word ptr [0xc344]), exactly like every other far-object ES load in this function. Both forms of taking the address produced byte-identical codegen (attempts 6 and 7), so the CONST-pool indirection is tied to how the far pointer is *stored/dereferenced* (three LES-based re-reads at offsets 33/124/237), not to the address expression's syntax. Best candidate: build/grind/agentU/_DeadAntHere.c (349-350/353 bytes, 97-98/118 opcodes, only register-allocation and expected far-fixup-representation differences remain).",
-  "next_experiment": "Try capturing the far pointer without ever dereferencing it through the compiler-visible C expression '*slot' for the counter increment (e.g. increment match_position[0x4f54] directly by index before taking &... for the LES-reload site), or try declaring 'slot' with an explicit __based/segment-qualified far pointer type so MSC treats the initial ES load like a normal far-object CONST-pool fetch instead of a compile-time segment constant; compare against src/recovered/wf_GetAntIndex-a8eba5e594.c's AT()-macro idiom, which was invented for this exact same segment-9 relocatable-fixup-vs-normal-fixup discrepancy.",
   "root_cause": {
     "category": "ABI_TYPE_INFERENCE",
     "cause": "call/pointer-shape differences (FAR_POINTER_TYPE)",
@@ -417,5 +425,11 @@
   },
   "previous_blockers": [
     "FAR_POINTER_TYPE"
-  ]
+  ],
+  "parked_blockers": [
+    "FAR_POINTER_TYPE"
+  ],
+  "parked_reason": "Semantics converged (97-98/118 opcodes match; counter/circular-buffer, TERRAINset-conditional aging, SRand16/SRand4/SRand1 stamping, flat MapA/LifeA[x*64+y] via a shared tile local, and the far-pointer local for match_position[0x4f54] all reproduce the target's control flow and register reuse). Remaining first structural difference is at offset 9 (candidate build/grind/agentU/_DeadAntHere.c): capturing 'int far *slot = &match_position[0x4f54]' (or the equivalent match_position+0x4f54 pointer-arithmetic form) makes MSC7 load its ES half as a direct 'internal segment 9 offset 0' fixup, while the target loads ES for this SAME slot indirectly through the CONST selector-pool word at 0xc344 (mov es, word ptr [0xc344]), exactly like every other far-object ES load in this function. Both forms of taking the address produced byte-identical codegen (attempts 6 and 7), so the CONST-pool indirection is tied to how the far pointer is *stored/dereferenced* (three LES-based re-reads at offsets 33/124/237), not to the address expression's syntax. Best candidate: build/grind/agentU/_DeadAntHere.c (349-350/353 bytes, 97-98/118 opcodes, only register-allocation and expected far-fixup-representation differences remain).",
+  "parked_next_experiment": "Try capturing the far pointer without ever dereferencing it through the compiler-visible C expression '*slot' for the counter increment (e.g. increment match_position[0x4f54] directly by index before taking &... for the LES-reload site), or try declaring 'slot' with an explicit __based/segment-qualified far pointer type so MSC treats the initial ES load like a normal far-object CONST-pool fetch instead of a compile-time segment constant; compare against src/recovered/wf_GetAntIndex-a8eba5e594.c's AT()-macro idiom, which was invented for this exact same segment-9 relocatable-fixup-vs-normal-fixup discrepancy.",
+  "budget_extensions": []
 }

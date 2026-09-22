@@ -1,7 +1,7 @@
 {
   "id": "IsItYellow-30921d64d5",
   "symbol": "_IsItYellow",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T16:16:13.034998+00:00",
   "flags": [
     "/AL",
@@ -357,6 +357,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "a73574c751ecb179630583d70a5c6e48d8729928f94f626f177ec632c1d00748",
+      "report": "evidence/recovery/workflow/jobs/IsItYellow-30921d64d5/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "5117bed1f59dcd2d40d9e63955060add00eb46d986d4d9d2351f981eeeadf503",
+      "report": "evidence/recovery/workflow/jobs/IsItYellow-30921d64d5/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "7d0c986593da17a1f5e6c98e474f342aa48917ec6df0d9a7e0a7d4adbf5e5a75",
+      "report": "evidence/recovery/workflow/jobs/IsItYellow-30921d64d5/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "32ff9b666c2500d19198c7885048ac6ba08ef65ab9e77eccc2351e2686889ce9",
+      "report": "evidence/recovery/workflow/jobs/IsItYellow-30921d64d5/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -388,5 +444,10 @@
   ],
   "parked_reason": "Semantics established (Sonnet grinder, 3 attempts, best evidence/recovery/workflow/jobs/IsItYellow-30921d64d5/attempt02/candidate0000.c, 186 vs 206 bytes, 65/90 opcodes): return 0 unless MePlane equals (level ? level : 1); when MeMode == 1 only levels <= 1 qualify and the result is whether an unnamed same-segment helper at SIMONE_MODULE+0x11122 (distance of (x*16+8, y*16+8) from SpidX/SpidY) is below 0x200; otherwise switch on level to LifeA/LifeB/LifeR and return 1 for tile 0xff or 0xfe. Blocked by the unnamed private near helper (no MAPSYM public; the original calls it as 'nop / push cs / call' at +0x59), which an extern declaration cannot bind, plus a cx/si register choice for level.",
   "parked_next_experiment": "Recover the helper at SIMONE_MODULE+0x11122 (spider distance test) as its own object or as a static function in the same unit, then retest IsItYellow with it declared static in the same TU; distinguishing observation: 'push cs / call 0x7a6c' at +0x5a.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best candidate (build/grind/agentG1/IsItYellow.c, 65/90 opcodes, ~188/206 bytes) reproduces the MeMode/Dist special case, the dense level-switch over LifeA/LifeB/LifeR (shared uninitialized-tile default tail), and the shared 'xor ax,ax' return-0 epilogue used by every failing path, all confirmed via the exact _MePlane/_SpidX/_SpidY/_MeMode/_LifeA/_LifeB/_LifeR bindings. The unresolved residue is localized to one spot: the target computes the effective plane p=(level!=0?level:1) as a genuinely separate value (mov cx,[bp+6]; or cx,cx; jne; two distinct paths each ending 'mov dx,1'/'mov dx,cx' that reconverge before a single later 'cmp [MePlane],dx'), then materializes the compare result into bx (mov bx,1/jmp vs xor bx,bx converging into 'or bx,bx; jne') before branching into the MeMode/switch body. Every rewrite tried this session (ternary p=level?level:1; explicit if/else for p; an explicit int ok=(MePlane==p); MePlane==p vs p==MePlane operand order) makes MSC7 fuse the ternary directly into the MePlane compare (mov <fixup MePlane>...;je/jne) and drop the separate dx materialization and the bx boolean entirely, producing a smaller (188 vs 206 byte) and structurally different front section though the remainder of the function still matches well.",
+  "next_experiment": "Try writing the guard as two independent early returns per branch (if (level==0) { if (MePlane!=1) return 0; } else { if (MePlane!=level) return 0; }) so the compiler cannot see it as one foldable ternary+compare, and check whether that reproduces the separate dx materialization and the bx-boolean shape; also try comparing against a volatile-qualified local for p to force it to a real memory/register temp."
 }

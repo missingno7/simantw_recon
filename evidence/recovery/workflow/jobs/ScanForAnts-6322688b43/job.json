@@ -1,7 +1,7 @@
 {
   "id": "ScanForAnts-6322688b43",
   "symbol": "_ScanForAnts",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T09:17:24.180813+00:00",
   "flags": [
     "/AL",
@@ -371,6 +371,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "325f0340b8bd0ff1f59a5dff92b515e30761b6ec55be7fffee0962ecd831c4c2",
+      "report": "evidence/recovery/workflow/jobs/ScanForAnts-6322688b43/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "a315633f166d78a2fa89ad456c01d25e337de85846025498f6471bd7d909a2bf",
+      "report": "evidence/recovery/workflow/jobs/ScanForAnts-6322688b43/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "1131b2d0fc4e1120fc72ae8f9ce3c5811a3f6902d7e3e4f1876de36224fdc12d",
+      "report": "evidence/recovery/workflow/jobs/ScanForAnts-6322688b43/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "cbfaa696958efe84bea5e171ad94b494a8917ce6d6b0b2ce2c0779aa2145516f",
+      "report": "evidence/recovery/workflow/jobs/ScanForAnts-6322688b43/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -409,5 +465,10 @@
     "REGISTER_ALLOCATION"
   ],
   "parked_reason": "Semantics recovered and preserved (best: attempt02/candidate0001.c, named x/y row and column variables assigned in the inner body, declaration order y,dx,tileX,count,tileY,dy,x): 112-byte extent, 45/46 instructions aligned, frame slots ([bp-6] tileX, [bp-8] count, [bp-0xa] tileY, [bp-4] dx spill), loop rotation, DI-hoisted row, DX-carried count and the LifeA fixup all match. Single residual at target 0x23-0x28: the original evaluates the hoisted row sum through AX ('mov ax,[bp-6]; add ax,dx; mov di,ax') while C7 computes it directly into DI ('mov di,[bp-6]; add di,dx'). 29 candidates tried: inline row/column expressions (trigger strength reduction, 35/46), row assigned in the inner for-initializer or before the inner loop or with do/while (106 bytes), SpidX>>4 / SpidY>>4 inline as temps (104/136 bytes), register hints on x, y, tile coordinates and all, assignment order, 0..3 loop offsets and continue-style rejection. Budget 5/8 attempts, 29/192 candidates.",
-  "parked_next_experiment": "Find the construct under which MSC C7 /Oelw evaluates a loop-hoisted register-variable assignment through AX: distinguishing observation is 'mov ax,[bp-6]; add ax,dx; mov di,ax' at the inner-loop pre-header. Untried ideas: x assigned from a function-like macro with a cast or parenthesised comma, x as a short/unsigned mixed-type sum, or tileX/tileY as parameters of a helper that ScanForAnts calls in the original TU context; do not repeat the 29 listed spellings."
+  "parked_next_experiment": "Find the construct under which MSC C7 /Oelw evaluates a loop-hoisted register-variable assignment through AX: distinguishing observation is 'mov ax,[bp-6]; add ax,dx; mov di,ax' at the inner-loop pre-header. Untried ideas: x assigned from a function-like macro with a cast or parenthesised comma, x as a short/unsigned mixed-type sum, or tileX/tileY as parameters of a helper that ScanForAnts calls in the original TU context; do not repeat the 29 listed spellings.",
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "45/46 opcodes match target (111/113 bytes); the only real residual is a single extra hoist copy: target computes x=tileX+dx into AX then 'mov di,ax' (a separate copy instruction), while every source variant compiles the assignment straight into DI (mov di,[bp-6]; add di,dx) with no copy, which also shifts every downstream branch target by exactly 2 bytes (js/jg/jl/jg/je all off by 0x2, plus the outer loop jl). The LifeA cmp fixup diff is the expected isolated-compile far-index binding noise. Tried: recomputing tileX+dx a second time for the sign test only, swapping the y/x assignment order, folding the assignment into the first condition via (x = tileX+dx), and reversing the addition operands (dx+tileX) for just the sign check -- the /Oe optimizer CSEs all of these back to a single DI-resident computation with no extra copy.",
+  "next_experiment": "Try holding tileX+dx in an explicit int local assigned from a call-like helper or volatile-qualified temp to defeat CSE, or restructure the loop so x is computed via a widening/narrowing cast (e.g. through a short/int mismatch) that forces the compiler to materialize AX before copying to DI."
 }

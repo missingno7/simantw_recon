@@ -1,7 +1,7 @@
 {
   "id": "DropFoodB-6be5ac9717",
   "symbol": "_DropFoodB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T04:40:39.414986+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "a9303c0b808aab29a0e2eff3415b6c2856492b83be39f97717054954704465d2",
+      "report": "evidence/recovery/workflow/jobs/DropFoodB-6be5ac9717/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "f14c63bc9d27605d2c5c9a2a851ba73f553d8113d592dcc36e1ab9ca9323d7e0",
+      "report": "evidence/recovery/workflow/jobs/DropFoodB-6be5ac9717/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "4b012b0956258875b395acae3c5fd114449a620d296385c497692197e496428b",
+      "report": "evidence/recovery/workflow/jobs/DropFoodB-6be5ac9717/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -361,5 +403,10 @@
   ],
   "parked_reason": "Semantic body and branch behavior are established, but strict proof is blocked by the private map base at DGROUP:0x48e8, FoodB/Tindex/Dx8 selector slots 0xc362/0xc350/0xc352, and the associated local far-pointer spill layout; named MapB/FoodB/Tindex/Dx8 declarations produce mismatched direct operands and selectors.",
   "parked_next_experiment": "Recover the SIMANT1 translation-unit declarations for the B map and selector-backed FoodB/Tindex/Dx8 objects, then rerun strict admission with their original shared layout.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Semantics recovered with high confidence (27/41 -> 27/37 opcodes, 88 vs 100 bytes): cell=&MapB[(x<<6)+y]; level=*cell; if level<0x10 set *cell=0x10 and result=1; else if level<0x13 increment *cell and result=1; else result stays 0; then unconditionally FoodB++ and clear bit 8 of the dropping ant's attribute byte via an explicit far pointer attrPtr=&Dx8[Tindex+0x3d18] (matches BlistT(Tindex) from the admitted simant1:2D4E unit; Tindex's own selector is segment9, distinct from Dx8's segment8, exactly as the two separate ES loads at offsets61/74 show); return result. The branch structure (3-way pile-level compare, common FoodB++/attribute-clear tail reached from every path including the fresh-tile jmp target) matches the target's control flow and branch/jump byte layout exactly once an explicit 'int level=*cell' local is used (forces the target's byte-read+zero-extend+word-compare shape instead of a direct byte compare). The one remaining REGISTER_ALLOCATION residue: the target explicitly spills the MapB cell pointer to a stack slot (enter 6,0; mov word ptr[bp-2],bx) and re-reads [bx] through BX throughout, while every source form tried (a plain 'unsigned char near *cell' pointer local, and the same with explicit xx/yy parameter-home locals read before result=0 to raise register pressure) keeps the cell address live in SI without ever spilling it (enter 4,0, no bp-2 slot) -- the same un-spilled-pointer-across-conditionals pattern that blocked _StealFoodB/_StealFoodR (REGISTER_ALLOCATION) in this session. The attribute-pointer spill (attrPtr to bp-6/bp-4) matches the target exactly; only the cell/MapB pointer differs.",
+  "next_experiment": "Companion to the StealFoodB/R blocker: determine what MSC7 /Oeglw source shape forces a near pointer local (with no intervening far call) to spill across an if/else-if/else chain -- e.g. try assigning the pointer to a 'static' or explicitly reusing it inside a nested block, or a raw single-source compiler probe outside the grinder budget varying only the number of live temporaries around the branch."
 }
