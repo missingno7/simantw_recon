@@ -162,9 +162,13 @@
     "/NTANTEDIT_MODULE"
   ],
   "layout": "preambles-first",
-  "overrides": {},
+  "overrides": {
+    "ExpSubStates": "extern signed char far ExpSubStates[];",
+    "ExitMapB": "#define ExitMapB ((unsigned char (far *)[64])((unsigned char far *)&Dx8 + 0x3A4))  /* pool word C27A: one object, MAPSYM _Dx8+932 */",
+    "ExitMapR": "#define ExitMapR ((unsigned char (far *)[64])((unsigned char far *)&Dx8 + 0x13A4))  /* pool word C27A: one object, MAPSYM _Dx8+5028 */"
+  },
   "reason": "Scaffolded unit of antedit:7022: claimed members are the admitted and exact-body sources; unclaimed introducers are pool stand-ins (evidence/topology/supervisor-scaffold/controls.json)",
-  "created": "2026-09-22T01:42:25.997448+00:00",
+  "created": "2026-09-22T02:10:39.428264+00:00",
   "topology": {
     "join_evidence": {
       "shared_slot": 20,
@@ -172,28 +176,325 @@
     },
     "range": "antedit:67C6-E9E9"
   },
-  "status": "DECLARATION_CONFLICT",
-  "conflicts": [
-    {
-      "name": "CNT",
-      "first": "#define CNT TilesDugB",
-      "first_from": "_FillDirtB",
-      "other": "#define CNT TilesDugR",
-      "other_from": "_FillDirtR"
+  "status": "COMPOSED",
+  "harmonization": {
+    "overrides": {
+      "ExpSubStates": "extern signed char far ExpSubStates[];"
     },
-    {
-      "name": "ExpSubStates",
-      "first": "extern unsigned char far ExpSubStates[];",
-      "first_from": "_DoTool",
-      "other": "extern signed char far ExpSubStates[];",
-      "other_from": "_GetSM"
+    "unresolved": [],
+    "trials": 2,
+    "evidence": "evidence/recovery/units/antedit_7022_DoTool_15_scaffold/harmonize.json"
+  },
+  "scaffold": {
+    "segment": "POOLSTUB_TEXT",
+    "stubs": [
+      {
+        "function": "_processExp",
+        "position": 0,
+        "references": [
+          {
+            "word": 49758,
+            "segment": 9,
+            "name": "ExpLastPnt",
+            "basis": "CLAIMED_MEMBER_NAME"
+          },
+          {
+            "word": 49760,
+            "segment": 9,
+            "name": "UDcntr",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49762,
+            "segment": 9,
+            "name": "mapTileRect",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49764,
+            "segment": 9,
+            "name": "mapXsize",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49766,
+            "segment": 9,
+            "name": "mapYsize",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49768,
+            "segment": 9,
+            "name": "editTileRect",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49770,
+            "segment": 9,
+            "name": "MapPnt",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49772,
+            "segment": 9,
+            "name": "CurExpTool",
+            "basis": "CLAIMED_MEMBER_NAME"
+          },
+          {
+            "word": 49774,
+            "segment": 9,
+            "name": "ExpCursAnimCycle",
+            "basis": "MAPSYM_SITE_NAME"
+          }
+        ]
+      },
+      {
+        "function": "_DropWall",
+        "position": 3,
+        "references": [
+          {
+            "word": 49778,
+            "segment": 8,
+            "name": "Dx9",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49780,
+            "segment": 8,
+            "name": "Dy9",
+            "basis": "MAPSYM_SITE_NAME"
+          }
+        ]
+      },
+      {
+        "function": "_ExpDig",
+        "position": 4,
+        "references": [
+          {
+            "word": 49782,
+            "segment": 9,
+            "name": "WindPromptStrs",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49784,
+            "segment": 9,
+            "name": "ListIndexB",
+            "basis": "CLAIMED_MEMBER_NAME"
+          },
+          {
+            "word": 49786,
+            "segment": 8,
+            "name": "Dx8",
+            "basis": "CLAIMED_MEMBER_NAME"
+          },
+          {
+            "word": 49788,
+            "segment": 9,
+            "name": "ListIndexR",
+            "basis": "CLAIMED_MEMBER_NAME"
+          }
+        ]
+      },
+      {
+        "function": "_IncFoodHere",
+        "position": 11,
+        "references": [
+          {
+            "word": 49790,
+            "segment": 9,
+            "name": "FoodB",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49792,
+            "segment": 9,
+            "name": "FoodR",
+            "basis": "MAPSYM_SITE_NAME"
+          },
+          {
+            "word": 49794,
+            "segment": 9,
+            "name": "FoodA",
+            "basis": "MAPSYM_SITE_NAME"
+          }
+        ]
+      }
+    ],
+    "runs": [
+      [
+        "_DoTool"
+      ],
+      [
+        "_ReDrawMapEdit"
+      ],
+      [
+        "_ClearLifeB",
+        "_ClearLifeR",
+        "_ExpAddAnt",
+        "_ExpAddFood"
+      ],
+      [
+        "_ConnectWall",
+        "_WallNeighbors",
+        "_IsItWall",
+        "_FillDirtB",
+        "_FillDirtR",
+        "_SmoothMany"
+      ],
+      [
+        "_IsValidSLoc",
+        "_GetSM",
+        "_SetSM"
+      ]
+    ],
+    "unclaimed_after_last": [],
+    "shared_words": {
+      "C270": [
+        "_ExpSubStates"
+      ],
+      "C25E": [
+        "_ExpLastPnt"
+      ],
+      "C26C": [
+        "_CurExpTool"
+      ],
+      "C278": [
+        "_ListIndexB"
+      ],
+      "C27C": [
+        "_ListIndexR"
+      ],
+      "C27A": [
+        "_Dx8",
+        "_ExitMapB",
+        "_ExitMapR"
+      ]
     },
-    {
-      "name": "ExpSubStates",
-      "first": "extern unsigned char far ExpSubStates[];",
-      "first_from": "_DoTool",
-      "other": "extern signed char far ExpSubStates[];",
-      "other_from": "_SetSM"
-    }
-  ]
+    "symbol_overrides": {
+      "ExitMapB": "#define ExitMapB ((unsigned char (far *)[64])((unsigned char far *)&Dx8 + 0x3A4))  /* pool word C27A: one object, MAPSYM _Dx8+932 */",
+      "ExitMapR": "#define ExitMapR ((unsigned char (far *)[64])((unsigned char far *)&Dx8 + 0x13A4))  /* pool word C27A: one object, MAPSYM _Dx8+5028 */"
+    },
+    "scope": "Stand-ins reproduce only the selector-pool allocation order of unclaimed members; they are not recovered source and are never compared or credited"
+  },
+  "source": "evidence/recovery/units/antedit_7022_DoTool_15_scaffold/unit.c",
+  "source_identity": {
+    "size": 14950,
+    "sha256": "a3d242892a4ea46134de05b54f8b132b01c39bcf6860ffcced369be5165037bf"
+  },
+  "declarations": 49,
+  "definitions": [
+    "DoTool",
+    "ReDrawMapEdit",
+    "ClearLifeB",
+    "ClearLifeR",
+    "ExpAddAnt",
+    "ExpAddFood",
+    "ConnectWall",
+    "WallNeighbors",
+    "IsItWall",
+    "FillDirtB",
+    "FillDirtR",
+    "SmoothMany",
+    "IsValidSLoc",
+    "GetSM",
+    "SetSM"
+  ],
+  "last_test": {
+    "unit": "antedit_7022_DoTool_15_scaffold",
+    "result": "STRONGLY_SUPPORTED_MEMBER",
+    "issues": [],
+    "placements": {
+      "8": [
+        3,
+        34126
+      ],
+      "7": [
+        3,
+        31060
+      ],
+      "9": [
+        3,
+        36004
+      ],
+      "6": [
+        3,
+        29668
+      ],
+      "1": [
+        3,
+        29310
+      ],
+      "3": [
+        10,
+        49758
+      ],
+      "2": [
+        10,
+        7118
+      ]
+    },
+    "private_constraint_placements": [
+      3,
+      2
+    ],
+    "literal_equal": 1946,
+    "literal_compared": 1946,
+    "fixups_equal": 193,
+    "fixups_total": 229,
+    "contributions": [
+      {
+        "segment": "ANTEDIT_MODULE",
+        "original_offset": 29310,
+        "length": 358,
+        "divergences": 0,
+        "failed_fixups": 0
+      },
+      {
+        "segment": "_DATA",
+        "original_offset": 7118,
+        "length": 16,
+        "divergences": 0,
+        "failed_fixups": 0
+      },
+      {
+        "segment": "CONST",
+        "original_offset": 49758,
+        "length": 38,
+        "divergences": 0,
+        "failed_fixups": 0
+      },
+      {
+        "segment": "RUN2_TEXT",
+        "original_offset": 29668,
+        "length": 108,
+        "divergences": 0,
+        "failed_fixups": 0
+      },
+      {
+        "segment": "RUN3_TEXT",
+        "original_offset": 31060,
+        "length": 586,
+        "divergences": 0,
+        "failed_fixups": 0
+      },
+      {
+        "segment": "RUN4_TEXT",
+        "original_offset": 34126,
+        "length": 934,
+        "divergences": 0,
+        "failed_fixups": 0
+      },
+      {
+        "segment": "RUN5_TEXT",
+        "original_offset": 36004,
+        "length": 416,
+        "divergences": 0,
+        "failed_fixups": 0
+      }
+    ],
+    "compiler_log": null,
+    "report": "evidence/recovery/units/antedit_7022_DoTool_15_scaffold/test/results.json",
+    "tested": "2026-09-22T02:10:40.575599+00:00"
+  }
 }

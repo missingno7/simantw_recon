@@ -152,6 +152,41 @@ def declared_names(code):
     return [n for n in names if n not in keywords]
 
 
+def declaration_shape(normalized, name):
+    """(base type, distance keyword, dims) of `extern T [near|far] NAME[d]...;` or None.
+
+    `char` and `signed char` are the same MSC 7 type (no /J in any profile)."""
+    m = re.match(r'extern\s+(.*?)\s*\b(near|far)\b\s*' + re.escape(name) + r'\s*((?:\[[^\]]*\]\s*)*);$', normalized)
+    if not m:
+        return None
+    base = ' '.join(m.group(1).split())
+    if base == 'char':
+        base = 'signed char'
+    dims = re.findall(r'\[([^\]]*)\]', m.group(3) or '')
+    return dict(base=base, distance=m.group(2), dims=dims)
+
+
+def view_macro(name, own, canonical):
+    """A per-definition macro that lets a member written against one shape of a
+    far/near object use the canonical declaration of the same object without
+    changing its text or its code: element 0 for a scalar view of an array,
+    the flattened element pointer for a 1-D view of an N-D array, the address
+    for an array view of a scalar. The self-reference expands once."""
+    if own['distance'] != canonical['distance']:
+        return None
+    same = own['base'] == canonical['base']
+    if not own['dims']:
+        if same and canonical['dims']:
+            return '#define %s ((%s)%s)' % (name, name, '[0]' * len(canonical['dims']))
+        return '#define %s (*(%s %s *)&%s)' % (name, own['base'], own['distance'], name)
+    # An array view: the member indexes through a pointer of its own element
+    # type (and inner dimensions), which is the code its own declaration gave.
+    inner = ''.join('[%s]' % d for d in own['dims'][1:])
+    pointer = ('%s (%s *)%s' % (own['base'], own['distance'], inner)) if inner else ('%s %s *' % (own['base'], own['distance']))
+    target = name if canonical['dims'] else '&' + name
+    return '#define %s ((%s)%s)' % (name, pointer, target)
+
+
 def compose(sources, order, unit_id, layout='preambles-first', overrides=None, extra_definitions=None, pragmas=None, rank_order=None, header_notes=None, exclude_definitions=()):
     """Merge preserved sources into one unit; conflicts are reported, not resolved.
 
@@ -173,10 +208,55 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
     conflicts = []
     definitions = []
     emitted_overrides = set()
+    # A macro spelled differently by two preserved sources is not a declaration
+    # conflict: macros have no object identity, so each definition gets its own
+    # `#undef` + `#define` right before it.
+    macro_texts = {}
+    for f in files:
+        for it in f['items']:
+            if it['kind'] == 'declaration' and it['text'].lstrip().startswith('#define') and it['names']:
+                macro_texts.setdefault(it['names'][0], {}).setdefault(it['normalized'], []).append(f['symbol'])
+    declared_objects = {n for f in files for it in f['items'] if it['kind'] == 'declaration' and not it['text'].lstrip().startswith('#define') for n in it['names']}
+    # Spelled differently by two sources, or shadowing an object/override of
+    # the same name: scoped to the definitions that use it.
+    per_definition_macros = {name for name, spellings in macro_texts.items() if len(spellings) > 1 or name in declared_objects or name in overrides}
+    for f in files:
+        f['macros'] = [it for it in f['items'] if it['kind'] == 'declaration' and it['text'].lstrip().startswith('#define') and it['names'] and it['names'][0] in per_definition_macros]
+    # Shape variants of one object (scalar/array, 1-D/N-D of the same base type)
+    # are not conflicts either: the widest declaration is canonical and each
+    # member written against another shape gets a per-definition view macro.
+    spellings = {}
+    for f in files:
+        for it in f['items']:
+            if it['kind'] == 'declaration' and not it['text'].lstrip().startswith('#define') and len(it['names']) == 1 and it['names'][0] not in overrides:
+                spellings.setdefault(it['names'][0], {}).setdefault(it['normalized'], set()).add(f['symbol'])
+    canonical = {}
+    for name, variants in spellings.items():
+        if len(variants) < 2:
+            continue
+        shapes = {s: declaration_shape(s, name) for s in variants}
+        if any(v is None for v in shapes.values()):
+            continue
+        best = max(shapes, key=lambda s: (len(shapes[s]['dims']), sum(1 for d in shapes[s]['dims'] if d.strip()), len(variants[s]), -list(shapes).index(s)))
+        if all(s == best or view_macro(name, shapes[s], shapes[best]) for s in shapes):
+            canonical[name] = dict(text=best, shape=shapes[best], views={s: view_macro(name, shapes[s], shapes[best]) for s in shapes if s != best})
+    for f in files:
+        f['views'] = []
+        for it in f['items']:
+            if it['kind'] == 'declaration' and len(it['names']) == 1 and it['names'][0] in canonical and it['normalized'] != canonical[it['names'][0]]['text']:
+                f['views'].append(dict(name=it['names'][0], text=canonical[it['names'][0]]['views'][it['normalized']]))
     for f in files:
         for it in f['items']:
             if it['kind'] == 'declaration':
+                if it['text'].lstrip().startswith('#define') and it['names'] and it['names'][0] in per_definition_macros:
+                    continue
+                if len(it['names']) == 1 and it['names'][0] in canonical and it['normalized'] != canonical[it['names'][0]]['text']:
+                    continue
                 key_names = it['names'] or [it['normalized']]
+                # A function-like macro never clashes with an object of the same
+                # name: it only expands before a parenthesis.
+                if it['text'].lstrip().startswith('#define') and it['names'] and re.match(r'#define\s+' + re.escape(it['names'][0]) + r'\(', it['text'].lstrip()):
+                    key_names = [it['names'][0] + '(']
                 # A reviewed override replaces every declaration of that name
                 # with one recorded spelling, emitted at its first occurrence.
                 if any(name in overrides for name in key_names):
@@ -214,7 +294,7 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
         declarations = [d for d in declarations if not (d['text'].lstrip().startswith('static') and d['names'] and not any(re.search(chr(92) + 'b' + re.escape(n) + chr(92) + 'b', kept) for n in d['names']))]
     # Unresolved conflicts stop composition: a reviewed override must choose.
     if conflicts:
-        return dict(status='DECLARATION_CONFLICT', conflicts=conflicts, files=[{k: v for k, v in f.items() if k != 'items'} for f in files])
+        return dict(status='DECLARATION_CONFLICT', conflicts=conflicts, files=[{k: v for k, v in f.items() if k not in ('items', 'macros', 'views')} for f in files])
     header = ['/* Candidate translation unit %s: composed from preserved exact-body sources' % unit_id,
               ' * in MAPSYM order. Internal evidence id, not a historical filename.',
               ' * Members: %s' % ', '.join(order)] + [' * ' + n for n in (header_notes or [])]
@@ -231,8 +311,21 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
             lines.append('')
         rank = {m.lstrip('_'): i for i, m in enumerate(rank_order or order)}
         placed = [dict(d, rank=rank.get(d['name'], len(rank))) for d in definitions] + [dict(kind='definition', name=x['name'], text=x['text'], origin='scaffold', rank=rank.get(x['rank_name'].lstrip('_'), len(rank))) for x in extra_definitions]
+        macros_of = {f['symbol']: f['macros'] for f in files}
+        views_of = {f['symbol']: f['views'] for f in files}
         for d in sorted(placed, key=lambda d: d['rank']):
+            for it in macros_of.get(d.get('origin'), []):
+                lines.append('#undef ' + it['names'][0])
+                lines.append(it['text'])
+            for v in views_of.get(d.get('origin'), []):
+                lines.append(v['text'] + '  /* shape view of the unit declaration for this member only */')
             lines.append(d['text'])
+            for v in views_of.get(d.get('origin'), []):
+                lines.append('#undef ' + v['name'])
+            for it in macros_of.get(d.get('origin'), []):
+                lines.append('#undef ' + it['names'][0])
+                if it['names'][0] in overrides and overrides[it['names'][0]].lstrip().startswith('#define'):
+                    lines.append(overrides[it['names'][0]].strip())
             lines.append('')
     else:
         # Each file's declarations immediately precede its definition.
@@ -246,8 +339,9 @@ def compose(sources, order, unit_id, layout='preambles-first', overrides=None, e
                 if d['origin'] == f['symbol']:
                     lines.append(d['text'])
                     lines.append('')
-    return dict(status='COMPOSED', text='\n'.join(lines) + '\n', files=[{k: v for k, v in f.items() if k != 'items'} for f in files],
-                declarations=len(declarations), definitions=[d['name'] for d in definitions], layout=layout, overrides=sorted(overrides),
+    return dict(status='COMPOSED', text='\n'.join(lines) + '\n', files=[{k: v for k, v in f.items() if k not in ('items', 'macros', 'views')} for f in files],
+                declarations=len(declarations), definitions=[d['name'] for d in definitions], layout=layout, overrides=sorted(overrides), per_definition_macros=sorted(per_definition_macros),
+                shape_views={name: sorted(set(c['views'].values())) for name, c in canonical.items()},
                 declaration_items=[dict(names=d['names'], text=d['text']) for d in declarations], definition_items=[dict(name=d['name'], text=d['text']) for d in definitions])
 
 
@@ -278,7 +372,12 @@ def preserved_sources():
                 d = (row.get('comparison') or {}).get('diagnostic') or {}
                 if d.get('opcode_matches') is None:
                     continue
-                exact_body = d.get('instruction_layout_match') is True and d.get('opcode_matches') == d.get('opcode_total') and d.get('register_only_differences', 1) == 0 and d.get('branch_target_differences', 1) == 0
+                # An exact body is one the binding classifier accepts: every
+                # differing literal is an unresolved offset binding. A resolved
+                # fixup with a wrong literal (e.g. Dx8/Dy8 swapped) is a
+                # semantic difference even when the instruction layout aligns.
+                from topology_diagnostics import classify
+                exact_body = classify(row['comparison']) is not None
                 key = (exact_body, d['opcode_matches'], -abs(d.get('candidate_bytes', 0) - d.get('target_bytes', 0)))
                 source = ROOT / row['receipt']['source']
                 if source.exists() and (best is None or key > best[0]):
@@ -378,6 +477,12 @@ def propose(min_functions=1):
 SCAFFOLD_SEGMENT = 'POOLSTUB_TEXT'
 
 
+def body_exact(comparison):
+    """Strict GOOD result, or a body that differs only in unresolved offset bindings."""
+    from topology_diagnostics import classify
+    return comparison.get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER') or classify(comparison) is not None
+
+
 def slot_segments():
     """Original selector-pool word -> addressed original segment, from the NE
     loader relocations of DGROUP (source type 2, offset 0)."""
@@ -410,7 +515,7 @@ def far_sites(card_list=None):
     return result
 
 
-def member_slot_symbols(member, source, flags, target_bytes):
+def member_slot_symbols(member, source, flags, target_bytes, folder=None):
     """Original pool word -> far symbol the preserved source uses for it.
 
     The preserved body is byte-exact except for its `mov es,[slot]`
@@ -418,10 +523,15 @@ def member_slot_symbols(member, source, flags, target_bytes):
     aligns with the original slot literal at the same body offset; the CONST
     word it addresses names the symbol through its selector fixup."""
     import omf
-    from compiler import compile_source
-    from recovery_workflow import relative
-    obj, receipt = compile_source(relative(ROOT / source), flags, 'msc700')
-    m = omf.parse(obj.read_bytes())
+    from codegen_grinder import run
+    out = (folder or (UNITS / '_slots')) / ('slots_' + member.lstrip('_'))
+    report = run(dict(symbol=member, source=source, compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[member]), out.relative_to(ROOT).as_posix(), cache=True)
+    row = report['results'][0]
+    # The alignment argument only holds for an exact body: refuse to derive a
+    # slot map from a candidate whose literals differ from the original.
+    if not body_exact(row['comparison']):
+        raise FormatError('%s is not an exact body under the unit profile; no slot map can be derived from %s' % (member, source))
+    m = omf.parse((ROOT / row['receipt']['object']).read_bytes())
     pub = next((p for p in m['publics'] if p['name'] == member), None)
     const = next((s for s in m['segments'] if s['name'] == 'CONST'), None)
     if pub is None or const is None:
@@ -446,14 +556,61 @@ def reference_expression(name, declaration):
         return name
     text = ' '.join(declaration.split())
     dims = text.count('[')
+    aggregate = bool(re.search(r'\bstruct\b|\bunion\b', text)) and '*' not in text.split(name)[0][-4:]
     if dims:
-        return name + '[0]' * dims
-    if re.search(r'\bstruct\b|\bunion\b', text) and '*' not in text.split(name)[0][-4:]:
+        # An aggregate element cannot be assigned to int: read its first word
+        # through the decayed array pointer (a value read, so a pool load).
+        return ('*(int far *)' + name + '[0]' * (dims - 1)) if aggregate else name + '[0]' * dims
+    if aggregate:
         return '*(int far *)&' + name
     return '(int)' + name
 
 
-def scaffold_plan(component_id, members, flags, declared, card_list=None):
+def unify_pool_symbols(shared, declared_texts, symbols):
+    """Two claimed members naming the same original pool word through different
+    symbols would allocate two words in one unit. The word proves one object;
+    the spelling with the lowest MAPSYM offset (the enclosing object) is kept
+    and every other name becomes a macro over it with its byte displacement,
+    which compiles to the same displacement literal and the same pool word."""
+    located = {}
+    for seg in symbols['segments']:
+        for x in seg['symbols']:
+            located.setdefault(x['name'], (seg['number'], x['offset']))
+    overrides = {}
+    for word, names in shared.items():
+        if len(names) < 2:
+            continue
+        rows = []
+        for n in sorted(names):
+            if n not in located:
+                raise FormatError('pool word %04X is named through %s, which MAPSYM does not locate' % (word, n))
+            rows.append((located[n][1], located[n][0], n))
+        if len({r[1] for r in rows}) != 1:
+            raise FormatError('pool word %04X is named through symbols of different segments' % word)
+        rows.sort()
+        base_off, _, base = rows[0]
+        for off, _, other in rows[1:]:
+            c_name = other.lstrip('_')
+            decl = declared_texts.get(c_name)
+            if decl is None:
+                raise FormatError('no declaration text for ' + c_name)
+            text = ' '.join(decl.split())
+            m = re.match(r'extern\s+(.*?)\s+far\s+' + re.escape(c_name) + r'\s*((?:\[[^\]]*\]\s*)*);$', text)
+            if not m:
+                raise FormatError('cannot express %s over %s from declaration: %s' % (c_name, base.lstrip('_'), text))
+            elem = m.group(1).strip()
+            dims = re.findall(r'\[([^\]]*)\]', m.group(2) or '')
+            # A pointer to the element type (or, for a multi-dimensional array,
+            # to its inner array type) so the original index expressions keep
+            # their meaning.
+            pointer = '%s (far *)%s' % (elem, ''.join('[%s]' % d for d in dims[1:])) if len(dims) > 1 else '%s far *' % elem
+            base_decl = ' '.join((declared_texts.get(base.lstrip('_')) or '').split())
+            base_ref = ('%s' if '[' in base_decl else '&%s') % base.lstrip('_')
+            overrides[c_name] = '#define %s ((%s)((unsigned char far *)%s + 0x%X))  /* pool word %04X: one object, MAPSYM %s+%d */' % (c_name, pointer, base_ref, off - base_off, word, base, off - base_off)
+    return overrides
+
+
+def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None):
     """Stand-in functions that reproduce the selector-pool allocation order of the
     component members the unit does not claim (evidence: original pool words,
     their NE selector relocations, the claimed members' own slot usage).
@@ -481,9 +638,14 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None):
     shared = {}
     for m in claimed:
         target = bytes.fromhex(''.join(r['bytes'] for r in by_symbol[m]['disassembly']))
-        for slot, names in member_slot_symbols(m, sources[m]['source'], flags, target).items():
+        for slot, names in member_slot_symbols(m, sources[m]['source'], flags, target, folder).items():
             shared.setdefault(slot, set()).update(names)
     used = set(declared) | {n.lstrip('_') for s in shared.values() for n in s}
+    symbol_overrides = unify_pool_symbols(shared, declared_texts or {}, symbols)
+    located = {}
+    for seg in symbols['segments']:
+        for x in seg['symbols']:
+            located.setdefault(x['name'], (seg['number'], x['offset']))
     sites = far_sites(card_list)
     last = publics.index(claimed[-1])
     stubs = []
@@ -499,9 +661,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None):
             if seg is None:
                 raise FormatError('pool word %04X of %s has no selector relocation' % (w, f))
             if w in shared:
-                if len(shared[w]) != 1:
-                    raise FormatError('claimed members disagree on the symbol of pool word %04X' % w)
-                name = next(iter(shared[w])).lstrip('_')
+                name = min(shared[w], key=lambda n: (located.get(n, (0, 1 << 16))[1], n)).lstrip('_')
                 basis = 'CLAIMED_MEMBER_NAME'
             else:
                 site_names = sorted(n.lstrip('_') for n in sites.get(w, {}).get('names', ()) if n.startswith('_'))
@@ -517,15 +677,19 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None):
                 used.add(name)
             refs.append(dict(word=w, segment=seg, name=name, basis=basis))
         stubs.append(dict(function=f, position=idx, references=refs))
+    # Code runs must be physically contiguous in the original: an unclaimed
+    # public or an unnamed static helper between two claimed members ends a run.
     runs = []
     for m in claimed:
-        i = publics.index(m)
-        if runs and publics.index(runs[-1][-1]) == i - 1:
+        prev = runs[-1][-1] if runs else None
+        end = functions[prev]['offset'] + functions[prev]['size'] if prev is not None and functions[prev].get('size') is not None else None
+        # MSC pads an odd-sized function with one NOP so the next starts even.
+        if end is not None and functions[m]['offset'] in (end, end + (end & 1)):
             runs[-1].append(m)
         else:
             runs.append([m])
     return dict(component=component_id, claimed=claimed, stubs=stubs, runs=runs, unclaimed_after_last=publics[last + 1:],
-                shared_words={'%04X' % k: sorted(v) for k, v in shared.items()})
+                shared_words={'%04X' % k: sorted(v) for k, v in shared.items()}, symbol_overrides=symbol_overrides)
 
 
 def scaffold_text(plan, declared_texts):
@@ -556,7 +720,78 @@ def scaffold_text(plan, declared_texts):
     return dict(declarations=decls, prototypes=prototypes, pragmas=pragmas, definitions=definitions)
 
 
-def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None, unit_source=None, scaffold=False):
+def harmonize(component_id, members, flags, folder, layout='preambles-first', overrides=None):
+    """Resolve declaration conflicts by verification, never by preference.
+
+    For a name spelled differently by the claimed sources, a spelling is
+    admissible only if every claimed member whose definition uses the name
+    keeps its exact body when its own source is recompiled in isolation with
+    that spelling substituted. The first admissible spelling (most users
+    first) becomes a recorded override; a name with no admissible spelling
+    stays a conflict. Every trial compile is kept under the unit folder."""
+    from codegen_grinder import run
+    from recovery_workflow import cards
+    sources = preserved_sources()
+    comp = topology_units()[component_id]
+    order = [m for m in comp['publics'] if m in members]
+    chosen = {m: sources[m]['source'] for m in order}
+    overrides = dict(overrides or {})
+    result = compose(chosen, order, 'harmonize', layout, overrides)
+    if result['status'] == 'COMPOSED':
+        return dict(status='COMPOSED', overrides=overrides, trials=[])
+    parsed = {m: split_items((ROOT / chosen[m]).read_text(encoding='latin1')) for m in order}
+    definition_text = {m: '\n'.join(it['text'] for it in parsed[m] if it['kind'] == 'definition') for m in order}
+    by_name = {}
+    for c in result['conflicts']:
+        entry = by_name.setdefault(c['name'], {})
+        entry.setdefault(c['first'], set()).add(c['first_from'])
+        entry.setdefault(c['other'], set()).add(c['other_from'])
+    trials = []
+    unresolved = []
+    trial_dir = folder / 'harmonize'
+    trial_dir.mkdir(parents=True, exist_ok=True)
+    for name, spellings in by_name.items():
+        if name in overrides:
+            continue
+        users = [m for m in order if re.search(r'(?<![A-Za-z0-9_])' + re.escape(name) + r'(?![A-Za-z0-9_])', definition_text[m])]
+        own = {}
+        for m in order:
+            for it in parsed[m]:
+                if it['kind'] == 'declaration' and name in (it['names'] or []):
+                    own[m] = it
+        ranked = sorted(spellings, key=lambda s: -len(spellings[s]))
+        accepted = None
+        for spelling in ranked:
+            text = next(it['text'] for m in order for it in parsed[m] if it['kind'] == 'declaration' and it['normalized'] == spelling)
+            ok = True
+            for u in users:
+                if u not in own or own[u]['normalized'] == spelling:
+                    continue
+                source = (ROOT / chosen[u]).read_text(encoding='latin1').replace(own[u]['text'], text, 1)
+                key = sha256((u + spelling).encode())[:8]
+                path = trial_dir / ('%s_%s_%s.c' % (u.lstrip('_'), re.sub(r'[^A-Za-z0-9]+', '_', name), key))
+                path.write_text(source, encoding='latin1')
+                report = run(dict(symbol=u, source=path.relative_to(ROOT).as_posix(), compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[u]),
+                             (trial_dir / ('%s_%s_%s' % (u.lstrip('_'), re.sub(r'[^A-Za-z0-9]+', '_', name), key))).relative_to(ROOT).as_posix(), cache=True)
+                comparison = report['results'][0]['comparison']
+                exact = body_exact(comparison)
+                trials.append(dict(name=name, spelling=spelling, member=u, source=path.relative_to(ROOT).as_posix(), exact=exact, result=comparison['result']))
+                if not exact:
+                    ok = False
+                    break
+            if ok:
+                accepted = text
+                break
+        if accepted is None:
+            unresolved.append(dict(name=name, spellings={s: sorted(v) for s, v in spellings.items()}))
+        else:
+            overrides[name] = accepted
+    write_json(folder / 'harmonize.json', dict(component=component_id, members=order, overrides=overrides, unresolved=unresolved, trials=trials,
+                                                scope='Declaration spellings chosen only when every user keeps its exact body in isolation; trial sources and reports are kept'))
+    return dict(status='COMPOSED' if not unresolved else 'DECLARATION_CONFLICT', overrides=overrides, unresolved=unresolved, trials=trials)
+
+
+def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None, unit_source=None, scaffold=False, harmonize_conflicts=False):
     """Compose a candidate unit from preserved sources and write its evidence folder."""
     import compiler_profiles
     from recovery_workflow import cards
@@ -613,6 +848,10 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     profile = next(iter(names))
     segment = comp['segment']
     flags = compiler_profiles.profile_flags(profile, segment)
+    harmonized = None
+    if harmonize_conflicts:
+        harmonized = harmonize(component_id, members, flags, folder, layout, overrides)
+        overrides = dict(harmonized['overrides'])
     plan = None
     if scaffold:
         if layout != 'preambles-first':
@@ -624,8 +863,13 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
         else:
             plan_declared = [n for d in first['declaration_items'] for n in d['names']]
         if first['status'] == 'COMPOSED':
-            plan = scaffold_plan(component_id, members, flags, plan_declared)
-            declared_texts = {n: d['text'] for d in first['declaration_items'] for n in d['names']}
+            declared_texts = {}
+            for d in sorted(first['declaration_items'], key=lambda d: d['text'].lstrip().startswith('#define')):
+                for n in d['names']:
+                    declared_texts.setdefault(n, d['text'])
+            plan = scaffold_plan(component_id, members, flags, plan_declared, declared_texts=declared_texts, folder=folder)
+            if plan['symbol_overrides']:
+                overrides = dict(overrides or {}, **plan['symbol_overrides'])
             parts = scaffold_text(plan, declared_texts)
             prototypes = parts['prototypes'] + [re.sub(r'\s+', ' ', d['text'][:d['text'].index('{')]).strip() + ';' for d in first['definition_items'] if ('_' + d['name']) in [m for run in plan['runs'][1:] for m in run]]
             result = compose(chosen, order, unit_id, layout, overrides, extra_definitions=parts['definitions'], exclude_definitions=unclaimed,
@@ -638,8 +882,10 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
     spec = dict(unit=unit_id, component=component_id, segment=segment, members=members, sources={m: dict(sources[m], identity=identity(ROOT / sources[m]['source'])) for m in members},
                 profile=profile, flags=flags, layout=layout, overrides=overrides or {}, reason=reason, created=timestamp(),
                 topology=dict(join_evidence=comp.get('join_evidence'), range=comp['range']), status=result['status'])
+    if harmonized is not None:
+        spec['harmonization'] = dict(overrides=harmonized['overrides'], unresolved=harmonized.get('unresolved', []), trials=len(harmonized['trials']), evidence=(folder / 'harmonize.json').relative_to(ROOT).as_posix())
     if plan is not None:
-        spec['scaffold'] = dict(segment=SCAFFOLD_SEGMENT, stubs=plan['stubs'], runs=plan['runs'], unclaimed_after_last=plan['unclaimed_after_last'], shared_words=plan['shared_words'],
+        spec['scaffold'] = dict(segment=SCAFFOLD_SEGMENT, stubs=plan['stubs'], runs=plan['runs'], unclaimed_after_last=plan['unclaimed_after_last'], shared_words=plan['shared_words'], symbol_overrides=plan['symbol_overrides'],
                                 scope='Stand-ins reproduce only the selector-pool allocation order of unclaimed members; they are not recovered source and are never compared or credited')
     if result['status'] != 'COMPOSED':
         spec['conflicts'] = result['conflicts']
@@ -714,7 +960,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest='action', required=True)
     p = sub.add_parser('propose'); p.add_argument('--min', type=int, default=1); p.add_argument('--limit', type=int, default=40)
-    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--reason', default='')
+    p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--harmonize', action='store_true', help='resolve declaration conflicts by isolated exact-body verification'); p.add_argument('--reason', default='')
     p = sub.add_parser('test'); p.add_argument('unit')
     p = sub.add_parser('job'); p.add_argument('unit'); p.add_argument('--reason', required=True)
     args = ap.parse_args()
@@ -729,7 +975,7 @@ def main():
             name, text = item.split('=', 1)
             overrides[name] = text
         source_overrides = dict(item.split('=', 1) for item in args.source)
-        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source, args.scaffold)
+        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source, args.scaffold, args.harmonize)
         print(json.dumps({k: v for k, v in result.items() if k not in ('sources',)}, indent=2))
     elif args.action == 'test':
         print(json.dumps(test_unit(args.unit), indent=2))

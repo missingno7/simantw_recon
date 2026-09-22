@@ -44,7 +44,7 @@ void far pool_stub_DBAdd(void)
 {
     volatile int t;
 
-    t = openDBData[0];
+    t = *(int far *)openDBData;
 }
 
 int far DBDelete(int handle, int a, int b)

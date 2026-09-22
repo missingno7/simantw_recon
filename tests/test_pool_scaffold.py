@@ -58,6 +58,7 @@ class ComposerScaffoldTests(unittest.TestCase):
         self.assertEqual(tu.reference_expression('A', 'extern unsigned char far A[12][16];'), 'A[0][0]')
         self.assertEqual(tu.reference_expression('B', 'extern int far B;'), '(int)B')
         self.assertEqual(tu.reference_expression('C', 'extern struct Point far C;'), '*(int far *)&C')
+        self.assertEqual(tu.reference_expression('S', 'extern struct Rec far S[7];'), '*(int far *)S')
         self.assertEqual(tu.reference_expression('D', None), 'D')
 
     def test_scaffold_text_declares_only_non_member_names_and_moves_runs(self):
