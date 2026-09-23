@@ -54919,8 +54919,8 @@ ACD7  cb                       retf
 ```
 
 ## _DrawYardData — ANTEDIT_MODULE:ACD8
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 460 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 460 bytes.
+Source: src/recovered/wf_tu_antedit_A998_DrawYardData_2_scaffold-2f57d5cc12.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 ACD8  c80c0000                 enter 0xc, 0
@@ -56750,7 +56750,7 @@ C098  cb                       retf
 
 ## _YardArea — ANTEDIT_MODULE:C09A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 255 bytes.
-Source: src/recovered/wf_tu_antedit_A998_DrawYardCursor_3_scaffold-c71c8e4e09.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_A998_DrawYardData_2_scaffold-2f57d5cc12.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C09A  c8020000                 enter 2, 0
