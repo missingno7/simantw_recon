@@ -33,14 +33,44 @@ the ordinary/fixup obligations in a fresh independent admission:
 The older individual job `vocMciClose-671a37cab0` is linked as superseded;
 its failed isolated trial remains in history.
 
-`_snd_IsSongDone` is a bounded follow-up, not an admission. Its 44-byte target
-loads ES once from selector slot BF78, tests state words at 8D08/8D0C/8D0A,
-then compares 8D1C with one and returns the unsigned-borrow Boolean through
-`SBB AX,AX; NEG AX`. Extending the admitted state declaration from 20 to 22
-bytes and adding this source to a twelve-member reviewed unit failed private
-placement for `SIMANT_DATA_GROUP`; isolated C7 emits an immediate segment
-load and a conditional branch at the Boolean tail. Reversing the unsigned
-comparison spelling compiled identically. `snd_IsSongDone*-trial/` and
-`gr_7712_IsMMMidiAvail_12_reviewed/` preserve the negative evidence. The
-8D1C word is adjacent to the admitted state, but this does not establish that
-it is a field of that same C object.
+`_snd_IsSongDone` is now admitted in a twelve-member replacement unit. Its
+44-byte target loads ES once from selector BF78, tests state words at
+8D08/8D0C/8D0A, then compares 8D1C with one and returns the unsigned-borrow
+Boolean through `SBB AX,AX; NEG AX`. The admitted `_ProcEditEvent` supplied a
+control: `songState == 0` makes authentic C7 emit that Boolean tail. An
+`extern __segment near` word used in a based view of the state produced the
+correct four-byte selector load, while `__based(__segname(...))` or an ordinary
+`extern far` object produced a five-byte immediate segment load. The isolated
+`snd_IsSongDone-selector-alias-trial/` matches all 44 code bytes, five code
+bindings, the two-byte selector relocation and 22 far-state bytes.
+
+The first 22-byte unit failed because that five-byte load tried to bind a
+segment fixup at target BF78 as a far-state offset, conflicting with the field
+offset constraints. It did not disprove the 8D1C field identity. Its original
+unit source, test, and diagnostics are retained under `failed-22byte-unit/`;
+the separate-word and const-selector trials record additional rejected
+representations. A `static const __segment near` selector, initialized from
+`__segname("SIMANT_DATA_GROUP")`, and a based view of the same named object
+reproduce the target's two-byte CONST selector slot without adding a near DATA
+word. Using that view throughout the unit gives exact bodies for the eleven
+earlier members and `_snd_IsSongDone`, the 454-byte DATA span, two CONST bytes,
+and 22 far-state bytes. Fresh independent admission:
+`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_12_reviewed-5d2b970b1c/promotion.json`.
+The old individual `snd_IsSongDone-18a6b4f887` job is linked as superseded.
+This establishes a coherent source representation and byte identity for the
+claimed unit; it does not prove the original identifier or macro spelling.
+
+The next control was `_MultiMediaSong`: its 51-byte target checks the near
+`songsOnFlag` before loading BF78 and then tests state offsets 8D08, 8D0A,
+8D0C, and 8D0E, sharing one false-return block. The isolated
+`MultiMediaSong-selector-trial/` reproduced every instruction position but
+left external selector/state bindings unresolved. Adding that body after the
+twelve-member source in `reviewed-unit-multimedia-song.c` gave a complete
+thirteen-member match: 982/982 ordinary bytes, all 44 fixups in claimed
+contributions, 454 DATA bytes, two CONST bytes, and the same 22 far-state
+bytes. The 28 other reported fixups are in explicitly noncredited stand-in
+code. Fresh independent admission:
+`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c/promotion.json`.
+The five-attempt individual job `MultiMediaSong-f2993ef613` is linked as
+superseded. This second member confirms that the selector view is useful
+beyond the single song-done spelling.

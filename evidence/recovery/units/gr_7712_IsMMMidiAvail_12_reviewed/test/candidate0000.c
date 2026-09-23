@@ -1,5 +1,5 @@
 /* Reviewed multimedia unit extension: twelve claimed members in MAPSYM
- * order, with one shared 22-byte far state at SIMANT_DATA_GROUP 8D08.
+ * order, with a named selector view of 22-byte far state at 8D08.
  * Code runs leave unrecovered functions unclaimed. */
 
 typedef int (far *MMProc)(void);
@@ -17,6 +17,8 @@ struct MultimediaState {
     unsigned int songState;
 };
 static struct MultimediaState __based(__segname("SIMANT_DATA_GROUP")) mmState = {0};
+static const __segment near mmSelector = __segname("SIMANT_DATA_GROUP");
+#define stateViaSelector (*(struct MultimediaState __based(mmSelector) *)&mmState)
 static int near vocBufLocked1 = 0;
 static int near vocBufLocked2 = 0;
 /* MAPSYM names these adjacent near words at DGROUP AF4, AF6 and AF8. */
@@ -62,7 +64,7 @@ int IsMMMidiAvail(void)
 {
     MMProc proc;
 
-    proc = GetProcAddress(mmState.moduleHandle, "midiOutGetNumDevs");
+    proc = GetProcAddress(stateViaSelector.moduleHandle, "midiOutGetNumDevs");
     if (proc)
         return proc();
     return 0;
@@ -72,7 +74,7 @@ int IsMMWaveAvail(void)
 {
     MMProc proc;
 
-    proc = GetProcAddress(mmState.moduleHandle, "waveOutGetNumDevs");
+    proc = GetProcAddress(stateViaSelector.moduleHandle, "waveOutGetNumDevs");
     if (proc)
         return proc();
     return 0;
@@ -80,11 +82,11 @@ int IsMMWaveAvail(void)
 
 int snd_IsSongDone(void)
 {
-    if (mmState.moduleHandle == 0 ||
-        mmState.waveInstalled != 0 ||
-        mmState.soundInstalled != 0)
+    if (stateViaSelector.moduleHandle == 0 ||
+        stateViaSelector.waveInstalled != 0 ||
+        stateViaSelector.soundInstalled != 0)
         return 1;
-    return mmState.songState < 1;
+    return stateViaSelector.songState == 0;
 }
 
 /* Noncredited stand-in: observed literals between the admitted availability
@@ -132,11 +134,11 @@ void far vocMciClose(unsigned int buffer1, unsigned int buffer2)
         GlobalFree(buffer1);
         vocBufLocked1 = 0;
     }
-    if (--mmState.refCount == 0) {
-        proc = (MMCloseProc)GetProcAddress(mmState.moduleHandle, "waveOutClose");
+    if (--stateViaSelector.refCount == 0) {
+        proc = (MMCloseProc)GetProcAddress(stateViaSelector.moduleHandle, "waveOutClose");
         if (proc)
-            proc(mmState.waveHandle);
-        mmState.waveHandle = 0;
+            proc(stateViaSelector.waveHandle);
+        stateViaSelector.waveHandle = 0;
     }
 }
 

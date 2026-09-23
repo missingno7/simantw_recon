@@ -62,7 +62,7 @@ The [multimedia supervisor pass](../evidence/topology/supervisor-mm-segment/revi
 
 The member matcher now supports OMF F5/T0 private offset constraints: F5 uses the target segment as its frame, equivalent here to an explicit F0 frame naming that same segment. See the [TIS OMF specification](https://refspecs.linuxfoundation.org/elf/TIS1.1.pdf), printed pages 44-45. A unique original MAPSYM segment name is still required. Wrong/ambiguous names, conflicting placements, wrong/missing/additive selectors, changed data/body bytes and out-of-bounds contributions remain rejected; eight new regression tests cover these obligations.
 
-Do not generalize this success to multi-field codegen automatically. MultiMediaSong's scalar, aggregate and far-lvalue forms all change selector loading and branches; its remaining blocker is recorded in the job. The four earlier PACK selector-pool placement conflicts also still reject under the updated matcher. Preserve those negative results.
+The later thirteen-member gr:7712 unit in `evidence/experiments/mm-state-structure/` matches a 22-byte shared state and two further sound routines, `_snd_IsSongDone` and `_MultiMediaSong`. It uses a const `__segment` selector and a based view of the same state object; the earlier scalar, aggregate and far-lvalue trials remain negative controls, not a general license to combine fields by offset. The four earlier PACK selector-pool placement conflicts also still reject under the updated matcher. Preserve those negative results.
 
 ## Supervisor review after tool changes
 
