@@ -79,7 +79,7 @@ def main():
                     }
                 )
     report = {
-        "scope": "Research only; no historical TU ownership, source declaration, or recovery credit",
+        "scope": "Research only; observed 50-record prefix, not a proven complete table; no historical TU ownership, source declaration, or recovery credit",
         "fixtures": {
             "exe_sha256": parsed_ne["sha256"],
             "sym_sha256": parsed_sym["sha256"],
@@ -94,6 +94,7 @@ def main():
         "table": {
             "start": sites[0] - 6,
             "end_exclusive": sites[-1] + 2,
+            "extent_status": "observed_prefix_only; scan continues beyond this range",
             "record_size": 8,
             "record_count": len(records),
             "all_pointer_targets_named": True,
