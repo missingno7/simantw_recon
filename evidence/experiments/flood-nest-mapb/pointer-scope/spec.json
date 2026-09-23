@@ -1,0 +1,25 @@
+{
+  "symbol": "_FloodNestB",
+  "template": "/*\r\n * FloodNestB updates the B-side nest cells in the shared map.  Each row\r\n * starts at offset three and spans the remaining 0x3d cells.  Values in the\r\n * flooding band 0x20..0x2d receive the flood increment; low values at or\r\n * below 0x13 become the full-water marker 0x50.\r\n */\r\nextern unsigned char near MapB[];\r\n\r\n@FUNCTION@\r\n",
+  "axes": [
+    {
+      "name": "pointer_scope_and_initialization",
+      "marker": "@FUNCTION@",
+      "rationale": "The baseline pointer/value form is best, while deleting the pointer or value worsens codegen. Compare the target-like per-iteration pointer lifetime in the nested block and declaration-time pointer initialization; these are distinct source lifetime/initialization shapes with identical MapB binding and loop semantics.",
+      "values": [
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    unsigned char near *p;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}",
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            unsigned char near *p;\n            p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}",
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            unsigned char near *p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 3
+}

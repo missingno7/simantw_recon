@@ -1,0 +1,26 @@
+{
+  "symbol": "_FloodNestB",
+  "template": "/*\n * FloodNestB updates the B-side nest cells in the shared map.  Each row\n * starts at offset three and spans the remaining 0x3d cells.  Values in the\n * flooding band 0x20..0x2d receive the flood increment; low values at or\n * below 0x13 become the full-water marker 0x50.\n */\nextern unsigned char near MapB[];\n\n@FUNCTION@\n",
+  "axes": [
+    {
+      "name": "local_object_and_value_lifetimes",
+      "marker": "@FUNCTION@",
+      "rationale": "Counter declarations, equivalent address expressions, and for/while/do loop forms collapse to the same object. Test whether retaining the near pointer temporary and whether the loaded byte is `int` versus `unsigned char` controls the target\u2019s DI/BX schedule; also compare direct MapB indexing with pointer-based access.",
+      "values": [
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    unsigned char near *p;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}",
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    unsigned char near *p;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = MapB + row + cell;\n            if (*p >= 0x20 && *p <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}",
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            value = MapB[row + cell];\n            if (value >= 0x20 && value <= 0x2d)\n                MapB[row + cell] += 0x31;\n            else if (MapB[row + cell] <= 0x13)\n                MapB[row + cell] = 0x50;\n        }\n    }\n}",
+        "void FloodNestB(void)\n{\n    int row;\n    int cell;\n    unsigned char value;\n    unsigned char near *p;\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 4
+}

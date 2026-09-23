@@ -1,0 +1,3 @@
+# FloodNestB predecessor context attempts
+
+A bounded C7 context trial prepended the blocked `_FixExitMapB` candidate before FloodNestB, using its MapB declaration and a flat-byte view; a second candidate added the `_FixExitMapR` source. The first comparison was `RULED_OUT_MEMBER` because the extra FixExitMapB public had inconsistent candidate/target placement (its unverified candidate body was shorter than the target gap). The second did not compile because the two preserved source drafts redeclare `Dx8` with different types. These results do not establish same-TU behavior. They preserve the tested context failures and explain why the preceding-member hypothesis remains open.

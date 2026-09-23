@@ -1,0 +1,2022 @@
+{
+  "symbol": "_FloodNestB",
+  "spec": {
+    "symbol": "_FloodNestB",
+    "template": "/*\n * FloodNestB updates the B-side nest cells in the shared map.  Each row\n * starts at offset three and spans the remaining 0x3d cells.  Values in the\n * flooding band 0x20..0x2d receive the flood increment; low values at or\n * below 0x13 become the full-water marker 0x50.\n */\nextern unsigned char near MapB[];\n\nvoid FloodNestB(void)\n{\n@DECLS@\n    int value;\n    unsigned char near *p;\n\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}\n",
+    "axes": [
+      {
+        "name": "counter_declarations",
+        "marker": "@DECLS@",
+        "rationale": "The MapB binding is independently named by MAPSYM at DGROUP:48E8; the target allocates row/cell to DI/BX, while the preserved source used CX/DI. Test only the three already evidenced declaration forms with the corrected binding.",
+        "values": [
+          "    int row;\n    int cell;",
+          "    register int row;\n    register int cell;",
+          "    register int cell;\n    register int row;"
+        ]
+      }
+    ],
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMONE_MODULE"
+    ],
+    "max_candidates": 3
+  },
+  "exe_sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+  "sym_sha256": "9d27f4d0872e483ddbf460bda8a2e34b7180f153c6d7c1a74d692720476c9a7f",
+  "candidates": 3,
+  "completed_candidates": 3,
+  "environment_launches": 2,
+  "cache": {
+    "hits": 0,
+    "misses": 3,
+    "environment_launches": 2
+  },
+  "exact_candidates": [],
+  "promotion": "NONE: independent rebuild and recipe review required",
+  "results": [
+    {
+      "candidate": 0,
+      "choices": {
+        "counter_declarations": "    int row;\n    int cell;"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/a26844d47bd892c617ea60586b183ed5b156225845600c6c1b2ee08293b56efb/INPUT.C",
+        "source_identity": {
+          "size": 741,
+          "sha256": "ad426b2f216f3a47054469af0c59f090c5f63aa608a24c0ec9350054292731ac"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMONE_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W0_05hpkzgq\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMONE_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/codegen-cache/a26844d47bd892c617ea60586b183ed5b156225845600c6c1b2ee08293b56efb/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 313,
+          "sha256": "770fe47da6cc9e6c3ff270ea3f917de1b18a507856f12e61e62d2ca86e2c1a70"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 0,
+        "worker_session": "build/compiler-workers/W0_05hpkzgq",
+        "batch_directory": "build/compiler-workers/W0_05hpkzgq",
+        "batch_index": 2,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "45a43180d2218c783cd3dadaa7cfb0e5eaf97a9729a26677a9efe191bacdab31"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 0,
+          "environment_launches": 0,
+          "queue_dispatch_seconds": 0.010253799991915002,
+          "compiler_execution_seconds": 0.3886713000101736,
+          "total_compile_request_seconds": 0.4083171999955084,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/d233ed21492945c096f1037bc790f349/INPUT.C",
+        "request_id": "d233ed21492945c096f1037bc790f349",
+        "service_instance": "60bfb2d9332d4deea515d648c53aaaf1"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMONE_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            5,
+            10714
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              5,
+              10714,
+              "_FloodNestB"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMONE_MODULE",
+            "original_segment": 5,
+            "original_offset": 10714,
+            "length": 60,
+            "initialized_ranges": [
+              [
+                0,
+                60
+              ]
+            ],
+            "literal_compared": 58,
+            "literal_equal": 51,
+            "divergences": [
+              3,
+              4,
+              10,
+              42,
+              44,
+              49,
+              52
+            ],
+            "fixups": [
+              {
+                "offset": 13,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 18664
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 13,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapB"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 58,
+        "literal_equal": 51,
+        "fixups_equal": 1,
+        "fixups_total": 1,
+        "publics": [
+          "_FloodNestB"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 60,
+        "features": {
+          "frame": [],
+          "registers": [
+            "cx",
+            "dh",
+            "di",
+            "dl",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 60,
+          "size": 60,
+          "upper_bound": 60,
+          "return_offsets": [
+            59
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 10714,
+          "end": 10774,
+          "size": 60,
+          "upper_bound": 10774,
+          "return_offsets": [
+            10773
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [],
+          "registers": [
+            "bx",
+            "dh",
+            "di",
+            "dl",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMONE_MODULE",
+          "offset": 3
+        },
+        "diagnostic": {
+          "target_bytes": 60,
+          "candidate_bytes": 60,
+          "instruction_layout_match": true,
+          "cfg_shape_match": true,
+          "opcode_total": 27,
+          "opcode_matches": 27,
+          "register_only_differences": 7,
+          "immediate_differences": 0,
+          "memory_operand_differences": 0,
+          "branch_target_differences": 0,
+          "stack_local_differences": 0,
+          "first_structural_difference": null,
+          "categories": [
+            "REGISTER_ALLOCATION"
+          ],
+          "score": 0.87037,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push di",
+              "candidate_offset": 0,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "push si",
+              "candidate_offset": 1,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 2,
+              "target": "xor di, di",
+              "candidate_offset": 2,
+              "candidate": "xor cx, cx",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 4,
+              "target": "mov bx, 3",
+              "candidate_offset": 4,
+              "candidate": "mov di, 3",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 7,
+              "target": "mov si, di",
+              "candidate_offset": 7,
+              "candidate": "mov si, di",
+              "differences": []
+            },
+            {
+              "target_offset": 9,
+              "target": "add si, bx",
+              "candidate_offset": 9,
+              "candidate": "add si, cx",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+              "candidate_offset": 11,
+              "candidate": "add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+              "differences": []
+            },
+            {
+              "target_offset": 15,
+              "target": "mov dl, byte ptr [si]",
+              "candidate_offset": 15,
+              "candidate": "mov dl, byte ptr [si]",
+              "differences": []
+            },
+            {
+              "target_offset": 17,
+              "target": "sub dh, dh",
+              "candidate_offset": 17,
+              "candidate": "sub dh, dh",
+              "differences": []
+            },
+            {
+              "target_offset": 19,
+              "target": "cmp dx, 0x20",
+              "candidate_offset": 19,
+              "candidate": "cmp dx, 0x20",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jl 0x22",
+              "candidate_offset": 22,
+              "candidate": "jl 0x22",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "cmp dx, 0x2d",
+              "candidate_offset": 24,
+              "candidate": "cmp dx, 0x2d",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "jg 0x22",
+              "candidate_offset": 27,
+              "candidate": "jg 0x22",
+              "differences": []
+            },
+            {
+              "target_offset": 29,
+              "target": "add byte ptr [si], 0x31",
+              "candidate_offset": 29,
+              "candidate": "add byte ptr [si], 0x31",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "jmp 0x2a",
+              "candidate_offset": 32,
+              "candidate": "jmp 0x2a",
+              "differences": []
+            },
+            {
+              "target_offset": 34,
+              "target": "cmp byte ptr [si], 0x13",
+              "candidate_offset": 34,
+              "candidate": "cmp byte ptr [si], 0x13",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "ja 0x2a",
+              "candidate_offset": 37,
+              "candidate": "ja 0x2a",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "mov byte ptr [si], 0x50",
+              "candidate_offset": 39,
+              "candidate": "mov byte ptr [si], 0x50",
+              "differences": []
+            },
+            {
+              "target_offset": 42,
+              "target": "inc bx",
+              "candidate_offset": 42,
+              "candidate": "inc di",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 43,
+              "target": "cmp bx, 0x40",
+              "candidate_offset": 43,
+              "candidate": "cmp di, 0x40",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 46,
+              "target": "jl 7",
+              "candidate_offset": 46,
+              "candidate": "jl 7",
+              "differences": []
+            },
+            {
+              "target_offset": 48,
+              "target": "add di, 0x40",
+              "candidate_offset": 48,
+              "candidate": "add cx, 0x40",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 51,
+              "target": "cmp di, 0x1000",
+              "candidate_offset": 51,
+              "candidate": "cmp cx, 0x1000",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 55,
+              "target": "jl 4",
+              "candidate_offset": 55,
+              "candidate": "jl 4",
+              "differences": []
+            },
+            {
+              "target_offset": 57,
+              "target": "pop si",
+              "candidate_offset": 57,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 58,
+              "target": "pop di",
+              "candidate_offset": 58,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 59,
+              "target": "retf ",
+              "candidate_offset": 59,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 4,
+              "terminal": "flow",
+              "successors": [
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 4,
+              "end": 7,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 7,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                5,
+                3
+              ]
+            },
+            {
+              "id": 3,
+              "start": 24,
+              "end": 29,
+              "terminal": "branch",
+              "successors": [
+                5,
+                4
+              ]
+            },
+            {
+              "id": 4,
+              "start": 29,
+              "end": 34,
+              "terminal": "branch",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 5,
+              "start": 34,
+              "end": 39,
+              "terminal": "branch",
+              "successors": [
+                7,
+                6
+              ]
+            },
+            {
+              "id": 6,
+              "start": 39,
+              "end": 42,
+              "terminal": "flow",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 7,
+              "start": 42,
+              "end": 48,
+              "terminal": "branch",
+              "successors": [
+                2,
+                8
+              ]
+            },
+            {
+              "id": 8,
+              "start": 48,
+              "end": 57,
+              "terminal": "branch",
+              "successors": [
+                1,
+                9
+              ]
+            },
+            {
+              "id": 9,
+              "start": 57,
+              "end": 60,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 4,
+              "terminal": "flow",
+              "successors": [
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 4,
+              "end": 7,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 7,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                5,
+                3
+              ]
+            },
+            {
+              "id": 3,
+              "start": 24,
+              "end": 29,
+              "terminal": "branch",
+              "successors": [
+                5,
+                4
+              ]
+            },
+            {
+              "id": 4,
+              "start": 29,
+              "end": 34,
+              "terminal": "branch",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 5,
+              "start": 34,
+              "end": 39,
+              "terminal": "branch",
+              "successors": [
+                7,
+                6
+              ]
+            },
+            {
+              "id": 6,
+              "start": 39,
+              "end": 42,
+              "terminal": "flow",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 7,
+              "start": 42,
+              "end": 48,
+              "terminal": "branch",
+              "successors": [
+                2,
+                8
+              ]
+            },
+            {
+              "id": 8,
+              "start": 48,
+              "end": 57,
+              "terminal": "branch",
+              "successors": [
+                1,
+                9
+              ]
+            },
+            {
+              "id": 9,
+              "start": 57,
+              "end": 60,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMONE_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMONE_MODULE",
+                "original_segment": 5,
+                "original_offset": 10714,
+                "literal_differences": 7,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 1,
+          "fixups_total": 1,
+          "extent_known": true,
+          "contribution_bytes": 60,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.0002097000106004998,
+        "strict_match_seconds": 0.005667999997967854,
+        "diagnostic_diff_seconds": 0.007063400000333786
+      }
+    },
+    {
+      "candidate": 1,
+      "choices": {
+        "counter_declarations": "    register int row;\n    register int cell;"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/dd06ce099f75f78791a0427360b6fc6010120fd8d31b21d182d1a5aed3a096c9/INPUT.C",
+        "source_identity": {
+          "size": 759,
+          "sha256": "a1bdc941f634002ff38958751fc022cbde3c420f9a277d088a4e2a0002845c5e"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMONE_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W1_37049gh7\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMONE_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/codegen-cache/dd06ce099f75f78791a0427360b6fc6010120fd8d31b21d182d1a5aed3a096c9/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 313,
+          "sha256": "770fe47da6cc9e6c3ff270ea3f917de1b18a507856f12e61e62d2ca86e2c1a70"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 1,
+        "worker_session": "build/compiler-workers/W1_37049gh7",
+        "batch_directory": "build/compiler-workers/W1_37049gh7",
+        "batch_index": 0,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "055dc422409cf46ecfbb2016c331a2ff92afcd1e47bf0fa7c93b7fe2906e4138"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 4.128645100005087,
+          "environment_launches": 1,
+          "queue_dispatch_seconds": 0.014439300008234568,
+          "compiler_execution_seconds": 0.3580270999955246,
+          "total_compile_request_seconds": 4.506274100000155,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/dcc1523274d5408a8975a78a95aa3b2e/INPUT.C",
+        "request_id": "dcc1523274d5408a8975a78a95aa3b2e",
+        "service_instance": "60bfb2d9332d4deea515d648c53aaaf1"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMONE_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            5,
+            10714
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              5,
+              10714,
+              "_FloodNestB"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMONE_MODULE",
+            "original_segment": 5,
+            "original_offset": 10714,
+            "length": 60,
+            "initialized_ranges": [
+              [
+                0,
+                60
+              ]
+            ],
+            "literal_compared": 58,
+            "literal_equal": 51,
+            "divergences": [
+              3,
+              4,
+              10,
+              42,
+              44,
+              49,
+              52
+            ],
+            "fixups": [
+              {
+                "offset": 13,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 18664
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 13,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapB"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 58,
+        "literal_equal": 51,
+        "fixups_equal": 1,
+        "fixups_total": 1,
+        "publics": [
+          "_FloodNestB"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 60,
+        "features": {
+          "frame": [],
+          "registers": [
+            "cx",
+            "dh",
+            "di",
+            "dl",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 60,
+          "size": 60,
+          "upper_bound": 60,
+          "return_offsets": [
+            59
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 10714,
+          "end": 10774,
+          "size": 60,
+          "upper_bound": 10774,
+          "return_offsets": [
+            10773
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [],
+          "registers": [
+            "bx",
+            "dh",
+            "di",
+            "dl",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMONE_MODULE",
+          "offset": 3
+        },
+        "diagnostic": {
+          "target_bytes": 60,
+          "candidate_bytes": 60,
+          "instruction_layout_match": true,
+          "cfg_shape_match": true,
+          "opcode_total": 27,
+          "opcode_matches": 27,
+          "register_only_differences": 7,
+          "immediate_differences": 0,
+          "memory_operand_differences": 0,
+          "branch_target_differences": 0,
+          "stack_local_differences": 0,
+          "first_structural_difference": null,
+          "categories": [
+            "REGISTER_ALLOCATION"
+          ],
+          "score": 0.87037,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push di",
+              "candidate_offset": 0,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "push si",
+              "candidate_offset": 1,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 2,
+              "target": "xor di, di",
+              "candidate_offset": 2,
+              "candidate": "xor cx, cx",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 4,
+              "target": "mov bx, 3",
+              "candidate_offset": 4,
+              "candidate": "mov di, 3",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 7,
+              "target": "mov si, di",
+              "candidate_offset": 7,
+              "candidate": "mov si, di",
+              "differences": []
+            },
+            {
+              "target_offset": 9,
+              "target": "add si, bx",
+              "candidate_offset": 9,
+              "candidate": "add si, cx",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+              "candidate_offset": 11,
+              "candidate": "add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+              "differences": []
+            },
+            {
+              "target_offset": 15,
+              "target": "mov dl, byte ptr [si]",
+              "candidate_offset": 15,
+              "candidate": "mov dl, byte ptr [si]",
+              "differences": []
+            },
+            {
+              "target_offset": 17,
+              "target": "sub dh, dh",
+              "candidate_offset": 17,
+              "candidate": "sub dh, dh",
+              "differences": []
+            },
+            {
+              "target_offset": 19,
+              "target": "cmp dx, 0x20",
+              "candidate_offset": 19,
+              "candidate": "cmp dx, 0x20",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jl 0x22",
+              "candidate_offset": 22,
+              "candidate": "jl 0x22",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "cmp dx, 0x2d",
+              "candidate_offset": 24,
+              "candidate": "cmp dx, 0x2d",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "jg 0x22",
+              "candidate_offset": 27,
+              "candidate": "jg 0x22",
+              "differences": []
+            },
+            {
+              "target_offset": 29,
+              "target": "add byte ptr [si], 0x31",
+              "candidate_offset": 29,
+              "candidate": "add byte ptr [si], 0x31",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "jmp 0x2a",
+              "candidate_offset": 32,
+              "candidate": "jmp 0x2a",
+              "differences": []
+            },
+            {
+              "target_offset": 34,
+              "target": "cmp byte ptr [si], 0x13",
+              "candidate_offset": 34,
+              "candidate": "cmp byte ptr [si], 0x13",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "ja 0x2a",
+              "candidate_offset": 37,
+              "candidate": "ja 0x2a",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "mov byte ptr [si], 0x50",
+              "candidate_offset": 39,
+              "candidate": "mov byte ptr [si], 0x50",
+              "differences": []
+            },
+            {
+              "target_offset": 42,
+              "target": "inc bx",
+              "candidate_offset": 42,
+              "candidate": "inc di",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 43,
+              "target": "cmp bx, 0x40",
+              "candidate_offset": 43,
+              "candidate": "cmp di, 0x40",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 46,
+              "target": "jl 7",
+              "candidate_offset": 46,
+              "candidate": "jl 7",
+              "differences": []
+            },
+            {
+              "target_offset": 48,
+              "target": "add di, 0x40",
+              "candidate_offset": 48,
+              "candidate": "add cx, 0x40",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 51,
+              "target": "cmp di, 0x1000",
+              "candidate_offset": 51,
+              "candidate": "cmp cx, 0x1000",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 55,
+              "target": "jl 4",
+              "candidate_offset": 55,
+              "candidate": "jl 4",
+              "differences": []
+            },
+            {
+              "target_offset": 57,
+              "target": "pop si",
+              "candidate_offset": 57,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 58,
+              "target": "pop di",
+              "candidate_offset": 58,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 59,
+              "target": "retf ",
+              "candidate_offset": 59,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 4,
+              "terminal": "flow",
+              "successors": [
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 4,
+              "end": 7,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 7,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                5,
+                3
+              ]
+            },
+            {
+              "id": 3,
+              "start": 24,
+              "end": 29,
+              "terminal": "branch",
+              "successors": [
+                5,
+                4
+              ]
+            },
+            {
+              "id": 4,
+              "start": 29,
+              "end": 34,
+              "terminal": "branch",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 5,
+              "start": 34,
+              "end": 39,
+              "terminal": "branch",
+              "successors": [
+                7,
+                6
+              ]
+            },
+            {
+              "id": 6,
+              "start": 39,
+              "end": 42,
+              "terminal": "flow",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 7,
+              "start": 42,
+              "end": 48,
+              "terminal": "branch",
+              "successors": [
+                2,
+                8
+              ]
+            },
+            {
+              "id": 8,
+              "start": 48,
+              "end": 57,
+              "terminal": "branch",
+              "successors": [
+                1,
+                9
+              ]
+            },
+            {
+              "id": 9,
+              "start": 57,
+              "end": 60,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 4,
+              "terminal": "flow",
+              "successors": [
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 4,
+              "end": 7,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 7,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                5,
+                3
+              ]
+            },
+            {
+              "id": 3,
+              "start": 24,
+              "end": 29,
+              "terminal": "branch",
+              "successors": [
+                5,
+                4
+              ]
+            },
+            {
+              "id": 4,
+              "start": 29,
+              "end": 34,
+              "terminal": "branch",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 5,
+              "start": 34,
+              "end": 39,
+              "terminal": "branch",
+              "successors": [
+                7,
+                6
+              ]
+            },
+            {
+              "id": 6,
+              "start": 39,
+              "end": 42,
+              "terminal": "flow",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 7,
+              "start": 42,
+              "end": 48,
+              "terminal": "branch",
+              "successors": [
+                2,
+                8
+              ]
+            },
+            {
+              "id": 8,
+              "start": 48,
+              "end": 57,
+              "terminal": "branch",
+              "successors": [
+                1,
+                9
+              ]
+            },
+            {
+              "id": 9,
+              "start": 57,
+              "end": 60,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMONE_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMONE_MODULE",
+                "original_segment": 5,
+                "original_offset": 10714,
+                "literal_differences": 7,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 1,
+          "fixups_total": 1,
+          "extent_known": true,
+          "contribution_bytes": 60,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.0002555999963078648,
+        "strict_match_seconds": 0.006634199991822243,
+        "diagnostic_diff_seconds": 0.006959600010304712
+      }
+    },
+    {
+      "candidate": 2,
+      "choices": {
+        "counter_declarations": "    register int cell;\n    register int row;"
+      },
+      "receipt": {
+        "source": "build/codegen-cache/37aa395f6ea923e1bee9fa2815201c450c806f267c83f55eaacf34950bfca835/INPUT.C",
+        "source_identity": {
+          "size": 759,
+          "sha256": "8a5b2c9db3865029e7f38f63b03dbf7dae7aa1fc322d03daf46b1c32b8e831ef"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oelw",
+          "/NTSIMONE_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W2_6tbotyom\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oelw /NTSIMONE_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/codegen-cache/37aa395f6ea923e1bee9fa2815201c450c806f267c83f55eaacf34950bfca835/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 313,
+          "sha256": "0916467c5aa0b677987b7c98ff5a564e2cb22bc8e427a719e4dc5a47013eeadc"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 2,
+        "worker_session": "build/compiler-workers/W2_6tbotyom",
+        "batch_directory": "build/compiler-workers/W2_6tbotyom",
+        "batch_index": 0,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "aa8f61c4560e038278536896302a9dc347ea9b44afbd6b6ae077b3dd8f7b7029"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 4.1174426000070525,
+          "environment_launches": 1,
+          "queue_dispatch_seconds": 0.014368399992235936,
+          "compiler_execution_seconds": 0.35811220000323374,
+          "total_compile_request_seconds": 4.498209299999871,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/4f2692bd59db4df8a7d0123d022af562/INPUT.C",
+        "request_id": "4f2692bd59db4df8a7d0123d022af562",
+        "service_instance": "60bfb2d9332d4deea515d648c53aaaf1"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMONE_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            5,
+            10714
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              5,
+              10714,
+              "_FloodNestB"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMONE_MODULE",
+            "original_segment": 5,
+            "original_offset": 10714,
+            "length": 60,
+            "initialized_ranges": [
+              [
+                0,
+                60
+              ]
+            ],
+            "literal_compared": 58,
+            "literal_equal": 50,
+            "divergences": [
+              3,
+              4,
+              8,
+              10,
+              42,
+              44,
+              49,
+              52
+            ],
+            "fixups": [
+              {
+                "offset": 13,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 18664
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 13,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapB"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 58,
+        "literal_equal": 50,
+        "fixups_equal": 1,
+        "fixups_total": 1,
+        "publics": [
+          "_FloodNestB"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 60,
+        "features": {
+          "frame": [],
+          "registers": [
+            "cx",
+            "dh",
+            "di",
+            "dl",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 60,
+          "size": 60,
+          "upper_bound": 60,
+          "return_offsets": [
+            59
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 10714,
+          "end": 10774,
+          "size": 60,
+          "upper_bound": 10774,
+          "return_offsets": [
+            10773
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [],
+          "registers": [
+            "bx",
+            "dh",
+            "di",
+            "dl",
+            "esp",
+            "flags",
+            "si"
+          ],
+          "cleanup": [],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMONE_MODULE",
+          "offset": 3
+        },
+        "diagnostic": {
+          "target_bytes": 60,
+          "candidate_bytes": 60,
+          "instruction_layout_match": true,
+          "cfg_shape_match": true,
+          "opcode_total": 27,
+          "opcode_matches": 27,
+          "register_only_differences": 8,
+          "immediate_differences": 0,
+          "memory_operand_differences": 0,
+          "branch_target_differences": 0,
+          "stack_local_differences": 0,
+          "first_structural_difference": null,
+          "categories": [
+            "REGISTER_ALLOCATION"
+          ],
+          "score": 0.851852,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push di",
+              "candidate_offset": 0,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "push si",
+              "candidate_offset": 1,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 2,
+              "target": "xor di, di",
+              "candidate_offset": 2,
+              "candidate": "xor cx, cx",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 4,
+              "target": "mov bx, 3",
+              "candidate_offset": 4,
+              "candidate": "mov di, 3",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 7,
+              "target": "mov si, di",
+              "candidate_offset": 7,
+              "candidate": "mov si, cx",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 9,
+              "target": "add si, bx",
+              "candidate_offset": 9,
+              "candidate": "add si, di",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+              "candidate_offset": 11,
+              "candidate": "add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+              "differences": []
+            },
+            {
+              "target_offset": 15,
+              "target": "mov dl, byte ptr [si]",
+              "candidate_offset": 15,
+              "candidate": "mov dl, byte ptr [si]",
+              "differences": []
+            },
+            {
+              "target_offset": 17,
+              "target": "sub dh, dh",
+              "candidate_offset": 17,
+              "candidate": "sub dh, dh",
+              "differences": []
+            },
+            {
+              "target_offset": 19,
+              "target": "cmp dx, 0x20",
+              "candidate_offset": 19,
+              "candidate": "cmp dx, 0x20",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jl 0x22",
+              "candidate_offset": 22,
+              "candidate": "jl 0x22",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "cmp dx, 0x2d",
+              "candidate_offset": 24,
+              "candidate": "cmp dx, 0x2d",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "jg 0x22",
+              "candidate_offset": 27,
+              "candidate": "jg 0x22",
+              "differences": []
+            },
+            {
+              "target_offset": 29,
+              "target": "add byte ptr [si], 0x31",
+              "candidate_offset": 29,
+              "candidate": "add byte ptr [si], 0x31",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "jmp 0x2a",
+              "candidate_offset": 32,
+              "candidate": "jmp 0x2a",
+              "differences": []
+            },
+            {
+              "target_offset": 34,
+              "target": "cmp byte ptr [si], 0x13",
+              "candidate_offset": 34,
+              "candidate": "cmp byte ptr [si], 0x13",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "ja 0x2a",
+              "candidate_offset": 37,
+              "candidate": "ja 0x2a",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "mov byte ptr [si], 0x50",
+              "candidate_offset": 39,
+              "candidate": "mov byte ptr [si], 0x50",
+              "differences": []
+            },
+            {
+              "target_offset": 42,
+              "target": "inc bx",
+              "candidate_offset": 42,
+              "candidate": "inc di",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 43,
+              "target": "cmp bx, 0x40",
+              "candidate_offset": 43,
+              "candidate": "cmp di, 0x40",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 46,
+              "target": "jl 7",
+              "candidate_offset": 46,
+              "candidate": "jl 7",
+              "differences": []
+            },
+            {
+              "target_offset": 48,
+              "target": "add di, 0x40",
+              "candidate_offset": 48,
+              "candidate": "add cx, 0x40",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 51,
+              "target": "cmp di, 0x1000",
+              "candidate_offset": 51,
+              "candidate": "cmp cx, 0x1000",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 55,
+              "target": "jl 4",
+              "candidate_offset": 55,
+              "candidate": "jl 4",
+              "differences": []
+            },
+            {
+              "target_offset": 57,
+              "target": "pop si",
+              "candidate_offset": 57,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 58,
+              "target": "pop di",
+              "candidate_offset": 58,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 59,
+              "target": "retf ",
+              "candidate_offset": 59,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 4,
+              "terminal": "flow",
+              "successors": [
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 4,
+              "end": 7,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 7,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                5,
+                3
+              ]
+            },
+            {
+              "id": 3,
+              "start": 24,
+              "end": 29,
+              "terminal": "branch",
+              "successors": [
+                5,
+                4
+              ]
+            },
+            {
+              "id": 4,
+              "start": 29,
+              "end": 34,
+              "terminal": "branch",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 5,
+              "start": 34,
+              "end": 39,
+              "terminal": "branch",
+              "successors": [
+                7,
+                6
+              ]
+            },
+            {
+              "id": 6,
+              "start": 39,
+              "end": 42,
+              "terminal": "flow",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 7,
+              "start": 42,
+              "end": 48,
+              "terminal": "branch",
+              "successors": [
+                2,
+                8
+              ]
+            },
+            {
+              "id": 8,
+              "start": 48,
+              "end": 57,
+              "terminal": "branch",
+              "successors": [
+                1,
+                9
+              ]
+            },
+            {
+              "id": 9,
+              "start": 57,
+              "end": 60,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 4,
+              "terminal": "flow",
+              "successors": [
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 4,
+              "end": 7,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 7,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                5,
+                3
+              ]
+            },
+            {
+              "id": 3,
+              "start": 24,
+              "end": 29,
+              "terminal": "branch",
+              "successors": [
+                5,
+                4
+              ]
+            },
+            {
+              "id": 4,
+              "start": 29,
+              "end": 34,
+              "terminal": "branch",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 5,
+              "start": 34,
+              "end": 39,
+              "terminal": "branch",
+              "successors": [
+                7,
+                6
+              ]
+            },
+            {
+              "id": 6,
+              "start": 39,
+              "end": 42,
+              "terminal": "flow",
+              "successors": [
+                7
+              ]
+            },
+            {
+              "id": 7,
+              "start": 42,
+              "end": 48,
+              "terminal": "branch",
+              "successors": [
+                2,
+                8
+              ]
+            },
+            {
+              "id": 8,
+              "start": 48,
+              "end": 57,
+              "terminal": "branch",
+              "successors": [
+                1,
+                9
+              ]
+            },
+            {
+              "id": 9,
+              "start": 57,
+              "end": 60,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMONE_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMONE_MODULE",
+                "original_segment": 5,
+                "original_offset": 10714,
+                "literal_differences": 8,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 1,
+          "fixups_total": 1,
+          "extent_known": true,
+          "contribution_bytes": 60,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.0003512999974191189,
+        "strict_match_seconds": 0.007309100008569658,
+        "diagnostic_diff_seconds": 0.00799340000958182
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "symbol": "_FloodNestB",
+  "template": "/*\n * FloodNestB updates the B-side nest cells in the shared map.  Each row\n * starts at offset three and spans the remaining 0x3d cells.  Values in the\n * flooding band 0x20..0x2d receive the flood increment; low values at or\n * below 0x13 become the full-water marker 0x50.\n */\nextern unsigned char near MapB[];\n\nvoid FloodNestB(void)\n{\n@DECLS@\n    int value;\n    unsigned char near *p;\n\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = MapB + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}\n",
+  "axes": [
+    {
+      "name": "counter_declarations",
+      "marker": "@DECLS@",
+      "rationale": "The MapB binding is independently named by MAPSYM at DGROUP:48E8; the target allocates row/cell to DI/BX, while the preserved source used CX/DI. Test only the three already evidenced declaration forms with the corrected binding.",
+      "values": [
+        "    int row;\n    int cell;",
+        "    register int row;\n    register int cell;",
+        "    register int cell;\n    register int row;"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 3
+}

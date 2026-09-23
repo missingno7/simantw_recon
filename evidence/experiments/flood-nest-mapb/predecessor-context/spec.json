@@ -1,0 +1,24 @@
+{
+  "symbol": "_FloodNestB",
+  "template": "@PREDECESSORS@\n/*\n * FloodNestB updates the B-side nest cells in the shared map.  Each row\n * starts at offset three and spans the remaining 0x3d cells.  Values in the\n * flooding band 0x20..0x2d receive the flood increment; low values at or\n * below 0x13 become the full-water marker 0x50.\n */\n\nvoid FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    unsigned char near *p;\n\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            p = ((unsigned char near *)MapB) + row + cell;\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}\n",
+  "axes": [
+    {
+      "name": "preceding_colony_members",
+      "marker": "@PREDECESSORS@",
+      "rationale": "All local address/declaration/loop variants collapsed, and downstream adjacent admitted members did not alter the target. Test the two immediately preceding FixExitMap candidate bodies as explicit same-TU compiler context, with MapB taken from their known 64x64 declaration and the target using a byte-pointer view. Their bodies remain unverified context, never recovery candidates.",
+      "values": [
+        "extern unsigned char near MapB[64][64];\nextern unsigned char far Dx8;\n#define AT(off) ((&Dx8)[off])\n#define DX(off) (*(signed char far *)&AT(off))\n\nvoid far FixExitMapB(int x, int y)\n{\n    int i;\n    int best;\n    int nx;\n    int ny;\n    int value;\n\n    if (y < 2) {\n        if (MapB[x][y] == 0x18)\n            AT(0x3a4 + (x << 6) + y) = 0xff;\n        else\n            AT(0x3a4 + (x << 6) + y) = 0xfe;\n        return;\n    }\n    best = 0;\n    for (i = 0; i < 8; i++) {\n        ny = DX(8 + i) + y;\n        nx = DX(i) + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n        value = AT(0x3a4 + (nx << 6) + ny);\n        if (value > best)\n            best = value;\n    }\n    if (best != 0)\n        AT(0x3a4 + (x << 6) + y) = best - 1;\n    else\n        AT(0x3a4 + (x << 6) + y) = 0;\n}\n",
+        "extern unsigned char near MapB[64][64];\nextern unsigned char far Dx8;\n#define AT(off) ((&Dx8)[off])\n#define DX(off) (*(signed char far *)&AT(off))\n\nvoid far FixExitMapB(int x, int y)\n{\n    int i;\n    int best;\n    int nx;\n    int ny;\n    int value;\n\n    if (y < 2) {\n        if (MapB[x][y] == 0x18)\n            AT(0x3a4 + (x << 6) + y) = 0xff;\n        else\n            AT(0x3a4 + (x << 6) + y) = 0xfe;\n        return;\n    }\n    best = 0;\n    for (i = 0; i < 8; i++) {\n        ny = DX(8 + i) + y;\n        nx = DX(i) + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n        value = AT(0x3a4 + (nx << 6) + ny);\n        if (value > best)\n            best = value;\n    }\n    if (best != 0)\n        AT(0x3a4 + (x << 6) + y) = best - 1;\n    else\n        AT(0x3a4 + (x << 6) + y) = 0;\n}\n\n/*\n * FixExitMapR: propagate the R-colony flood-fill value into ExitMapR at\n * (x, y), the far scoring array GetExitDirR reads back. On the edge rows\n * y < 2, ExitMapR[x][y] is seeded to 0xff when the row's MapR cell is the\n * nest entrance (0x18), otherwise 0xfe. Elsewhere the eight in-bounds\n * Dx8/Dy8 neighbours are scanned for the highest existing ExitMapR value;\n * the cell becomes (max - 1) when a neighbour scored above zero, else 0.\n * Twin of FixExitMapB (parked draft in\n * evidence/recovery/workflow/jobs/FixExitMapB-54c05d603e/) and same shape\n * as the admitted GetExitDirB/GetExitDirR readers, whose declarations for\n * MapR/Dx8/Dy8/ExitMapR are reused here verbatim.\n */\nextern unsigned char near MapR[64][64];\nextern char far Dx8[];\nextern char far Dy8[];\nextern unsigned char far ExitMapR[64][64];\n\nvoid far FixExitMapR(int x, int y)\n{\n    int i;\n    int nx;\n    int ny;\n    int best;\n\n    if (y < 2) {\n        if (MapR[x][y] == 0x18)\n            ExitMapR[x][y] = 0xff;\n        else\n            ExitMapR[x][y] = 0xfe;\n        return;\n    }\n    best = 0;\n    for (i = 0; i < 8; i++) {\n        ny = Dy8[i] + y;\n        nx = Dx8[i] + x;\n        if (nx < 0 || nx > 63 || ny < 0 || ny > 63)\n            continue;\n        if (ExitMapR[nx][ny] > best)\n            best = ExitMapR[nx][ny];\n    }\n    if (best)\n        ExitMapR[x][y] = best - 1;\n    else\n        ExitMapR[x][y] = 0;\n}\n"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 2
+}

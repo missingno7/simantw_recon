@@ -48083,8 +48083,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _MagnifyMenu — ANTEDIT_MODULE:6B4C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 471 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 471 bytes.
+Source: src/recovered/wf_MagnifyMenu-51f69a1a04.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 6B4C  c81a0000                 enter 0x1a, 0

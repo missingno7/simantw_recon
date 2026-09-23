@@ -125,6 +125,15 @@ The production service verifies unchanged worker/tool identities against its can
 
 ## Search diagnostics versus proof
 
+`codegen_grinder.py --evidence PATH` now includes a compact
+`compiler_response` in its archived report. It groups candidate choices by
+raw OMF identity under that batch's fixed compiler/profile, lists reliable
+codegen dimensions for one representative of each group, and shows which
+dimensions changed from candidate 0. Full receipts, source variants and
+strict comparisons remain in the run's `results.json`. This diagnostic view
+does not rank variants or change recovery admission; identical object classes
+are a signal to change the next experiment's analysis level.
+
 `tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. Per-candidate JSON and compact `.diff.txt` files accompany the strict matcher output.
 
 For `_db_GetObjectSize`, the current candidate has **39/39 opcodes aligned, matching layout and CFG, seven register-only differences, no immediate/memory/branch differences, and 7/7 fixups correct**. It remains unaccepted. See `evidence/codegen/db-instruction-diff.json` and `.txt`.

@@ -1,0 +1,29 @@
+Whole-member issues: SIMONE_MODULE literal bytes differ
+Target | Candidate | Difference
+0000 push di | 0000 push di | 
+0001 push si | 0001 push si | 
+0002 xor di, di | 0002 xor dx, dx | register_allocation
+0004 mov bx, 3 | 0004 mov di, 3 | register_allocation
+0007 mov si, di | 0007 mov si, di | 
+0009 add si, bx | 0009 add si, dx | register_allocation
+000b add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}] | 000b add <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}] | 
+000f mov dl, byte ptr [si] | 000f mov al, byte ptr [si] | register_allocation,alignment_uncertain
+0011 sub dh, dh | 0011 cmp al, 0x20 | instruction_shape
+0013 cmp dx, 0x20 | 0013 jb 0x1e | instruction_shape
+0016 jl 0x22 | 0015 cmp al, 0x2d | instruction_shape
+0018 cmp dx, 0x2d | 0017 ja 0x1e | instruction_shape
+001b jg 0x22 |  | instruction_shape
+001d add byte ptr [si], 0x31 | 0019 add byte ptr [si], 0x31 | 
+0020 jmp 0x2a | 001c jmp 0x26 | branch_target
+0022 cmp byte ptr [si], 0x13 | 001e cmp byte ptr [si], 0x13 | 
+0025 ja 0x2a | 0021 ja 0x26 | branch_target
+0027 mov byte ptr [si], 0x50 | 0023 mov byte ptr [si], 0x50 | 
+002a inc bx | 0026 inc di | register_allocation
+002b cmp bx, 0x40 | 0027 cmp di, 0x40 | register_allocation
+002e jl 7 | 002a jl 7 | 
+0030 add di, 0x40 | 002c add dx, 0x40 | register_allocation
+0033 cmp di, 0x1000 | 002f cmp dx, 0x1000 | register_allocation
+0037 jl 4 | 0033 jl 4 | 
+0039 pop si | 0035 pop si | 
+003a pop di | 0036 pop di | 
+003b retf  | 0037 retf  | 

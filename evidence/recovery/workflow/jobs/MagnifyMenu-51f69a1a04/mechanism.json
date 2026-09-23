@@ -1,0 +1,76 @@
+{
+  "symbol": "_MagnifyMenu",
+  "profile": "antedit:67C6 /Oeglw (assigned unit profile)",
+  "outcome": "PROMOTED",
+  "promotion": "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/promotion.json",
+  "pre_solution_signature": {
+    "source_attempt": "attempt03",
+    "target_extent_bytes": 471,
+    "candidate_code_bytes": 471,
+    "instruction_layout_match": true,
+    "cfg_shape_match": true,
+    "opcodes_equal": "156/156",
+    "fixups_equal": "46/46",
+    "literal_bytes_equal": "338/342",
+    "remaining_differences": [
+      "Y bound: candidate loads point.y, subtracts object.top, then adds object.bottom; target loads object.bottom, subtracts object.top, then adds point.y.",
+      "X bound: candidate loads point.x, subtracts object.left, then adds object.right; target loads object.right, subtracts object.left, then adds point.x."
+    ],
+    "receipt": "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt03/results.json"
+  },
+  "decisive_experiment": {
+    "attempt": "attempt08",
+    "change": "Preserved the semantics and declaration contents while changing local declaration order from screen, object, point to screen, point, object.",
+    "result": "EXACT_CANDIDATE; 342/342 literal bytes, 46/46 fixups, 156/156 opcodes, exact 471-byte extent.",
+    "receipt": "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt08/results.json",
+    "promoted_source": "src/recovered/wf_MagnifyMenu-51f69a1a04.c"
+  },
+  "output_classes": [
+    {
+      "attempts": ["attempt02", "attempt03", "attempt04", "attempt05", "attempt07"],
+      "result": "Same effective compiler output: exact frame, control flow, opcode schedule and fixups, with the same four Y/X bound local-operand differences.",
+      "receipts": [
+        "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt02/results.json",
+        "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt03/results.json",
+        "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt04/results.json",
+        "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt05/results.json",
+        "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt07/results.json"
+      ],
+      "tested_axes": [
+        "parenthesized rectangle span before point addition",
+        "sequential intermediate arithmetic",
+        "comma-expression sequence points",
+        "opposite expression-tree grouping"
+      ]
+    },
+    {
+      "attempts": ["attempt06"],
+      "result": "Volatile point.y changed the output substantially and regressed layout and operand matching; discarded.",
+      "receipt": "evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/attempt06/results.json"
+    },
+    {
+      "attempts": ["attempt08"],
+      "result": "Changing local declaration order controlled the operand schedule and produced the exact object."
+    }
+  ],
+  "replay_candidates": [
+    {
+      "symbols": ["_GetEnterDirB", "_GetEnterDirR"],
+      "evidence": [
+        "evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/attempt02/results.json",
+        "evidence/recovery/workflow/jobs/GetEnterDirR-4cef7555bd/attempt02/results.json"
+      ],
+      "signature": "Mirrored candidates each match all 60 opcodes and all 12 fixups, with 127/132 literal bytes and five stack-local differences; the same bp-4/bp-6 scratch variables are swapped at offsets 0x0B, 0x27, 0x2C, 0x75 and 0x85.",
+      "replay_result": "Isolated MSC7 probes tested the preserved source order against only back/bestValue swapped, first per function and then in a combined same-TU source. Both standalone batches collapsed to one object per function with the original five diffs; all four same-TU order combinations collapsed to one object with the same stack schedule. The combined member comparison also had unresolved CONST placement and fixup obligations.",
+      "replay_evidence": "evidence/recovery/workflow/jobs/GetEnterDirB-a5248385bb/isolated-research/local-declaration-order/replay-report.md",
+      "next_research": "Do not repeat these local declaration permutations. Any future research needs a new explanation for how use/lifetime shape or same-object compiler context controls scalar stack homes. Production jobs are escalated; do not spend or reopen production budgets without a genuinely new exact result and reviewed reissue."
+    },
+    {
+      "symbol": "_DoReturnFoodAnt",
+      "evidence": "evidence/recovery/workflow/jobs/DoReturnFoodAnt-82971198db/attempt07/results.json",
+      "signature": "142/142 opcodes and 29/43 fixups, but 11 memory-operand differences, two stack-local differences and major selector/operand issues.",
+      "next_research": "Lower priority: the body is not isolated to stack-local scheduling, so first resolve the selector and memory-operand blockers before applying a local-order hypothesis."
+    }
+  ],
+  "scope": "Observed only for this SimAnt MSC 7.00 /Oeglw ANTEDIT_MODULE function and tested declaration forms; not a universal compiler rule or proof of other jobs' source history."
+}

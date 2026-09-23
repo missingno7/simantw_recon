@@ -66,13 +66,13 @@ The later fourteen-member gr:7712 unit in `evidence/experiments/mm-state-structu
 
 ## Supervisor review after tool changes
 
-Doctor now reports stale tool context on active jobs. For an OPEN job with **zero attempts**, no pending attempt, unchanged fixtures and unchanged non-Python protected inputs, a supervisor may use:
+Doctor reports stale tool context on active jobs. For an OPEN or NEEDS_REVISION job with no pending attempt, unchanged fixtures and unchanged non-Python protected inputs, a supervisor may use:
 
 ```powershell
 python tools/topology_retest.py JOB --refresh-unattempted --reason "Concrete reviewed tool changes and validation evidence"
 ```
 
-This requires current successful handoff validation (including all current Python tools/tests) and independently verifies the existing complete manifest. It archives the previous job context and source/submission identities before refreshing computed tool fingerprints. It preserves source, status, attempt budget and recovery credit. It refuses attempted, running, exact-candidate or pending jobs. Ordinary grinders must not invoke this expert maintenance path or edit hashes themselves. Attempted jobs still require a new evidenced experiment through the existing expert reissue workflow.
+This requires current successful handoff validation (including all current Python tools/tests) and independently verifies the existing complete manifest. It archives the previous job context and source/submission identities before refreshing computed tool fingerprints. It preserves source, status, prior attempts, attempt budget and recovery credit. It refuses running, exact-candidate, escalated or pending jobs. Ordinary grinders must not invoke this expert maintenance path or edit hashes themselves. Refreshing context does not grant a new experiment or extend a budget; an exhausted job still needs a new evidenced experiment through the existing expert reissue workflow.
 
 The multimedia pass used this path to restore the previously OPEN PackMemoryToMemory job after the matcher change; its source and zero-attempt budget were preserved. Final handoff validation passed 138 tests and doctor returned READY_FOR_BOUNDED_HANDOFF.
 
@@ -192,3 +192,44 @@ the source preserves explicitly. This is a local observed clone, not an
 assumption that all startup functions share a translation unit. See the
 [first source proof](../evidence/experiments/prepare-strings/README.md) and
 [reuse proof](../evidence/experiments/init-stuff/README.md).
+
+### Check MAPSYM at the base of an indexed near map
+
+The old `_FloodNestB` draft invented `_nestMap` and added `0x48E8` to its
+index. MAPSYM names `_MapB` at DGROUP `0x48E8`, and already admitted map
+functions declare that near object. Replacing the invented base with `_MapB`
+made the single target fixup exact in three bounded MSC7 probes; it did not
+fix the seven register-only byte differences. Ordinary and register
+row/cell declarations collapsed to one effective object, so further
+declaration-order spelling is unlikely to help this specific isolated
+context. [Scoped probe](../evidence/experiments/flood-nest-mapb/README.md).
+
+Indexed operands may lack a direct name in the function packet. When their
+constant base is a real MAPSYM public, test that named object under the
+assigned profile before constructing a private or invented external base.
+
+### Local declaration order can select stack operands in a bound expression
+
+`_MagnifyMenu` reached an exact ANTEDIT_MODULE member under its assigned
+MSC 7.00 `/Oeglw` profile after the last controlled production experiment
+changed only local declaration order: `screen, object, point` became
+`screen, point, object`. The prior source already matched all 156 opcodes and
+46 fixups; its only four literal differences were which stack operand seeded
+the Y and X rectangle-bound calculations. Parentheses, sequential temporary
+arithmetic, comma expressions, and opposite expression-tree grouping all
+collapsed to the same compiler output. Making `point.y` volatile caused a
+substantial regression. The declaration reorder selected the target's
+edge-first operand schedule and passed fresh exact admission. This is local
+MSC7 evidence for this member and source context, not a universal rule for
+other functions. The pre-solution signature, output classes, promotion receipt,
+and replay candidates are recorded in
+[`MagnifyMenu mechanism evidence`](../evidence/recovery/workflow/jobs/MagnifyMenu-51f69a1a04/mechanism.json).
+
+The closest blocked signatures are mirrored `_GetEnterDirB` and
+`_GetEnterDirR`: their attempt 02 candidates match all 60 opcodes and 12
+fixups, with the same five swaps between stack slots `bp-4` and `bp-6`.
+Their local declaration order is a concrete isolated research hypothesis;
+both production jobs are escalated, so this evidence alone does not reopen
+them. `_DoReturnFoodAnt` has two stack-local differences in its 142-opcode
+attempt 07, but its 11 memory-operand differences and incomplete fixups make
+it a weaker match for this mechanism.

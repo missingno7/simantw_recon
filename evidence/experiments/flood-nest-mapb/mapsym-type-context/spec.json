@@ -1,0 +1,34 @@
+{
+  "symbol": "_FloodNestB",
+  "template": "/*\n * FloodNestB updates the B-side nest cells in the shared map.  Each row\n * starts at offset three and spans the remaining 0x3d cells.  Values in the\n * flooding band 0x20..0x2d receive the flood increment; low values at or\n * below 0x13 become the full-water marker 0x50.\n */\n@MAP_DECL@\n\nvoid FloodNestB(void)\n{\n    int row;\n    int cell;\n    int value;\n    unsigned char near *p;\n\n    for (row = 0; row < 0x1000; row += 0x40) {\n        for (cell = 3; cell < 0x40; ++cell) {\n            @MAP_ADDR@\n            value = *p;\n            if (value >= 0x20 && value <= 0x2d)\n                *p += 0x31;\n            else if (*p <= 0x13)\n                *p = 0x50;\n        }\n    }\n}\n",
+  "axes": [
+    {
+      "name": "mapsym_array_view",
+      "marker": "@MAP_DECL@",
+      "rationale": "MAPSYM independently names _MapB at DGROUP:48E8; nearby recovered users (AddWater, ExpAddAnt, GetExitDirB, FixExitMapB draft) declare it as unsigned char near MapB[64][64]. Test that evidenced same-TU view against the isolated flat declaration.",
+      "values": [
+        "extern unsigned char near MapB[];",
+        "extern unsigned char near MapB[64][64];"
+      ]
+    },
+    {
+      "name": "typed_array_flattening",
+      "marker": "@MAP_ADDR@",
+      "rationale": "Preserve the same 0..0xFFF byte span and row+cell offset while expressing the 64x64 MAPSYM as a byte pointer or its first row; these forms can affect register allocation through C7 expression/lvalue lowering.",
+      "values": [
+        "p = MapB + row + cell;",
+        "p = ((unsigned char near *)MapB) + row + cell;",
+        "p = &MapB[0][row + cell];"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "max_candidates": 6
+}

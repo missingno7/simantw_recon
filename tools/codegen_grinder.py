@@ -139,8 +139,80 @@ def archive_report(report,destination):
                           exit_code=receipt['exit_code'],result=row['comparison']['result'],representative=groups[digest],
                           batch_directory=receipt['batch_directory'],batch_index=receipt['batch_index']))
     compact={k:v for k,v in report.items() if k!='results'}
-    compact.update(results=representatives,candidate_index=index,distinct_comparisons=len(representatives))
+    compact.update(results=representatives,candidate_index=index,distinct_comparisons=len(representatives),
+                   compiler_response=compiler_response(report))
     write_json(ROOT/destination,compact)
+
+
+def compiler_response(report):
+    """Summarize distinct OMF outcomes without treating diagnostics as proof.
+
+    The full receipts and comparisons stay in results.json. This view keeps the
+    tested source choices and the codegen dimensions they changed visible to a
+    worker, including when several choices produced the same object.
+    """
+    rows={row['candidate']:row for row in report['results']}
+    baseline=rows.get(0)
+    groups={};uncompiled=[]
+    for row in report['results']:
+        obj=row['receipt'].get('object_identity')
+        if not isinstance(obj,dict) or not obj.get('sha256'):
+            uncompiled.append(dict(candidate=row['candidate'],choices=row['choices'],
+                                   result=row['comparison']['result']))
+            continue
+        group=groups.setdefault(obj['sha256'],[])
+        group.append(row)
+
+    def dimensions(row):
+        comparison=row['comparison'];diagnostic=comparison.get('diagnostic') or {}
+        features=comparison.get('features') or {}
+        contributions=[]
+        for part in comparison.get('contributions',[]):
+            fixups=part.get('fixups',[])
+            contributions.append(dict(segment=part.get('segment'),length=part.get('length'),
+                                      divergent_bytes=len(part.get('divergences',[])),
+                                      fixups_equal=sum(bool(f.get('equal')) for f in fixups),
+                                      fixups_total=len(fixups)))
+        return dict(result=comparison.get('result'),
+                    code_contribution_size=comparison.get('code_contribution_size'),
+                    candidate_bytes=diagnostic.get('candidate_bytes'),
+                    target_bytes=diagnostic.get('target_bytes'),
+                    instruction_layout_match=diagnostic.get('instruction_layout_match'),
+                    cfg_shape_match=diagnostic.get('cfg_shape_match'),
+                    opcode_matches=diagnostic.get('opcode_matches'),
+                    opcode_total=diagnostic.get('opcode_total'),
+                    register_only_differences=diagnostic.get('register_only_differences'),
+                    memory_operand_differences=diagnostic.get('memory_operand_differences'),
+                    branch_target_differences=diagnostic.get('branch_target_differences'),
+                    first_structural_difference=diagnostic.get('first_structural_difference'),
+                    fixups_equal=comparison.get('fixups_equal'),
+                    fixups_total=comparison.get('fixups_total'),
+                    frame=features.get('frame',[]),
+                    registers=features.get('registers',[]),
+                    cleanup=features.get('cleanup',[]),
+                    pointer_loads=features.get('pointer_loads',[]),
+                    string_ops=features.get('string_ops',[]),
+                    contributions=contributions,
+                    issues=comparison.get('issues',[]))
+
+    parent=dimensions(baseline) if baseline else {}
+    classes=[]
+    for digest,member_rows in sorted(groups.items(),key=lambda item:min(r['candidate'] for r in item[1])):
+        representative=min(member_rows,key=lambda row:row['candidate'])
+        current=dimensions(representative)
+        classes.append(dict(object_sha256=digest,
+                            representative=representative['candidate'],
+                            candidates=sorted(row['candidate'] for row in member_rows),
+                            choices=[dict(candidate=row['candidate'],values=row['choices'])
+                                     for row in sorted(member_rows,key=lambda row:row['candidate'])],
+                            dimensions=current,
+                            changed_from_candidate0=[key for key,value in current.items()
+                                                     if key in parent and value!=parent[key]]))
+    return dict(scope='DIAGNOSTIC_ONLY; strict complete-member admission is unchanged',
+                baseline_candidate=0 if baseline else None,
+                baseline_object_sha256=(baseline['receipt'].get('object_identity') or {}).get('sha256') if baseline else None,
+                distinct_effective_objects=len(classes),classes=classes,
+                uncompiled_candidates=sorted(uncompiled,key=lambda row:row['candidate']))
 
 
 def main():
