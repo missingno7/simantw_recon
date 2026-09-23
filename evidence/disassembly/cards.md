@@ -32157,8 +32157,8 @@ Source: src/recovered/wf_WinPrintf-d81cd63317.c. Flags: ['/AL', '/G2', '/Gs', '/
 ```
 
 ## _DebugWinPrintf — GR_MODULE:6322
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 101 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 101 bytes.
+Source: src/recovered/wf_tu_gr_6322_DebugWinPrintf_1_reviewed-227fa239c3.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 6322  c8000200                 enter 0x200, 0

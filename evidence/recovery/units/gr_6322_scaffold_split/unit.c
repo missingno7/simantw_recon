@@ -9,21 +9,13 @@ extern void far pascal OutputDebugString(char far *text);
 extern int far pascal lstrlen(char far *text);
 static int near debugEnabled = 0;
 static char near debugCR[] = "\r";
-static char near debugLF[] = "\n";
+static char near debugTrailingCR[] = "\r";
 static char near debugFormat[] = "%s";
+/* SCAFFOLD, not recovered source: static data of unclaimed members after _DebugWinPrintf (DGROUP 08F4-08F8), copied from the image so the claimed pieces keep their layout. */
+static unsigned char pool_data_fill_08F4[4] = {0x0D, 0x00, 0x0D, 0x00};
 
 
-void far pool_literal_fill_08F4(void);
 
-#pragma alloc_text(POOLSTUB_TEXT, pool_literal_fill_08F4)
-
-/* SCAFFOLD, not recovered source: body literals between _DebugWinPrintf and _DebugWinPrintf (DGROUP 08F4-08F8), unclaimed members' body literals. */
-void far pool_literal_fill_08F4(void)
-{
-    volatile char far *p;
-
-    p = "\015\000\015";
-}
 
 int far DebugWinPrintf(char far *format, ...)
 {
@@ -37,7 +29,7 @@ int far DebugWinPrintf(char far *format, ...)
         OutputDebugString(buffer);
         length = lstrlen(buffer);
         if (buffer[length - 1] == '\n')
-            OutputDebugString(debugLF);
+            OutputDebugString(debugTrailingCR);
         return 1;
     }
     return 0;

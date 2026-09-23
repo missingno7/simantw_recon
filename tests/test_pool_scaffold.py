@@ -54,6 +54,20 @@ class MatcherScaffoldTests(unittest.TestCase):
 
 
 class ComposerScaffoldTests(unittest.TestCase):
+    def test_all_zero_private_word_is_not_inferred_as_a_literal(self):
+        self.assertFalse(tu.private_data_is_literal(b'\x00\x00'))
+        self.assertTrue(tu.private_data_is_literal(b'\r\x00'))
+        self.assertFalse(tu.private_data_is_literal(b'\x01\x00'))
+
+    def test_reviewed_scaffold_identifies_only_separate_stand_ins(self):
+        text = '#pragma alloc_text(POOLSTUB_TEXT, filler)\nvoid far filler(void) { }\nvoid far Real(void) { }'
+        plan = tu.reviewed_scaffold(text, ['_Real'], ['_Real'])
+        self.assertEqual(plan['stubs'], [dict(function='filler')])
+        with self.assertRaisesRegex(tu.FormatError, 'real component public'):
+            tu.reviewed_scaffold(text.replace('filler', 'Real'), ['_Real'], ['_Real'])
+        with self.assertRaisesRegex(tu.FormatError, 'lacks a definition'):
+            tu.reviewed_scaffold('#pragma alloc_text(POOLSTUB_TEXT, filler)', ['_Real'], ['_Real'])
+
     def test_reference_expressions_read_values_not_addresses(self):
         self.assertEqual(tu.reference_expression('A', 'extern unsigned char far A[12][16];'), 'A[0][0]')
         self.assertEqual(tu.reference_expression('B', 'extern int far B;'), '(int)B')

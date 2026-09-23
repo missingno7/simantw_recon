@@ -1,9 +1,10 @@
 /*
  * Hypothesis: this is the debug-gated companion to printf.  It formats the
- * far varargs into the same 512-byte stack buffer, emits a carriage return
- * before text that does not start with LF, emits the text, and appends LF
- * when the formatted text does not already end in LF.  The private flag and
- * one-byte strings precede the verified "%s" debug format in DGROUP.
+ * far varargs into a 512-byte stack buffer. If the text starts with LF, it
+ * emits the carriage-return string at DGROUP 08F8 first. It emits the text,
+ * then emits the carriage-return string at 08FA if the text ends with LF.
+ * Both target strings contain CR; the prior LF declaration was disproved by
+ * the target's private DATA bytes. The flag is at 08F2.
  */
 extern int far pascal WVSPrintf(char far *buffer, char far *format,
                                 char far *arguments);
@@ -12,7 +13,7 @@ extern int far pascal lstrlen(char far *text);
 
 static int near debugEnabled = 0;
 static char near debugCR[] = "\r";
-static char near debugLF[] = "\n";
+static char near debugTrailingCR[] = "\r";
 static char near debugFormat[] = "%s";
 
 int far DebugWinPrintf(char far *format, ...)
@@ -27,7 +28,7 @@ int far DebugWinPrintf(char far *format, ...)
         OutputDebugString(buffer);
         length = lstrlen(buffer);
         if (buffer[length - 1] == '\n')
-            OutputDebugString(debugLF);
+            OutputDebugString(debugTrailingCR);
         return 1;
     }
     return 0;

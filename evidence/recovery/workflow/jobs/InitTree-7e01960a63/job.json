@@ -60,8 +60,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 11413,
-      "sha256": "595f6811baa17e5b5124b2e7283e30addccd89eaaf282c2188704fa114dd28d1"
+      "size": 11407,
+      "sha256": "7e461d599328ce73a634ce24dda932de67e21c757dbac75f369dc114e9bf8a9d"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -413,13 +413,27 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "2a38c7b91b6b3965b2295994b6614c552e471412bb86be91bfa2433b709df5c6",
+      "report": "evidence/recovery/workflow/jobs/InitTree-7e01960a63/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "SEMANTICS_UNKNOWN"
+    "EXPRESSION_SHAPE"
   ],
-  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
-  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family",
+  "reason": "Attempt 9 corrected unpackHandle to a near DGROUP pointer object: C7 now emits a single ES selector load and 28-byte body, but order, LEA addressing, CX reload and internal binding still differ; all prior attempts retained",
+  "next_experiment": "Compare a named offset source representation against the exact target lea di addresses without invented object identity; account for the unpackHandle+2 binding in a unit context before an expert source-shape reissue",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape under the current profile (9/12 opcodes, 29/28 bytes)",
@@ -433,5 +447,15 @@
   "previous_blockers": [
     "DATA_LAYOUT"
   ],
-  "budget_extensions": []
+  "budget_extensions": [
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "TYPE_REPRESENTATION",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "C7 probes show unpackHandle must be a near DGROUP pointer object: far-object declaration emitted CONST selector fetches, near-object declaration emits direct selector access",
+      "reviewed": "2026-09-23T07:09:34.902496+00:00",
+      "spec": "evidence/recovery/workflow/jobs/InitTree-7e01960a63/expert-near-segment-02.json"
+    }
+  ]
 }

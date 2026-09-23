@@ -964,9 +964,37 @@ def member_data_anchors(member, source, flags, target_bytes, folder=None):
         for i, r in enumerate(runs):
             end = runs[i + 1]['start'] if i + 1 < len(runs) else seg['length']
             chunk = data[r['start']:end] if cls == '_DATA' else b''
-            literal = cls == '_DATA' and len(chunk) > 1 and chunk[-1:] == b'\x00' and all(32 <= b < 127 or b in (0, 9, 10, 13) for b in chunk)
+            literal = private_data_is_literal(chunk) if cls == '_DATA' else False
             pieces.append(dict(segment=cls, offset=(r['start'] + r['delta']) & 0xFFFF, length=end - r['start'], member=member, kind='literal' if literal else 'static', candidate_start=r['start']))
     return pieces
+
+
+def private_data_is_literal(chunk):
+    """Infer a printable string only when bytes distinguish it from zero statics.
+
+    All-zero bytes can encode an empty string, but also an initialized word or
+    byte array. A speculative literal would move a real static past other data.
+    """
+    return (len(chunk) > 1 and chunk[-1:] == b'\x00' and any(chunk[:-1])
+            and all(32 <= b < 127 or b in (0, 9, 10, 13) for b in chunk))
+
+
+def reviewed_scaffold(text, members, component_publics):
+    """Record explicit stand-ins in a reviewed unit; never credit their code."""
+    slots = re.findall(r'#\s*pragma\s+alloc_text\s*\(\s*POOLSTUB_TEXT\s*,\s*([^()]*)\)', text)
+    names = [name.strip() for slot in slots for name in slot.split(',')]
+    if not names or any(not re.fullmatch(r'[A-Za-z_]\w*', name) for name in names):
+        raise FormatError('reviewed scaffold requires named POOLSTUB_TEXT functions')
+    if len(names) != len(set(names)):
+        raise FormatError('duplicate reviewed scaffold stand-in')
+    all_publics = {p.lstrip('_').upper() for p in component_publics}
+    if any(name.upper() in all_publics for name in names):
+        raise FormatError('a real component public cannot be a scaffold stand-in')
+    for name in names:
+        if not re.search(r'\b' + re.escape(name) + r'\s*\([^;]*\)\s*\{', text):
+            raise FormatError('reviewed scaffold stand-in lacks a definition: ' + name)
+    return dict(segment=SCAFFOLD_SEGMENT, stubs=[dict(function=name) for name in names],
+                runs=[members], scope='Reviewed stand-ins occupy reserved code only; their private contributions remain strictly compared')
 
 
 def data_fillers(pieces, comp, functions, mode='definitions'):
@@ -1472,6 +1500,8 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
         spec = dict(unit=unit_id, component=component_id, segment=comp['segment'], members=members, sources={'*': dict(source=unit_source, basis='REVIEWED_UNIT_SOURCE', identity=identity(path))},
                     profile=profile, flags=compiler_profiles.profile_flags(profile, comp['segment']), layout='reviewed', overrides={}, reason=reason, created=timestamp(),
                     topology=dict(join_evidence=comp.get('join_evidence'), range=comp['range']), status='COMPOSED', source=(folder / 'unit.c').relative_to(ROOT).as_posix(), source_identity=identity(folder / 'unit.c'))
+        if scaffold:
+            spec['scaffold'] = reviewed_scaffold(text, members, comp['publics'])
         write_json(folder / 'unit.json', spec)
         return spec
     sources = preserved_sources()

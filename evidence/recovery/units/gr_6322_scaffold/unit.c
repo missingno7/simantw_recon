@@ -23,7 +23,7 @@ void far pool_data_fill_08F4(void)
 
 static int near debugEnabled = 0;
 static char near debugCR[] = "\r";
-static char near debugLF[] = "\n";
+static char near debugTrailingCR[] = "\r";
 static char near debugFormat[] = "%s";
 int far DebugWinPrintf(char far *format, ...)
 {
@@ -37,7 +37,7 @@ int far DebugWinPrintf(char far *format, ...)
         OutputDebugString(buffer);
         length = lstrlen(buffer);
         if (buffer[length - 1] == '\n')
-            OutputDebugString(debugLF);
+            OutputDebugString(debugTrailingCR);
         return 1;
     }
     return 0;
