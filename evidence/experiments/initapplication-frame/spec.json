@@ -1,0 +1,35 @@
+{
+  "symbol": "_InitApplication",
+  "source": "evidence/experiments/initapplication-frame/template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "max_candidates": 5,
+  "axes": [
+    {
+      "name": "trailing_unused_storage",
+      "marker": "/*FRAME_DECL*/",
+      "rationale": "Target stack is exactly one 26-byte WNDCLASS deeper than the opcode-exact candidate; prior unused declaration was placed before the used locals, so test trailing and scoped placement separately.",
+      "values": [
+        "",
+        "struct WndClass wcUnused;",
+        "volatile struct WndClass wcUnused;",
+        "char unused[26];",
+        "volatile char unused[26];"
+      ]
+    }
+  ],
+  "semantic_summary": "Isolated frame-layout research on exact-opcode InitApplication; no production reissue.",
+  "binding_evidence": [
+    "Preserved attempt06 is 315 bytes and 90/90 opcodes with all 20/20 fixups; only the frame/stack-home offset differs by one 26-byte WNDCLASS.",
+    "A prior unused WNDCLASS before the three used locals shrank the frame and is a separate negative control."
+  ],
+  "publics": [
+    "_InitApplication"
+  ]
+}

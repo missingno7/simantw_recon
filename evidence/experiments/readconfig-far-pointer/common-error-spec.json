@@ -1,0 +1,24 @@
+{
+  "symbol": "_ReadConfig",
+  "source": "evidence/experiments/readconfig-far-pointer/common-error.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 1,
+  "axes": [],
+  "semantic_summary": "Isolated test of the shared error path observed in the target: both nonpositive _lopen and invalid display-mode cases set a far message pointer and branch to MessageBox/exit.",
+  "binding_evidence": [
+    "The target's _lopen failure path loads _configFileMissingStr, sets its offset and segment, then jumps to the MessageBox call block.",
+    "The invalid display-mode path sets a local pointer to the private literal Bad 'Display Mode' in configuration file and reaches the same call block.",
+    "Both paths pass caption 'Message' and call exit(1).",
+    "Far-object declarations were tested under the assigned profile in README.md."
+  ],
+  "publics": [
+    "_ReadConfig"
+  ]
+}

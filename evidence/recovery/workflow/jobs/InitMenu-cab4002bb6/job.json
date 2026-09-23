@@ -1,7 +1,7 @@
 {
   "id": "InitMenu-cab4002bb6",
   "symbol": "_InitMenu",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-23T05:41:20.100910+00:00",
   "flags": [
     "/AL",
@@ -310,5 +310,10 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "reason": "The packet supports the menu-building behavior at a high level, but not a compilable binding hypothesis for the target's raw menu tables. It directly accesses DGROUP 0xBAE2/0xBAE4 (far pointer state), 0xBB06 (menu index), and selector-backed state at 0xC6C0 with further table offsets 0x7260/0x7262/0x7276. These sites lack exact MAPSYM names or evidenced object boundaries/types; the target also traverses locked database object records and parses popup strings, so guessing pointer/record declarations would not be a meaningful exact-body experiment. Existing unit evidence establishes Scycle[] for adjacent menu helpers, but does not establish these InitMenu objects.",
+  "next_experiment": "Acquire independent GR_MODULE MAPSYM or reviewed source/TU evidence identifying the objects and layouts at DGROUP 0xBAE2/0xBAE4, 0xBB06, and selector target 0xC6C0 (including menu-table offsets 0x7260 and 0x7276), then build one readable source with those declarations and strict-test it under the assigned baseline profile."
 }

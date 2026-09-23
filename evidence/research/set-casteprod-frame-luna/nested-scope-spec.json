@@ -1,0 +1,27 @@
+{
+  "assumptions": [
+    "Research only; test nested lexical lifetimes of the two 16-bit arrays while preserving the target interleaved percentage loop and signed comparison."
+  ],
+  "axes": [
+    {
+      "marker": "@BODY@",
+      "name": "pct_want_nested_lifetime",
+      "rationale": "The target array bases differ by 10 bytes while the local candidate bases differ by 8 bytes, with two additional words in the target frame. Place one live array in an enclosing scope and one in a nested scope to test compiler lifetime allocation without changing operations.",
+      "values": [
+        "    int i, total, ideal, best;\n    int pct[4];\n    total = 0;\n    ideal = 0;\n    for (i = 0; i < 4; ++i) {\n        total += CastePopB[i + 1];\n        ideal += IdealCaste[i];\n    }\n    {\n        int want[4];\n        for (i = 0; i < 4; ++i) {\n            if (total <= 0) pct[i] = 0;\n            else pct[i] = 100L * CastePopB[i + 1] / total;\n            if (ideal <= 0) want[i] = 0;\n            else want[i] = 100L * IdealCaste[i] / ideal;\n        }\n        best = 0;\n        total = 0;\n        for (i = 0; i < 4; ++i) {\n            if (pct[i] - want[i] < best) {\n                best = pct[i] - want[i];\n                total = i;\n            }\n        }\n        MakeMe = CasteTabB[total];\n    }",
+        "    int i, total, ideal, best;\n    int want[4];\n    total = 0;\n    ideal = 0;\n    for (i = 0; i < 4; ++i) {\n        total += CastePopB[i + 1];\n        ideal += IdealCaste[i];\n    }\n    {\n        int pct[4];\n        for (i = 0; i < 4; ++i) {\n            if (total <= 0) pct[i] = 0;\n            else pct[i] = 100L * CastePopB[i + 1] / total;\n            if (ideal <= 0) want[i] = 0;\n            else want[i] = 100L * IdealCaste[i] / ideal;\n        }\n        best = 0;\n        total = 0;\n        for (i = 0; i < 4; ++i) {\n            if (pct[i] - want[i] < best) {\n                best = pct[i] - want[i];\n                total = i;\n            }\n        }\n        MakeMe = CasteTabB[total];\n    }"
+      ]
+    }
+  ],
+  "symbol": "_SetCasteProd",
+  "template": "/*\r\n * SetCasteProd: choose which caste the black colony should produce next.\r\n * The current populations of the four castes (CastePopB[1..4]) and the\r\n * ideal caste levels (IdealCaste[0..3]) are totalled; each caste's\r\n * current and ideal percentages are computed with a 32-bit product and\r\n * the runtime long division (zero when the total is not positive).  The\r\n * caste whose current share falls furthest below its ideal share (most\r\n * negative difference, index 0 by default) selects MakeMe from the\r\n * black caste table.  The population total variable is reused for the\r\n * chosen index (both live in the same frame slot).\r\n */\r\nextern int near CastePopB[];\r\nextern int far IdealCaste[];\r\nextern int far CasteTabB[];\r\nextern int far MakeMe;\r\n\r\nvoid far SetCasteProd(void)\r\n{\r\n@BODY@\r\n}\r\n",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "compiler": "msc700",
+  "max_candidates": 2
+}
