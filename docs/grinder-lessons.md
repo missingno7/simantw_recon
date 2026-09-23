@@ -233,3 +233,15 @@ both production jobs are escalated, so this evidence alone does not reopen
 them. `_DoReturnFoodAnt` has two stack-local differences in its 142-opcode
 attempt 07, but its 11 memory-operand differences and incomplete fixups make
 it a weaker match for this mechanism.
+
+### Recheck a TU negative with the actual best preserved body
+
+The first `_ButtonHeldInit` + `_ButtonHeld` unit trial used `_ButtonHeld`
+attempt 01, although attempt 08 had the stronger isolated body. A reviewed
+two-member replay with attempt 08 still failed: 472 candidate bytes, 36/460
+ordinary bytes and 5/47 fixups equal, with a conflicting private CONST
+placement. [Scoped replay](../evidence/experiments/button-held-best-tu/README.md).
+This closes the source-substitution hypothesis, but does not isolate selector
+pool placement as the sole cause: the second member's instructions remain
+misaligned, so many later relocation comparisons are not binding evidence
+until its source shape is corrected.

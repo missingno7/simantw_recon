@@ -14596,8 +14596,8 @@ Source: src/recovered/ErrorLog.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMA
 ```
 
 ## _YardToMap — SIMANT_MODULE:972A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 493 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 493 bytes.
+Source: src/recovered/wf_YardToMap-2e5b0deea5.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 972A  56                       push si

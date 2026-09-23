@@ -1,0 +1,24 @@
+{
+  "symbol": "_YardToMap",
+  "target": "SIMANT_MODULE +0x972A; 493 bytes",
+  "pre_solution_signature": {
+    "attempt": 4,
+    "result": "NO_COMPLETE_MATCH",
+    "body": "145/145 opcodes; 55/55 fixups; branch targets aligned",
+    "remaining_difference": "UpdateWindow(win_hwnd[34]) was outside the win_IsWinOpen(0x2300) guard, changing one literal/control-flow byte"
+  },
+  "decisive_change": {
+    "attempt": 5,
+    "change": "Move UpdateWindow(win_hwnd[34]) into the win_IsWinOpen(0x2300) block, after win_Swap(0x2300, 0x2200)",
+    "result": "STRICT exact; 493 bytes, 145/145 opcodes, 55/55 fixups",
+    "receipt": "attempt05/results.json",
+    "source": "src/recovered/wf_YardToMap-2e5b0deea5.c"
+  },
+  "earlier_ineffective_families": [
+    "attempt01 unified the two title-update paths; wrong transition guard and major body/fixup mismatch",
+    "attempt02 duplicated the title paths but retained the wrong guard; body still short and fixups incomplete",
+    "attempt03 added map-open gating around initial clip/unselect operations; still wrong transition guard",
+    "attempt04 corrected clip push/set/pop scope and transition predicate (win_hwnd[1] == 0 && win_hwnd[25] != 0); only the window-update scope remained"
+  ],
+  "scope": "This mechanism is specific to YardToMap; do not transfer its UI guard to MapToYard without target evidence."
+}
