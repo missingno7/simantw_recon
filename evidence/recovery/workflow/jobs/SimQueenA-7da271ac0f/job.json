@@ -1,7 +1,7 @@
 {
   "id": "SimQueenA-7da271ac0f",
   "symbol": "_SimQueenA",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T13:50:48.965572+00:00",
   "flags": [
     "/AL",
@@ -343,6 +343,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "e3d1b8b156b4adc25b1b8c75f0687cda11153c5583fc208a113e3836342762df",
+      "report": "evidence/recovery/workflow/jobs/SimQueenA-7da271ac0f/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "6b542bdd4ec5cbe996f7651f217ffd8e93fd3701fe4fb342d2cc5b75b12d27f4",
+      "report": "evidence/recovery/workflow/jobs/SimQueenA-7da271ac0f/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "c8d9b7815f9a05d4039d665c80389b46786d97ed36011d7e4dea3a91651efa11",
+      "report": "evidence/recovery/workflow/jobs/SimQueenA-7da271ac0f/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -375,5 +417,10 @@
   ],
   "parked_reason": "Semantics recovered: y = list column (0x278e) as a masked word, type = list type (0x2f62), x = list row (0x23a4); LifeA[x][y] = type; for queen codes ((type & 0x7f) > 0x67) the cell one step ahead in direction (type & 7) via Dy8/Dx8 is read and, unless it holds type - 8 or FindInAList finds an ant there, the queen is cleared from LifeA and the list (boolean materialised in AX and tested). Best candidate evidence/recovery/workflow/jobs/SimQueenA-7da271ac0f/attempt02/candidate0000.c (170 vs 169 bytes) keeps the structure but MSC7 enregisters the ant parameter (SI) and moves y/type to DI/CX, whereas the original keeps ant in memory (read into BX for the three list reads and again for the final write), y in SI and type in DI, and reads the first block through an immediate segment load but the later Dy8/Dx8/AlistT through CONST slots (0xc31c, 0xc31e, 0xc318). Offset reads, a far record pointer and boolean forms (attempts 01-02, 9 candidates) do not reproduce the allocation, and the slots report conflicting placement (unit pool). ",
   "parked_next_experiment": "Do not repeat read-form matrices. Resolve the SIMANT1 selector pool first (AlistT slot precedes the Dy8/Dx8 slots created by earlier functions); for the body, test forms where ant has only two uses and y/type dominate (for example the record reads through a struct pointer typed with the list layout), observing 'mov bx,[bp+4]' at +0xb and again at +0x9d.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "The best recorded draft remains evidence/recovery/workflow/jobs/SimQueenA-7da271ac0f/attempt02/candidate0000.c; it was 170/169 bytes with the recovered control-flow semantics. Reissue attempt03 and three reasoned tests (attempts04-06) did not improve it: the best of the new tests is 159/169 bytes and 43/61 opcodes. The target keeps the ant index in its stack slot, y in SI, type in DI, and uses row/destination locals at [bp-2], [bp-4], [bp-6]; the current candidates enregister the parameter, spill type/coordinates differently, and reverse the FindInAList argument homes. New based AlistX/Y/T declarations and the target's y/type/x use order are now tested from an admitted sibling, but they still do not produce the target register/frame shape. Isolated candidates also retain the known unit CONST pool conflict: AlistT at c318 precedes Dy8/Dx8 slots c31c/c31e. Stop this isolated search until new unit or source-layout evidence can distinguish the original shape.",
+  "next_experiment": "When the SIMANT1 unit gains new admitted members or a source-layout fact, compare the first-use order and parameter lifetime against the DoRestAnt/SimEggA neighbors, then test one evidence-backed whole-unit source form that preserves the ant parameter in memory and the y/type locals in SI/DI. If the body becomes exact, assemble with the real AlistT/Dy8/Dx8 selector introducers; do not pad or synthesize selector references."
 }

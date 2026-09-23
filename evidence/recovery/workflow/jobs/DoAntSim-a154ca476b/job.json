@@ -1,7 +1,7 @@
 {
   "id": "DoAntSim-a154ca476b",
   "symbol": "_DoAntSim",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:38:05.221300+00:00",
   "flags": [
     "/AL",
@@ -72,8 +72,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 10443,
+      "sha256": "0b384dc84c8ca8b5b98cf87371a8116bfe7bfae2e7c2503f7c2d24ff5f51ad12"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -341,6 +341,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "8a9a8eb180fbf221bbb8d023392cfb43704795ae4dd0fea2ab7a53246ba8b269",
+      "report": "evidence/recovery/workflow/jobs/DoAntSim-a154ca476b/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "63abd25b1c46dce69a4bc26229de26a20c6c86f939b5a0d7a1d940e3fa9d72c1",
+      "report": "evidence/recovery/workflow/jobs/DoAntSim-a154ca476b/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "1ecc706ede1e89c03cdc6ddbc059b5ec98af0088e6bfb9876b03d684d2472ab1",
+      "report": "evidence/recovery/workflow/jobs/DoAntSim-a154ca476b/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "e7601fc43d74bc2ed0553f07365a042bb5de78f32aabcc5784765d8d3261da59",
+      "report": "evidence/recovery/workflow/jobs/DoAntSim-a154ca476b/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -361,5 +417,10 @@
   ],
   "parked_reason": "This is the master per-tick orchestrator (762 bytes, ~26 calls) rather than a per-ant state handler like this session's other targets. direct_data_bindings resolves only 7 of 68 far operand instructions to a MAPSYM name (_NextFeed, _match_position, _ModePopB, _ModePopR, _IsGameOver, _gGameNeedsSaving); the remaining ~60 are private, unnamed PACK words/counters -- AI-difficulty timers (decrementing ss:[0xac86]/[0xac88] with floor-at-0 clamps), a tick counter wrapping at 0x1000, per-plane population aggregation into at least six distinct 0x9e70-0x9e7a/0xa084-0xa08e destinations summed from pairs of 0x78xx/0x7bxx source words, two 0x14-word table clears gated by a status bit, and literal thresholds (0x96, 0x32, 1, 3) whose game-balance meaning is not evidenced locally. A structural placeholder candidate (build/grind/agentU/_DoAntSim.c) capturing only the confidently-evidenced DoAntSimA/B/R/Y + CompactListA/B/R plane-mode dispatch and the IsGameOver-gated Feedback/gGameNeedsSaving tail scored 34/232 opcodes (144/762 bytes) -- nowhere near convergence, confirming the gap is genuinely unresolved private semantics, not an expression-shape or register issue. Best candidate: build/grind/agentU/_DoAntSim.c.",
   "parked_next_experiment": "Cross-reference the ~60 unnamed PACK offsets (0x76a8/0x76aa two-word counter, 0x85fc mode flag, 0x7404/0xa07e/0x8122/0x7d44 zeroed words, 0x72c4/0x72c6, 0x79de/0x79e0, 0x80f4/0x80f6 dword pairs, 0xac86/0xac88 difficulty timers, 0x80b4 difficulty level, 0x8a60/0x8a62/0x9e84 feed-threshold trio, 0x7c44/0x8078 countdown timers, the 0x78xx/0x7bxx population source words, 0x7c0a, 0x9dda already named IsGameOver) against evidence/topology/private-data-topology.json and any admitted sibling that shares a selector with them, before attempting a full-body candidate again; this needs an expert data-topology pass, not further isolated-function search.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Two historical drafts and four causally varied source-shape experiments leave the same core gap: the saved far pointer to _match_position never matches the target's BX/ES frame form, while only 39/232 opcodes align and the readable draft omits most of the 762-byte function. Changing the array to __based(PACK) yields segment 9 but a direct fixup; __based(SIMANT_DATA_GROUP) yields the wrong segment 8; an explicit far local pointer improves alignment slightly but uses SI/DS and still does not reproduce the target. Beyond that local residue, target behavior depends on many unnamed state locations (including segment 9:0x76a8/0x76aa, segment 8:0x85fc/0x8a60/0x8a62, segment 9:0x9fb6/0x9fb8 and other counters) plus four distinct simulation-pass call sequences. Existing MAPSYM and recovered-source evidence does not establish the identities/ownership of these state cells or the complete branch-to-call semantics. The current C remains explicitly speculative and earns no credit.",
+  "next_experiment": "Cross-reference the unnamed segment 8/9 and SS state cells from all neighboring SIMANT1 functions and use initialized/BSS plus existing counters/history evidence to identify natural state objects; also map all four per-plane switch arms and their call order. Then replace the placeholder with a full semantic draft before spending remaining codegen budget. Do not retry far/base declaration spellings already recorded in attempts 3-6."
 }

@@ -3105,13 +3105,13 @@
   ],
   "referenced_declarations": [
     {
-      "declaration": "extern long far BitmapImageSize(int width, int height, int depth);",
-      "source": "src/recovered/wf_OpenCasteWindow-3d435baaee.c",
+      "declaration": "extern long far BitmapImageSize(int width, int height, int planes);",
+      "source": "src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern long far BitmapImageSize(int width, int height, int depth);",
-      "source": "src/recovered/wf_OpenModeWindow-b97cc714f9.c",
+      "source": "src/recovered/wf_tu_simant_B324_InitTriVars_6_scaffold-355c471c2b.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -3186,7 +3186,7 @@
     },
     {
       "declaration": "extern int near MapPlane;",
-      "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
+      "source": "src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -3206,32 +3206,32 @@
     },
     {
       "declaration": "extern int far match_position[];",
-      "source": "src/recovered/wf_AddAntToBList-e7a166edf6.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern int far match_position[];",
-      "source": "src/recovered/wf_AddAntToRList-63e08ccbad.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern int far match_position[];",
       "source": "src/recovered/wf_CompactListA-2c6f7e42f7.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
-      "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
-      "source": "src/recovered/wf_InitMapFunctions-70fb457ea5.c",
+      "declaration": "extern int far match_position[];",
+      "source": "src/recovered/wf_CompactListB-6f09945019.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far match_position[];",
+      "source": "src/recovered/wf_CompactListR-17480d0ee2.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
-      "source": "src/recovered/wf_OpenCasteWindow-3d435baaee.c",
+      "source": "src/recovered/wf_hanim_MakeAnimSet-ff5bff9d29.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
-      "source": "src/recovered/wf_OpenModeWindow-b97cc714f9.c",
+      "source": "src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
+      "source": "src/recovered/wf_tu_simant_B324_InitTriVars_6_scaffold-355c471c2b.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -3276,7 +3276,7 @@
     },
     {
       "declaration": "extern void far win_GetObjRect(int object, struct WinRect far *rect);",
-      "source": "src/recovered/wf_InitTriVars-e97b7c6f72.c",
+      "source": "src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -4024,109 +4024,24 @@
     "segment": "ANTEDIT_MODULE",
     "range": "antedit:67C6-E9E9"
   },
-  "reconstruction_rules": [
-    {
-      "id": "link-far-call-translation",
-      "rule": "LINK 5.30 /FARCALLTRANSLATION rewrites a same-segment far call into NOP; PUSH CS; CALL near (five bytes). Write an ordinary far call to the named function; the strict matcher validates the linker transformation independently.",
-      "evidence": [
-        "evidence/experiments/toolchain/link-probe/",
-        "tools/library_match.py"
-      ],
-      "matched": [
-        "same_segment_call"
-      ]
-    },
-    {
-      "id": "declaration-order-ds-es",
-      "rule": "Declaration order can determine DS versus ES code generation: the compiler keeps the last-loaded far selector live, so the order in which far objects are first referenced in the source (not the extern declaration order) fixes ES reuse and the CONST selector-pool order. Reorder references, not declarations, to change selector traffic.",
-      "evidence": [
-        "evidence/topology/build-topology.json",
-        "docs/build-topology.md"
-      ],
-      "matched": [
-        "far_data"
-      ]
-    },
-    {
-      "id": "parameter-copied-to-local",
-      "rule": "When the historical code holds a parameter's value in SI/DI throughout, an explicit local copy of the parameter (register variable candidate) can be required; the compiler does not enregister [bp+n] parameters directly.",
-      "evidence": [
-        "docs/grinder-lessons.md"
-      ],
-      "matched": [
-        "si_di_home"
-      ]
-    },
-    {
-      "id": "word-indexed-arrays",
-      "rule": "Arrays are frequently word-indexed (SHL 1 / ADD reg,reg before the displacement). Preserve the observed element width: declare int arrays for two-byte strides, char arrays for byte strides, eight-byte structs for SHL 3.",
-      "evidence": [
-        "docs/grinder-lessons.md"
-      ],
-      "matched": [
-        "indexed_access"
-      ]
-    },
-    {
-      "id": "mapsym-name-over-invented",
-      "rule": "Never invent a convenient symbol when MAPSYM provides the real one: use the exact name from direct_data_bindings; an unnamed operand inside a named public array is an index into that array, not a new private object.",
-      "evidence": [
-        "docs/grinder-lessons.md",
-        "evidence/topology/supervisor-far-names/bindings.json"
-      ],
-      "matched": [
-        "always"
-      ]
-    },
-    {
-      "id": "offset-is-not-identity",
-      "rule": "A matching numeric offset does not establish object identity: equal offsets in different segments are different objects, and a BSS word placed by constraint inside another object's data proves nothing.",
-      "evidence": [
-        "tools/library_match.py",
-        "docs/build-topology.md"
-      ],
-      "matched": [
-        "always"
-      ]
-    },
-    {
-      "id": "far-object-needs-selector",
-      "rule": "Far-object identity requires selector/segment evidence: an NE selector relocation on the slot or immediate that loads ES, resolved to the object's segment. Prefer the packet's addressed_segment and exact_mapsym_names.",
-      "evidence": [
-        "docs/grinder-lessons.md"
-      ],
-      "matched": [
-        "far_data"
-      ]
-    },
-    {
-      "id": "selector-pool-is-per-object",
-      "rule": "The CONST selector pool is private to one object and ordered by first reference across the whole unit; a function whose pool constraints conflict in isolation needs its unit context, and functions sharing a pool word belong to the same unit.",
-      "evidence": [
-        "evidence/topology/build-topology.json"
-      ],
-      "matched": [
-        "far_data"
-      ]
-    },
-    {
-      "id": "compiler-profile-is-unit-level",
-      "rule": "The compiler profile belongs to the unit context (layout/compiler-profiles.json): use the packet profile as given; a code-shape mismatch that only /Og explains is profile evidence for the unit (report it), not a per-function flag to try.",
-      "evidence": [
-        "layout/compiler-profiles.json",
-        "evidence/experiments/optimizer-profile/README.md"
-      ],
-      "matched": [
-        "always"
-      ]
-    }
-  ],
   "parked_review": null,
   "similar_matched_functions": [
+    {
+      "symbol": "_DrawMapData",
+      "source": "src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c",
+      "size": 397,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
     {
       "symbol": "_DoTool",
       "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
       "size": 358,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_PreDrawSpider",
+      "source": "src/recovered/wf_tu_antedit_00F4_OverlayTileSet_20_scaffold-e8caf5259e.c",
+      "size": 337,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
@@ -4139,18 +4054,6 @@
       "symbol": "_ConnectWall",
       "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
       "size": 241,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_ProcEditEvent",
-      "source": "src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c",
-      "size": 232,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_ResetEditScrollRange",
-      "source": "src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c",
-      "size": 230,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],
@@ -4825,6 +4728,171 @@
       "index_registers": [],
       "frame_assumption": "Local ES load from an NE selector slot; assumes DS=DGROUP and no unlisted incoming entry",
       "scope": "Far operand evidence only; indexed displacement names do not establish bounds or object size"
+    }
+  ],
+  "reconstruction_rules": [
+    {
+      "id": "link-far-call-translation",
+      "rule": "LINK 5.30 /FARCALLTRANSLATION rewrites a same-segment far call into NOP; PUSH CS; CALL near (five bytes). Write an ordinary far call to the named function; the strict matcher validates the linker transformation independently.",
+      "evidence": [
+        "evidence/experiments/toolchain/link-probe/",
+        "tools/library_match.py"
+      ],
+      "matched": [
+        "same_segment_call"
+      ]
+    },
+    {
+      "id": "declaration-order-ds-es",
+      "rule": "Declaration order can determine DS versus ES code generation: the compiler keeps the last-loaded far selector live, so the order in which far objects are first referenced in the source (not the extern declaration order) fixes ES reuse and the CONST selector-pool order. Reorder references, not declarations, to change selector traffic.",
+      "evidence": [
+        "evidence/topology/build-topology.json",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "parameter-copied-to-local",
+      "rule": "When the historical code holds a parameter's value in SI/DI throughout, an explicit local copy of the parameter (register variable candidate) can be required; the compiler does not enregister [bp+n] parameters directly.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "si_di_home"
+      ]
+    },
+    {
+      "id": "word-indexed-arrays",
+      "rule": "Arrays are frequently word-indexed (SHL 1 / ADD reg,reg before the displacement). Preserve the observed element width: declare int arrays for two-byte strides, char arrays for byte strides, eight-byte structs for SHL 3.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "mapsym-name-over-invented",
+      "rule": "Never invent a convenient symbol when MAPSYM provides the real one: use the exact name from direct_data_bindings; an unnamed operand inside a named public array is an index into that array, not a new private object.",
+      "evidence": [
+        "docs/grinder-lessons.md",
+        "evidence/topology/supervisor-far-names/bindings.json"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "offset-is-not-identity",
+      "rule": "A matching numeric offset does not establish object identity: equal offsets in different segments are different objects, and a BSS word placed by constraint inside another object's data proves nothing.",
+      "evidence": [
+        "tools/library_match.py",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "far-object-needs-selector",
+      "rule": "Far-object identity requires selector/segment evidence: an NE selector relocation on the slot or immediate that loads ES, resolved to the object's segment. Prefer the packet's addressed_segment and exact_mapsym_names.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "natural-static-private-state",
+      "rule": "Reconstruct private state as natural static data with an evidence-backed size, type and initializer (a static in _DATA when the original bytes are initialised, in _BSS only when the original word lies in the BSS region), never as address-padding arrays.",
+      "evidence": [
+        "docs/grinder-lessons.md",
+        "evidence/topology/supervisor-private-state/initialized-data-evidence.json"
+      ],
+      "matched": [
+        "private_data"
+      ]
+    },
+    {
+      "id": "selector-pool-is-per-object",
+      "rule": "The CONST selector pool is private to one object and ordered by first reference across the whole unit; a function whose pool constraints conflict in isolation needs its unit context, and functions sharing a pool word belong to the same unit.",
+      "evidence": [
+        "evidence/topology/build-topology.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "compiler-profile-is-unit-level",
+      "rule": "The compiler profile belongs to the unit context (layout/compiler-profiles.json): use the packet profile as given; a code-shape mismatch that only /Og explains is profile evidence for the unit (report it), not a per-function flag to try.",
+      "evidence": [
+        "layout/compiler-profiles.json",
+        "evidence/experiments/optimizer-profile/README.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "far_data",
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ],
+      "matched": [
+        "far_data",
+        "private_data"
+      ]
     }
   ],
   "evidence_state": null,

@@ -1,6 +1,6 @@
 {
   "symbol": "_DeadAntHere",
-  "source": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/profile-candidate.c",
+  "source": "evidence/recovery/workflow/jobs/DeadAntHere-a337cdab09/candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,12 +9,11 @@
     "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
-  "max_candidates": 1,
+  "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "Pointer arithmetic form (match_position + 0x4f54) instead of &match_position[0x4f54] for the saved far-pointer local",
+  "semantic_summary": "* DeadAntHere: place/age a dead-ant corpse marker on the A-plane map at\n * (x, y) for a colony flagged by type, recycling one slot of a 100-entry\n * circular buffer (match_position[0x4f54], DeadX/DeadY) that remembers\n * the last 100 corpse positions. The previous occupant of the recycled\n * slot is aged or restored first: when TERRAINset (PACK:9B6E, see\n * src/recovered/wf_IsItFood-c02f58780a.c) is clear, an old corpse tile in\n * the plain 0x10-0x17 band is replaced by a fresh random background tile\n * (SRand16); when set, an old tile in the 8-0x17 band is stepped toward\n * its decayed sub-band. The new cell then gets a fresh corpse tile: with\n * TERRAINset clear, any free cell (< 0x18) is stamped with SRand4() plus\n * 0x14 (type != 0) or 0x10 (type == 0), unconditionally; with TERRAINset\n * set, only a cell whose current value is still a fresh state (< 4) is\n * restamped, combining that state, a coin flip (SRand1(2)) and type.\n * LifeA is always cleared for the new cell. MapA/LifeA reuse\n * src/recovered/wf_GetMap-cddf28f960.c and\n * src/recovered/wf_GetLife-172de0cfc1.c; match_position reuses\n * src/recovered/wf_GetAntIndex-a8eba5e594.c.",
   "binding_evidence": [
-    "layout/compiler-profiles.json",
-    "asg-simant1-0000-og"
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],
   "publics": [
     "_DeadAntHere"

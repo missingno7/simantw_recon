@@ -53,10 +53,10 @@ extern int far SRand4(void);
 extern long far MacTickCount(void);
 extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);
 
-static signed char near dirDeltaX[6] = { 0, 0, 0, 0, 0, 0 };
-static signed char near dirDeltaY[6] = { 0, 0, 0, 0, 0, 0 };
-static signed char near dirJitter[4] = { 0, 0, 0, 0 };
-static signed char near dirMagnitude[6] = { 0, 0, 0, 0, 0, 0 };
+static signed char near dirDeltaX[6] = { 3, 4, -3, -4, 0, 0 };
+static signed char near dirDeltaY[6] = { -3, 0, 3, 0, 0, 0 };
+static signed char near dirJitter[4] = { 0, 1, 2, 1 };
+static signed char near dirMagnitude[6] = { 0, 3, 6, 9, 100, 102 };
 
 void far SimDog(void)
 {

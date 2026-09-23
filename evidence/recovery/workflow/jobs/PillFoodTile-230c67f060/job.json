@@ -1,7 +1,7 @@
 {
   "id": "PillFoodTile-230c67f060",
   "symbol": "_PillFoodTile",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T08:35:39.496787+00:00",
   "flags": [
     "/AL",
@@ -416,5 +416,10 @@
   ],
   "parked_reason": "Semantics and structure recovered: best drafts attempt05/candidate0000.c and attempt03/candidate0028.c have equal 110-byte extent, matching CFG (outer IsValidA==1 guard; inner IsValidA==1 guard covering only the PillarMap store; tile clamp <0x18 -> 0x4b), all four internal/segment-9/segment-10 offset fixups and PillDir/PillarMap/MapA bindings resolved. Two whole-member blockers remain. (1) Private CONST selector pool: original loads PillDir's selector from DGROUP 0xc5a0 and PillarMap's from 0xc5a6 (two foreign slots between, both segment 9); a single-function TU emits adjacent slots, so the matcher reports 'conflicting private placement constraints CONST'. (2) Three residual codegen differences insensitive to 78 variants: x/y allocated DI/SI instead of SI/DI (PlacePillTile's original uses the candidate's DI/SI order for the same tie); 'mov es,[0xc5a6]' emitted between idiv and 'mov bx,dx; shl bx,1' instead of after; and the tile pointer computed in BX and stored to [bp-2] instead of computed in DX and moved to BX. Tried: inline/block-local/if-else coordinate selection, n%=6 / n=n%6 / block k, 2-D/struct/*row/byte-cast PillarMap, direct MapA clamp (loses the pointer entirely), block-scoped/register tile, ANSI/K&R (both orders)/register parameters, &MapA[]/MapA+ pointer spelling, x<<6. Budget 5/8 attempts, 78/192 candidates.",
   "parked_next_experiment": "Supervisor TU experiment: reconstruct the SIMTWO_MODULE far-object first-use order so that two other far objects (owners of slots 0xc5a2 and 0xc5a4) are referenced between PillDir and PillarMap; only then does a body match become admissible. Discriminating observation for the residual codegen: a candidate that emits 'mov si,[bp+6]; mov di,[bp+8]' and 'mov es,[slot]' before 'mov bx,dx' - if TU context (e.g. preceding functions' register-variable history or a shared far pointer to PillarMap) flips these, the same TU experiment tests both; do not repeat single-function spelling variants.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Best readable draft is evidence/recovery/workflow/jobs/PillFoodTile-230c67f060/attempt05/candidate0000.c; fresh /Oeglw reissue is attempt06/candidate0000.c with its diff at evidence/recovery/workflow/jobs/PillFoodTile-230c67f060/attempt06/candidate0000.diff.txt. The target's semantics and closed 110-byte scope are established, but complete proof still fails. Under the assigned unit profile the fresh candidate has 41/47 opcode agreement and a different register/branch/frame shape; the best prior candidates match CFG and named PillDir/PillarMap/MapA uses, yet the isolated object cannot place the PillarMap selector at original CONST slot 0xc5a6 because two earlier unit references own 0xc5a2 and 0xc5a4. Five bounded source-shape batches (78 candidates) already tried both parameter orders, local/register and pointer forms, and PillarMap indexing shapes; attempt06 rechecked the best candidate under the current profile but does not close the body. This is no longer a useful isolated-expression search.",
+  "next_experiment": "With new evidence from the admitted simtwo:4CDC component and this job's exact unit order, perform a supervisor TU experiment that composes preserved exact bodies for _DoPillar through _PillFoodTile and uses only evidence-backed POOLSTUB_TEXT stand-ins for unclaimed introducers. Check whether the preceding members naturally introduce the two segment-9 selector words before PillarMap, and whether compiling PillFoodTile in that whole TU context changes its DI/SI parameter allocation, ES-load placement, and BX/DX tile-pointer shape. Do not add fake data references to the recovered body."
 }

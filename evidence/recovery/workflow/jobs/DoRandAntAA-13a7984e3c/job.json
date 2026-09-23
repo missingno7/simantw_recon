@@ -1,7 +1,7 @@
 {
   "id": "DoRandAntAA-13a7984e3c",
   "symbol": "_DoRandAntAA",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:23:22.397939+00:00",
   "flags": [
     "/AL",
@@ -72,8 +72,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 10443,
+      "sha256": "0b384dc84c8ca8b5b98cf87371a8116bfe7bfae2e7c2503f7c2d24ff5f51ad12"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -355,6 +355,76 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "42095f3217069363e2abb24e2f1e0365bbfd678a4bf1631de15b911dc624178a",
+      "report": "evidence/recovery/workflow/jobs/DoRandAntAA-13a7984e3c/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "96c99dd203475c54f17dfc7012ab5c36be9772e59a87126ee377df94616ad201",
+      "report": "evidence/recovery/workflow/jobs/DoRandAntAA-13a7984e3c/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "baf0b50530bc3681821b4908bc4082f68a0246e0720d7d91bb0be30af9af611a",
+      "report": "evidence/recovery/workflow/jobs/DoRandAntAA-13a7984e3c/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "56be2e43516469c6c861da3f1151c4ea4f2bbd8f88e90718f606eb978ff44e03",
+      "report": "evidence/recovery/workflow/jobs/DoRandAntAA-13a7984e3c/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "7d54c10323d67882af0a1dda7ad41e4e7cbe1ebec0132d675fc97e62bcfa97dd",
+      "report": "evidence/recovery/workflow/jobs/DoRandAntAA-13a7984e3c/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -375,5 +445,10 @@
   ],
   "parked_reason": "Strong semantic match on first candidate: 192/220 opcodes (87%), 611/588 bytes. Full body decoded and reproduced: inline IsItHole test + GoInNest (identical shape to blocked _DoReturnFoodAnt), GetRandDir(x,y,dir)+Dx8/Dy8 step, Barrier-gated turn-in-place, empty-cell commit with no stamina/scent (this state has none), IsYellowAnt(occupant)==1 && (attribute^MeColor)&0x80 gating YellowFight(index,1), the (occupant^attribute)&0x80==0 friendly-turn case, and otherwise full StartFightA-shaped combat (FindInAList/GetWinner/AlarmHere2, colour/mode/stamina updates) -- all calls, operands and branch targets line up. Remaining differences are the exact same root cause as _DoReturnFoodAnt (also blocked LOCAL_FRAME_LAYOUT in this session): target computes the found/hole flag through one shared merge point (xor cx,cx / mov cx,1 / or cx,cx;je) reached from 3 places, giving it a 0x14-byte frame; every C shape tried (nested if/else-if, and an explicit goto to one shared check_hole label) still produces either 3 separate inlined found-checks (if/else, 192/220, kept as best) or a slightly worse layout (goto, 191/220) and an 0x12-byte frame. Best candidate: build/grind/agentU/_DoRandAntAA.c.",
   "parked_next_experiment": "Apply whatever C shape resolves _DoReturnFoodAnt's/\u200b_DoDigOutAntA's identical shared-merge-point and frame-size gap first (they are simpler standalone cases of the same pattern), then reapply it here; also try declaring 'found' as the same width/slot as the target's cx (a persistent word local touched by all three branches via straight assignment, never reused for anything else) to see if that alone recovers the missing 2 frame bytes.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

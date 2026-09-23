@@ -1,6 +1,6 @@
 {
   "symbol": "_QueenMoveB",
-  "source": "evidence/recovery/workflow/jobs/QueenMoveB-6e6e9ffa78/profile-candidate.c",
+  "source": "evidence/recovery/workflow/jobs/QueenMoveB-6e6e9ffa78/candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,12 +9,11 @@
     "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
-  "max_candidates": 1,
+  "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "Same shared-funnel structure as test2 but with the y<3 guard split into two sequential nested-if OR checks (dir<=5 then dir>=3) instead of a combined && range test, matching the target's two independent cmp/branch pairs",
+  "semantic_summary": "* GetBestDir: pick the best of the 8 Dx8/Dy8 step directions from\n * (x, y) toward (a, b) on the given plane, mirroring the shape of the\n * already-solved GetRedBestDirs/GetMyBestDirs siblings. best/fallback\n * start at -1/-2 (best returned unchanged if the starting distance to\n * (a,b) is already <=0). Each direction whose step tile is not an\n * obstacle (IsNotObstacle(plane,nx,ny)==1) and is not a pebble\n * (IsThisPebble(plane, GetMap(plane,nx,ny))==0) and whose stepped\n * distance improves on the current threshold updates the threshold; if\n * the stepped tile has life or is not clear it only updates the\n * fallback, otherwise it updates best. Returns best if set, else the\n * fallback.",
   "binding_evidence": [
-    "layout/compiler-profiles.json",
-    "asg-simant1-2d4e-og"
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],
   "publics": [
     "_QueenMoveB"

@@ -68,7 +68,6 @@ void near DoToNestAnt(int index)
 {
     int x, y;
     int attribute;
-    int found;
     int flags;
     int digmode;
     int dirlow;
@@ -83,26 +82,21 @@ void near DoToNestAnt(int index)
     y = AlistY(index);
     attribute = AlistT(index);
 
-    if (!IsValidA(x, y)) {
-        found = 0;
-    } else if (TERRAINset == 0) {
-        if (MapA[x * 64 + y] != 0x50)
-            found = 0;
-        else
-            found = 1;
-    } else {
-        newtile = MapA[x * 64 + y];
-        if (newtile < 0x80 || newtile > 0x8f)
-            found = 0;
-        else
-            found = 1;
+    if (IsValidA(x, y)) {
+        if (TERRAINset == 0) {
+            if (MapA[x * 64 + y] == 0x50)
+                goto enter_nest;
+        } else {
+            newtile = MapA[x * 64 + y];
+            if (newtile >= 0x80 && newtile <= 0x8f)
+                goto enter_nest;
+        }
     }
-
-    if (found) {
-        GoInNest(x, y, index);
-        return;
-    }
-
+    goto continue_outside_nest;
+enter_nest:
+    GoInNest(x, y, index);
+    return;
+continue_outside_nest:
     flags = attribute & 0xf8;
     digmode = (attribute & 0x78) >> 3;
     dirlow = attribute & 7;
@@ -117,7 +111,7 @@ void near DoToNestAnt(int index)
         isfood = (newtile >= 0x18 && newtile <= 0x27);
 
     if (isfood && (digmode == 6 || digmode == 2)) {
-        newattr = (unsigned char)(newtile | flags | 8);
+        newattr = (unsigned char)(newdir | flags | 8);
         AlistT(index) = newattr;
         LifeA[x * 64 + y] = newattr;
         AlistM(index) = 3;

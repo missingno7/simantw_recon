@@ -2019,22 +2019,27 @@
     },
     {
       "declaration": "extern void far SetMapPlane(int plane);",
-      "source": "src/recovered/wf_CenterAnt-5b585d8f15.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern void far SetMapPlane(int plane);",
       "source": "src/recovered/wf_SetDefaultWindows-770f6186c6.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern void far SetMapPlane(int plane);",
-      "source": "src/recovered/wf_SetMapModeAnt-f674ac382e.c",
+      "source": "src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern void far SetMapPlane(int plane);",
+      "source": "src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern void far SetYardMode(int mode);",
-      "source": "src/recovered/wf_SetMapModeAnt-f674ac382e.c",
+      "source": "src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern void far SetYardMode(int mode);",
+      "source": "src/recovered/wf_tu_simant_9D04_AddSomeAnts_9_scaffold-e90b738f21.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2049,17 +2054,17 @@
     },
     {
       "declaration": "extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);",
-      "source": "src/recovered/myBeginSoundReverse.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);",
       "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);",
-      "source": "src/recovered/wf_tu_simant_6A38_SetAlarmDropState_2_scaffold-bb12a76f6c.c",
+      "source": "src/recovered/wf_tu_gr_7712_IsMMMidiAvail_11_scaffold-950e5ffcca.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);",
+      "source": "src/recovered/wf_tu_simant_6A38_processSpider_5_scaffold-758a633aa7.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2084,7 +2089,7 @@
     },
     {
       "declaration": "extern int far win_IsWinOpen(int window);",
-      "source": "src/recovered/wf_CenterAnt-5b585d8f15.c",
+      "source": "src/recovered/wf_ClearMapScentButtons-11d8f7b573.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2094,7 +2099,7 @@
     },
     {
       "declaration": "extern int far win_IsWinOpen(int window);",
-      "source": "src/recovered/wf_GotoMapPoint-52cd2a4427.c",
+      "source": "src/recovered/wf_OpenMapYard-118a20a584.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2734,10 +2739,72 @@
       "matched": [
         "always"
       ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "far_data",
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ],
+      "matched": [
+        "far_data"
+      ]
     }
   ],
   "parked_review": null,
   "similar_matched_functions": [
+    {
+      "symbol": "_GotoQueen",
+      "source": "src/recovered/wf_tu_simant_9D04_AddSomeAnts_7_scaffold-8594bec5c8.c",
+      "size": 420,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
     {
       "symbol": "_SetUserButton",
       "source": "src/recovered/wf_tu_simant_01B6_DoUserButtonUpdate_13_scaffold-11b35534e1.c",
@@ -2757,15 +2824,9 @@
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_DoScenario",
-      "source": "src/recovered/wf_DoScenario-496dc7a0ac.c",
-      "size": 275,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_SetMapModeAnt",
-      "source": "src/recovered/wf_SetMapModeAnt-f674ac382e.c",
-      "size": 274,
+      "symbol": "_processSpider",
+      "source": "src/recovered/wf_tu_simant_6A38_processSpider_5_scaffold-758a633aa7.c",
+      "size": 290,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

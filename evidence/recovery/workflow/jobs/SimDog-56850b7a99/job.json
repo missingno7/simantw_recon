@@ -1,7 +1,7 @@
 {
   "id": "SimDog-56850b7a99",
   "symbol": "_SimDog",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:25:33.152675+00:00",
   "flags": [
     "/AL",
@@ -71,8 +71,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 10443,
+      "sha256": "0b384dc84c8ca8b5b98cf87371a8116bfe7bfae2e7c2503f7c2d24ff5f51ad12"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -368,6 +368,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "4720511a94e806b3648eeece413fb33da569f2e2ab84cf3585865104ce3582ac",
+      "report": "evidence/recovery/workflow/jobs/SimDog-56850b7a99/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "parked_blockers": [
@@ -375,5 +389,10 @@
   ],
   "parked_reason": "Three real revisions converge on the same limitation: an isolated compile cannot express the target's far-pointer materialization. The target addresses DogTurnCnt/DogPx/DogDir/DogPy through explicit bp-relative far pointer locals built as 'mov bx,LITERAL_OFFSET; mov es,word ptr [CONST_SELECTOR]; store both to frame' (e.g. attempt01 candidate.c offset6: mov bx,0x7a5a is a plain immediate, not a relocation). Attempt02 (int far *p = &DogTurnCnt;, the natural C for that shape) and attempt03 (int far *p = DogTurnCnt; via a single-element far-array decay, matching the already-admitted Dx8-pointer idiom in wf_AddAntToBList-e7a166edf6.c) both instead emit TWO fixups for the same offset (mov <fixup>[seg9,off31322]; mov <fixup>[seg9,off31322] again, needing an extra mov es,cx/mov bx,ax pair) because the isolated compiler cannot pre-resolve the pointer's OFFSET half as a link-time literal the way it can for a direct memory-operand displacement. Attempt04 (this file, build/grind/agentI/_SimDog.c, plain named-extern accesses with no pointer locals) reaches the target's exact byte length (946) and 248/323 opcodes, but necessarily loses the pointer-indirection instruction shape at those four reused spots (dec word ptr es:[bx] vs dec <fixup>), which is a real, not merely CONST-fixup-content, difference. Evidence: evidence/recovery/workflow/jobs/SimDog-56850b7a99/attempt01..03 results and aligned_asm (candidate_offset 6-20 in each). The four private near tables at DGROUP 0x236a-0x2380 (dirDeltaX/dirDeltaY/dirJitter/dirMagnitude, sizes inferred 6/6/4/6 from address spacing) also have no surfaced byte evidence in the inspect packet, so their initializers are placeholder zeros pending that evidence; this is a secondary, separate gap.",
   "parked_next_experiment": "Determine whether this compile pipeline can pre-resolve an extern far object's link-time OFFSET into a pointer-materializing MOV as a plain immediate (matching direct memory-operand displacement resolution) rather than emitting a second external fixup; if so, retry int far *p = &DogTurnCnt; style locals. Separately, surface the raw private-data bytes at DGROUP 0x236a-0x2380 (or their MAPSYM/topology evidence) so dirDeltaX/dirDeltaY/dirJitter/dirMagnitude can be initialized from evidence instead of placeholders.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+  ],
+  "reason": "Five isolated candidate attempts did not converge: direct globals produce an 8-byte frame and 946-byte body, while explicit far-pointer locals reproduce target-style BP slots but still leave broad branch/expression/frame differences. The original fixture confirms the private table bytes, so data identity is no longer the blocker. Available simtwo_1378 unit scaffold leaves _SimDog as a stub; target materializes distinct far-pointer temporaries for DogTurnCnt, DogDir, DogPy and DogPx at BP-8, BP-14, BP-18 and BP-0C. The remaining source declaration/use ordering cannot be derived from current standalone packet evidence.",
+  "next_experiment": "Recover the original SimTwo source context or a proven matched sibling/unit member that reveals SimDog's pointer-local declaration and first-use ordering; then test the exact body inside that unit context, retaining the fixture-confirmed table initializers."
 }

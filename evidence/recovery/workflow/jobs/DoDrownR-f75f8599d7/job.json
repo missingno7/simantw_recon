@@ -1,7 +1,7 @@
 {
   "id": "DoDrownR-f75f8599d7",
   "symbol": "_DoDrownR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T18:46:50.070596+00:00",
   "flags": [
     "/AL",
@@ -410,6 +410,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "163e088102810973fb0f7e9db9eee9280e5fcc3aa7959bf39e40cd65ad554b92",
+      "report": "evidence/recovery/workflow/jobs/DoDrownR-f75f8599d7/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -430,5 +444,10 @@
   ],
   "parked_reason": "Six semantically-equivalent revisions (far-vs-near MapR, flat-vs-2D indexing, separate RlistM/RlistT externs vs one shared Dx8[] array matching DoAntSimR/ClearLifeR/FindInRList, x/index split into a discrete copy-then-shift statement, attr copied into a local before the SRand1(3) call, and dir built statement-by-statement) all still compile to 198-202 bytes against a 210-byte target with first_structural_difference at offset 0. Target uses 'enter 4,0' (index stored to [bp-4], reloaded via bx after each of the two SRand1 far calls); every candidate variant instead has /Oe fold the whole (x<<6)+y computation into the otherwise-dead DI (x's own parameter register) and emit only 'push bp; mov bp,sp' with zero frame, never spilling. Symmetrically, target loads attr into si BEFORE the SRand1(3) call and later does 'mov cx,si; add al,cl; ...; and cx,0xf8' (a genuine register-to-register copy after the call), while every candidate keeps re-reading attr from [bp+0xa] memory or folds it straight into ax/si without ever emitting that cx copy. Even after consolidating BlistM/BlistT-style names into one shared far Dx8[] (matching admitted DoAntSimR/ClearLifeR/FindInRList declarations, which did fix one of the 29 unresolved-fixup issues), the matcher still reports 'conflicting private placement constraints CONST' and per-offset unresolved fixups for the two Dx8 field writes (offsets 0x44f0, 0x46e6) that the target routes through one reused CONST selector slot (0xc386) every time. Best candidate: build/grind/agentE/_DoDrownR.c (test6, job DoDrownR-f75f8599d7).",
   "parked_next_experiment": "Compare against twin _DoDrownB (byte-for-byte identical structural shape, same 4-byte enter frame the isolated candidate never reproduces) once its stale-toolchain job (DoDrownB-24e399ed13, protected-hash snapshot from 2026-09-21T18:42:03Z, predates a concurrent tools/tu_assembly.py edit) is expert-refreshed; if DoDrownB shows the identical DI-fold/no-frame divergence under a fresh job, this is unit-level codegen (simant1:2D4E) that an isolated single-function candidate cannot reproduce and may need tu_assembly.py unit-level compilation (alongside DoAntSimR/ClearLifeR/RaidOutR/CheckNestFightB, which already fix this unit's Dx8 selector-pool order) rather than further per-function declaration search.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "Attempt 08 exhausted the 8-attempt budget without a complete proof. Best candidates (attempt02-05/07) are 198-202 bytes and 63/71 opcodes against the 210-byte target. The target saves cell index in [bp-4], keeps original attr in SI across the random call, and builds the rolled byte in place; attempt08 used one combined source expression but still kept the index in DI, emitted extra arithmetic/reloads, and had register, expression, branch and memory-shape differences. All eight candidate snapshots and aligned diagnostics are preserved; strict matching also reports conflicting CONST selector placements and unresolved far-data bindings. No complete body/fixup/private-contribution proof.",
+  "next_experiment": "Test this body in its proven translation-unit context with the authentic near MapR/LifeR declarations and selector introducers; use a source hypothesis that keeps the computed cell index live in a local frame home across calls and preserves attr in a separate live local for the in-place direction update."
 }

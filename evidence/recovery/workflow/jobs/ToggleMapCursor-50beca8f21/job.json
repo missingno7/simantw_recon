@@ -1,7 +1,7 @@
 {
   "id": "ToggleMapCursor-50beca8f21",
   "symbol": "_ToggleMapCursor",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:24:50.596900+00:00",
   "flags": [
     "/AL",
@@ -353,5 +353,10 @@
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "PRIVATE_CONST_LAYOUT"
+  ],
+  "reason": "Attempts 01-03 preserve one readable semantic candidate with equal 261-byte extents, identical layout/CFG and 85/85 opcodes. The complete-member failures are confined to the shared private CONST selector pool: 11 two-byte selector operands account for all 22 literal divergences, with 28/45 fixups currently equal and conflicting/unplaced CONST obligations. Independent topology places _ToggleMapCursor in antedit:C19C, whose shared pool spans C1E0-C216 and includes its target selector sites C1E2, C1E4, C1F0, C1F2, C1F4 and C1F6. The documented scaffold build cannot derive a slot map because this body is not an isolated strict match; a partial no-scaffold compile also fails because the selected public placements are noncontiguous without the intervening members. No source-shape edit can resolve this unit-wide ordering obligation, and no recovery credit is claimed.",
+  "next_experiment": "Build a contiguous antedit:C19C unit with the preceding map members that introduce the shared C1E0-C1F6 selector pool, then strict-test this preserved candidate in that complete unit context."
 }

@@ -1,0 +1,1093 @@
+{
+  "job": "GetWinner-c0a47b129e",
+  "candidate": 0,
+  "admitted": true,
+  "audit_only": false,
+  "semantic_summary": "* GetWinner: resolve combat between two ant identifiers a and b, each\n * encoding a team in bit 0x80 and a level-ish index in bits 0x78. While\n * Invincible, RAntsKilled (long) is incremented and the winner is b if\n * a's bit 0x80 is set, else a. Otherwise a combat-odds table indexed by\n * both combatants' (id&0x78)>>3 nibble picks a threshold (private near\n * tables at DGROUP 0x22c6 [16 bytes] and 0x22d6 [size undetermined,\n * indexed up to (15<<2)+15]; no MAPSYM/byte evidence surfaced for their\n * contents, so placeholder zeros are used) that RRand(10) is compared\n * against; the loser's side is charged (BlackLost/BAntsKilled if the\n * winner's bit 0x80 is set, else RedLost/RAntsKilled) and the winner\n * (a or b, whichever \"won\") is returned. Plain ret/push-bp prologue:\n * this is a near function.",
+  "binding_evidence": [
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+  ],
+  "receipt": {
+    "source": "src/recovered/wf_GetWinner-c0a47b129e.c",
+    "source_identity": {
+      "size": 1952,
+      "sha256": "5dcc2de1d337e620ff8f80c21d5e9bd6279b9a48f90a01254469785119008f51"
+    },
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oeglw",
+      "/NTSIMANT1_MODULE"
+    ],
+    "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+    "command": [
+      "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+      "-conf",
+      "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W0_krhno42g\\work\\RUN.CONF",
+      "-fastlaunch",
+      "-nogui",
+      "-nomenu",
+      "-noconsole"
+    ],
+    "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oeglw /NTSIMANT1_MODULE INPUT.C > OUTPUT.LOG",
+    "exit_code": 0,
+    "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+    "stderr": "",
+    "object": "build/compiler-workers/W0_krhno42g/job0003/OUTPUT.OBJ",
+    "object_identity": {
+      "size": 738,
+      "sha256": "6f15a80f0c7053843121f8aab2f033a0243141a57140b404399507cacb4223ad"
+    },
+    "fixture_dependencies": [],
+    "unsupported_option": false,
+    "worker_id": 0,
+    "worker_session": "build/compiler-workers/W0_krhno42g",
+    "batch_directory": "build/compiler-workers/W0_krhno42g",
+    "batch_index": 2,
+    "worker_implementation": {
+      "tools/compiler_worker.py": {
+        "size": 7358,
+        "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+      },
+      "tools/compiler_wait.asm": {
+        "size": 658,
+        "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+      }
+    },
+    "configuration_identity": {
+      "size": 437,
+      "sha256": "c50bc5c6440dc64e4db7898bcb1c340b82e9aeef3642a28b4e16aebda769b454"
+    },
+    "wait_helper_identity": {
+      "size": 99,
+      "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+    },
+    "timing": {
+      "runner_startup_seconds": 0,
+      "environment_launches": 0,
+      "queue_dispatch_seconds": 0.010294000000158121,
+      "compiler_execution_seconds": 0.3895994999998038,
+      "total_compile_request_seconds": 0.4038166000000274,
+      "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+    },
+    "source_snapshot": "build/compiler-service/jobs/e22c8a153b8b4ff2b8cf5ad4b43fbbee/INPUT.C",
+    "request_id": "e22c8a153b8b4ff2b8cf5ad4b43fbbee",
+    "service_instance": "3ea2869f05d144b3bffdf821b355adb5"
+  },
+  "comparison": {
+    "result": "STRONGLY_SUPPORTED_MEMBER",
+    "issues": [],
+    "placements": {
+      "1": [
+        6,
+        9972
+      ],
+      "3": [
+        10,
+        49978
+      ],
+      "2": [
+        10,
+        8902
+      ]
+    },
+    "private_constraint_placements": [
+      3,
+      2
+    ],
+    "anchors": {
+      "1": [
+        [
+          6,
+          9972,
+          "_GetWinner"
+        ]
+      ]
+    },
+    "contributions": [
+      {
+        "segment": "SIMANT1_MODULE",
+        "original_segment": 6,
+        "original_offset": 9972,
+        "length": 242,
+        "initialized_ranges": [
+          [
+            0,
+            242
+          ]
+        ],
+        "literal_compared": 182,
+        "literal_equal": 182,
+        "divergences": [],
+        "fixups": [
+          {
+            "offset": 232,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40600
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 232,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 226,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40598
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 226,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 221,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49980
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 221,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 217,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 41188
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 217,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 5,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RedLost"
+              }
+            }
+          },
+          {
+            "offset": 212,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49986
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 212,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 204,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 39394
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 204,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 198,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 39392
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 198,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 193,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49984
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 193,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 189,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 31204
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 189,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BlackLost"
+              }
+            }
+          },
+          {
+            "offset": 184,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49982
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 184,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 164,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40600
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 164,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 158,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40598
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 158,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 153,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49980
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 153,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 149,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 41188
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 149,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 5,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RedLost"
+              }
+            }
+          },
+          {
+            "offset": 144,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49986
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 144,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 137,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 39394
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 137,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 131,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 39392
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 131,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 126,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49984
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 126,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 122,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 31204
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 122,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BlackLost"
+              }
+            }
+          },
+          {
+            "offset": 117,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49982
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 117,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 98,
+            "target": {
+              "kind": "internal",
+              "segment": 5,
+              "offset": 5486
+            },
+            "equal": true,
+            "reason": "NE selector relocation + offset",
+            "omf": {
+              "segment": 1,
+              "offset": 98,
+              "location_type": 3,
+              "width": 4,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 6,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RRand"
+              }
+            }
+          },
+          {
+            "offset": 91,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 8918
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 91,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "_DATA"
+              }
+            }
+          },
+          {
+            "offset": 80,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 8902
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 80,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "_DATA"
+              }
+            }
+          },
+          {
+            "offset": 66,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 8902
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 66,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "_DATA"
+              }
+            }
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40600
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 30,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 24,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40598
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 24,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 19,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49980
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 19,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          },
+          {
+            "offset": 12,
+            "target": {
+              "kind": "internal",
+              "segment": 8,
+              "offset": 35420
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 12,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 1,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_Invincible"
+              }
+            }
+          },
+          {
+            "offset": 7,
+            "target": {
+              "kind": "internal",
+              "segment": 10,
+              "offset": 49978
+            },
+            "equal": true,
+            "reason": "resolved offset and frame",
+            "omf": {
+              "segment": 1,
+              "offset": 7,
+              "location_type": 1,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 1,
+              "frame_index": 1,
+              "target_method": 0,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "segment",
+                "name": "CONST"
+              }
+            }
+          }
+        ],
+        "transformations": []
+      },
+      {
+        "segment": "_DATA",
+        "original_segment": 10,
+        "original_offset": 8902,
+        "length": 32,
+        "initialized_ranges": [
+          [
+            0,
+            32
+          ]
+        ],
+        "literal_compared": 32,
+        "literal_equal": 32,
+        "divergences": [],
+        "fixups": [],
+        "transformations": []
+      },
+      {
+        "segment": "CONST",
+        "original_segment": 10,
+        "original_offset": 49978,
+        "length": 10,
+        "initialized_ranges": [
+          [
+            0,
+            10
+          ]
+        ],
+        "literal_compared": 0,
+        "literal_equal": 0,
+        "divergences": [],
+        "fixups": [
+          {
+            "offset": 8,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 41188
+            },
+            "equal": true,
+            "reason": "NE selector for independently named target",
+            "omf": {
+              "segment": 3,
+              "offset": 8,
+              "location_type": 2,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 5,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RedLost"
+              }
+            }
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 39392
+            },
+            "equal": true,
+            "reason": "NE selector for independently named target",
+            "omf": {
+              "segment": 3,
+              "offset": 6,
+              "location_type": 2,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 4,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 4,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 31204
+            },
+            "equal": true,
+            "reason": "NE selector for independently named target",
+            "omf": {
+              "segment": 3,
+              "offset": 4,
+              "location_type": 2,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 3,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_BlackLost"
+              }
+            }
+          },
+          {
+            "offset": 2,
+            "target": {
+              "kind": "internal",
+              "segment": 9,
+              "offset": 40598
+            },
+            "equal": true,
+            "reason": "NE selector for independently named target",
+            "omf": {
+              "segment": 3,
+              "offset": 2,
+              "location_type": 2,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 2,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_RAntsKilled"
+              }
+            }
+          },
+          {
+            "offset": 0,
+            "target": {
+              "kind": "internal",
+              "segment": 8,
+              "offset": 35420
+            },
+            "equal": true,
+            "reason": "NE selector for independently named target",
+            "omf": {
+              "segment": 3,
+              "offset": 0,
+              "location_type": 2,
+              "width": 2,
+              "self_relative": false,
+              "frame_method": 5,
+              "frame_index": null,
+              "target_method": 2,
+              "target_index": 1,
+              "displacement": 0,
+              "target": {
+                "kind": "external",
+                "name": "_Invincible"
+              }
+            }
+          }
+        ],
+        "transformations": []
+      }
+    ],
+    "literal_compared": 214,
+    "literal_equal": 214,
+    "fixups_equal": 34,
+    "fixups_total": 34,
+    "publics": [
+      "_GetWinner"
+    ],
+    "scaffold_segments": []
+  },
+  "targets": {
+    "_GetWinner": {
+      "segment": 6,
+      "offset": 9972,
+      "size": 241,
+      "code_segment": "SIMANT1_MODULE",
+      "extent_status": "CONFIRMED",
+      "extent_evidence": "Closed original and candidate recursive CFGs, explicit NOP gaps, full initialized coverage and exact complete-member comparison",
+      "comparison": "member",
+      "historical_filename": null,
+      "proof": "BYTE_MATCHED_RECONSTRUCTION"
+    }
+  },
+  "compiler_profile": {
+    "name": "og",
+    "basis": "ASSIGNED",
+    "assignment": "asg-simant1-0000-og",
+    "context": "simant1:0000",
+    "evidence": [
+      "evidence/experiments/optimizer-profile/probes/DoFightA-55d1b9b984.json",
+      "evidence/experiments/optimizer-profile/probes/DoReturnFoodAnt-82971198db.json"
+    ],
+    "component": "simant1:0000",
+    "refuted_profiles": [],
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oeglw",
+      "/NTSIMANT1_MODULE"
+    ]
+  },
+  "unit": null,
+  "scaffold": null,
+  "superseded_recipes": {},
+  "scope": "Exact readable reconstruction, not original text or filename"
+}

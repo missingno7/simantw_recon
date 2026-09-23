@@ -25,10 +25,10 @@
    ]
   },
   {
-   "id": "ant-lists-one-dx8-object",
+      "id": "ant-lists-one-dx8-object",
    "rule": "The ant lists (A/B/R list arrays) derive from one real Dx8 far object where the selector evidence establishes it; do not declare separate synthetic arrays per list when the original loads one selector and indexes with an element width of eight bytes.",
-   "triggers": [
-    "ant_list"
+      "triggers": [
+        "ant_list_shared_dx8"
    ],
    "evidence": [
     "evidence/topology/supervisor-far-names/named-far-operands.json"
@@ -219,19 +219,39 @@
     "tools/rebind_pack_index.py"
    ]
   },
-  {
-   "id": "based-list-fields-simant1-0000",
+    {
+      "id": "based-list-fields-simant1-0000",
    "rule": "In simant1:0000 the A-list fields are the public arrays AlistX/AlistY/AlistM/AlistT/AlistS addressed as `__based(__segname(\"SIMANT_DATA_GROUP\"))` (one segment word C318 with absolute displacements 0x23A4/0x2B78/0x2F62), while Dx8/Dy8 keep their own words (C31E/C31C). `tools/rebind_based_fields.py` rewrites `Dx8[i + 0xOFF]` spellings. Members that load the segment immediately (DoDefendNest) use no pool word and keep their spelling.",
-   "triggers": [
-    "ant_list"
-   ],
-   "evidence": [
-    "evidence/topology/supervisor-unit-sources/GoInNest.c",
-    "evidence/topology/build-topology.json"
-   ]
-  },
-  {
-   "id": "commutative-operand-declaration-order",
+      "triggers": [
+        "ant_list"
+      ],
+      "contexts": [
+        "simant1:0000"
+      ],
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/GoInNest.c",
+        "evidence/topology/build-topology.json"
+      ]
+    },
+    {
+      "id": "inline-hole-flag-join-simant1-0000",
+      "rule": "When `_IsValidA` and `_GoInNest` bracket the target's CX zero/one flag sequence, the target carries a hole result through a shared check before the GoInNest path. As a source-shape experiment, initialize one flag to zero, set it on the terrain-specific hole cases, and use an explicit `goto` to the shared test from early invalid/alternate branches; a direct `if (hole) return` may schedule the call block too early. This improved `_DoToAlarm` from 225/248 opcodes at 678 bytes to 227/248 at the exact 682-byte extent, but strict proof still fails. Recheck each target's branch graph and semantics.",
+      "triggers": [
+        "inline_hole_flag_join"
+      ],
+      "contexts": [
+        "simant1:0000"
+      ],
+      "evidence": [
+        "evidence/recovery/workflow/jobs/DoToAlarm-eebd22beab/attempt03/results.json",
+        "evidence/recovery/workflow/jobs/DoToAlarm-eebd22beab/attempt08/results.json",
+        "evidence/recovery/workflow/jobs/DoRecruitAnt-f80269cf27/attempt03/results.json",
+        "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt06/results.json",
+        "evidence/recovery/workflow/jobs/DoReturnFoodAnt-82971198db/attempt08/results.json"
+      ]
+    },
+    {
+      "id": "commutative-operand-declaration-order",
    "rule": "MSC 7 orders the operands of a commutative expression of two globals by their declaration order (the earlier-declared symbol becomes the second/memory operand: `tileWidth * editWidth` -> `mov ax,[tileWidth]; imul [editWidth]` requires editWidth declared before tileWidth). Rewriting the expression does not help (the compiler canonicalises it); the fix is declaration order. Isolated candidates: reorder externs. Units: record the pair in layout/declaration-order.json (applied by tu_assembly.compose).",
    "triggers": [
     "commutative operand swap",

@@ -148,6 +148,7 @@
       10211,
       10212
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 10213,
@@ -820,7 +821,12 @@
   "referenced_declarations": [
     {
       "declaration": "extern int far RRand(int range);",
-      "source": "src/recovered/wf_tu_simtwo_1378_InitSimYard_4-bf9b121c43.c",
+      "source": "src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far RRand(int range);",
+      "source": "src/recovered/wf_tu_simtwo_5AB0_RandWorld_12-c7664162e4.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -828,19 +834,19 @@
     {
       "symbol": "_GoInNest",
       "offset": 9594,
-      "source": null,
+      "source": "src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c",
       "size": 240
     },
     {
       "symbol": "_StartFightA",
       "offset": 9834,
-      "source": "src/recovered/wf_StartFightA-b2f3e31b2f.c",
+      "source": "src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c",
       "size": 137
     },
     {
       "symbol": "_DoFightA",
       "offset": 10214,
-      "source": null,
+      "source": "src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c",
       "size": 217
     },
     {
@@ -1213,15 +1219,18 @@
       "/AL",
       "/G2",
       "/Gs",
-      "/Oelw",
+      "/Oeglw",
       "/NTSIMANT1_MODULE"
     ],
     "profile": {
-      "name": "baseline",
-      "basis": "DEFAULT",
-      "assignment": null,
-      "context": null,
-      "evidence": null,
+      "name": "og",
+      "basis": "ASSIGNED",
+      "assignment": "asg-simant1-0000-og",
+      "context": "simant1:0000",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/DoFightA-55d1b9b984.json",
+        "evidence/experiments/optimizer-profile/probes/DoReturnFoodAnt-82971198db.json"
+      ],
       "component": "simant1:0000",
       "refuted_profiles": []
     },
@@ -1350,38 +1359,134 @@
       "matched": [
         "always"
       ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "far_data",
+        "indexed_access"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ],
+      "matched": [
+        "far_data"
+      ]
     }
   ],
-  "parked_review": null,
+  "parked_review": {
+    "job": "GetWinner-c0a47b129e",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "LOCAL_FRAME_LAYOUT"
+    ],
+    "attempts": 2,
+    "candidates": 2,
+    "best_report": "evidence/recovery/workflow/jobs/GetWinner-c0a47b129e/attempt02/results.json",
+    "detail": {
+      "blockers": [
+        "LOCAL_FRAME_LAYOUT"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 51,
+      "opcode_total": 79,
+      "candidate_bytes": 187,
+      "target_bytes": 241,
+      "register_only_differences": 3,
+      "branch_target_differences": 3,
+      "failed_fixup_reasons": {
+        "resolved offset and frame": 9,
+        "unsupported or unresolved target/frame": 10
+      },
+      "issues": [
+        "conflicting private placement constraints CONST",
+        "conflicting private placement constraints _DATA",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xb4",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xae",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xa9",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xa5",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xa0",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0x96"
+      ],
+      "unit_profile": {
+        "name": "baseline",
+        "basis": "DEFAULT",
+        "assignment": null
+      }
+    }
+  },
   "similar_matched_functions": [
     {
-      "symbol": "_EnterNest",
-      "source": "src/recovered/wf_EnterNest-606488b329.c",
-      "size": 155,
+      "symbol": "_GoInNest",
+      "source": "src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c",
+      "size": 240,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_CheckNestFightB",
-      "source": "src/recovered/wf_CheckNestFightB-6daf29ea80.c",
-      "size": 154,
+      "symbol": "_DoRandB",
+      "source": "src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c",
+      "size": 246,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_StartFightA",
-      "source": "src/recovered/wf_StartFightA-b2f3e31b2f.c",
-      "size": 137,
+      "symbol": "_RaidInB",
+      "source": "src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c",
+      "size": 235,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_DoDefendNest",
-      "source": "src/recovered/wf_DoDefendNest-ed5a5a93f0.c",
-      "size": 112,
+      "symbol": "_RaidInR",
+      "source": "src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c",
+      "size": 235,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_RaidOutB",
-      "source": "src/recovered/wf_RaidOutB-794c50ee5a.c",
-      "size": 110,
+      "symbol": "_DoRandR",
+      "source": "src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c",
+      "size": 248,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

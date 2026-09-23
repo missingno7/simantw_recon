@@ -1,7 +1,7 @@
 {
   "id": "DoAttackAnt-80be755651",
   "symbol": "_DoAttackAnt",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:28:33.615098+00:00",
   "flags": [
     "/AL",
@@ -72,8 +72,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 10443,
+      "sha256": "0b384dc84c8ca8b5b98cf87371a8116bfe7bfae2e7c2503f7c2d24ff5f51ad12"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -341,6 +341,90 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "f492bb4c5f27c9fbf403aeb05447b1f90a7d9e70541723efe7ca085d2ce47c0b",
+      "report": "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "6724e54ee8c6f10dd218836a1039515f1f12db4273759ede5927b9ac042fd8e5",
+      "report": "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "087fb9ce900a8e5eee762ff003d63c69bc9735a919235cf09f3648d35ab04477",
+      "report": "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "c8c76bbb8bf8dc01ba26fe62b6e18e3f3f6b65ac699ac15022c0159e52be2c7e",
+      "report": "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "67ab1e8c7bd538180db2de780ec367acee0900a3883e51ae135d455a650395f4",
+      "report": "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "fdbc79510dc68655f79e4e2eb7852403c26930e07f6cb99b9c3dc07d0cccd2de",
+      "report": "evidence/recovery/workflow/jobs/DoAttackAnt-80be755651/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -361,5 +445,10 @@
   ],
   "parked_reason": "Full semantic decode confirmed against direct_data_bindings, reusing the _DoReturnFoodAnt/_DoRandAntAA (both blocked, same unit) template: inline IsItHole test + GoInNest; new for this target, IsCarryCaste[caste*2]==1 gates replacing the caste nibble with UnCarryCaste[caste] (direction+team bits preserved via &0x87) to drop whatever the ant was carrying; GetNestDir(x,y,dirlow,attribute^0x80) -- team bit flipped to seek the *enemy* nest; Dx8/Dy8 step; Barrier-gated turn-in-place; empty-cell commit (no stamina/scent, matching DoRandAntAA); IsYellowAnt/MeColor-gated YellowFight vs turn-in-place; else StartFightA-shaped combat (FindInAList/GetWinner/AlarmHere2). First candidate reached 135/240 opcodes (671/640 bytes) with every call target, branch shape and constant right. Weaker byte match than the simpler DoRandAntAA sibling (87%) because of the added caste-transform block's register pressure carrying into the rest of the body -- same recurring register-allocation/frame-layout residue already logged for _DoReturnFoodAnt, _DoDigOutAntA and _DoRandAntAA in this session, not a semantic gap. Best candidate: build/grind/agentU/_DoAttackAnt.c.",
   "parked_next_experiment": "Once the shared hole-check merge-point / frame-size pattern is solved for the simpler siblings (_DoReturnFoodAnt, _DoDigOutAntA, _DoRandAntAA), reapply that fix here first, then focus specifically on the caste-transform block (candidate first diverges at offset 13, before the transform even runs, suggesting the AlistT word-read-into-DI-then-and-0xff idiom needs the same explicit-local treatment used elsewhere for SI-destination byte reads).",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

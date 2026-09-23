@@ -1,7 +1,7 @@
 {
   "id": "MowerFall-c59c4e8822",
   "symbol": "_MowerFall",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T13:25:12.966021+00:00",
   "flags": [
     "/AL",
@@ -385,6 +385,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "c33f010c9acc8413bc9010f8f113c7c67cfc5407c369ad6bc0de9cba45794726",
+      "report": "evidence/recovery/workflow/jobs/MowerFall-c59c4e8822/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "f319563ab0088940393e3498b5268127455ed1061cff90523ddd15d05966e11d",
+      "report": "evidence/recovery/workflow/jobs/MowerFall-c59c4e8822/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -416,5 +444,10 @@
   ],
   "parked_reason": "Best candidate evidence/recovery/workflow/jobs/MowerFall-c59c4e8822/attempt03/candidate0000.c (166 bytes, equal size): CurGameType gate, the guarded do-while countdown over ListIndexA with the type byte test and SRand4 chance (including the redundant ES reload on the skipped path), the row/column loads, the chained clear of the LifeA cell and list type, the spider kill and the YellowDeath(6) checks all match; the four CONST slots (0xc53e-0xc544) resolve. One instruction differs: the original materialises the shared zero with 'xor al,al' (+0x54) whereas MSC7 copies the already-zero BH ('mov al,bh') left by the column load. Load order, coordinate types, index forms, a zero local (int/char) and a cast constant (attempts 03-05, 25 candidates) all keep the BH copy; while/for/post-decrement loop forms (attempts 01-02) changed the loop shape instead.",
   "parked_next_experiment": "Do not repeat load-order or zero-local matrices. Find a form where no byte register is known zero when the clear value is needed (for example loading the column as a word with & 0xff too, or computing the LifeA index before the column byte load); distinguishing observation '32 c0' at +0x54 before the two byte stores.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Best readable source is evidence/recovery/workflow/jobs/MowerFall-c59c4e8822/attempt08/candidate0000.c; attempt07 and attempt08 remain preserved with exact aligned diagnostics. Under the assigned /Oeglw profile the code is 164 bytes against the 166-byte target (53/54 opcodes); the decisive body residue is the target's xor al,al feeding two zero stores, which persisted when a shared local zero was used. The rest of the body has matching branch logic and resolved semantic data/call identities, while complete proof also fails on selector-pool placement and corresponding fixups at CONST slots c53e/c540/c542/c544. Budget is exhausted at eight attempts. This is a concrete source-shape plus whole-TU binding blocker, not a semantic-completion claim.",
+  "next_experiment": "Use a reviewed whole-unit SIMTWO_MODULE experiment with _MowerFall's evidence-grounded body and real preceding member sources to test one specific hypothesis: the historical translation-unit optimization shares a zero-valued register across the LifeA and Dx8 stores while its selector introducers establish slots c53e-c544. Compare the resulting 166-byte member and selector fixups to attempt08; preserve the candidate if code shape remains 164 bytes."
 }

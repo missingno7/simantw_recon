@@ -1,6 +1,6 @@
 {
   "symbol": "_QueenMoveR",
-  "source": "evidence/recovery/workflow/jobs/QueenMoveR-c4d55997ad/profile-candidate.c",
+  "source": "evidence/recovery/workflow/jobs/QueenMoveR-c4d55997ad/candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,12 +9,11 @@
     "/Oeglw",
     "/NTSIMANT1_MODULE"
   ],
-  "max_candidates": 1,
+  "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "Mirror of admitted-structure twin QueenMoveB (funnel to shared return 0) with GetBestDir kind=3, R-colony field offsets, and the observed dir-0x18 store literal",
+  "semantic_summary": "* QueenMoveR: move the R-colony queen (and drag her tail) from (x, y).\n * GetBestDir(3, x, y, TileMassXR, TileMassYR) picks a direction toward\n * the colony's tile-mass centroid; -1 means \"stay\" (fail), any other\n * negative value falls back to a fresh SRand8() direction.  Near the\n * top edge (y<3) only directions 3..5 are allowed, else the move fails.\n * TryMoveDirR(x,y,dir) must succeed or the whole call fails.  On success,\n * the opposite direction ((dirHint^0xfc)&7) locates the cell just\n * vacated via the extended Dy8[opp+8]/regular Dx8[opp] delta pair; that\n * LifeR cell is cleared.  A stale tail segment there is looked up with\n * FindInRList(newCol,newRow,(dirHint&7)+0xe8); if one is found and\n * still active (Dx8[index+0x46e6]!=0), it is migrated to the new head\n * position (Dx8 life/column fields become x,y and its type field\n * becomes dir-0x18, the same byte value as dir+0xe8) and LifeR at the\n * new (x,y) is stamped with that same type value.  The call always\n * reports success (1) once TryMoveDirR has succeeded.  This mirrors\n * admitted twin QueenMoveB exactly, with GetBestDir's kind=3 (vs 2) and\n * the R-colony field offsets (0x4104/0x42fa/0x46e6) already used by\n * RlistT/DoAntSimR/ClearLifeR.",
   "binding_evidence": [
-    "layout/compiler-profiles.json",
-    "asg-simant1-5344-og"
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],
   "publics": [
     "_QueenMoveR"

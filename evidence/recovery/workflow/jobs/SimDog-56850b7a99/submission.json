@@ -1,6 +1,6 @@
 {
   "symbol": "_SimDog",
-  "source": "evidence/recovery/workflow/jobs/SimDog-56850b7a99/profile-candidate.c",
+  "source": "evidence/recovery/workflow/jobs/SimDog-56850b7a99/candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,12 +9,11 @@
     "/Oeglw",
     "/NTSIMTWO_MODULE"
   ],
-  "max_candidates": 1,
+  "max_candidates": 96,
   "axes": [],
-  "semantic_summary": "Array-decay far pointer locals matching AddAntToBList's Dx8-pointer idiom",
+  "semantic_summary": "* SimDog: advance the yard dog's per-frame state machine.\n *\n * DogTurnCnt is decremented every call; only when it goes negative does\n * the dog pick a new heading (DogDir) and re-arm DogTurnCnt to 4.\n *\n * Heading pick, CatOn!=0 (chasing the cat away): DogPx<5 -> 1; DogPx in\n * [5,8] -> 0 if DogPy>0, else YardCycle&3; DogPx>8 -> 3.\n *\n * Heading pick, CatOn==0 (wandering toward the boy), only when\n * NodeNum>=0x26: deltaX=DogPx-BoyPx, deltaY=DogPy-BoyPy. While both\n * |deltaX|>=1 and |deltaY|>=1, indoors (MapMode==0), the yard is normal\n * (YardMode<2) and the tick count has passed DogBarkDelay, the dog may\n * bark (myBeginSound 0x15) and DogBarkDelay is re-armed\n * SRand1(30)+MacTickCount()+60. Then: if both |deltaX|<2 and |deltaY|<2,\n * heading = YardCycle&3; else if deltaY<0 -> 2; deltaY>1 -> 0; deltaX<0\n * -> 1; deltaX>1 -> 3; otherwise YardCycle&3. Otherwise (NodeNum<0x26)\n * heading = (SRand1(3)+DogDir-1)&3.\n *\n * Movement: if DogDir==1 and SRand1(10)==0, DogDir becomes a running\n * heading SRand2()+4 and DogTurnCnt=6. The per-heading magnitude table\n * (dirMagnitude, plus a YardCycle-based jitter while walking, DogDir<=3,\n * or a YardCycle&1 jitter while running) becomes the new DogFrame value.\n * DogY/DogX advance by the per-heading delta tables; DogPy/DogPx are\n * rederived from the new position (row/column division) and clamped to\n * [0,15]/[0,11], each edge re-biasing DogDir back toward the yard.\n *\n * Around DogFrame 100-103, a second bark opportunity (SRand1(6)==0,\n * indoors, normal yard mode, tick count past DogBarkDelay) plays a sound\n * chosen by SRand4() (0/2 -> 0x17, 1 -> 0x15, 3 -> 0x16, else silent)\n * and re-arms DogBarkDelay the same way.",
   "binding_evidence": [
-    "layout/compiler-profiles.json",
-    "asg-simtwo-1378-og"
+    "Candidate declarations and source comments; inspect packet bindings before acceptance"
   ],
   "publics": [
     "_SimDog"

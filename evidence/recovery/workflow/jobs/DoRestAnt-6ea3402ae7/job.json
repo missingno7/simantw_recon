@@ -1,7 +1,7 @@
 {
   "id": "DoRestAnt-6ea3402ae7",
   "symbol": "_DoRestAnt",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T13:31:57.470070+00:00",
   "flags": [
     "/AL",
@@ -343,6 +343,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "0e8a4904a3efab00637b4165538c29ce8845d2257feb8b272d1f5a4310b5e9a3",
+      "report": "evidence/recovery/workflow/jobs/DoRestAnt-6ea3402ae7/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "55d706727f1075867883e76e2292bd5605fae6dabbf80b72d49946c76b0c673c",
+      "report": "evidence/recovery/workflow/jobs/DoRestAnt-6ea3402ae7/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "dd50f4598e73dfee8201a11495a2077f921adf09fcbe137a0e6040e0786a1223",
+      "report": "evidence/recovery/workflow/jobs/DoRestAnt-6ea3402ae7/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "358b7b40e579ce9b104dfce53192f90f5d90784b04796d5dfa1ae9af8b1d7e95",
+      "report": "evidence/recovery/workflow/jobs/DoRestAnt-6ea3402ae7/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -375,5 +431,10 @@
   ],
   "parked_reason": "Best candidate evidence/recovery/workflow/jobs/DoRestAnt-6ea3402ae7/attempt02/candidate0000.c (166 vs 168 bytes): list row/column loads through the Dx8 selector slot, IsValidA, the TERRAINset split (nest code 0x50 versus 0x80..0x8f), the nest flag tested with dec/jne, near GoInNest, SRand4 with mode 2 (0x2b78), OptionStates[5] and RestBalloons(x,y,1) all match; only the tail-merged placement of the flag assignments differs: the original keeps the first 'xor dx,dx' (invalid cell) block and the last 'mov dx,1' (code range) block, MSC7 keeps the first 'mov dx,1' and the last 'xor dx,dx'; boolean expressions, ternaries, nested ifs, explicit if/else per branch and the negated polarity (which duplicates the decision tail instead) do not reproduce it (attempts 01-02, 6 candidates). Independently the CONST slots (list 0xc318, TERRAINset 0xc320, OptionStates 0xc322) are non-adjacent, so an exact body would still escalate as DATA_LAYOUT.",
   "parked_next_experiment": "Do not repeat flag-assignment polarity matrices. Test forms where the zero result is produced once at the top (a goto to a shared 'inNest = 0' or an early-return structure with GoInNest inside the valid branch) and compare the tail-merge direction; distinguishing observation 'xor dx,dx / jmp' at +0x2c and 'mov dx,1' at +0x61. Resolve the SIMANT1 selector-pool gap first.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Attempt02/candidate0000.c remains the best draft at 166/168 bytes. Reissue attempt03 under the current unit profile reproduced its source-shape residue (60/66 opcodes): the original sets DX to zero on the invalid path and joins at dec dx; jne, while the candidate tail merge keeps the positive mov dx,1 path first; the custom-terrain range check also allocates the byte value through DH rather than the target's CX. The specified follow-up experiments were run and preserved: attempt04 placed GoInNest inside successful branches with early returns; attempts05-06 initialized one shared zero result (register-qualified in 06); attempt07 routed failures to a shared zero label. These did not approach the 166-byte best. All candidates still carry the known non-adjacent CONST selector pool requirement (0xc318, 0xc320, 0xc322), so isolated proof cannot complete. No new matched sibling or topology evidence justifies an expert reissue; pause ordinary work here rather than spend the remaining attempts on equivalent syntax.",
+  "next_experiment": "Wait for new SIMANT1 unit evidence that constrains the original declaration/order or a newly matched semantic sibling for this rest-state decision. Then perform one bounded source reconstruction from that evidence, focusing first on whether the terrain-range byte is materialized in CX and whether failed IsValidA/terrain branches join through xor dx,dx; jmp before the shared dec dx; jne tail. Compose the real selector introducers only after the body becomes exact."
 }

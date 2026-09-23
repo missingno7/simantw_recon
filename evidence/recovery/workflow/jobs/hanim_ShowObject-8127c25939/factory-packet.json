@@ -132,6 +132,7 @@
       27241,
       27242
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 27243,
@@ -839,8 +840,18 @@
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
+      "declaration": "extern void far *mem_Lock(unsigned int handle);",
+      "source": "src/recovered/wf_hanim_RemoveAnimSet-91a33c0781.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
       "declaration": "extern int far mem_Unlock(unsigned int handle);",
       "source": "src/recovered/wf_hanim_MakeAnimSet-ff5bff9d29.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far mem_Unlock(unsigned int handle);",
+      "source": "src/recovered/wf_hanim_RemoveAnimSet-91a33c0781.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -1059,11 +1070,237 @@
       "/AL",
       "/G2",
       "/Gs",
-      "/Oelw",
+      "/Oeglw",
       "/NTGR_MODULE"
-    ]
+    ],
+    "profile": {
+      "name": "og",
+      "basis": "ASSIGNED",
+      "assignment": "asg-gr-6410-og",
+      "context": "gr:6410",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/hanim_RemoveAnimSet-91a33c0781.json"
+      ],
+      "component": "gr:6410",
+      "refuted_profiles": []
+    },
+    "catalog": "layout/compiler-profiles.json",
+    "note": "Profile is attached to the object context; it is not a per-function switch and the grinder cannot change it"
+  },
+  "unit_context": {
+    "id": "gr:6410",
+    "publics": [
+      "_hanim_AddAnimObject",
+      "_hanim_RemoveAnimObject",
+      "_hanim_RemoveAllAnimObjects",
+      "_hanim_ActuallyRemoveAnimObjects",
+      "_hanim_HideObject",
+      "_hanim_ShowObject",
+      "_hanim_SetObjectPos",
+      "_hanim_MakeAnimSet",
+      "_hanim_RemoveAnimSet",
+      "_hanim_RenderAnimSet"
+    ],
+    "segment": "GR_MODULE",
+    "range": "gr:6410-A26E"
+  },
+  "reconstruction_rules": [
+    {
+      "id": "link-far-call-translation",
+      "rule": "LINK 5.30 /FARCALLTRANSLATION rewrites a same-segment far call into NOP; PUSH CS; CALL near (five bytes). Write an ordinary far call to the named function; the strict matcher validates the linker transformation independently.",
+      "evidence": [
+        "evidence/experiments/toolchain/link-probe/",
+        "tools/library_match.py"
+      ],
+      "matched": [
+        "same_segment_call"
+      ]
+    },
+    {
+      "id": "declaration-order-ds-es",
+      "rule": "Declaration order can determine DS versus ES code generation: the compiler keeps the last-loaded far selector live, so the order in which far objects are first referenced in the source (not the extern declaration order) fixes ES reuse and the CONST selector-pool order. Reorder references, not declarations, to change selector traffic.",
+      "evidence": [
+        "evidence/topology/build-topology.json",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "mapsym-name-over-invented",
+      "rule": "Never invent a convenient symbol when MAPSYM provides the real one: use the exact name from direct_data_bindings; an unnamed operand inside a named public array is an index into that array, not a new private object.",
+      "evidence": [
+        "docs/grinder-lessons.md",
+        "evidence/topology/supervisor-far-names/bindings.json"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "offset-is-not-identity",
+      "rule": "A matching numeric offset does not establish object identity: equal offsets in different segments are different objects, and a BSS word placed by constraint inside another object's data proves nothing.",
+      "evidence": [
+        "tools/library_match.py",
+        "docs/build-topology.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "far-object-needs-selector",
+      "rule": "Far-object identity requires selector/segment evidence: an NE selector relocation on the slot or immediate that loads ES, resolved to the object's segment. Prefer the packet's addressed_segment and exact_mapsym_names.",
+      "evidence": [
+        "docs/grinder-lessons.md"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "selector-pool-is-per-object",
+      "rule": "The CONST selector pool is private to one object and ordered by first reference across the whole unit; a function whose pool constraints conflict in isolation needs its unit context, and functions sharing a pool word belong to the same unit.",
+      "evidence": [
+        "evidence/topology/build-topology.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "compiler-profile-is-unit-level",
+      "rule": "The compiler profile belongs to the unit context (layout/compiler-profiles.json): use the packet profile as given; a code-shape mismatch that only /Og explains is profile evidence for the unit (report it), not a per-function flag to try.",
+      "evidence": [
+        "layout/compiler-profiles.json",
+        "evidence/experiments/optimizer-profile/README.md"
+      ],
+      "matched": [
+        "always"
+      ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    }
+  ],
+  "parked_review": {
+    "job": "hanim_ShowObject-8127c25939",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "REGISTER_ALLOCATION"
+    ],
+    "attempts": 1,
+    "candidates": 6,
+    "best_report": "evidence/recovery/workflow/jobs/hanim_ShowObject-8127c25939/attempt01/results.json",
+    "detail": {
+      "blockers": [
+        "REGISTER_ALLOCATION"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 56,
+      "opcode_total": 78,
+      "candidate_bytes": 166,
+      "target_bytes": 179,
+      "register_only_differences": 3,
+      "branch_target_differences": 6,
+      "failed_fixup_reasons": {
+        "LINK same-segment far call/jump translation": 5,
+        "unsupported or unresolved target/frame": 1
+      },
+      "issues": [
+        "GR_MODULE unresolved/mismatched fixup at 0x9c",
+        "GR_MODULE unresolved/mismatched fixup at 0x91",
+        "GR_MODULE unresolved/mismatched fixup at 0x7b",
+        "GR_MODULE unresolved/mismatched fixup at 0x78",
+        "GR_MODULE unresolved/mismatched fixup at 0x21",
+        "GR_MODULE unresolved/mismatched fixup at 0x9",
+        "GR_MODULE literal bytes differ"
+      ],
+      "probe": {
+        "strict": [],
+        "diagnostic": [],
+        "results": {
+          "baseline": "NO_COMPLETE_MATCH",
+          "ga": "NO_COMPLETE_MATCH",
+          "og": "NO_COMPLETE_MATCH",
+          "og-ga": "NO_COMPLETE_MATCH",
+          "ogi": "NO_COMPLETE_MATCH"
+        }
+      },
+      "unit_profile": {
+        "name": "og",
+        "basis": "ASSIGNED",
+        "assignment": "asg-gr-6410-og"
+      },
+      "note_profile": "unit context now carries profile og; a fresh attempt inherits it"
+    }
   },
   "similar_matched_functions": [
+    {
+      "symbol": "_GRectOutline",
+      "source": "src/recovered/wf_GRectOutline-cbe72b492f.c",
+      "size": 186,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
+    {
+      "symbol": "_font_InitFonts",
+      "source": "src/recovered/wf_tu_gr_611C_font_InitFonts_2_scaffold-1c4a9db378.c",
+      "size": 169,
+      "basis": "Same code group and nearest size; similarity is not semantic proof"
+    },
     {
       "symbol": "_GRectInvOutline",
       "source": "src/recovered/wf_GRectInvOutline-81f8c3e9d1.c",
@@ -1072,7 +1309,7 @@
     },
     {
       "symbol": "_font_PrintStr",
-      "source": "src/recovered/wf_font_PrintStr-23d609869e.c",
+      "source": "src/recovered/wf_tu_gr_611C_font_InitFonts_2_scaffold-1c4a9db378.c",
       "size": 165,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
@@ -1080,18 +1317,6 @@
       "symbol": "_GBoxFillOutline",
       "source": "src/recovered/wf_GBoxFillOutline-d99ffce56d.c",
       "size": 164,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_RallocRealloc",
-      "source": "src/recovered/wf_RallocRealloc-d8db281862.c",
-      "size": 163,
-      "basis": "Same code group and nearest size; similarity is not semantic proof"
-    },
-    {
-      "symbol": "_StillDown",
-      "source": "src/recovered/wf_StillDown-a90f7d48e5.c",
-      "size": 161,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

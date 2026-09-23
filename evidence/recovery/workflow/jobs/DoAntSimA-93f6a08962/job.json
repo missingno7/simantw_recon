@@ -1,7 +1,7 @@
 {
   "id": "DoAntSimA-93f6a08962",
   "symbol": "_DoAntSimA",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:23:19.495102+00:00",
   "flags": [
     "/AL",
@@ -72,8 +72,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 10443,
+      "sha256": "0b384dc84c8ca8b5b98cf87371a8116bfe7bfae2e7c2503f7c2d24ff5f51ad12"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -369,6 +369,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "41c193c919f504fca35143d67930a4b3266518360e533c663eed309cb9d9ccdc",
+      "report": "evidence/recovery/workflow/jobs/DoAntSimA-93f6a08962/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "95eab6cf7049671bad7263db9be3e07ce6e104fe75d3c86e8976220d044d75d2",
+      "report": "evidence/recovery/workflow/jobs/DoAntSimA-93f6a08962/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "a920c860c9454ccea6f9d3f355228537ed606adfab012af8716fcbadb051b327",
+      "report": "evidence/recovery/workflow/jobs/DoAntSimA-93f6a08962/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -389,5 +431,10 @@
   ],
   "parked_reason": "Best candidate reaches 289/447 opcode matches (65%) across 3 attempts. Reconstructed the full do-while(Tindex--; ...; while(Tindex>0)) outer loop over the A-list from ListIndexA, the SRand256 death check against HealthB/HealthR gated on AlistT's colour bit, the mode<=0x13 bounds check and 20-slot dense switch (modes 0-19, with mode1/mode4 sharing a single DoToNestAnt(Tindex) call matching the target's own tail-merged trampoline at file offset 340, and modes 17/18 falling through with no action like the target's default), and all 20 case bodies including the inline egg-expire (mode8), trail/smell-avoidance via Dx8/Dy8 direction tables and FindInAList (mode9), PherMapBN/PherMapRN pheromone-threshold follow (mode12), IsValidA/TERRAINset/MapA hole-entry via GoInNest with SRand4/RestBalloons fallback (mode13), FlyAwayB/FlyAwayR mode-14 tail, and the CurGameType==2 SwarmCntB/SwarmCntR/QueenStorageB/QueenStorageR absorption logic (mode16). Attempt01 (288/447) first diverged at offset59 because the death-check's AlistT(Tindex) macro was expanded twice (once for the !=0 test, once for &0x80 health selection), producing two separate far reloads where the target caches one word load in SI and reuses it for both tests (mov si,word ptr es:[bx+0x2f62]; and si,0xff; je ...; test si,0x80). Attempt02 (289/447, via a nested if with an explicit 'int a = AlistT(Tindex)' local) and attempt03 (289/447, via the equivalent '&&'-chained assignment-in-condition form) both reproduce that single SI-cached read exactly (test si,0x80 now matches byte-for-byte) but the outer SRand256()==0 branch itself now diverges: target uses the short-je-near/jmp-far workaround (je 0x2e enters the death-check block; unconditional jmp 0xaf skips it) because the block is far away, while both candidates emit a single direct 'jne <skip>' since the candidate's own block happens to end up within short-jump range given its other byte-count differences -- this is a downstream consequence of the exact same class of MSC7 /Oe branch-distance/register-allocation choice that blocked DoNestAntB (REGISTER_ALLOCATION, DI lacking a byte sub-register) and DoNestAntR (own vs opposing body ordering) in this session, not a semantic error: every named global (AlistT/AlistM/AlistX/AlistY at Dx8 offsets 0x2f62/0x2b78/0x23a4/0x278e, PherMapBN/PherMapRN, TERRAINset, SwarmCntB/R, QueenStorageB/R, FlyAwayB/R) and every call's argument order were confirmed against the packet's direct_data_bindings and match by name. Two remaining uncertain guesses, not yet contradicted by the diagnostic: the mode19 handler (file offset 1312, a near_call whose target 0xffff96d4 has no resolved name in the packet) is written here as DoRepoLoit(Tindex) by elimination against the unit_context's public list (DoRepoLoit and DoRepoFly are the only siblings never otherwise referenced); and mode13's TERRAINset==0 vs !=0 branches are written as MapA[cell]==0x50 vs MapA[cell] in 0x80..0x8f by direct transcription of the two disassembled compare shapes.",
   "parked_next_experiment": "Once the top-of-function branch-distance issue is understood (see DoNestAntB's blocked job for the same class of evidence), re-diff specifically the mode19 call site to confirm/correct the DoRepoLoit guess against its resolved target address, and check the case8/case9/case13 local-variable declarations (x/y/nx/ny/canMove currently declared once at function scope) against block-scoped alternatives, since B's block-scoping experiment made matches worse but R's did not -- test both ways here with the branch-distance issue otherwise unchanged. Best source is build/grind/agentL/_DoAntSimA.c (attempt03 body); full diagnostics in the job's attempt03 evidence.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+  ],
+  "reason": "Six distinct isolated source/profile experiments produced no strict match. The strongest Oeglw candidates align through the loop setup but remain divergent at the random-death join and across the large 20-mode switch; the label variant normalized to an already observed object. The packet confirms simant1:0000 uses shared based A-list fields and selector slots C314/C316/C318, but standalone tests keep these as unresolved CONST/pool obligations; a separate based-declaration attempt also changed code layout without resolving the body. The current draft's later case bodies remain a reconstruction hypothesis rather than a byte-grounded source.",
+  "next_experiment": "Recover the original simant1:0000 declaration/pool ordering or test within a faithful full-unit source context, then align the SRand256 zero/nonzero join at target offsets 0x29-0xaf and trace each switch case against target instructions before another whole-body attempt."
 }

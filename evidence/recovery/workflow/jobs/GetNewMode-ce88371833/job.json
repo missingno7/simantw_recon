@@ -1,7 +1,7 @@
 {
   "id": "GetNewMode-ce88371833",
   "symbol": "_GetNewMode",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T15:47:04.340962+00:00",
   "flags": [
     "/AL",
@@ -399,6 +399,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "71a115bfc4960a14d27de316b328de246380678cbe12685906dea6248514e289",
+      "report": "evidence/recovery/workflow/jobs/GetNewMode-ce88371833/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "profile": {
@@ -417,5 +431,10 @@
   ],
   "parked_reason": "Semantics established (Sonnet grinder, 6 attempts, best build/grind/gnm2.c, 186 vs 192 bytes, 52/68 opcodes): with flags & 0x80 the next mode is ModeTabWB[StrategicModeR][SRand8()] for mode 2, ModeTabSB[StrategicModeR][SRand8()] for mode 6, else CasteModeTabB[mode]; with ModeAuto == 1 the same three-way choice uses StrategicModeB; otherwise modes 2/6 return ModeMe and others CasteModeTabB[mode]. The original duplicates the mode tests per branch (mode reloaded into DI, SI, DI) but cross-jumps the identical lookup tails ('shl bx,3 / add bx,ax / mov es / mov al,[bx+off]' shared via 'jmp 0x21' and 'jmp 0x7f'); /Oelw emits both copies of each tail, and the single-dispatch rewrite (strat local, build/grind/gnm6.c) changes the register that carries the row (SI/AX instead of BX) and drops the duplicated tests.",
   "parked_next_experiment": "Keep the per-branch duplicated tests but make the two lookup tails textually identical (same table expression through a shared macro, row loaded into a temp before SRand8) so C7's cross-jumping merges them; distinguishing observation: 'jmp 0x21' at +0x6a into the shared 'shl bx,3' tail.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Attempt 08 exhausted the 8-attempt job budget and failed to reproduce the target shared lookup tail. Attempt 07 remains the best candidate at 192 bytes and 55/68 opcodes; the target cross-jumps into a shared shl bx,3 lookup tail, while the newest candidate emits an early standalone return and drops to 186 bytes and 48/68 opcodes. All prior candidates and reports are preserved. No exact body or relocation proof was achieved.",
+  "next_experiment": "Investigate the whole SIMTWO translation unit with the exact duplicate mode tests and compiler cross-jump behavior needed to form the shared lookup tail; require source evidence for register and table-slot allocation before another bounded recovery job."
 }

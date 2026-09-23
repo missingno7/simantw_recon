@@ -24135,8 +24135,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GPatBox — GR_MODULE:1AB2
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 205 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 205 bytes.
+Source: src/recovered/wf_GPatBox-b326d1b571.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 1AB2  c8080000                 enter 8, 0
@@ -27905,8 +27905,8 @@ Source: src/recovered/wf_MSClipEnd-48c3851864.c. Flags: ['/AL', '/G2', '/Gs', '/
 ```
 
 ## _PaintStuff — GR_MODULE:3E92
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 290 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 290 bytes.
+Source: src/recovered/wf_PaintStuff-4a441706dd.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 3E92  c8220000                 enter 0x22, 0
@@ -28981,8 +28981,8 @@ Source: src/recovered/wf_WaitedEnough-b76919c4b5.c. Flags: ['/AL', '/G2', '/Gs',
 ```
 
 ## _gr_CenterStrInRectClear — GR_MODULE:4816
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 217 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 217 bytes.
+Source: src/recovered/wf_gr_CenterStrInRectClear-92445db40b.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 4816  c80c0000                 enter 0xc, 0
@@ -96086,8 +96086,8 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flag
 ```
 
 ## _GetWinner — SIMANT1_MODULE:26F4
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 241 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 241 bytes.
+Source: src/recovered/wf_GetWinner-c0a47b129e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 26F4  55                       push bp

@@ -1,7 +1,7 @@
 {
   "id": "hanim_ShowObject-8127c25939",
   "symbol": "_hanim_ShowObject",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T14:24:56.616907+00:00",
   "flags": [
     "/AL",
@@ -329,6 +329,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "95c0ea5712c93950de1c511a414d2497f45cc7371a3dc847eeeba81f611a7035",
+      "report": "evidence/recovery/workflow/jobs/hanim_ShowObject-8127c25939/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "a72adbbcda21f5aece4589ad359b518e516a3306e3187223e737173148e114d5",
+      "report": "evidence/recovery/workflow/jobs/hanim_ShowObject-8127c25939/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "e9bff65475c39f67f59b8c32865b77f3b9ccb1e3c1d24834cef0856d89391c8e",
+      "report": "evidence/recovery/workflow/jobs/hanim_ShowObject-8127c25939/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "7618eeb971abfa4a2da989f10a4680b2c54d74d08b52954cfae8cbc4f0522af1",
+      "report": "evidence/recovery/workflow/jobs/hanim_ShowObject-8127c25939/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -360,5 +416,10 @@
   ],
   "parked_reason": "Byte-for-byte twin of the parked hanim_HideObject (only the stored flag value 1 and the message 'anim_show object not found' at DGROUP 0xa76 differ). One new probe here (evidence/recovery/workflow/jobs/hanim_ShowObject-8127c25939/attempt01, 6 candidates: void/char/struct-typed lock result kept apart from a walking pointer, count read via set->count or *(int far *)set) coalesces the lock result with the walker exactly as in HideObject (166 vs 179 bytes). The original keeps the array pointer in SI/[bp-8], copies its segment to [bp-2], walks BX/CX with the count read through DS:[DI], and stores the hit into [bp-0xa]/[bp-8]; see the HideObject blocker for the exhausted matrices.",
   "parked_next_experiment": "Resolve together with hanim_HideObject and hanim_RemoveAnimSet (frame-homed far pointer with SI offset, path-dependent spills): whichever source form matches HideObject applies here with visible = 1 and the 0xa76 literal; restore the string literal before acceptance (with the literal present the diff is UNSUPPORTED until the code aligns).",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "REGISTER_ALLOCATION"
+  ],
+  "reason": "The authoritative twin remains evidence/recovery/workflow/jobs/hanim_HideObject-579ae04c92/attempt05/candidate0000.c, whose body is 177/179 bytes; its documented pointer/index/register residue is shared with this target. The ShowObject transfer in attempt03 reaches 179 bytes and 70/78 opcodes, but still coalesces the lock result with the walker. Two new pointer-lifetime probes (attempts04-05) and the path-dependent enclosing far-pointer probe (attempt06) did not improve the body; attempt06 is 192 bytes/48 of 78 opcodes. The target keeps the array base in SI, scans through a BX/CX pair, and only spills the far match result on the hit path; the tested readable C forms either home the walker/result pointers too early, use a frame-based count, or collapse the base and walk pointer. The error string remains a private DATA contribution and the temporary external message stand-in is only diagnostic. More syntax variants would repeat the exhausted HideObject matrix without new evidence.",
+  "next_experiment": "Revisit together with hanim_HideObject only after a new admitted sibling or unit-level source fact constrains the lifetime of the locked array base and the path-specific far result pointer. Test that single evidence-backed shape under the assigned GR_MODULE profile, then restore the required anim_show object not found literal and require fresh complete member proof before acceptance."
 }

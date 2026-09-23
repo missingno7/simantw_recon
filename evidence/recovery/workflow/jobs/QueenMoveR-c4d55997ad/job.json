@@ -1,7 +1,7 @@
 {
   "id": "QueenMoveR-c4d55997ad",
   "symbol": "_QueenMoveR",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:32:59.839532+00:00",
   "flags": [
     "/AL",
@@ -340,6 +340,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "3146c029a9c623170bdbfb82d073ad478468216ccada7526ab1102ecea46bab5",
+      "report": "evidence/recovery/workflow/jobs/QueenMoveR-c4d55997ad/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "48eb6c4025b43a88175b8684f823f7549c3cfb6a0cebab8c0b3ce110d09fe3fd",
+      "report": "evidence/recovery/workflow/jobs/QueenMoveR-c4d55997ad/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -360,5 +388,10 @@
   ],
   "parked_reason": "Byte-for-byte identical structural gap to twin _QueenMoveB (already blocked): candidate is 252 bytes against a 246-byte target, same funnel-to-shared-return-0 structure and same residual 'inc si;jne' (dir==-1 test) vs plain cmp idiom gap already documented there. Source mirrors QueenMoveB's admitted structure exactly: GetBestDir(3,x,y,TileMassXR,TileMassYR) direction pick (-1=fail, other negative=SRand8() fallback), y<3 edge guard (dir in 3..5), TryMoveDirR gate, opposite-direction Dy8[opp+8]/Dx8[opp] backtrack-cell clear on LifeR, FindInRList(newCol,newRow,(dirHint&7)+0xe8) tail-segment lookup (0xe8 matching the R-colony's out-of-fight-range base seen in DoRandR), migration to the new head position with the observed 'dir-0x18' store literal (same byte value as dir+0xe8, matching the exact subtraction form in the disassembly rather than the equivalent addition), and unconditional return-1 once TryMoveDirR succeeds. Best candidate: build/grind/agentE/_QueenMoveR.c (test1).",
   "parked_next_experiment": "Same as _QueenMoveB: this is the eighth simant1:2D4E/twin function this session with the identical isolated-candidate register/instruction-selection gap; re-test once a unit-level or toolchain-level fix for the systemic issue is available.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Four bounded attempts produced no complete source proof. Best attempt03/04 is 248 bytes against the 246-byte target at 81/95 opcodes; attempt03 changed the top-edge guard to explicit early returns, while attempt04 tested local declaration order and reproduced identical output. The target keeps y in DI, stores the selected direction in [bp-2] across TryMoveDirR, uses a near-call form that LINK rewrites for same-object GetBestDir, and uses compact shared LifeR address arithmetic; candidate still differs in register/local lifetime, selector placement and expression shape. Mirror derivation from QueenMoveB is only BEST_CANDIDATE_NOT_EXACT and earns no credit. Evidence is preserved under attempt03/04 and evidence/recovery/mirror-pairs/QueenMoveR.json.",
+  "next_experiment": "Recover the source form for QueenMoveB/QueenMoveR together with the same-object GetBestDir definition; use the target's observed direction stack home, y register lifetime, and LifeR cell index expression as explicit constraints, then test a complete unit-context source."
 }

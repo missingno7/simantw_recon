@@ -174,6 +174,7 @@
       16722,
       16723
     ],
+    "jump_tables": [],
     "overlapping_entries": [],
     "proof": "CFG_ONLY_NOT_RECOVERED_SOURCE",
     "reachable_end": 16724,
@@ -1086,23 +1087,38 @@
   ],
   "referenced_declarations": [
     {
-      "declaration": "extern int far GetMap(int plane, int x, int y);",
-      "source": "src/recovered/wf_ConnectWall-bbdd72e7a8.c",
+      "declaration": "extern unsigned long far GetDis(int x1, int y1, int x2, int y2);",
+      "source": "src/recovered/wf_tu_simtwo_1378_InitSimYard_12_scaffold-851a6419ac.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far GetLife(int plane, int x, int y);",
+      "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern int far GetMap(int plane, int x, int y);",
-      "source": "src/recovered/wf_WallNeighbors-7ac5fa173f.c",
+      "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far GetMap(int plane, int x, int y);",
+      "source": "src/recovered/wf_tu_simant1_75F4_DoAntSimY_3_scaffold-7e7e8ed0c2.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern int far IsClearTile(int plane, int x, int y);",
-      "source": "src/recovered/wf_AddAntLion-3b9ada1a24.c",
+      "source": "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern int far IsClearTile(int plane, int x, int y);",
-      "source": "src/recovered/wf_ExpAddAnt-6ef6c47e91.c",
+      "source": "src/recovered/wf_IsClear3x3-f787045a5e.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern int far IsClearTile(int plane, int x, int y);",
+      "source": "src/recovered/wf_tu_antedit_7022_DoTool_15_scaffold-064731bfb6.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -1110,7 +1126,7 @@
     {
       "symbol": "_SimEggB",
       "offset": 15520,
-      "source": null,
+      "source": "src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c",
       "size": 290
     },
     {
@@ -1451,15 +1467,18 @@
       "/AL",
       "/G2",
       "/Gs",
-      "/Oelw",
+      "/Oeglw",
       "/NTSIMANT1_MODULE"
     ],
     "profile": {
-      "name": "baseline",
-      "basis": "DEFAULT",
-      "assignment": null,
-      "context": null,
-      "evidence": null,
+      "name": "og",
+      "basis": "ASSIGNED",
+      "assignment": "asg-simant1-2d4e-og",
+      "context": "simant1:2D4E",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/DoRecruitN-cac1aa103b.json",
+        "evidence/experiments/optimizer-profile/probes/DoRandB-ce86a18bea.json"
+      ],
       "component": "simant1:2D4E",
       "refuted_profiles": []
     },
@@ -1577,38 +1596,145 @@
       "matched": [
         "always"
       ]
+    },
+    {
+      "id": "dx8-dy8-separate-words",
+      "rule": "Dx8 (segment 8 offset 0) and Dy8 (offset 8) are two MAPSYM symbols; in objects whose pool block holds two adjacent segment-8 words for them (simtwo:3EF8 C57E/C580, simant:6A38 BF70/BF72) index each with the bare direction (`Dx8[i]`, `Dy8[i]`), never `Dy8[i+8]` or `(Dx8+8)`; one word per symbol. The one-Dx8-object spelling applies only where a single word serves all displacements.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c",
+        "src/recovered/wf_DoTroph-349038dca8.c",
+        "evidence/recovery/mirror-pairs/AddRandAntLion.json"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "argument-push-order",
+      "rule": "Values computed only to feed a call are emitted in argument push order (right to left), not statement order: when the target loads `Dy8` before `Dx8` the call is `f(..., lx, ly)` with ly the last argument. Reorder arguments/locals before rewriting expressions.",
+      "evidence": [
+        "src/recovered/wf_AddRandAntLion-bd2ae22846.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "ymappop-own-words",
+      "rule": "YMapPopB (seg 8 +0xA4) and YMapPopR (+0x164) are 12x16 byte maps indexed `(x << 4) + y`, each through its own selector word; the symbol supplies the base displacement (do not add 0xA4/0x164).",
+      "evidence": [
+        "evidence/recovery/body-solved/_GetNearbyPatches-*.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "opendbdata-layout",
+      "rule": "struct OpenDB (PACK _openDBData, 0x7C-byte slots): name[0x50]; void far *indexTable @0x50; int recordCount @0x54; pad to 0x6C; int count @0x6C; long freeBytes @0x6E; long wastedBytes @0x72; int pad @0x76 (never referenced); int file @0x78; int dirty @0x7A. Deleted/replaced record lengths are added to wastedBytes.",
+      "evidence": [
+        "src/recovered/wf_DBDelete-ea6d0ac3f1.c",
+        "src/recovered/wf_DBReplace-da4c045f1a.c"
+      ],
+      "matched": [
+        "far_data"
+      ]
+    },
+    {
+      "id": "pack-words-by-name",
+      "rule": "Never reach a PACK word as `match_position[K]`: the object allocates one selector word per symbol, so the public at PACK offset 2K (`ListIndexB`, `TemBModePop[i]`, `FlyAwayR`, ...) must be named; `tools/rebind_pack_index.py` rewrites and re-verifies such sources. Isolated admissions with this spelling are byte-exact but bind the wrong word in the unit.",
+      "evidence": [
+        "evidence/topology/supervisor-unit-sources/AddAntToBList.c",
+        "evidence/topology/supervisor-unit-sources/TallyModePop.c",
+        "tools/rebind_pack_index.py"
+      ],
+      "matched": [
+        "far_data"
+      ]
     }
   ],
-  "parked_review": null,
+  "parked_review": {
+    "job": "GetBestDir-7360fb1eae",
+    "root_cause": "D_SOURCE_SEMANTIC_MISMATCH",
+    "previous_blockers": [
+      "REGISTER_ALLOCATION"
+    ],
+    "attempts": 1,
+    "candidates": 1,
+    "best_report": "evidence/recovery/workflow/jobs/GetBestDir-7360fb1eae/attempt01/results.json",
+    "detail": {
+      "blockers": [
+        "REGISTER_ALLOCATION"
+      ],
+      "best_result": "NO_COMPLETE_MATCH",
+      "opcode_matches": 81,
+      "opcode_total": 97,
+      "candidate_bytes": 245,
+      "target_bytes": 246,
+      "register_only_differences": 0,
+      "branch_target_differences": 7,
+      "failed_fixup_reasons": {
+        "unsupported or unresolved target/frame": 8,
+        "resolved offset and frame": 2
+      },
+      "issues": [
+        "conflicting private placement constraints CONST",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xc4",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0xac",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0x95",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0x7d",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0x6e",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0x5c",
+        "SIMANT1_MODULE unresolved/mismatched fixup at 0x50"
+      ],
+      "probe": {
+        "strict": [],
+        "diagnostic": [],
+        "results": {
+          "baseline": "NO_COMPLETE_MATCH",
+          "ga": "NO_COMPLETE_MATCH",
+          "og": "NO_COMPLETE_MATCH",
+          "og-ga": "NO_COMPLETE_MATCH",
+          "ogi": "NO_COMPLETE_MATCH"
+        }
+      },
+      "unit_profile": {
+        "name": "og",
+        "basis": "ASSIGNED",
+        "assignment": "asg-simant1-2d4e-og"
+      },
+      "note_profile": "unit context now carries profile og; a fresh attempt inherits it"
+    }
+  },
   "similar_matched_functions": [
     {
-      "symbol": "_EnterNest",
-      "source": "src/recovered/wf_EnterNest-606488b329.c",
-      "size": 155,
+      "symbol": "_DoRandB",
+      "source": "src/recovered/wf_tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634.c",
+      "size": 246,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_CheckNestFightB",
-      "source": "src/recovered/wf_CheckNestFightB-6daf29ea80.c",
-      "size": 154,
+      "symbol": "_DoRandR",
+      "source": "src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c",
+      "size": 248,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_StartFightA",
-      "source": "src/recovered/wf_StartFightA-b2f3e31b2f.c",
-      "size": 137,
+      "symbol": "_StayInR",
+      "source": "src/recovered/wf_tu_simant1_5344_DoAntSimR_11_scaffold-77ef66a1e6.c",
+      "size": 249,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_DoDefendNest",
-      "source": "src/recovered/wf_DoDefendNest-ed5a5a93f0.c",
-      "size": 112,
+      "symbol": "_GetWinner",
+      "source": "src/recovered/wf_GetWinner-c0a47b129e.c",
+      "size": 241,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     },
     {
-      "symbol": "_RaidOutB",
-      "source": "src/recovered/wf_RaidOutB-794c50ee5a.c",
-      "size": 110,
+      "symbol": "_GoInNest",
+      "source": "src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c",
+      "size": 240,
       "basis": "Same code group and nearest size; similarity is not semantic proof"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "InsertNode-0ab28dabb8",
   "symbol": "_InsertNode",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:31:38.214782+00:00",
   "flags": [
     "/AL",
@@ -310,5 +310,53 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [
+    {
+      "number": 1,
+      "submission_digest": "a9a80eaf75669d438f367068dc51b37b5f46478523b7371f34c75ae87f8eb8d0",
+      "report": "evidence/recovery/workflow/jobs/InsertNode-0ab28dabb8/attempt01/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "212f5a7d9183f663b2a9673304fedcf4714b9dd149b57782226c809bf86b54d1",
+      "report": "evidence/recovery/workflow/jobs/InsertNode-0ab28dabb8/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "28881e349d7f4dc40adb6b0231456c93b99fdea969e77de344469ca160d73e2d",
+      "report": "evidence/recovery/workflow/jobs/InsertNode-0ab28dabb8/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    }
+  ],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "reason": "Both a based aggregate pointer and explicit based-array macros over the verified LZSS layout generate ES-relative address setup and 380\u2013480 byte candidates. The target instead sets DS from _unpackHandle.segment at 0xb8de once and accesses text_buf, lson, rson, and dad by near offsets. The shared layout is established; the missing prerequisite is the authentic TU-level declaration or compiler idiom that exposes the locked block through DS-relative near arrays.",
+  "next_experiment": "Inspect the source/unit context for _unpackHandle and _DeleteNode to recover the original segment-pointer declaration or macro that causes mov ds,[0xb8de] and DS-relative [index+0x1016/0x3018/0x521a] operands. Retest the smallest field access first; do not continue per-function variations of __based arrays unless the emitted segment register changes."
 }

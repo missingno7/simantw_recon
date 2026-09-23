@@ -1,7 +1,7 @@
 {
   "id": "GetBestDir-7360fb1eae",
   "symbol": "_GetBestDir",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:20:49.093625+00:00",
   "flags": [
     "/AL",
@@ -341,6 +341,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "8bade924ed2a419f35cbde2583f85f1a287e77f04f3f02f6df943af1d97034f3",
+      "report": "evidence/recovery/workflow/jobs/GetBestDir-7360fb1eae/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "8fa0b0b614f181086f2b78382859942dd93fbeb10275f0895e0ecc6e01005983",
+      "report": "evidence/recovery/workflow/jobs/GetBestDir-7360fb1eae/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "d9e04af427606a441cc984374cbb25612ae124a2e51a68af694e0435e8ace3f3",
+      "report": "evidence/recovery/workflow/jobs/GetBestDir-7360fb1eae/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "5dfd17db2d3df22acc0d2734b2a3d171f39c0d32202e90a091ba282dbbb71761",
+      "report": "evidence/recovery/workflow/jobs/GetBestDir-7360fb1eae/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -361,5 +417,10 @@
   ],
   "parked_reason": "81/97 opcodes match, size exact (246/246). Same REGISTER_ALLOCATION/epilogue-merge class already recorded for sibling GetRedBestDirs/GetMyBestDirs in this same unit family: the target's early return (threshold<=0) reuses the shared final epilogue via a jmp to the tail that reloads 'best' from its stack slot, while this candidate folds it to an inline 'mov ax,0xffff' plus its own pop/pop/leave/retf copy. All Dx8/Dy8/GetMap/IsNotObstacle/IsThisPebble/GetDis segment-selector diffs are the expected per-object CONST fixups. Candidate build/grind/agentI/_GetBestDir.c, attempt01.",
   "parked_next_experiment": "Same as GetRedBestDirs/GetMyBestDirs: find a source shape for the early best=-1 return that keeps the compiler from folding it to an immediate-only inline epilogue distinct from the final shared tail.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Six bounded attempts show a stable, localized source-shape mismatch. Best candidate attempt06 is 245 bytes against the 246-byte target with 88/95 opcodes, all 13 fixups resolved, and no frame/register mismatch. The loop body and far-data/call obligations align; remaining branch differences come from MSC7 folding the threshold<=0 return to a constant epilogue and arranging the final best/fallback return differently. Moving the loop under `if (threshold > 0)` and adding a result temporary did not reproduce the target early best load at the shared return block. Reports are preserved in attempt03, attempt04, and attempt06.",
+  "next_experiment": "Use the parallel GetRedBestDirs/GetMyBestDirs function packets and their exact candidate diagnostics to infer a natural C control-flow form that preserves the target best=-1 shared return path; change only the early return/final best-fallback structure, then retest under the existing unit profile."
 }

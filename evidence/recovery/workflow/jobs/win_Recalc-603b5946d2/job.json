@@ -1,7 +1,7 @@
 {
   "id": "win_Recalc-603b5946d2",
   "symbol": "_win_Recalc",
-  "status": "OPEN",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:18:53.371794+00:00",
   "flags": [
     "/AL",
@@ -69,8 +69,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 10443,
+      "sha256": "0b384dc84c8ca8b5b98cf87371a8116bfe7bfae2e7c2503f7c2d24ff5f51ad12"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -310,5 +310,10 @@
     },
     "purpose": "verification fixtures only"
   },
-  "attempts": []
+  "attempts": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "The packet and recovered helpers establish the outer bucket layout (count at +0x0c, 4-byte far entries at +0x2c), four-word rectangles, the size fields used by win_AutoSize, and a child-entry switch on a value at object+0x18. The target then traverses a second far-linked record, reads its discriminator at +0x21 and payload at +0x28, and has distinct modes 0..5, including a win_numOfWindows-gated mode and multiple rectangle min/max updates. Repository searches found only callers of win_Recalc and the isolated win_AutoSize/win_GetVal helpers; no recovered initializer or matching source identifies these linked-record fields or the mode meanings. Writing C now would assign unsupported semantics to the layout modes.",
+  "next_experiment": "Find or recover a producer/initializer of the second far-linked layout record used by SIMTWO_MODULE: identify writes to discriminator +0x21, payload +0x28, and link +0x2c; map modes 0..5 and the win_numOfWindows-gated reference. Then build one source draft from those field identities and retest the earliest CFG region."
 }

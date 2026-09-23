@@ -1,7 +1,7 @@
 {
   "id": "AntMenu-ac97d119f4",
   "symbol": "_AntMenu",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T20:13:59.569142+00:00",
   "flags": [
     "/AL",
@@ -382,6 +382,48 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "9f54e50bb5c174f1b5bdf7fc3a82b5ae9a4eaa095fc5655eaea6c6ac6686fe8b",
+      "report": "evidence/recovery/workflow/jobs/AntMenu-ac97d119f4/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "01c752fd5c76f05ec598e41ffa7d46493fbe603fb08941bd10db9540171e039f",
+      "report": "evidence/recovery/workflow/jobs/AntMenu-ac97d119f4/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "9dc80bd4ccaf50e171c9e1ef68ae1e6c2218bd28695819441b2361669c236ec2",
+      "report": "evidence/recovery/workflow/jobs/AntMenu-ac97d119f4/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -402,5 +444,10 @@
   ],
   "parked_reason": "Full semantics reconstructed and matches almost completely: WinPrintf(\"ANTMENU\") debug trace, MeMode(far,segment9,exact anchor _MeMode)-selected win_DoProxMenu menu (0x800 when MeMode==0 && MeType==0x40 && MeNestStarted==0(far,segment8), else 0x700 when MeMode==0, or 0x2000 when MeMode==1, else no selection -1), then a command lookup in one of three private byte tables (evidence-backed exact bytes read from the EXE at DGROUP 0x1ba6/0x1baa/0x1bb0, adjacent to the ANTMENU string at 0x1bb4) selected by the same MeMode/MeType/MeNestStarted condition, and command==2 triggers YellowCommand(3) when GetAsyncKeyState(VK_SHIFT)&0x8000. Four explained revisions (unsigned vs signed char command table entries, a plain far MeMode access vs an explicit int far *mode=&MeMode pointer, and int vs signed-char typed 'cmd') converged to 222/232 bytes with correct CFG shape, all fixups, and matching or/jl di<0 guard, mem_Free-style menu dispatch, and shared call-site reuse; the only remaining difference is the final command==2 comparison: the target widens the looked-up byte via cbw/cwde into the same register that held the ProxMenu result (si=cwde(al); cmp si,2) before comparing, while every candidate compares the byte directly (cmp al,2) regardless of the 'cmd' variable's declared width. Preserving the closest candidate (attempt04, int far *mode pointer + int cmd, 222/232 bytes).",
   "parked_next_experiment": "Assemble the antedit:67C6 unit (EditToolsMenu, win_DrawExamineWindow, MagnifyMenu, AntMenu, SetExpTool) with tools/tu_assembly.py; the byte-to-word widening choice for the final command comparison, and the MeMode address-spill (matching the same OverlayTileSet/ResetEditScrollRange pattern), are both likely whole-unit register-context artifacts rather than isolated-source-shape issues.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

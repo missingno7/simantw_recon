@@ -1,7 +1,7 @@
 {
   "id": "DoReturnFoodAnt-82971198db",
   "symbol": "_DoReturnFoodAnt",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:04:24.943744+00:00",
   "flags": [
     "/AL",
@@ -411,6 +411,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "bc0769d0be18f18cf476e1c5bbc2909e0e8223347d8a014de153e0341fe3d67f",
+      "report": "evidence/recovery/workflow/jobs/DoReturnFoodAnt-82971198db/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -431,5 +445,10 @@
   ],
   "parked_reason": "Semantics converged well (128/142 opcodes, 392/398 bytes; AlistX/AlistY/AlistT/AlistS field layout, the inline IsItHole test (MapA==0x50 vs 0x80-0x8f by TERRAINset), GetNestDir+Dx8/Dy8 step, signed Barrier compare, TurnTab-based turn vs committed move, and the AlistS-gated JamScentRT/JamScentBT dispatch on the team bit all reproduce the target's calls, operands and branch structure -- remaining diffs are expected CONST/segment-fixup representations plus real structural ones: (1) enter 0xa,0 (10-byte frame) in target vs enter 8,0 (8 bytes) in the candidate, with every subsequent [bp-N] local consistently shifted by 2 (bp-6 vs bp-4, bp-8 vs bp-6, bp-0xa vs bp-7/-8 across revisions); (2) the target computes its 'is this a hole' flag through ONE shared merge point (xor cx,cx / mov cx,1 / or cx,cx;je followed by a single GoInNest call+return), while every candidate shape tried (simple if/else-if, and an explicit goto to one shared label) still produces either 3 separate inlined found-checks or a worse-matching layout; goto scored lower (102/142) than plain if/else (128/142) so if/else was kept. Best candidate: build/grind/agentU/_DoReturnFoodAnt.c.",
   "parked_next_experiment": "Try adding one more explicit 2-byte int local that is always live across both the TERRAINset branches and the GoInNest call (matching the missing 2 bytes of frame), e.g. a separate 'hole' int that is set exactly once per branch via early return (using an early 'if (found) { GoInNest(...); return; }' placed inside each of the three branches directly, rather than falling through to one later check) so the compiler is forced to allocate the same 10-byte frame and single shared cx-style flag the target uses; compare against DoRandAntA/DoRandAntAA (same unit, not yet inspected) for the same list-selection idiom.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

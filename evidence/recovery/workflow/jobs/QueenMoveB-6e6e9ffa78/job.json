@@ -1,7 +1,7 @@
 {
   "id": "QueenMoveB-6e6e9ffa78",
   "symbol": "_QueenMoveB",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:25:24.810845+00:00",
   "flags": [
     "/AL",
@@ -369,6 +369,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "d745228f4ebb27d4f68e3d0b228713977f1591d17de79f02bd1b4116c1f24ea3",
+      "report": "evidence/recovery/workflow/jobs/QueenMoveB-6e6e9ffa78/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "028be372d1c9d8f14b485cd222be5b6fc364dd07bcb4103d9bf7ab1a71196fd5",
+      "report": "evidence/recovery/workflow/jobs/QueenMoveB-6e6e9ffa78/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "8dbdf9889ef9e0806356c431c2f53200e000e045aa2e66e351cea30bc4a28e46",
+      "report": "evidence/recovery/workflow/jobs/QueenMoveB-6e6e9ffa78/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "07471b4fc9669095d1cf8776892eaf4c02911cc0763b6d376a94d589f971417b",
+      "report": "evidence/recovery/workflow/jobs/QueenMoveB-6e6e9ffa78/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -389,5 +445,10 @@
   ],
   "parked_reason": "Semantic body is fully reconstructed and structurally close but not exact. Closest candidate (test2/test3 structure, nested-if funnel to a single shared 'return 0' instead of three separate early returns) is 252 bytes against a 246-byte target; an earlier variant using direct early returns for each guard (test1) was 234/246 but produced THREE separate copies of the fail epilogue (pop si;pop di;leave;retf) instead of the target's one shared epilogue reached by 'jmp' from every guard failure -- confirming the funnel/nested-if source shape is the right one even though its absolute byte count is currently larger due to a residual micro-idiom gap: the target tests dir==-1 via 'inc si; jne' (discarding si since it is about to be overwritten by SRand8() on the non-(-1) path) where every candidate variant instead emits a plain 'cmp si,-1'/'cmp si,0'. Semantics verified: GetBestDir(2,x,y,TileMassXB,TileMassYB) picks a direction (-1=fail, other negative=SRand8() fallback); near the top edge (y<3) only directions 3..5 are allowed; TryMoveDirB(x,y,dir) gates the whole call; on success the opposite direction ((dirHint^0xfc)&7) finds the vacated cell via Dy8[opp+8]/Dx8[opp] deltas, clears LifeB there, and FindInBList(newCol,newRow,(dirHint&7)+0x68) looks up a stale tail-segment record there -- when found and still active (Dx8[index+0x3d18]!=0) it is migrated to the new head position and LifeB there is stamped with dir+0x68; the call always returns 1 once TryMoveDirB succeeds. Dx8/Dy8 reuse GetExitDirB's admitted 'char far Dx8[]/Dy8[]' declarations; the ant-record field offsets (0x3736/0x392c/0x3d18) match DoAntSimB/ClearLifeB/CheckNestFightB. This is the seventh simant1:2D4E function this session hitting the same class of isolated-candidate register/instruction-selection gap. Best candidate: build/grind/agentE/_QueenMoveB.c (source matches test2, 252 vs 246 bytes, fixups 3/23 unresolved -- the same CONST-selector display pattern seen on every other block this session, likely a consequence of the residual byte-offset shift rather than an independent binding error).",
   "parked_next_experiment": "Once a unit-level tu_assembly.py compile or an expert toolchain review addresses the systemic simant1:2D4E register/frame gap already flagged on _DoDrownB/_DoDrownR/_RaidInB/_RaidInR/_DoRandB/_DoRandR, re-test this candidate; if the shared body still shows only the inc-vs-cmp -1 idiom as a residual difference, that specific MSC7 peephole choice (replacing a boundary comparison with an increment when the compared register's original value is dead on the taken path) is the last narrow gap and may need a targeted codegen_diff.py-guided single-instruction experiment rather than a body rewrite.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }

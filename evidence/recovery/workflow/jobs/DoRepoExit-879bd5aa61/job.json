@@ -1,7 +1,7 @@
 {
   "id": "DoRepoExit-879bd5aa61",
   "symbol": "_DoRepoExit",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T19:50:07.233574+00:00",
   "flags": [
     "/AL",
@@ -369,6 +369,34 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "175279a03b84424826569ea635a66b86bedad32d44f935b70fca7629bcbfdc83",
+      "report": "evidence/recovery/workflow/jobs/DoRepoExit-879bd5aa61/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "6ae0129a88bdd5272daa4daea747f6ac8996737db7382d692789c7bfaac86f86",
+      "report": "evidence/recovery/workflow/jobs/DoRepoExit-879bd5aa61/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -389,5 +417,10 @@
   ],
   "parked_reason": "Same class of isolated-candidate gap as GoInNest/TallyModePop (both in the same simant1:0000 unit) plus a genuine relocation artifact: candidate is 220 bytes against a 208-byte target, 64/72 opcodes matched, first_structural_difference at target offset 85 (a jge-vs-jl polarity difference in the pct>=100 dispatch that persisted across both branch orderings tried). The target's DoToNestAnt/DoRandAntAA calls compile as bare relative near calls with NO relocation at all (unlike the LINK-rewritten 'push cs; call near' far-call idiom used elsewhere in this corpus for TryMoveDirB/GetWinner/YellowFight) -- evidence that DoRepoExit, DoToNestAnt and DoRandAntAA were originally compiled together in the same object/TU, so an isolated single-function candidate must always emit an external fixup for these calls where the historical build needed none; declaring them plain 'near' (not far, not pascal) at least gets the fixup TARGETS correct (segment 6 offsets 4660/5750, verified) even though the fixup ITSELF cannot disappear. Semantic body verified against the disassembly: a percentage from one of two Dx8-segment tables (+0x72d2 or +0x62d2, selected by AlistT[index]&0x80, indexed by ((byte@+0x23a4&0xfe)<<4)+(byte@+0x278e>>1), both unnamed by MAPSYM) picks DoToNestAnt(index) (pct<100) or DoRandAntAA(index) (pct>=100); either way, an AlistT-bit-gated 0/1/SRand1 flyaway check runs against either an unnamed far word (segment9 offset 0x8078, addressed via match_position[0x403c] as an explicit far pointer, matching the target's stored 4-byte far-pointer locals) or the named FlyAwayB, and if neither gate returns early, AlistM[Tindex] (the shared cursor, not this call's own index parameter) is stamped 0x10. Best candidate: build/grind/agentE/_DoRepoExit.c (test3).",
   "parked_next_experiment": "Same as GoInNest/TallyModePop: an expert should try tu_assembly.py unit-level compilation of simant1:0000 (DoRepoExit alongside DoToNestAnt/DoRandAntAA/GoInNest/TallyModePop/MakeRedInitiator), since the near-call relocation gap and CONST-pool placement issues both stem from testing a single member of a shared original TU in isolation.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "No complete source proof after six preserved attempts in the active job history. Best candidate is attempt03 at 220 bytes and 64/72 opcodes; it reproduces the first half but branches into separate SRand1 paths and differs from the target shared call tail. Attempts 05 and 06 tested a merged common argument/call and explicit merge label; they regressed to 175 and 222 bytes (50/68 and 61/84 opcodes) and still failed to materialize the target segment-9 offset 0x8078 through its selector path. Reports and candidates are preserved under evidence/recovery/workflow/jobs/DoRepoExit-879bd5aa61/attempt03, attempt05, and attempt06. No exact body or complete relocation/private-contribution proof.",
+  "next_experiment": "Recover the translation-unit declaration or proven object identity for the far word at segment 9 offset 0x8078 (currently only packet evidence for match_position selector and a raw immediate), then compile a unit-context candidate that preserves the target shared SRand1 tail and selector-pool order."
 }

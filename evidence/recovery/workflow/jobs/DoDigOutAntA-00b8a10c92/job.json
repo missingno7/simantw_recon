@@ -1,7 +1,7 @@
 {
   "id": "DoDigOutAntA-00b8a10c92",
   "symbol": "_DoDigOutAntA",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-22T00:17:40.085628+00:00",
   "flags": [
     "/AL",
@@ -341,6 +341,90 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "4286eb722ca77995d9c6bc68443e0559a2ed46f265fe87d34b87bba1d476e230",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "fa0f0a83ea15e36ac473157ca011b5c675c9f9b596242596256bed948721f907",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 5,
+      "submission_digest": "d67ccc6a14c5d970aebe441a600e89378872311ccf86e45918f7b75b8b296da6",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "a35be5be633e76f645ed2ef4fff1716fc3c2eb57d084ad6e69a6dabe5e6bd0b9",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt06/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 7,
+      "submission_digest": "a84ebde9f22e41cea6cd66920a1c9f18fedda6fb99979152eb8992bb6e5ce34d",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "f208d6cc93dd0b5f50d33ba2b155fde29efde1a8b257aa3462955268315168bd",
+      "report": "evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -361,5 +445,10 @@
   ],
   "parked_reason": "Full semantic decode confirmed against direct_data_bindings (AlistX/Y/T/M/S share selector 49944; Dx8/Dy8/TurnTab/Barrier match the layout already used in build/grind/agentU/_DoDigOutAntA.c's block comment and the blocked _DoReturnFoodAnt sibling): TurnTab[(attribute&7)*8+SRand8()] vs Bounce(x,y)-overridden direction, Dx8/Dy8 step, digmode-not-in-{5,9} early GetNewMode-only return, digmode-in-{5,9}&&SRand8()==0 finish-in-place (AlistT-=0x18) return, Barrier/occupancy-gated turn-in-place vs committed move, AlistS-gated JamScentRN/JamScentBN by team bit. First candidate reached 111/170 opcodes (508/502 body bytes) with all branch shapes and call targets right; remaining differences are register-allocation noise (index ends up in BX with x's read routed through SI's word+and-0xff zero-extend, vs the target keeping index in SI throughout and reading each Alist field straight into AL) and consequent stack-slot renumbering (bp-0xc vs bp-0xe etc.), not semantic gaps. Best candidate: build/grind/agentU/_DoDigOutAntA.c.",
   "parked_next_experiment": "Try reading x/y/attribute through three separate plain 'AlistX[index]'-style array subscripts on three distinctly-named byte arrays sharing the same selector (rather than one real array plus AT-offset macros for y/attribute) to see whether that steers the allocator to keep 'index' in SI and route each byte read through AL the way build/grind/agentU/_DoReturnFoodAnt.c's final attempt did for its own AlistY/AlistT reads; compare against DoRandAntA (same unit, not yet inspected) which likely shares this exact field-read prologue.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
 }
