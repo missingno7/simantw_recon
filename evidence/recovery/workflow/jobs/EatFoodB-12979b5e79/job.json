@@ -1,7 +1,7 @@
 {
   "id": "EatFoodB-12979b5e79",
   "symbol": "_EatFoodB",
-  "status": "NEEDS_REVISION",
+  "status": "SUPERSEDED_BY_TU",
   "created": "2026-09-21T09:07:55.699219+00:00",
   "flags": [
     "/AL",
@@ -417,5 +417,6 @@
   ],
   "parked_reason": "Semantics recovered and preserved (attempt01/candidate0000.c, pointer-local form; attempt02 direct form): all far/near bindings resolve (MapB, FoodB, EatCountB, BpopT, CastePopB[2], HealthB, SRand8) and the FoodB/EatCountB/HealthB tail aligns instruction for instruction. Two whole-member blockers. (1) Private CONST selector pool: original loads FoodB's selector from DGROUP 0xc362 and EatCountB's from 0xc374 (eight foreign slots between); a single-function TU emits adjacent slots, so the matcher reports 'conflicting private placement constraints CONST' (same SIMANT1_MODULE pool as DoRandAntA). (2) Residual register allocation: original loads x into DI and y into SI at entry although each is used once, computes the MapB cell address in BX and spills it to [bp-2] across the SRand8 call (enter 2,0), whereas every C7 candidate enregisters the pointer in SI and leaves x/y on the stack (100 bytes vs 112). Tried across 26 candidates: declared near pointer (plain/register), direct MapB[x*64+y] repeated access (recomputes, no temp), register parameters (ANSI/K&R, ignored by /Oe), 2-D MapB[x][y] direct and via pointer, *(MapB+...), x<<6, y+x*64. Budget 4/8 attempts, 26/192 candidates.",
   "parked_next_experiment": "Supervisor TU-level experiment for SIMANT1_MODULE: reconstruct the far-object first-reference order so FoodB and EatCountB sit nine slots apart (0xc362/0xc374), then retest the preserved pointer-local body; for the register residual the distinguishing observation is 'mov di,[bp+6]; mov si,[bp+8]; ... mov [bp-2],bx' - test whether a TU-level context (e.g. x/y also used by an adjacent inline helper or a different MapB declaration shared with TryEatFoodB/StealFoodB) changes the allocation; do not repeat the single-function spellings listed.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "superseded_by": "evidence/recovery/workflow/jobs/tu_simant1_2D4E_DoAntSimB_12_scaffold-4b5d5c0634/promotion.json"
 }

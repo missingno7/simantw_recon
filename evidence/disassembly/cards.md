@@ -21250,8 +21250,8 @@ Source: src/recovered/DetectDisplay.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _InitGraphics — GR_MODULE:010C
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 275 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 275 bytes.
+Source: src/recovered/wf_tu_gr_0000_InitGraphics_1-8959d65c41.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 010C  c8480200                 enter 0x248, 0
@@ -96087,7 +96087,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flag
 
 ## _GetWinner — SIMANT1_MODULE:26F4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 241 bytes.
-Source: src/recovered/wf_GetWinner-c0a47b129e.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_0000_GetWinner_1_scaffold-c5a24f3398.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMANT1_MODULE'].
 
 ```asm
 26F4  55                       push bp
@@ -109048,8 +109048,8 @@ Source: src/recovered/wf_tu_simtwo_0000_GstrB_9_scaffold-1d3fbf27a4.c. Flags: ['
 ```
 
 ## _GetDefendDir — SIMTWO_MODULE:1026
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 365 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 365 bytes.
+Source: src/recovered/wf_tu_simtwo_0000_GetDefendDir_2_scaffold-cdac288ff9.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 1026  c8020000                 enter 2, 0
@@ -109205,8 +109205,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetRedDefendDir — SIMTWO_MODULE:1194
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 343 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 343 bytes.
+Source: src/recovered/wf_tu_simtwo_0000_GetDefendDir_2_scaffold-cdac288ff9.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTSIMTWO_MODULE'].
 
 ```asm
 1194  c8020000                 enter 2, 0

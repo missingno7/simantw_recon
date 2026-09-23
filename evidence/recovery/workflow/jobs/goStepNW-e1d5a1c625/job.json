@@ -1,7 +1,7 @@
 {
   "id": "goStepNW-e1d5a1c625",
   "symbol": "_goStepNW",
-  "status": "NEEDS_REVISION",
+  "status": "SUPERSEDED_BY_TU",
   "created": "2026-09-21T18:45:21.962215+00:00",
   "flags": [
     "/AL",
@@ -348,5 +348,6 @@
   ],
   "parked_reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepNW-e1d5a1c625/attempt01): instruction_layout_match=true, cfg_shape_match=true, 99/99 opcodes matched, 0 register/immediate/branch/stack differences, score 0.909. Both clamp axes (Y: dec, clamp to 0; X: dec, clamp to 0) match the admitted goStepUp/goStepLeft bodies with zero structural difference, and the disassembly's own loader bindings confirm the two silent-scroll calls used here really are _ScrollDownS (after the Y clamp) and _ScrollRightS (after the X clamp) rather than the axis-matched _ScrollUpS/_ScrollLeftS the function's own name would suggest -- both call fixups are exact. The only remaining issues are the same shared simtwo:6EFE CONST selector-pool placement gap documented for _FinishDiagStep and _goStepNE (block reasons on those jobs): 'conflicting private placement constraints CONST' / 'unplaced contribution CONST' on the far-segment selector loads, because an isolated single-function test cannot place this function's CONST words relative to its still-unrecovered siblings in the 11-member simtwo:6EFE object. No local frame/pointer-caching was needed here (no 'enter' with reserved locals, unlike _goStepNE), so this body is otherwise a clean candidate.",
   "parked_next_experiment": "Same as _FinishDiagStep: once tools/tu_assembly.py (or an expert unit-assembly pass) establishes the simtwo:6EFE CONST selector-pool placement from full-object reference order across all 11 members, retest this exact source as part of that unit job; preserve build/grind/agentD/goStepNW.c as the exact-body candidate. Also note for future siblings: do not assume axis-matched ScrollUpS/ScrollDownS/ScrollLeftS/ScrollRightS names from the compass letters in a diagonal function's own name -- read the actual call targets from the working packet's disassembly references for each symbol individually, as goStepNW/goStepSW's _ScrollRightS calls on a decrementing (Left-shaped) X clamp demonstrate.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "superseded_by": "evidence/recovery/workflow/jobs/tu_simtwo_6EFE-d6ff84e46b/promotion.json"
 }

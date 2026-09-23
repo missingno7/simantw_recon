@@ -1,7 +1,7 @@
 {
   "id": "FinishDiagStep-1f1e8e9f64",
   "symbol": "_FinishDiagStep",
-  "status": "NEEDS_REVISION",
+  "status": "SUPERSEDED_BY_TU",
   "created": "2026-09-21T18:45:25.330780+00:00",
   "flags": [
     "/AL",
@@ -362,5 +362,6 @@
   ],
   "parked_reason": "Attempt 2 (evidence/recovery/workflow/jobs/FinishDiagStep-1f1e8e9f64/attempt02): instruction_layout_match=true, cfg_shape_match=true, 70/70 opcodes matched, 0 register/immediate/branch/stack differences, score 0.871. All 21 named-object fixups (_MapPlane,_EditColumns,_EditRows,_MapPnt.x/y,_AMapPnt.x/y,_BMapPnt.x/y,_RMapPnt.x/y,_UpdateEdit,_DrawEdit) are equal=true with correct offsets. The only issues are the 6 distinct 'mov es, word ptr [CONST pool slot]' segment-selector loads (target literals 0xc64c/0xc64e/0xc650/0xc652/0xc654/0xc656, one per distinct far segment: MapPnt, AMapPnt, EditRows, EditColumns, BMapPnt, RMapPnt) -- comparison reports 'conflicting private placement constraints CONST' and 'unplaced contribution CONST'. unit_context confirms simtwo:6EFE is one 11-member object (goStepRight/Left/Down/Up, goStepNE/SE/SW/NW, FinishDiagStep, FinishHorzStep, FinishVertStep) sharing ONE CONST selector pool ordered by first reference across the WHOLE unit; the already-admitted prefix2/prefix4 TUs fixed slots for their own subset, and an isolated single-function test of FinishDiagStep cannot establish where its 6 selector words are placed relative to the object's other 5 still-unrecovered members. Body and reference order are otherwise exactly right (this candidate's per-case x-then-y reference order reproduces every named fixup).",
   "parked_next_experiment": "Compose FinishDiagStep with its simtwo:6EFE siblings (goStepRight/Left/Down/Up, FinishHorzStep/FinishVertStep, and the other diagonal goStep* members once drafted) via tools/tu_assembly.py so the shared CONST selector-pool placement is established from full-object reference order, then retest as part of that unit job; preserve this source (build/grind/agentD/FinishDiagStep.c) as the exact-body candidate.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "superseded_by": "evidence/recovery/workflow/jobs/tu_simtwo_6EFE-d6ff84e46b/promotion.json"
 }

@@ -92,7 +92,7 @@ The [segment-access and boolean scheduling review](../evidence/topology/supervis
 
 - LINK may rewrite same-segment far calls (NOP; PUSH CS; CALL near); write ordinary far calls.
 - Declaration order can determine DS versus ES code generation; the CONST selector pool follows first-reference order across the whole unit, so a function's pool conflicts in isolation are unit work, not body work.
-- The ant lists derive from one real `Dx8` object where selector evidence establishes it.
+- Named ant-list fields may share one segment-8 selector slot. That proves a shared segment selector in that function, not one `Dx8` array; preserve each observed field displacement and establish object identity from unit evidence.
 - Parameters copied into locals can be required when the historical code holds values in SI/DI.
 - Explicit result variables reproduce historical `MOV DX,1` return tails.
 - Arrays are frequently word-indexed; preserve the observed element width.

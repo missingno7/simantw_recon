@@ -1,7 +1,7 @@
 {
   "id": "InitGraphics-6a2f9e08f4",
   "symbol": "_InitGraphics",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T20:28:51.702485+00:00",
   "flags": [
     "/AL",
@@ -69,8 +69,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 11407,
+      "sha256": "7e461d599328ce73a634ce24dda932de67e21c757dbac75f369dc114e9bf8a9d"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -422,11 +422,83 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "9e5a658be8af934cdb46b706d3bc62f9e485db984f050b9446c3d4e05daad852",
+      "report": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 10,
+      "submission_digest": "0db76c5955115e685989aed0887be2a6cb9a3b5b50e513e8cebafba1c6b814fe",
+      "report": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/attempt10/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 11,
+      "submission_digest": "294e0adaf5e0614805cc875d086a2cbbb94e950d23980a113a7874dd46074cf1",
+      "report": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/attempt11/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "blockers": [
     "SEMANTICS_UNKNOWN"
   ],
   "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
-  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
+  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family",
+  "budget_extensions": [
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "ABI",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Target has one four-byte incoming far pointer, 16-byte sprintf cleanup, transformed far WinPrintf call, CWDE index, and AX pushes; test those ABI and type corrections together.",
+      "reviewed": "2026-09-23T06:04:10.728896+00:00",
+      "spec": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/expert-abi-01.json"
+    },
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "SOURCE_LAYOUT",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Target pointer table BP-0x1E4 and buffer BP-0x248 imply 100 bytes between them; ABI-corrected candidate has same table and BP-0x244 buffer.",
+      "reviewed": "2026-09-23T06:25:15.040658+00:00",
+      "spec": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/expert-frame-01.json"
+    },
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "TYPE_REPRESENTATION",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Target 0073 CMP BYTE PTR displayType,0xFF versus candidate MOV AL;CWDE;CMP AX,0xFF; later target index uses CWDE.",
+      "reviewed": "2026-09-23T06:26:38.028608+00:00",
+      "spec": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/expert-type-01.json"
+    }
+  ],
+  "promotion_evidence": "evidence/recovery/workflow/jobs/InitGraphics-6a2f9e08f4/promotion.json"
 }

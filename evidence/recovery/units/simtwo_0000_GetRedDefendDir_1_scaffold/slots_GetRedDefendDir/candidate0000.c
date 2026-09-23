@@ -5,7 +5,7 @@
 extern int far RedPlane;
 extern int far RedLocX;
 extern int far RedLocY;
-extern int far DefendRadius;
+extern int far ModePopR[];
 extern char far TurnTab[][8];
 extern int far SRand1(unsigned int range);
 extern int far GetDir(int x1, int y1, int x2, int y2);
@@ -56,9 +56,10 @@ check:
 
 chase:
     r = GetDis(x, y, RedLocX, RedLocY);
-    if (DefendRadius >> 1 < r)
+    if (ModePopR[5] >> 1 < r)
         r = GetDir(x, y, RedLocX, RedLocY);
     else
         r = SRand1(8) + 1;
     goto check;
 }
+

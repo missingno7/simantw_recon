@@ -86,4 +86,45 @@ class UnattemptedContextTests(unittest.TestCase):
         with self.assertRaises(FormatError):review.refresh_unattempted(self.job_id,' ')
         with self.assertRaises(FormatError):review.refresh_unattempted('../outside','reason')
 
+    def test_supersede_requires_verified_tu_and_preserves_history(self):
+        proof=self.root/'proof.json';proof.write_text('{}')
+        recipe={'unit':'unit-1','promotion_evidence':'proof.json','source':'unit.c'}
+        self.job.update(status='NEEDS_REVISION',symbol='_Test',attempts=[{'number':1}])
+        self.save_job()
+        with patch.object(wf,'recipes',return_value={'_Test':recipe}):
+            result=review.supersede_admitted(self.job_id,'TU admitted the member')
+        self.assertEqual(result['status'],'SUPERSEDED_BY_TU')
+        after=json.loads((self.directory/'job.json').read_text())
+        self.assertEqual(after['attempts'],[{'number':1}])
+        self.assertEqual(after['superseded_by'],'proof.json')
+        record=json.loads((self.directory/'superseded-by-tu.json').read_text())
+        self.assertEqual(record['previous_job'],self.job)
+        self.verify.assert_called_once_with(publish=False)
+
+    def test_supersede_rejects_unadmitted_or_unverified(self):
+        self.job.update(symbol='_Test');self.save_job()
+        with patch.object(wf,'recipes',return_value={}):
+            with self.assertRaises(FormatError):review.supersede_admitted(self.job_id,'reason')
+        self.assertFalse((self.directory/'superseded-by-tu.json').exists())
+
+    def test_exhausted_job_gets_one_recorded_hypothesis_attempt(self):
+        self.job.update(status='ESCALATED',symbol='_Test',flags=['/AL'],
+                        attempts=[{'submission_digest':str(i),'candidates':1} for i in range(8)])
+        self.save_job()
+        spec={'symbol':'_Test','source':'source.c','compiler':'msc700','flags':['/AL'],
+              'max_candidates':1,'axes':[],'publics':['_Test'],'semantic_summary':'new ABI'}
+        (self.root/'spec.json').write_text(json.dumps(spec))
+        with patch.object(review,'ROOT',self.root),patch.object(wf,'check_submission'),patch.object(wf,'variants',side_effect=lambda spec:iter([('source',{})])), \
+             patch.object(wf,'experiment_digest',return_value='new-digest'), \
+             patch.object(wf,'run_attempt',return_value={'job':self.job_id}):
+            result=review.reissue(self.job_id,'spec.json','Original far-call frame proves ABI change','ABI')
+            self.assertEqual(result['job'],self.job_id)
+            after=json.loads((self.directory/'job.json').read_text())
+            self.assertEqual(len(after['attempts']),8)
+            self.assertEqual(after['budget_extensions'][0]['cause'],'ABI')
+            self.assertEqual(after['status'],'OPEN')
+            after['status']='ESCALATED';after['attempts'].append({'submission_digest':'used','candidates':1});self.job=after;self.save_job()
+            with self.assertRaises(FormatError):
+                review.reissue(self.job_id,'spec.json','Repeated ABI extension','ABI')
+
 if __name__=='__main__':unittest.main()

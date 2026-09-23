@@ -38,8 +38,13 @@ def instructions(code,bindings=None,tables=(),base=0):
 
 
 def structure(row):return row['mnemonic'],tuple((op['kind'],op['size']) for op in row['operands'])
+SEGMENT_REGISTERS={'cs','ds','es','ss','fs','gs'}
 def without_registers(row):
-    return [dict(op,**{k:'REGISTER' for k in ['register','base','index','segment'] if k in op and op[k]}) for op in row['operands']]
+    # Segment registers carry a selector, not an interchangeable value in a
+    # general-purpose register.  Preserve their class and identity here.
+    return [dict(op,**{k:('SEGMENT:'+op[k] if op[k] in SEGMENT_REGISTERS else 'REGISTER')
+                       for k in ['register','base','index','segment'] if k in op and op[k]})
+            for op in row['operands']]
 
 def blocks(rows):
     if not rows:return []
@@ -78,6 +83,9 @@ def compare_code(target,candidate,target_bindings=None,candidate_bindings=None,c
             else:
                 for p,q in zip(x['operands'],y['operands']):
                     if p==q:continue
+                    if p['kind']==q['kind']=='reg' and p['register']!=q['register']:
+                        changes.append('call_frame_or_segment_register' if p['register'] in SEGMENT_REGISTERS or q['register'] in SEGMENT_REGISTERS else 'register_role')
+                        continue
                     if p['kind']=='imm':counters['immediate_differences']+=1;changes.append('immediate_or_binding')
                     elif p['kind']=='branch':
                         if left_ord.get(p['value'],p['value'])!=right_ord.get(q['value'],q['value']):counters['branch_target_differences']+=1;changes.append('branch_target')
@@ -85,6 +93,11 @@ def compare_code(target,candidate,target_bindings=None,candidate_bindings=None,c
                         counters['memory_operand_differences']+=1;changes.append('memory_operand')
                         if p['base']==q['base']=='bp' and p['displacement']!=q['displacement']:counters['stack_local_differences']+=1;changes.append('stack_local_layout')
         display.append(dict(target_offset=x['offset'] if x else None,target=x['asm'] if x else '',candidate_offset=y['offset'] if y else None,candidate=y['asm'] if y else '',differences=changes))
+    structural={i for i,row in enumerate(display) if 'instruction_shape' in row['differences']}
+    for i,row in enumerate(display):
+        if (set(row['differences']) & {'register_allocation','call_frame_or_segment_register'}
+                and any(abs(i-j)<=2 for j in structural)):
+            row['differences'].append('alignment_uncertain')
     lb,rb=blocks(left),blocks(right);graph=lambda bb:[(r['terminal'],r['successors']) for r in bb]
     closure=closure or [solve(code,0,len(code)) for code in (target,candidate)]
     known=all(r['end'] is not None and r['status']=='PROBABLE' for r in closure)
@@ -94,6 +107,8 @@ def compare_code(target,candidate,target_bindings=None,candidate_bindings=None,c
     if graph_match is False:categories.append('CONTROL_FLOW')
     if first:categories.append('INSTRUCTION_ORDER' if ordering else 'EXPRESSION_SHAPE')
     if counters['register_only_differences']:categories.append('REGISTER_ALLOCATION')
+    if any('call_frame_or_segment_register' in r['differences'] for r in display):categories.append('CALL_FRAME_OR_SEGMENT_REGISTER')
+    if any('alignment_uncertain' in r['differences'] for r in display):categories.append('ALIGNMENT_UNCERTAIN')
     if counters['stack_local_differences']:categories.append('LOCAL_FRAME_LAYOUT')
     if counters['memory_operand_differences']:categories.append('MEMORY_OPERAND')
     if counters['immediate_differences']:categories.append('IMMEDIATE_OR_BINDING')

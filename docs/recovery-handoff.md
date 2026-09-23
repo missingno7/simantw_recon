@@ -1,0 +1,32 @@
+# Recovery handoff — 2026-09-23
+
+Branch: `codex/simantw-recovery`. This pass began at `3ad31de1a8a105bbea4b19e3e768b0cb94095d72`, with two pre-existing modified generated reports (`docs/handoff-readiness.json`, `docs/recovery-queue.json`). Use `git rev-parse HEAD` for the current checkpoint commit.
+
+## Verified state
+
+The initial local doctor reported **496 game functions / 49,316 code bytes**, 77 runtime members / 12,960 bytes, 130 MATCH_READY, 437 MATCH_BLOCKED, 2 STRUCTURE_BLOCKED, and 11 stale active individual jobs. The current independent manifest has **499 game functions / 50,299 code bytes**, the same 77 runtime members, 130 MATCH_READY, 434 MATCH_BLOCKED, and 2 STRUCTURE_BLOCKED. Doctor is ready after the superseded jobs and two remaining active contexts were reviewed. The executable as a whole is not reconstructed.
+
+Freshly admitted:
+
+- `_GetRedDefendDir` and `_GetDefendDir`: the target reads segment 9 offsets 41102 and 40570 respectively. MAPSYM and admitted `TallyModePop` establish these as `ModePopR[5]` and `ModePopB[5]`, not an external `DefendRadius`. Both bodies and the selector pool passed a complete scaffolded unit match and fresh promotion. Current proof: `evidence/recovery/workflow/jobs/tu_simtwo_0000_GetDefendDir_2_scaffold-cdac288ff9/promotion.json`. Earlier single-member and paired promotions remain in history.
+- `_InitGraphics`: one incoming far label pointer accounts for the two parameter words and 16-byte `sprintf` cleanup. `WinPrintf` has a far source declaration. Removing unnecessary volatile locals, using a 100-byte buffer, and comparing `displayType` as unsigned while indexing it as signed produced a complete match. Current proof: `evidence/recovery/workflow/jobs/tu_gr_0000_InitGraphics_1-8959d65c41/promotion.json` (a re-admission with a corrected comment, superseding the initial individual admission).
+
+`_GetWinner` retained its count and verified initialized 16-byte tables. Its stale placeholder-table comment was removed through fresh exact unit admission, `evidence/recovery/workflow/jobs/tu_simant1_0000_GetWinner_1_scaffold-c5a24f3398/promotion.json`. Source comments in the current direction and InitGraphics unit recipes were also corrected and reverified; superseded source/proof records remain historical evidence.
+
+Authentic MSC 7.00 compilation through the configured DOSBox-X/Win3.x service was available throughout. This run completed focused unit tests, `handoff_validate.py` (205 tests and cache replay), `verify_recovery.py` (499 game / 77 runtime), and a doctor run with no problems. The exact TU and individual promotions above each performed a fresh compiler and independent complete-member check.
+
+## Factory repairs exercised on real cases
+
+- `tools/codegen_diff.py` keeps segment-register identity. A `PUSH CS` versus `PUSH DI` pair is no longer called plain register allocation, and nearby shape differences label the alignment uncertain. `tools/grind.py` returns mismatch windows from across a member; the dense-mismatch case in `_ms_PopUpMenuResource` exposed and then validated a sampler fix. These views are diagnostic only; matching and admission remain unchanged.
+- `tools/topology_context.py` reports UNKNOWN DS after a write, call, or local join instead of presenting a DGROUP name as exact. It preserves such names only as conditional candidates. This is a conservative local scan, not whole-function segment analysis.
+- The ant-list rule now reports only shared segment-8 selector use. `_TryMoveDirB` target C352 serves named B-list fields at offsets 0x3736, 0x392C, and 0x3D18; C364/C366 serve direction accesses. This does not prove the fields are one Dx8 object. A named based-field candidate compiled but did not resolve the code shape.
+- `tools/topology_retest.py` can supersede an individual job only after fresh verification of its TU recipe, archiving the full old job and link. It closed 11 stale active jobs without deleting attempts. Exhausted expert jobs may receive one recorded, single-candidate extension per new causal hypothesis; total candidate limits and duplicate checks still apply.
+
+## Open evidence and next work
+
+- `_TryMoveDirB`, job `TryMoveDirB-b35531d834`: attempts 9–12 corrected far `GetOutB`, tested named based B-list fields, and matched the target's early negative-direction exit through offset 0x1D. A `register dy` spelling compiled identically to the previous flow draft. The remaining divergence starts at the dy/dx lifetimes (target DI/AX), branch joins, and later memory effects. Use the explicit blocker and preserved `expert-flow-01.c`; compare admitted neighbours before another bounded shape experiment. No complete body is claimed.
+- `_InitTree`, job `InitTree-7e01960a63`: the target loads ES once from the selector word at `unpackHandle+2` (`0xB8DE`) and uses two `REP STOSW` ranges, offsets 0x501A and 0x521A. Attempt 8 with `__based((__segment)unpackHandle)` generated extra selector traffic and a 42-byte body versus 28 target bytes. DeleteNode/InsertNode instead save DS and load it once from that same word. Resolve the source-level segment mechanism on a tiny probe before tuning the full algorithms; the Okumura layout alone does not prove compiler context.
+- `_ms_PopUpMenuResource`, job `ms_PopUpMenuResource-159d80df8d`: ordinary attempt 5 corrected `mem_free` to far but remains a 330-byte candidate against 320 target bytes with loop/local and binding differences. Its report exercises the focused diagnostic on a long member.
+- Twelve currently reported BODY_MATCHED_BINDING_BLOCKED cases remain unit/data work, including `AllocateMapBuffer`, `DoFightA`, and `DoTool`. Confirm preserved source identity and exact unresolved bindings before composing units. Scaffold stand-ins never count as recovered code.
+
+Continue with `python tools/grind.py next`, `inspect`, `test`, `accept` or `block` for ordinary targets. For an evidenced parked experiment use `python tools/topology_retest.py JOB SPEC --reason "..." --hypothesis-cause CAUSE`; do not reset a budget. For unit work use `python tools/tu_assembly.py build ...`, `test`, `job`, then `python tools/recovery_workflow.py attempt JOB` and `promote JOB --candidate N`. Validate with `python tools/handoff_validate.py`, `python tools/verify_recovery.py`, and `python tools/recovery_workflow.py doctor` after changes.

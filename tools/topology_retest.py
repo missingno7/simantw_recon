@@ -42,7 +42,7 @@ def near_exact_reopen(job_id, reason):
     return dict(job=job_id, status='NEEDS_REVISION', attempts_granted=NEAR_EXACT_ATTEMPTS)
 
 
-def reissue(job_id, spec_path, reason):
+def reissue(job_id, spec_path, reason, hypothesis_cause=None):
     if not re.fullmatch(r'[A-Za-z0-9_]+-[a-f0-9]{10}', job_id):
         raise FormatError('invalid job ID')
     directory = wf.STATE / 'jobs' / job_id
@@ -57,16 +57,22 @@ def reissue(job_id, spec_path, reason):
     wf.check_submission(spec, job)
     if wf.experiment_digest(spec) in {a['submission_digest'] for a in job['attempts']}:
         raise FormatError('this source experiment was already attempted')
-    if len(job['attempts']) >= wf.attempt_limit(job) or sum(a.get('candidates', 1) for a in job['attempts']) >= wf.MAX_TOTAL_CANDIDATES:
-        raise FormatError('existing budget exhausted; use a separately recorded expert research spec')
     planned=sum(1 for _ in wf.variants(spec))
     if sum(a.get('candidates',1) for a in job['attempts']) + planned > wf.MAX_TOTAL_CANDIDATES:
         raise FormatError('new experiment exceeds remaining target budget')
+    extensions=list(job.get('budget_extensions',[]))
+    if len(job['attempts']) >= wf.attempt_limit(job):
+        if hypothesis_cause not in ('ABI','DATA_IDENTITY','TYPE_REPRESENTATION','SOURCE_LAYOUT','LOCAL_LIFETIME','COMPILER_CONTEXT','DIAGNOSTIC') or planned!=1:
+            raise FormatError('exhausted job requires one bounded, evidenced hypothesis extension')
+        if any(e.get('kind')=='HYPOTHESIS_REISSUE' and e.get('cause')==hypothesis_cause for e in extensions):
+            raise FormatError('this hypothesis cause already received an extension')
+        extensions.append(dict(kind='HYPOTHESIS_REISSUE',cause=hypothesis_cause,attempts=1,candidates=1,
+                               reason=reason,reviewed=wf.timestamp(),spec=spec_path))
     index = len(list(directory.glob('expert-reissue-*.json'))) + 1
     write_json(directory / ('expert-reissue-%02d.json' % index),
-               dict(previous_job=job, reason=reason, spec=spec_path,
+               dict(previous_job=job, reason=reason, hypothesis_cause=hypothesis_cause, spec=spec_path,
                     spec_identity=identity(ROOT / spec_path), reviewed=wf.timestamp()))
-    job = dict(job, status='OPEN', protected=wf.protected(),
+    job = dict(job, status='OPEN', budget_extensions=extensions, protected=wf.protected(),
                fixture_identity=read_json(ROOT / 'layout/fixtures.json'))
     wf.atomic_json(directory / 'submission.json', spec)
     wf.atomic_json(directory / 'job.json', job)
@@ -233,6 +239,34 @@ def refresh_unattempted(job_id, reason):
                 attempts=len(job['attempts']), recovery_credit=0, changed_tools=changed)
 
 
+def supersede_admitted(job_id, reason):
+    """Close an old individual job only after its current TU recipe verifies."""
+    if not re.fullmatch(r'[A-Za-z0-9_]+-[a-f0-9]{10}', job_id):
+        raise FormatError('invalid job ID')
+    directory = wf.STATE / 'jobs' / job_id
+    job = read_json(directory / 'job.json')
+    if job.get('id') != job_id or job.get('lane') == 'TU_ASSEMBLY' or job.get('status') not in ('OPEN', 'NEEDS_REVISION', 'ESCALATED') or job.get('pending_attempt'):
+        raise FormatError('only a settled individual job may be superseded')
+    if not reason.strip():
+        raise FormatError('supersession reason required')
+    recipe = wf.recipes().get(job['symbol'])
+    if not recipe or not recipe.get('unit') or not recipe.get('promotion_evidence'):
+        raise FormatError('no admitted TU recipe supersedes this symbol')
+    proof = wf.ROOT / recipe['promotion_evidence']
+    if not proof.exists():
+        raise FormatError('TU promotion proof is missing')
+    wf.verify(publish=False)
+    record = dict(previous_job=job, admitted_symbol=job['symbol'],
+                  recipe=recipe, promotion_evidence=recipe['promotion_evidence'],
+                  promotion_identity=identity(proof), reason=reason,
+                  reviewed=wf.timestamp(), recovery_credit=0)
+    write_json(directory / 'superseded-by-tu.json', record)
+    wf.atomic_json(directory / 'job.json', dict(job, status='SUPERSEDED_BY_TU',
+                   superseded_by=recipe['promotion_evidence']))
+    return dict(job=job_id, status='SUPERSEDED_BY_TU',
+                promotion_evidence=recipe['promotion_evidence'], attempts=len(job['attempts']))
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('job'); ap.add_argument('spec', nargs='?'); ap.add_argument('--reason', required=True)
@@ -240,16 +274,20 @@ if __name__ == '__main__':
     ap.add_argument('--profile-reissue', action='store_true', help='replay the preserved candidate under the assigned unit profile')
     ap.add_argument('--tool-replay', action='store_true', help='replay the preserved candidate unchanged after a validated proof-tool change')
     ap.add_argument('--near-exact', action='store_true', help='reopen a near-exact source-shape job with one recorded bounded extension')
+    ap.add_argument('--supersede-admitted', action='store_true', help='close an old individual job after verifying its admitted TU recipe')
+    ap.add_argument('--hypothesis-cause', choices=['ABI','DATA_IDENTITY','TYPE_REPRESENTATION','SOURCE_LAYOUT','LOCAL_LIFETIME','COMPILER_CONTEXT','DIAGNOSTIC'], help='one recorded single-candidate extension for an exhausted job')
     args = ap.parse_args()
     if args.refresh_unattempted and args.spec:
         ap.error('context-only refresh does not take a spec')
-    if not args.refresh_unattempted and not args.profile_reissue and not args.tool_replay and not args.near_exact and not args.spec:
+    if not args.refresh_unattempted and not args.profile_reissue and not args.tool_replay and not args.near_exact and not args.supersede_admitted and not args.spec:
         ap.error('reissue requires a spec')
     with wf.global_lock():
         wf.recover_transaction()
     with wf.job_lock(args.job):
         if args.refresh_unattempted:
             result = refresh_unattempted(args.job, args.reason)
+        elif args.supersede_admitted:
+            result = supersede_admitted(args.job, args.reason)
         elif args.near_exact:
             result = near_exact_reopen(args.job, args.reason)
         elif args.profile_reissue:
@@ -257,5 +295,5 @@ if __name__ == '__main__':
         elif args.tool_replay:
             result = tool_reissue(args.job, args.reason)
         else:
-            result = reissue(args.job, args.spec, args.reason)
+            result = reissue(args.job, args.spec, args.reason, args.hypothesis_cause)
     print(json.dumps(result, indent=2))

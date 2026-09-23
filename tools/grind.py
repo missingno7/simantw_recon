@@ -12,6 +12,27 @@ from codegen_diff import blocks,instructions
 from reconstruction_rules import relevant_rules
 
 
+def focused_alignment(rows, limit=60, radius=2):
+    """Keep the opening context and mismatch windows from across the member."""
+    if len(rows) <= limit:
+        return rows
+    selected=set(range(min(8,len(rows))))
+    for i,row in enumerate(rows):
+        if row.get('differences'):
+            selected.update(range(max(0,i-radius),min(len(rows),i+radius+1)))
+    # Preserve the first occurrence of each discrepancy when the budget is
+    # tight, then sample late windows so a long prologue cannot hide the tail.
+    if len(selected)>limit:
+        anchors=[i for i,row in enumerate(rows) if row.get('differences')]
+        chosen=set(range(min(6,len(rows))))
+        if anchors:
+            slots=min(limit-len(chosen),len(anchors))
+            for n in range(slots):
+                chosen.add(anchors[n*(len(anchors)-1)//max(1,slots-1)])
+        selected=chosen
+    return [dict(rows[i],alignment_index=i) for i in sorted(selected)[:limit]]
+
+
 def lookup(symbol):
     with wf.global_lock():report=generate()
     row=next((r for r in report['functions'] if r['symbol']==symbol),None)
@@ -77,7 +98,7 @@ def test(symbol,candidate,summary=None):
     with wf.job_lock(task['job']):outcome=wf.run_attempt(task['job'])
     report=read_json(ROOT/outcome['attempt']['report']);best=report['results'][0];comparison=best['comparison'];diagnostic=comparison.get('diagnostic',{})
     with wf.global_lock():generate()
-    return dict(symbol=symbol,job=task['job'],status=outcome['status'],cache=report['cache'],strict_member_result=comparison['result'],compiler_log=best['receipt']['stdout'] if comparison['result']=='COMPILE_FAILED' else None,diagnostic={k:v for k,v in diagnostic.items() if k not in ('aligned_asm','target_blocks','candidate_blocks')},aligned_asm=diagnostic.get('aligned_asm',[])[:60],full_evidence=outcome['attempt']['report'],timing=dict(best['receipt'].get('timing',{}),**best.get('timing',{}),total_test_api_seconds=time.perf_counter()-began),acceptance='NONE: use accept for fresh independent proof')
+    return dict(symbol=symbol,job=task['job'],status=outcome['status'],cache=report['cache'],strict_member_result=comparison['result'],compiler_log=best['receipt']['stdout'] if comparison['result']=='COMPILE_FAILED' else None,diagnostic={k:v for k,v in diagnostic.items() if k not in ('aligned_asm','target_blocks','candidate_blocks')},aligned_asm=focused_alignment(diagnostic.get('aligned_asm',[])),full_evidence=outcome['attempt']['report'],timing=dict(best['receipt'].get('timing',{}),**best.get('timing',{}),total_test_api_seconds=time.perf_counter()-began),acceptance='NONE: use accept for fresh independent proof')
 
 
 def accept(symbol,candidate):

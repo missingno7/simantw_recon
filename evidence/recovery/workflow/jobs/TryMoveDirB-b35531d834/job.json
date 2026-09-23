@@ -72,8 +72,8 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 11407,
+      "sha256": "7e461d599328ce73a634ce24dda932de67e21c757dbac75f369dc114e9bf8a9d"
     },
     "tools/factory_queue.py": {
       "size": 5468,
@@ -425,6 +425,62 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "846604bd9d7e754eb759320d6190b3909dd63eb2e74b478e8403c7e30994d2d8",
+      "report": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 10,
+      "submission_digest": "a85c0c16c2d3367196fefd88e9e20d523bb3c9c77c305a934c3b0c32413b3bee",
+      "report": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/attempt10/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 11,
+      "submission_digest": "aedde32a177ea6faa3d8f2a018df838d4b89c1fafb12c4307b846be25e33b647",
+      "report": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/attempt11/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 12,
+      "submission_digest": "f28eaa9823da7c6719822a596f4d01dc5fd4b6a51192b523cb988862808ce3a4",
+      "report": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/attempt12/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "root_cause": {
@@ -445,10 +501,47 @@
   ],
   "parked_reason": "70/104 opcodes match with the full semantic structure recovered (bounds checks, GetOutB near-call deferral, MapB/LifeB cell walkability, conditional DoTroph recruit call gated on LifeB==0xff/MeWantFood/BlistX[Tindex]<0x80, and the BlistX/BlistY/BlistT relocation tail), all data bindings resolved to exact MAPSYM names (MapB, LifeB, MeWantFood, Tindex, BlistX/Y/T, Dx8, Dy8). Residual differences are dominated by register allocation (candidate keeps the Dy8-derived delta in cx where the target keeps di, cascading into the local-frame size: enter 4,0 vs target's enter 6,0) plus the expected CONST selector fixups. Candidate build/grind/agentI/_TryMoveDirB.c, attempt01: bytes 13/298 raw-literal, size 298 vs target 266.",
   "parked_next_experiment": "Try renaming/reordering the nx/ny/cell locals or computing ny before nx (matching the target's Dy8-then-Dx8 instruction order more literally in the C statement order) to see whether that changes which register the allocator picks for the stepped-Y delta.",
-  "budget_extensions": [],
-  "blockers": [
-    "SEMANTICS_UNKNOWN"
+  "budget_extensions": [
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "ABI",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Original GetOutB call pushes one argument then NOP PUSH CS CALL, proving a far source call; candidate declared near.",
+      "reviewed": "2026-09-23T06:05:22.609792+00:00",
+      "spec": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/expert-abi-01.json"
+    },
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "DATA_IDENTITY",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Target C352 serves named BlistX/Y/T offsets while C364/C366 serve direction fields; test named based list objects instead of one synthetic Dx8 extent.",
+      "reviewed": "2026-09-23T06:24:08.770970+00:00",
+      "spec": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/expert-data-01.json"
+    },
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "SOURCE_LAYOUT",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Target first negative-dir exit is at offset 0x0D, while nested candidate jumps to a tail; explicit early returns test target branch topology.",
+      "reviewed": "2026-09-23T06:28:21.459874+00:00",
+      "spec": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/expert-flow-01.json"
+    },
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "LOCAL_LIFETIME",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "After branch-shape correction, target 0x1E MOV DI,AX and retains DI through 0x59; candidate stores dy at BP-2 and allocates DI to dx.",
+      "reviewed": "2026-09-23T06:29:24.435512+00:00",
+      "spec": "evidence/recovery/workflow/jobs/TryMoveDirB-b35531d834/expert-lifetime-01.json"
+    }
   ],
-  "reason": "Bounded candidate budget exhausted; best result: NO_COMPLETE_MATCH",
-  "next_experiment": "Expert: inspect best divergence and choose a new semantic/type/TU family"
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "Attempts 9-12: far GetOutB ABI corrected; explicit early returns make offsets 0000-001D exact and improve 16 to 27 matching bytes. Named based BlistX/Y/T preserves observed C352 field identities but does not alter body shape; register dy compiles identically. Remaining target keeps dy in DI and dx in AX through bounds, then distinct BX cell index and branch join at 00B5; candidate spills/reloads and joins at 007B/00BB. Raw transformed GetOutB call still needs contextual LINK proof.",
+  "next_experiment": "Compare the admitted neighbouring black/red movement idiom and original branch/memory effects from 001E onward; test one source lifetime or expression form that keeps dy in DI while dx remains AX, then assemble the unit to resolve selector pool. Do not repeat register dy or giant Dx8 spellings."
 }

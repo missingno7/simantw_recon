@@ -1,7 +1,7 @@
 {
   "id": "goStepSE-d7e8947954",
   "symbol": "_goStepSE",
-  "status": "NEEDS_REVISION",
+  "status": "SUPERSEDED_BY_TU",
   "created": "2026-09-21T18:45:14.787782+00:00",
   "flags": [
     "/AL",
@@ -348,5 +348,6 @@
   ],
   "parked_reason": "Attempt 1 (evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt01): score 0.649, 102/114 opcodes matched, instruction_layout_match=false, cfg_shape_match=false, first_structural_difference at offset 0 (target 'enter 6, 0' reserving 6 bytes of locals; our candidate is bare 'push bp; mov bp,sp'). Same class of /Oe local-frame/pointer-caching difference already documented and blocked on _goStepNE: the disassembly shows the compiler caches a far address in a stack temp (here for at least one axis, both of which compare against a nonzero bound: Y vs vScrollMax, X vs hScrollMax) and reuses it later via 'les' at the switch-case field reads, instead of recomputing a fresh CONST-pool fixup each time as our direct-addressing candidate does; a chain of 8 immediate/memory-operand and 9 branch-target differences follow from that shape mismatch. Body semantics otherwise line up (axis directions, bounds and the ScrollDownS/ScrollRightS calls all confirmed correct against the disassembly's own loader bindings). Also carries the same shared simtwo:6EFE CONST-selector-pool placement gap documented on _FinishDiagStep/_goStepNE/_goStepNW.",
   "parked_next_experiment": "Same as _goStepNE: after the simtwo:6EFE CONST-pool placement is established via tools/tu_assembly.py, have a supervisor determine which axis (or both) needs its far address cached in an explicit local and reused via 'les' for the later switch-case reads, checked against evidence/recovery/workflow/jobs/goStepSE-d7e8947954/attempt01/results.json aligned_asm, before spending more attempts.",
-  "budget_extensions": []
+  "budget_extensions": [],
+  "superseded_by": "evidence/recovery/workflow/jobs/tu_simtwo_6EFE-d6ff84e46b/promotion.json"
 }
