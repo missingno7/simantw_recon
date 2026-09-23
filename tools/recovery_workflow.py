@@ -127,10 +127,36 @@ def check_submission(spec,job):
         # (stand-ins into the reserved segment, later code runs into RUNk_TEXT).
         allowed_pragmas=re.compile(r'#\s*pragma\s+alloc_text\s*\(\s*(?:POOLSTUB_TEXT|RUN\d+_TEXT)\s*,[^()]*\)') if job.get('lane')=='TU_ASSEMBLY' and job.get('scaffold') else None
         stripped=allowed_pragmas.sub('',code) if allowed_pragmas else code
+        # A source-local strlen intrinsic is admitted only as an exact,
+        # already tested expert-reviewed unit source. Ordinary jobs and
+        # unreviewed scaffold compositions retain the blanket pragma ban.
+        if reviewed_intrinsic_source(job,source):
+            stripped=re.sub(r'(?m)^[ \t]*#\s*pragma\s+intrinsic\s*\(\s*strlen\s*\)[ \t]*$', '', stripped)
         if re.search(r'\b(?:__asm|_asm|asm|_emit|__emit|incbin)\b|#\s*(?:include|pragma)',stripped,re.I):raise FormatError('handoff lane requires self-contained ordinary C, without assembly or compiler pragmas')
         if re.search(r'\([^)]*\*[^)]*\)\s*(?:0x[0-9a-f]+|[1-9][0-9]*)',code,re.I):raise FormatError('literal-address pointer cast requires expert review')
     # Only catalogued compiler profiles are admissible; no free flag search.
     compiler_profiles.identify_profile(job['flags'])
+
+
+def reviewed_intrinsic_source(job,source):
+    if job.get('lane')!='TU_ASSEMBLY' or not job.get('unit_evidence') or not job.get('unit'):
+        return False
+    evidence=(ROOT/job['unit_evidence']).resolve()
+    if not evidence.is_relative_to(ROOT) or not evidence.is_file():
+        return False
+    unit=read_json(evidence)
+    if unit.get('layout')!='reviewed' or unit.get('unit')!=job['unit'] or sorted(unit.get('members',[]))!=sorted(job.get('publics',[])):
+        return False
+    if unit.get('last_test',{}).get('result') not in ('CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER'):
+        return False
+    unit_source=(ROOT/unit.get('source','')).resolve()
+    if not unit_source.is_relative_to(ROOT) or not unit_source.is_file():
+        return False
+    saved=unit.get('source_identity')
+    if saved!=identity(unit_source):
+        return False
+    # Path.read_text normalizes CRLF on Windows, as the variant loader does.
+    return source==unit_source.read_text()
 
 def experiment_digest(spec):
     # Administrative prose and axis ordering cannot turn an identical set of

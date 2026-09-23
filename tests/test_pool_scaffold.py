@@ -209,14 +209,21 @@ class ComposerConflictTests(unittest.TestCase):
 
 
 class SubmissionPragmaTests(unittest.TestCase):
-    def submission(self, lines, scaffold):
+    def submission(self, lines, scaffold, reviewed=False, tested=True):
         import recovery_workflow as wf
+        from common import identity, write_json
         folder = ROOT / 'build/tests/scaffold'
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / 'sub.c').write_text(chr(10).join(lines) + chr(10), encoding='latin1')
+        source = folder / 'sub.c'
+        source.write_text(chr(10).join(lines) + chr(10), encoding='latin1')
         flags = ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE']
         job = dict(symbol='_A', flags=flags, lane='TU_ASSEMBLY', publics=['_A'], scaffold=dict(unit='x') if scaffold else None)
-        spec = dict(symbol='_A', compiler='msc700', flags=flags, publics=['_A'], semantic_summary='test', max_candidates=1, axes=[], source=(folder / 'sub.c').relative_to(ROOT).as_posix())
+        spec = dict(symbol='_A', compiler='msc700', flags=flags, publics=['_A'], semantic_summary='test', max_candidates=1, axes=[], source=source.relative_to(ROOT).as_posix())
+        if reviewed:
+            evidence = folder / 'unit.json'
+            write_json(evidence, dict(unit='x', layout='reviewed', members=['_A'], source=spec['source'], source_identity=identity(source),
+                                      last_test=dict(result='STRONGLY_SUPPORTED_MEMBER' if tested else 'NO_COMPLETE_MATCH')))
+            job.update(unit='x', unit_evidence=evidence.relative_to(ROOT).as_posix())
         return lambda: wf.check_submission(spec, job)
 
     def test_alloc_text_allowed_only_for_scaffolded_units(self):
@@ -232,6 +239,26 @@ class SubmissionPragmaTests(unittest.TestCase):
             self.submission(['#pragma pack(1)', 'void far A(void)', '{', '}'], True)()
         with self.assertRaises(FormatError):
             self.submission(['void far A(void);', '#pragma alloc_text(_TEXT, A)', 'void far A(void)', '{', '}'], True)()
+
+    def test_strlen_intrinsic_requires_exact_tested_reviewed_unit(self):
+        from common import FormatError
+        lines = ['#pragma intrinsic(strlen)', 'void far A(void) { }']
+        self.submission(lines, True, reviewed=True)()
+        with self.assertRaises(FormatError):
+            self.submission(lines, True)()
+        with self.assertRaises(FormatError):
+            self.submission(lines, True, reviewed=True, tested=False)()
+
+    def test_reviewed_intrinsic_rejects_other_directives_and_stale_source(self):
+        from common import FormatError
+        for directive in ('#pragma intrinsic(memcpy)', '#pragma pack(1)', '#include <string.h>'):
+            with self.assertRaises(FormatError):
+                self.submission([directive, 'void far A(void) { }'], True, reviewed=True)()
+        check = self.submission(['#pragma intrinsic(strlen)', 'void far A(void) { }'], True, reviewed=True)
+        source = ROOT / 'build/tests/scaffold/sub.c'
+        source.write_text(source.read_text() + '/* changed */\n', encoding='latin1')
+        with self.assertRaises(FormatError):
+            check()
 
 
 if __name__ == '__main__':

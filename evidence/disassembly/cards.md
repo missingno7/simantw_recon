@@ -34317,7 +34317,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _IsMMMidiAvail — GR_MODULE:7712
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 42 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 7712  c8040000                 enter 4, 0
@@ -34341,7 +34341,7 @@ Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flag
 
 ## _IsMMWaveAvail — GR_MODULE:773C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 42 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 773C  c8040000                 enter 4, 0
@@ -34364,8 +34364,8 @@ Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flag
 ```
 
 ## _CheckMMWave — GR_MODULE:7766
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 168 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 168 bytes.
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 7766  c8040100                 enter 0x104, 0
@@ -35083,7 +35083,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _snd_IsSongDone — GR_MODULE:7EBE
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 44 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 7EBE  8e0678bf                 mov es, word ptr [0xbf78]
@@ -35172,7 +35172,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _vocMciClose — GR_MODULE:7FB2
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 122 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 7FB2  c8040000                 enter 4, 0
@@ -35417,7 +35417,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _MusicInit — GR_MODULE:827C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 13 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 827C  1e                       push ds
@@ -35431,7 +35431,7 @@ Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flag
 
 ## _SysBeep — GR_MODULE:828A
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 8 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 828A  6a00                     push 0
@@ -35441,7 +35441,7 @@ Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flag
 
 ## _myBeginSoundList — GR_MODULE:8292
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 1 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8292  cb                       retf 
@@ -35551,7 +35551,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _ExtractDWord — GR_MODULE:83A4
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 81 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 83A4  55                       push bp
@@ -35589,7 +35589,7 @@ Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flag
 
 ## _ExtractWord — GR_MODULE:83F6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 68 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 83F6  55                       push bp
@@ -35716,7 +35716,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _Extract24BitVal — GR_MODULE:8518
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 118 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 8518  55                       push bp
@@ -38473,7 +38473,7 @@ A186  cb                       retf
 
 ## _mySoundIsDone — GR_MODULE:A188
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 4 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A188  b80100                   mov ax, 1
@@ -38482,7 +38482,7 @@ A18B  cb                       retf
 
 ## _myBeginSoundReverse — GR_MODULE:A18C
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 19 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A18C  55                       push bp
@@ -38527,7 +38527,7 @@ A1E1  cb                       retf
 
 ## _MultiMediaSong — GR_MODULE:A1E2
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 51 bytes.
-Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
+Source: src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 A1E2  833ef60a00               cmp word ptr [0xaf6], 0 ; _songsOnFlag

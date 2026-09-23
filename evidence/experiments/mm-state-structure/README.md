@@ -75,6 +75,36 @@ The five-attempt individual job `MultiMediaSong-f2993ef613` is linked as
 superseded. This second member confirms that the selector view is useful
 beyond the single song-done spelling.
 
+`_CheckMMWave` is admitted in the fourteen-member replacement unit. The old
+individual job treated its inline `strlen` as requiring a different compiler
+profile. Authentic C7 with baseline `/AL /G2 /Gs /Oelw /NTGR_MODULE` and
+source-local `#pragma intrinsic(strlen)` emitted the target `REPNE SCASB`
+sequence. The Win16 SDK `LIBW.LIB` import records identify KERNEL ordinal
+134 as `GetWindowsDirectory`; the earlier `GetSystemDirectory` declaration
+bound ordinal 135 and was wrong. Assigning `proc ? proc() : 0` to an `int
+devices` local produces the target SI result join. The isolated
+`CheckMMWave-result-local-trial/` preserves the exact positional body but
+leaves private string and state bindings unresolved.
+
+The first reviewed unit duplicated four strings and shifted near DATA;
+`failed-duplicate-strings-unit/` preserves its comparison. The next named
+all-five-string version added one alignment byte before `"MMSYSTEM.DLL"`;
+`failed-aligned-library-name-unit/` preserves that result. The admitted
+`reviewed-unit-check-mm-wave-mixed.c` shares four named near arrays with the
+availability members: procedure names at DGROUP 0AFA/0B0C and system paths
+at 0B1E/0B32. `LoadLibrary("MMSYSTEM.DLL")` stays a literal at odd 0B47.
+The unit test at
+`evidence/recovery/units/gr_7712_IsMMMidiAvail_14_reviewed/test/results.json`
+reports all 1114 claimed ordinary code bytes and 57 claimed fixups exact,
+plus 454 near DATA bytes, two CONST bytes, and 22 far-state bytes. The other
+25 fixups are in explicitly noncredited stand-ins. Fresh independent
+promotion is recorded at
+`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59/promotion.json`;
+the previous thirteen members were reverified, and the zero-attempt
+`CheckMMWave-9d5b57c59b` job was linked as superseded. This unit establishes
+the source representation and complete member bytes, not the original
+historical spelling of each near array.
+
 `_mySongIsDone` remains open. Its target reads 8D06 before the admitted
 8D08-based state, then checks the known near `songsOnFlag` and four admitted
 state fields. Three bounded isolated C7 probes in
