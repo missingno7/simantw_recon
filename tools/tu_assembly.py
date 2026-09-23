@@ -1239,6 +1239,33 @@ def required_pool_block(listed, claimed_slots):
     return [w for w in range(min(listed), max(listed) + 2, 2) if w <= stop]
 
 
+def prior_unknown_pool_owners(publics, claimed, functions, card_list, pool_segments, block):
+    """Find direct selector reads in earlier publics with unknown topology size.
+
+    Such a public has no introduced-pool list despite visible DS/ES loads.
+    Accept only an NE-relocated selector word in its target instruction stream.
+    """
+    first = publics.index(claimed[0])
+    wanted = set(block)
+    by_symbol = {c['symbol']: c for c in card_list}
+    found = {}
+    for symbol in publics[:first]:
+        if functions.get(symbol, {}).get('size') is not None:
+            continue
+        card = by_symbol.get(symbol, {})
+        if card.get('extent', {}).get('status') not in ('CONFIRMED', 'PROBABLE'):
+            continue
+        for row in card.get('disassembly', []):
+            if row.get('mnemonic') != 'mov':
+                continue
+            m = re.fullmatch(r'(?:ds|es), word ptr \[0x([0-9a-f]+)\]', row.get('operands', '').lower())
+            if m:
+                word = int(m.group(1), 16)
+                if word in wanted and word in pool_segments:
+                    found.setdefault(word, symbol)
+    return found
+
+
 def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions', chosen_sources=None):
     """Stand-in functions that reproduce the selector-pool allocation order of the
     component members the unit does not claim (evidence: original pool words,
@@ -1370,6 +1397,10 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
     # public (static helpers, other load forms) are still allocated in it.
     claimed_slots = [w for m in claimed for w in functions[m]['slots']]
     block = required_pool_block(listed, claimed_slots)
+    prior_owners = prior_unknown_pool_owners(publics, claimed, functions, card_list, segments, block)
+    for word, symbol in prior_owners.items():
+        if word not in introducer or introducer[word] in claimed:
+            introducer[word] = symbol
     reattributed = []
     # Allocation is sequential, so introducer code positions never decrease
     # along the block. A recorded introducer later than a following word's
@@ -1437,6 +1468,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
         else:
             runs.append([m])
     return dict(component=component_id, claimed=claimed, stubs=stubs, runs=runs, unclaimed_after_last=publics[last + 1:], orphan_words=orphans, reattributed_words=reattributed, publics_order=publics, helper_blocked=helper_blocked,
+                prior_unknown_pool_owners={'%04X' % w: f for w, f in prior_owners.items()},
                 shared_words={'%04X' % k: sorted(v) for k, v in shared.items()}, symbol_overrides=symbol_overrides,
                 data_pieces=data['pieces'], data_fillers=data['fillers'], data_excluded=data['excluded'], data_literals=data['literals'], data_layout=data['mode'], data_address_order=data['address_order'])
 

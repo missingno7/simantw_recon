@@ -74,6 +74,23 @@ class ComposerScaffoldTests(unittest.TestCase):
         self.assertEqual(tu.required_pool_block([0xc19e, 0xc1a0, 0xc1a2], []), [])
         self.assertEqual(tu.required_pool_block([0xc19e, 0xc1a0, 0xc1a2], [0xc1a0]), [0xc19e, 0xc1a0])
 
+    def test_unknown_prior_public_owns_only_direct_relocated_selector_reads(self):
+        publics = ['_Prior', '_Claimed', '_Later']
+        functions = {'_Prior': {'size': None}, '_Claimed': {'size': 100}, '_Later': {'size': None}}
+        card = lambda symbol, rows: dict(symbol=symbol, extent={'status': 'PROBABLE'}, disassembly=rows)
+        rows = [dict(mnemonic='mov', operands='es, word ptr [0xc142]'),
+                dict(mnemonic='mov', operands='es, word ptr [0xc144]'),
+                dict(mnemonic='mov', operands='ax, word ptr [0xc146]'),
+                dict(mnemonic='mov', operands='es, word ptr [0xc148]')]
+        cards = [card('_Prior', rows), card('_Later', rows)]
+        owners = tu.prior_unknown_pool_owners(publics, ['_Claimed'], functions, cards,
+                                              {0xc142: 9, 0xc144: 8, 0xc146: 9},
+                                              [0xc142, 0xc144, 0xc146, 0xc148])
+        self.assertEqual(owners, {0xc142: '_Prior', 0xc144: '_Prior'})
+        functions['_Prior']['size'] = 40
+        self.assertEqual(tu.prior_unknown_pool_owners(publics, ['_Claimed'], functions,
+                                                       cards, {0xc142: 9}, [0xc142]), {})
+
     def test_negative_index_data_addends_place_distinct_dog_tables(self):
         data = bytes.fromhex('ffff0300010404030702010001020001020202010001000100010201020000010201')
         original = bytearray(0x2000)

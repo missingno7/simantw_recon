@@ -19829,8 +19829,8 @@ CC82  cb                       retf
 ```
 
 ## _initControls — SIMANT_MODULE:CC84
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 291 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 291 bytes.
+Source: src/recovered/wf_tu_simant_B324_initControls_1_scaffold-03091459d8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 CC84  c8080000                 enter 8, 0
