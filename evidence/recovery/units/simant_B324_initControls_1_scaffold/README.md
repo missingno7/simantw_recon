@@ -1,0 +1,3 @@
+# `_initControls` single-member scaffold trial
+
+The preserved body `evidence/recovery/body-solved/_initControls-f720bbd774e4.c` was compiled in the established `simant:B324` component with `--scaffold --harmonize`. The isolated diagnostic matched 186 of 210 ordinary bytes and 34 of 54 fixups, but unit construction stopped: selector-pool word C144 lies inside `_initControls`'s target word range and the preserved source does not allocate it. The generated `slots_initControls/` files retain the authentic compiler result. This is not an admitted body or a valid stand-in position; identify the missing selector/object use in the claimed source before retrying composition.
