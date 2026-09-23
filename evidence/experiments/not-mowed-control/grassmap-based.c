@@ -1,4 +1,4 @@
-extern int far GrassMap[];
+extern int __based(__segname("PACK")) GrassMap[];
 
 int NotMowed(int position, unsigned char bit)
 {

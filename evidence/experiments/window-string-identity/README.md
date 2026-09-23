@@ -22,3 +22,11 @@ a contextual source hypothesis, not an admission. The current isolated
 external reference as two independent admitted objects. A complete unit must
 establish the shared static's ownership and the intervening DATA declarations
 without duplicate contributions or copied filler bytes.
+
+`target-crossrefs.json` maps the original DGROUP BD12-BE05 initialized span
+and direct PUSH sites in target cards. BD12 is referenced by six window
+functions, including `_win_ObjAddr` and `_win_SetObjBitmap`. The intervening
+strings are used by `_win_LoadWindow`, `_win_LoadAllWindows`, `_win_Open`,
+`_win_GetEvent`, `_win_SetObjFormatStr`, and `_win_Swap`; BD54-BD5C contains
+four `0x8000` words. The map gives observed uses, not historical ownership
+or enough evidence to insert filler into a recovered unit.
