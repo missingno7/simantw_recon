@@ -54,10 +54,38 @@ class MatcherScaffoldTests(unittest.TestCase):
 
 
 class ComposerScaffoldTests(unittest.TestCase):
+    def test_member_without_selector_slots_needs_no_pool_standins(self):
+        self.assertEqual(tu.required_pool_block([0xc19e, 0xc1a0, 0xc1a2], []), [])
+        self.assertEqual(tu.required_pool_block([0xc19e, 0xc1a0, 0xc1a2], [0xc1a0]), [0xc19e, 0xc1a0])
+
+    def test_negative_index_data_addends_place_distinct_dog_tables(self):
+        data = bytes.fromhex('ffff0300010404030702010001020001020202010001000100010201020000010201')
+        original = bytearray(0x2000)
+        original[0x188e:0x1890] = data[:2]
+        original[0x18d8:0x18e0] = data[2:10]
+        original[0x1918:0x1930] = data[10:]
+        anchors = {0: {0x188e}, 10: {0x190e}, 22: {0x190e},
+                   65526: {0x18d6}, 65530: {0x18d6}}
+        pieces = tu.negative_index_data_pieces(data, anchors, original, '_DrawDog')
+        self.assertEqual([(p['offset'], p['length'], p['candidate_start']) for p in pieces],
+                         [(0x188e, 2, 0), (0x18d8, 8, 2), (0x1918, 24, 10)])
+
+    def test_negative_index_data_addend_refuses_undistinguished_zeroes(self):
+        with self.assertRaisesRegex(tu.FormatError, 'no unique initialized DATA placement'):
+            tu.negative_index_data_pieces(b'\0' * 8, {65530: {0x100}}, bytearray(0x200), '_Example')
+
+    def test_mixed_dog_data_gap_is_not_emitted_as_a_literal(self):
+        pieces = [dict(segment='_DATA', offset=0x188e, length=2, member='_DrawDog'),
+                  dict(segment='_DATA', offset=0x18d8, length=8, member='_DrawDog')]
+        plan = tu.data_fillers(pieces, {'data_words': []}, {'_DrawDog': {'offset': 0}})
+        self.assertEqual(plan['literals'], [])
+        self.assertIn('pool_data_fill_1890', plan['fillers']['_DrawDog'][0])
+
     def test_all_zero_private_word_is_not_inferred_as_a_literal(self):
         self.assertFalse(tu.private_data_is_literal(b'\x00\x00'))
         self.assertTrue(tu.private_data_is_literal(b'\r\x00'))
         self.assertFalse(tu.private_data_is_literal(b'\x01\x00'))
+        self.assertFalse(tu.private_data_is_literal(b'\xff\xffA\x00'))
 
     def test_reviewed_scaffold_identifies_only_separate_stand_ins(self):
         text = '#pragma alloc_text(POOLSTUB_TEXT, filler)\nvoid far filler(void) { }\nvoid far Real(void) { }'

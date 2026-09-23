@@ -953,6 +953,20 @@ def member_data_anchors(member, source, flags, target_bytes, folder=None):
         if not anchors or any(len(v) > 1 for v in anchors.values()):
             continue
         ks = sorted(anchors)
+        data = bytes.fromhex(seg['data_hex']) if cls == '_DATA' else b''
+        if any(k >= seg['length'] for k in ks):
+            if cls != '_DATA':
+                raise FormatError('%s has an out-of-range %s fixup addend; BSS placement needs review' % (member, cls))
+            import ne
+            from common import fixture
+            image_bytes = fixture('SIMANTW.EXE')
+            image = ne.parse(image_bytes)
+            dgroup = image['segments'][9]
+            original_data = image_bytes[dgroup['file_offset']:dgroup['file_offset'] + dgroup['logical_size']]
+            for piece in negative_index_data_pieces(data, anchors, original_data, member):
+                piece['segment'] = cls
+                pieces.append(piece)
+            continue
         runs = []
         for k in ks:
             delta = next(iter(anchors[k]))
@@ -960,13 +974,54 @@ def member_data_anchors(member, source, flags, target_bytes, folder=None):
                 continue
             runs.append(dict(start=k, delta=delta))
         runs[0]['start'] = 0
-        data = bytes.fromhex(seg['data_hex']) if cls == '_DATA' else b''
         for i, r in enumerate(runs):
             end = runs[i + 1]['start'] if i + 1 < len(runs) else seg['length']
             chunk = data[r['start']:end] if cls == '_DATA' else b''
             literal = private_data_is_literal(chunk) if cls == '_DATA' else False
             pieces.append(dict(segment=cls, offset=(r['start'] + r['delta']) & 0xFFFF, length=end - r['start'], member=member, kind='literal' if literal else 'static', candidate_start=r['start']))
     return pieces
+
+
+def negative_index_data_pieces(data, anchors, original_data, member):
+    """Place private data when an indexed array has a negative folded addend.
+
+    The 16-bit addend is not an offset into the candidate DATA segment. Infer
+    each contiguous piece only if its initialized bytes uniquely identify a
+    placement and the pieces cover the entire candidate contribution.
+    """
+    groups = {}
+    for k, values in anchors.items():
+        if len(values) != 1:
+            raise FormatError('%s has ambiguous private DATA anchors' % member)
+        groups.setdefault(next(iter(values)), []).append(k)
+    chosen = []
+    for delta, keys in groups.items():
+        matches = [i for i, byte in enumerate(data)
+                   if delta + i < len(original_data) and byte == original_data[delta + i]]
+        runs = []
+        for i in matches:
+            if runs and runs[-1][1] == i:
+                runs[-1] = (runs[-1][0], i + 1)
+            else:
+                runs.append((i, i + 1))
+        inside = [k for k in keys if k < len(data)]
+        if inside:
+            eligible = [(lo, hi) for lo, hi in runs if all(lo <= k < hi for k in inside)]
+        else:
+            eligible = [(lo, hi) for lo, hi in runs if hi - lo >= 4 and any(data[lo:hi])]
+            if eligible:
+                longest = max(hi - lo for lo, hi in eligible)
+                eligible = [(lo, hi) for lo, hi in eligible if hi - lo == longest]
+        if len(eligible) != 1:
+            raise FormatError('%s has no unique initialized DATA placement for folded addend %04X' % (member, delta))
+        lo, hi = eligible[0]
+        chosen.append((lo, hi, delta))
+    chosen.sort()
+    if not chosen or chosen[0][0] != 0 or chosen[-1][1] != len(data) or any(a[1] != b[0] for a, b in zip(chosen, chosen[1:])):
+        raise FormatError('%s folded-addend DATA placements overlap or leave unproved bytes' % member)
+    return [dict(offset=(delta + lo) & 0xFFFF, length=hi - lo, member=member,
+                 kind='literal' if private_data_is_literal(data[lo:hi]) else 'static', candidate_start=lo)
+            for lo, hi, delta in chosen]
 
 
 def private_data_is_literal(chunk):
@@ -1047,14 +1102,15 @@ def data_fillers(pieces, comp, functions, mode='definitions'):
                     raise FormatError('DGROUP %04X-%04X carries loader obligations; no data filler' % (gap_lo, gap_hi))
                 chunk = data[gap_lo:gap_hi]
                 note = 'the %d bytes of private data between %s and %s (DGROUP %04X-%04X, unclaimed members), copied from the image so the claimed pieces keep their layout' % (len(chunk), a['member'], b['member'], gap_lo, gap_hi)
-                if mode == 'definitions' and (gap_lo % 2 or chunk[-1:] == b'\x00'):
+                cut = chunk.rfind(b'\x00') + 1
+                literal_gap = cut > 0 and private_data_is_literal(chunk[:cut])
+                if mode == 'definitions' and (gap_lo % 2 or literal_gap):
                     # Statics are word aligned but string literals are not: an
                     # unaligned or string-terminated gap is reproduced as a
                     # literal referenced from a stand-in function (its data is
                     # emitted while that function is compiled). Bytes after the
                     # last NUL become a word-aligned static filler.
-                    cut = chunk.rfind(b'\x00') + 1
-                    if cut == 0 or (cut < len(chunk) and (gap_lo + cut) % 2):
+                    if not literal_gap or (cut < len(chunk) and (gap_lo + cut) % 2):
                         raise FormatError('DGROUP %04X-%04X: unaligned private data that is not a string cannot be reproduced' % (gap_lo, gap_hi))
                     literal = ''.join('\\%03o' % x for x in chunk[:cut - 1])
                     text = ['/* SCAFFOLD, not recovered source: %s. */' % note, 'void far %s(void)' % name, '{', '    volatile char far *p;', '', '    p = "%s";' % literal, '}']
@@ -1142,6 +1198,14 @@ def split_layout(kept, data, relocated, functions, excluded):
                     literals.append(filler_literal(lo, hi, 'unclaimed body literals before %s' % lits[0]['member'], lits[0]['member']))
         address_order += [p['member'] for p in statics]
     return dict(fillers=fillers, excluded=excluded, pieces=kept, literals=literals, mode='split', address_order=list(dict.fromkeys(address_order)))
+
+
+def required_pool_block(listed, claimed_slots):
+    """Only reproduce selector words needed before a claimed member's slot."""
+    if not listed or not claimed_slots:
+        return []
+    stop = max(claimed_slots)
+    return [w for w in range(min(listed), max(listed) + 2, 2) if w <= stop]
 
 
 def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions', chosen_sources=None):
@@ -1273,8 +1337,8 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
     listed = sorted(int(x, 16) for x in comp.get('pool_words', [])) or sorted(introducer)
     # The block is contiguous: words the topology could not attribute to any
     # public (static helpers, other load forms) are still allocated in it.
-    block = list(range(listed[0], listed[-1] + 2, 2)) if listed else []
-    stop = max(w for m in claimed for w in functions[m]['slots']) if any(functions[m]['slots'] for m in claimed) else None
+    claimed_slots = [w for m in claimed for w in functions[m]['slots']]
+    block = required_pool_block(listed, claimed_slots)
     reattributed = []
     # Allocation is sequential, so introducer code positions never decrease
     # along the block. A recorded introducer later than a following word's
@@ -1307,8 +1371,6 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
     current = None
     orphans = []
     for w in block:
-        if stop is not None and w > stop:
-            break
         f = introducer.get(w)
         o = owner(w)
         if o is not None and o != f:

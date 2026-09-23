@@ -55308,8 +55308,8 @@ B10E  cb                       retf
 ```
 
 ## _DrawDog — ANTEDIT_MODULE:B110
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 134 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 134 bytes.
+Source: src/recovered/wf_tu_antedit_A998_DrawDog_1_reviewed-b5499d8ad8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 B110  c8040000                 enter 4, 0
