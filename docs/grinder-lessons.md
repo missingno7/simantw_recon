@@ -142,3 +142,53 @@ For `_YardArea`, target DGROUP 18B6 is `patchRgn2[9]`: MAPSYM puts `patchRgn2` a
 - Three pause-menu routines read exactly the same two strings at DGROUP 0900 and 0911. Simply combining their preserved literal-bearing C emits three copies. Two separate named statics insert a padding byte; one flat array or a two-field char struct keeps 32 data bytes but changes conditional pointer code. The [bounded C7 trials](../evidence/experiments/menu-string-identity/README.md) rule out those spellings under the assigned profile. Keep the body matches as hypotheses until shared string identity and the direct `mov ax,offset` source form agree together.
 
 - The `_GSetSmallFont`/`_GSetBigFont` pair exposes a BSS boundary issue, not a long DATA gap. DGROUP CC54 lies above `_edata` CA60. The target shares a two-byte word at CC54 but uses separate byte scratches at CC56 and CC57. Explicit `= 0` definitions placed the candidate words in `_DATA`; tentative zero definitions placed them in `_BSS`. Splitting the byte scratch and restoring the target TEXTMETRIC field expressions matched the two complete members, 41 DATA bytes, two CONST bytes, four BSS bytes, two PACK bytes, and every fixup. The old reviewed unit had swapped the two calculations even though the preserved individual bodies had them right; read target stack offsets rather than trusting a reviewed comment. [Evidence](../evidence/experiments/font-bss-context/README.md).
+
+## Bitmap row stride and far-pointer ABI (2026-09-23)
+
+`_DoFastMonoBitmap` matched after its eight-attempt production budget through
+one evidenced `SOURCE_LAYOUT` reissue. The decisive target signature was a
+long division helper followed by long multiplication at the same two call
+sites where the preserved draft emitted them in reverse. NE records relocate
+only the far-call selector halves; inspect the ordinary offset words and
+MAPSYM names before concluding both calls target segment offset zero. The
+historical computation divides rounded row width before multiplying height.
+Its source bitmap argument is one far pointer: the original pushes its two
+stack words directly, whereas a source with separate offset/segment words
+loaded AX/DX first. An explicit shared cleanup label reproduced the jump
+past the handle check after `mem_Unlock`. The final object matched the whole
+member, all 11 fixups and its private `bm` literal under fresh admission.
+[Full experiment and negative controls](../evidence/experiments/fast-mono-helper-order/README.md).
+
+When a future bitmap candidate has correct call sites but wrong arithmetic
+helper order, compare the source operation order before changing compiler
+profiles or treating a selector-only NE relocation as a missing helper.
+Apply the far-pointer and cleanup observations only where the target's stack
+and branch evidence agree.
+
+The independent `_win_SetObjVisibleState` research confirmed the relocation
+point in another group: call-offset bytes for `_GRectInv` (0x0EB2) and
+`_GSetAttrib` (0x19B4) match MAPSYM even though their NE selector records
+name segment 2 offset zero. A signed `char` local reproduced its `cwde`
+dispatch sequence; the complete function remains blocked on other code and
+selector differences. [Scoped evidence](../evidence/experiments/win-visible-state-call-offsets/README.md).
+
+The next bitmap member, `_DoFastBitmap`, independently reproduced its target
+long-division-then-multiplication helper sequence using the rounded row-stride
+expression. It remains blocked later in its Dx8 conversion. An isolated
+plain far-pointer alias still emitted seven `_Dx8` offset fixups, whereas the
+target uses two selector loads and indexed ES reads. That negative applies to
+the tested alias under this component's baseline profile, not to all pointer
+representations. [Research note](../evidence/recovery/workflow/jobs/DoFastBitmap-e1a0ad76d1/isolated-research.md).
+
+### Mine an admitted sequence in neighboring members
+
+`_PrepareStrings` matched on one readable hypothesis: eighteen consecutive
+`LoadStringAnt` calls assigned to named far string-table globals, including
+all 90 fixups. The adjacent `_initStuff` packet began with the same eighteen
+calls and stores; reusing those statements and reconstructing only the
+startup tail matched its full 576-byte body and 109 fixups on its first test.
+The latter target reads an unwritten stack local on its failure path, which
+the source preserves explicitly. This is a local observed clone, not an
+assumption that all startup functions share a translation unit. See the
+[first source proof](../evidence/experiments/prepare-strings/README.md) and
+[reuse proof](../evidence/experiments/init-stuff/README.md).

@@ -1,0 +1,19 @@
+{
+  "symbol": "_PlacePillTile",
+  "template": "extern int far IsValidA(int x, int y);\n@SOURCE@",
+  "axes": [
+    {
+      "name": "array_shape",
+      "marker": "@SOURCE@",
+      "rationale": "The neighboring recovered pillar functions use both linear and row-column views of 64-byte rows; test whether the array type affects the retained x/y register assignment and call push schedule.",
+      "values": [
+        "extern unsigned char near MapA[128][64];\nvoid PlacePillTile(int x,int y,unsigned char value) { if (IsValidA(x,y) == 1) MapA[x][y] = value; }",
+        "extern unsigned char near MapA[128][64];\nvoid PlacePillTile(int x,int y,unsigned char value) { int column=x, row=y; if (IsValidA(column,row) == 1) MapA[column][row] = value; }",
+        "extern unsigned char near MapA[];\nvoid PlacePillTile(int x,int y,unsigned char value) { if (IsValidA(x,y) == 1) MapA[y + x*64] = value; }",
+        "extern unsigned char near MapA[];\nvoid PlacePillTile(int x,int y,unsigned char value) { int row=y, column=x; if (IsValidA(column,row) == 1) MapA[row + column*64] = value; }"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": ["/AL", "/G2", "/Gs", "/Oeglw", "/NTSIMTWO_MODULE"]
+}

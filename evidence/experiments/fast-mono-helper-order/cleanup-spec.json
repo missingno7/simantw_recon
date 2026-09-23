@@ -1,0 +1,24 @@
+{
+  "symbol": "_DoFastMonoBitmap",
+  "template": "struct MonoInfo {\n    unsigned long size;\n    long width;\n    long height;\n    unsigned int planes;\n    unsigned int bitCount;\n    unsigned long compression;\n    unsigned long imageSize;\n    long xPixelsPerMeter;\n    long yPixelsPerMeter;\n    unsigned long colorsUsed;\n    unsigned long colorsImportant;\n    unsigned char palette[8];\n};\n\nextern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);\nextern void far *mem_Lock(unsigned int handle);\nextern int far mem_Unlock(unsigned int handle);\nextern void far mem_Free(int handle);\nextern int near clipDC;\nextern int far pascal SetBkMode(int dc, int mode);\nextern int far pascal SetDIBitsToDevice(int dc, int xDest, int yDest,\n                                        unsigned int width, unsigned int height,\n                                        int xSource, int ySource,\n                                        unsigned int firstScan,\n                                        unsigned int scanCount,\n                                        void far *bits, void far *info,\n                                        unsigned int colorUse);\n\nvoid far DoFastMonoBitmap(int xDest, int yDest, int width,\n                          int height, void far *bits)\n{\n    unsigned int handle;\n    struct MonoInfo far *info;\n\n    handle = mem_Alloc(0x30L, 0, \"bm\");\n    if (bits != 0 && handle != 0) {\n    info = (struct MonoInfo far *)mem_Lock(handle);\n    SetBkMode(clipDC, 1);\n    info->size = 0x28L;\n    info->width = (long)width;\n    info->height = (long)height;\n    info->planes = 1;\n    info->bitCount = 1;\n    info->compression = 0L;\n    info->imageSize = (((long)width + 31L) / 32L) * (long)height * 4L;\n    info->xPixelsPerMeter = 0L;\n    info->yPixelsPerMeter = 0L;\n    info->colorsUsed = 0L;\n    info->colorsImportant = 0L;\n    info->palette[0] = 0;\n    info->palette[1] = 0;\n    info->palette[2] = 0;\n    info->palette[3] = 0;\n    info->palette[4] = 0xff;\n    info->palette[5] = 0xff;\n    info->palette[6] = 0xff;\n    info->palette[7] = 0;\n    SetDIBitsToDevice(clipDC, xDest, yDest, width, height,\n                      0, 0, 0, height,\n                      bits,\n                      info, 0);\n@TAIL@\n}\n\n\n\n\n\n\n\n",
+  "axes": [
+    {
+      "name": "cleanup_branch",
+      "marker": "@TAIL@",
+      "rationale": "The original jumps directly to mem_Free after mem_Unlock and checks handle only on the early-exit path. Explicit common-tail labels preserve that control flow while keeping the same semantics.",
+      "values": [
+        "    mem_Unlock(handle);\n        goto free_handle;\n    }\n    if (handle == 0) return;\nfree_handle:\n    mem_Free(handle);",
+        "    mem_Unlock(handle);\n        goto free_handle;\n    }\n    if (!handle) goto done;\nfree_handle:\n    mem_Free(handle);\ndone:;",
+        "    mem_Unlock(handle);\n        goto free_handle;\n    }\n    if (handle != 0) {\nfree_handle:\n        mem_Free(handle);\n    }"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "symbol": "_PlacePillTile",
+  "template": "extern int far IsValidA(int x, int y);\n@ARRAY_DECL@\nvoid PlacePillTile(int x, int y, unsigned char value)\n{\n@BODY@\n}\n",
+  "axes": [
+    {
+      "name": "array_declaration",
+      "marker": "@ARRAY_DECL@",
+      "rationale": "The target uses a 64-byte row stride; compare linear and two-dimensional declarations of the same near byte storage.",
+      "values": [
+        "extern unsigned char near MapA[];",
+        "extern unsigned char near MapA[128][64];"
+      ]
+    },
+    {
+      "name": "index_expression",
+      "marker": "@BODY@",
+      "rationale": "For coordinates accepted by IsValidA, x*64+y and (x<<6)+y denote the same byte; compare equivalent index representations and a register-lifetime snapshot.",
+      "values": [
+        "    if (IsValidA(x, y) == 1) ((unsigned char near *)MapA)[x * 64 + y] = value;",
+        "    if (IsValidA(x, y) == 1) ((unsigned char near *)MapA)[(x << 6) + y] = value;",
+        "    if (IsValidA(x, y) == 1) ((unsigned char near *)MapA)[y + (x << 6)] = value;",
+        "    int column = x; int row = y;\n    if (IsValidA(column, row) == 1) ((unsigned char near *)MapA)[(column << 6) + row] = value;"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": ["/AL", "/G2", "/Gs", "/Oeglw", "/NTSIMTWO_MODULE"]
+}

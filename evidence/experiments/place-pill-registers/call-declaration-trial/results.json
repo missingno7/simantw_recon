@@ -1,0 +1,2137 @@
+{
+  "symbol": "_PlacePillTile",
+  "spec": {
+    "symbol": "_PlacePillTile",
+    "template": "@CALL_DECL@\nextern unsigned char near MapA[];\nvoid PlacePillTile(int x, int y, unsigned char value)\n{\n@BODY@\n}\n",
+    "axes": [
+      {
+        "name": "callee_declaration",
+        "marker": "@CALL_DECL@",
+        "rationale": "The callee is an int-returning far function with two int arguments, but the original declaration style is unknown; test prototyped versus K&R unspecified-argument form under the same ABI.",
+        "values": [
+          "extern int far IsValidA(int x, int y);",
+          "extern int far IsValidA();"
+        ]
+      },
+      {
+        "name": "retained_coordinates",
+        "marker": "@BODY@",
+        "rationale": "Direct arguments and coordinate snapshots give the two previously observed register-schedule classes; see whether declaration form splits either class.",
+        "values": [
+          "    if (IsValidA(x, y) == 1) MapA[x * 64 + y] = value;",
+          "    int column=x, row=y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;"
+        ]
+      }
+    ],
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oeglw",
+      "/NTSIMTWO_MODULE"
+    ]
+  },
+  "exe_sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+  "sym_sha256": "9d27f4d0872e483ddbf460bda8a2e34b7180f153c6d7c1a74d692720476c9a7f",
+  "candidates": 4,
+  "completed_candidates": 4,
+  "environment_launches": 4,
+  "cache": {
+    "hits": 0,
+    "misses": 4,
+    "environment_launches": 4
+  },
+  "exact_candidates": [],
+  "promotion": "NONE: independent rebuild and recipe review required",
+  "results": [
+    {
+      "candidate": 0,
+      "choices": {
+        "callee_declaration": "extern int far IsValidA(int x, int y);",
+        "retained_coordinates": "    if (IsValidA(x, y) == 1) MapA[x * 64 + y] = value;"
+      },
+      "receipt": {
+        "source": "evidence/experiments/place-pill-registers/call-declaration-trial/candidate0000.c",
+        "source_identity": {
+          "size": 192,
+          "sha256": "056ce4c26cf26651a940bcf146da46276079fdcb4feec122af9dd3ce1bdb1868"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oeglw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W1_nm33igqi\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oeglw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W1_nm33igqi/job0001/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 311,
+          "sha256": "949f6b16cfe1bb31b0a0e16f6f62810ab0d7a28cd224c60d825ed5ebfc7a9a4c"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 1,
+        "worker_session": "build/compiler-workers/W1_nm33igqi",
+        "batch_directory": "build/compiler-workers/W1_nm33igqi",
+        "batch_index": 0,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "706605634b5adc47e0522414b1c5cc3448a8de2828c54032d848fdd743e570fe"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 4.672051300003659,
+          "environment_launches": 1,
+          "queue_dispatch_seconds": 0.021782199997687712,
+          "compiler_execution_seconds": 0.3746568000060506,
+          "total_compile_request_seconds": 5.087740300004953,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/568358505c5a493da70a1b1fd18f435a/INPUT.C",
+        "request_id": "568358505c5a493da70a1b1fd18f435a",
+        "service_instance": "018eebcbf43c4c0e97a97d54b6b56ecd"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMTWO_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            7,
+            22234
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              7,
+              22234,
+              "_PlacePillTile"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMTWO_MODULE",
+            "original_segment": 7,
+            "original_offset": 22234,
+            "length": 40,
+            "initialized_ranges": [
+              [
+                0,
+                40
+              ]
+            ],
+            "literal_compared": 34,
+            "literal_equal": 28,
+            "divergences": [
+              7,
+              10,
+              11,
+              12,
+              28,
+              33
+            ],
+            "fixups": [
+              {
+                "offset": 34,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 10472
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 34,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapA"
+                  }
+                }
+              },
+              {
+                "offset": 14,
+                "target": {
+                  "kind": "internal",
+                  "segment": 5,
+                  "offset": 39938
+                },
+                "equal": true,
+                "reason": "NE selector relocation + offset",
+                "omf": {
+                  "segment": 1,
+                  "offset": 14,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_IsValidA"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 34,
+        "literal_equal": 28,
+        "fixups_equal": 2,
+        "fixups_total": 2,
+        "publics": [
+          "_PlacePillTile"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 40,
+        "features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 40,
+          "size": 40,
+          "upper_bound": 40,
+          "return_offsets": [
+            39
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 22234,
+          "end": 22274,
+          "size": 40,
+          "upper_bound": 22274,
+          "return_offsets": [
+            22273
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMTWO_MODULE",
+          "offset": 7
+        },
+        "diagnostic": {
+          "target_bytes": 40,
+          "candidate_bytes": 40,
+          "instruction_layout_match": true,
+          "cfg_shape_match": true,
+          "opcode_total": 20,
+          "opcode_matches": 20,
+          "register_only_differences": 4,
+          "immediate_differences": 0,
+          "memory_operand_differences": 2,
+          "branch_target_differences": 0,
+          "stack_local_differences": 2,
+          "first_structural_difference": null,
+          "categories": [
+            "REGISTER_ALLOCATION",
+            "LOCAL_FRAME_LAYOUT",
+            "MEMORY_OPERAND"
+          ],
+          "score": 0.85,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push bp",
+              "candidate_offset": 0,
+              "candidate": "push bp",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "mov bp, sp",
+              "candidate_offset": 1,
+              "candidate": "mov bp, sp",
+              "differences": []
+            },
+            {
+              "target_offset": 3,
+              "target": "push di",
+              "candidate_offset": 3,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 4,
+              "target": "push si",
+              "candidate_offset": 4,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 5,
+              "target": "mov di, word ptr [bp + 6]",
+              "candidate_offset": 5,
+              "candidate": "mov di, word ptr [bp + 8]",
+              "differences": [
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": 8,
+              "target": "mov si, word ptr [bp + 8]",
+              "candidate_offset": 8,
+              "candidate": "mov si, word ptr [bp + 6]",
+              "differences": [
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "push si",
+              "candidate_offset": 11,
+              "candidate": "push di",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 12,
+              "target": "push di",
+              "candidate_offset": 12,
+              "candidate": "push si",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 13,
+              "target": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "candidate_offset": 13,
+              "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "differences": []
+            },
+            {
+              "target_offset": 18,
+              "target": "add sp, 4",
+              "candidate_offset": 18,
+              "candidate": "add sp, 4",
+              "differences": []
+            },
+            {
+              "target_offset": 21,
+              "target": "dec ax",
+              "candidate_offset": 21,
+              "candidate": "dec ax",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jne 0x24",
+              "candidate_offset": 22,
+              "candidate": "jne 0x24",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "mov al, byte ptr [bp + 0xa]",
+              "candidate_offset": 24,
+              "candidate": "mov al, byte ptr [bp + 0xa]",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "mov bx, di",
+              "candidate_offset": 27,
+              "candidate": "mov bx, si",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 29,
+              "target": "shl bx, 6",
+              "candidate_offset": 29,
+              "candidate": "shl bx, 6",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "candidate_offset": 32,
+              "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 36,
+              "target": "pop si",
+              "candidate_offset": 36,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "pop di",
+              "candidate_offset": 37,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 38,
+              "target": "leave ",
+              "candidate_offset": 38,
+              "candidate": "leave ",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "retf ",
+              "candidate_offset": 39,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMTWO_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMTWO_MODULE",
+                "original_segment": 7,
+                "original_offset": 22234,
+                "literal_differences": 6,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 2,
+          "fixups_total": 2,
+          "extent_known": true,
+          "contribution_bytes": 40,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.00028500000189524144,
+        "strict_match_seconds": 0.007377300004009157,
+        "diagnostic_diff_seconds": 0.0068765000032726675
+      }
+    },
+    {
+      "candidate": 1,
+      "choices": {
+        "callee_declaration": "extern int far IsValidA(int x, int y);",
+        "retained_coordinates": "    int column=x, row=y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;"
+      },
+      "receipt": {
+        "source": "evidence/experiments/place-pill-registers/call-declaration-trial/candidate0001.c",
+        "source_identity": {
+          "size": 232,
+          "sha256": "ee55eff48e6d723ebdc163648e45885a489b74422b5b69e3b8cef7f91b3eb465"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oeglw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W0_er2lfh2j\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oeglw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W0_er2lfh2j/job0001/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 311,
+          "sha256": "26714a488d11614a9dbde9013cb76b964a0e1717521347b0e2098a4fecf15065"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 0,
+        "worker_session": "build/compiler-workers/W0_er2lfh2j",
+        "batch_directory": "build/compiler-workers/W0_er2lfh2j",
+        "batch_index": 0,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "7cc2861a40ee38ed91b50f44eb8b8b99c1134459b3a3d3d1aaf93b20ce5a6b41"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 4.676207600001362,
+          "environment_launches": 1,
+          "queue_dispatch_seconds": 0.02131200001167599,
+          "compiler_execution_seconds": 0.37481649999972433,
+          "total_compile_request_seconds": 5.092406800002209,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/02982faa918f484491a706f87961b2fb/INPUT.C",
+        "request_id": "02982faa918f484491a706f87961b2fb",
+        "service_instance": "018eebcbf43c4c0e97a97d54b6b56ecd"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMTWO_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            7,
+            22234
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              7,
+              22234,
+              "_PlacePillTile"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMTWO_MODULE",
+            "original_segment": 7,
+            "original_offset": 22234,
+            "length": 40,
+            "initialized_ranges": [
+              [
+                0,
+                40
+              ]
+            ],
+            "literal_compared": 34,
+            "literal_equal": 28,
+            "divergences": [
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "fixups": [
+              {
+                "offset": 34,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 10472
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 34,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapA"
+                  }
+                }
+              },
+              {
+                "offset": 14,
+                "target": {
+                  "kind": "internal",
+                  "segment": 5,
+                  "offset": 39938
+                },
+                "equal": true,
+                "reason": "NE selector relocation + offset",
+                "omf": {
+                  "segment": 1,
+                  "offset": 14,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_IsValidA"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 34,
+        "literal_equal": 28,
+        "fixups_equal": 2,
+        "fixups_total": 2,
+        "publics": [
+          "_PlacePillTile"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 40,
+        "features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 40,
+          "size": 40,
+          "upper_bound": 40,
+          "return_offsets": [
+            39
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 22234,
+          "end": 22274,
+          "size": 40,
+          "upper_bound": 22274,
+          "return_offsets": [
+            22273
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMTWO_MODULE",
+          "offset": 6
+        },
+        "diagnostic": {
+          "target_bytes": 40,
+          "candidate_bytes": 40,
+          "instruction_layout_match": false,
+          "cfg_shape_match": true,
+          "opcode_total": 20,
+          "opcode_matches": 19,
+          "register_only_differences": 0,
+          "immediate_differences": 0,
+          "memory_operand_differences": 2,
+          "branch_target_differences": 0,
+          "stack_local_differences": 2,
+          "first_structural_difference": {
+            "target_offset": null,
+            "candidate_offset": 8
+          },
+          "categories": [
+            "INSTRUCTION_ORDER",
+            "LOCAL_FRAME_LAYOUT",
+            "MEMORY_OPERAND"
+          ],
+          "score": 0.9,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push bp",
+              "candidate_offset": 0,
+              "candidate": "push bp",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "mov bp, sp",
+              "candidate_offset": 1,
+              "candidate": "mov bp, sp",
+              "differences": []
+            },
+            {
+              "target_offset": 3,
+              "target": "push di",
+              "candidate_offset": 3,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 4,
+              "target": "push si",
+              "candidate_offset": 4,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 5,
+              "target": "mov di, word ptr [bp + 6]",
+              "candidate_offset": 5,
+              "candidate": "mov si, word ptr [bp + 8]",
+              "differences": [
+                "register_role",
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": null,
+              "target": "",
+              "candidate_offset": 8,
+              "candidate": "push si",
+              "differences": [
+                "instruction_shape"
+              ]
+            },
+            {
+              "target_offset": 8,
+              "target": "mov si, word ptr [bp + 8]",
+              "candidate_offset": 9,
+              "candidate": "mov di, word ptr [bp + 6]",
+              "differences": [
+                "register_role",
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "push si",
+              "candidate_offset": null,
+              "candidate": "",
+              "differences": [
+                "instruction_shape"
+              ]
+            },
+            {
+              "target_offset": 12,
+              "target": "push di",
+              "candidate_offset": 12,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 13,
+              "target": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "candidate_offset": 13,
+              "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "differences": []
+            },
+            {
+              "target_offset": 18,
+              "target": "add sp, 4",
+              "candidate_offset": 18,
+              "candidate": "add sp, 4",
+              "differences": []
+            },
+            {
+              "target_offset": 21,
+              "target": "dec ax",
+              "candidate_offset": 21,
+              "candidate": "dec ax",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jne 0x24",
+              "candidate_offset": 22,
+              "candidate": "jne 0x24",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "mov al, byte ptr [bp + 0xa]",
+              "candidate_offset": 24,
+              "candidate": "mov al, byte ptr [bp + 0xa]",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "mov bx, di",
+              "candidate_offset": 27,
+              "candidate": "mov bx, di",
+              "differences": []
+            },
+            {
+              "target_offset": 29,
+              "target": "shl bx, 6",
+              "candidate_offset": 29,
+              "candidate": "shl bx, 6",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "candidate_offset": 32,
+              "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "differences": []
+            },
+            {
+              "target_offset": 36,
+              "target": "pop si",
+              "candidate_offset": 36,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "pop di",
+              "candidate_offset": 37,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 38,
+              "target": "leave ",
+              "candidate_offset": 38,
+              "candidate": "leave ",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "retf ",
+              "candidate_offset": 39,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMTWO_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMTWO_MODULE",
+                "original_segment": 7,
+                "original_offset": 22234,
+                "literal_differences": 6,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 2,
+          "fixups_total": 2,
+          "extent_known": true,
+          "contribution_bytes": 40,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.0003041000018129125,
+        "strict_match_seconds": 0.006759700001566671,
+        "diagnostic_diff_seconds": 0.006727100000716746
+      }
+    },
+    {
+      "candidate": 2,
+      "choices": {
+        "callee_declaration": "extern int far IsValidA();",
+        "retained_coordinates": "    if (IsValidA(x, y) == 1) MapA[x * 64 + y] = value;"
+      },
+      "receipt": {
+        "source": "evidence/experiments/place-pill-registers/call-declaration-trial/candidate0002.c",
+        "source_identity": {
+          "size": 180,
+          "sha256": "39091ee728e27461e342c084e5954fa8a5d32207d75d74bc1363f2d7fe214a97"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oeglw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W3_dpclr_49\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oeglw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W3_dpclr_49/job0001/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 311,
+          "sha256": "949f6b16cfe1bb31b0a0e16f6f62810ab0d7a28cd224c60d825ed5ebfc7a9a4c"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 3,
+        "worker_session": "build/compiler-workers/W3_dpclr_49",
+        "batch_directory": "build/compiler-workers/W3_dpclr_49",
+        "batch_index": 0,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "45cf33c1ccbca76e4c2ffeb54608e75cbbbafb94f923f47593d2f1af47dbddcf"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 4.656207300009555,
+          "environment_launches": 1,
+          "queue_dispatch_seconds": 0.021410500005003996,
+          "compiler_execution_seconds": 0.37511380000796635,
+          "total_compile_request_seconds": 5.072029899994959,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/e79a9d7f50ad4dc1b23cd6b5c0d46cba/INPUT.C",
+        "request_id": "e79a9d7f50ad4dc1b23cd6b5c0d46cba",
+        "service_instance": "018eebcbf43c4c0e97a97d54b6b56ecd"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMTWO_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            7,
+            22234
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              7,
+              22234,
+              "_PlacePillTile"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMTWO_MODULE",
+            "original_segment": 7,
+            "original_offset": 22234,
+            "length": 40,
+            "initialized_ranges": [
+              [
+                0,
+                40
+              ]
+            ],
+            "literal_compared": 34,
+            "literal_equal": 28,
+            "divergences": [
+              7,
+              10,
+              11,
+              12,
+              28,
+              33
+            ],
+            "fixups": [
+              {
+                "offset": 34,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 10472
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 34,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapA"
+                  }
+                }
+              },
+              {
+                "offset": 14,
+                "target": {
+                  "kind": "internal",
+                  "segment": 5,
+                  "offset": 39938
+                },
+                "equal": true,
+                "reason": "NE selector relocation + offset",
+                "omf": {
+                  "segment": 1,
+                  "offset": 14,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_IsValidA"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 34,
+        "literal_equal": 28,
+        "fixups_equal": 2,
+        "fixups_total": 2,
+        "publics": [
+          "_PlacePillTile"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 40,
+        "features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 40,
+          "size": 40,
+          "upper_bound": 40,
+          "return_offsets": [
+            39
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 22234,
+          "end": 22274,
+          "size": 40,
+          "upper_bound": 22274,
+          "return_offsets": [
+            22273
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMTWO_MODULE",
+          "offset": 7
+        },
+        "diagnostic": {
+          "target_bytes": 40,
+          "candidate_bytes": 40,
+          "instruction_layout_match": true,
+          "cfg_shape_match": true,
+          "opcode_total": 20,
+          "opcode_matches": 20,
+          "register_only_differences": 4,
+          "immediate_differences": 0,
+          "memory_operand_differences": 2,
+          "branch_target_differences": 0,
+          "stack_local_differences": 2,
+          "first_structural_difference": null,
+          "categories": [
+            "REGISTER_ALLOCATION",
+            "LOCAL_FRAME_LAYOUT",
+            "MEMORY_OPERAND"
+          ],
+          "score": 0.85,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push bp",
+              "candidate_offset": 0,
+              "candidate": "push bp",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "mov bp, sp",
+              "candidate_offset": 1,
+              "candidate": "mov bp, sp",
+              "differences": []
+            },
+            {
+              "target_offset": 3,
+              "target": "push di",
+              "candidate_offset": 3,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 4,
+              "target": "push si",
+              "candidate_offset": 4,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 5,
+              "target": "mov di, word ptr [bp + 6]",
+              "candidate_offset": 5,
+              "candidate": "mov di, word ptr [bp + 8]",
+              "differences": [
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": 8,
+              "target": "mov si, word ptr [bp + 8]",
+              "candidate_offset": 8,
+              "candidate": "mov si, word ptr [bp + 6]",
+              "differences": [
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "push si",
+              "candidate_offset": 11,
+              "candidate": "push di",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 12,
+              "target": "push di",
+              "candidate_offset": 12,
+              "candidate": "push si",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 13,
+              "target": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "candidate_offset": 13,
+              "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "differences": []
+            },
+            {
+              "target_offset": 18,
+              "target": "add sp, 4",
+              "candidate_offset": 18,
+              "candidate": "add sp, 4",
+              "differences": []
+            },
+            {
+              "target_offset": 21,
+              "target": "dec ax",
+              "candidate_offset": 21,
+              "candidate": "dec ax",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jne 0x24",
+              "candidate_offset": 22,
+              "candidate": "jne 0x24",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "mov al, byte ptr [bp + 0xa]",
+              "candidate_offset": 24,
+              "candidate": "mov al, byte ptr [bp + 0xa]",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "mov bx, di",
+              "candidate_offset": 27,
+              "candidate": "mov bx, si",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 29,
+              "target": "shl bx, 6",
+              "candidate_offset": 29,
+              "candidate": "shl bx, 6",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "candidate_offset": 32,
+              "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "differences": [
+                "register_allocation"
+              ]
+            },
+            {
+              "target_offset": 36,
+              "target": "pop si",
+              "candidate_offset": 36,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "pop di",
+              "candidate_offset": 37,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 38,
+              "target": "leave ",
+              "candidate_offset": 38,
+              "candidate": "leave ",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "retf ",
+              "candidate_offset": 39,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMTWO_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMTWO_MODULE",
+                "original_segment": 7,
+                "original_offset": 22234,
+                "literal_differences": 6,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 2,
+          "fixups_total": 2,
+          "extent_known": true,
+          "contribution_bytes": 40,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.0002964000013889745,
+        "strict_match_seconds": 0.0065230000036535785,
+        "diagnostic_diff_seconds": 0.006452200002968311
+      }
+    },
+    {
+      "candidate": 3,
+      "choices": {
+        "callee_declaration": "extern int far IsValidA();",
+        "retained_coordinates": "    int column=x, row=y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;"
+      },
+      "receipt": {
+        "source": "evidence/experiments/place-pill-registers/call-declaration-trial/candidate0003.c",
+        "source_identity": {
+          "size": 220,
+          "sha256": "7a19abfb32aa99b56655fd436b7a1fa044ee8cb09c5d9161277e49f6ce7b4cfc"
+        },
+        "compiler": "msc700",
+        "flags": [
+          "/AL",
+          "/G2",
+          "/Gs",
+          "/Oeglw",
+          "/NTSIMTWO_MODULE"
+        ],
+        "toolchain_lock_sha256": "745e0932b4d672174dc74423c627846a88708946093756f9ee520cee7a2f33f6",
+        "command": [
+          "D:\\Prog\\simantw_recon\\toolchain\\dosbox-x\\bin\\x64\\Release\\dosbox-x.exe",
+          "-conf",
+          "D:\\Prog\\simantw_recon\\build\\compiler-workers\\W2_x5r76g_2\\work\\RUN.CONF",
+          "-fastlaunch",
+          "-nogui",
+          "-nomenu",
+          "-noconsole"
+        ],
+        "compile_command": "CAPCL /c /FoOUTPUT.OBJ /AL /G2 /Gs /Oeglw /NTSIMTWO_MODULE INPUT.C > OUTPUT.LOG",
+        "exit_code": 0,
+        "stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+        "stderr": "",
+        "object": "build/compiler-workers/W2_x5r76g_2/job0001/OUTPUT.OBJ",
+        "object_identity": {
+          "size": 311,
+          "sha256": "26714a488d11614a9dbde9013cb76b964a0e1717521347b0e2098a4fecf15065"
+        },
+        "fixture_dependencies": [],
+        "unsupported_option": false,
+        "worker_id": 2,
+        "worker_session": "build/compiler-workers/W2_x5r76g_2",
+        "batch_directory": "build/compiler-workers/W2_x5r76g_2",
+        "batch_index": 0,
+        "worker_implementation": {
+          "tools/compiler_worker.py": {
+            "size": 7358,
+            "sha256": "ac29582fcabe2227f9da12fcbfe3c5ee5c51828fa1e4766f8fb6f7792ffc8e51"
+          },
+          "tools/compiler_wait.asm": {
+            "size": 658,
+            "sha256": "334ac4aa1d14a8ba48fcbdb947f44f833ca7b1e33244950d311a8f92764d9bb6"
+          }
+        },
+        "configuration_identity": {
+          "size": 437,
+          "sha256": "69fa139c9be1189d5d005c5818894461c2648dfe8449ab3b7e3dfafb084cc23c"
+        },
+        "wait_helper_identity": {
+          "size": 99,
+          "sha256": "19361944eec9685a99577dabfd90027391369a38f041245dff2850c986594348"
+        },
+        "timing": {
+          "runner_startup_seconds": 4.66079140000511,
+          "environment_launches": 1,
+          "queue_dispatch_seconds": 0.02111880001029931,
+          "compiler_execution_seconds": 0.3748981999960961,
+          "total_compile_request_seconds": 5.076233900006628,
+          "measurement": "Host monotonic observation of precreated DOS protocol files; 2ms sampling; CL time includes internal pass initialization"
+        },
+        "source_snapshot": "build/compiler-service/jobs/cc5aa7e6312c4241952786eb897850e4/INPUT.C",
+        "request_id": "cc5aa7e6312c4241952786eb897850e4",
+        "service_instance": "018eebcbf43c4c0e97a97d54b6b56ecd"
+      },
+      "comparison": {
+        "result": "NO_COMPLETE_MATCH",
+        "issues": [
+          "SIMTWO_MODULE literal bytes differ"
+        ],
+        "placements": {
+          "1": [
+            7,
+            22234
+          ]
+        },
+        "private_constraint_placements": [],
+        "anchors": {
+          "1": [
+            [
+              7,
+              22234,
+              "_PlacePillTile"
+            ]
+          ]
+        },
+        "contributions": [
+          {
+            "segment": "SIMTWO_MODULE",
+            "original_segment": 7,
+            "original_offset": 22234,
+            "length": 40,
+            "initialized_ranges": [
+              [
+                0,
+                40
+              ]
+            ],
+            "literal_compared": 34,
+            "literal_equal": 28,
+            "divergences": [
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "fixups": [
+              {
+                "offset": 34,
+                "target": {
+                  "kind": "internal",
+                  "segment": 10,
+                  "offset": 10472
+                },
+                "equal": true,
+                "reason": "resolved offset and frame",
+                "omf": {
+                  "segment": 1,
+                  "offset": 34,
+                  "location_type": 1,
+                  "width": 2,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 2,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_MapA"
+                  }
+                }
+              },
+              {
+                "offset": 14,
+                "target": {
+                  "kind": "internal",
+                  "segment": 5,
+                  "offset": 39938
+                },
+                "equal": true,
+                "reason": "NE selector relocation + offset",
+                "omf": {
+                  "segment": 1,
+                  "offset": 14,
+                  "location_type": 3,
+                  "width": 4,
+                  "self_relative": false,
+                  "frame_method": 5,
+                  "frame_index": null,
+                  "target_method": 2,
+                  "target_index": 1,
+                  "displacement": 0,
+                  "target": {
+                    "kind": "external",
+                    "name": "_IsValidA"
+                  }
+                }
+              }
+            ],
+            "transformations": []
+          }
+        ],
+        "literal_compared": 34,
+        "literal_equal": 28,
+        "fixups_equal": 2,
+        "fixups_total": 2,
+        "publics": [
+          "_PlacePillTile"
+        ],
+        "scaffold_segments": [],
+        "code_contribution_size": 40,
+        "features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "candidate_function_extent": {
+          "status": "PROBABLE",
+          "start": 0,
+          "end": 40,
+          "size": 40,
+          "upper_bound": 40,
+          "return_offsets": [
+            39
+          ],
+          "reasons": []
+        },
+        "target_function_extent": {
+          "status": "PROBABLE",
+          "start": 22234,
+          "end": 22274,
+          "size": 40,
+          "upper_bound": 22274,
+          "return_offsets": [
+            22273
+          ],
+          "reasons": []
+        },
+        "target_features": {
+          "frame": [
+            "leave "
+          ],
+          "registers": [
+            "al",
+            "ax",
+            "bp",
+            "bx",
+            "di",
+            "ebp",
+            "esp",
+            "flags",
+            "si",
+            "sp"
+          ],
+          "cleanup": [
+            "add sp, 4"
+          ],
+          "pointer_loads": [],
+          "string_ops": []
+        },
+        "first_divergence": {
+          "segment": "SIMTWO_MODULE",
+          "offset": 6
+        },
+        "diagnostic": {
+          "target_bytes": 40,
+          "candidate_bytes": 40,
+          "instruction_layout_match": false,
+          "cfg_shape_match": true,
+          "opcode_total": 20,
+          "opcode_matches": 19,
+          "register_only_differences": 0,
+          "immediate_differences": 0,
+          "memory_operand_differences": 2,
+          "branch_target_differences": 0,
+          "stack_local_differences": 2,
+          "first_structural_difference": {
+            "target_offset": null,
+            "candidate_offset": 8
+          },
+          "categories": [
+            "INSTRUCTION_ORDER",
+            "LOCAL_FRAME_LAYOUT",
+            "MEMORY_OPERAND"
+          ],
+          "score": 0.9,
+          "aligned_asm": [
+            {
+              "target_offset": 0,
+              "target": "push bp",
+              "candidate_offset": 0,
+              "candidate": "push bp",
+              "differences": []
+            },
+            {
+              "target_offset": 1,
+              "target": "mov bp, sp",
+              "candidate_offset": 1,
+              "candidate": "mov bp, sp",
+              "differences": []
+            },
+            {
+              "target_offset": 3,
+              "target": "push di",
+              "candidate_offset": 3,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 4,
+              "target": "push si",
+              "candidate_offset": 4,
+              "candidate": "push si",
+              "differences": []
+            },
+            {
+              "target_offset": 5,
+              "target": "mov di, word ptr [bp + 6]",
+              "candidate_offset": 5,
+              "candidate": "mov si, word ptr [bp + 8]",
+              "differences": [
+                "register_role",
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": null,
+              "target": "",
+              "candidate_offset": 8,
+              "candidate": "push si",
+              "differences": [
+                "instruction_shape"
+              ]
+            },
+            {
+              "target_offset": 8,
+              "target": "mov si, word ptr [bp + 8]",
+              "candidate_offset": 9,
+              "candidate": "mov di, word ptr [bp + 6]",
+              "differences": [
+                "register_role",
+                "memory_operand",
+                "stack_local_layout"
+              ]
+            },
+            {
+              "target_offset": 11,
+              "target": "push si",
+              "candidate_offset": null,
+              "candidate": "",
+              "differences": [
+                "instruction_shape"
+              ]
+            },
+            {
+              "target_offset": 12,
+              "target": "push di",
+              "candidate_offset": 12,
+              "candidate": "push di",
+              "differences": []
+            },
+            {
+              "target_offset": 13,
+              "target": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "candidate_offset": 13,
+              "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 39938}]",
+              "differences": []
+            },
+            {
+              "target_offset": 18,
+              "target": "add sp, 4",
+              "candidate_offset": 18,
+              "candidate": "add sp, 4",
+              "differences": []
+            },
+            {
+              "target_offset": 21,
+              "target": "dec ax",
+              "candidate_offset": 21,
+              "candidate": "dec ax",
+              "differences": []
+            },
+            {
+              "target_offset": 22,
+              "target": "jne 0x24",
+              "candidate_offset": 22,
+              "candidate": "jne 0x24",
+              "differences": []
+            },
+            {
+              "target_offset": 24,
+              "target": "mov al, byte ptr [bp + 0xa]",
+              "candidate_offset": 24,
+              "candidate": "mov al, byte ptr [bp + 0xa]",
+              "differences": []
+            },
+            {
+              "target_offset": 27,
+              "target": "mov bx, di",
+              "candidate_offset": 27,
+              "candidate": "mov bx, di",
+              "differences": []
+            },
+            {
+              "target_offset": 29,
+              "target": "shl bx, 6",
+              "candidate_offset": 29,
+              "candidate": "shl bx, 6",
+              "differences": []
+            },
+            {
+              "target_offset": 32,
+              "target": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "candidate_offset": 32,
+              "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 10472}]",
+              "differences": []
+            },
+            {
+              "target_offset": 36,
+              "target": "pop si",
+              "candidate_offset": 36,
+              "candidate": "pop si",
+              "differences": []
+            },
+            {
+              "target_offset": 37,
+              "target": "pop di",
+              "candidate_offset": 37,
+              "candidate": "pop di",
+              "differences": []
+            },
+            {
+              "target_offset": 38,
+              "target": "leave ",
+              "candidate_offset": 38,
+              "candidate": "leave ",
+              "differences": []
+            },
+            {
+              "target_offset": 39,
+              "target": "retf ",
+              "candidate_offset": 39,
+              "candidate": "retf ",
+              "differences": []
+            }
+          ],
+          "target_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "candidate_blocks": [
+            {
+              "id": 0,
+              "start": 0,
+              "end": 24,
+              "terminal": "branch",
+              "successors": [
+                2,
+                1
+              ]
+            },
+            {
+              "id": 1,
+              "start": 24,
+              "end": 36,
+              "terminal": "flow",
+              "successors": [
+                2
+              ]
+            },
+            {
+              "id": 2,
+              "start": 36,
+              "end": 40,
+              "terminal": "return",
+              "successors": []
+            }
+          ],
+          "scope": "SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score",
+          "diagnostic_normalizations": [],
+          "unresolved_member_obligations": {
+            "strict_member_result": "NO_COMPLETE_MATCH",
+            "issues": [
+              "SIMTWO_MODULE literal bytes differ"
+            ],
+            "contributions": [
+              {
+                "segment": "SIMTWO_MODULE",
+                "original_segment": 7,
+                "original_offset": 22234,
+                "literal_differences": 6,
+                "failed_fixups": []
+              }
+            ],
+            "scope": "Whole-member obligations; instruction alignment does not discharge private data or selector failures"
+          },
+          "exact_match": false,
+          "strict_member_result": "NO_COMPLETE_MATCH",
+          "fixups_equal": 2,
+          "fixups_total": 2,
+          "extent_known": true,
+          "contribution_bytes": 40,
+          "linker_transformations": []
+        }
+      },
+      "timing": {
+        "omf_parse_seconds": 0.00021669999114237726,
+        "strict_match_seconds": 0.005948200006969273,
+        "diagnostic_diff_seconds": 0.00645539999823086
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+Whole-member issues: GR_MODULE literal bytes differ
+Target | Candidate | Difference
+0000 enter 0x14, 0 | 0000 enter 0xe, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 test <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52350}] | 0006 test <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52350}] | 
+000b je 0x10 | 000b je 0x10 | 
+000d jmp 0xb2 | 000d jmp 0xc2 | branch_target
+0010 mov ax, word ptr [bp + 0xe] | 0010 mov ax, word ptr [bp + 0x16] | memory_operand,stack_local_layout
+ | 0013 inc ax | instruction_shape
+ | 0014 cdq  | instruction_shape
+ | 0015 sub ax, dx | instruction_shape
+ | 0017 sar ax, 1 | instruction_shape
+ | 0019 add ax, 3 | instruction_shape
+ | 001c mov word ptr [bp - 2], ax | instruction_shape
+ | 001f mov ax, word ptr [bp + 0xe] | instruction_shape
+0013 shl ax, 2 | 0022 shl ax, 2 | 
+0016 add ax, 0x1f | 0025 add ax, 0x1f | 
+0019 cdq  | 0028 cdq  | 
+001a and dx, 0x1f | 0029 and dx, 0x1f | 
+001d add ax, dx | 002c add ax, dx | 
+001f sar ax, 5 | 002e sar ax, 5 | 
+0022 mov bx, ax |  | instruction_shape
+0024 shl bx, 2 | 0031 shl ax, 2 | register_allocation,alignment_uncertain
+0027 mov ax, word ptr [bp + 0x16] | 0034 mov word ptr [bp - 0xc], ax | instruction_shape
+002a inc ax |  | instruction_shape
+002b cdq  |  | instruction_shape
+002c sub ax, dx |  | instruction_shape
+002e sar ax, 1 |  | instruction_shape
+0030 mov di, ax |  | instruction_shape
+0032 add di, 3 |  | instruction_shape
+0035 mov word ptr [bp - 0x10], 0 |  | instruction_shape
+003a cmp word ptr [bp + 0x18], 0 |  | instruction_shape
+003e jg 0x43 |  | instruction_shape
+0040 jmp 0x152 |  | instruction_shape
+0043 mov ax, word ptr [bp + 0x10] | 0037 mov cx, word ptr [bp + 0x10] | register_allocation,alignment_uncertain
+0046 sub ax, word ptr [bp + 8] | 003a sub cx, word ptr [bp + 8] | register_allocation,alignment_uncertain
+0049 dec ax | 003d dec cx | register_allocation
+004a imul bx | 003e imul cx | register_allocation
+004c mov cx, word ptr [bp + 6] | 0040 mov cx, word ptr [bp + 6] | 
+004f sar cx, 1 | 0043 sar cx, 1 | 
+0051 add ax, cx | 0045 add ax, cx | 
+0053 add ax, word ptr [bp + 0xa] | 0047 add ax, word ptr [bp + 0xa] | 
+0056 mov dx, word ptr [bp + 0xc] | 004a mov dx, word ptr [bp + 0xc] | 
+0059 mov word ptr [bp - 6], ax | 004d mov word ptr [bp - 6], ax | 
+005c mov word ptr [bp - 4], dx | 0050 mov word ptr [bp - 4], dx | 
+005f mov ax, word ptr [bp + 0x12] | 0053 mov ax, word ptr [bp + 0x12] | 
+0062 mov dx, word ptr [bp + 0x14] | 0056 mov dx, word ptr [bp + 0x14] | 
+0065 mov word ptr [bp - 0xa], ax | 0059 mov word ptr [bp - 0xa], ax | 
+0068 mov word ptr [bp - 8], dx | 005c mov word ptr [bp - 8], dx | 
+006b mov ax, word ptr [bp + 0x18] | 005f mov bx, word ptr [bp + 0x18] | register_allocation,alignment_uncertain
+ | 0062 or bx, bx | instruction_shape
+ | 0064 jg 0x69 | instruction_shape
+ | 0066 jmp 0x165 | instruction_shape
+006e mov word ptr [bp - 0xc], ax | 0069 mov word ptr [bp - 0xe], bx | memory_operand,stack_local_layout,register_role
+0071 mov word ptr [bp - 2], di | 006c mov ax, word ptr [bp - 2] | instruction_shape
+0074 mov word ptr [bp - 0xe], bx | 006f and ax, 0xfffe | instruction_shape
+0077 cmp word ptr [bp - 2], 0 | 0072 je 0x91 | instruction_shape
+007b jle 0x9d |  | instruction_shape
+007d mov ax, word ptr [bp - 0xa] | 0074 mov ax, word ptr [bp - 0xa] | 
+0080 mov dx, word ptr [bp - 8] | 0077 mov dx, word ptr [bp - 8] | 
+0083 mov bx, word ptr [bp - 6] | 007a mov bx, word ptr [bp - 6] | 
+0086 mov si, word ptr [bp - 4] | 007d mov si, word ptr [bp - 4] | 
+0089 mov cx, word ptr [bp - 2] | 0080 mov cx, word ptr [bp - 2] | 
+008c shr cx, 1 | 0083 shr cx, 1 | 
+008e push ds | 0085 push ds | 
+008f push si | 0086 push si | 
+0090 mov di, ax | 0087 mov di, ax | 
+0092 mov si, bx | 0089 mov si, bx | 
+0094 mov es, dx | 008b mov es, dx | 
+0096 pop ds | 008d pop ds | 
+0097 rep movsw word ptr es:[di], word ptr [si] | 008e rep movsw word ptr es:[di], word ptr [si] | 
+0099 jae 0x9c |  | instruction_shape
+009b movsb byte ptr es:[di], byte ptr [si] |  | instruction_shape
+009c pop ds | 0090 pop ds | 
+ | 0091 test byte ptr [bp - 2], 1 | instruction_shape
+ | 0095 je 0xa8 | instruction_shape
+ | 0097 les bx, ptr [bp - 6] | instruction_shape
+ | 009a mov si, word ptr [bp - 2] | instruction_shape
+ | 009d mov al, byte ptr es:[bx + si - 1] | instruction_shape
+ | 00a1 les bx, ptr [bp - 0xa] | instruction_shape
+ | 00a4 mov byte ptr es:[bx + si - 1], al | instruction_shape
+009d mov ax, word ptr [bp - 0xe] | 00a8 mov ax, word ptr [bp - 0xc] | memory_operand,stack_local_layout
+00a0 sub word ptr [bp - 6], ax | 00ab sub word ptr [bp - 6], ax | 
+00a3 mov ax, word ptr [bp - 2] | 00ae mov ax, word ptr [bp - 2] | 
+00a6 add word ptr [bp - 0xa], ax | 00b1 add word ptr [bp - 0xa], ax | 
+00a9 dec word ptr [bp - 0xc] | 00b4 dec word ptr [bp - 0xe] | memory_operand,stack_local_layout
+00ac jne 0x77 | 00b7 cmp word ptr [bp - 0xe], 0 | instruction_shape
+ | 00bb jg 0x6c | instruction_shape
+00ae pop si | 00bd pop si | 
+00af pop di | 00be pop di | 
+00b0 leave  | 00bf leave  | 
+00b1 retf  | 00c0 retf  | 
+ | 00c1 nop  | instruction_shape
+00b2 mov ax, word ptr [bp + 0xe] | 00c2 mov ax, word ptr [bp + 0x16] | memory_operand,stack_local_layout
+00b5 add ax, 0x1f | 00c5 add ax, 7 | immediate_or_binding
+00b8 cdq  | 00c8 cdq  | 
+00b9 and dx, 0x1f | 00c9 and dx, 7 | immediate_or_binding
+00bc add ax, dx | 00cc add ax, dx | 
+00be sar ax, 5 | 00ce sar ax, 3 | immediate_or_binding
+00c1 mov bx, ax | 00d1 mov word ptr [bp - 2], ax | instruction_shape
+00c3 shl bx, 2 |  | instruction_shape
+... see structured diagnostic for remaining instructions

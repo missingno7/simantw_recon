@@ -1,6 +1,6 @@
 {
   "symbol": "_RallocFindMem",
-  "source": "evidence/recovery/workflow/jobs/RallocFindMem-faabd6512a/candidate.c",
+  "template": "/* First semantic draft: reserve two GlobalAlloc blocks, release the reserve\n * under pressure, pause once when compaction restores enough free space,\n * otherwise report and terminate. The three near words and messages are\n * taken from the target DGROUP bytes at 087C-08EE. */\nstatic struct RallocState {\n    unsigned int reserveHandle;\n    unsigned int softHandle;\n    int lowMemoryReported;\n} near state = { 0, 0, 0 };\n@MESSAGE_DECLARATIONS@\n\nextern unsigned long far pascal GlobalCompact(unsigned long minimum);\nextern unsigned int far pascal GlobalAlloc(unsigned int flags, unsigned long bytes);\nextern unsigned int far pascal GlobalFree(unsigned int handle);\nextern unsigned long far pascal GetFreeSpace(unsigned int flags);\nextern void far SetPause(int paused);\nextern void far PopMsg(char far *message);\nextern void far WinPrintf(char far *format, ...);\nextern void far CleanUp(void);\nextern void far pascal PostQuitMessage(int code);\nextern void far exit(int code);\n\nvoid far RallocFindMem(unsigned long needed)\n{\n    if (state.softHandle == 0) {\n        GlobalCompact(0xffffffffUL);\n        state.softHandle = GlobalAlloc(2, 50000UL);\n    }\n    if (state.reserveHandle == 0) {\n        if (GlobalCompact(0UL) > 100000UL) {\n            GlobalCompact(0xffffffffUL);\n            state.reserveHandle = GlobalAlloc(2, 100000UL);\n        }\n        state.lowMemoryReported = 0;\n    }\n    if (needed == 0xffffffffUL)\n        return;\n    if (GlobalCompact(0UL) >= needed && GetFreeSpace(0) >= needed)\n        return;\n    if (state.reserveHandle != 0) {\n        GlobalFree(state.reserveHandle);\n        state.reserveHandle = 0;\n    }\n    if (GlobalCompact(0xffffffffUL) >= needed) {\n        if (state.lowMemoryReported == 0) {\n            SetPause(1);\n            PopMsg(RALLOC_WARNING);\n            state.lowMemoryReported = 1;\n            goto finish;\n        }\n    }\n    WinPrintf(RALLOC_FORMAT, GlobalCompact(0UL), needed);\n    if (state.softHandle != 0)\n        GlobalFree(state.softHandle);\n    GlobalCompact(0xffffffffUL);\n    PopMsg(RALLOC_FATAL);\n    CleanUp();\n    PostQuitMessage(0);\n    exit(0);\nfinish:\n    GlobalCompact(0xffffffffUL);\n}\n",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,13 +9,24 @@
     "/Oelw",
     "/NTGR_MODULE"
   ],
-  "max_candidates": 96,
-  "axes": [],
-  "semantic_summary": "Test whether the warning flag's known-zero increment keeps its loaded value in DX, as the target does before branching",
-  "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
-  ],
+  "max_candidates": 2,
   "publics": [
     "_RallocFindMem"
+  ],
+  "semantic_summary": "Keep the three initialized private state words together; test message storage as ordered CONST strings, matching the observed DGROUP offsets and link layout.",
+  "binding_evidence": [
+    "The state words at 0x87c-0x880 are below _edata, so initialized _DATA is required.",
+    "Message bytes at 0x882, 0x897 and 0x8bc are format/fatal/warning in order; earlier static DATA aggregate caused conflicting/unplaced _DATA contributions."
+  ],
+  "axes": [
+    {
+      "name": "ordered_message_constant_form",
+      "marker": "@MESSAGE_DECLARATIONS@",
+      "rationale": "Target message offsets are ordered format, fatal, warning; compare literals pooled at their code references against explicit ordered const arrays.",
+      "values": [
+        "#define RALLOC_FORMAT \"Free: %lu Size: %ld\\n\"\n#define RALLOC_FATAL \"Out of memory.  Terminating Program.\"\n#define RALLOC_WARNING \"Running low on memory.  Pausing game.\\nRefer to manual\"",
+        "#define RALLOC_FORMAT freeFormat\n#define RALLOC_FATAL fatalMessage\n#define RALLOC_WARNING warningMessage\nstatic const char near freeFormat[] = \"Free: %lu Size: %ld\\n\";\nstatic const char near fatalMessage[] = \"Out of memory.  Terminating Program.\";\nstatic const char near warningMessage[] = \"Running low on memory.  Pausing game.\\nRefer to manual\";"
+      ]
+    }
   ]
 }

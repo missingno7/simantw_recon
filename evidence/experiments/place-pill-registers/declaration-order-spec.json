@@ -1,0 +1,23 @@
+{
+  "symbol": "_PlacePillTile",
+  "template": "extern int far IsValidA(int x, int y);\nextern unsigned char near MapA[];\nvoid PlacePillTile(int x, int y, unsigned char value)\n{\n@BODY@\n}\n",
+  "axes": [
+    {
+      "name": "coordinate_lifetime_order",
+      "marker": "@BODY@",
+      "rationale": "The target retains x in DI and y in SI across IsValidA, loading x before y. Prior x-then-y local initialization loads y first; test declaration and assignment order without changing values or call arguments.",
+      "values": [
+        "    int row = y;\n    int column = x;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    register int row = y;\n    register int column = x;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    int row, column;\n    column = x; row = y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    int row, column;\n    row = y; column = x;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    int column, row;\n    column = x; row = y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    int column, row;\n    row = y; column = x;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    register int row, column;\n    column = x; row = y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;",
+        "    register int row, column;\n    row = y; column = x;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": ["/AL", "/G2", "/Gs", "/Oeglw", "/NTSIMTWO_MODULE"]
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "_ClearHistory",
+  "template": "/*\n * ClearHistory: resets the history window's (simant:8A76) match state.\n * The public far array match_position[] (PACK) has one 64-word (0x40)\n * range zeroed first. Nine more 64-word ranges follow in PACK but (unlike\n * match_position) each needs its OWN fresh selector load with a plain,\n * fixup-free offset immediate -- the __based(__segname(\"PACK\")) private\n * static shape used by the admitted IsMMWaveAvail/IsMMMidiAvail/\n * RecruitPoolTotal statics, one static per range (module-private rolling\n * per-stat history sample buffers; unclaimed/no public MAPSYM name).\n * When newGame == 1 the running score/colony-start/kill counters are also\n * reset (OverallScore is a far long; BColoniesStarted/RColoniesStarted\n * are reseeded to 1, BColoniesKilled/RColoniesKilled to 0). The ant/egg\n * tally longs (confirmed far long via the admitted DoNestAntB/DoDrownB/\n * GetWinner/SimEggB/SimQueenB bodies) and the HistStart/HistCnt\n * circular-buffer indices are always reset last.\n */\nextern int far match_position[];\n\n@DECLS@\n\nextern long far OverallScore;\nextern int far BColoniesStarted;\nextern int far RColoniesStarted;\nextern int far BColoniesKilled;\nextern int far RColoniesKilled;\n\nextern int far HistStart;\nextern int far HistCnt;\nextern long far BAntsEaten;\nextern long far BAntsExpired;\nextern long far BAntsKilled;\nextern long far RAntsEaten;\nextern long far RAntsExpired;\nextern long far RAntsKilled;\nextern long far TotalEggsLaidB;\nextern long far TotalEggsDiedB;\n\nvoid far ClearHistory(int newGame)\n{\n    int i;\n\n    for (i = 0; i < 0x40; i++)\n        match_position[0x4ef5 + i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf1[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf2[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf3[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf4[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf5[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf6[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf7[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf8[i] = 0;\n    for (i = 0; i < 64; i++)\n        histBuf9[i] = 0;\n\n    if (newGame == 1) {\n        OverallScore = 0L;\n        BColoniesStarted = 1;\n        RColoniesStarted = 1;\n        BColoniesKilled = 0;\n        RColoniesKilled = 0;\n    }\n\n    HistStart = 0x3f;\n    HistCnt = 0;\n    BAntsEaten = 0L;\n    BAntsExpired = 0L;\n    BAntsKilled = 0L;\n    RAntsEaten = 0L;\n    RAntsExpired = 0L;\n    RAntsKilled = 0L;\n    TotalEggsLaidB = 0L;\n    TotalEggsDiedB = 0L;\n}\n",
+  "axes": [
+    {
+      "name": "private_based_storage",
+      "marker": "@DECLS@",
+      "rationale": "Nine unnamed PACK arrays have plain offsets and distinct segment-9 selector words; compare tentative versus explicit zero-initialized based static definitions for code, private data and selector obligations.",
+      "values": [
+        "static int __based(__segname(\"PACK\")) histBuf1[64];\nstatic int __based(__segname(\"PACK\")) histBuf2[64];\nstatic int __based(__segname(\"PACK\")) histBuf3[64];\nstatic int __based(__segname(\"PACK\")) histBuf4[64];\nstatic int __based(__segname(\"PACK\")) histBuf5[64];\nstatic int __based(__segname(\"PACK\")) histBuf6[64];\nstatic int __based(__segname(\"PACK\")) histBuf7[64];\nstatic int __based(__segname(\"PACK\")) histBuf8[64];\nstatic int __based(__segname(\"PACK\")) histBuf9[64];",
+        "static int __based(__segname(\"PACK\")) histBuf1[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf2[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf3[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf4[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf5[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf6[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf7[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf8[64] = {0};\nstatic int __based(__segname(\"PACK\")) histBuf9[64] = {0};"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ]
+}

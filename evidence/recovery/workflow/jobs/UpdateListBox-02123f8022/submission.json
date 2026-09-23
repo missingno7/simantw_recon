@@ -1,0 +1,41 @@
+{
+  "symbol": "_UpdateListBox",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTANTEDIT_MODULE"
+  ],
+  "max_candidates": 4,
+  "publics": [
+    "_UpdateListBox"
+  ],
+  "semantic_summary": "Test two equivalent scan-then-copy C forms for each observed inline far-string transfer. Target evidence scans the far source, then copies it to the 256-byte frame buffer; the append sequence scans wildcard source and current buffer before copying.",
+  "binding_evidence": [
+    "Packet shows far selector Dx8 and offsets 0x94a0/0x9f10.",
+    "Target disassembly orders each NUL scan before its REP MOVSW/MOVSB transfer."
+  ],
+  "template": "/* Test whether the target's two inline copy sequences arise from simple\n * far-string copy loops under C7 optimization rather than library calls. */\nextern char far Dx8[];\nextern char far *strchr(char far *text, int ch);\nextern char far *strstr(char far *text, char near *needle);\nextern int far pascal DlgDirList(int dialog, char far *pathSpec, int listId,\n                                 int staticId, unsigned int fileType);\nextern long far pascal SendDlgItemMessage(int dialog, int item, unsigned int message,\n                                         unsigned int wParam, unsigned long lParam);\nextern int far pascal GetDlgItem(int dialog, int item);\nextern int far pascal InvalidateRect(int window, void far *rect, int erase);\nextern int far pascal SetDlgItemText(int dialog, int item, char far *text);\nvoid far UpdateListBox(int dialog, unsigned int fileType)\n{\n    char buffer[256];\n    char near parentMarker[3] = { '.', '.', 0 };\n    char far *source;\n    int count;\n    int last;\n    int i;\n    int end;\n    SendDlgItemMessage(dialog, 0x194, 0x000b, 0, 0L);\n    source = Dx8 + 0x94a0;\n@COPY_FORM@\n    if (fileType != 0xc010) {\n@APPEND_FORM@\n    }\n    DlgDirList(dialog, buffer, 0x194, 0x193, fileType);\n    source = Dx8 + 0x94a0;\n    if (strchr(source, ':') == 0)\n        DlgDirList(dialog, Dx8 + 0x9f10, 0x194, 0x193, fileType);\n    SendDlgItemMessage(dialog, 0x194, 0x040a, 0, (unsigned long)buffer);\n    count = (int)SendDlgItemMessage(dialog, 0x194, 0x040c, 0, 0L);\n    if (count <= 0 || buffer[0] == '[') return;\n    SendDlgItemMessage(dialog, 0x194, 0x000b, 0, 0L);\n    for (;;) {\n        last = count - 1;\n        SendDlgItemMessage(dialog, 0x194, 0x040a, last, (unsigned long)buffer);\n        if (buffer[0] != '[') break;\n        SendDlgItemMessage(dialog, 0x194, 0x0403, last, 0L);\n        SendDlgItemMessage(dialog, 0x194, 0x0402, 0, (unsigned long)buffer);\n        if (buffer[0] != '[') break;\n    }\n    SendDlgItemMessage(dialog, 0x194, 0x000b, 1, 0L);\n    InvalidateRect(GetDlgItem(dialog, 0x194), 0, 1);\n    if (strstr(buffer, parentMarker) != 0) *source = 0;\n    SetDlgItemText(dialog, 0x191, Dx8 + 0x9f10);\n}\n",
+  "axes": [
+    {
+      "name": "initial_copy_loop_form",
+      "marker": "@COPY_FORM@",
+      "rationale": "Compare explicit indexed NUL-count then copy against pointer-walking NUL-count then copy; the observed target scans the far input and copies through its terminator.",
+      "values": [
+        "    i = 0; while (source[i] != 0) ++i; end = i; for (i = 0; i <= end; ++i) buffer[i] = source[i];",
+        "    { char far *scan = source; char near *dst = buffer; while (*scan != 0) { ++scan; ++dst; } end = (int)(scan - source); for (i = 0; i <= end; ++i) dst[i - end] = source[i]; }"
+      ]
+    },
+    {
+      "name": "append_loop_form",
+      "marker": "@APPEND_FORM@",
+      "rationale": "Compare explicit indexed and pointer-walking append forms; the target first measures the wildcard, then finds the destination terminator and copies wildcard plus NUL.",
+      "values": [
+        "        source = Dx8 + 0x9f10; i = 0; while (source[i] != 0) ++i; end = 0; while (buffer[end] != 0) ++end; for (last = 0; last <= i; ++last) buffer[end + last] = source[last];",
+        "        source = Dx8 + 0x9f10; { char far *scan = source; char near *dst = buffer; while (*scan != 0) ++scan; i = (int)(scan - source); while (*dst != 0) ++dst; for (last = 0; last <= i; ++last) dst[last] = source[last]; }"
+      ]
+    }
+  ]
+}

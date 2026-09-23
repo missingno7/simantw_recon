@@ -1,0 +1,31 @@
+{
+  "symbol": "_ConvertMonoMaskToColor",
+  "source": "evidence/recovery/workflow/jobs/ConvertMonoMaskToColor-5c8b48bd58/branch-template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 2,
+  "axes": [
+    {
+      "name": "display_type_branch_form",
+      "marker": "@DISPLAY_BRANCH@",
+      "values": [
+        "if (displayType != 10)\n                invert(sourceBits, width / 8);",
+        "if (displayType == 10)\n                goto copy_row;\n            invert(sourceBits, width / 8);\n        copy_row:"
+      ],
+      "rationale": "Both ordinary C forms encode the same observed branch around _invert; target branch is JE over the inversion path, so test if/goto lowering."
+    }
+  ],
+  "semantic_summary": "Compare the direct non-10 inversion guard with an explicit goto to the non-inversion path. The target branches on displayType==10 around one _invert call and then rejoins at the second row copy.",
+  "binding_evidence": [
+    "Packet shows CMP displayType,10; JE skips a single far _invert call and rejoins at the second row copy."
+  ],
+  "publics": [
+    "_ConvertMonoMaskToColor"
+  ]
+}

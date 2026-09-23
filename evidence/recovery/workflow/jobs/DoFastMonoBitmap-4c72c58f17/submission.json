@@ -1,0 +1,23 @@
+{
+  "symbol": "_DoFastMonoBitmap",
+  "source": "evidence/experiments/fast-mono-helper-order/cleanup-trial/candidate0000.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 1,
+  "axes": [],
+  "publics": [
+    "_DoFastMonoBitmap"
+  ],
+  "semantic_summary": "Compute image bytes from the rounded 32-bit row width before multiplying height, pass the source as a far pointer, and share the cleanup tail after unlocking.",
+  "binding_evidence": [
+    "Target calls __aFldiv at +0xA6 then __aFlmul at +0xAD; the source experiment matches both helper addresses and every tested fixup.",
+    "Target pushes the source pointer directly from BP+0x10 and BP+0x0E at +0x120/+0x123; a far-pointer parameter reproduces that ABI and the GDI ordinal 443 call.",
+    "evidence/experiments/fast-mono-helper-order/cleanup-trial/results.json records full 337-byte body agreement, all 11 fixups, and an additional trailing code-alignment byte under the source-independent extent."
+  ]
+}

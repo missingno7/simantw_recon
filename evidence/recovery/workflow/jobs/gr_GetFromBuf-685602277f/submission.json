@@ -1,0 +1,37 @@
+{
+  "symbol": "_gr_GetFromBuf",
+  "template": "/* Transfer surface rows into a buffer, accounting for the active pixel packing. */\nextern unsigned char near displayType;\nvoid far gr_GetFromBuf(int x, int top, unsigned char far *surface,\n                       int surfaceWidth, int bottom, unsigned char far *buffer,\n                       int width, int rows)\n{\n    @DECLS@\n    if ((displayType & 1) == 0) {\n        stride = ((surfaceWidth * 4 + 31) / 32) * 4;\n        rowBytes = (width + 1) / 2 + 3;\n        source = surface + (bottom - top - 1) * stride + (x >> 1);\n        destination = buffer;\n        remaining = rows;\n        while (remaining > 0) {\n            for (col = 0; col < (rowBytes >> 1); col++)\n                ((unsigned int far *)destination)[col] = ((unsigned int far *)source)[col];\n            if (rowBytes & 1)\n                destination[rowBytes - 1] = source[rowBytes - 1];\n            source -= stride;\n            destination += rowBytes;\n            remaining--;\n        }\n    } else {\n        stride = ((surfaceWidth + 31) / 32) * 4;\n        rowBytes = (width + 7) / 8;\n        source = surface + (bottom - top - 1) * stride + (x >> 3);\n        destination = buffer;\n        remaining = rows;\n        while (remaining > 0) {\n            for (col = 0; col < (rowBytes >> 1); col++)\n                ((unsigned int far *)destination)[col] = ((unsigned int far *)source)[col];\n            if (rowBytes & 1)\n                destination[rowBytes - 1] = source[rowBytes - 1];\n            source -= stride;\n            destination += rowBytes;\n            remaining--;\n        }\n    }\n}\n\n",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 12,
+  "axes": [
+    {
+      "name": "local_home_order",
+      "marker": "@DECLS@",
+      "rationale": "Target frame homes place byte count first, the two far pointers next, then remaining rows and stride; source declaration order is evidence-backed codegen context. Test local order and register hints.",
+      "values": [
+        "int rowBytes;\n    unsigned char far *source;\n    unsigned char far *destination;\n    int remaining;\n    int stride;\n    int col;",
+        "register int rowBytes;\n    unsigned char far *source;\n    unsigned char far *destination;\n    int remaining;\n    register int stride;\n    int col;",
+        "int rowBytes;\n    unsigned char far *destination;\n    unsigned char far *source;\n    int remaining;\n    int stride;\n    int col;",
+        "register int rowBytes;\n    unsigned char far *destination;\n    unsigned char far *source;\n    int remaining;\n    register int stride;\n    int col;",
+        "int stride;\n    int rowBytes;\n    unsigned char far *source;\n    unsigned char far *destination;\n    int remaining;\n    int col;",
+        "register int stride;\n    register int rowBytes;\n    unsigned char far *source;\n    unsigned char far *destination;\n    int remaining;\n    int col;",
+        "int stride;\n    int rowBytes;\n    unsigned char far *destination;\n    unsigned char far *source;\n    int remaining;\n    int col;",
+        "register int stride;\n    register int rowBytes;\n    unsigned char far *destination;\n    unsigned char far *source;\n    int remaining;\n    int col;"
+      ]
+    }
+  ],
+  "semantic_summary": "Copy far-buffer rows to or from the GR surface using the observed mode-specific row packing and reverse surface stride.",
+  "binding_evidence": [
+    "The target frame homes are [bp-2] byte count, pointer halves at -4..-a, row count at -c and pitch at -e; the output bindings identify displayType."
+  ],
+  "publics": [
+    "_gr_GetFromBuf"
+  ]
+}

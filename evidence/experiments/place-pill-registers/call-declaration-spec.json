@@ -1,0 +1,23 @@
+{
+  "symbol": "_PlacePillTile",
+  "template": "@CALL_DECL@\nextern unsigned char near MapA[];\nvoid PlacePillTile(int x, int y, unsigned char value)\n{\n@BODY@\n}\n",
+  "axes": [
+    {
+      "name": "callee_declaration",
+      "marker": "@CALL_DECL@",
+      "rationale": "The callee is an int-returning far function with two int arguments, but the original declaration style is unknown; test prototyped versus K&R unspecified-argument form under the same ABI.",
+      "values": ["extern int far IsValidA(int x, int y);", "extern int far IsValidA();"]
+    },
+    {
+      "name": "retained_coordinates",
+      "marker": "@BODY@",
+      "rationale": "Direct arguments and coordinate snapshots give the two previously observed register-schedule classes; see whether declaration form splits either class.",
+      "values": [
+        "    if (IsValidA(x, y) == 1) MapA[x * 64 + y] = value;",
+        "    int column=x, row=y;\n    if (IsValidA(column, row) == 1) MapA[column * 64 + row] = value;"
+      ]
+    }
+  ],
+  "compiler": "msc700",
+  "flags": ["/AL", "/G2", "/Gs", "/Oeglw", "/NTSIMTWO_MODULE"]
+}

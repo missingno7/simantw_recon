@@ -27521,8 +27521,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _DoFastMonoBitmap — GR_MODULE:3B48
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 337 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 337 bytes.
+Source: src/recovered/wf_DoFastMonoBitmap-4c72c58f17.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 3B48  c80e0000                 enter 0xe, 0
@@ -75486,8 +75486,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _initStuff — SIMONE_MODULE:0000
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 576 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 576 bytes.
+Source: src/recovered/wf_initStuff-9712c2c2ff.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 0000  c8020000                 enter 2, 0
@@ -75696,8 +75696,8 @@ Source: src/recovered/SimAllocate.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTS
 ```
 
 ## _PrepareStrings — SIMONE_MODULE:0242
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 433 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 433 bytes.
+Source: src/recovered/wf_PrepareStrings-9dd732cc1e.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 0242  68e803                   push 0x3e8
@@ -83079,8 +83079,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _AddRocks — SIMONE_MODULE:4334
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 440 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 440 bytes.
+Source: src/recovered/wf_AddRocks-01eddceee1.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMONE_MODULE'].
 
 ```asm
 4334  57                       push di

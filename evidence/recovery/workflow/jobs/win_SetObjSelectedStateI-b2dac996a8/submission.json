@@ -1,0 +1,67 @@
+{
+  "symbol": "_win_SetObjSelectedStateI",
+  "template": "struct WinObject {\n    unsigned char beforeType[0x21];\n    unsigned char type;\n    unsigned char reserved[2];\n    unsigned char state;\n    unsigned char pad;\n    unsigned int bitmap[3];\n};\nextern int near clipDC;\nextern int near win_hwnd[];\nextern unsigned char near monoPat;\nextern int near _backColor;\nextern int near _foreColor;\nextern void far win_LockWin(int);\nextern void far win_UnlockWin(int);\nextern struct WinObject far * far win_ObjAddr(int);\nextern int @CALL_MODE@ win_IsWinOpen(int);\nextern void far MSClipStart(int);\nextern void far MSClipEnd(void);\nextern void far GRectInv(struct WinObject far *);\nextern void far win_DrawObject(struct WinObject far *);\nextern void far GSetAttrib(int, int, int);\nextern void far win_DrawBitMapAtObj(struct WinObject far *, int);\n\nvoid far win_SetObjSelectedStateI(int objectNumber, int selected)\n{\n    register struct WinObject far *object;\n    int clipping;\n    char type;\n\n    win_LockWin(objectNumber);\n    object = win_ObjAddr(objectNumber);\n    if (win_IsWinOpen(objectNumber)) {\n        if (((object->state & 4) >> 2) != selected) {\n            @UPDATE_OPEN@\n            if (object->state & 1) {\n                clipping = 0;\n                if (clipDC == 0) {\n                    MSClipStart(win_hwnd[objectNumber >> 8]);\n                    clipping = 1;\n                }\n                type = object->type;\n                switch (type) { case 0x11: case 5: win_DrawObject(object); break; case 0x0d: GSetAttrib(_foreColor, _backColor, monoPat & 0x7f); win_DrawBitMapAtObj(object, object->bitmap[@BITMAP_CHANGED@]); break; default: GRectInv(object); break; }\n                if (clipping)\n                    MSClipEnd();\n            }\n        } else if (object->state & 1) {\n            clipping = 0;\n            if (clipDC == 0) {\n                MSClipStart(win_hwnd[objectNumber >> 8]);\n                clipping = 1;\n            }\n            if (object->type == 0x0d) {\n                GSetAttrib(_foreColor, _backColor, monoPat & 0x7f);\n                win_DrawBitMapAtObj(object, object->bitmap[@BITMAP_UNCHANGED@]);\n            }\n            if (clipping)\n                MSClipEnd();\n        }\n    } else {\n        @UPDATE_CLOSED@\n    }\n    win_UnlockWin(objectNumber);\n}\n",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "max_candidates": 32,
+  "axes": [
+    {
+      "name": "is_open_call",
+      "marker": "@CALL_MODE@",
+      "rationale": "The target uses the same-segment NOP/PUSH CS/CALL near sequence; compare a far declaration that LINK can translate with direct near declaration.",
+      "values": [
+        "far",
+        "near"
+      ]
+    },
+    {
+      "name": "open_state_update",
+      "marker": "@UPDATE_OPEN@",
+      "rationale": "The target uses a difference-gated update of state bit 2; compare the direct XOR expression with the best observed branch-based form.",
+      "values": [
+        "object->state ^= (object->state ^ (selected << 2)) & 4;",
+        "if (selected) object->state |= 4; else object->state &= 0xfb;"
+      ]
+    },
+    {
+      "name": "closed_state_update",
+      "marker": "@UPDATE_CLOSED@",
+      "rationale": "The closed path updates bit 2 using the same Boolean value; compare XOR and branch-based forms.",
+      "values": [
+        "object->state ^= (object->state ^ (selected << 2)) & 4;",
+        "if (selected) object->state |= 4; else object->state &= 0xfb;"
+      ]
+    },
+    {
+      "name": "changed_bitmap_index",
+      "marker": "@BITMAP_CHANGED@",
+      "rationale": "Target reads object+0x28 when selected and object+0x2a when clear; with an array base at +0x26 that is index 1 or 2.",
+      "values": [
+        "2 - ((object->state & 4) != 0)",
+        "1 + ((object->state & 4) == 0)"
+      ]
+    },
+    {
+      "name": "unchanged_bitmap_index",
+      "marker": "@BITMAP_UNCHANGED@",
+      "rationale": "The unchanged branch uses the same two bitmap words and state-dependent index.",
+      "values": [
+        "2 - ((object->state & 4) != 0)",
+        "1 + ((object->state & 4) == 0)"
+      ]
+    }
+  ],
+  "semantic_summary": "Update state bit 2 always; the open window redraws by type only on a changed selection and redraws only bitmap objects when selection is unchanged.",
+  "binding_evidence": [
+    "Packet supplies MAPSYM names for all direct DGROUP operands and the target call/reference offsets. State bit 2 selects one of the words at object+0x28 and +0x2a."
+  ],
+  "publics": [
+    "_win_SetObjSelectedStateI"
+  ]
+}

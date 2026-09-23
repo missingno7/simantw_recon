@@ -2,13 +2,13 @@
 
 The current primary interface is documented in [factory.md](factory.md). It adds a measured persistent MSC7 service, explicit production/research states and instruction-level diagnostics. The commands below describe the lower-level workflow.
 
-Use the authentic MSC C/C++ 7.00 baseline `/AL /G2 /Gs /Oelw /NT<original group>`. Historical patch identity is not a generic blocker. Independent recovery totals are in `docs/progress.json`; `docs/handoff-readiness.json` reports workflow validation and `docs/recovery-queue.json` partitions tasks.
+Use the authentic MSC C/C++ 7.00 baseline `/AL /G2 /Gs /Oelw /NT<original group>`. Historical patch identity is not a generic blocker. Current recovery totals are in `docs/progress.json`; `docs/handoff-readiness.json` reports live workflow validation and production-state counts, while `docs/recovery-queue.json` partitions task effort. The checkpoint below is historical; run `python tools/recovery_workflow.py doctor` for the current state.
 
 ## Verified checkpoint
 
 The earlier September 20 checkpoint passed 92 tests and independent verification of 208 game functions / 4,995 bytes, plus 77 runtime members / 12,960 bytes. The IsItWall pilot completed task selection, eight generated variants, fresh admission and transactional promotion. Replaying all eight candidates used zero compiler boots and reran every comparison. This validates the workflow; no particular cheap model has been benchmarked.
 
-The queue has 515 READY, 88 GUIDED, 174 LARGE and 80 EXPERT targets. All 41 original readable drafts remain frozen; 38 still need specialist work. Earlier infrastructure solved DoWinHelp, ProcMenuHelp and the SetMenuOptionState TU case, compiled 384 candidates in four boots, and reduced unknown game extents from 500 to 43 without granting source credit.
+At that checkpoint, the queue had 515 READY, 88 GUIDED, 174 LARGE and 80 EXPERT targets. All 41 original readable drafts remained frozen; 38 still needed specialist work. Earlier infrastructure solved DoWinHelp, ProcMenuHelp and the SetMenuOptionState TU case, compiled 384 candidates in four boots, and reduced unknown game extents from 500 to 43 without granting source credit.
 
 The admission audit corrected ten legacy recipes' code-group/MAPSYM metadata and rebuilt their objects without changing source logic. Another 97 existing member recipes had provisional extent metadata revalidated against original/candidate CFGs and complete matching members. See `evidence/recovery/handoff-code-groups.json` and `handoff-extents.json`. Neither operation adds recovery credit.
 

@@ -1,0 +1,113 @@
+Whole-member issues: conflicting private placement constraints _DATA; GR_MODULE unresolved/mismatched fixup at 0x1c3; GR_MODULE unresolved/mismatched fixup at 0x1b8; GR_MODULE unresolved/mismatched fixup at 0x1ad; GR_MODULE unresolved/mismatched fixup at 0x10d; GR_MODULE unresolved/mismatched fixup at 0xf5; GR_MODULE unresolved/mismatched fixup at 0x8a; GR_MODULE unresolved/mismatched fixup at 0x87; GR_MODULE unresolved/mismatched fixup at 0x4e; GR_MODULE unresolved/mismatched fixup at 0x44; GR_MODULE unresolved/mismatched fixup at 0x1b; GR_MODULE uncovered NE relocations; GR_MODULE literal bytes differ; unplaced contribution _DATA
+  GR_MODULE+0x1c3: candidate {'kind': 'internal', 'segment': 2, 'offset': 21888}; original loader []
+  GR_MODULE+0x1b8: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader [{'site': 24775, 'source_type': 2, 'target': {'kind': 'internal', 'segment': 7, 'offset': 0}, 'additive': False}]
+  GR_MODULE+0x1ad: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader []
+  GR_MODULE+0x10d: candidate {'kind': 'internal', 'segment': 7, 'offset': 63558}; original loader []
+  GR_MODULE+0xf5: candidate {'kind': 'internal', 'segment': 10, 'offset': 52350}; original loader []
+  GR_MODULE+0x8a: candidate {'kind': 'internal', 'segment': 2, 'offset': 25276}; original loader []
+  GR_MODULE+0x87: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  GR_MODULE+0x4e: candidate {'kind': 'internal', 'segment': 2, 'offset': 21902}; original loader []
+  GR_MODULE+0x44: candidate {'kind': 'internal', 'segment': 2, 'offset': 21722}; original loader []
+  GR_MODULE+0x1b: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+Target | Candidate | Difference
+0000 enter 0x18, 0 | 0000 enter 0x22, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 push word ptr [bp + 6] | 0006 push word ptr [bp + 6] | 
+0009 nop  | 0009 nop  | 
+000a push cs | 000a push cs | 
+000b call 0xfffff680 | 000b call 0xfffff680 | 
+000e add sp, 2 | 000e add sp, 2 | 
+0011 mov es, dx | 0011 mov es, dx | 
+0013 mov bx, ax | 0013 mov bx, ax | 
+0015 mov si, word ptr es:[bx + 8] | 0015 mov di, word ptr es:[bx + 8] | register_allocation
+0019 push ds | 0019 push ds | 
+001a push 0x1d53 | 001a push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+001d push 1 | 001d push 1 | 
+001f mov ax, si | 001f mov ax, di | register_allocation,alignment_uncertain
+0021 mov cx, si |  | instruction_shape
+0023 cdq  | 0021 cdq  | 
+0024 and dx, 7 | 0022 and dx, 7 | 
+0027 add ax, dx | 0025 add ax, dx | 
+0029 sar ax, 3 | 0027 sar ax, 3 | 
+002c mov si, ax |  | instruction_shape
+002e mov di, word ptr es:[bx + 0xa] | 002a mov si, word ptr es:[bx + 0xa] | register_allocation,alignment_uncertain
+0032 mov ax, di |  | instruction_shape
+0034 imul si | 002e imul si | 
+0036 mov dx, ax | 0030 mov cx, ax | register_allocation,alignment_uncertain
+0038 shl ax, 2 | 0032 shl ax, 2 | 
+003b add ax, dx | 0035 add ax, cx | register_allocation,alignment_uncertain
+003d add ax, 0xc | 0037 add ax, 0xc | 
+0040 push 0 | 003a cdq  | instruction_shape
+ | 003b push dx | instruction_shape
+0042 push ax | 003c push ax | 
+0043 mov word ptr [bp - 0x14], cx | 003d mov word ptr [bp - 0x20], bx | memory_operand,stack_local_layout,register_role
+0046 mov word ptr [bp - 0x18], bx | 0040 mov word ptr [bp - 0x1e], es | memory_operand,stack_local_layout,call_frame_or_segment_register,alignment_uncertain
+0049 mov word ptr [bp - 0x16], es |  | instruction_shape
+004c nop  |  | instruction_shape
+004d push cs |  | instruction_shape
+004e call 0xfffff5cc | 0043 call <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21722}] | immediate_or_binding
+0051 add sp, 0xa | 0046 add sp, 0xa | 
+0054 mov word ptr [bp - 0xe], ax | 0049 mov word ptr [bp - 0x1c], ax | memory_operand,stack_local_layout
+0057 push ax | 004c push ax | 
+0058 nop  | 004d lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | instruction_shape
+0059 push cs |  | instruction_shape
+005a call 0xfffff680 |  | instruction_shape
+005d add sp, 2 | 0052 add sp, 2 | 
+0060 mov es, dx | 0055 mov es, dx | 
+0062 mov bx, ax | 0057 mov bx, ax | 
+0064 mov ax, word ptr [bp - 0x14] |  | instruction_shape
+0067 mov word ptr es:[bx + 8], ax | 0059 mov word ptr es:[bx + 8], di | register_allocation,alignment_uncertain
+006b mov word ptr es:[bx + 0xa], di | 005d mov word ptr es:[bx + 0xa], si | register_allocation,alignment_uncertain
+006f mov byte ptr es:[bx + 2], 4 | 0061 mov byte ptr es:[bx + 2], 4 | 
+0074 mov word ptr es:[bx], 3 | 0066 mov word ptr es:[bx], 3 | 
+0079 mov cx, word ptr [bp - 0x18] | 006b mov ax, word ptr [bp - 0x20] | register_role,memory_operand,stack_local_layout
+007c mov dx, word ptr [bp - 0x16] | 006e mov dx, word ptr [bp - 0x1e] | memory_operand,stack_local_layout
+007f add cx, 0xc | 0071 add ax, 0xc | register_allocation
+0082 mov word ptr [bp - 0xa], cx | 0074 mov word ptr [bp - 0x18], ax | memory_operand,stack_local_layout,register_role
+0085 mov word ptr [bp - 8], dx | 0077 mov word ptr [bp - 0x16], dx | memory_operand,stack_local_layout
+0088 lea cx, [bx + 0xc] | 007a lea ax, [bx + 0xc] | register_allocation
+008b mov word ptr [bp - 4], cx | 007d mov word ptr [bp - 0xe], ax | memory_operand,stack_local_layout,register_role
+008e mov word ptr [bp - 2], es | 0080 mov word ptr [bp - 0xc], es | memory_operand,stack_local_layout
+0091 mov word ptr [bp - 6], si |  | instruction_shape
+0094 push di | 0083 push si | register_allocation,alignment_uncertain
+0095 push ax | 0084 push di | register_allocation,alignment_uncertain
+0096 push ds | 0085 push ds | 
+0097 push 0x1d5a | 0086 push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+009a nop  | 0089 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25276}] | instruction_shape
+009b push cs |  | instruction_shape
+009c call 0x3ae |  | instruction_shape
+009f add sp, 8 | 008e add sp, 8 | 
+00a2 or di, di | 0091 or si, si | register_allocation,alignment_uncertain
+00a4 jg 0xa9 | 0093 jg 0x98 | branch_target
+00a6 jmp 0x153 | 0095 jmp 0x1a9 | branch_target
+00a9 mov word ptr [bp - 0xc], di | 0098 mov word ptr [bp - 0x1a], si | memory_operand,stack_local_layout,register_role
+ | 009b mov ax, di | instruction_shape
+ | 009d cdq  | instruction_shape
+ | 009e and dx, 7 | instruction_shape
+ | 00a1 add ax, dx | instruction_shape
+ | 00a3 sar ax, 3 | instruction_shape
+ | 00a6 mov word ptr [bp - 0x22], ax | instruction_shape
+ | 00a9 mov word ptr [bp - 0x14], di | instruction_shape
+ | 00ac add ax, word ptr [bp - 0x18] | instruction_shape
+ | 00af mov dx, word ptr [bp - 0x16] | instruction_shape
+ | 00b2 mov word ptr [bp - 0x12], ax | instruction_shape
+ | 00b5 mov word ptr [bp - 0x10], dx | instruction_shape
+ | 00b8 mov word ptr [bp - 4], ax | instruction_shape
+ | 00bb mov ds, dx | instruction_shape
+ | 00bd mov ax, word ptr [bp - 0xe] | instruction_shape
+ | 00c0 mov dx, word ptr [bp - 0xc] | instruction_shape
+ | 00c3 mov word ptr [bp - 8], ax | instruction_shape
+ | 00c6 mov es, dx | instruction_shape
+00ac mov ax, word ptr [bp - 0xa] | 00c8 mov ax, word ptr [bp - 0x22] | memory_operand,stack_local_layout
+00af mov dx, word ptr [bp - 8] | 00cb mov si, word ptr [bp - 8] | register_allocation,alignment_uncertain
+00b2 mov cx, word ptr [bp - 6] | 00ce mov di, word ptr [bp - 4] | register_role,memory_operand,stack_local_layout
+00b5 add ax, cx | 00d1 mov cx, ax | instruction_shape
+ | 00d3 jmp 0xdf | instruction_shape
+ | 00d5 nop  | instruction_shape
+ | 00d6 mov bx, di | instruction_shape
+ | 00d8 inc di | instruction_shape
+ | 00d9 mov al, byte ptr [bx] | instruction_shape
+ | 00db mov byte ptr es:[si], al | instruction_shape
+ | 00de inc si | instruction_shape
+... see structured diagnostic for remaining instructions

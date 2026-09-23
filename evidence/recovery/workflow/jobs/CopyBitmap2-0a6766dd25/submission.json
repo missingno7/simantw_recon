@@ -1,0 +1,32 @@
+{
+  "symbol": "_CopyBitmap2",
+  "template": "/* Copy a clipped 4-bit rectangle between two packed bitmap surfaces. */\nvoid far CopyBitmap2(unsigned char far *destination, unsigned char far *source,\n                     int destinationHeight, int destinationWidth,\n                     int sourceHeight, int sourceWidth, int x, int y)\n{\n    long destinationStride;\n    long sourceStride;\n    long destinationOffset;\n    long sourceOffset;\n    long clipY;\n    int clipX;\n    int copyWidth;\n    int copyHeight;\n    int copyBytes;\n    int rows;\n    int col;\n\n    destinationStride = ((destinationWidth * 4 + 31) / 32) * 4;\n    sourceStride = ((sourceWidth * 4 + 31) / 32) * 4;\n    if (sourceWidth % 2 == 0)\n        copyBytes = (sourceWidth + 1) / 2;\n    else\n        copyBytes = (sourceWidth - 1) / 2 + 1;\n\n    clipX = 0;\n    clipY = 0L;\n    if (x < 0)\n        clipX = -x;\n    if (y < 0)\n        clipY = -(long)y;\n\n    copyWidth = sourceWidth - clipX;\n    if (x + sourceWidth > destinationWidth)\n        copyWidth = destinationWidth - x;\n    copyHeight = sourceHeight - (int)clipY;\n    if (y + sourceHeight > destinationHeight)\n        copyHeight = destinationHeight - y;\n    if (copyWidth <= 0 || copyHeight <= 0)\n        return;\n\n    copyBytes -= clipX / 2;\n    destinationOffset = ((long)y + clipY) * destinationStride + (x / 2) + (clipX / 2);\n    sourceOffset = ((long)y + clipY) * sourceStride + (x / 2) + (clipX / 2);\n    @NORMALIZE_BASES@\n    rows = copyHeight;\n    while (rows > 0) {\n        for (col = 0; col < (copyBytes >> 1); col++)\n            ((unsigned int far *)destination)[col] = ((unsigned int far *)source)[col];\n        if (copyBytes & 1)\n            destination[copyBytes - 1] = source[copyBytes - 1];\n        destination += destinationStride;\n        source += sourceStride;\n        rows--;\n    }\n}\n",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "max_candidates": 2,
+  "publics": [
+    "_CopyBitmap2"
+  ],
+  "semantic_summary": "Use huge normalization only for the two initial row addresses, then retain far pointers for row stepping, matching the target\u2019s two AHSHIFT loads.",
+  "binding_evidence": [
+    "Target has exactly two KERNEL ordinal 113 shift sites, one after each long row-address calculation.",
+    "The whole-function huge-pointer trial added eight selector obligations; this experiment confines huge normalization to the initial destination/source base adjustment."
+  ],
+  "axes": [
+    {
+      "name": "initial_huge_normalization_form",
+      "marker": "@NORMALIZE_BASES@",
+      "rationale": "Both address calculations require one normalized far segment adjustment, but later row steps in the target do not shift the segment.",
+      "values": [
+        "destination = (unsigned char far *)((unsigned char huge *)destination + destinationOffset);\n    source = (unsigned char far *)((unsigned char huge *)source + sourceOffset);",
+        "{ unsigned char huge *hd = (unsigned char huge *)destination;\n      unsigned char huge *hs = (unsigned char huge *)source;\n      hd += destinationOffset; hs += sourceOffset;\n      destination = (unsigned char far *)hd; source = (unsigned char far *)hs; }"
+      ]
+    }
+  ]
+}
