@@ -1,0 +1,63 @@
+Whole-member issues: inconsistent public placements for SIMANT_MODULE
+Target | Candidate | Difference
+ | 0000 enter 2, 0 | instruction_shape
+0000 push di | 0004 push di | 
+0001 push si | 0005 push si | 
+0002 mov si, 0x43 | 0006 mov si, 0x43 | 
+0005 mov ax, si | 0009 mov ax, si | 
+0007 mov es, word ptr [0xbeca] | 000b mov es, word ptr [0] | memory_operand
+000b sub ax, word ptr es:[0x8614] | 000f sub ax, word ptr es:[0] | memory_operand
+0010 cmp ax, 0x43 | 0014 cmp ax, 0x43 | 
+0013 jne 0x1a | 0017 jne 0x1e | branch_target
+0015 mov ax, 0x10 | 0019 mov ax, 0x10 | 
+0018 jmp 0x1d | 001c jmp 0x21 | branch_target
+001a mov ax, 0x20 | 001e mov ax, 0x20 | 
+001d push ax | 0021 push ax | 
+001e push si | 0022 push si | 
+001f lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0023 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+0024 add sp, 4 | 0028 add sp, 4 | 
+0027 inc si | 002b inc si | 
+0028 cmp si, 0x46 | 002c cmp si, 0x46 | 
+002b jle 5 | 002f jle 9 | branch_target
+002d mov es, word ptr [0xbecc] | 0031 mov es, word ptr [2] | memory_operand
+0031 cmp word ptr es:[0x9c28], 0 | 0035 cmp word ptr es:[0], 0 | memory_operand
+0037 je 0x3e | 003b je 0x42 | branch_target
+0039 mov ax, 0x900 | 003d mov ax, 0 | immediate_or_binding
+003c jmp 0x41 | 0040 jmp 0x45 | branch_target
+003e mov ax, 0x911 | 0042 mov ax, 0x11 | immediate_or_binding
+ | 0045 mov word ptr [bp - 2], ax | instruction_shape
+0041 push ds | 0048 push ds | 
+0042 push ax | 0049 push ax | 
+0043 push 0x41 | 004a push 0x41 | 
+0045 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 004c lcall 0, 0 | immediate_or_binding,immediate_or_binding
+004a add sp, 6 | 0051 add sp, 6 | 
+004d mov di, 0x31 | 0054 mov di, 0x31 | 
+0050 mov si, 0x85f2 | 0057 mov si, 0 | immediate_or_binding
+0053 mov es, word ptr [0xbece] | 005a mov es, word ptr [4] | memory_operand
+0057 cmp word ptr es:[si], 1 | 005e cmp word ptr es:[si], 1 | 
+005b sbb ax, ax | 0062 sbb ax, ax | 
+005d and ax, 0x10 | 0064 and ax, 0x10 | 
+0060 add ax, 0x10 | 0067 add ax, 0x10 | 
+0063 push ax | 006a push ax | 
+0064 push di | 006b push di | 
+0065 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 006c lcall 0, 0 | immediate_or_binding,immediate_or_binding
+006a add sp, 4 | 0071 add sp, 4 | 
+006d add si, 2 | 0074 add si, 2 | 
+0070 inc di | 0077 inc di | 
+0071 cmp di, 0x36 | 0078 cmp di, 0x36 | 
+0074 jle 0x53 | 007b jle 0x5a | branch_target
+0076 nop  | 007d lcall 0, 0 | instruction_shape
+0077 push cs |  | instruction_shape
+0078 call 0xffffb616 |  | instruction_shape
+007b mov es, word ptr [0xbece] | 0082 mov es, word ptr [4] | memory_operand
+007f mov ax, word ptr es:[0x85f4] | 0086 mov ax, word ptr es:[2] | memory_operand
+0083 mov es, word ptr [0xbed0] | 008a mov es, word ptr [6] | memory_operand
+0087 mov word ptr es:[0xaf6], ax | 008e mov word ptr es:[0], ax | memory_operand
+008b mov es, word ptr [0xbece] | 0092 mov es, word ptr [4] | memory_operand
+008f mov ax, word ptr es:[0x85f6] | 0096 mov ax, word ptr es:[4] | memory_operand
+0093 mov es, word ptr [0xbed2] | 009a mov es, word ptr [8] | memory_operand
+0097 mov word ptr es:[0xaf8], ax | 009e mov word ptr es:[0], ax | memory_operand
+009b pop si | 00a2 pop si | 
+009c pop di | 00a3 pop di | 
+ | 00a4 leave  | instruction_shape
+009d retf  | 00a5 retf  | 

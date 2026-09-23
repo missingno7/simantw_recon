@@ -119899,8 +119899,8 @@ Source: src/recovered/db_Exists.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIM
 ```
 
 ## _db_SetDataBase — SIMTWO_MODULE:81AC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 146 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 146 bytes.
+Source: src/recovered/wf_tu_simtwo_81AC_db_SetDataBase_1_reviewed-7aea199e9a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 81AC  c8200000                 enter 0x20, 0
