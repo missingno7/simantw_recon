@@ -54619,7 +54619,7 @@ A997  cb                       retf
 
 ## _DrawYardCursor — ANTEDIT_MODULE:A998
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 36 bytes.
-Source: src/recovered/DrawYardCursor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_A998_DrawYardCursor_3_scaffold-c71c8e4e09.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 A998  833eb61800               cmp word ptr [0x18b6], 0
@@ -54637,7 +54637,7 @@ A9BB  cb                       retf
 
 ## _EraseYardCursor — ANTEDIT_MODULE:A9BC
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 36 bytes.
-Source: src/recovered/EraseYardCursor.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
+Source: src/recovered/wf_tu_antedit_A998_DrawYardCursor_3_scaffold-c71c8e4e09.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 A9BC  833eb61800               cmp word ptr [0x18b6], 0
@@ -56749,8 +56749,8 @@ C098  cb                       retf
 ```
 
 ## _YardArea — ANTEDIT_MODULE:C09A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 255 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 255 bytes.
+Source: src/recovered/wf_tu_antedit_A998_DrawYardCursor_3_scaffold-c71c8e4e09.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C09A  c8020000                 enter 2, 0

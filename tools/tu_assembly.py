@@ -514,6 +514,10 @@ def preserved_sources():
     recipes = read_json(ROOT / 'src/recovery.json')['targets']
     for symbol, target in recipes.items():
         if target.get('scaffold'):
+            admitted_source = admitted_unit_member_source(symbol, target)
+            if admitted_source:
+                result[symbol] = admitted_source
+                continue
             # A scaffolded unit source carries stand-ins and per-member macros;
             # the member's own text is its superseded isolated recipe or its
             # exact body candidate (searched below).
@@ -597,6 +601,33 @@ def preserved_sources():
         if symbol in result and result[symbol]['basis'] != 'ADMITTED' and target.get('scaffold'):
             result[symbol] = dict(result[symbol], basis='ADMITTED', profile=target.get('profile', 'baseline'), unit=target.get('unit'), isolated_basis=result[symbol]['basis'])
     return result
+
+
+def admitted_unit_member_source(symbol, target):
+    """Return an identity-checked member source from its admitted unit.
+
+    A scaffolded unit can prove a corrected body without an earlier isolated
+    recipe, and later scaffolded units can supersede it. The current unit's
+    recorded per-member source is the one later composition must receive.
+    """
+    unit = target.get('unit')
+    path = UNITS / unit / 'unit.json' if unit else None
+    if not path or not path.exists():
+        return None
+    source = (read_json(path).get('sources') or {}).get(symbol) or {}
+    if not source.get('source') or not source.get('identity'):
+        return None
+    if Path(source['source']).parts[0] not in ('src', 'evidence'):
+        # Compiler-cache paths are ignored build products, unavailable after
+        # a fresh checkout. Keep the older durable-source fallback for them.
+        return None
+    if Path(source['source']).name.startswith('wf_tu_') or Path(source['source']).name == 'unit.c':
+        # A previous unit's whole source is not an isolated member source.
+        return None
+    source_path = ROOT / source['source']
+    if not source_path.exists() or identity(source_path) != source.get('identity'):
+        raise FormatError('admitted unit member source identity is stale for %s' % symbol)
+    return dict(source=source['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'), unit=unit)
 
 
 def topology_units():

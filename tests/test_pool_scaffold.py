@@ -3,6 +3,7 @@ import copy
 import json
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from common import ROOT, fixture
@@ -54,6 +55,21 @@ class MatcherScaffoldTests(unittest.TestCase):
 
 
 class ComposerScaffoldTests(unittest.TestCase):
+    def test_admitted_unit_yard_source_supersedes_parked_draft(self):
+        target = json.loads((ROOT / 'src/recovery.json').read_text())['targets']['_YardArea']
+        reviewed = tu.admitted_unit_member_source('_YardArea', target)
+        self.assertEqual(reviewed['source'], 'evidence/topology/supervisor-unit-sources/YardArea-patchRgn2.c')
+        self.assertEqual(tu.preserved_sources()['_YardArea']['source'], reviewed['source'])
+        with mock.patch.object(tu, 'identity', return_value={'sha256': 'stale'}):
+            with self.assertRaisesRegex(tu.FormatError, 'identity is stale'):
+                tu.admitted_unit_member_source('_YardArea', target)
+        with mock.patch.object(tu, 'read_json', return_value={'sources': {'_YardArea': {
+                'source': 'build/codegen-cache/ignored/INPUT.C', 'identity': {'sha256': 'x'}}}}):
+            self.assertIsNone(tu.admitted_unit_member_source('_YardArea', target))
+        with mock.patch.object(tu, 'read_json', return_value={'sources': {'_YardArea': {
+                'source': 'src/recovered/wf_tu_whole_unit.c', 'identity': {'sha256': 'x'}}}}):
+            self.assertIsNone(tu.admitted_unit_member_source('_YardArea', target))
+
     def test_member_without_selector_slots_needs_no_pool_standins(self):
         self.assertEqual(tu.required_pool_block([0xc19e, 0xc1a0, 0xc1a2], []), [])
         self.assertEqual(tu.required_pool_block([0xc19e, 0xc1a0, 0xc1a2], [0xc1a0]), [0xc19e, 0xc1a0])
