@@ -16003,8 +16003,8 @@ A5C9  cb                       retf
 ```
 
 ## _SetMapPlane — SIMANT_MODULE:A5CA
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 277 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 277 bytes.
+Source: src/recovered/wf_tu_simant_9D04_SetMapPlane_1_scaffold-47a07d4d6a.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 A5CA  c8040000                 enter 4, 0
