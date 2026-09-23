@@ -74,3 +74,17 @@ code. Fresh independent admission:
 The five-attempt individual job `MultiMediaSong-f2993ef613` is linked as
 superseded. This second member confirms that the selector view is useful
 beyond the single song-done spelling.
+
+`_mySongIsDone` remains open. Its target reads 8D06 before the admitted
+8D08-based state, then checks the known near `songsOnFlag` and four admitted
+state fields. Three bounded isolated C7 probes in
+`mySongIsDone-*-shape-trial/` use a named selector and keep the 8D06 word as
+a separate external. They match the 66-byte extent, selector-load position,
+outer checks, and BX Boolean register, but C7 canonicalizes all three
+source layouts to place the `songState == 0` block before the `result = 1`
+block. The target places `result = 1` first and branches forward to the
+comparison, then jumps back to the shared BX return. None is a complete
+body or proves that 8D06 belongs to the 22-byte object. A new experiment
+needs a causal explanation for this block order and a separate placement
+test for the preceding word; more equivalent `if`/`goto` spellings are not
+useful.
