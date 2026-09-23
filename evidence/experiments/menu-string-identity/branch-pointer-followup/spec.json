@@ -1,0 +1,32 @@
+{
+  "symbol": "_PauseGame",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "max_candidates": 4,
+  "axes": [
+    {
+      "name": "pointer_declaration",
+      "marker": "__MENU_DECL__",
+      "values": [
+        "char near *",
+        "register char near *",
+        "char far *",
+        "register char far *"
+      ],
+      "rationale": "The target PauseGame and SetPause have no local frame and select the far-call argument through AX plus DS. The existing near-pointer temporary creates enter 2,0 in both bodies. Vary only the temporary pointer type/register declaration to see whether C7 removes those frame bytes while preserving the branch and call shape."
+    }
+  ],
+  "publics": [
+    "_SetMenuEntries",
+    "_PauseGame",
+    "_SetPause",
+    "_ProcMenuHelp"
+  ],
+  "source": "evidence/experiments/menu-string-identity/branch-pointer-followup/template.c"
+}

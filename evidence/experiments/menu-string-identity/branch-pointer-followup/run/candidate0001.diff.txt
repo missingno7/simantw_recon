@@ -1,0 +1,103 @@
+Whole-member issues: inconsistent public placements for SIMANT_MODULE
+Target | Candidate | Difference
+0000 push bp | 0000 enter 2, 0 | instruction_shape
+0001 mov bp, sp |  | instruction_shape
+0003 push di | 0004 push di | 
+0004 push si | 0005 push si | 
+0005 mov di, word ptr [bp + 6] | 0006 mov di, word ptr [bp + 6] | 
+0008 or di, di | 0009 or di, di | 
+000a jne 0x2d | 000b jne 0x2f | 
+000c mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 0}] | 000d mov ax, 0 | immediate_or_binding
+000f mov es, ax | 0010 mov es, ax | 
+0011 cmp word ptr es:[0x7c22], 0xa | 0012 cmp word ptr es:[0], 0xa | memory_operand
+0017 jne 0x20 | 0018 jne 0x22 | 
+0019 lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 0}] | 001a lcall 0, 0 | immediate_or_binding,immediate_or_binding
+001e jmp 0x2d | 001f jmp 0x2f | 
+ | 0021 nop  | instruction_shape
+0020 cmp word ptr es:[0x7c22], 0xb | 0022 cmp word ptr es:[0], 0xb | memory_operand
+0026 jne 0x2d | 0028 jne 0x2f | 
+0028 lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 0}] | 002a lcall 0, 0 | immediate_or_binding,immediate_or_binding
+002d mov es, word ptr [0xbecc] | 002f mov es, word ptr [2] | memory_operand
+0031 mov word ptr es:[0x9c28], di | 0033 mov word ptr es:[0], di | memory_operand
+0036 or di, di | 0038 or di, di | 
+0038 je 0xa8 | 003a je 0xaa | 
+003a mov es, word ptr [0xbed4] | 003c mov es, word ptr [0xa] | memory_operand
+003e cmp word ptr es:[0x7c22], -1 | 0040 cmp word ptr es:[0], -1 | memory_operand
+0044 jne 0x60 | 0046 jne 0x62 | 
+0046 push 1 | 0048 push 1 | 
+0048 push -1 | 004a push -1 | 
+004a push -2 | 004c push -2 | 
+004c mov es, word ptr [0xbed6] | 004e mov es, word ptr [0xc] | memory_operand
+0050 les bx, ptr es:[0x737a] | 0052 les bx, ptr es:[0] | memory_operand
+0055 push word ptr es:[bx + 0xa] | 0057 push word ptr es:[bx + 0xa] | 
+0059 push word ptr es:[bx + 8] | 005b push word ptr es:[bx + 8] | 
+005d jmp 0xb2 | 005f jmp 0xb4 | 
+005f nop  | 0061 nop  | 
+0060 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 0}] | 0062 mov ax, 0 | immediate_or_binding
+0063 mov es, ax | 0065 mov es, ax | 
+0065 cmp word ptr es:[0x7c22], 0xa | 0067 cmp word ptr es:[0], 0xa | memory_operand
+006b jne 0x86 | 006d jne 0x88 | 
+006d push 1 | 006f push 1 | 
+006f push -1 | 0071 push -1 | 
+0071 push -2 | 0073 push -2 | 
+0073 mov es, word ptr [0xbed6] | 0075 mov es, word ptr [0xc] | memory_operand
+0077 les bx, ptr es:[0x737a] | 0079 les bx, ptr es:[0] | memory_operand
+007c push word ptr es:[bx + 0xe] | 007e push word ptr es:[bx + 0xe] | 
+0080 push word ptr es:[bx + 0xc] | 0082 push word ptr es:[bx + 0xc] | 
+0084 jmp 0xb2 | 0086 jmp 0xb4 | 
+0086 cmp word ptr es:[0x7c22], 0xb | 0088 cmp word ptr es:[0], 0xb | memory_operand
+008c jne 0xba | 008e jne 0xbc | branch_target
+008e push 1 | 0090 push 1 | 
+0090 push -1 | 0092 push -1 | 
+0092 push -2 | 0094 push -2 | 
+0094 mov es, word ptr [0xbed6] | 0096 mov es, word ptr [0xc] | memory_operand
+0098 les bx, ptr es:[0x737a] | 009a les bx, ptr es:[0] | memory_operand
+009d push word ptr es:[bx + 0x46] | 009f push word ptr es:[bx + 0x46] | 
+00a1 push word ptr es:[bx + 0x44] | 00a3 push word ptr es:[bx + 0x44] | 
+00a5 jmp 0xb2 | 00a7 jmp 0xb4 | 
+00a7 nop  | 00a9 nop  | 
+00a8 push 1 | 00aa push 1 | 
+00aa push -1 | 00ac push -1 | 
+00ac push -2 | 00ae push -2 | 
+00ae push 0 | 00b0 push 0 | 
+00b0 push 0 | 00b2 push 0 | 
+00b2 nop  | 00b4 lcall 0, 0 | instruction_shape
+00b3 push cs |  | instruction_shape
+00b4 call 0x45fe |  | instruction_shape
+00b7 add sp, 0xa | 00b9 add sp, 0xa | 
+00ba push 0 | 00bc push 0 | 
+00bc lcall <resolved fixup> [{'kind': 'internal', 'segment': 3, 'offset': 0}] | 00be lcall 0, 0 | immediate_or_binding,immediate_or_binding
+00c1 add sp, 2 | 00c3 add sp, 2 | 
+00c4 push di | 00c6 push di | 
+00c5 push 0xf | 00c7 push 0xf | 
+00c7 lcall <resolved fixup> [{'kind': 'internal', 'segment': 7, 'offset': 0}] | 00c9 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+00cc add sp, 4 | 00ce add sp, 4 | 
+00cf lcall <resolved fixup> [{'kind': 'internal', 'segment': 3, 'offset': 0}] | 00d1 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+00d4 mov si, 0x43 | 00d6 mov si, 0x43 | 
+00d7 mov ax, si | 00d9 mov ax, si | 
+00d9 mov es, word ptr [0xbeca] | 00db mov es, word ptr [0] | memory_operand
+00dd sub ax, word ptr es:[0x8614] | 00df sub ax, word ptr es:[0] | memory_operand
+00e2 cmp ax, 0x43 | 00e4 cmp ax, 0x43 | 
+00e5 jne 0xec | 00e7 jne 0xee | branch_target
+00e7 mov ax, 0x10 | 00e9 mov ax, 0x10 | 
+00ea jmp 0xef | 00ec jmp 0xf1 | branch_target
+00ec mov ax, 0x20 | 00ee mov ax, 0x20 | 
+00ef push ax | 00f1 push ax | 
+00f0 push si | 00f2 push si | 
+00f1 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 00f3 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+00f6 add sp, 4 | 00f8 add sp, 4 | 
+00f9 inc si | 00fb inc si | 
+00fa cmp si, 0x46 | 00fc cmp si, 0x46 | 
+00fd jle 0xd7 | 00ff jle 0xd9 | branch_target
+00ff mov es, word ptr [0xbecc] | 0101 mov es, word ptr [2] | memory_operand
+0103 cmp word ptr es:[0x9c28], 0 | 0105 cmp word ptr es:[0], 0 | memory_operand
+0109 je 0x110 | 010b je 0x112 | branch_target
+010b mov ax, 0x900 | 010d mov ax, 0 | immediate_or_binding
+010e jmp 0x113 | 0110 jmp 0x115 | branch_target
+0110 mov ax, 0x911 | 0112 mov ax, 0x11 | immediate_or_binding
+0113 push ds | 0115 push ds | 
+0114 push ax | 0116 push ax | 
+0115 push 0x41 | 0117 push 0x41 | 
+0117 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0119 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+011c add sp, 6 | 011e add sp, 6 | 
+... see structured diagnostic for remaining instructions
