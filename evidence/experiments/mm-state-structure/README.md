@@ -118,3 +118,10 @@ body or proves that 8D06 belongs to the 22-byte object. A new experiment
 needs a causal explanation for this block order and a separate placement
 test for the preceding word; more equivalent `if`/`goto` spellings are not
 useful.
+
+A further `mySongIsDone-branch-return-trial/` tested a branch-local return
+before the final song-state test. It compiled to 58 bytes, moved the Boolean
+into AX, and still placed the final test before the one-result block. This
+rules out that simple return spelling; the earlier 66-byte shared-BX body
+remains the useful isolated hypothesis. No production budget or admission
+was claimed for this probe.

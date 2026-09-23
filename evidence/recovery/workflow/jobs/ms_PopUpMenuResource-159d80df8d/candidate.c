@@ -27,7 +27,6 @@ int far ms_PopUpMenuResource(int x, int y, int resourceID,
     char far * far *cursor;
     unsigned int menu;
     int index;
-    unsigned int item;
     char far *itemText;
     struct MenuPoint point;
 
@@ -44,12 +43,12 @@ int far ms_PopUpMenuResource(int x, int y, int resourceID,
     }
     cursor = items;
     for (; index < count; index++, cursor++) {
-        item = (unsigned int)((index + 1) | 0xf900);
-        itemText = *cursor + 1;
+        itemText = *cursor;
+        itemText++;
         if (*itemText == '-')
-            AppendMenu(menu, 0x800, item, (char far *)0);
+            AppendMenu(menu, 0x800, (unsigned int)((index + 1) | 0xf900), (char far *)0);
         else
-            AppendMenu(menu, 0, item, itemText);
+            AppendMenu(menu, 0, (unsigned int)((index + 1) | 0xf900), itemText);
     }
     mem_free(items);
 show_menu:
