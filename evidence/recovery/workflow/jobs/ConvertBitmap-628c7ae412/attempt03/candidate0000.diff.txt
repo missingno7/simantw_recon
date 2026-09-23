@@ -1,0 +1,113 @@
+Whole-member issues: GR_MODULE unresolved/mismatched fixup at 0x259; GR_MODULE unresolved/mismatched fixup at 0x1eb; GR_MODULE unresolved/mismatched fixup at 0x1b2; GR_MODULE unresolved/mismatched fixup at 0x16a; GR_MODULE unresolved/mismatched fixup at 0x130; GR_MODULE unresolved/mismatched fixup at 0xbd; GR_MODULE unresolved/mismatched fixup at 0xb2; GR_MODULE unresolved/mismatched fixup at 0x99; GR_MODULE unresolved/mismatched fixup at 0x86; GR_MODULE unresolved/mismatched fixup at 0x21; GR_MODULE uncovered NE relocations; GR_MODULE literal bytes differ
+  GR_MODULE+0x259: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0x1eb: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0x1b2: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0x16a: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0x130: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0xbd: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0xb2: candidate {'kind': 'internal', 'segment': 4, 'offset': 2414}; original loader []
+  GR_MODULE+0x99: candidate {'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}; original loader []
+  GR_MODULE+0x86: candidate {'kind': 'internal', 'segment': 4, 'offset': 2414}; original loader []
+  GR_MODULE+0x21: candidate {'kind': 'internal', 'segment': 4, 'offset': 2260}; original loader []
+Target | Candidate | Difference
+0000 enter 0x40, 0 | 0000 enter 0x32, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 mov bx, word ptr [bp + 0x10] | 0006 mov si, word ptr [bp + 0x10] | register_allocation,alignment_uncertain
+ | 0009 push 0 | instruction_shape
+ | 000b push 0x20 | instruction_shape
+0009 mov ax, bx | 000d mov ax, si | register_allocation,alignment_uncertain
+000b shl ax, 2 | 000f cdq  | instruction_shape
+ | 0010 shl ax, 1 | instruction_shape
+ | 0012 rcl dx, 1 | instruction_shape
+ | 0014 shl ax, 1 | instruction_shape
+ | 0016 rcl dx, 1 | instruction_shape
+000e add ax, 0x1f | 0018 add ax, 0x1f | 
+ | 001b adc dx, 0 | instruction_shape
+ | 001e push dx | instruction_shape
+ | 001f push ax | instruction_shape
+ | 0020 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2260}] | instruction_shape
+ | 0025 shl ax, 1 | instruction_shape
+ | 0027 rcl dx, 1 | instruction_shape
+ | 0029 shl ax, 1 | instruction_shape
+ | 002b rcl dx, 1 | instruction_shape
+ | 002d mov word ptr [bp - 0x1a], ax | instruction_shape
+ | 0030 mov word ptr [bp - 0x18], dx | instruction_shape
+ | 0033 mov ax, si | instruction_shape
+0011 cdq  | 0035 cdq  | 
+0012 and dx, 0x1f | 0036 and dx, 7 | immediate_or_binding
+0015 add ax, dx | 0039 add ax, dx | 
+0017 sar ax, 5 | 003b sar ax, 3 | immediate_or_binding
+001a shl ax, 2 | 003e mov di, ax | instruction_shape
+001d cdq  |  | instruction_shape
+001e mov word ptr [bp - 0x10], ax |  | instruction_shape
+0021 mov word ptr [bp - 0xe], dx |  | instruction_shape
+0024 mov ax, bx | 0040 mov ax, si | register_allocation,alignment_uncertain
+0026 mov cx, 8 | 0042 mov cx, 8 | 
+0029 cdq  | 0045 cdq  | 
+002a idiv cx | 0046 idiv cx | 
+002c or dx, dx | 0048 or dx, dx | 
+002e jne 0x3e | 004a je 0x61 | instruction_shape
+0030 mov ax, bx | 004c mov ax, si | register_allocation,alignment_uncertain
+ | 004e mov cx, si | instruction_shape
+ | 0050 and ax, 7 | instruction_shape
+ | 0053 add ax, cx | instruction_shape
+0032 cdq  | 0055 cdq  | 
+0033 and dx, 7 | 0056 and dx, 7 | 
+0036 add ax, dx | 0059 add ax, dx | 
+0038 sar ax, 3 | 005b sar ax, 3 | 
+003b cdq  | 005e mov di, ax | instruction_shape
+003c jmp 0x50 | 0060 inc di | instruction_shape
+003e mov ax, bx | 0061 mov ax, di | register_allocation,alignment_uncertain
+0040 cdq  | 0063 cdq  | 
+0041 and dx, 7 |  | instruction_shape
+0044 add ax, dx |  | instruction_shape
+0046 sar ax, 3 |  | instruction_shape
+0049 cdq  |  | instruction_shape
+004a add ax, 1 |  | instruction_shape
+004d adc dx, 0 |  | instruction_shape
+0050 mov word ptr [bp - 0x14], ax | 0064 mov word ptr [bp - 0x12], ax | memory_operand,stack_local_layout
+0053 mov word ptr [bp - 0x12], dx | 0067 mov word ptr [bp - 0x10], dx | memory_operand,stack_local_layout
+0056 sub ax, ax | 006a xor si, si | instruction_shape
+0058 mov word ptr [bp - 0xa], ax |  | instruction_shape
+005b mov word ptr [bp - 0xc], ax |  | instruction_shape
+005e cmp word ptr [bp + 0xe], ax | 006c cmp word ptr [bp + 0xe], si | register_allocation,alignment_uncertain
+0061 jg 0x66 | 006f jg 0x74 | branch_target
+0063 jmp 0x29e | 0071 jmp 0x286 | branch_target
+ | 0074 mov di, word ptr [bp + 0xe] | instruction_shape
+ | 0077 push word ptr [bp - 0x10] | instruction_shape
+ | 007a push word ptr [bp - 0x12] | instruction_shape
+ | 007d mov ax, di | instruction_shape
+ | 007f sub ax, si | instruction_shape
+ | 0081 dec ax | instruction_shape
+ | 0082 cdq  | instruction_shape
+ | 0083 push dx | instruction_shape
+ | 0084 push ax | instruction_shape
+ | 0085 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2414}] | instruction_shape
+ | 008a shl ax, 1 | instruction_shape
+ | 008c rcl dx, 1 | instruction_shape
+ | 008e shl ax, 1 | instruction_shape
+ | 0090 rcl dx, 1 | instruction_shape
+ | 0092 add ax, word ptr [bp + 0xa] | instruction_shape
+ | 0095 adc dx, 0 | instruction_shape
+ | 0098 mov <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}] | instruction_shape
+ | 009b shl dx, cl | instruction_shape
+ | 009d add dx, word ptr [bp + 0xc] | instruction_shape
+ | 00a0 mov word ptr [bp - 6], ax | instruction_shape
+ | 00a3 mov word ptr [bp - 4], dx | instruction_shape
+ | 00a6 mov ax, si | instruction_shape
+ | 00a8 cdq  | instruction_shape
+ | 00a9 push dx | instruction_shape
+ | 00aa push ax | instruction_shape
+ | 00ab push word ptr [bp - 0x18] | instruction_shape
+ | 00ae push word ptr [bp - 0x1a] | instruction_shape
+ | 00b1 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 2414}] | instruction_shape
+ | 00b6 add ax, word ptr [bp + 6] | instruction_shape
+ | 00b9 adc dx, 0 | instruction_shape
+ | 00bc mov <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 113}] | instruction_shape
+ | 00bf shl dx, cl | instruction_shape
+ | 00c1 add dx, word ptr [bp + 8] | instruction_shape
+ | 00c4 mov word ptr [bp - 0xa], ax | instruction_shape
+ | 00c7 mov word ptr [bp - 8], dx | instruction_shape
+ | 00ca mov word ptr [bp - 2], 0 | instruction_shape
+... see structured diagnostic for remaining instructions
