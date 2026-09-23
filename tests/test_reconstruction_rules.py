@@ -76,5 +76,17 @@ class ReconstructionRuleTriggerTests(unittest.TestCase):
         calls['calls'] = [{'names': ['_IsValidA']}, {'names': ['_GoInNest']}]
         self.assertNotIn('inline_hole_flag_join', triggers(card, calls))
 
+    def test_multimedia_state_rule_requires_sound_context_and_far_access(self):
+        card = {'symbol': '_snd_IsSongDone', 'segment': 2,
+                'disassembly': [{'mnemonic': 'mov', 'operands': 'es, word ptr [0xbf78]'}],
+                'calls': []}
+        sound = {'unit_context': {'id': 'gr:7712'}}
+        elsewhere = {'unit_context': {'id': 'gr:514C'}}
+        rule_id = 'multimedia-state-gr-7712'
+        self.assertTrue(any(r['id'] == rule_id for r in relevant_rules(card, sound)))
+        self.assertFalse(any(r['id'] == rule_id for r in relevant_rules(card, elsewhere)))
+        card['disassembly'] = []
+        self.assertFalse(any(r['id'] == rule_id for r in relevant_rules(card, sound)))
+
 if __name__ == '__main__':
     unittest.main()

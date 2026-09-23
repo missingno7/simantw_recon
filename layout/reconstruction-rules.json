@@ -251,6 +251,20 @@
       ]
     },
     {
+      "id": "multimedia-state-gr-7712",
+      "rule": "In gr:7712, target selector BF78 reaches the zero-initialized SIMANT_DATA_GROUP state at 8D08. The admitted eleven-member unit proves a 20-byte shared declaration through 8D1B, including moduleHandle (+0), waveHandle (+0xC), and refCount (+0x12). An adjacent access at 8D1C is not proved to belong to that object. DGROUP 0AF4 is the MAPSYM word wSoundBlasterMsg, not a string-table base: the availability routines' procedure names at 0AFA/0B0C and vocMciClose's waveOutClose at 0C6D match as string literals. Preserve object and literal identities when extending this sound unit; test each new member and its private contributions independently.",
+      "triggers": [
+        "far_data"
+      ],
+      "contexts": [
+        "gr:7712"
+      ],
+      "evidence": [
+        "evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_11_reviewed-20da90de50/promotion.json",
+        "evidence/experiments/mm-state-structure/README.md"
+      ]
+    },
+    {
       "id": "commutative-operand-declaration-order",
    "rule": "MSC 7 orders the operands of a commutative expression of two globals by their declaration order (the earlier-declared symbol becomes the second/memory operand: `tileWidth * editWidth` -> `mov ax,[tileWidth]; imul [editWidth]` requires editWidth declared before tileWidth). Rewriting the expression does not help (the compiler canonicalises it); the fix is declaration order. Isolated candidates: reorder externs. Units: record the pair in layout/declaration-order.json (applied by tu_assembly.compose).",
    "triggers": [

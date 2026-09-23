@@ -32,3 +32,15 @@ the ordinary/fixup obligations in a fresh independent admission:
 `evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_11_reviewed-20da90de50/promotion.json`.
 The older individual job `vocMciClose-671a37cab0` is linked as superseded;
 its failed isolated trial remains in history.
+
+`_snd_IsSongDone` is a bounded follow-up, not an admission. Its 44-byte target
+loads ES once from selector slot BF78, tests state words at 8D08/8D0C/8D0A,
+then compares 8D1C with one and returns the unsigned-borrow Boolean through
+`SBB AX,AX; NEG AX`. Extending the admitted state declaration from 20 to 22
+bytes and adding this source to a twelve-member reviewed unit failed private
+placement for `SIMANT_DATA_GROUP`; isolated C7 emits an immediate segment
+load and a conditional branch at the Boolean tail. Reversing the unsigned
+comparison spelling compiled identically. `snd_IsSongDone*-trial/` and
+`gr_7712_IsMMMidiAvail_12_reviewed/` preserve the negative evidence. The
+8D1C word is adjacent to the admitted state, but this does not establish that
+it is a field of that same C object.
