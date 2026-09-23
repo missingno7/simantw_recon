@@ -1,0 +1,112 @@
+Whole-member issues: conflicting private placement constraints _DATA; SIMTWO_MODULE unresolved/mismatched fixup at 0x12f; SIMTWO_MODULE unresolved/mismatched fixup at 0x10d; SIMTWO_MODULE unresolved/mismatched fixup at 0x10a; SIMTWO_MODULE unresolved/mismatched fixup at 0xf7; SIMTWO_MODULE unresolved/mismatched fixup at 0xe9; SIMTWO_MODULE unresolved/mismatched fixup at 0xe6; SIMTWO_MODULE unresolved/mismatched fixup at 0xa5; SIMTWO_MODULE unresolved/mismatched fixup at 0x92; SIMTWO_MODULE unresolved/mismatched fixup at 0x70; SIMTWO_MODULE uncovered NE relocations; SIMTWO_MODULE literal bytes differ; unplaced contribution _DATA
+  SIMTWO_MODULE+0x12f: candidate {'kind': 'internal', 'segment': 2, 'offset': 21916}; original loader []
+  SIMTWO_MODULE+0x10d: candidate {'kind': 'internal', 'segment': 2, 'offset': 25276}; original loader []
+  SIMTWO_MODULE+0x10a: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  SIMTWO_MODULE+0xf7: candidate {'kind': 'internal', 'segment': 2, 'offset': 21888}; original loader []
+  SIMTWO_MODULE+0xe9: candidate {'kind': 'internal', 'segment': 2, 'offset': 6334}; original loader []
+  SIMTWO_MODULE+0xe6: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  SIMTWO_MODULE+0xa5: candidate {'kind': 'internal', 'segment': 2, 'offset': 21650}; original loader []
+  SIMTWO_MODULE+0x92: candidate {'kind': 'internal', 'segment': 2, 'offset': 22112}; original loader []
+  SIMTWO_MODULE+0x70: candidate {'kind': 'internal', 'segment': 2, 'offset': 22052}; original loader []
+Target | Candidate | Difference
+0000 enter 0x26, 0 | 0000 enter 0x1e, 0 | immediate_or_binding
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 sub ax, ax | 0006 sub ax, ax | 
+0008 mov word ptr [bp - 0xa], ax | 0008 mov word ptr [bp - 0xe], ax | memory_operand,stack_local_layout
+000b mov word ptr [bp - 0xc], ax | 000b mov word ptr [bp - 0x10], ax | memory_operand,stack_local_layout
+000e push word ptr [bp + 6] | 000e push word ptr [bp + 6] | 
+0011 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | 0011 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | 
+0016 add sp, 2 | 0016 add sp, 2 | 
+0019 mov es, dx | 0019 mov es, dx | 
+001b mov bx, ax | 001b mov bx, ax | 
+001d mov di, ax | 001d mov si, ax | register_allocation
+ | 001f mov word ptr [bp - 0x1c], es | instruction_shape
+001f mov ax, word ptr es:[bx] | 0022 mov di, word ptr es:[bx] | register_allocation
+ | 0025 lea ax, [bx + 4] | instruction_shape
+0022 mov word ptr [bp - 0xe], ax | 0028 mov word ptr [bp - 0xc], ax | memory_operand,stack_local_layout
+ | 002b mov word ptr [bp - 0xa], es | instruction_shape
+ | 002e mov ax, word ptr es:[bx] | instruction_shape
+0025 inc ax | 0031 inc ax | 
+0026 shl ax, 2 | 0032 cdq  | instruction_shape
+0029 sub dx, dx | 0033 shl ax, 1 | instruction_shape
+ | 0035 rcl dx, 1 | instruction_shape
+ | 0037 shl ax, 1 | instruction_shape
+ | 0039 rcl dx, 1 | instruction_shape
+002b mov cx, es | 003b mov cx, es | 
+002d add ax, bx | 003d add ax, bx | 
+002f adc dx, cx | 003f adc dx, cx | 
+0031 mov si, ax |  | instruction_shape
+0033 mov word ptr [bp - 0x1c], dx |  | instruction_shape
+0036 lea ax, [bx + 4] |  | instruction_shape
+0039 mov word ptr [bp - 6], es |  | instruction_shape
+003c add bx, 2 |  | instruction_shape
+003f mov word ptr [bp - 0x22], bx |  | instruction_shape
+0042 mov word ptr [bp - 0x20], es | 0041 mov word ptr [bp - 2], dx | memory_operand,stack_local_layout
+0045 cmp word ptr es:[bx], 0 | 0044 cmp word ptr es:[bx + 2], 0 | memory_operand
+0049 jne 0x4e | 0049 jne 0x4e | 
+004b jmp 0x12c | 004b jmp 0x12b | branch_target
+ | 004e or di, di | instruction_shape
+ | 0050 jne 0x55 | instruction_shape
+ | 0052 jmp 0xdc | instruction_shape
+ | 0055 mov word ptr [bp - 0x16], di | instruction_shape
+ | 0058 mov word ptr [bp - 0x1e], si | instruction_shape
+004e mov di, ax | 005b mov si, ax | register_allocation
+0050 jmp 0xc8 | 005d mov di, word ptr [bp - 0xc] | instruction_shape
+0052 nop  |  | instruction_shape
+0053 nop  |  | instruction_shape
+0054 mov es, word ptr [bp - 6] | 0060 mov es, word ptr [bp - 0xa] | memory_operand,stack_local_layout
+0057 cmp word ptr es:[di], -1 | 0063 cmp word ptr es:[di], -1 | 
+005b je 0xc2 | 0067 je 0xce | branch_target
+005d mov es, word ptr [bp - 0x1c] | 0069 mov es, word ptr [bp - 2] | memory_operand,stack_local_layout
+0060 push word ptr es:[si] | 006c push word ptr es:[si] | 
+0063 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 006f lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 22052}] | immediate_or_binding,immediate_or_binding
+0068 add sp, 2 | 0074 add sp, 2 | 
+006b sub dx, dx | 0077 sub dx, dx | 
+006d mov word ptr [bp - 4], ax | 0079 mov word ptr [bp - 8], ax | memory_operand,stack_local_layout
+0070 mov word ptr [bp - 2], dx | 007c mov word ptr [bp - 6], dx | memory_operand,stack_local_layout
+0073 cmp dx, word ptr [bp - 0xa] | 007f cmp dx, word ptr [bp - 0xe] | memory_operand,stack_local_layout
+0076 jb 0xc2 | 0082 jb 0xce | branch_target
+0078 ja 0x7f | 0084 ja 0x8b | branch_target
+007a cmp ax, word ptr [bp - 0xc] | 0086 cmp ax, word ptr [bp - 0x10] | memory_operand,stack_local_layout
+007d jbe 0xc2 | 0089 jbe 0xce | branch_target
+007f mov es, word ptr [bp - 0x1c] | 008b mov es, word ptr [bp - 2] | memory_operand,stack_local_layout
+0082 push word ptr es:[si] | 008e push word ptr es:[si] | 
+0085 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 0091 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 22112}] | immediate_or_binding,immediate_or_binding
+008a add sp, 2 | 0096 add sp, 2 | 
+008d cmp ax, 3 | 0099 cmp ax, 3 | 
+0090 jne 0xc2 | 009c jne 0xce | branch_target
+0092 mov es, word ptr [bp - 0x1c] | 009e mov es, word ptr [bp - 2] | memory_operand,stack_local_layout
+0095 push word ptr es:[si] | 00a1 push word ptr es:[si] | 
+0098 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 00a4 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21650}] | immediate_or_binding,immediate_or_binding
+009d add sp, 2 | 00a9 add sp, 2 | 
+00a0 or ax, ax | 00ac or ax, ax | 
+00a2 jne 0xc2 | 00ae jne 0xce | branch_target
+00a4 mov ax, word ptr [bp - 4] | 00b0 mov ax, word ptr [bp - 8] | memory_operand,stack_local_layout
+00a7 mov dx, word ptr [bp - 2] | 00b3 mov dx, word ptr [bp - 6] | memory_operand,stack_local_layout
+00aa mov word ptr [bp - 0xc], ax | 00b6 mov word ptr [bp - 0x10], ax | memory_operand,stack_local_layout
+00ad mov word ptr [bp - 0xa], dx | 00b9 mov word ptr [bp - 0xe], dx | memory_operand,stack_local_layout
+00b0 mov ax, word ptr [bp - 0x1c] | 00bc mov ax, word ptr [bp - 2] | memory_operand,stack_local_layout
+00b3 mov word ptr [bp - 0x1a], si | 00bf mov word ptr [bp - 0x1a], si | 
+00b6 mov word ptr [bp - 0x18], ax | 00c2 mov word ptr [bp - 0x18], ax | 
+00b9 mov ax, word ptr [bp - 6] | 00c5 mov ax, word ptr [bp - 0xa] | memory_operand,stack_local_layout
+00bc mov word ptr [bp - 0x12], di | 00c8 mov word ptr [bp - 0x14], di | memory_operand,stack_local_layout
+00bf mov word ptr [bp - 0x10], ax | 00cb mov word ptr [bp - 0x12], ax | memory_operand,stack_local_layout
+00c2 add si, 2 | 00ce add di, 4 | immediate_or_binding
+00c5 add di, 4 | 00d1 add si, 2 | immediate_or_binding
+ | 00d4 dec word ptr [bp - 0x16] | instruction_shape
+ | 00d7 jne 0x60 | instruction_shape
+00c8 mov ax, word ptr [bp - 0xe] | 00d9 mov si, word ptr [bp - 0x1e] | memory_operand,stack_local_layout
+00cb dec word ptr [bp - 0xe] |  | instruction_shape
+00ce or ax, ax |  | instruction_shape
+00d0 jne 0x54 |  | instruction_shape
+00d2 mov ax, word ptr [bp - 0xa] | 00dc mov ax, word ptr [bp - 0xe] | memory_operand,stack_local_layout
+00d5 or ax, word ptr [bp - 0xc] | 00df or ax, word ptr [bp - 0x10] | memory_operand,stack_local_layout
+00d8 jne 0xe6 | 00e2 jne 0xf0 | branch_target
+00da push ds | 00e4 push ds | 
+00db push 0xb625 | 00e5 push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+00de lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 00e8 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 6334}] | immediate_or_binding,immediate_or_binding
+00e3 add sp, 4 | 00ed add sp, 4 | 
+ | 00f0 les bx, ptr [bp - 0x1a] | instruction_shape
+ | 00f3 push word ptr es:[bx] | instruction_shape
+... see structured diagnostic for remaining instructions
