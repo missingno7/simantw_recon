@@ -1,3 +1,5 @@
+/* Reviewed GR font pair: target DGROUP CC54 word is shared; CC56/CC57
+ * are distinct BSS bytes. TEXTMETRIC stack offsets establish the two sums. */
 /* Candidate unit gr:1560 (GSetSmallFont, GSetBigFont) composed from the exact candidates; internal evidence id. */
 typedef struct {
     short tmHeight, tmAscent, tmDescent, tmInternalLeading, tmExternalLeading;
@@ -12,8 +14,9 @@ extern int near rootWnd;
 extern int near clipDC;
 extern unsigned char near fontWidth;
 extern unsigned char near fontHeight;
-static int near savedFont = 0;
-static unsigned char near avgWidthByte = 0;
+static int near savedFont;
+static unsigned char near smallAvgWidthByte;
+static unsigned char near bigAvgWidthByte;
 static unsigned char __based(__segname("PACK")) smallFontHeightByte;
 extern int far pascal AddFontResource(char far *filename);
 extern long far pascal SendMessage(int hwnd, unsigned int msg, unsigned int wParam, long lParam);
@@ -45,8 +48,8 @@ void far GSetSmallFont(void)
         oldFont = SelectObject(hdc, smallFontH);
         savedFont = oldFont;
         GetTextMetrics(hdc, &tm);
-        avgWidthByte = (unsigned char)(tm.tmAveCharWidth + tm.tmMaxCharWidth);
-        smallFontHeightByte = (unsigned char)((tm.tmHeight + tm.tmAscent) / 2);
+        smallAvgWidthByte = (unsigned char)(tm.tmExternalLeading + tm.tmHeight);
+        smallFontHeightByte = (unsigned char)((tm.tmAveCharWidth + tm.tmMaxCharWidth) / 2);
         SetMapperFlags(hdc, 0L);
         SelectObject(hdc, savedFont);
         ReleaseDC(rootWnd, hdc);
@@ -60,7 +63,7 @@ void far GSetSmallFont(void)
             SelectObject(clipDC, smallFontH);
     }
     fontWidth = smallFontHeightByte;
-    fontHeight = avgWidthByte;
+    fontHeight = smallAvgWidthByte;
 }
 
 void far GSetBigFont(void)
@@ -77,8 +80,8 @@ void far GSetBigFont(void)
         oldFont = SelectObject(hdc, bigFontH);
         savedFont = oldFont;
         GetTextMetrics(hdc, &tm);
-        avgWidthByte = (unsigned char)(tm.tmAveCharWidth + tm.tmMaxCharWidth);
-        bigFontHeightByte = (unsigned char)((tm.tmHeight + tm.tmAscent) / 2);
+        bigAvgWidthByte = (unsigned char)(tm.tmExternalLeading + tm.tmHeight);
+        bigFontHeightByte = (unsigned char)((tm.tmAveCharWidth + tm.tmMaxCharWidth) / 2);
         SetMapperFlags(hdc, 0L);
         SelectObject(hdc, savedFont);
         ReleaseDC(rootWnd, hdc);
@@ -92,5 +95,5 @@ void far GSetBigFont(void)
             SelectObject(clipDC, bigFontH);
     }
     fontWidth = bigFontHeightByte;
-    fontHeight = avgWidthByte;
+    fontHeight = bigAvgWidthByte;
 }

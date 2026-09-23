@@ -23538,8 +23538,8 @@ Source: src/recovered/WindowsMemCpy.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/N
 ```
 
 ## _GSetSmallFont — GR_MODULE:1560
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 259 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 259 bytes.
+Source: src/recovered/wf_tu_gr_1560_GSetSmallFont_2_reviewed-d4616416c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 1560  c8200000                 enter 0x20, 0
@@ -23635,8 +23635,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GSetBigFont — GR_MODULE:1664
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 259 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 259 bytes.
+Source: src/recovered/wf_tu_gr_1560_GSetSmallFont_2_reviewed-d4616416c8.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTGR_MODULE'].
 
 ```asm
 1664  c8200000                 enter 0x20, 0

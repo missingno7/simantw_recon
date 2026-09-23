@@ -28,3 +28,10 @@ justify changing the assigned compiler profile. The next experiment must
 explain a source-level shared identity that retains the target's direct
 `mov ax,offset` choice in all three bodies. Do not use numeric-address casts
 or allow overlapping private contributions to bypass the binding obligation.
+
+Later targeted C7 probes in `alignment-probes.json` found that
+`#pragma pack(1)` and `/Zp1` leave two separate statics at 33 DATA bytes and
+926 code bytes. Spelling the single object's second address as
+`&menuText[17]`, or spelling the struct fields as `&field[0]`, still emits
+942 code bytes and 32 DATA bytes. The global alignment and conditional pointer
+code questions therefore remain separate.
