@@ -37,3 +37,11 @@ This audit is scoped to the current cards and current candidate files; it
 does not infer declarations for unresolved or indirect calls. The established
 linker behavior and independent proof remain in
 `evidence/experiments/toolchain/link-probe/`.
+
+The later isolated `_CustomerIDDialog` replay changed only `DecodeString`
+from near to far. It repaired the call-site relocation form but left the
+complete 227-byte member nonexact (73/76 opcodes, 9/22 fixups, different
+frame and private layout). See
+[the scoped result](../customerid-decodestring-far-distance/run/results.json).
+`_EditMessage` had already tested far `DrawRibbonMessage` in attempt05,
+so the family pass did not repeat it.
