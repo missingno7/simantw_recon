@@ -24,9 +24,11 @@ runtime members after regeneration.
 
 The `_OpenMiniMapWin` and `_MapAreaEvent` packets had called `0x11620` and
 `0x111e0` unnamed static helpers. Their normalized destinations are the
-MAPSYM publics `_CenterEdit` and `_UpdateEdit`. This corrects a false helper
-blocker, but leaves private selector/data layout and historical TU boundaries
-unproven. Reissue a production job only through the existing reviewed
+MAPSYM publics `_CenterEdit` and `_UpdateEdit`. `_MapAreaEvent` also reaches
+`_OpenEditWindow` through `0x10e2c`, and `_ProcMapRibbonEvent` reaches
+`_ForceUpdateEdit` through `0x10e50`. These correct false helper blockers,
+but leave source-shape, private selector/data layout and historical TU
+boundaries unproven. Reissue a production job only through the existing reviewed
 retest/reissue path with the new named-call evidence; this note grants no
 recovery credit.
 
