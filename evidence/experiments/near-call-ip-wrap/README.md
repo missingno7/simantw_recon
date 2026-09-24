@@ -33,3 +33,12 @@ retest/reissue path with the new named-call evidence; this note grants no
 recovery credit.
 
 The focused ANTEDIT ownership review is preserved in [open-minimap-audit.md](open-minimap-audit.md).
+
+### Scope check: direct jumps
+
+A read-only replay of every decoded instruction row in the regenerated
+`evidence/disassembly/cards.jsonl` decoded 14,123 direct near jumps with
+Capstone 5 in 16-bit mode. None reported an immediate destination outside
+`[0, 0xffff]`. This negative result is scoped to the current card inventory
+and does not establish a general MSC7 rule; it gives no reason to change the
+separate jump-target handling in `extent()` for this fixture.
