@@ -1,7 +1,7 @@
 {
   "id": "DoKeyDown-785609ef21",
   "symbol": "_DoKeyDown",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-24T00:56:31.968409+00:00",
   "flags": [
     "/AL",
@@ -324,6 +324,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "fade48e7d19a2689456a0290eb0a3b86bd9d1e44a69b15d15c60d3d375ca8087",
+      "report": "evidence/recovery/workflow/jobs/DoKeyDown-785609ef21/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "SEMANTICS_UNKNOWN"
+  ],
+  "reason": "Attempts 1 and 2 are both strict NO_COMPLETE_MATCH. The second, evidence-backed test reused the saved INDEX property value at win_FindObject and win_SetGroupSelectedObj because the target saves and pushes that same local at both calls. It remains 989 bytes versus the 1,385-byte target with 137/514 opcodes, 1/58 fixups, a 0x40 versus 0x1c frame, and conflicting private _DATA/_BSS placements. The packet and related sources do not establish the Insert/Space group-selection state transitions, the complete DoEvent record layout, or mouse_state encoding; the remaining target extent also contains paths absent from the readable candidate. No next source-shape experiment is supported without resolving those semantics and private state.",
+  "next_experiment": "Derive the Insert/Space object-selection transitions, DoEvent record fields and mouse_state encoding from the complete DoKeyDown target paths and directly relevant callee/caller evidence; identify private _DATA/_BSS ownership, then draft a complete readable handler before strict retry."
 }

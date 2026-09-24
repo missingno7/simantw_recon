@@ -1,7 +1,7 @@
 {
   "id": "FileSelect-627a6e5433",
   "symbol": "_FileSelect",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-24T00:16:40.818801+00:00",
   "flags": [
     "/AL",
@@ -326,6 +326,25 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "293bdaa88b79771f2edbf3e63629c5d9737a379e60e7da31837e607e92341e2c",
+      "report": "evidence/recovery/workflow/jobs/FileSelect-627a6e5433/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "TRANSLATION_UNIT_CONTEXT"
+  ],
+  "reason": "Two strict candidates are preserved. Attempt01 used Dx8 offsets for dialog strings; an independent byte read from original segment 10 at 0x16fd-0x17ce proves the strings are near DGROUP text. Attempt02 replaced those references with exact literals, improving opcode alignment only from 71/367 to 73/367, but the matcher now reports conflicting/unplaced _DATA and still has broad control-flow/frame/fixup differences; the large legacy-dialog fallback and its path normalization also remain unresolved.",
+  "next_experiment": "Trace ownership and source-order of the DGROUP literal block 0x16fd-0x17ce across the antedit:9248 members, then use a full unit candidate to place those strings and recover the OPENDLG/SAVEASDLG fallback before retesting FileSelect."
 }

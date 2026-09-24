@@ -2739,17 +2739,17 @@
     },
     {
       "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
+      "source": "src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
       "source": "src/recovered/wf_DoFastMonoBitmap-4c72c58f17.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
       "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
       "source": "src/recovered/wf_hanim_MakeAnimSet-ff5bff9d29.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);",
-      "source": "src/recovered/wf_tu_antedit_C19C_InitMapFunctions_4_scaffold-619861a01a.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2764,7 +2764,12 @@
     },
     {
       "declaration": "extern void far mem_Free(int handle);",
-      "source": "src/recovered/wf_DoFastMonoBitmap-4c72c58f17.c",
+      "source": "src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c",
+      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
+    },
+    {
+      "declaration": "extern void far *mem_Lock(unsigned int handle);",
+      "source": "src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2778,8 +2783,8 @@
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
-      "declaration": "extern void far *mem_Lock(unsigned int handle);",
-      "source": "src/recovered/wf_hanim_RemoveAnimSet-91a33c0781.c",
+      "declaration": "extern int far mem_Unlock(unsigned int handle);",
+      "source": "src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     },
     {
@@ -2790,11 +2795,6 @@
     {
       "declaration": "extern int far mem_Unlock(unsigned int handle);",
       "source": "src/recovered/wf_hanim_MakeAnimSet-ff5bff9d29.c",
-      "scope": "Declaration used in a verified source; cross-TU type identity not proven"
-    },
-    {
-      "declaration": "extern int far mem_Unlock(unsigned int handle);",
-      "source": "src/recovered/wf_hanim_RemoveAnimSet-91a33c0781.c",
       "scope": "Declaration used in a verified source; cross-TU type identity not proven"
     }
   ],
@@ -2836,12 +2836,70 @@
       "symbol": "_GPutPicS"
     }
   ],
+  "linker_lowered_far_calls": [
+    {
+      "callee_names": [
+        "_ConvertBitmap"
+      ],
+      "segment": 2,
+      "target_offset": 9326,
+      "caller_offsets": [
+        216
+      ]
+    },
+    {
+      "callee_names": [
+        "_mem_Alloc"
+      ],
+      "segment": 2,
+      "target_offset": 21722,
+      "caller_offsets": [
+        90,
+        110
+      ]
+    },
+    {
+      "callee_names": [
+        "_mem_Free"
+      ],
+      "segment": 2,
+      "target_offset": 21888,
+      "caller_offsets": [
+        629,
+        655,
+        668
+      ]
+    },
+    {
+      "callee_names": [
+        "_mem_Lock"
+      ],
+      "segment": 2,
+      "target_offset": 21902,
+      "caller_offsets": [
+        146,
+        161
+      ]
+    },
+    {
+      "callee_names": [
+        "_mem_Unlock"
+      ],
+      "segment": 2,
+      "target_offset": 21916,
+      "caller_offsets": [
+        618,
+        638
+      ]
+    }
+  ],
   "prior_draft": null,
   "interpretation_notes": [
     "?? bytes belong to NE loader relocation chains, never literal C addresses.",
     "Global DS annotations assume normal DGROUP; far/huge and aggregate types require evidence.",
     "Next MAPSYM public is an upper bound, not the function end.",
-    "Declared types in other verified sources are useful hypotheses, not proof of a shared historical header."
+    "Declared types in other verified sources are useful hypotheses, not proof of a shared historical header.",
+    "Named NOP; PUSH CS; CALL near sites match LINK same-segment far-call translation. Use linker_lowered_far_calls for site offsets; do not infer a near C prototype from the final CALL opcode."
   ],
   "state": "MATCH_READY",
   "structural_extent": {
@@ -3421,7 +3479,7 @@
       "_DoBitmap"
     ],
     "segment": "GR_MODULE",
-    "range": "gr:1902-528C"
+    "range": "gr:0000-3FB4"
   },
   "parked_review": null,
   "similar_matched_functions": [

@@ -1,7 +1,7 @@
 {
   "id": "DoBitmap-475422217a",
   "symbol": "_DoBitmap",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-23T22:49:25.470493+00:00",
   "flags": [
     "/AL",
@@ -352,6 +352,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "c10f5018677d04eaf7a4524a5507df99e55406373907b5c16d8183f1a493f493",
+      "report": "evidence/recovery/workflow/jobs/DoBitmap-475422217a/attempt04/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 5,
+      "submission_digest": "bb6c7d7eb628e7293767e12927b210e04fd03e47685f7f964afdea0841947a55",
+      "report": "evidence/recovery/workflow/jobs/DoBitmap-475422217a/attempt05/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "LOCAL_FRAME_LAYOUT"
+  ],
+  "reason": "Attempts 1-5 remain non-exact after the independently supported DIB width/height local-materialization hypothesis. Attempt05 is 652/678 bytes with only 27/652 literal bytes equal and first divergence at offset 1; it worsens stack-local diffs to 36 and leaves extensive call/fixup, _DATA placement, and private-byte mismatches. The target packet and admitted BitmapImageSize/DoFastMonoBitmap sources support the size formula, BITMAPINFO shape, DIB fields, palette state, and GDI call; no remaining candidate source form is supported by those sources, so local lifetime/frame shape remains unresolved.",
+  "next_experiment": "Obtain original listing/source or a new direct source artifact that identifies _DoBitmap's local declaration/lifetime and statement ordering. Map target entry through its first helper call and subsequent long-width/height slot reuse to that source evidence, then revise one source-shape axis and run a fresh strict test; do not vary palette branches or compiler flags without new evidence."
 }
