@@ -1,7 +1,7 @@
 {
   "id": "DrawCastePopUp-6de54bcbe1",
   "symbol": "_DrawCastePopUp",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-23T23:21:48.466163+00:00",
   "flags": [
     "/AL",
@@ -324,6 +324,39 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "8d3be8b063c9aa810f803868c1c491182cf7bddfc7d1cd05395698f6316bddee",
+      "report": "evidence/recovery/workflow/jobs/DrawCastePopUp-6de54bcbe1/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 3,
+      "submission_digest": "bc5e098c145d307be3ddb90b446bf1209dbcd8f85896bd0f6e337d7efc807479",
+      "report": "evidence/recovery/workflow/jobs/DrawCastePopUp-6de54bcbe1/attempt03/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "DATA_LAYOUT"
+  ],
+  "reason": "Three bounded strict candidates remain NO_COMPLETE_MATCH. Attempt03 improves the body diagnostic to 206/293 opcodes (score 0.526) and matches the save-pause order and known win_hwnd[23] handle, but the target still branches on unnamed DGROUP words at 0xCF24/0xCF22 and uses the unnamed far pointer at 0xCEF6/0xCEF8 with GetSystemMetrics(7) to position window 0x1700; the current draft cannot justify that branch's source expression. Whole-member proof also reports conflicting private _DATA placement, including the two format-string operands at DS:0x095F and DS:0x0962. The target body remains substantially different (814 bytes vs 650; 13 branch-target and 37 local-layout differences).",
+  "next_experiment": "Resolve the two shared DGROUP words at 0xCF22/0xCF24 and the far-pointer object at 0xCEF6/0xCEF8 from source/unit evidence, then implement the observed GetClientRect/win_GetObjRect/win_LockWin/GetSystemMetrics(7)/win_Open placement branch. In the same source-context reconstruction, establish the exact separate format literals at DS:0x095F and DS:0x0962 and their _DATA placement before another strict test."
 }

@@ -652,15 +652,15 @@ Source: unrecovered. Flags: unresolved.
 068C  6008                     dw offset 0x860
 068E  90                       nop 
 068F  0e                       push cs
-0690  e8e7b5                   call 0xffffbc7a
+0690  e8e7b5                   call 0xbc7a ; _OpenModeWindow
 0693  e90c02                   jmp 0x8a2
 0696  90                       nop 
 0697  0e                       push cs
-0698  e851b5                   call 0xffffbbec
+0698  e851b5                   call 0xbbec ; _OpenCasteWindow
 069B  e90402                   jmp 0x8a2
 069E  90                       nop 
 069F  0e                       push cs
-06A0  e8c783                   call 0xffff8a6a
+06A0  e8c783                   call 0x8a6a ; _OpenHistoryWindow
 06A3  e9fc01                   jmp 0x8a2
 06A6  9ada60ffff               lcall 0xffff, 0x60da ; _OpenInfoWindow
 06AB  e9f401                   jmp 0x8a2
@@ -723,7 +723,7 @@ Source: unrecovered. Flags: unresolved.
 0752  684b01                   push 0x14b
 0755  90                       nop 
 0756  0e                       push cs
-0757  e8668b                   call 0xffff92c0
+0757  e8668b                   call 0x92c0 ; _EditMessage
 075A  83c40a                   add sp, 0xa
 075D  5e                       pop si
 075E  5f                       pop di
@@ -771,7 +771,7 @@ Source: unrecovered. Flags: unresolved.
 07BB  90                       nop 
 07BC  90                       nop 
 07BD  0e                       push cs
-07BE  e8fba8                   call 0xffffb0bc
+07BE  e8fba8                   call 0xb0bc ; _MysteryButton
 07C1  5e                       pop si
 07C2  5f                       pop di
 07C3  c9                       leave 
@@ -837,7 +837,7 @@ Source: unrecovered. Flags: unresolved.
 086D  7405                     je 0x874
 086F  90                       nop 
 0870  0e                       push cs
-0871  e8b68e                   call 0xffff972a
+0871  e8b68e                   call 0x972a ; _YardToMap
 0874  6a00                     push 0
 0876  9a56c28608               lcall 0x886, 0xc256 ; _win_IsWinOpen
 087B  83c402                   add sp, 2
@@ -852,7 +852,7 @@ Source: unrecovered. Flags: unresolved.
 0898  9affff0000               lcall 0, 0xffff
 089D  90                       nop 
 089E  0e                       push cs
-089F  e8c29e                   call 0xffffa764
+089F  e8c29e                   call 0xa764 ; _GotoMyAnt
 08A2  5e                       pop si
 08A3  5f                       pop di
 08A4  c9                       leave 
@@ -931,7 +931,7 @@ Source: unrecovered. Flags: unresolved.
 0962  68a201                   push 0x1a2
 0965  90                       nop 
 0966  0e                       push cs
-0967  e85689                   call 0xffff92c0
+0967  e85689                   call 0x92c0 ; _EditMessage
 096A  83c40a                   add sp, 0xa
 096D  5e                       pop si
 096E  5f                       pop di
@@ -987,13 +987,13 @@ Source: unrecovered. Flags: unresolved.
 0A01  7519                     jne 0xa1c
 0A03  90                       nop 
 0A04  0e                       push cs
-0A05  e8108f                   call 0xffff9918
+0A05  e8108f                   call 0x9918 ; _MapToYard
 0A08  8e067abe                 mov es, word ptr [0xbe7a]
 0A0C  8b5efa                   mov bx, word ptr [bp - 6]
 0A0F  26ffb7a88a               push word ptr es:[bx - 0x7558]
 0A14  90                       nop 
 0A15  0e                       push cs
-0A16  e87b95                   call 0xffff9f94
+0A16  e87b95                   call 0x9f94 ; _SetYardMode
 0A19  eb2c                     jmp 0xa47
 0A1B  90                       nop 
 0A1C  837ef800                 cmp word ptr [bp - 8], 0
@@ -1004,13 +1004,13 @@ Source: unrecovered. Flags: unresolved.
 0A2F  7405                     je 0xa36
 0A31  90                       nop 
 0A32  0e                       push cs
-0A33  e8f48c                   call 0xffff972a
+0A33  e8f48c                   call 0x972a ; _YardToMap
 0A36  8e067abe                 mov es, word ptr [0xbe7a]
 0A3A  8b5efa                   mov bx, word ptr [bp - 6]
 0A3D  26ffb7a68a               push word ptr es:[bx - 0x755a]
 0A42  90                       nop 
 0A43  0e                       push cs
-0A44  e83b94                   call 0xffff9e82
+0A44  e83b94                   call 0x9e82 ; _SetMapModeAnt
 0A47  83c402                   add sp, 2
 0A4A  a17acd                   mov ax, word ptr [0xcd7a] ; _editHeight
 0A4D  99                       cdq 
@@ -1029,7 +1029,7 @@ Source: unrecovered. Flags: unresolved.
 0A6D  26ffb7a08a               push word ptr es:[bx - 0x7560]
 0A72  90                       nop 
 0A73  0e                       push cs
-0A74  e8b39a                   call 0xffffa52a
+0A74  e8b39a                   call 0xa52a ; _GotoMapPoint
 0A77  83c406                   add sp, 6
 0A7A  6a00                     push 0
 0A7C  9a56c28c0a               lcall 0xa8c, 0xc256 ; _win_IsWinOpen
@@ -1352,14 +1352,14 @@ Source: unrecovered. Flags: unresolved.
 0DA2  50                       push ax
 0DA3  90                       nop 
 0DA4  0e                       push cs
-0DA5  e8d2b2                   call 0xffffc07a
+0DA5  e8d2b2                   call 0xc07a ; _ProcModeEvent
 0DA8  eb3a                     jmp 0xde4
 0DAA  8d4606                   lea ax, [bp + 6]
 0DAD  16                       push ss
 0DAE  50                       push ax
 0DAF  90                       nop 
 0DB0  0e                       push cs
-0DB1  e854af                   call 0xffffbd08
+0DB1  e854af                   call 0xbd08 ; _ProcCasteEvent
 0DB4  eb2e                     jmp 0xde4
 0DB6  8d4606                   lea ax, [bp + 6]
 0DB9  16                       push ss
@@ -2477,14 +2477,14 @@ Source: unrecovered. Flags: unresolved.
 18F2  ff3680ce                 push word ptr [0xce80] ; _MePlane
 18F6  90                       nop 
 18F7  0e                       push cs
-18F8  e8cf8c                   call 0xffffa5ca
+18F8  e8cf8c                   call 0xa5ca ; _SetMapPlane
 18FB  83c402                   add sp, 2
 18FE  833e80ce00               cmp word ptr [0xce80], 0 ; _MePlane
 1903  750f                     jne 0x1914
 1905  ff3682ce                 push word ptr [0xce82] ; _YardMode
 1909  90                       nop 
 190A  0e                       push cs
-190B  e88686                   call 0xffff9f94
+190B  e88686                   call 0x9f94 ; _SetYardMode
 190E  83c402                   add sp, 2
 1911  eb15                     jmp 0x1928
 1913  90                       nop 
@@ -2563,7 +2563,7 @@ Source: unrecovered. Flags: unresolved.
 19FC  6a00                     push 0
 19FE  90                       nop 
 19FF  0e                       push cs
-1A00  e8d9bc                   call 0xffffd6dc
+1A00  e8d9bc                   call 0xd6dc ; _NewGame
 1A03  83c402                   add sp, 2
 1A06  0bc0                     or ax, ax
 1A08  7d44                     jge 0x1a4e
@@ -2591,7 +2591,7 @@ Source: unrecovered. Flags: unresolved.
 1A40  9a39080000               lcall 0, 0x839
 1A45  90                       nop 
 1A46  0e                       push cs
-1A47  e8debb                   call 0xffffd628
+1A47  e8debb                   call 0xd628 ; _MenuQuit
 1A4A  0bc0                     or ax, ax
 1A4C  75bc                     jne 0x1a0a
 1A4E  ff3678cd                 push word ptr [0xcd78] ; _rootWnd
@@ -4466,7 +4466,7 @@ Source: unrecovered. Flags: unresolved.
 2DC5  9a742f0000               lcall 0, 0x2f74
 2DCA  90                       nop 
 2DCB  0e                       push cs
-2DCC  e859a8                   call 0xffffd628
+2DCC  e859a8                   call 0xd628 ; _MenuQuit
 2DCF  0bc0                     or ax, ax
 2DD1  740d                     je 0x2de0
 2DD3  90                       nop 
@@ -5253,7 +5253,7 @@ Source: unrecovered. Flags: unresolved.
 3698  9a3b370000               lcall 0, 0x373b
 369D  90                       nop 
 369E  0e                       push cs
-369F  e8869f                   call 0xffffd628
+369F  e8869f                   call 0xd628 ; _MenuQuit
 36A2  0bc0                     or ax, ax
 36A4  7403                     je 0x36a9
 36A6  e92af7                   jmp 0x2dd3
@@ -6354,7 +6354,7 @@ Source: unrecovered. Flags: unresolved.
 4283  7405                     je 0x428a
 4285  90                       nop 
 4286  0e                       push cs
-4287  e87a92                   call 0xffffd504
+4287  e87a92                   call 0xd504 ; _LoadMonoPats
 428A  803e7ecc0a               cmp byte ptr [0xcc7e], 0xa ; _displayType
 428F  7505                     jne 0x4296
 4291  90                       nop 
@@ -6362,14 +6362,14 @@ Source: unrecovered. Flags: unresolved.
 4293  e876fc                   call 0x3f0c ; _PatchColorArrays
 4296  90                       nop 
 4297  0e                       push cs
-4298  e84791                   call 0xffffd3e2
+4298  e84791                   call 0xd3e2 ; _ShowIntro
 429B  90                       nop 
 429C  0e                       push cs
 429D  e8b426                   call 0x6954 ; _CustomerIDDialog
 42A0  6a01                     push 1
 42A2  90                       nop 
 42A3  0e                       push cs
-42A4  e83594                   call 0xffffd6dc
+42A4  e83594                   call 0xd6dc ; _NewGame
 42A7  83c402                   add sp, 2
 42AA  0bc0                     or ax, ax
 42AC  7d1c                     jge 0x42ca
@@ -6378,7 +6378,7 @@ Source: unrecovered. Flags: unresolved.
 42B1  684a07                   push 0x74a
 42B4  90                       nop 
 42B5  0e                       push cs
-42B6  e86193                   call 0xffffd61a
+42B6  e86193                   call 0xd61a ; _Quit
 42B9  83c406                   add sp, 6
 42BC  90                       nop 
 42BD  0e                       push cs
@@ -7801,7 +7801,7 @@ Source: unrecovered. Flags: unresolved.
 50B3  6a00                     push 0
 50B5  90                       nop 
 50B6  0e                       push cs
-50B7  e82286                   call 0xffffd6dc
+50B7  e82286                   call 0xd6dc ; _NewGame
 50BA  83c402                   add sp, 2
 50BD  e99103                   jmp 0x5451
 50C0  8b46fe                   mov ax, word ptr [bp - 2]
@@ -14144,7 +14144,7 @@ Source: unrecovered. Flags: unresolved.
 9400  7405                     je 0x9407
 9402  90                       nop 
 9403  0e                       push cs
-9404  e81f77                   call 0x10b26
+9404  e81f77                   call 0xb26 ; _DrawRibbonMessage
 9407  680019                   push 0x1900
 940A  9a56c25192               lcall 0x9251, 0xc256 ; _win_IsWinOpen
 940F  83c402                   add sp, 2
@@ -16657,7 +16657,7 @@ ACE1  7506                     jne 0xace9
 ACE3  c70688ac0000             mov word ptr [0xac88], 0 ; _HealthR
 ACE9  90                       nop 
 ACEA  0e                       push cs
-ACEB  e8ba5d                   call 0x10aa8
+ACEB  e8ba5d                   call 0xaa8 ; _ClearBookmarks
 ACEE  8b46fe                   mov ax, word ptr [bp - 2]
 ACF1  3d2400                   cmp ax, 0x24
 ACF4  7e08                     jle 0xacfe
@@ -16770,7 +16770,7 @@ AE14  7e05                     jle 0xae1b
 AE16  c746f00f00               mov word ptr [bp - 0x10], 0xf
 AE1B  90                       nop 
 AE1C  0e                       push cs
-AE1D  e8e051                   call 0x10000
+AE1D  e8e051                   call 0x0 ; _StopSimulation
 AE20  9a0ac263ae               lcall 0xae63, 0xc20a ; _win_FlushEvents
 AE25  b87a73                   mov ax, 0x737a
 AE28  b9b4ae                   mov cx, 0xaeb4 ; _match_position
@@ -17004,7 +17004,7 @@ B0AC  e811e2                   call 0x92c0 ; _EditMessage
 B0AF  83c40a                   add sp, 0xa
 B0B2  90                       nop 
 B0B3  0e                       push cs
-B0B4  e87d4f                   call 0x10034
+B0B4  e87d4f                   call 0x34 ; _RestartSimulation
 B0B7  5e                       pop si
 B0B8  5f                       pop di
 B0B9  c9                       leave 
@@ -20112,7 +20112,7 @@ CF50  8946e4                   mov word ptr [bp - 0x1c], ax
 CF53  6a01                     push 1
 CF55  90                       nop 
 CF56  0e                       push cs
-CF57  e8da7e                   call 0x14e34
+CF57  e8da7e                   call 0x4e34 ; _SetPause
 CF5A  83c402                   add sp, 2
 CF5D  68001f                   push 0x1f00
 CF60  9a2ecadbcf               lcall 0xcfdb, 0xca2e ; _win_Open
@@ -20513,7 +20513,7 @@ D3D0  83c402                   add sp, 2
 D3D3  ff76e4                   push word ptr [bp - 0x1c]
 D3D6  90                       nop 
 D3D7  0e                       push cs
-D3D8  e8597a                   call 0x14e34
+D3D8  e8597a                   call 0x4e34 ; _SetPause
 D3DB  83c402                   add sp, 2
 D3DE  5e                       pop si
 D3DF  5f                       pop di
@@ -20869,7 +20869,7 @@ D6EF  26c70670830000           mov word ptr es:[0x8370], 0
 D6F6  6a01                     push 1
 D6F8  90                       nop 
 D6F9  0e                       push cs
-D6FA  e83777                   call 0x14e34
+D6FA  e83777                   call 0x4e34 ; _SetPause
 D6FD  83c402                   add sp, 2
 D700  ff7606                   push word ptr [bp + 6]
 D703  90                       nop 
@@ -20880,7 +20880,7 @@ D70B  8bf0                     mov si, ax
 D70D  57                       push di
 D70E  90                       nop 
 D70F  0e                       push cs
-D710  e82177                   call 0x14e34
+D710  e82177                   call 0x4e34 ; _SetPause
 D713  83c402                   add sp, 2
 D716  6a01                     push 1
 D718  6aff                     push -1
@@ -21102,7 +21102,7 @@ D968  26c7064e140100           mov word ptr es:[0x144e], 1
 D96F  9ae0117cd9               lcall 0xd97c, 0x11e0 ; _UpdateEdit
 D974  90                       nop 
 D975  0e                       push cs
-D976  e82f31                   call 0x10aa8
+D976  e82f31                   call 0xaa8 ; _ClearBookmarks
 D979  9ab0a4d4d8               lcall 0xd8d4, 0xa4b0 ; _ClearLastFileName
 D97E  8e0658c1                 mov es, word ptr [0xc158]
 D982  26c70670830000           mov word ptr es:[0x8370], 0
@@ -39698,7 +39698,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 0B81  6a00                     push 0
 0B83  90                       nop 
 0B84  0e                       push cs
-0B85  e8bc82                   call 0xffff8e44
+0B85  e8bc82                   call 0x8e44 ; _clip_SetWin
 0B88  83c402                   add sp, 2
 0B8B  8e4608                   mov es, word ptr [bp + 8]
 0B8E  268b440c                 mov ax, word ptr es:[si + 0xc]
@@ -39795,7 +39795,7 @@ Source: src/recovered/wf_tu_antedit_00F4_OverlayTileSet_18_scaffold-8260025fb8.c
 0C57  83c406                   add sp, 6
 0C5A  90                       nop 
 0C5B  0e                       push cs
-0C5C  e8e781                   call 0xffff8e46
+0C5C  e8e781                   call 0x8e46 ; _clip_Off
 0C5F  5e                       pop si
 0C60  c9                       leave 
 0C61  cb                       retf 
@@ -53381,7 +53381,7 @@ Source: src/recovered/wf_SpecialTutorialInit-e0cff25916.c. Flags: ['/AL', '/G2',
 9D43  68dd17                   push 0x17dd
 9D46  90                       nop 
 9D47  0e                       push cs
-9D48  e8bb7d                   call 0x11b06
+9D48  e8bb7d                   call 0x1b06 ; _SetEditWinTitle
 9D4B  83c404                   add sp, 4
 9D4E  9a705a4060               lcall 0x6040, 0x5a70 ; _InitSimVars
 9D53  9a2a155653               lcall 0x5356, 0x152a ; _SeedSRand
@@ -53402,7 +53402,7 @@ Source: src/recovered/wf_SpecialTutorialInit-e0cff25916.c. Flags: ['/AL', '/G2',
 9D74  56                       push si
 9D75  90                       nop 
 9D76  0e                       push cs
-9D77  e88c7d                   call 0x11b06
+9D77  e88c7d                   call 0x1b06 ; _SetEditWinTitle
 9D7A  83c404                   add sp, 4
 9D7D  8bc7                     mov ax, di
 9D7F  5e                       pop si
@@ -53453,7 +53453,7 @@ Source: unrecovered. Flags: unresolved.
 9DEE  6a00                     push 0
 9DF0  90                       nop 
 9DF1  0e                       push cs
-9DF2  e8ff62                   call 0x100f4
+9DF2  e8ff62                   call 0xf4 ; _OverlayTileSet
 9DF5  83c404                   add sp, 4
 9DF8  bee868                   mov si, 0x68e8
 9DFB  33c0                     xor ax, ax
@@ -53593,7 +53593,7 @@ Source: unrecovered. Flags: unresolved.
 9F7D  ff3688cd                 push word ptr [0xcd88] ; _MeLocX
 9F81  90                       nop 
 9F82  0e                       push cs
-9F83  e89a76                   call 0x11620
+9F83  e89a76                   call 0x1620 ; _CenterEdit
 9F86  83c404                   add sp, 4
 9F89  9aa494939f               lcall 0x9f93, 0x94a4 ; _UpdateLayQueenModeDisplay
 9F8E  6a01                     push 1
@@ -53718,7 +53718,7 @@ A096  1e                       push ds
 A097  68dd17                   push 0x17dd
 A09A  90                       nop 
 A09B  0e                       push cs
-A09C  e8677a                   call 0x11b06
+A09C  e8677a                   call 0x1b06 ; _SetEditWinTitle
 A09F  83c404                   add sp, 4
 A0A2  9a705a88a1               lcall 0xa188, 0x5a70 ; _InitSimVars
 A0A7  9a2a15ee9e               lcall 0x9eee, 0x152a ; _SeedSRand
@@ -53735,7 +53735,7 @@ A0C3  50                       push ax
 A0C4  56                       push si
 A0C5  90                       nop 
 A0C6  0e                       push cs
-A0C7  e83c7a                   call 0x11b06
+A0C7  e83c7a                   call 0x1b06 ; _SetEditWinTitle
 A0CA  83c404                   add sp, 4
 A0CD  0bff                     or di, di
 A0CF  7427                     je 0xa0f8
@@ -53749,7 +53749,7 @@ A0E5  ff367ece                 push word ptr [0xce7e] ; _MeLocY
 A0E9  ff3688cd                 push word ptr [0xcd88] ; _MeLocX
 A0ED  90                       nop 
 A0EE  0e                       push cs
-A0EF  e82e75                   call 0x11620
+A0EF  e82e75                   call 0x1620 ; _CenterEdit
 A0F2  83c404                   add sp, 4
 A0F5  e91f01                   jmp 0xa217
 A0F8  8d4694                   lea ax, [bp - 0x6c]
@@ -57224,7 +57224,7 @@ C568  b8ffff                   mov ax, 0xffff
 C56B  a358ac                   mov word ptr [0xac58], ax ; _ELayerMode
 C56E  90                       nop 
 C56F  0e                       push cs
-C570  e8dd48                   call 0x10e50
+C570  e8dd48                   call 0xe50 ; _ForceUpdateEdit
 C573  5e                       pop si
 C574  c9                       leave 
 C575  cb                       retf 
@@ -58720,7 +58720,7 @@ DCDD  6a00                     push 0
 DCDF  6a00                     push 0
 DCE1  90                       nop 
 DCE2  0e                       push cs
-DCE3  e8203e                   call 0x11b06
+DCE3  e8203e                   call 0x1b06 ; _SetEditWinTitle
 DCE6  83c404                   add sp, 4
 DCE9  6a7e                     push 0x7e
 DCEB  6a00                     push 0
@@ -58799,7 +58799,7 @@ DDA7  6a00                     push 0
 DDA9  6a00                     push 0
 DDAB  90                       nop 
 DDAC  0e                       push cs
-DDAD  e8563d                   call 0x11b06
+DDAD  e8563d                   call 0x1b06 ; _SetEditWinTitle
 DDB0  83c404                   add sp, 4
 DDB3  6a7e                     push 0x7e
 DDB5  68fb2a                   push 0x2afb
@@ -58957,7 +58957,7 @@ DF43  6a00                     push 0
 DF45  6a00                     push 0
 DF47  90                       nop 
 DF48  0e                       push cs
-DF49  e8ba3b                   call 0x11b06
+DF49  e8ba3b                   call 0x1b06 ; _SetEditWinTitle
 DF4C  83c404                   add sp, 4
 DF4F  6a7e                     push 0x7e
 DF51  6a00                     push 0
@@ -59030,7 +59030,7 @@ DFFD  6a00                     push 0
 DFFF  6a00                     push 0
 E001  90                       nop 
 E002  0e                       push cs
-E003  e8003b                   call 0x11b06
+E003  e8003b                   call 0x1b06 ; _SetEditWinTitle
 E006  83c404                   add sp, 4
 E009  6a7e                     push 0x7e
 E00B  68fb2a                   push 0x2afb
@@ -59255,7 +59255,7 @@ E271  ff76fc                   push word ptr [bp - 4]
 E274  57                       push di
 E275  90                       nop 
 E276  0e                       push cs
-E277  e8a633                   call 0x11620
+E277  e8a633                   call 0x1620 ; _CenterEdit
 E27A  83c404                   add sp, 4
 E27D  0bc0                     or ax, ax
 E27F  7411                     je 0xe292
@@ -59264,7 +59264,7 @@ E285  26833ef28500             cmp word ptr es:[0x85f2], 0
 E28B  7405                     je 0xe292
 E28D  90                       nop 
 E28E  0e                       push cs
-E28F  e84e2f                   call 0x111e0
+E28F  e84e2f                   call 0x11e0 ; _UpdateEdit
 E292  ff36a8bc                 push word ptr [0xbca8]
 E296  9afa3da6e2               lcall 0xe2a6, 0x3dfa ; _MSClipStart
 E29B  83c402                   add sp, 2
@@ -59296,7 +59296,7 @@ E2E1  eb0b                     jmp 0xe2ee
 E2E3  90                       nop 
 E2E4  90                       nop 
 E2E5  0e                       push cs
-E2E6  e8432b                   call 0x10e2c
+E2E6  e8432b                   call 0xe2c ; _OpenEditWindow
 E2E9  5e                       pop si
 E2EA  5f                       pop di
 E2EB  c9                       leave 
@@ -59307,7 +59307,7 @@ E2F2  263906f285               cmp word ptr es:[0x85f2], ax
 E2F7  7505                     jne 0xe2fe
 E2F9  90                       nop 
 E2FA  0e                       push cs
-E2FB  e8e22e                   call 0x111e0
+E2FB  e8e22e                   call 0x11e0 ; _UpdateEdit
 E2FE  5e                       pop si
 E2FF  5f                       pop di
 E300  c9                       leave 
@@ -59600,7 +59600,7 @@ E618  57                       push di
 E619  56                       push si
 E61A  90                       nop 
 E61B  0e                       push cs
-E61C  e80130                   call 0x11620
+E61C  e80130                   call 0x1620 ; _CenterEdit
 E61F  83c404                   add sp, 4
 E622  0bc0                     or ax, ax
 E624  7411                     je 0xe637
@@ -59609,7 +59609,7 @@ E62A  26833ef28500             cmp word ptr es:[0x85f2], 0
 E630  7405                     je 0xe637
 E632  90                       nop 
 E633  0e                       push cs
-E634  e8a92b                   call 0x111e0
+E634  e8a92b                   call 0x11e0 ; _UpdateEdit
 E637  ff36a8bc                 push word ptr [0xbca8]
 E63B  9afa3d4be6               lcall 0xe64b, 0x3dfa ; _MSClipStart
 E640  83c402                   add sp, 2
@@ -59681,7 +59681,7 @@ E702  7403                     je 0xe707
 E704  e92801                   jmp 0xe82f
 E707  90                       nop 
 E708  0e                       push cs
-E709  e8d42a                   call 0x111e0
+E709  e8d42a                   call 0x11e0 ; _UpdateEdit
 E70C  e92001                   jmp 0xe82f
 E70F  90                       nop 
 E710  ff36cebc                 push word ptr [0xbcce]
@@ -59721,11 +59721,11 @@ E774  ff76ec                   push word ptr [bp - 0x14]
 E777  ff76ea                   push word ptr [bp - 0x16]
 E77A  90                       nop 
 E77B  0e                       push cs
-E77C  e8a12e                   call 0x11620
+E77C  e8a12e                   call 0x1620 ; _CenterEdit
 E77F  83c404                   add sp, 4
 E782  90                       nop 
 E783  0e                       push cs
-E784  e8592a                   call 0x111e0
+E784  e8592a                   call 0x11e0 ; _UpdateEdit
 E787  ff36a8bc                 push word ptr [0xbca8]
 E78B  9afa3d9be7               lcall 0xe79b, 0x3dfa ; _MSClipStart
 E790  83c402                   add sp, 2
@@ -91065,7 +91065,7 @@ Source: unrecovered. Flags: unresolved.
 9011  ff7608                   push word ptr [bp + 8]
 9014  90                       nop 
 9015  0e                       push cs
-9016  e8ff7c                   call 0x10d18
+9016  e8ff7c                   call 0xd18 ; _PickupFoodA
 9019  83c404                   add sp, 4
 901C  0bf6                     or si, si
 901E  7403                     je 0x9023
@@ -91780,7 +91780,7 @@ Source: unrecovered. Flags: unresolved.
 967B  56                       push si
 967C  90                       nop 
 967D  0e                       push cs
-967E  e8017b                   call 0x11182
+967E  e8017b                   call 0x1182 ; _IsItDirt
 9681  83c402                   add sp, 2
 9684  0bc0                     or ax, ax
 9686  7408                     je 0x9690
@@ -91857,7 +91857,7 @@ Source: unrecovered. Flags: unresolved.
 970E  50                       push ax
 970F  90                       nop 
 9710  0e                       push cs
-9711  e80e7a                   call 0x11122
+9711  e80e7a                   call 0x1122 ; _GetDis
 9714  83c408                   add sp, 8
 9717  0bd2                     or dx, dx
 9719  75c1                     jne 0x96dc
@@ -92219,7 +92219,7 @@ Source: unrecovered. Flags: unresolved.
 9A0F  ff7608                   push word ptr [bp + 8]
 9A12  90                       nop 
 9A13  0e                       push cs
-9A14  e8977c                   call 0x116ae
+9A14  e8977c                   call 0x16ae ; _DigMyNewHole
 9A17  83c404                   add sp, 4
 9A1A  0bc0                     or ax, ax
 9A1C  7503                     jne 0x9a21
@@ -92304,7 +92304,7 @@ Source: unrecovered. Flags: unresolved.
 9AE8  ff3688cd                 push word ptr [0xcd88] ; _MeLocX
 9AEC  90                       nop 
 9AED  0e                       push cs
-9AEE  e8db75                   call 0x110cc
+9AEE  e8db75                   call 0x10cc ; _GetDir
 9AF1  83c408                   add sp, 8
 9AF4  8946fe                   mov word ptr [bp - 2], ax
 9AF7  0bc0                     or ax, ax
@@ -92597,17 +92597,17 @@ Source: unrecovered. Flags: unresolved.
 013E  9a162a4601               lcall 0x146, 0x2a16 ; _CompactListA
 0143  9ab4075501               lcall 0x155, 0x7b4 ; _FullCount
 0148  9a8291e702               lcall 0x2e7, 0x9182 ; _HistUpdate
-014D  e83092                   call 0xffff9380
+014D  e83092                   call 0x9380 ; _SmoothAlarm
 0150  eb1e                     jmp 0x170
 0152  9a7a2a6501               lcall 0x165, 0x2a7a ; _CompactListB
-0157  e88490                   call 0xffff91de
-015A  e84d91                   call 0xffff92aa
-015D  e8a691                   call 0xffff9306
+0157  e88490                   call 0x91de ; _FillHolesBN
+015A  e84d91                   call 0x92aa ; _ColonySmellBN
+015D  e8a691                   call 0x9306 ; _ColonySmellBT
 0160  eb0e                     jmp 0x170
 0162  9ade2a7801               lcall 0x178, 0x2ade ; _CompactListR
-0167  e8da90                   call 0xffff9244
-016A  e86b91                   call 0xffff92d8
-016D  e8d491                   call 0xffff9344
+0167  e8da90                   call 0x9244 ; _FillHolesRN
+016A  e86b91                   call 0x92d8 ; _ColonySmellRN
+016D  e8d491                   call 0x9344 ; _ColonySmellRT
 0170  9aa8147d01               lcall 0x17d, 0x14a8 ; _DoSimYard
 0175  9ac6078201               lcall 0x182, 0x7c6 ; _DoWater
 017A  9afa439001               lcall 0x190, 0x43fa ; _DoAntLions
@@ -92705,7 +92705,7 @@ Source: unrecovered. Flags: unresolved.
 02C5  7d05                     jge 0x2cc
 02C7  90                       nop 
 02C8  0e                       push cs
-02C9  e8b093                   call 0xffff967c
+02C9  e8b093                   call 0x967c ; _MakeRedInitiator
 02CC  90                       nop 
 02CD  0e                       push cs
 02CE  e82373                   call 0x75f4 ; _DoAntMoveY
@@ -92744,19 +92744,19 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flag
 0316  9a162a1e03               lcall 0x31e, 0x2a16 ; _CompactListA
 031B  9ab4072d03               lcall 0x32d, 0x7b4 ; _FullCount
 0320  9a82914b01               lcall 0x14b, 0x9182 ; _HistUpdate
-0325  e85890                   call 0xffff9380
+0325  e85890                   call 0x9380 ; _SmoothAlarm
 0328  c3                       ret 
 0329  90                       nop 
 032A  9a7a2a3d03               lcall 0x33d, 0x2a7a ; _CompactListB
-032F  e8ac8e                   call 0xffff91de
-0332  e8758f                   call 0xffff92aa
-0335  e8ce8f                   call 0xffff9306
+032F  e8ac8e                   call 0x91de ; _FillHolesBN
+0332  e8758f                   call 0x92aa ; _ColonySmellBN
+0335  e8ce8f                   call 0x9306 ; _ColonySmellBT
 0338  c3                       ret 
 0339  90                       nop 
 033A  9ade2a0b01               lcall 0x10b, 0x2ade ; _CompactListR
-033F  e8028f                   call 0xffff9244
-0342  e8938f                   call 0xffff92d8
-0345  e8fc8f                   call 0xffff9344
+033F  e8028f                   call 0x9244 ; _FillHolesRN
+0342  e8938f                   call 0x92d8 ; _ColonySmellRN
+0345  e8fc8f                   call 0x9344 ; _ColonySmellRT
 0348  c3                       ret 
 ```
 
@@ -92855,7 +92855,7 @@ Source: src/recovered/wf_tu_simant1_0000_DoSmells_15_scaffold-74956f98fa.c. Flag
 046C  7d05                     jge 0x473
 046E  90                       nop 
 046F  0e                       push cs
-0470  e80992                   call 0xffff967c
+0470  e80992                   call 0x967c ; _MakeRedInitiator
 0473  c3                       ret 
 ```
 
@@ -93336,7 +93336,7 @@ Source: unrecovered. Flags: unresolved.
 09FC  26ff366a9b               push word ptr es:[0x9b6a]
 0A01  90                       nop 
 0A02  0e                       push cs
-0A03  e8ce8c                   call 0xffff96d4
+0A03  e8ce8c                   call 0x96d4 ; _DoRedInitiator
 0A06  83c402                   add sp, 2
 0A09  8e0616c3                 mov es, word ptr [0xc316]
 0A0D  26833e6a9b00             cmp word ptr es:[0x9b6a], 0
@@ -93987,7 +93987,7 @@ Source: unrecovered. Flags: unresolved.
 1064  50                       push ax
 1065  ff76f0                   push word ptr [bp - 0x10]
 1068  ff76f2                   push word ptr [bp - 0xe]
-106B  e88884                   call 0xffff94f6
+106B  e88884                   call 0x94f6 ; _JamScentRN
 106E  eb15                     jmp 0x1085
 1070  8e0618c3                 mov es, word ptr [0xc318]
 1074  268a854c33               mov al, byte ptr es:[di + 0x334c]
@@ -93995,14 +93995,14 @@ Source: unrecovered. Flags: unresolved.
 107B  50                       push ax
 107C  ff76f0                   push word ptr [bp - 0x10]
 107F  ff76f2                   push word ptr [bp - 0xe]
-1082  e83184                   call 0xffff94b6
+1082  e83184                   call 0x94b6 ; _JamScentBN
 1085  83c406                   add sp, 6
 1088  8a46fe                   mov al, byte ptr [bp - 2]
 108B  258000                   and ax, 0x80
 108E  50                       push ax
 108F  ff76f0                   push word ptr [bp - 0x10]
 1092  ff76f2                   push word ptr [bp - 0xe]
-1095  e81e85                   call 0xffff95b6
+1095  e81e85                   call 0x95b6 ; _DecTSmell
 1098  83c406                   add sp, 6
 109B  9aee15d010               lcall 0x10d0, 0x15ee ; _SRand8
 10A0  0bc0                     or ax, ax
@@ -94143,7 +94143,7 @@ Source: unrecovered. Flags: unresolved.
 1222  6a28                     push 0x28
 1224  ff76f0                   push word ptr [bp - 0x10]
 1227  ff76f2                   push word ptr [bp - 0xe]
-122A  e85182                   call 0xffff947e
+122A  e85182                   call 0x947e ; _AlarmHere2
 122D  83c406                   add sp, 6
 1230  5e                       pop si
 1231  5f                       pop di
@@ -94365,7 +94365,7 @@ Source: unrecovered. Flags: unresolved.
 1470  6a28                     push 0x28
 1472  ff76f2                   push word ptr [bp - 0xe]
 1475  57                       push di
-1476  e80580                   call 0xffff947e
+1476  e80580                   call 0x947e ; _AlarmHere2
 1479  83c406                   add sp, 6
 147C  5e                       pop si
 147D  5f                       pop di

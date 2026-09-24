@@ -1,7 +1,7 @@
 {
   "id": "ConvertMaskBitmap-0b5587ae1e",
   "symbol": "_ConvertMaskBitmap",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-23T23:16:01.080074+00:00",
   "flags": [
     "/AL",
@@ -380,6 +380,53 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "e829c8ebbfac215b58d512e574a86e41c24371cc41af08813826c91bb620db99",
+      "report": "evidence/recovery/workflow/jobs/ConvertMaskBitmap-0b5587ae1e/attempt06/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 7,
+      "submission_digest": "a8dfba3e8ef14a1f658a5ada13cf6d38fbf8efbb7398286629f424c526de6194",
+      "report": "evidence/recovery/workflow/jobs/ConvertMaskBitmap-0b5587ae1e/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 8,
+      "submission_digest": "75bb7c5437efd0963d835232d870cd045c624df6f1b04fa215da531db84e3b4c",
+      "report": "evidence/recovery/workflow/jobs/ConvertMaskBitmap-0b5587ae1e/attempt08/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
-  ]
+  ],
+  "blockers": [
+    "EXPRESSION_SHAPE"
+  ],
+  "reason": "The target's row/plane semantics are supported by the packet: sourceStride is ceil(width/8); each bottom-up source image row comprises five consecutive S-byte 1bpp planes; plane0 copies to mask output with S-byte pitch, while planes1-4 feed the padded 4bpp color output (target color-plane load order 1,2,4,3). No candidate is an exact member. After all eight attempts, the best diagnostic is attempt07 (798 B, 226/325 opcode matches, score 0.583077; 9 total fixups matching the target count but at shifted offsets); attempt08 is 828 B, 193/335. Both remain NO_COMPLETE_MATCH with uncovered NE relocations and literal-byte differences. The first meaningful divergence is the sourceStride non-multiple-of-eight branch: the target sign-extends width/8, then performs a 32-bit +1 (CDQ; ADD AX,1; ADC DX,0); the tested draft does the +1 in 16-bit arithmetic before casting (INC AX; CDQ). Frame and per-access address code also remain different.",
+  "next_experiment": "On a fresh supervisor reissue, change only the non-divisible width branch to sourceStride = (long)(width / 8) + 1L;, preserving every other attempt07 expression. Test whether this moves the first divergence past target offset 0x3B and produces the target's 32-bit ADD/ADC sequence; then inspect the remaining pointer/frame mismatch before any further search."
 }

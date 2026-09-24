@@ -84,3 +84,33 @@ All eight in-flight worker owners have confirmed no strict operation remains. No
 At this stable point the ledger covers 29 production jobs, 24 with attempts, 120 compiler candidates across 120 attempts, and 103 unique effective production OMFs. Strict promotions and recovered bytes remain zero. Latest explicit blocker histogram: `SEMANTICS_UNKNOWN` 6, `EXPRESSION_SHAPE` 4, `PRIVATE_CONST_LAYOUT` 3, `DATA_LAYOUT` 1, translation-unit-context causes 4, and 6 unclassified `NEEDS_REVISION`. No BSS cause. Root's review found no basis to change queue routing/classification.
 
 Workers remain stopped until root finishes the commit; then resume disjoint explicit-symbol assignments. No commits or pushes were made by the foreman.
+
+
+## Post-commit resumption (2026-09-23 23:39 UTC)
+
+Root pushed the quiescent checkpoint as `bd54c9a5`. Eight workers resumed with explicit disjoint ownership: `_ConvertMaskBitmap`, `_ConvertBitmap2`, `_DrawCastePopUp`, `_NewGame`, `_OpenMiniMapWin`, `_DoWater`, `_PlaceQueenInYard`, and `_DoBitmap`. The Save/Load, Colony, menu-string, and body-exact research artifacts are durable. Escalated targets remain parked; `_DoBitmap` is assigned only to identify the exact `SS:BA2E` owner before any strict test. The checkout is active again, so generated queue/job files may change.
+
+
+## Near-exact results and quiescent stop (2026-09-24 00:25 UTC)
+
+Root requested a tool/card-generation change after finding out-of-range direct near-call targets that require 16-bit IP normalization. Fleet stopped refilling and all in-flight owners reported settled; no compiler operation remains active. Root has the quiescent signal and can safely update call normalization and regenerate cards. No proof tools, manifests, recipes, or protected counts were edited by the foreman.
+
+The three isolated tiny near-exact checks closed: `_NotMowed`'s wrong segment-9:0 binding resolves to `_GrassMap` at `seg9:0xA0B6`; three candidates fixed the binding, 52-byte extent, and all three fixups, but six register-allocation differences remain. `_db_GetObjectSize`'s two guarded far-cursor forms share a worse 92-byte/frame-8 OMF class against the target's 84-byte/frame-4 shape. `_PlacePillTile` had no evidence-supported new source axis beyond 24 prior variants, so no new candidate was compiled. None earns recovery credit or reopens production.
+
+Additional strict outcomes: `_MakeNewTailR`'s supported `og` profile reissue reproduced its prior nonexact result (29/40 opcodes; 91/101 bytes; CONST/fixup mismatch). `_DoWater` escalated after four candidates with a recurring unplaced CONST/TU-context blocker. `_DoBitmap` attempt03 used a distinct OMF but scored lower than attempt02 (630/678 bytes, 161/257 opcodes). `_PlaceQueenInYard` escalated after six attempts; best is attempt06 (855/937 bytes, 208/326 opcodes). `OPENDLG` escalated after one attempt (466/667 bytes, 99/259 opcodes) with callback/resource semantics still unresolved.
+
+The `_OpenMiniMapWin`/`_MapAreaEvent` read-only audit resolves apparent near helpers using 16-bit wrap: `0x11620 -> _CenterEdit` at ANTEDIT `0x1620`; `0x111e0 -> _UpdateEdit` at ANTEDIT `0x11e0`. The callers group at `antedit:E100` and helper publics at `antedit:00F4`, which does not prove source TU boundaries. Evidence: `build/grinder/open-minimap-helper-audit/audit.md`.
+
+Four jobs allocated just before root's stop request remain OPEN with zero attempts and unchanged TODO sources: `_DropMyFood` (`DropMyFood-3ae9844a8e`), `_CopyMonoBitmap` (`CopyMonoBitmap-13ceb70b88`), `_MciOutWave` (`MciOutWave-3a675ce3d7`), and `_MakeHousePatch` (`MakeHousePatch-1e27dee6d0`). `_snd_Install` (`snd_Install-3c0f20a8c8`) is also OPEN with zero attempts and no owner. These are recorded as stopped/unassigned in [luna-ownership.json](luna-ownership.json); do not resume until root finishes normalization/card regeneration and revalidates active packets.
+
+
+## Fleet refill after NewGame blocker (2026-09-23 23:43 UTC)
+
+`_NewGame` closed at `PRIVATE_CONST_LAYOUT` after attempt04; the same worker was explicitly assigned `OPENDLG-1f34a15e1f`. Current active ownership remains eight disjoint workers; HEAD is `bd54c9a5`, the last root commit.
+
+
+## Near-exact and profile-context research (2026-09-23 23:50 UTC)
+
+Root requested three isolated near-exact investigations: `_NotMowed` (simtwo:1378/og), `_db_GetObjectSize` (simtwo:81AC/baseline), and `_PlacePillTile` (simtwo:4CDC/og). Their preserved best sources are used, output stays under `build/grinder/near-exact/`, and no production jobs are created. Each owner must inspect existing negative coverage first and avoid register hints/profile fishing.
+
+A separate profile-context retest is assigned for `_MakeNewTailR` using only `tools/topology_retest.py --profile-reissue` under the existing simant1:5344 `og` assignment. A read-only helper ownership/TU audit checks `_OpenMiniMapWin`/`_MapAreaEvent` ANTEDIT near helpers at 0x11620/0x111e0; no stub, TU claim, or recovery credit is allowed. Fleet count is nine active owners across routine and research tasks.

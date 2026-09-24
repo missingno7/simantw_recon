@@ -61,6 +61,7 @@ def disassemble(code,start,end,segment,ne,symbols,tables=()):
         cursor=b
     for i in instructions:
         refs=[]
+        operand_text=i.op_str
         for pos in range(i.address,i.address+i.size):
             if pos in relocs:
                 r=relocs[pos];t=dict(r['target'])
@@ -68,10 +69,14 @@ def disassemble(code,start,end,segment,ne,symbols,tables=()):
                     t['offset']=int.from_bytes(code[i.address+1:i.address+3],'little')
                 t['names']=names.get((t.get('segment'),t.get('offset')),[]);refs.append(t)
         if i.group(cs.CS_GRP_CALL) and i.mnemonic=='call' and i.operands[0].type==X86_OP_IMM:
-            target=i.operands[0].imm;refs.append({'kind':'near_call','segment':segment,'offset':target,'names':names.get((segment,target),[])})
+            # Capstone reports a linear target when the relative displacement
+            # crosses the end of a 16-bit code segment. The CPU wraps IP.
+            target=i.operands[0].imm & 0xffff
+            refs.append({'kind':'near_call','segment':segment,'offset':target,'names':names.get((segment,target),[])})
+            if target!=i.operands[0].imm:operand_text=f'{target:#x}'
         for op in i.operands:
             if op.type==X86_OP_MEM and op.mem.base==0 and op.mem.index==0 and op.mem.segment in (X86_REG_INVALID,X86_REG_DS):
                 address=op.mem.disp&65535
                 if (10,address) in names:refs.append({'kind':'global_ds_assumed','segment':10,'offset':address,'names':names[10,address]})
-        rows.append({'offset':i.address,'bytes':i.bytes.hex(),'mnemonic':i.mnemonic,'operands':i.op_str,'references':refs})
+        rows.append({'offset':i.address,'bytes':i.bytes.hex(),'mnemonic':i.mnemonic,'operands':operand_text,'references':refs})
     rows.sort(key=lambda r:r['offset']);return rows

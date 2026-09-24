@@ -10,7 +10,7 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from common import ROOT, FormatError, Reader, fixture, read_json, sha256
 import ne, mapsym, omf
-from analysis import extent
+from analysis import extent, disassemble
 from compiler import compile_source, validate_receipt, verify_lock
 from matcher import compare, unique_symbol
 
@@ -98,6 +98,19 @@ class ParserTests(unittest.TestCase):
 
     def test_extent_indirect_jump_unconfirmed(self):
         self.assertIsNone(extent(bytes.fromhex('ffe090cb'),0,4)['end'])
+
+    def test_near_call_targets_wrap_at_16_bit_ip(self):
+        code=bytearray(65536)
+        code[0xe61c:0xe61f]=bytes.fromhex('e80130')
+        code[0x20:0x23]=bytes.fromhex('e8d0ff')
+        image={'segments':[{'relocations':[]}]}
+        symbols={'segments':[{'number':1,'symbols':[
+            {'offset':0x1620,'name':'_CenterEdit'},
+            {'offset':0xfff3,'name':'_BackwardsCall'}]}]}
+        for start,end,name in [(0xe61c,0x1620,'_CenterEdit'),(0x20,0xfff3,'_BackwardsCall')]:
+            row=disassemble(code,start,start+3,1,image,symbols)[0]
+            self.assertEqual(row['operands'],f'{end:#x}')
+            self.assertEqual(row['references'],[{'kind':'near_call','segment':1,'offset':end,'names':[name]}])
 
     def test_omf_public_and_fixup(self):
         m=omf.parse(synthetic());self.assertEqual(m['publics'][0]['name'],'_Test')

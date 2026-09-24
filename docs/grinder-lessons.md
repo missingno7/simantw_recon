@@ -245,3 +245,13 @@ This closes the source-substitution hypothesis, but does not isolate selector
 pool placement as the sole cause: the second member's instructions remain
 misaligned, so many later relocation comparisons are not binding evidence
 until its source shape is corrected.
+
+### Direct near-call targets wrap at 16-bit IP
+
+MSC7 Win16 code can call backward or forward across the 64 KiB IP boundary.
+Normalize direct near-call destinations modulo `0x10000` before deciding that a
+callee is an unnamed static helper. The corrected card generator resolved 85
+previously unnamed calls across 31 functions to existing MAPSYM publics,
+including `_OpenMiniMapWin` calls to `_CenterEdit` and `_UpdateEdit`. This is
+call binding evidence only; private selector/data and TU membership still need
+independent proof. [Controlled evidence](../evidence/experiments/near-call-ip-wrap/README.md).
