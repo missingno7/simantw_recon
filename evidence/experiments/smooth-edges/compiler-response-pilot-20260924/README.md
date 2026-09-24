@@ -1,0 +1,18 @@
+# SmoothEdgesB compiler-response holdout
+
+This is an isolated diagnostic pilot, not a production attempt. The frozen predictions and source forms are in `plan.json` and `spec.json`; the authentic MSC 7.00 receipts, complete-member comparisons, and machine diffs are in `run/results.json` and `run/candidate*.diff.txt`. `analysis.json` records the class comparison. The assigned context is `simone:255A`, baseline `/AL /G2 /Gs /Oelw /NTSIMONE_MODULE`; all four fresh candidates compiled in one reference DOSBox batch with one `RUN.CONF` identity. No production job or proof rule changed.
+
+The archived 24-way declaration-order experiment was verified before the fresh run: every saved C file matches its compiler-input receipt, and removing only the four local declaration lines yields one common body. Twelve orders with `value` before `edges` produced one archived raw OMF; the other twelve produced another. Four opaque historical `RUN.CONF` hashes are represented, each containing both classes. Their payloads are unavailable, so the fresh fixed-context controls matter. The old production attempt01 also declared byte `edges`, but changed much of the body; it is not a controlled width comparison for this template.
+
+| Fresh source choice | Predicted response | Observed material response | Strict result |
+| --- | --- | --- | --- |
+| Separate `int` locals, `value` before `edges` | Class A control | A; same CODE and fixups as archived A | `NO_COMPLETE_MATCH` |
+| Separate `int` locals, `edges` before `value` | Class B control | B; same CODE and fixups as archived B | `NO_COMPLETE_MATCH` |
+| Grouped `int index, value; int neighbor, edges;` | Withheld class A | A; parsed object fields equal to control A | `NO_COMPLETE_MATCH` |
+| Only `edges` changed to `unsigned char` | A new storage/width response or falsifier | New class C; 340 versus 346 CODE bytes, worse target alignment and fixups | `NO_COMPLETE_MATCH` |
+
+The raw hashes of all four fresh OMFs differ because MSC7 puts the varying input filename in THEADR. For the A control and grouped holdout, THEADR is the only differing record; CODE, fixups, publics, private segments, externals, and other parsed fields are equal. These material classes are **diagnostic comparisons**, not a new acceptance identity. A and B differ in only two CODE bytes, the register-order pair at candidate offsets `0x136` and `0x138`; both retain a two-byte frame and the same strict residue. Replaying the archived A and B controls in the fresh batch reproduced their CODE and fixups despite different raw OMF hashes.
+
+The byte-`edges` probe did move an operand into byte-addressed stack memory: candidate `add al, byte ptr [bp-1]` at `+0x137`. Independent target decoding shows `enter 6,0` and `add dl, byte ptr [bp-2]` at `+0x136`; the fresh candidate still has `enter 2,0`. The stack operand represents the other side of the sum, and its slot and register differ. Target alignment regressed from 113/152 to 87/152 opcodes and from 3/9 to 1/9 fixups. The width hypothesis controls a real codegen dimension, but this spelling does not solve it.
+
+**Next recovery decision:** stop spending trials on pure order permutations or grouping for this preserved template. The fresh holdout confirms the archived order rule in one fixed compiler context, while both classes retain the target's frame and byte-operand gap. The next source-backed discrimination would concern the *value* byte's storage/type or a larger source/TU context change; do not reopen `_SmoothEdgesB` production on this pilot. This experiment established a response prediction and a scoped incapable axis, not a recovery speedup or strict C gain.

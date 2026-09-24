@@ -1,0 +1,29 @@
+{
+  "symbol": "_SmoothEdgesB",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "template": "/* SmoothEdgesB: normalize a cell, then add direction flags for qualifying\n * neighboring terrain values. */\nextern unsigned char near MapB[64][64];\nextern int far SRand8(void);\n\nvoid far SmoothEdgesB(int x, int y)\n{\n@LOCALS@\n\n    if (x < 0 || x > 63 || y > 63)\n        return;\n\n    if (y == 0) {\n        index = (x << 6) + y;\n        if (MapB[0][index] < 0x30)\n            return;\n        MapB[0][index] = 0x18;\n        return;\n    }\n\n    index = (x << 6) + y;\n    value = MapB[0][index];\n    if (value < 0x20)\n        return;\n    if (value > 0x2f && value < 0x4f)\n        return;\n    if (value <= 0x2f || value >= 0x4f) {\n        if (value <= 0x4d)\n            value = 0;\n        else\n            value = 0x2f;\n    }\n\n    edges = 0;\n    if (y >= 2) {\n        neighbor = MapB[0][index - 1];\n        if (neighbor < 0x20)\n            neighbor = 0;\n        else if (neighbor > 0x2f && neighbor < 0x4f)\n            neighbor = 0;\n        else\n            neighbor = 1;\n        if (neighbor != 0)\n            edges |= 1;\n    }\n    if (x <= 0x3e) {\n        neighbor = MapB[0][index + 64];\n        if (neighbor < 0x20)\n            neighbor = 0;\n        else if (neighbor > 0x2f && neighbor < 0x4f)\n            neighbor = 0;\n        else\n            neighbor = 1;\n        if (neighbor != 0)\n            edges |= 2;\n    }\n    if (y <= 0x3e) {\n        neighbor = MapB[0][index + 1];\n        if (neighbor < 0x20)\n            neighbor = 0;\n        else if (neighbor > 0x2f && neighbor < 0x4f)\n            neighbor = 0;\n        else\n            neighbor = 1;\n        if (neighbor != 0)\n            edges |= 4;\n    }\n    if (x >= 1) {\n        neighbor = MapB[0][index - 64];\n        if (neighbor < 0x20)\n            neighbor = 0;\n        else if (neighbor > 0x2f && neighbor < 0x4f)\n            neighbor = 0;\n        else\n            neighbor = 1;\n        if (neighbor != 0)\n            edges |= 8;\n    }\n\n    if (edges != 0)\n        MapB[0][index] = value + 0x1f + edges;\n    else if (value == 0)\n        MapB[0][index] = (unsigned char)SRand8();\n    else\n        MapB[0][index] = 0x4e;\n}\r\n",
+  "max_candidates": 4,
+  "axes": [
+    {
+      "name": "local_declarations",
+      "marker": "@LOCALS@",
+      "values": [
+        "    int index;\n    int value;\n    int neighbor;\n    int edges;",
+        "    int index;\n    int edges;\n    int neighbor;\n    int value;",
+        "    int index, value;\n    int neighbor, edges;",
+        "    int index;\n    int value;\n    int neighbor;\n    unsigned char edges;"
+      ],
+      "rationale": "Two fixed-context response-class controls, one previously uncompiled grouped-declaration holdout, and one source-backed edge accumulator width probe; only the four declaration lines change."
+    }
+  ],
+  "publics": [
+    "_SmoothEdgesB"
+  ]
+}

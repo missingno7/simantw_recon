@@ -1,0 +1,60 @@
+{
+  "status": "PREDICTIONS_FROZEN_BEFORE_COMPILATION",
+  "target": "_SmoothEdgesB",
+  "archived_result": "evidence/experiments/smooth-edges/declaration-order/results.json",
+  "archived_result_sha256": "ad57f8a8915fb4faae3e283ae590697e827be36f42ea7c7f9bbbd28e3db05944",
+  "archived_source_remainder_sha256": "43a488efe1f972dfd8c94a0b5df42821d4db6fd33ea642178539932c1f010a2a",
+  "archived_source_receipts_verified": 24,
+  "archived_response_class_hashes": {
+    "True": "d9b8976b8413a72ba34a8eeba987e7f9bbcf28724b64ef4b00a2fd1fd1a2a1e7",
+    "False": "7d43a0f93515a42ac24a8ad5f33f25a69d62c522bbb31e6c2f916f1a5636a5bb"
+  },
+  "archived_opaque_configuration_strata": 4,
+  "archived_configuration_boundary": "RUN.CONF payload absent; old cross-worker hashes are not interchangeable. Fresh controls and holdout will compile in one reference DOSBox batch.",
+  "profile": {
+    "compiler": "msc700",
+    "flags": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMONE_MODULE"
+    ],
+    "component": "simone:255A",
+    "job": "SmoothEdgesB-6e90825f72"
+  },
+  "experiments": [
+    {
+      "id": "A_training",
+      "declarations": "    int index;\n    int value;\n    int neighbor;\n    int edges;",
+      "prediction": "Archived value-before-edges response class A, with register-only tail; no strict match",
+      "falsifier": "Different material output from archived class A under fixed context"
+    },
+    {
+      "id": "B_training",
+      "declarations": "    int index;\n    int edges;\n    int neighbor;\n    int value;",
+      "prediction": "Archived edges-before-value response class B, with register-only tail; no strict match",
+      "falsifier": "Different material output from archived class B under fixed context"
+    },
+    {
+      "id": "A_grouped_holdout",
+      "declarations": "    int index, value;\n    int neighbor, edges;",
+      "prediction": "Grouped declarations preserve class A under one fixed batch context",
+      "falsifier": "Different class from A training control"
+    },
+    {
+      "id": "byte_width_probe",
+      "declarations": "    int index;\n    int value;\n    int neighbor;\n    unsigned char edges;",
+      "prediction": "Byte-width local changes the memory/frame dimension; if it does not, type-width alone is incapable for this template",
+      "falsifier": "Unchanged two-byte frame and register-only tail"
+    }
+  ],
+  "acceptance": "Research diagnostics only. Native complete-member strict verification remains the only recovery credit.",
+  "source_remainder_normalization": "Python universal newline decoding, then removal of only four standalone local declaration lines",
+  "archived_class_counts": {
+    "value_before_edges": 12,
+    "edges_before_value": 12
+  },
+  "prior_byte_local_caveat": "SmoothEdgesB production attempt01 used unsigned char edges but a substantially different function body and value/index representation; it is not a controlled width comparison for the archived declaration-order template.",
+  "prior_byte_local_source": "evidence/recovery/workflow/jobs/SmoothEdgesB-6e90825f72/attempt01/candidate0000.c"
+}
