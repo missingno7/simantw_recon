@@ -1,0 +1,31 @@
+{
+  "symbol": "_HistUpdate",
+  "source": "evidence\\experiments\\histupdate-far-pointer-20260924\\template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "max_candidates": 2,
+  "axes": [
+    {
+      "name": "pointer_storage",
+      "marker": "@PTR_DECL@",
+      "values": [
+        "    int far *p;",
+        "    register int far *p;"
+      ],
+      "rationale": "Target loop loads the Dx8 segment-8 selector once, reads ES:[SI], increments SI by two, and tests SI against 0x8e5c. A typed far int pointer initialized at Dx8+0x8e54 models the same addressed words and pointer lifetime; compare ordinary and register storage only."
+    }
+  ],
+  "publics": [
+    "_HistUpdate"
+  ],
+  "semantic_summary": "Isolated typed far-pointer representation of the target Dx8 word scan; compare ordinary and register local pointer declarations without changing source semantics, calls, or surrounding function logic.",
+  "binding_evidence": [
+    "Factory packet directly binds the read at target offset 37520 to _Dx8, SEG8 selector slot 49284, addressed segment 8, displacement zero, index SI. Target initializes SI to 0x8e54, adds 2, and stops at 0x8e5c. These are four 16-bit words, equivalent to a far int pointer over Dx8[0x8e54..0x8e5c)."
+  ]
+}
