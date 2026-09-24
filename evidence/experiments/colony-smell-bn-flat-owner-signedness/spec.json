@@ -1,0 +1,17 @@
+{
+  "symbol": "_ColonySmellBN",
+  "source": "evidence/experiments/colony-smell-bn-flat-owner-signedness/template.c",
+  "compiler": "msc700",
+  "flags": ["/AL", "/G2", "/Gs", "/Oelw", "/NTSIMANT1_MODULE"],
+  "max_candidates": 4,
+  "axes": [
+    {"name": "band_type", "marker": "@BAND_TYPE@", "values": ["int", "unsigned int"], "rationale": "Bounded 2x2 signedness test; target's outer comparison uses signed JL, so signed versus unsigned band changes branch lowering while preserving loop bounds/increments."},
+    {"name": "cell_type", "marker": "@CELL_TYPE@", "values": ["int", "unsigned int"], "rationale": "Bounded 2x2 signedness test; target's inner comparison uses signed JL, so signed versus unsigned cell changes branch lowering while preserving loop bounds/increments."}
+  ],
+  "publics": ["_ColonySmellBN"],
+  "semantic_summary": "Isolated flat-owner source probe from production attempt01: change the Dx8-based BN accesses to named far PherMapBN[band + cell], then test only int/unsigned int signedness for band and cell.",
+  "binding_evidence": [
+    "Target packet ColonySmellBN-90c93a3ed6 loads the selector for segment 8 once, sets DS from AX, and addresses bytes at 0x62d2 + band + cell; the owner identity is _PherMapBN at segment 8, offset 0x62d2.",
+    "All other loop/control and declaration-order source is copied from preserved attempt01; prior 2D named-far experiment is a separate tested representation."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "symbol": "_ColonySmellBN",
+  "source": "evidence/experiments/colony-smell-bn-pointer-lifetime/template.c",
+  "compiler": "msc700",
+  "flags": ["/AL", "/G2", "/Gs", "/Oelw", "/NTSIMANT1_MODULE"],
+  "max_candidates": 2,
+  "axes": [
+    {"name": "pointer_storage", "marker": "@PTR_DECL@", "values": ["unsigned char far *p;", "register unsigned char far *p;"], "rationale": "Bounded pointer-lifetime test: hold the named far-array element address once for both the condition and decrement; second variant changes only the local pointer's register storage hint, subject to MSC7 acceptance."}
+  ],
+  "publics": ["_ColonySmellBN"],
+  "semantic_summary": "Starting from the signed/signed named-flat-owner attempt, test whether a local far pointer retained within each inner iteration lets C7 reuse one computed PherMapBN address for compare and decrement.",
+  "binding_evidence": [
+    "Target ColonySmellBN performs one segment 8 selector load and one DS switch, then computes SI once and reuses [SI] for the compare and decrement. The pointer lifetime is scoped to one band/cell access and preserves the existing named owner and bounds."
+  ]
+}
