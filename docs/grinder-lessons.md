@@ -91,6 +91,12 @@ The [segment-access and boolean scheduling review](../evidence/topology/supervis
 `layout/reconstruction-rules.json` is attached to every inspection packet (`reconstruction_rules`) by observed triggers. The rules in force:
 
 - LINK may rewrite same-segment far calls (NOP; PUSH CS; CALL near); write ordinary far calls.
+
+Before inferring a `near` prototype from a final `CALL near`, inspect the two
+preceding bytes. `python tools/call_abi_audit.py --symbol _Target` flags current
+candidate declarations that conflict with the exact `90 0E E8` LINK-lowered
+far-call signature. The [scoped audit](../evidence/experiments/call-abi-audit/README.md)
+is a review aid only; changing a prototype still needs a strict compiler test.
 - Declaration order can determine DS versus ES code generation; the CONST selector pool follows first-reference order across the whole unit, so a function's pool conflicts in isolation are unit work, not body work.
 - Named ant-list fields may share one segment-8 selector slot. That proves a shared segment selector in that function, not one `Dx8` array; preserve each observed field displacement and establish object identity from unit evidence.
 - Parameters copied into locals can be required when the historical code holds values in SI/DI.
