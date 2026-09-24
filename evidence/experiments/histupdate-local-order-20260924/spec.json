@@ -1,0 +1,32 @@
+{
+  "symbol": "_HistUpdate",
+  "source": "evidence/experiments/histupdate-local-order-20260924/template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "max_candidates": 3,
+  "axes": [
+    {
+      "name": "local_declaration_order",
+      "marker": "@LOCAL_DECLS@",
+      "values": [
+        "    int i;\n    unsigned int p;\n    int hs;\n    int v;",
+        "    unsigned int p;\n    int i;\n    int v;\n    int hs;",
+        "    int v;\n    int hs;\n    int i;\n    unsigned int p;"
+      ],
+      "rationale": "Target body saves DI and SI, then uses DI as the redraw-loop index and SI as the Dx8 pointer. The prior named-buffer candidate instead spills the pointer to [bp-2] and uses SI as the index. Only equivalent declaration ordering of initialized locals hs, p, i, and v changes; expressions and control flow are fixed."
+    }
+  ],
+  "publics": [
+    "_HistUpdate"
+  ],
+  "semantic_summary": "Isolated bounded local declaration-order probe from the best named H-buffer source; test whether MSC7 local allocation order selects the target DI-index/SI-pointer loop schedule.",
+  "binding_evidence": [
+    "Target aligned assembly saves DI and SI, uses DI as index and SI as pointer in the redraw loop. Prior candidate uses a frame spill for p and allocates SI/CX/BX differently. Source locals hs,p,i,v are all assigned before read."
+  ]
+}
