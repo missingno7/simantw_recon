@@ -54,6 +54,35 @@ class MatcherScaffoldTests(unittest.TestCase):
         self.assertIn('unplaced contribution ' + SCAFFOLD_SEGMENT, result['issues'])
 
 
+class ReviewedZeroGapTests(unittest.TestCase):
+    def setUp(self):
+        source = ('void far pool_stub_gap(void);\n'
+                  '#pragma alloc_text(POOLSTUB_TEXT, pool_stub_gap)\n'
+                  'static const __segment near z0 = 0;\n'
+                  'static const __segment near z1 = 0;\n'
+                  'void far pool_stub_gap(void) { volatile int t; t = z0; t = z1; }\n')
+        scaffold = tu.reviewed_scaffold(source, ['_Claimed'], ['_Claimed'])
+        self.gap = tu.reviewed_zero_gap(source, scaffold, '2:z0,z1:pool_stub_gap')
+        scaffold['private_zero_gaps'] = [self.gap]
+        self.scaffold = scaffold
+        self.module = dict(segments=[dict(index=1, name='CONST', **{'class': 'CONST'},
+                                          length=10, data_hex='12340000000056789abc',
+                                          initialized_ranges=[[0, 10]])], fixups=[])
+
+    def test_initialized_zero_gap_without_fixups_passes(self):
+        tu.check_reviewed_zero_gaps(self.module, self.scaffold)
+
+    def test_changed_bytes_or_fixup_fails_closed(self):
+        changed = copy.deepcopy(self.module)
+        changed['segments'][0]['data_hex'] = '12340000000156789abc'
+        with self.assertRaisesRegex(tu.FormatError, 'bytes differ'):
+            tu.check_reviewed_zero_gaps(changed, self.scaffold)
+        changed = copy.deepcopy(self.module)
+        changed['fixups'] = [dict(segment=1, offset=4, width=2)]
+        with self.assertRaisesRegex(tu.FormatError, 'contains an OMF fixup'):
+            tu.check_reviewed_zero_gaps(changed, self.scaffold)
+
+
 class ComposerScaffoldTests(unittest.TestCase):
     def test_admitted_unit_yard_source_supersedes_parked_draft(self):
         target = json.loads((ROOT / 'src/recovery.json').read_text())['targets']['_YardArea']

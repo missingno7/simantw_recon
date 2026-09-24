@@ -104289,7 +104289,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _DoAntSimY — SIMANT1_MODULE:7CF6
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 351 bytes.
-Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_3_scaffold-7e7e8ed0c2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_4_reviewed-721da53bc2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 7CF6  c8060000                 enter 6, 0
@@ -104935,7 +104935,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _EnterNest — SIMANT1_MODULE:8408
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 155 bytes.
-Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_3_scaffold-7e7e8ed0c2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_4_reviewed-721da53bc2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 8408  9a14143c84               lcall 0x843c, 0x1414 ; _TryAntTheme
@@ -105577,7 +105577,7 @@ Source: unrecovered. Flags: unresolved.
 
 ## _CheckMyBestDirs — SIMANT1_MODULE:8B40
 Ownership: GAME (PROBABLE). Extent: CONFIRMED, 169 bytes.
-Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_3_scaffold-7e7e8ed0c2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
+Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_4_reviewed-721da53bc2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 8B40  c8060000                 enter 6, 0
@@ -105756,8 +105756,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GetMyInitialRandDir — SIMANT1_MODULE:8CDE
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 91 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 91 bytes.
+Source: src/recovered/wf_tu_simant1_75F4_DoAntSimY_4_reviewed-721da53bc2.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT1_MODULE'].
 
 ```asm
 8CDE  55                       push bp

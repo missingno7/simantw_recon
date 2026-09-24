@@ -1083,6 +1083,56 @@ def reviewed_scaffold(text, members, component_publics):
                 runs=[members], scope='Reviewed stand-ins occupy reserved code only; their private contributions remain strictly compared')
 
 
+def reviewed_zero_gap(text, scaffold, declaration):
+    """Describe measured, unclaimed zero CONST words in a reviewed scaffold.
+
+    The declaration is OFFSET:SCALAR,SCALAR,...:POOLSTUB.  The source must
+    declare separate zero-initialized __segment scalars and use each from the
+    named reserved-code stand-in.  This records a layout scaffold, never a
+    historical private-state owner.
+    """
+    fields = declaration.split(':')
+    if len(fields) != 3 or not re.fullmatch(r'[0-9]+', fields[0]):
+        raise FormatError('reviewed zero gap must be OFFSET:SCALARS:POOLSTUB')
+    offset = int(fields[0])
+    symbols = fields[1].split(',')
+    stub = fields[2]
+    if not symbols or len(symbols) != len(set(symbols)) or any(not re.fullmatch(r'[A-Za-z_]\w*', n) for n in symbols):
+        raise FormatError('reviewed zero gap has invalid scalar names')
+    if stub not in {s['function'] for s in scaffold['stubs']}:
+        raise FormatError('reviewed zero gap must be used by a POOLSTUB_TEXT stand-in')
+    code = re.sub(r'/\*.*?\*/|//[^\n]*', '', text, flags=re.S)
+    body = re.search(r'\b' + re.escape(stub) + r'\s*\([^;]*\)\s*\{([^{}]*)\}', code, re.S)
+    if not body:
+        raise FormatError('reviewed zero gap stand-in body is missing or complex')
+    for symbol in symbols:
+        declaration_pattern = r'\bstatic\s+const\s+__segment\s+near\s+' + re.escape(symbol) + r'\s*=\s*0\s*;'
+        if len(re.findall(declaration_pattern, code)) != 1 or not re.search(r'\b' + re.escape(symbol) + r'\b', body.group(1)):
+            raise FormatError('reviewed zero gap scalar is not declared and used exactly as a zero: ' + symbol)
+    if offset % 2 or offset < 0:
+        raise FormatError('reviewed zero gap offset must be nonnegative and word aligned')
+    return dict(segment='CONST', offset=offset, length=2 * len(symbols), bytes_hex='00' * (2 * len(symbols)),
+                scalars=symbols, stand_in=stub, claim='UNCLAIMED_LAYOUT_SCAFFOLD')
+
+
+def check_reviewed_zero_gaps(module, scaffold):
+    """Fail closed if a reviewed zero gap moved, gained a fixup or was not emitted."""
+    for gap in scaffold.get('private_zero_gaps', []):
+        segments = [s for s in module['segments'] if s['name'] == gap['segment'] and s['class'] == 'CONST']
+        if len(segments) != 1:
+            raise FormatError('reviewed zero gap requires one CONST contribution')
+        segment = segments[0]
+        lo, hi = gap['offset'], gap['offset'] + gap['length']
+        if gap.get('claim') != 'UNCLAIMED_LAYOUT_SCAFFOLD' or gap.get('bytes_hex') != '00' * gap['length']:
+            raise FormatError('reviewed zero gap metadata is not an unclaimed zero scaffold')
+        if hi > segment['length'] or segment['data_hex'][2 * lo:2 * hi] != gap['bytes_hex']:
+            raise FormatError('reviewed zero gap bytes differ from recorded layout')
+        if not any(start <= lo and hi <= end for start, end in segment['initialized_ranges']):
+            raise FormatError('reviewed zero gap is not initialized OMF data')
+        if any(f['segment'] == segment['index'] and max(lo, f['offset']) < min(hi, f['offset'] + f['width']) for f in module['fixups']):
+            raise FormatError('reviewed zero gap contains an OMF fixup')
+
+
 def data_fillers(pieces, comp, functions, mode='definitions'):
     """Fillers that reproduce the private DATA/BSS layout between the claimed
     members' pieces: each gap between consecutive pieces of one class is the
@@ -1590,7 +1640,7 @@ def harmonize(component_id, members, flags, folder, layout='preambles-first', ov
     return dict(status='COMPOSED' if not unresolved else 'DECLARATION_CONFLICT', overrides=overrides, unresolved=unresolved, trials=trials)
 
 
-def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None, unit_source=None, scaffold=False, harmonize_conflicts=False, data_layout='definitions'):
+def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None, unit_source=None, scaffold=False, harmonize_conflicts=False, data_layout='definitions', private_zero_gap=None):
     """Compose a candidate unit from preserved sources and write its evidence folder."""
     import compiler_profiles
     from recovery_workflow import cards
@@ -1627,8 +1677,14 @@ def build_unit(component_id, members=None, layout='preambles-first', overrides=N
                     topology=dict(join_evidence=comp.get('join_evidence'), range=comp['range']), status='COMPOSED', source=(folder / 'unit.c').relative_to(ROOT).as_posix(), source_identity=identity(folder / 'unit.c'))
         if scaffold:
             spec['scaffold'] = reviewed_scaffold(text, members, comp['publics'])
+            if private_zero_gap:
+                spec['scaffold']['private_zero_gaps'] = [reviewed_zero_gap(text, spec['scaffold'], item) for item in private_zero_gap]
+        elif private_zero_gap:
+            raise FormatError('reviewed private zero gaps require a scaffold')
         write_json(folder / 'unit.json', spec)
         return spec
+    if private_zero_gap:
+        raise FormatError('private zero gaps are only accepted in reviewed unit sources')
     sources = preserved_sources()
     for m, path in (source_overrides or {}).items():
         if not (ROOT / path).exists() or not (ROOT / path).resolve().is_relative_to(ROOT):
@@ -1757,6 +1813,10 @@ def test_unit(unit_id):
     report = run(grinder_spec, (folder / 'test').relative_to(ROOT).as_posix(), cache=True)
     best = report['results'][0]
     comparison = best['comparison']
+    if spec.get('scaffold', {}).get('private_zero_gaps'):
+        import omf
+        module = omf.parse((ROOT / best['receipt']['object']).read_bytes())
+        check_reviewed_zero_gaps(module, spec['scaffold'])
     summary = dict(unit=unit_id, result=comparison['result'], issues=comparison.get('issues', []), placements=comparison.get('placements'),
                    private_constraint_placements=comparison.get('private_constraint_placements'), literal_equal=comparison.get('literal_equal'), literal_compared=comparison.get('literal_compared'),
                    fixups_equal=comparison.get('fixups_equal'), fixups_total=comparison.get('fixups_total'),
@@ -1805,6 +1865,8 @@ def unit_job(unit_id, reason):
                fixture_identity=read_json(ROOT / 'layout/fixtures.json'), attempts=[], reason=reason, unit_evidence=wf.relative(folder / 'unit.json'))
     if spec.get('scaffold'):
         job['scaffold'] = dict(unit=unit_id, segment=spec['scaffold']['segment'], stand_ins=[s['function'] for s in spec['scaffold']['stubs']], runs=spec['scaffold']['runs'])
+        if spec['scaffold'].get('private_zero_gaps'):
+            job['scaffold']['private_zero_gaps'] = spec['scaffold']['private_zero_gaps']
     wf.atomic_json(directory / 'job.json', job)
     (directory / 'packet.md').write_text('# Unit assembly job %s\n\nMembers: %s\n\nEvidence: %s\n' % (job_id, ', '.join(members), wf.relative(folder / 'unit.json')), encoding='utf-8')
     return dict(job=job_id, publics=members, supersedes=supersedes)
@@ -1815,6 +1877,7 @@ def main():
     sub = ap.add_subparsers(dest='action', required=True)
     p = sub.add_parser('propose'); p.add_argument('--min', type=int, default=1); p.add_argument('--limit', type=int, default=40)
     p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--harmonize', action='store_true', help='resolve declaration conflicts by isolated exact-body verification'); p.add_argument('--data-layout', default='definitions', choices=['definitions', 'preamble', 'split'], help='where a scaffolded unit emits claimed statics: with their definitions or at the top in address order'); p.add_argument('--reason', default='')
+    p.add_argument('--private-zero-gap', action='append', default=[], help='reviewed scaffold CONST gap OFFSET:SCALARS:POOLSTUB')
     p = sub.add_parser('test'); p.add_argument('unit')
     p = sub.add_parser('job'); p.add_argument('unit'); p.add_argument('--reason', required=True)
     args = ap.parse_args()
@@ -1829,7 +1892,7 @@ def main():
             name, text = item.split('=', 1)
             overrides[name] = text
         source_overrides = dict(item.split('=', 1) for item in args.source)
-        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source, args.scaffold, args.harmonize, args.data_layout)
+        result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source, args.scaffold, args.harmonize, args.data_layout, args.private_zero_gap)
         print(json.dumps({k: v for k, v in result.items() if k not in ('sources',)}, indent=2))
     elif args.action == 'test':
         print(json.dumps(test_unit(args.unit), indent=2))
