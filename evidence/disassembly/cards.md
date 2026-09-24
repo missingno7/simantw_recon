@@ -57421,8 +57421,8 @@ C74D  cb                       retf
 ```
 
 ## _ToggleMapCursor — ANTEDIT_MODULE:C74E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 261 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 261 bytes.
+Source: src/recovered/wf_tu_antedit_C19C_ToggleMapCursor_1_scaffold-9be4fde325.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTANTEDIT_MODULE'].
 
 ```asm
 C74E  833e921900               cmp word ptr [0x1992], 0 ; _mapCursorState

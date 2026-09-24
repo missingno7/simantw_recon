@@ -152,8 +152,9 @@ does not contain. Examples of what the components show without names:
 
 Ten unnamed code regions (4577 bytes) sit between publics: static helper
 functions of their units (edit: 694 and 1522 bytes; map: 781 and 1151;
-pack/unpack: 150/106/65/41; `MemRChr`: 58; `font_MakeImage`: 9). A unit that
-contains one cannot be assembled from its publics alone.
+pack/unpack: 150/106/65/41; a 58-byte unnamed gap after `_MemRChr` at
+SIMTWO:F795-F7CE with no proved caller or identity; `font_MakeImage`: 9).
+A unit that contains one cannot be assembled from its publics alone.
 
 Known rejected groupings are preserved: the four PACK selector-pool placement
 conflicts (`FollowCatDir`, `SendBoyMsg`, `StartAttack`, `SetAntLion`),

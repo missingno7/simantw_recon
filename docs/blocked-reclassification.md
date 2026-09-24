@@ -1,6 +1,6 @@
 # Fresh classification of the MATCH_BLOCKED population
 
-Generated 2026-09-24T08:06:27.713277+00:00 from the current HEAD: every blocked function's best preserved candidate recompiled under the current object profile and compared strictly. Historical labels are shown only as `previous`.
+Generated 2026-09-24T08:49:30.127842+00:00 from the current HEAD: every blocked function's best preserved candidate recompiled under the current object profile and compared strictly. Historical labels are shown only as `previous`.
 
 ## Counts by fresh root cause
 
@@ -8,10 +8,10 @@ Generated 2026-09-24T08:06:27.713277+00:00 from the current HEAD: every blocked 
 - ABI_TYPE_INFERENCE: 22
 - UNKNOWN: 21
 - BODY_EXACT_LAYOUT_BLOCKED: 5
-- SOURCE_BINDING_INELIGIBLE: 2
+- SOURCE_BINDING_INELIGIBLE: 1
 - MIRRORED_SOURCE_PAIR: 1
 
-Historical labels that no longer describe the fresh result: 100
+Historical labels that no longer describe the fresh result: 99
 
 ## By historical object / TU context
 
@@ -319,28 +319,6 @@ Historical labels that no longer describe the fresh result: 100
 | _UpdateWindows | 540 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (122/173 opcodes | SEMANTICS_UNKNOWN |  |
 | _ProcessPost | 672 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
 
-### antedit:C19C — 15 members, 4 matched, 11 blocked, 0 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 7/27 words introduced by admitted or exact members; private data words 1 (reproduced)
-- likely next missing introducer: _ProcMapEvent
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 10, SOURCE_BINDING_INELIGIBLE 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ToggleMapCursor | 261 | SOURCE_BINDING_INELIGIBLE | native body_exact source gate rejects current binding identities; correct source before unit assembly | PRIVATE_CONST_LAYOUT |  |
-| _DrawMap | 264 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (88/91 opcodes, 264/264 bytes) | SEMANTICS_UNKNOWN |  |
-| _DrawMapCursor | 185 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 197/185 bytes) | OPTIMIZER_VARIANT_REQUIRED |  |
-| _DrawMapFoot | 484 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (141/174 opcodes | REGISTER_ALLOCATION |  |
-| _DrawMapSpider | 280 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (82/113 opcodes, | REGISTER_ALLOCATION |  |
-| _EraseMapCursor | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (16/25 opcodes, 72/66 bytes) | DATA_LAYOUT |  |
-| _MapToYellowAnt | 105 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (40/46 opcodes, 110/105 bytes) | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _Mini_DrawMapI | 811 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (226/284 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _ProcMapEvent | 434 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (152/169 opcodes, 434/434 bytes) | REGISTER_ALLOCATION |  |
-| _ProcMapRibbonEvent | 626 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (226/243 opcodes, 616/626 byte | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _win_DrawMapWindow | 712 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (160/233 opcodes, 633/712 bytes) | PRIVATE_CONST_LAYOUT |  |
-
 ### gr:7712 — 28 members, 14 matched, 11 blocked, 3 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -384,6 +362,27 @@ Historical labels that no longer describe the fresh result: 100
 | _PickupFoodB | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (27/41 opcodes, 78/98 bytes) | PRIVATE_CONST_LAYOUT | _PickupFoodR (MATCH_BLOCKED) |
 | _PickupFoodR | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (27/41 opcodes, 78/98 bytes) | PRIVATE_CONST_LAYOUT | _PickupFoodB (MATCH_BLOCKED) |
 | _PlaceDrop | 170 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (52/58 opcodes, 168/170 bytes) | DATA_LAYOUT |  |
+
+### antedit:C19C — 15 members, 5 matched, 10 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 7/27 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _ProcMapEvent
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 10
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DrawMap | 264 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (88/91 opcodes, 264/264 bytes) | SEMANTICS_UNKNOWN |  |
+| _DrawMapCursor | 185 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 197/185 bytes) | OPTIMIZER_VARIANT_REQUIRED |  |
+| _DrawMapFoot | 484 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (141/174 opcodes | REGISTER_ALLOCATION |  |
+| _DrawMapSpider | 280 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (82/113 opcodes, | REGISTER_ALLOCATION |  |
+| _EraseMapCursor | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (16/25 opcodes, 72/66 bytes) | DATA_LAYOUT |  |
+| _MapToYellowAnt | 105 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (40/46 opcodes, 110/105 bytes) | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _Mini_DrawMapI | 811 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (226/284 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _ProcMapEvent | 434 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (152/169 opcodes, 434/434 bytes) | REGISTER_ALLOCATION |  |
+| _ProcMapRibbonEvent | 626 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (226/243 opcodes, 616/626 byte | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _win_DrawMapWindow | 712 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (160/233 opcodes, 633/712 bytes) | PRIVATE_CONST_LAYOUT |  |
 
 ### simone:16AE — 11 members, 1 matched, 10 blocked, 0 ready; profile baseline
 
