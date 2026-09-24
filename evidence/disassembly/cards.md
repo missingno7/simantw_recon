@@ -13498,8 +13498,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ClearHistory — SIMANT_MODULE:8CFC
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 299 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 299 bytes.
+Source: src/recovered/wf_ClearHistory-2a7aae3cf9.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE'].
 
 ```asm
 8CFC  55                       push bp

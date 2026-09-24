@@ -1,17 +1,17 @@
 # Fresh classification of the MATCH_BLOCKED population
 
-Generated 2026-09-23T21:16:29.015257+00:00 from the current HEAD: every blocked function's best preserved candidate recompiled under the current object profile and compared strictly. Historical labels are shown only as `previous`.
+Generated 2026-09-24T05:09:21.213321+00:00 from the current HEAD: every blocked function's best preserved candidate recompiled under the current object profile and compared strictly. Historical labels are shown only as `previous`.
 
 ## Counts by fresh root cause
 
-- TRUE_SOURCE_SHAPE_MISMATCH: 412
-- ABI_TYPE_INFERENCE: 20
-- UNKNOWN: 13
+- TRUE_SOURCE_SHAPE_MISMATCH: 446
+- ABI_TYPE_INFERENCE: 22
+- UNKNOWN: 21
 - BODY_EXACT_LAYOUT_BLOCKED: 5
-- PROFILE_CONTEXT_RETEST: 1
+- SOURCE_BINDING_INELIGIBLE: 4
 - MIRRORED_SOURCE_PAIR: 1
 
-Historical labels that no longer describe the fresh result: 83
+Historical labels that no longer describe the fresh result: 102
 
 ## By historical object / TU context
 
@@ -27,34 +27,6 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _PauseGame | 369 | BODY_EXACT_LAYOUT_BLOCKED | exact body; only unresolved offset bindings (pool / private data / TU context) | DATA_LAYOUT |  |
 | _SetPause | 369 | BODY_EXACT_LAYOUT_BLOCKED | exact body; only unresolved offset bindings (pool / private data / TU context) | DATA_LAYOUT |  |
-
-### simant1:5344 — 28 members, 11 matched, 17 blocked, 0 ready; profile og
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 17
-- selector pool: 6/21 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _DoNestAntR
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 1
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 16, PROFILE_CONTEXT_RETEST 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _MakeNewTailR | 101 | PROFILE_CONTEXT_RETEST | parked under /AL /G2 /Gs /Oelw /NTSIMANT1_MODULE, context profile is now og (/AL /G2 /Gs /Oeglw /NTSIMANT1_MOD | PRIVATE_CONST_LAYOUT | _MakeNewTailB (MATCH_BLOCKED) |
-| _DoDigInR | 798 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (225/285 opcodes | REGISTER_ALLOCATION | _DoDigInB (MATCH_BLOCKED) |
-| _DoDigOutR | 656 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (173/247 opcodes | REGISTER_ALLOCATION | _DoDigOutB (MATCH_BLOCKED) |
-| _DoDrownR | 210 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (63/71 opcodes, 202/210 bytes) | REGISTER_ALLOCATION | _DoDrownB (MATCH_BLOCKED) |
-| _DoFoodInR | 640 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (180/229 opcodes | REGISTER_ALLOCATION | _DoFoodInB (MATCH_BLOCKED) |
-| _DoNestAntR | 1925 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (374/684 opcodes | REGISTER_ALLOCATION | _DoNestAntB (MATCH_BLOCKED) |
-| _DoNestFightR | 304 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (88/108 opcodes, 290/304 bytes) | REGISTER_ALLOCATION | _DoNestFightB (MATCH_BLOCKED) |
-| _DoNestingR | 557 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (157/183 opcodes | REGISTER_ALLOCATION | _DoNestingB (MATCH_BLOCKED) |
-| _DropFoodR | 100 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (27/37 opcodes,  | REGISTER_ALLOCATION | _DropFoodB (MATCH_BLOCKED) |
-| _GetOutR | 314 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (100/117 opcodes, 307/314 byte | REGISTER_ALLOCATION | _GetOutB (MATCH_BLOCKED) |
-| _KillTailR | 45 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (15/17 opcodes, 44/45 bytes) | REGISTER_ALLOCATION | _KillTailB (MATCH_BLOCKED) |
-| _LostHeadR | 94 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (36/41 opcodes, 94/94 bytes) | REGISTER_ALLOCATION | _LostHeadB (MATCH_BLOCKED) |
-| _LostTailR | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (38/43 opcodes, 100/98 bytes) | REGISTER_ALLOCATION | _LostTailB (MATCH_BLOCKED) |
-| _QueenMoveR | 246 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (81/95 opcodes,  | EXPRESSION_SHAPE | _QueenMoveB (MATCH_BLOCKED) |
-| _SimQueenR | 639 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (195/223 opcodes | EXPRESSION_SHAPE | _SimQueenB (MATCH_BLOCKED) |
-| _StealFoodR | 67 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (19/26 opcodes, 54/67 bytes) | REGISTER_ALLOCATION | _StealFoodB (MATCH_BLOCKED) |
-| _TryMoveDirR | 186 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (62/73 opcodes, 195/186 bytes) | SEMANTICS_UNKNOWN | _TryMoveDirB (MATCH_BLOCKED) |
 
 ### simtwo:C806 — 24 members, 9 matched, 13 blocked, 2 ready; profile ga
 
@@ -80,6 +52,28 @@ Historical labels that no longer describe the fresh result: 83
 | _win_SetObjFormatStr | 297 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (65/115 opcodes, | SEMANTICS_UNKNOWN |  |
 | _win_Swap | 359 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (105/148 opcodes | REGISTER_ALLOCATION |  |
 
+### simant1:75F4 — 15 members, 3 matched, 11 blocked, 1 ready; profile baseline
+
+- exact bodies awaiting admission: 1; mirrored blocked members: 0
+- selector pool: 5/37 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _DoAntMoveY
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 1
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 9, BODY_EXACT_LAYOUT_BLOCKED 1, ABI_TYPE_INFERENCE 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _GetMyNextRandDirs | 244 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION |  |
+| _GetMyInitialRandDir | 91 | BODY_EXACT_LAYOUT_BLOCKED | exact body; only unresolved offset bindings (pool / private data / TU context) | DATA_LAYOUT |  |
+| _AnimYellowFight | 545 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (173/188 opcodes, 553/545 bytes) | REGISTER_ALLOCATION |  |
+| _AnimYellowInsane | 454 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (143/161 opcodes | REGISTER_ALLOCATION |  |
+| _ExitNest | 477 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (145/155 opcodes, 465/477 bytes) | EXPRESSION_SHAPE |  |
+| _GetMyBestDir | 399 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (116/154 opcodes, 379/399 bytes) | REGISTER_ALLOCATION |  |
+| _GetMyBestDirs | 256 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (76/98 opcodes,  | REGISTER_ALLOCATION |  |
+| _GetMyDir | 788 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (66/296 opcodes, | EXPRESSION_SHAPE |  |
+| _GetMyDis | 421 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (70/125 opcodes, | REGISTER_ALLOCATION |  |
+| _GetMyRandDirs | 536 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (143/192 opcodes | REGISTER_ALLOCATION |  |
+| _YellowFight | 457 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (132/161 opcodes | EXPRESSION_SHAPE |  |
+
 ### simtwo:0000 — 21 members, 12 matched, 9 blocked, 0 ready; profile og
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 1
@@ -100,22 +94,6 @@ Historical labels that no longer describe the fresh result: 83
 | _GetStrategy | 460 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (141/151 opcodes, 454/460 bytes) | SEMANTICS_UNKNOWN |  |
 | _SetCasteProd | 183 | TRUE_SOURCE_SHAPE_MISMATCH | frame layout under the current profile (74/74 opcodes, 183/183 bytes) | LOCAL_FRAME_LAYOUT |  |
 
-### simant:8A76 — 6 members, 0 matched, 5 blocked, 1 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/32 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _ProcHistoryEvent
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 1
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 4, BODY_EXACT_LAYOUT_BLOCKED 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ClearHistory | 299 | BODY_EXACT_LAYOUT_BLOCKED | exact body; private placement / contribution issues only | EXPRESSION_SHAPE |  |
-| _HistUpdate | 317 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (84/93 opcodes, 322/317 bytes) | EXPRESSION_SHAPE |  |
-| _ProcHistoryEvent | 245 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (67/96 opcodes, 248/245 bytes) | EXPRESSION_SHAPE |  |
-| _ToggleHistButton | 400 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (93/138 opcodes, 341/400 bytes | SEMANTICS_UNKNOWN |  |
-| _win_DrawHistoryWindow | 80 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (24/34 opcodes, 74/80 bytes) | PRIVATE_CONST_LAYOUT |  |
-
 ### simant:94A4 — 26 members, 23 matched, 3 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 1; mirrored blocked members: 0
@@ -129,6 +107,37 @@ Historical labels that no longer describe the fresh result: 83
 | _MapToYard | 529 | BODY_EXACT_LAYOUT_BLOCKED | exact body; only unresolved offset bindings (pool / private data / TU context) | DATA_LAYOUT |  |
 | _TileIsVisible | 74 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (25/30 opcodes, 69/74 bytes) | DATA_LAYOUT |  |
 | _UpdateLayQueenModeDisplay | 108 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (29/39 opcodes, 120/108 bytes) | PRIVATE_CONST_LAYOUT |  |
+
+### simone:5AD2 — 48 members, 25 matched, 20 blocked, 3 ready; profile og
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 11/35 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _DoLifeExchange
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 20
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ClearLife | 258 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (62/103 opcodes, | REGISTER_ALLOCATION |  |
+| _ClearMyLife | 465 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (151/190 opcodes | EXPRESSION_SHAPE |  |
+| _DropMyEgg | 1126 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (215/450 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _DropPebble | 662 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (213/261 opcodes, 640/662 byte | SEMANTICS_UNKNOWN |  |
+| _EatMyFood | 443 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (121/156 opcodes, 428/443 byte | SEMANTICS_UNKNOWN |  |
+| _FindEggAt | 499 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (37/199 opcodes, 98/499 bytes) | SEMANTICS_UNKNOWN |  |
+| _FindLifeAt | 473 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (37/189 opcodes, 98/473 bytes) | SEMANTICS_UNKNOWN |  |
+| _IsClearTile | 332 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (131/153 opcodes | SEMANTICS_UNKNOWN |  |
+| _IsItDigable | 240 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (68/113 opcodes, 208/240 bytes | EXPRESSION_SHAPE |  |
+| _IsItFoodAt | 193 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (78/88 opcodes, 200/193 bytes) | SEMANTICS_UNKNOWN |  |
+| _IsItYellow | 206 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (65/90 opcodes, 188/206 bytes) | EXPRESSION_SHAPE |  |
+| _IsNotObstacle | 255 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (77/108 opcodes, | REGISTER_ALLOCATION |  |
+| _IsSamePlane | 32 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (12/18 opcodes, 34/32 bytes) | REGISTER_ALLOCATION |  |
+| _IsThisPebble | 49 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (22/24 opcodes, 50/49 bytes) | REGISTER_ALLOCATION |  |
+| _PickupMyFood | 672 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (178/268 opcodes | EXPRESSION_SHAPE |  |
+| _PickupMyRock | 692 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (144/263 opcodes, 633/692 byte | EXPRESSION_SHAPE |  |
+| _SetLife | 432 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (110/180 opcodes | EXPRESSION_SHAPE |  |
+| _SetMyLife | 196 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (76/79 opcodes, 196/196 bytes) | EXPRESSION_SHAPE |  |
+| _TileCanBeMovedOn | 349 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (119/143 opcodes | REGISTER_ALLOCATION |  |
+| _TryMyDropOrLift | 619 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (127/247 opcodes | EXPRESSION_SHAPE |  |
 
 ### simant1:2D4E — 30 members, 12 matched, 18 blocked, 0 ready; profile og
 
@@ -159,10 +168,64 @@ Historical labels that no longer describe the fresh result: 83
 | _StealFoodB | 67 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (19/26 opcodes, 60/67 bytes) | SEMANTICS_UNKNOWN | _StealFoodR (MATCH_BLOCKED) |
 | _TryMoveDirB | 266 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (78/95 opcodes, 261/266 bytes) | EXPRESSION_SHAPE | _TryMoveDirR (MATCH_BLOCKED) |
 
+### simant1:5344 — 28 members, 11 matched, 17 blocked, 0 ready; profile og
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 17
+- selector pool: 6/21 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _DoNestAntR
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 17
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DoDigInR | 798 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (225/285 opcodes | REGISTER_ALLOCATION | _DoDigInB (MATCH_BLOCKED) |
+| _DoDigOutR | 656 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (173/247 opcodes | REGISTER_ALLOCATION | _DoDigOutB (MATCH_BLOCKED) |
+| _DoDrownR | 210 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (63/71 opcodes, 202/210 bytes) | REGISTER_ALLOCATION | _DoDrownB (MATCH_BLOCKED) |
+| _DoFoodInR | 640 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (180/229 opcodes | REGISTER_ALLOCATION | _DoFoodInB (MATCH_BLOCKED) |
+| _DoNestAntR | 1925 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (374/684 opcodes | REGISTER_ALLOCATION | _DoNestAntB (MATCH_BLOCKED) |
+| _DoNestFightR | 304 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (88/108 opcodes, 290/304 bytes) | REGISTER_ALLOCATION | _DoNestFightB (MATCH_BLOCKED) |
+| _DoNestingR | 557 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (157/183 opcodes | REGISTER_ALLOCATION | _DoNestingB (MATCH_BLOCKED) |
+| _DropFoodR | 100 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (27/37 opcodes,  | REGISTER_ALLOCATION | _DropFoodB (MATCH_BLOCKED) |
+| _GetOutR | 314 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (100/117 opcodes, 307/314 byte | REGISTER_ALLOCATION | _GetOutB (MATCH_BLOCKED) |
+| _KillTailR | 45 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (15/17 opcodes, 44/45 bytes) | REGISTER_ALLOCATION | _KillTailB (MATCH_BLOCKED) |
+| _LostHeadR | 94 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (36/41 opcodes, 94/94 bytes) | REGISTER_ALLOCATION | _LostHeadB (MATCH_BLOCKED) |
+| _LostTailR | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (38/43 opcodes, 100/98 bytes) | REGISTER_ALLOCATION | _LostTailB (MATCH_BLOCKED) |
+| _MakeNewTailR | 101 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (29/40 opcodes, 91/101 bytes) | TRANSLATION_UNIT_CONTEXT_REQUIRED | _MakeNewTailB (MATCH_BLOCKED) |
+| _QueenMoveR | 246 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (83/95 opcodes,  | PRIVATE_CONST_LAYOUT | _QueenMoveB (MATCH_BLOCKED) |
+| _SimQueenR | 639 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (195/223 opcodes | EXPRESSION_SHAPE | _SimQueenB (MATCH_BLOCKED) |
+| _StealFoodR | 67 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (19/26 opcodes, 54/67 bytes) | REGISTER_ALLOCATION | _StealFoodB (MATCH_BLOCKED) |
+| _TryMoveDirR | 186 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (62/73 opcodes, 195/186 bytes) | SEMANTICS_UNKNOWN | _TryMoveDirB (MATCH_BLOCKED) |
+
+### antedit:00F4 — 40 members, 19 matched, 15 blocked, 6 ready; profile og
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 11/131 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _LoadTiles
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 11, SOURCE_BINDING_INELIGIBLE 2, ABI_TYPE_INFERENCE 1, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _SetEditWinTitle | 232 | ABI_TYPE_INFERENCE | call/pointer-shape differences (STRING_INTRINSIC_IDIOM) | STRING_INTRINSIC_IDIOM |  |
+| _ScrollEditWindow | 165 | SOURCE_BINDING_INELIGIBLE | native body_exact source gate rejects current binding identities; correct source before unit assembly | EXPRESSION_SHAPE |  |
+| _UpdateEditIfBufInvalid | 82 | SOURCE_BINDING_INELIGIBLE | native body_exact source gate rejects current binding identities; correct source before unit assembly | CALLING_CONVENTION |  |
+| _AddMsgBalloon | 276 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (92/114 opcodes, | SEMANTICS_UNKNOWN |  |
+| _BoundEditPosition | 107 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (35/38 opcodes, 109/107 bytes) | EXPRESSION_SHAPE |  |
+| _CenterEdit | 180 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (66/67 opcodes, 180/180 bytes) | SEMANTICS_UNKNOWN |  |
+| _ClearEditDeltaTables | 247 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (69/89 opcodes,  | LOCAL_FRAME_LAYOUT |  |
+| _DoEditScroll | 1047 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (312/353 opcodes, 1027/1047 bytes) | REGISTER_ALLOCATION |  |
+| _DoEditScrollLine | 322 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (99/109 opcodes, 324/322 bytes) | REGISTER_ALLOCATION |  |
+| _DrawEditGraphs | 379 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (74/138 opcodes, 256/379 bytes) | SEMANTICS_UNKNOWN |  |
+| _ScrollEditArrays | 734 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (119/301 opcodes, 800/734 byte | TRANSLATION_UNIT_CONTEXT |  |
+| _ed_LineTo | 665 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (162/267 opcodes | SEMANTICS_UNKNOWN |  |
+| _win_DrawEditWindow | 195 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (57/69 opcodes,  | REGISTER_ALLOCATION |  |
+| _win_EditChanged | 458 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (136/157 opcodes | LOCAL_FRAME_LAYOUT |  |
+| _DrawBalloons | 897 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
+
 ### simant1:0000 — 31 members, 16 matched, 15 blocked, 0 ready; profile og
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 13/40 words introduced by admitted or exact members; private data words 0 (reproduced)
+- selector pool: 13/40 words introduced by admitted or exact members; private data words 1 (reproduced)
 - likely next missing introducer: _DoAntSim
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 15
@@ -185,36 +248,10 @@ Historical labels that no longer describe the fresh result: 83
 | _DoToNestAnt | 915 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (258/325 opcodes | LOCAL_FRAME_LAYOUT |  |
 | _SimQueenA | 169 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (51/66 opcodes,  | REGISTER_ALLOCATION |  |
 
-### simone:5AD2 — 48 members, 25 matched, 15 blocked, 8 ready; profile og
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 11/35 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _DoLifeExchange
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 15
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ClearLife | 258 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (62/103 opcodes, | REGISTER_ALLOCATION |  |
-| _ClearMyLife | 465 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (151/190 opcodes | EXPRESSION_SHAPE |  |
-| _EatMyFood | 443 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (121/156 opcodes, 428/443 byte | SEMANTICS_UNKNOWN |  |
-| _FindEggAt | 499 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (37/199 opcodes, 98/499 bytes) | SEMANTICS_UNKNOWN |  |
-| _FindLifeAt | 473 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (37/189 opcodes, 98/473 bytes) | SEMANTICS_UNKNOWN |  |
-| _IsClearTile | 332 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (131/153 opcodes | SEMANTICS_UNKNOWN |  |
-| _IsItDigable | 240 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (68/113 opcodes, 208/240 bytes | EXPRESSION_SHAPE |  |
-| _IsItFoodAt | 193 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (78/88 opcodes, 200/193 bytes) | SEMANTICS_UNKNOWN |  |
-| _IsItYellow | 206 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (65/90 opcodes, 188/206 bytes) | EXPRESSION_SHAPE |  |
-| _IsNotObstacle | 255 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (77/108 opcodes, | REGISTER_ALLOCATION |  |
-| _IsSamePlane | 32 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (12/18 opcodes, 34/32 bytes) | REGISTER_ALLOCATION |  |
-| _IsThisPebble | 49 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (22/24 opcodes, 50/49 bytes) | REGISTER_ALLOCATION |  |
-| _SetLife | 432 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (110/180 opcodes | EXPRESSION_SHAPE |  |
-| _SetMyLife | 196 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (76/79 opcodes, 196/196 bytes) | EXPRESSION_SHAPE |  |
-| _TileCanBeMovedOn | 349 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (119/143 opcodes | REGISTER_ALLOCATION |  |
-
 ### simant:B324 — 20 members, 6 matched, 14 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 10/24 words introduced by admitted or exact members; private data words 2 (reproduced)
+- selector pool: 9/25 words introduced by admitted or exact members; private data words 1 (reproduced)
 - likely next missing introducer: _win_CasteControlChanged
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 14
@@ -260,50 +297,94 @@ Historical labels that no longer describe the fresh result: 83
 | _TileFrame2 | 350 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (93/140 opcodes, | REGISTER_ALLOCATION |  |
 | _CarpetFloorR | 182 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | OPTIMIZER_VARIANT_REQUIRED |  |
 
-### antedit:00F4 — 40 members, 19 matched, 12 blocked, 9 ready; profile og
+### simant:01B6 — 29 members, 13 matched, 12 blocked, 3 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 11/131 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _LoadTiles
+- selector pool: 8/44 words introduced by admitted or exact members; private data words 2 (reproduced)
+- likely next missing introducer: _DoUserButton
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 11, ABI_TYPE_INFERENCE 1
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 10, ABI_TYPE_INFERENCE 1, UNKNOWN 1
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _SetEditWinTitle | 232 | ABI_TYPE_INFERENCE | call/pointer-shape differences (STRING_INTRINSIC_IDIOM) | STRING_INTRINSIC_IDIOM |  |
-| _AddMsgBalloon | 276 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (92/114 opcodes, | SEMANTICS_UNKNOWN |  |
-| _BoundEditPosition | 107 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (35/38 opcodes, 109/107 bytes) | EXPRESSION_SHAPE |  |
-| _CenterEdit | 180 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (66/67 opcodes, 180/180 bytes) | SEMANTICS_UNKNOWN |  |
-| _ClearEditDeltaTables | 247 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (69/89 opcodes,  | LOCAL_FRAME_LAYOUT |  |
-| _DoEditScroll | 1047 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (312/353 opcodes, 1027/1047 bytes) | REGISTER_ALLOCATION |  |
-| _DoEditScrollLine | 322 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (99/109 opcodes, 324/322 bytes) | REGISTER_ALLOCATION |  |
-| _DrawEditGraphs | 379 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (74/138 opcodes, 256/379 bytes) | SEMANTICS_UNKNOWN |  |
-| _ScrollEditWindow | 165 | TRUE_SOURCE_SHAPE_MISMATCH | exact body but wrong displacement/index for _editHeight, _editWidth, _tileHeight, _tileWidth (binding semantic | EXPRESSION_SHAPE |  |
-| _UpdateEditIfBufInvalid | 82 | TRUE_SOURCE_SHAPE_MISMATCH | exact body but wrong displacement/index for _DrawEdit (binding semantics) | CALLING_CONVENTION |  |
-| _win_DrawEditWindow | 195 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (57/69 opcodes,  | REGISTER_ALLOCATION |  |
-| _win_EditChanged | 458 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (136/157 opcodes | LOCAL_FRAME_LAYOUT |  |
+| MYENUMFUNC | 48 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION |  |
+| _AdjustWndMinMax | 457 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (126/204 opcodes | EXPRESSION_SHAPE |  |
+| _DoBookMark | 513 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (137/183 opcodes, 497/513 bytes) | EXPRESSION_SHAPE |  |
+| _DoEvent | 548 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (76/226 opcodes, 228/548 bytes) | SEMANTICS_UNKNOWN |  |
+| _DoKeyDown | 1385 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (137/514 opcodes | SEMANTICS_UNKNOWN |  |
+| _DoMenuEntry | 503 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (137/183 opcodes, 436/503 bytes) | EXPRESSION_SHAPE |  |
+| _DoMouse | 1077 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (187/394 opcodes | SEMANTICS_UNKNOWN |  |
+| _DoUserButton | 994 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (291/377 opcodes | LOCAL_FRAME_LAYOUT |  |
+| _InitApplication | 315 | TRUE_SOURCE_SHAPE_MISMATCH | frame layout under the current profile (90/90 opcodes, 315/315 bytes) | LOCAL_FRAME_LAYOUT |  |
+| _NetworkSend | 451 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (138/183 opcodes, 431/451 bytes) | EXPRESSION_SHAPE |  |
+| _UpdateWindows | 540 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (122/173 opcodes | SEMANTICS_UNKNOWN |  |
+| _ProcessPost | 672 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
 
-### simant1:75F4 — 15 members, 3 matched, 11 blocked, 1 ready; profile baseline
+### antedit:C19C — 15 members, 4 matched, 11 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 3/37 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _DoAntMoveY
+- selector pool: 7/27 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _ProcMapEvent
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 10, ABI_TYPE_INFERENCE 1
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 10, SOURCE_BINDING_INELIGIBLE 1
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _GetMyNextRandDirs | 244 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION |  |
-| _AnimYellowFight | 545 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (173/188 opcodes, 553/545 bytes) | REGISTER_ALLOCATION |  |
-| _AnimYellowInsane | 454 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (143/161 opcodes | REGISTER_ALLOCATION |  |
-| _ExitNest | 477 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (145/155 opcodes, 465/477 bytes) | EXPRESSION_SHAPE |  |
-| _GetMyBestDir | 399 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (116/154 opcodes, 379/399 bytes) | REGISTER_ALLOCATION |  |
-| _GetMyBestDirs | 256 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (76/98 opcodes,  | REGISTER_ALLOCATION |  |
-| _GetMyDir | 788 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (66/296 opcodes, | EXPRESSION_SHAPE |  |
-| _GetMyDis | 421 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (70/125 opcodes, | REGISTER_ALLOCATION |  |
-| _GetMyInitialRandDir | 91 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (34/36 opcodes, 89/91 bytes) | TRANSLATION_UNIT_CONTEXT |  |
-| _GetMyRandDirs | 536 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (143/192 opcodes | REGISTER_ALLOCATION |  |
-| _YellowFight | 457 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (132/161 opcodes | EXPRESSION_SHAPE |  |
+| _ToggleMapCursor | 261 | SOURCE_BINDING_INELIGIBLE | native body_exact source gate rejects current binding identities; correct source before unit assembly | PRIVATE_CONST_LAYOUT |  |
+| _DrawMap | 264 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (88/91 opcodes, 264/264 bytes) | SEMANTICS_UNKNOWN |  |
+| _DrawMapCursor | 185 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 197/185 bytes) | OPTIMIZER_VARIANT_REQUIRED |  |
+| _DrawMapFoot | 484 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (141/174 opcodes | REGISTER_ALLOCATION |  |
+| _DrawMapSpider | 280 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (82/113 opcodes, | REGISTER_ALLOCATION |  |
+| _EraseMapCursor | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (16/25 opcodes, 72/66 bytes) | DATA_LAYOUT |  |
+| _MapToYellowAnt | 105 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (40/46 opcodes, 110/105 bytes) | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _Mini_DrawMapI | 811 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (226/284 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _ProcMapEvent | 434 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (152/169 opcodes, 434/434 bytes) | REGISTER_ALLOCATION |  |
+| _ProcMapRibbonEvent | 626 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (226/243 opcodes, 616/626 byte | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _win_DrawMapWindow | 712 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (160/233 opcodes, 633/712 bytes) | PRIVATE_CONST_LAYOUT |  |
+
+### gr:7712 — 28 members, 14 matched, 11 blocked, 3 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 1/3 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _myBeginSong
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 10, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ExtractVariableLen | 222 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (64/86 opcodes,  | REGISTER_ALLOCATION |  |
+| _IsDLLAvail | 300 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (107/127 opcodes | EXPRESSION_SHAPE |  |
+| _MciMessage | 295 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (60/95 opcodes,  | EXPRESSION_SHAPE |  |
+| _MciOutWave | 788 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (207/288 opcodes | DATA_LAYOUT |  |
+| _StopSong | 272 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (81/95 opcodes, 274/272 bytes) | REGISTER_ALLOCATION |  |
+| _musSoundBlasterClose | 100 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (25/27 opcodes, 97/100 bytes) | PRIVATE_CONST_LAYOUT |  |
+| _myServiceSong | 78 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (26/29 opcodes, 80/78 bytes) | PRIVATE_CONST_LAYOUT |  |
+| _mySongIsDone | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (14/21 opcodes, 60/66 bytes) | DATA_LAYOUT |  |
+| _snd_Deinstall | 608 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (158/205 opcodes | DATA_LAYOUT |  |
+| _vocSoundBlasterClose | 100 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (25/27 opcodes, 97/100 bytes) | PRIVATE_CONST_LAYOUT |  |
+| _SoundBlasterMessage | 296 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
+
+### simone:04DE — 15 members, 4 matched, 11 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 4
+- selector pool: 0/17 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _CountAnts
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 9, ABI_TYPE_INFERENCE 2
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _PlaceEggB | 100 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION | _PlaceEggR (MATCH_BLOCKED) |
+| _PlaceEggR | 100 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION | _PlaceEggB (MATCH_BLOCKED) |
+| _CountAnts | 725 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (198/233 opcodes, 765/725 byte | DATA_LAYOUT |  |
+| _DoWater | 773 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (260/308 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _DropFoodA | 292 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (48/112 opcodes, | SEMANTICS_UNKNOWN |  |
+| _DropWater | 195 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (78/84 opcodes,  | REGISTER_ALLOCATION |  |
+| _FoodFall | 150 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (55/57 opcodes, 154/150 bytes) | SEMANTICS_UNKNOWN |  |
+| _PickupFoodA | 109 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (23/44 opcodes,  | PRIVATE_CONST_LAYOUT |  |
+| _PickupFoodB | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (27/41 opcodes, 78/98 bytes) | PRIVATE_CONST_LAYOUT | _PickupFoodR (MATCH_BLOCKED) |
+| _PickupFoodR | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (27/41 opcodes, 78/98 bytes) | PRIVATE_CONST_LAYOUT | _PickupFoodB (MATCH_BLOCKED) |
+| _PlaceDrop | 170 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (52/58 opcodes, 168/170 bytes) | DATA_LAYOUT |  |
 
 ### simone:16AE — 11 members, 1 matched, 10 blocked, 0 ready; profile baseline
 
@@ -326,111 +407,13 @@ Historical labels that no longer describe the fresh result: 83
 | _MakeNewHoleB | 436 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (143/176 opcodes | REGISTER_ALLOCATION | _MakeNewHoleR (MATCH_BLOCKED) |
 | _MakeNewHoleR | 650 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (207/254 opcodes | REGISTER_ALLOCATION | _MakeNewHoleB (MATCH_BLOCKED) |
 
-### antedit:C19C — 15 members, 4 matched, 9 blocked, 2 ready; profile baseline
+### simant:9D04 — 18 members, 9 matched, 9 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 7/25 words introduced by admitted or exact members; private data words 1 (reproduced)
-- likely next missing introducer: _DrawMapCursor
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 9
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _DrawMap | 264 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (88/91 opcodes, 264/264 bytes) | SEMANTICS_UNKNOWN |  |
-| _DrawMapCursor | 185 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 197/185 bytes) | OPTIMIZER_VARIANT_REQUIRED |  |
-| _DrawMapFoot | 484 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (141/174 opcodes | REGISTER_ALLOCATION |  |
-| _DrawMapSpider | 280 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (82/113 opcodes, | REGISTER_ALLOCATION |  |
-| _EraseMapCursor | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (16/25 opcodes, 72/66 bytes) | DATA_LAYOUT |  |
-| _MapToYellowAnt | 105 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (40/46 opcodes, 110/105 bytes) | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _Mini_DrawMapI | 811 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (226/284 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _ProcMapEvent | 434 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (152/169 opcodes, 434/434 bytes) | REGISTER_ALLOCATION |  |
-| _ToggleMapCursor | 261 | TRUE_SOURCE_SHAPE_MISMATCH | exact body but wrong displacement/index for _just, _mapTileRect (binding semantics) | PRIVATE_CONST_LAYOUT |  |
-
-### gr:7712 — 28 members, 14 matched, 9 blocked, 5 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 1/3 words introduced by admitted or exact members; private data words 1 (reproduced)
-- likely next missing introducer: _myBeginSong
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 8, UNKNOWN 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ExtractVariableLen | 222 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (64/86 opcodes,  | REGISTER_ALLOCATION |  |
-| _IsDLLAvail | 300 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (107/127 opcodes | EXPRESSION_SHAPE |  |
-| _MciMessage | 295 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (60/95 opcodes,  | EXPRESSION_SHAPE |  |
-| _StopSong | 272 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (81/95 opcodes, 274/272 bytes) | REGISTER_ALLOCATION |  |
-| _musSoundBlasterClose | 100 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (25/27 opcodes, 97/100 bytes) | PRIVATE_CONST_LAYOUT |  |
-| _myServiceSong | 78 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (26/29 opcodes, 80/78 bytes) | PRIVATE_CONST_LAYOUT |  |
-| _mySongIsDone | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (14/21 opcodes, 60/66 bytes) | DATA_LAYOUT |  |
-| _vocSoundBlasterClose | 100 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (25/27 opcodes, 97/100 bytes) | PRIVATE_CONST_LAYOUT |  |
-| _SoundBlasterMessage | 296 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
-
-### simant:01B6 — 29 members, 13 matched, 9 blocked, 6 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 8/36 words introduced by admitted or exact members; private data words 2 (reproduced)
-- likely next missing introducer: _DoUserButton
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 8, ABI_TYPE_INFERENCE 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| MYENUMFUNC | 48 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION |  |
-| _AdjustWndMinMax | 457 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (126/204 opcodes | EXPRESSION_SHAPE |  |
-| _DoBookMark | 513 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (137/183 opcodes, 497/513 bytes) | EXPRESSION_SHAPE |  |
-| _DoMenuEntry | 503 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (137/183 opcodes, 436/503 bytes) | EXPRESSION_SHAPE |  |
-| _DoMouse | 1077 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (187/394 opcodes | SEMANTICS_UNKNOWN |  |
-| _DoUserButton | 994 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (291/377 opcodes | LOCAL_FRAME_LAYOUT |  |
-| _InitApplication | 315 | TRUE_SOURCE_SHAPE_MISMATCH | frame layout under the current profile (90/90 opcodes, 315/315 bytes) | LOCAL_FRAME_LAYOUT |  |
-| _NetworkSend | 451 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (138/183 opcodes, 431/451 bytes) | EXPRESSION_SHAPE |  |
-| _UpdateWindows | 540 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (122/173 opcodes | SEMANTICS_UNKNOWN |  |
-
-### simone:04DE — 15 members, 4 matched, 9 blocked, 2 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 4
-- selector pool: 0/17 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _CountAnts
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 7, ABI_TYPE_INFERENCE 2
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _PlaceEggB | 100 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION | _PlaceEggR (MATCH_BLOCKED) |
-| _PlaceEggR | 100 | ABI_TYPE_INFERENCE | call/pointer-shape differences (CALLING_CONVENTION) | CALLING_CONVENTION | _PlaceEggB (MATCH_BLOCKED) |
-| _DropFoodA | 292 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (48/112 opcodes, | SEMANTICS_UNKNOWN |  |
-| _DropWater | 195 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (78/84 opcodes,  | REGISTER_ALLOCATION |  |
-| _FoodFall | 150 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (55/57 opcodes, 154/150 bytes) | SEMANTICS_UNKNOWN |  |
-| _PickupFoodA | 109 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (23/44 opcodes,  | PRIVATE_CONST_LAYOUT |  |
-| _PickupFoodB | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (27/41 opcodes, 78/98 bytes) | PRIVATE_CONST_LAYOUT | _PickupFoodR (MATCH_BLOCKED) |
-| _PickupFoodR | 98 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (27/41 opcodes, 78/98 bytes) | PRIVATE_CONST_LAYOUT | _PickupFoodB (MATCH_BLOCKED) |
-| _PlaceDrop | 170 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (52/58 opcodes, 168/170 bytes) | DATA_LAYOUT |  |
-
-### antedit:A998 — 22 members, 13 matched, 7 blocked, 2 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 7/33 words introduced by admitted or exact members; private data words 3 (reproduced)
-- likely next missing introducer: _win_DrawYardWindow
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 6, UNKNOWN 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _DrawColonyBars | 253 | TRUE_SOURCE_SHAPE_MISMATCH | frame layout under the current profile (88/88 opcodes, 253/253 bytes) | SEMANTICS_UNKNOWN |  |
-| _DrawMower | 229 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (55/90 opcodes, 256/229 bytes) | EXPRESSION_SHAPE |  |
-| _DrawSimColonies | 247 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (62/86 opcodes,  | SEMANTICS_UNKNOWN |  |
-| _DrawSimKid | 507 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (144/166 opcodes | LOCAL_FRAME_LAYOUT |  |
-| _InvertPatch | 159 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (45/64 opcodes,  | REGISTER_ALLOCATION |  |
-| _win_DrawYardWindow | 558 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (153/195 opcodes, 586/558 bytes) | EXPRESSION_SHAPE |  |
-| _DrawSimCat | 132 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
-
-### simant:9D04 — 18 members, 9 matched, 7 blocked, 2 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 11/33 words introduced by admitted or exact members; private data words 0 (reproduced)
+- selector pool: 11/33 words introduced by admitted or exact members; private data words 1 (reproduced)
 - likely next missing introducer: _KillSomeAnts
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 7
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 8, UNKNOWN 1
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
@@ -438,9 +421,86 @@ Historical labels that no longer describe the fresh result: 83
 | _GotoMyAnt | 224 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (69/73 opcodes, 221/224 bytes) | REGISTER_ALLOCATION |  |
 | _KillSomeAnts | 198 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (58/71 opcodes, 187/198 bytes) | REGISTER_ALLOCATION |  |
 | _MysteryButton | 616 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (186/240 opcodes, 602/616 byte | REGISTER_ALLOCATION |  |
+| _PlaceQueenInYard | 937 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (208/326 opcodes | EXPRESSION_SHAPE |  |
 | _SetMapPlaneLocation | 419 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (122/133 opcodes | REGISTER_ALLOCATION |  |
 | _SubtractFood | 77 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (31/32 opcodes,  | LOCAL_FRAME_LAYOUT |  |
 | _XferPatch | 385 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (124/137 opcodes, 385/385 byte | REGISTER_ALLOCATION |  |
+| _SetYardMode | 1009 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
+
+### antedit:7022 — 23 members, 15 matched, 8 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 1/19 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _processExp
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 7, ABI_TYPE_INFERENCE 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _SmoothACell | 944 | ABI_TYPE_INFERENCE | call/pointer-shape differences (FAR_POINTER_TYPE) | FAR_POINTER_TYPE |  |
+| _ConnectAll | 1267 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (269/538 opcodes | LOCAL_FRAME_LAYOUT |  |
+| _DropWall | 285 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (85/108 opcodes, | TRANSLATION_UNIT_CONTEXT |  |
+| _ExpDig | 997 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (239/372 opcodes | TRANSLATION_UNIT_CONTEXT |  |
+| _ExpIncSmell | 445 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (155/166 opcodes, 457/445 byte | TRANSLATION_UNIT_CONTEXT |  |
+| _ExpKillAnts | 478 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (109/179 opcodes | TRANSLATION_UNIT_CONTEXT |  |
+| _IncFoodHere | 287 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (86/102 opcodes, 273/287 bytes | TRANSLATION_UNIT_CONTEXT |  |
+| _processExp | 604 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (133/220 opcodes | EXPRESSION_SHAPE |  |
+
+### antedit:A998 — 22 members, 13 matched, 8 blocked, 1 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 7/33 words introduced by admitted or exact members; private data words 5 (reproduced)
+- likely next missing introducer: _win_DrawYardWindow
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 7, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DrawColonyBars | 253 | TRUE_SOURCE_SHAPE_MISMATCH | frame layout under the current profile (88/88 opcodes, 253/253 bytes) | SEMANTICS_UNKNOWN |  |
+| _DrawMower | 229 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (55/90 opcodes, 256/229 bytes) | EXPRESSION_SHAPE |  |
+| _DrawSimColonies | 247 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (62/86 opcodes,  | SEMANTICS_UNKNOWN |  |
+| _DrawSimKid | 507 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (144/166 opcodes | LOCAL_FRAME_LAYOUT |  |
+| _DrawSwarm | 718 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (173/263 opcodes | PRIVATE_CONST_LAYOUT |  |
+| _InvertPatch | 159 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (45/64 opcodes,  | REGISTER_ALLOCATION |  |
+| _win_DrawYardWindow | 558 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (153/195 opcodes, 586/558 bytes) | EXPRESSION_SHAPE |  |
+| _DrawSimCat | 132 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
+
+### simant:6A38 — 15 members, 5 matched, 8 blocked, 2 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 14/55 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _processEdit
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 7, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DoLaserFire | 719 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (227/270 opcodes | LOCAL_FRAME_LAYOUT |  |
+| _LionDialog | 449 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (132/156 opcodes, 453/449 bytes) | EXPRESSION_SHAPE |  |
+| _SetGoalsY | 105 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (24/34 opcodes, 94/105 bytes) | PRIVATE_CONST_LAYOUT |  |
+| _SpecialXfer | 490 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (135/175 opcodes | SEMANTICS_UNKNOWN |  |
+| _YellowCommand | 625 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (195/227 opcodes, 606/625 bytes) | REGISTER_ALLOCATION |  |
+| _YellowCommandKey | 600 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (180/231 opcodes, 536/600 bytes) | EXPRESSION_SHAPE |  |
+| _YellowDialog | 523 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (134/175 opcodes | SEMANTICS_UNKNOWN |  |
+| _YellowBirth | 936 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
+
+### gr:6410 — 10 members, 2 matched, 7 blocked, 1 ready; profile og
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/2 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _hanim_AddAnimObject
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 6, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _hanim_ActuallyRemoveAnimObjects | 248 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (65/105 opcodes, | EXPRESSION_SHAPE |  |
+| _hanim_AddAnimObject | 650 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (147/248 opcodes | SEMANTICS_UNKNOWN |  |
+| _hanim_HideObject | 179 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (62/78 opcodes,  | SEMANTICS_UNKNOWN |  |
+| _hanim_RemoveAllAnimObjects | 109 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (45/52 opcodes,  | SEMANTICS_UNKNOWN |  |
+| _hanim_RemoveAnimObject | 260 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (70/107 opcodes, | EXPRESSION_SHAPE |  |
+| _hanim_ShowObject | 179 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (70/78 opcodes,  | REGISTER_ALLOCATION |  |
+| _hanim_SetObjectPos | 974 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
 
 ### simone:2B42 — 14 members, 7 matched, 7 blocked, 0 ready; profile baseline
 
@@ -460,6 +520,24 @@ Historical labels that no longer describe the fresh result: 83
 | _GetFromAlist | 72 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (26/38 opcodes, 69/72 bytes) | DATA_LAYOUT |  |
 | _RemoveFromAList | 255 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, frame layout under the current profile (73/98 opcodes, 246/255 bytes) | REGISTER_ALLOCATION |  |
 
+### simtwo:1378 — 21 members, 12 matched, 7 blocked, 2 ready; profile og
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 34/63 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _SimKidOutside
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 7
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _FootFall | 339 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (92/130 opcodes, | LOCAL_FRAME_LAYOUT |  |
+| _GetMowDir | 225 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (90/92 opcodes,  | EXPRESSION_SHAPE |  |
+| _MowerFall | 166 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (53/54 opcodes, 166/166 bytes) | EXPRESSION_SHAPE |  |
+| _NotMowed | 52 | TRUE_SOURCE_SHAPE_MISMATCH | register allocation under the current profile (26/26 opcodes, 52/52 bytes) | REGISTER_ALLOCATION |  |
+| _SimBird | 633 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (183/200 opcodes, 631/633 bytes) | EXPRESSION_SHAPE |  |
+| _SimDog | 946 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (250/339 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _SimKidInside | 2036 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (385/645 opcodes | SEMANTICS_UNKNOWN |  |
+
 ### simtwo:9A86 — 7 members, 0 matched, 7 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -478,39 +556,22 @@ Historical labels that no longer describe the fresh result: 83
 | _FindIndex | 237 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (62/88 opcodes, 224/237 bytes) | REGISTER_ALLOCATION |  |
 | _OpenIndex | 194 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (64/75 opcodes,  | REGISTER_ALLOCATION |  |
 
-### simant:6A38 — 15 members, 5 matched, 6 blocked, 4 ready; profile baseline
+### simant:5530 — 12 members, 5 matched, 6 blocked, 1 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 14/55 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _processEdit
+- selector pool: 1/20 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: _CalcScore
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 6
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _LionDialog | 449 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (132/156 opcodes, 453/449 bytes) | EXPRESSION_SHAPE |  |
-| _SetGoalsY | 105 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (24/34 opcodes, 94/105 bytes) | PRIVATE_CONST_LAYOUT |  |
-| _SpecialXfer | 490 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (135/175 opcodes | SEMANTICS_UNKNOWN |  |
-| _YellowCommand | 625 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (195/227 opcodes, 606/625 bytes) | REGISTER_ALLOCATION |  |
-| _YellowCommandKey | 600 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (180/231 opcodes, 536/600 bytes) | EXPRESSION_SHAPE |  |
-| _YellowDialog | 523 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (134/175 opcodes | SEMANTICS_UNKNOWN |  |
-
-### simtwo:1378 — 21 members, 12 matched, 6 blocked, 3 ready; profile og
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 34/63 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _SimKidOutside
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 6
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _FootFall | 339 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (92/130 opcodes, | LOCAL_FRAME_LAYOUT |  |
-| _GetMowDir | 225 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (90/92 opcodes,  | EXPRESSION_SHAPE |  |
-| _MowerFall | 166 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape under the current profile (53/54 opcodes, 166/166 bytes) | EXPRESSION_SHAPE |  |
-| _NotMowed | 52 | TRUE_SOURCE_SHAPE_MISMATCH | register allocation under the current profile (26/26 opcodes, 52/52 bytes) | REGISTER_ALLOCATION |  |
-| _SimDog | 946 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (250/339 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _SimKidInside | 2036 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (385/645 opcodes | SEMANTICS_UNKNOWN |  |
+| _DrawCastePopUp | 814 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (206/293 opcodes | DATA_LAYOUT |  |
+| _EndGameDialog | 312 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (96/112 opcodes, 310/312 bytes) | REGISTER_ALLOCATION |  |
+| _PictureDialog | 535 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (150/186 opcodes | SEMANTICS_UNKNOWN |  |
+| _ScoreDialog | 244 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (71/85 opcodes, 238/244 bytes) | LOCAL_FRAME_LAYOUT |  |
+| _win_DrawEndGameWindow | 301 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (100/115 opcodes, 318/301 bytes) | SEMANTICS_UNKNOWN |  |
+| _win_DrawScoreWindow | 480 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (112/193 opcodes | SEMANTICS_UNKNOWN |  |
 
 ### simtwo:3EF8 — 10 members, 3 matched, 6 blocked, 1 ready; profile baseline
 
@@ -529,54 +590,6 @@ Historical labels that no longer describe the fresh result: 83
 | _InitSow | 146 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (45/48 opcodes,  | REGISTER_ALLOCATION |  |
 | _KillAntLion | 160 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (52/59 opcodes, 170/160 bytes) | EXPRESSION_SHAPE |  |
 
-### antedit:7022 — 23 members, 15 matched, 5 blocked, 3 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 1/19 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _processExp
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 5
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _DropWall | 285 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (85/108 opcodes, | TRANSLATION_UNIT_CONTEXT |  |
-| _ExpDig | 997 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (239/372 opcodes | TRANSLATION_UNIT_CONTEXT |  |
-| _ExpIncSmell | 445 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (155/166 opcodes, 457/445 byte | TRANSLATION_UNIT_CONTEXT |  |
-| _ExpKillAnts | 478 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (109/179 opcodes | TRANSLATION_UNIT_CONTEXT |  |
-| _IncFoodHere | 287 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (86/102 opcodes, 273/287 bytes | TRANSLATION_UNIT_CONTEXT |  |
-
-### gr:6410 — 10 members, 2 matched, 5 blocked, 3 ready; profile og
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/2 words introduced by admitted or exact members; private data words 1 (reproduced)
-- likely next missing introducer: _hanim_AddAnimObject
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 5
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _hanim_ActuallyRemoveAnimObjects | 248 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (65/105 opcodes, | EXPRESSION_SHAPE |  |
-| _hanim_HideObject | 179 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (62/78 opcodes,  | SEMANTICS_UNKNOWN |  |
-| _hanim_RemoveAllAnimObjects | 109 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (45/52 opcodes,  | SEMANTICS_UNKNOWN |  |
-| _hanim_RemoveAnimObject | 260 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (70/107 opcodes, | EXPRESSION_SHAPE |  |
-| _hanim_ShowObject | 179 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (70/78 opcodes,  | REGISTER_ALLOCATION |  |
-
-### simant:5530 — 12 members, 5 matched, 5 blocked, 2 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 1/20 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _CalcScore
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 5
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _EndGameDialog | 312 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (96/112 opcodes, 310/312 bytes) | REGISTER_ALLOCATION |  |
-| _PictureDialog | 535 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (150/186 opcodes | SEMANTICS_UNKNOWN |  |
-| _ScoreDialog | 244 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (71/85 opcodes, 238/244 bytes) | LOCAL_FRAME_LAYOUT |  |
-| _win_DrawEndGameWindow | 301 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (100/115 opcodes, 318/301 bytes) | SEMANTICS_UNKNOWN |  |
-| _win_DrawScoreWindow | 480 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (112/193 opcodes | SEMANTICS_UNKNOWN |  |
-
 ### simtwo:4CDC — 9 members, 4 matched, 5 blocked, 0 ready; profile og
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -593,10 +606,55 @@ Historical labels that no longer describe the fresh result: 83
 | _PillFoodTile | 110 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (41/47 opcodes,  | REGISTER_ALLOCATION |  |
 | _PlacePillTile | 40 | TRUE_SOURCE_SHAPE_MISMATCH | register allocation, frame layout under the current profile (20/20 opcodes, 40/40 bytes) | REGISTER_ALLOCATION,LOCAL_FRAME_LAYOUT |  |
 
+### antedit:9248 — 9 members, 3 matched, 4 blocked, 2 ready; profile og
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 5/19 words introduced by admitted or exact members; private data words 1 (reproduced)
+- likely next missing introducer: OPENDLG
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 3, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| OPENDLG | 667 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (99/259 opcodes, | SEMANTICS_UNKNOWN |  |
+| _DoLoadInitializations | 481 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (139/167 opcodes, 443/481 bytes) | TRANSLATION_UNIT_CONTEXT |  |
+| _FileSelect | 970 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (73/367 opcodes, | TRANSLATION_UNIT_CONTEXT |  |
+| _SaveGame | 626 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
+
+### antedit:E100 — 6 members, 2 matched, 4 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/13 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _MapAreaEvent
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, UNKNOWN 2
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DrawMiniMapCursor | 155 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (37/43 opcodes, 167/155 bytes) | EXPRESSION_SHAPE |  |
+| _MapAreaEvent | 514 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (128/182 opcodes | TRANSLATION_UNIT_CONTEXT |  |
+| _OpenMiniMapWin | 1254 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _ToggleMiniMapCursor | 203 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | EXPRESSION_SHAPE |  |
+
+### simant:8A76 — 6 members, 1 matched, 4 blocked, 1 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 25/32 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _ProcHistoryEvent
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 4
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _HistUpdate | 317 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (84/93 opcodes, 322/317 bytes) | EXPRESSION_SHAPE |  |
+| _ProcHistoryEvent | 245 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (67/96 opcodes, 248/245 bytes) | EXPRESSION_SHAPE |  |
+| _ToggleHistButton | 400 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (93/138 opcodes, 341/400 bytes | SEMANTICS_UNKNOWN |  |
+| _win_DrawHistoryWindow | 80 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (24/34 opcodes, 74/80 bytes) | PRIVATE_CONST_LAYOUT |  |
+
 ### simone:4668 — 6 members, 1 matched, 4 blocked, 1 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/21 words introduced by admitted or exact members; private data words 0 (reproduced)
+- selector pool: 0/30 words introduced by admitted or exact members; private data words 0 (reproduced)
 - likely next missing introducer: _InitSpider
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 4
@@ -607,6 +665,36 @@ Historical labels that no longer describe the fresh result: 83
 | _SFoundAnt | 319 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (51/132 opcodes, | LOCAL_FRAME_LAYOUT |  |
 | _ScanForAnts | 113 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (45/46 opcodes, 111/113 bytes) | EXPRESSION_SHAPE |  |
 | _SpiderScan | 387 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (124/160 opcodes | EXPRESSION_SHAPE |  |
+
+### simtwo:78CA — 4 members, 0 matched, 4 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/17 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _Feedback
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, UNKNOWN 1, SOURCE_BINDING_INELIGIBLE 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _GiveLesson | 948 | SOURCE_BINDING_INELIGIBLE | native body_exact source gate rejects current binding identities; correct source before unit assembly | PRIVATE_CONST_LAYOUT |  |
+| _Feedback | 453 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (80/150 opcodes, | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _RunTutor | 190 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (41/66 opcodes,  | OPTIMIZER_VARIANT_REQUIRED |  |
+| _LessonDone | 627 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
+
+### simtwo:E4E8 — 4 members, 0 matched, 4 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/2 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _win_GetVal
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, ABI_TYPE_INFERENCE 1, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _win_GetArg | 60 | ABI_TYPE_INFERENCE | call/pointer-shape differences (FAR_POINTER_TYPE) | FAR_POINTER_TYPE |  |
+| __win_CalcObjElement | 307 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (58/139 opcodes, | EXPRESSION_SHAPE |  |
+| _win_GetVal | 138 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 146/138 bytes) | REGISTER_ALLOCATION |  |
+| _win_Recalc | 738 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
 
 ### antedit:67C6 — 5 members, 2 matched, 3 blocked, 0 ready; profile og
 
@@ -622,33 +710,19 @@ Historical labels that no longer describe the fresh result: 83
 | _EditToolsMenu | 506 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (141/188 opcodes | TRANSLATION_UNIT_CONTEXT |  |
 | _win_DrawExamineWindow | 395 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (101/179 opcodes | EXPRESSION_SHAPE |  |
 
-### antedit:E100 — 6 members, 2 matched, 3 blocked, 1 ready; profile baseline
+### simant1:96D4 — 3 members, 0 matched, 3 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
 - selector pool: 0/13 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _MapAreaEvent
+- likely next missing introducer: _DoRedInitiator
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, UNKNOWN 1
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 3
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _DrawMiniMapCursor | 155 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation under the current profile (37/43 opcodes, 167/155 bytes) | EXPRESSION_SHAPE |  |
-| _MapAreaEvent | 514 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (128/182 opcodes | TRANSLATION_UNIT_CONTEXT |  |
-| _ToggleMiniMapCursor | 203 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | EXPRESSION_SHAPE |  |
-
-### simtwo:78CA — 4 members, 0 matched, 3 blocked, 1 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/17 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _Feedback
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, UNKNOWN 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _Feedback | 453 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (80/150 opcodes, | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _RunTutor | 190 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (41/66 opcodes,  | OPTIMIZER_VARIANT_REQUIRED |  |
-| _LessonDone | 627 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
+| _DoRedInitiator | 619 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (77/208 opcodes, | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _GetNewRedTask | 215 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (54/72 opcodes, 227/215 bytes) | SEMANTICS_UNKNOWN |  |
+| _GetRedBestDirs | 220 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (62/89 opcodes, 219/220 bytes) | REGISTER_ALLOCATION |  |
 
 ### simtwo:858A — 5 members, 2 matched, 3 blocked, 0 ready; profile baseline
 
@@ -664,32 +738,31 @@ Historical labels that no longer describe the fresh result: 83
 | _DBPack | 547 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (129/192 opcodes | EXPRESSION_SHAPE |  |
 | _DBRecall | 438 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (151/178 opcodes | REGISTER_ALLOCATION |  |
 
-### simtwo:E4E8 — 3 members, 0 matched, 3 blocked, 0 ready; profile baseline
+### antedit:A51E — 2 members, 0 matched, 2 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/1 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _win_GetVal
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, ABI_TYPE_INFERENCE 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _win_GetArg | 60 | ABI_TYPE_INFERENCE | call/pointer-shape differences (FAR_POINTER_TYPE) | FAR_POINTER_TYPE |  |
-| __win_CalcObjElement | 307 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (58/139 opcodes, | EXPRESSION_SHAPE |  |
-| _win_GetVal | 138 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (50/59 opcodes, 146/138 bytes) | REGISTER_ALLOCATION |  |
-
-### simant1:96D4 — 3 members, 0 matched, 2 blocked, 1 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/13 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _DoRedInitiator
+- selector pool: 0/4 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _ProcYardEvent
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _GetNewRedTask | 215 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (54/72 opcodes, 227/215 bytes) | SEMANTICS_UNKNOWN |  |
-| _GetRedBestDirs | 220 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (62/89 opcodes, 219/220 bytes) | REGISTER_ALLOCATION |  |
+| _ProcYardEvent | 432 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (146/160 opcodes, 444/432 bytes) | REGISTER_ALLOCATION |  |
+| _ProcYardRibbonEvent | 714 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (223/264 opcodes, 694/714 byte | SEMANTICS_UNKNOWN |  |
+
+### gr:4C36 — 5 members, 3 matched, 2 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 1/1 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ms_LoadPopUpResource | 359 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (122/157 opcodes | EXPRESSION_SHAPE |  |
+| _InitMenu | 790 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
 
 ### simone:12E4 — 2 members, 0 matched, 2 blocked, 0 ready; profile baseline
 
@@ -720,7 +793,7 @@ Historical labels that no longer describe the fresh result: 83
 ### simtwo:81AC — 11 members, 9 matched, 2 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 1/1 words introduced by admitted or exact members; private data words 4 (reproduced)
+- selector pool: 1/1 words introduced by admitted or exact members; private data words 5 (reproduced)
 - likely next missing introducer: none (all introducers known)
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2
@@ -827,34 +900,22 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _ChangeDirectory | 364 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (106/147 opcodes | SEMANTICS_UNKNOWN |  |
 
-### antedit:9248 — 9 members, 3 matched, 1 blocked, 5 ready; profile og
+### antedit:DC1E — 2 members, 0 matched, 1 blocked, 1 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 5/19 words introduced by admitted or exact members; private data words 1 (reproduced)
-- likely next missing introducer: OPENDLG
+- selector pool: 0/3 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _MapToolsMenu
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _DoLoadInitializations | 481 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (139/167 opcodes, 443/481 bytes) | TRANSLATION_UNIT_CONTEXT |  |
-
-### antedit:A51E — 2 members, 0 matched, 1 blocked, 1 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/4 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _ProcYardEvent
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ProcYardEvent | 432 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (146/160 opcodes, 444/432 bytes) | REGISTER_ALLOCATION |  |
+| _RibbonToolsMenu | 649 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (209/243 opcodes, 655/649 bytes) | PRIVATE_CONST_LAYOUT |  |
 
 ### gr:0000 — 4 members, 2 matched, 1 blocked, 1 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/9 words introduced by admitted or exact members; private data words 0 (reproduced)
+- selector pool: 0/9 words introduced by admitted or exact members; private data words 1 (reproduced)
 - likely next missing introducer: _SetHelpCursor
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
@@ -862,6 +923,30 @@ Historical labels that no longer describe the fresh result: 83
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
 | _SetHelpCursor | 201 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (17/91 opcodes, 113/201 bytes) | OPTIMIZER_VARIANT_REQUIRED |  |
+
+### gr:08F4 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/2 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _ReadConfig
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: ABI_TYPE_INFERENCE 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ReadConfig | 548 | ABI_TYPE_INFERENCE | call/pointer-shape differences (FAR_POINTER_TYPE) | FAR_POINTER_TYPE |  |
+
+### gr:10A2 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _GPutPacked | 634 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (135/270 opcodes | SEMANTICS_UNKNOWN |  |
 
 ### gr:13EA — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
@@ -911,6 +996,30 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _GBoxFill | 203 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (88/93 opcodes, 211/203 bytes) | SEMANTICS_UNKNOWN |  |
 
+### gr:1BB2 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ConvertMaskBitmap | 703 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (231/328 opcodes | EXPRESSION_SHAPE |  |
+
+### gr:246E — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ConvertBitmap | 674 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (181/275 opcodes | SEMANTICS_UNKNOWN |  |
+
 ### gr:2A40 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -923,6 +1032,18 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _CopyBitmap2 | 370 | ABI_TYPE_INFERENCE | call/pointer-shape differences (FAR_POINTER_TYPE) | FAR_POINTER_TYPE |  |
 
+### gr:332A — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DoBitmap | 678 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (164/257 opcodes | LOCAL_FRAME_LAYOUT |  |
+
 ### gr:35D0 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -934,6 +1055,18 @@ Historical labels that no longer describe the fresh result: 83
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
 | _ConvertMonoBitmap | 123 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (37/51 opcodes,  | OPTIMIZER_VARIANT_REQUIRED |  |
+
+### gr:364C — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/1 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _DoMonoBitmap
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _DoMonoBitmap | 870 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (210/314 opcodes | PRIVATE_CONST_LAYOUT |  |
 
 ### gr:39B2 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
@@ -1067,18 +1200,6 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _ButtonHeld | 441 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (135/153 opcodes, 437/441 bytes) | TRANSLATION_UNIT_CONTEXT |  |
 
-### gr:4C36 — 5 members, 3 matched, 1 blocked, 1 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 1/1 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: none (all introducers known)
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ms_LoadPopUpResource | 359 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (122/157 opcodes | EXPRESSION_SHAPE |  |
-
 ### gr:514C — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -1151,18 +1272,6 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _RallocFindMem | 329 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (112/117 opcodes, 329/329 bytes) | DATA_LAYOUT |  |
 
-### gr:5E30 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: none (all introducers known)
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _ConvertMonoMaskToTandy | 221 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (71/94 opcodes,  | REGISTER_ALLOCATION |  |
-
 ### gr:5F0E — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -1190,7 +1299,7 @@ Historical labels that no longer describe the fresh result: 83
 ### gr:611C — 3 members, 2 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 2/3 words introduced by admitted or exact members; private data words 0 (reproduced)
+- selector pool: 2/3 words introduced by admitted or exact members; private data words 1 (reproduced)
 - likely next missing introducer: _font_SetFont
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
@@ -1403,6 +1512,18 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _SetDevicePalette | 185 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (77/82 opcodes,  | EXPRESSION_SHAPE |  |
 
+### simant:469E — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/2 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _SetUpPalette
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _SetUpPalette | 565 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (135/226 opcodes | DATA_LAYOUT |  |
+
 ### simant:673A — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -1413,7 +1534,7 @@ Historical labels that no longer describe the fresh result: 83
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _SpiderDialog | 537 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (157/198 opcodes | SEMANTICS_UNKNOWN |  |
+| _SpiderDialog | 537 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (157/198 opcodes | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
 
 ### simant:6954 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
@@ -1486,6 +1607,18 @@ Historical labels that no longer describe the fresh result: 83
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
 | _MenuQuit | 66 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout under the current profile (24/29 opcodes, 68/66 bytes) | DATA_LAYOUT |  |
+
+### simant:D6DC — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/10 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _NewGame
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _NewGame | 691 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (170/252 opcodes, 633/691 byte | PRIVATE_CONST_LAYOUT |  |
 
 ### simone:03F4 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
@@ -1802,7 +1935,7 @@ Historical labels that no longer describe the fresh result: 83
 ### simtwo:5AB0 — 13 members, 12 matched, 1 blocked, 0 ready; profile og
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 59/60 words introduced by admitted or exact members; private data words 0 (reproduced)
+- selector pool: 59/60 words introduced by admitted or exact members; private data words 1 (reproduced)
 - likely next missing introducer: _AddFood
 - estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
 - fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
@@ -1942,6 +2075,18 @@ Historical labels that no longer describe the fresh result: 83
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
 | _ch_LookUpHandle | 163 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (68/70 opcodes, 167/163 bytes) | REGISTER_ALLOCATION |  |
+
+### simtwo:91E6 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _ch_LookUpId | 649 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (76/243 opcodes, | PRIVATE_CONST_LAYOUT |  |
 
 ### simtwo:9732 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
@@ -2207,6 +2352,18 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | __font_CharWidth | 99 | ABI_TYPE_INFERENCE | call/pointer-shape differences (FAR_POINTER_TYPE) | FAR_POINTER_TYPE |  |
 
+### simtwo:ADE0 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/3 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _font_MakeImage
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _font_MakeImage | 586 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (138/218 opcodes | SEMANTICS_UNKNOWN |  |
+
 ### simtwo:B033 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -2423,6 +2580,18 @@ Historical labels that no longer describe the fresh result: 83
 |---|---|---|---|---|---|
 | _win_WinObjAddr | 87 | TRUE_SOURCE_SHAPE_MISMATCH | register allocation under the current profile (34/34 opcodes, 87/87 bytes) | REGISTER_ALLOCATION |  |
 
+### simtwo:C3E4 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: none (all introducers known)
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _win_SetPalette | 546 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (109/208 opcodes | DATA_LAYOUT |  |
+
 ### simtwo:C606 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -2458,18 +2627,6 @@ Historical labels that no longer describe the fresh result: 83
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
 | _win_AutoSize | 225 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (51/87 opcodes, 185/225 bytes) | EXPRESSION_SHAPE |  |
-
-### simtwo:E6E2 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/0 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: none (all introducers known)
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: UNKNOWN 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _win_Recalc | 738 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | SEMANTICS_UNKNOWN |  |
 
 ### simtwo:EB96 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 
@@ -2517,7 +2674,7 @@ Historical labels that no longer describe the fresh result: 83
 
 | symbol | size | fresh category | cause | previous | partner |
 |---|---|---|---|---|---|
-| _win_SetObjSelectedStateI | 331 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (105/128 opcodes, 328/331 byte | IMPORT_ORDINAL |  |
+| _win_SetObjSelectedStateI | 331 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (105/128 opcodes, 328/331 byte | REGISTER_ALLOCATION |  |
 
 ### simtwo:EE54 — 1 members, 0 matched, 1 blocked, 0 ready; profile baseline
 

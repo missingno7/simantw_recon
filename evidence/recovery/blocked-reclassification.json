@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "generated": "2026-09-23T21:16:29.015257+00:00",
+  "generated": "2026-09-24T05:09:21.213321+00:00",
   "scope": "Fresh root-cause classification of every MATCH_BLOCKED function.",
   "counts": {
-    "TRUE_SOURCE_SHAPE_MISMATCH": 412,
-    "UNKNOWN": 13,
-    "ABI_TYPE_INFERENCE": 20,
-    "PROFILE_CONTEXT_RETEST": 1,
+    "TRUE_SOURCE_SHAPE_MISMATCH": 446,
+    "UNKNOWN": 21,
+    "ABI_TYPE_INFERENCE": 22,
+    "SOURCE_BINDING_INELIGIBLE": 4,
     "BODY_EXACT_LAYOUT_BLOCKED": 5,
     "MIRRORED_SOURCE_PAIR": 1
   },
-  "corrected_labels": 83,
+  "corrected_labels": 102,
   "rows": [
     {
       "symbol": "_UnpackFileClose",
@@ -3324,8 +3324,8 @@
       "source_basis": "BEST_CANDIDATE_NOT_EXACT",
       "mirror_partner": null,
       "partner_state": null,
-      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
-      "cause": "exact body but wrong displacement/index for _DrawEdit (binding semantics)",
+      "category": "SOURCE_BINDING_INELIGIBLE",
+      "cause": "native body_exact source gate rejects current binding identities; correct source before unit assembly",
       "evidence": {
         "result": "NO_COMPLETE_MATCH",
         "opcode_matches": 26,
@@ -3342,7 +3342,21 @@
         ],
         "categories": [
           "IMMEDIATE_OR_BINDING"
-        ]
+        ],
+        "source_gate": {
+          "resolved_wrong_bindings": [
+            {
+              "offset": 72,
+              "reason": "same-segment relative offset",
+              "target": {
+                "kind": "external",
+                "name": "_DrawEdit"
+              }
+            }
+          ],
+          "unknown_externals": [],
+          "plain_literal_offsets": []
+        }
       }
     },
     {
@@ -3877,41 +3891,37 @@
       "profile": "baseline",
       "profile_basis": "DEFAULT",
       "job": "GetMyInitialRandDir-72875fbed4",
-      "attempts": 4,
+      "attempts": 7,
       "previous_blockers": [
-        "TRANSLATION_UNIT_CONTEXT"
+        "DATA_LAYOUT"
       ],
       "stale_profile": false,
-      "source": "build/codegen-cache/3d6762b2cb0f79384049053e6b3b2706f21757331bcdf062416ede37f14b264a/INPUT.C",
-      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "source": "evidence/recovery/body-solved/_GetMyInitialRandDir-4f0c201e18a7.c",
+      "source_basis": "BODY_MATCHED_BINDING_BLOCKED",
       "mirror_partner": null,
       "partner_state": null,
-      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
-      "cause": "instruction shape under the current profile (34/36 opcodes, 89/91 bytes)",
+      "category": "BODY_EXACT_LAYOUT_BLOCKED",
+      "cause": "exact body; only unresolved offset bindings (pool / private data / TU context)",
       "evidence": {
         "result": "NO_COMPLETE_MATCH",
-        "opcode_matches": 34,
+        "opcode_matches": 36,
         "opcode_total": 36,
-        "candidate_bytes": 89,
+        "candidate_bytes": 91,
         "target_bytes": 91,
         "register_only": 0,
         "branch": 0,
         "stack": 0,
-        "layout_match": false,
+        "layout_match": true,
         "issues": [
           "conflicting private placement constraints CONST",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0x50",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0x46",
           "SIMANT1_MODULE unresolved/mismatched fixup at 0x31",
           "SIMANT1_MODULE unresolved/mismatched fixup at 0x26",
           "SIMANT1_MODULE unresolved/mismatched fixup at 0x1e",
-          "SIMANT1_MODULE uncovered NE relocations",
-          "SIMANT1_MODULE literal bytes differ"
+          "SIMANT1_MODULE literal bytes differ",
+          "unplaced contribution CONST"
         ],
         "categories": [
-          "EXPRESSION_SHAPE",
-          "MEMORY_OPERAND",
-          "IMMEDIATE_OR_BINDING"
+          "MEMORY_OPERAND"
         ]
       }
     },
@@ -4737,17 +4747,17 @@
       "profile": "og",
       "profile_basis": "ASSIGNED",
       "job": "MakeNewTailR-5a941ed619",
-      "attempts": 0,
+      "attempts": 2,
       "previous_blockers": [
-        "PRIVATE_CONST_LAYOUT"
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
       ],
-      "stale_profile": true,
+      "stale_profile": false,
       "source": "build/codegen-cache/630206c68fc929131c14d2b733c28a2511afe1955017096221cc5dfe0f5e6100/INPUT.C",
       "source_basis": "BEST_CANDIDATE_NOT_EXACT",
       "mirror_partner": "_MakeNewTailB",
       "partner_state": "MATCH_BLOCKED",
-      "category": "PROFILE_CONTEXT_RETEST",
-      "cause": "parked under /AL /G2 /Gs /Oelw /NTSIMANT1_MODULE, context profile is now og (/AL /G2 /Gs /Oeglw /NTSIMANT1_MODULE); fresh result: TRUE_SOURCE_SHAPE_MISMATCH: instruction shape, register allocation under the current profile (29/40 opcodes, 91/101 bytes)",
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation under the current profile (29/40 opcodes, 91/101 bytes)",
       "evidence": {
         "result": "NO_COMPLETE_MATCH",
         "opcode_matches": 29,
@@ -4980,7 +4990,7 @@
       "profile": "baseline",
       "profile_basis": "DEFAULT",
       "job": "MakeLint2-ef5b88fbd3",
-      "attempts": 4,
+      "attempts": 5,
       "previous_blockers": [
         "REGISTER_ALLOCATION"
       ],
@@ -7580,8 +7590,8 @@
       "source_basis": "BEST_CANDIDATE_NOT_EXACT",
       "mirror_partner": null,
       "partner_state": null,
-      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
-      "cause": "exact body but wrong displacement/index for _editHeight, _editWidth, _tileHeight, _tileWidth (binding semantics)",
+      "category": "SOURCE_BINDING_INELIGIBLE",
+      "cause": "native body_exact source gate rejects current binding identities; correct source before unit assembly",
       "evidence": {
         "result": "NO_COMPLETE_MATCH",
         "opcode_matches": 57,
@@ -7601,7 +7611,45 @@
         ],
         "categories": [
           "MEMORY_OPERAND"
-        ]
+        ],
+        "source_gate": {
+          "resolved_wrong_bindings": [
+            {
+              "offset": 60,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_tileHeight"
+              }
+            },
+            {
+              "offset": 56,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_editHeight"
+              }
+            },
+            {
+              "offset": 48,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_tileWidth"
+              }
+            },
+            {
+              "offset": 42,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_editWidth"
+              }
+            }
+          ],
+          "unknown_externals": [],
+          "plain_literal_offsets": []
+        }
       }
     },
     {
@@ -10412,58 +10460,6 @@
       }
     },
     {
-      "symbol": "_ConvertMonoMaskToTandy",
-      "component": "gr:5E30",
-      "segment": "GR_MODULE",
-      "size": 221,
-      "profile": "baseline",
-      "profile_basis": "DEFAULT",
-      "job": "ConvertMonoMaskToTandy-4e3e71229c",
-      "attempts": 4,
-      "previous_blockers": [
-        "REGISTER_ALLOCATION"
-      ],
-      "stale_profile": false,
-      "source": "build/codegen-cache/4fa82c36008574b9ce58d56da2c875d30df3cbfe12679ceb97aa4dbc1befc54a/INPUT.C",
-      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
-      "mirror_partner": null,
-      "partner_state": null,
-      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
-      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (71/94 opcodes, 228/221 bytes)",
-      "evidence": {
-        "result": "NO_COMPLETE_MATCH",
-        "opcode_matches": 71,
-        "opcode_total": 94,
-        "candidate_bytes": 228,
-        "target_bytes": 221,
-        "register_only": 8,
-        "branch": 4,
-        "stack": 7,
-        "layout_match": false,
-        "issues": [
-          "conflicting private placement constraints _DATA",
-          "GR_MODULE unresolved/mismatched fixup at 0xd6",
-          "GR_MODULE unresolved/mismatched fixup at 0xcb",
-          "GR_MODULE unresolved/mismatched fixup at 0xc0",
-          "GR_MODULE unresolved/mismatched fixup at 0xb5",
-          "GR_MODULE unresolved/mismatched fixup at 0x92",
-          "GR_MODULE unresolved/mismatched fixup at 0x73",
-          "GR_MODULE unresolved/mismatched fixup at 0x67"
-        ],
-        "categories": [
-          "CONTROL_FLOW",
-          "EXPRESSION_SHAPE",
-          "REGISTER_ALLOCATION",
-          "CALL_FRAME_OR_SEGMENT_REGISTER",
-          "ALIGNMENT_UNCERTAIN",
-          "LOCAL_FRAME_LAYOUT",
-          "MEMORY_OPERAND",
-          "IMMEDIATE_OR_BINDING",
-          "BRANCH_TARGET"
-        ]
-      }
-    },
-    {
       "symbol": "_SetTriLatPoint",
       "component": "simant:B324",
       "segment": "SIMANT_MODULE",
@@ -11650,36 +11646,36 @@
       "profile": "og",
       "profile_basis": "ASSIGNED",
       "job": "QueenMoveR-c4d55997ad",
-      "attempts": 4,
+      "attempts": 5,
       "previous_blockers": [
-        "EXPRESSION_SHAPE"
+        "PRIVATE_CONST_LAYOUT"
       ],
       "stale_profile": false,
-      "source": "build/codegen-cache/d524dc23b33e5e4ff7764ac81ba5d7fcfc03fc1c95885a2830a6cafa6bef4295/INPUT.C",
+      "source": "build/codegen-cache/a730b3f5038cc0b32571e8cb59a1cfe7b432895cace6b904f13139b978f6b523/INPUT.C",
       "source_basis": "BEST_CANDIDATE_NOT_EXACT",
       "mirror_partner": "_QueenMoveB",
       "partner_state": "MATCH_BLOCKED",
       "category": "TRUE_SOURCE_SHAPE_MISMATCH",
-      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (81/95 opcodes, 248/246 bytes)",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (83/95 opcodes, 250/246 bytes)",
       "evidence": {
         "result": "NO_COMPLETE_MATCH",
-        "opcode_matches": 81,
+        "opcode_matches": 83,
         "opcode_total": 95,
-        "candidate_bytes": 248,
+        "candidate_bytes": 250,
         "target_bytes": 246,
         "register_only": 3,
-        "branch": 6,
+        "branch": 1,
         "stack": 6,
         "layout_match": false,
         "issues": [
           "conflicting private placement constraints CONST",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xe9",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xdf",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xd5",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xcd",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xc3",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xbc",
-          "SIMANT1_MODULE unresolved/mismatched fixup at 0xae"
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xeb",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xe1",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xd7",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xcf",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xc5",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xbe",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0xb0"
         ],
         "categories": [
           "CONTROL_FLOW",
@@ -12407,7 +12403,7 @@
       "profile": "baseline",
       "profile_basis": "DEFAULT",
       "job": "ToggleMapCursor-50beca8f21",
-      "attempts": 3,
+      "attempts": 4,
       "previous_blockers": [
         "PRIVATE_CONST_LAYOUT"
       ],
@@ -12416,8 +12412,8 @@
       "source_basis": "BEST_CANDIDATE_NOT_EXACT",
       "mirror_partner": null,
       "partner_state": null,
-      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
-      "cause": "exact body but wrong displacement/index for _just, _mapTileRect (binding semantics)",
+      "category": "SOURCE_BINDING_INELIGIBLE",
+      "cause": "native body_exact source gate rejects current binding identities; correct source before unit assembly",
       "evidence": {
         "result": "NO_COMPLETE_MATCH",
         "opcode_matches": 85,
@@ -12440,7 +12436,29 @@
         ],
         "categories": [
           "MEMORY_OPERAND"
-        ]
+        ],
+        "source_gate": {
+          "resolved_wrong_bindings": [
+            {
+              "offset": 208,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_mapTileRect"
+              }
+            },
+            {
+              "offset": 199,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_just"
+              }
+            }
+          ],
+          "unknown_externals": [],
+          "plain_literal_offsets": []
+        }
       }
     },
     {
@@ -13400,50 +13418,6 @@
           "MEMORY_OPERAND",
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
-        ]
-      }
-    },
-    {
-      "symbol": "_ClearHistory",
-      "component": "simant:8A76",
-      "segment": "SIMANT_MODULE",
-      "size": 299,
-      "profile": "baseline",
-      "profile_basis": "DEFAULT",
-      "job": "ClearHistory-2a7aae3cf9",
-      "attempts": 5,
-      "previous_blockers": [
-        "EXPRESSION_SHAPE"
-      ],
-      "stale_profile": false,
-      "source": "build/codegen-cache/03c8e32b223264b4c34d577ca3edffa9e9536a3382493a7a3c2ce51a472cbc18/INPUT.C",
-      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
-      "mirror_partner": null,
-      "partner_state": null,
-      "category": "BODY_EXACT_LAYOUT_BLOCKED",
-      "cause": "exact body; private placement / contribution issues only",
-      "evidence": {
-        "result": "NO_COMPLETE_MATCH",
-        "opcode_matches": 90,
-        "opcode_total": 90,
-        "candidate_bytes": 299,
-        "target_bytes": 299,
-        "register_only": 0,
-        "branch": 0,
-        "stack": 0,
-        "layout_match": true,
-        "issues": [
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x7a",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x6e",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x62",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x56",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x4a",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x3e",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x32",
-          "SIMANT_MODULE unresolved/mismatched fixup at 0x26"
-        ],
-        "categories": [
-          "IMMEDIATE_OR_BINDING"
         ]
       }
     },
@@ -14545,9 +14519,9 @@
       "profile": "baseline",
       "profile_basis": "DEFAULT",
       "job": "win_SetObjSelectedStateI-b2dac996a8",
-      "attempts": 8,
+      "attempts": 9,
       "previous_blockers": [
-        "IMPORT_ORDINAL"
+        "REGISTER_ALLOCATION"
       ],
       "stale_profile": false,
       "source": "build/codegen-cache/382b87b7d1992ca81ea752d35b712f3cf50f2f73c799d46c1158f2d00520d26a/INPUT.C",
@@ -17288,7 +17262,7 @@
       "profile": "og",
       "profile_basis": "ASSIGNED",
       "job": "GetStrategy-ae1b994b3c",
-      "attempts": 8,
+      "attempts": 9,
       "previous_blockers": [
         "SEMANTICS_UNKNOWN"
       ],
@@ -18942,7 +18916,7 @@
       "job": "SpiderDialog-12e6d7a7b5",
       "attempts": 8,
       "previous_blockers": [
-        "SEMANTICS_UNKNOWN"
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
       ],
       "stale_profile": false,
       "source": "build/codegen-cache/88bd867a3abf467a8a7ebcb64d31a3ac20af80215317ea8910f9d13c1644dc86/INPUT.C",
@@ -19187,6 +19161,58 @@
       }
     },
     {
+      "symbol": "_win_SetPalette",
+      "component": "simtwo:C3E4",
+      "segment": "SIMTWO_MODULE",
+      "size": 546,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "win_SetPalette-681501e6d8",
+      "attempts": 6,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/259e1f0ad4692dfa51469d00f0dadfd41cc9396d9ef8b6df2e6c01a2f476292f/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (109/208 opcodes, 410/546 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 109,
+        "opcode_total": 208,
+        "candidate_bytes": 410,
+        "target_bytes": 546,
+        "register_only": 14,
+        "branch": 12,
+        "stack": 9,
+        "layout_match": false,
+        "issues": [
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x18c",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x17f",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x177",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x172",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x16c",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x169",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x162",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0xd3"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_DBPack",
       "component": "simtwo:858A",
       "segment": "SIMTWO_MODULE",
@@ -19387,6 +19413,104 @@
           "REGISTER_ALLOCATION",
           "CALL_FRAME_OR_SEGMENT_REGISTER",
           "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DoEvent",
+      "component": "simant:01B6",
+      "segment": "SIMANT_MODULE",
+      "size": 548,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoEvent-827819ee10",
+      "attempts": 1,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/334822ec29e564db9bb9d221a0c16a74338ced7578c9ea0ca05572589ca41c01/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, branch layout, frame layout under the current profile (76/226 opcodes, 228/548 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 76,
+        "opcode_total": 226,
+        "candidate_bytes": 228,
+        "target_bytes": 548,
+        "register_only": 0,
+        "branch": 18,
+        "stack": 1,
+        "layout_match": false,
+        "issues": [
+          "SIMANT_MODULE unresolved/mismatched fixup at 0xde",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0xd2",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0xc6",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0xba",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0xae",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0xa2",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x96",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x5b"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ReadConfig",
+      "component": "gr:08F4",
+      "segment": "GR_MODULE",
+      "size": 548,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ReadConfig-09909209c9",
+      "attempts": 4,
+      "previous_blockers": [
+        "FAR_POINTER_TYPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/9f9ecf3272ee9d89962838ffcdf26e0e970c359701149bd91065e8fdd38b752c/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "ABI_TYPE_INFERENCE",
+      "cause": "call/pointer-shape differences (FAR_POINTER_TYPE)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 191,
+        "opcode_total": 219,
+        "candidate_bytes": 508,
+        "target_bytes": 548,
+        "register_only": 0,
+        "branch": 35,
+        "stack": 12,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "GR_MODULE unresolved/mismatched fixup at 0x1f6",
+          "GR_MODULE unresolved/mismatched fixup at 0x1e3",
+          "GR_MODULE unresolved/mismatched fixup at 0x1b2",
+          "GR_MODULE unresolved/mismatched fixup at 0x1aa",
+          "GR_MODULE unresolved/mismatched fixup at 0x1a2",
+          "GR_MODULE unresolved/mismatched fixup at 0x19a",
+          "GR_MODULE unresolved/mismatched fixup at 0x192"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
           "LOCAL_FRAME_LAYOUT",
           "MEMORY_OPERAND",
           "IMMEDIATE_OR_BINDING",
@@ -19652,6 +19776,110 @@
       }
     },
     {
+      "symbol": "_SetUpPalette",
+      "component": "simant:469E",
+      "segment": "SIMANT_MODULE",
+      "size": 565,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "SetUpPalette-bb3f5ac8f6",
+      "attempts": 4,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/e1344bd594a066838f556a7f5388f7733cd1b42b892c7db11d526751676c66bb/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (135/226 opcodes, 437/565 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 135,
+        "opcode_total": 226,
+        "candidate_bytes": 437,
+        "target_bytes": 565,
+        "register_only": 21,
+        "branch": 14,
+        "stack": 8,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _BSS",
+          "conflicting private placement constraints CONST",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x1ad",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x1a5",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x19c",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x199",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x191",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x18c"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_font_MakeImage",
+      "component": "simtwo:ADE0",
+      "segment": "SIMTWO_MODULE",
+      "size": 586,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "font_MakeImage-407a1fb679",
+      "attempts": 8,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/9c7f645cb8cf83f49925d21b2159cdc2688a6e70330168d72b683ba93dd4490c/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (138/218 opcodes, 633/586 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 138,
+        "opcode_total": 218,
+        "candidate_bytes": 633,
+        "target_bytes": 586,
+        "register_only": 17,
+        "branch": 12,
+        "stack": 19,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x271",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x26e",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x269",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x265",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x244",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x23f",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x23a"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_DoRandAntAA",
       "component": "simant1:0000",
       "segment": "SIMANT1_MODULE",
@@ -19753,6 +19981,109 @@
       }
     },
     {
+      "symbol": "_processExp",
+      "component": "antedit:7022",
+      "segment": "ANTEDIT_MODULE",
+      "size": 604,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "processExp-1e8b6ce994",
+      "attempts": 2,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/b7629e54522aeb5aae6c5a941e667e8634403ade659329e31ef2cb37b04c0421/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (133/220 opcodes, 525/604 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 133,
+        "opcode_total": 220,
+        "candidate_bytes": 525,
+        "target_bytes": 604,
+        "register_only": 7,
+        "branch": 13,
+        "stack": 10,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x207",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x204",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1fe",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1f9",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1ec",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1e5",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1dd"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_snd_Deinstall",
+      "component": "gr:7712",
+      "segment": "GR_MODULE",
+      "size": 608,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "snd_Deinstall-0136403875",
+      "attempts": 6,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/d159ac6baf40bc60fc0d0c5a9de6103868162ba7bc4f3810f77b2f47d1c5e9a4/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (158/205 opcodes, 597/608 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 158,
+        "opcode_total": 205,
+        "candidate_bytes": 597,
+        "target_bytes": 608,
+        "register_only": 6,
+        "branch": 18,
+        "stack": 7,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints SIMANT_DATA_GROUP",
+          "conflicting private placement constraints CONST",
+          "conflicting private placement constraints _DATA",
+          "GR_MODULE unresolved/mismatched fixup at 0x24e",
+          "GR_MODULE unresolved/mismatched fixup at 0x24b",
+          "GR_MODULE unresolved/mismatched fixup at 0x23f",
+          "GR_MODULE unresolved/mismatched fixup at 0x23b",
+          "GR_MODULE unresolved/mismatched fixup at 0x236"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_MysteryButton",
       "component": "simant:9D04",
       "segment": "SIMANT_MODULE",
@@ -19796,6 +20127,109 @@
           "EXPRESSION_SHAPE",
           "REGISTER_ALLOCATION",
           "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DoRedInitiator",
+      "component": "simant1:96D4",
+      "segment": "SIMANT1_MODULE",
+      "size": 619,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoRedInitiator-adbcdabab1",
+      "attempts": 1,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/e28b6d80524ce4259e460580853270f43da256aed16f5416fc2b90d7a69fb452/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (77/208 opcodes, 627/619 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 77,
+        "opcode_total": 208,
+        "candidate_bytes": 627,
+        "target_bytes": 619,
+        "register_only": 2,
+        "branch": 10,
+        "stack": 2,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x26b",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x266",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x25d",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x253",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x24e",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x247",
+          "SIMANT1_MODULE unresolved/mismatched fixup at 0x234"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_TryMyDropOrLift",
+      "component": "simone:5AD2",
+      "segment": "SIMONE_MODULE",
+      "size": 619,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "TryMyDropOrLift-faf085ead3",
+      "attempts": 7,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/e109e2f395ae165c8f9bb25567cdcb3c07c233d64faa05b28d5c7a8653c8a039/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (127/247 opcodes, 529/619 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 127,
+        "opcode_total": 247,
+        "candidate_bytes": 529,
+        "target_bytes": 619,
+        "register_only": 8,
+        "branch": 15,
+        "stack": 10,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x204",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1ff",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1ef",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1e1",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1d9",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1d3",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1cd"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
           "MEMORY_OPERAND",
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
@@ -19852,6 +20286,91 @@
       }
     },
     {
+      "symbol": "_ProcMapRibbonEvent",
+      "component": "antedit:C19C",
+      "segment": "ANTEDIT_MODULE",
+      "size": 626,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ProcMapRibbonEvent-6f111b1eb0",
+      "attempts": 7,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/cab85bc975034d25cb8c9eaf1fdaa156e8a0bf88841e7ecf30f9e7a2c1e84bd6/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (226/243 opcodes, 616/626 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 226,
+        "opcode_total": 243,
+        "candidate_bytes": 616,
+        "target_bytes": 626,
+        "register_only": 1,
+        "branch": 35,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "conflicting private placement constraints _BSS",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x261",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x25a",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x247",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x232",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x21f",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x20f"
+        ],
+        "categories": [
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_SaveGame",
+      "component": "antedit:9248",
+      "segment": "ANTEDIT_MODULE",
+      "size": 626,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "SaveGame-4535266fed",
+      "attempts": 0,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/SaveGame-4535266fed/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
+      }
+    },
+    {
       "symbol": "_LessonDone",
       "component": "simtwo:78CA",
       "segment": "SIMTWO_MODULE",
@@ -19884,6 +20403,107 @@
           "missing or ambiguous requested target public"
         ],
         "categories": []
+      }
+    },
+    {
+      "symbol": "_SimBird",
+      "component": "simtwo:1378",
+      "segment": "SIMTWO_MODULE",
+      "size": 633,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "SimBird-cd0d72830b",
+      "attempts": 5,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/44850a224e5cd6e956b12b3d015556c7efb6972726cdfde4c7c3fcdfcb950187/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, branch layout, frame layout under the current profile (183/200 opcodes, 631/633 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 183,
+        "opcode_total": 200,
+        "candidate_bytes": 631,
+        "target_bytes": 633,
+        "register_only": 0,
+        "branch": 38,
+        "stack": 6,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x271",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x26d",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x265",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x260",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x25a",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x256",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x251"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_GPutPacked",
+      "component": "gr:10A2",
+      "segment": "GR_MODULE",
+      "size": 634,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "GPutPacked-6a36ee165a",
+      "attempts": 3,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/4dd525b3d9afb323a98911f6b2d72d223af50140edbdcb6a9eed550f2cd4371b/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (135/270 opcodes, 507/634 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 135,
+        "opcode_total": 270,
+        "candidate_bytes": 507,
+        "target_bytes": 634,
+        "register_only": 6,
+        "branch": 11,
+        "stack": 10,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "GR_MODULE unresolved/mismatched fixup at 0x1f0",
+          "GR_MODULE unresolved/mismatched fixup at 0x1e5",
+          "GR_MODULE unresolved/mismatched fixup at 0x1cc",
+          "GR_MODULE unresolved/mismatched fixup at 0x178",
+          "GR_MODULE unresolved/mismatched fixup at 0x165",
+          "GR_MODULE unresolved/mismatched fixup at 0x14a",
+          "GR_MODULE unresolved/mismatched fixup at 0x13e"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
       }
     },
     {
@@ -20042,6 +20662,107 @@
       }
     },
     {
+      "symbol": "_RibbonToolsMenu",
+      "component": "antedit:DC1E",
+      "segment": "ANTEDIT_MODULE",
+      "size": 649,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "RibbonToolsMenu-435a841a98",
+      "attempts": 8,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/da2619c807c5abd1c9805d7c71c21ab98755996e13c12667080035314067907a/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, branch layout, frame layout under the current profile (209/243 opcodes, 655/649 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 209,
+        "opcode_total": 243,
+        "candidate_bytes": 655,
+        "target_bytes": 649,
+        "register_only": 0,
+        "branch": 12,
+        "stack": 19,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x285",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x278",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x253",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x24f",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x249",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x245",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x240"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ch_LookUpId",
+      "component": "simtwo:91E6",
+      "segment": "SIMTWO_MODULE",
+      "size": 649,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ch_LookUpId-1f5828a166",
+      "attempts": 1,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/4686491ecb8fd0e3c0281878e486128975ea5349f23f8de729b0fc28990e8e19/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (76/243 opcodes, 332/649 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 76,
+        "opcode_total": 243,
+        "candidate_bytes": 332,
+        "target_bytes": 649,
+        "register_only": 14,
+        "branch": 8,
+        "stack": 12,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _BSS",
+          "conflicting private placement constraints _DATA",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x13e",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x138",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x134",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x12b",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x126",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x120"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_MakeNewHoleR",
       "component": "simone:16AE",
       "segment": "SIMONE_MODULE",
@@ -20084,6 +20805,58 @@
           "CONTROL_FLOW",
           "EXPRESSION_SHAPE",
           "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_hanim_AddAnimObject",
+      "component": "gr:6410",
+      "segment": "GR_MODULE",
+      "size": 650,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "hanim_AddAnimObject-614728caa7",
+      "attempts": 8,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/b883068497e14d2cd1e48f55d658ea9291abb6b271a0fff6faf603e7f3d61285/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (147/248 opcodes, 628/650 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 147,
+        "opcode_total": 248,
+        "candidate_bytes": 628,
+        "target_bytes": 650,
+        "register_only": 11,
+        "branch": 11,
+        "stack": 29,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "GR_MODULE unresolved/mismatched fixup at 0x266",
+          "GR_MODULE unresolved/mismatched fixup at 0x25b",
+          "GR_MODULE unresolved/mismatched fixup at 0x24a",
+          "GR_MODULE unresolved/mismatched fixup at 0x20e",
+          "GR_MODULE unresolved/mismatched fixup at 0x1f0",
+          "GR_MODULE unresolved/mismatched fixup at 0x163",
+          "GR_MODULE unresolved/mismatched fixup at 0x15f"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
           "ALIGNMENT_UNCERTAIN",
           "LOCAL_FRAME_LAYOUT",
           "MEMORY_OPERAND",
@@ -20145,6 +20918,108 @@
       }
     },
     {
+      "symbol": "_DropPebble",
+      "component": "simone:5AD2",
+      "segment": "SIMONE_MODULE",
+      "size": 662,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "DropPebble-bfcbed459a",
+      "attempts": 8,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/4cd166a78618f5a112d4ec41a3b1c1420bf1a02321188a870e5d887f020688ce/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (213/261 opcodes, 640/662 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 213,
+        "opcode_total": 261,
+        "candidate_bytes": 640,
+        "target_bytes": 662,
+        "register_only": 19,
+        "branch": 69,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x275",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x269",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x259",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x249",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1de",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1d2",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x1ca"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ed_LineTo",
+      "component": "antedit:00F4",
+      "segment": "ANTEDIT_MODULE",
+      "size": 665,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "ed_LineTo-4414d80635",
+      "attempts": 8,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/b44834c1d2c86997ec8ef637382d8c660ef486057c3320e656a56018659b76d0/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (162/267 opcodes, 706/665 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 162,
+        "opcode_total": 267,
+        "candidate_bytes": 706,
+        "target_bytes": 665,
+        "register_only": 10,
+        "branch": 2,
+        "stack": 9,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2bc",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2b8",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2b3",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2aa",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2a3",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x29f",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x29a"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_SimQueenB",
       "component": "simant1:2D4E",
       "segment": "SIMANT1_MODULE",
@@ -20182,6 +21057,247 @@
           "SIMANT1_MODULE unresolved/mismatched fixup at 0x29d",
           "SIMANT1_MODULE unresolved/mismatched fixup at 0x290",
           "SIMANT1_MODULE unresolved/mismatched fixup at 0x28c"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "OPENDLG",
+      "component": "antedit:9248",
+      "segment": "ANTEDIT_MODULE",
+      "size": 667,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "OPENDLG-1f34a15e1f",
+      "attempts": 1,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/710bb764b25cdcb66361be7405154cd9c7abec623b889dfde0dbcb68862eabae/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (99/259 opcodes, 466/667 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 99,
+        "opcode_total": 259,
+        "candidate_bytes": 466,
+        "target_bytes": 667,
+        "register_only": 10,
+        "branch": 9,
+        "stack": 17,
+        "layout_match": false,
+        "issues": [
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1c6",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1bd",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1b4",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1b1",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x1a4",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x181",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x176",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x16d"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_PickupMyFood",
+      "component": "simone:5AD2",
+      "segment": "SIMONE_MODULE",
+      "size": 672,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "PickupMyFood-b2db900c18",
+      "attempts": 8,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/4b11fc434c76615d5580e3e63b58bc82588621550677aded414f2ba0298fed0a/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (178/268 opcodes, 628/672 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 178,
+        "opcode_total": 268,
+        "candidate_bytes": 628,
+        "target_bytes": 672,
+        "register_only": 8,
+        "branch": 50,
+        "stack": 5,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x264",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x25b",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x24a",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x243",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x23c",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x235",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x22f"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ProcessPost",
+      "component": "simant:01B6",
+      "segment": "SIMANT_MODULE",
+      "size": 672,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ProcessPost-577454eb07",
+      "attempts": 0,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/ProcessPost-577454eb07/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
+      }
+    },
+    {
+      "symbol": "_ConvertBitmap",
+      "component": "gr:246E",
+      "segment": "GR_MODULE",
+      "size": 674,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ConvertBitmap-628c7ae412",
+      "attempts": 8,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/4e283fd91409f9aea2f915b4e80e0c2869cf53b980b736ea18c237c75ecc164d/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (181/275 opcodes, 695/674 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 181,
+        "opcode_total": 275,
+        "candidate_bytes": 695,
+        "target_bytes": 674,
+        "register_only": 12,
+        "branch": 6,
+        "stack": 57,
+        "layout_match": false,
+        "issues": [
+          "GR_MODULE unresolved/mismatched fixup at 0x277",
+          "GR_MODULE unresolved/mismatched fixup at 0x204",
+          "GR_MODULE unresolved/mismatched fixup at 0x1ce",
+          "GR_MODULE unresolved/mismatched fixup at 0x194",
+          "GR_MODULE unresolved/mismatched fixup at 0x15a",
+          "GR_MODULE unresolved/mismatched fixup at 0x144",
+          "GR_MODULE unresolved/mismatched fixup at 0x12f",
+          "GR_MODULE unresolved/mismatched fixup at 0xcf"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DoBitmap",
+      "component": "gr:332A",
+      "segment": "GR_MODULE",
+      "size": 678,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoBitmap-475422217a",
+      "attempts": 5,
+      "previous_blockers": [
+        "LOCAL_FRAME_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/66b8adc9d84a8b86d581c00289e0338c40496dac60174c9646631c716f92f40a/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (164/257 opcodes, 652/678 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 164,
+        "opcode_total": 257,
+        "candidate_bytes": 652,
+        "target_bytes": 678,
+        "register_only": 24,
+        "branch": 14,
+        "stack": 36,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "GR_MODULE unresolved/mismatched fixup at 0x281",
+          "GR_MODULE unresolved/mismatched fixup at 0x270",
+          "GR_MODULE unresolved/mismatched fixup at 0x259",
+          "GR_MODULE unresolved/mismatched fixup at 0x24e",
+          "GR_MODULE unresolved/mismatched fixup at 0x243",
+          "GR_MODULE unresolved/mismatched fixup at 0x23b",
+          "GR_MODULE unresolved/mismatched fixup at 0x215"
         ],
         "categories": [
           "CONTROL_FLOW",
@@ -20352,6 +21468,360 @@
       }
     },
     {
+      "symbol": "_NewGame",
+      "component": "simant:D6DC",
+      "segment": "SIMANT_MODULE",
+      "size": 691,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "NewGame-648c3dd8ca",
+      "attempts": 4,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/b54b675c58ae92f3a8730ff8b30aaaaeeefbdd208aaba48cf6a3031782a5e046/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (170/252 opcodes, 633/691 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 170,
+        "opcode_total": 252,
+        "candidate_bytes": 633,
+        "target_bytes": 691,
+        "register_only": 2,
+        "branch": 20,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x26f",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x26a",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x264",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x25f",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x25a",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x255",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x24f"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_PickupMyRock",
+      "component": "simone:5AD2",
+      "segment": "SIMONE_MODULE",
+      "size": 692,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "PickupMyRock-3b3c94d053",
+      "attempts": 7,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/1aa60fe3a8b63fae1bec063f4446956c2c31d5871b4fc7c2b15c9cab9d66cb4d/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (144/263 opcodes, 633/692 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 144,
+        "opcode_total": 263,
+        "candidate_bytes": 633,
+        "target_bytes": 692,
+        "register_only": 9,
+        "branch": 26,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x26b",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x262",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x254",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x244",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x239",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x234",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x22b"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ConvertMaskBitmap",
+      "component": "gr:1BB2",
+      "segment": "GR_MODULE",
+      "size": 703,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ConvertMaskBitmap-0b5587ae1e",
+      "attempts": 8,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/fc54265109bbd83e07bc5ea8e89ea02356c3a867deb2a24cb6d4994eaf907c8b/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (231/328 opcodes, 801/703 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 231,
+        "opcode_total": 328,
+        "candidate_bytes": 801,
+        "target_bytes": 703,
+        "register_only": 13,
+        "branch": 9,
+        "stack": 62,
+        "layout_match": false,
+        "issues": [
+          "GR_MODULE unresolved/mismatched fixup at 0x2f0",
+          "GR_MODULE unresolved/mismatched fixup at 0x27d",
+          "GR_MODULE unresolved/mismatched fixup at 0x23f",
+          "GR_MODULE unresolved/mismatched fixup at 0x209",
+          "GR_MODULE unresolved/mismatched fixup at 0x1bc",
+          "GR_MODULE unresolved/mismatched fixup at 0x13e",
+          "GR_MODULE unresolved/mismatched fixup at 0x11f",
+          "GR_MODULE unresolved/mismatched fixup at 0xce"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_win_DrawMapWindow",
+      "component": "antedit:C19C",
+      "segment": "ANTEDIT_MODULE",
+      "size": 712,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "win_DrawMapWindow-eebfb870f2",
+      "attempts": 2,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/7b031b2b7786023993fea9ef4b06f7237e28a721bc5428c6814ec1c5e975bb9a/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, branch layout, frame layout under the current profile (160/233 opcodes, 633/712 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 160,
+        "opcode_total": 233,
+        "candidate_bytes": 633,
+        "target_bytes": 712,
+        "register_only": 0,
+        "branch": 18,
+        "stack": 6,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x273",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x26e",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x265",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x262",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x25c",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x255",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x24b"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ProcYardRibbonEvent",
+      "component": "antedit:A51E",
+      "segment": "ANTEDIT_MODULE",
+      "size": 714,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ProcYardRibbonEvent-68cf4fce3a",
+      "attempts": 2,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/e4878370ef4d80a2d047c607fe9bb524978810be59a7488fbecafd966fc418a3/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (223/264 opcodes, 694/714 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 223,
+        "opcode_total": 264,
+        "candidate_bytes": 694,
+        "target_bytes": 714,
+        "register_only": 1,
+        "branch": 37,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "conflicting private placement constraints _DATA",
+          "conflicting private placement constraints _BSS",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2af",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2a8",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x295",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x280",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x26d"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DrawSwarm",
+      "component": "antedit:A998",
+      "segment": "ANTEDIT_MODULE",
+      "size": 718,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DrawSwarm-7ae6fef6d6",
+      "attempts": 5,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/0f0e05b72f11670037bd24da19dbb24ce32c66162534f05dbac0a6723ee69dbc/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (173/263 opcodes, 774/718 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 173,
+        "opcode_total": 263,
+        "candidate_bytes": 774,
+        "target_bytes": 718,
+        "register_only": 11,
+        "branch": 23,
+        "stack": 11,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "conflicting private placement constraints CONST",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2fe",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2ee",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2eb",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2db",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2d2",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2cd"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DoLaserFire",
+      "component": "simant:6A38",
+      "segment": "SIMANT_MODULE",
+      "size": 719,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoLaserFire-9589b88895",
+      "attempts": 2,
+      "previous_blockers": [
+        "LOCAL_FRAME_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/f3068a7f9810314ab81d62fc540454130d2f0dfa95b23ef4730894b6597856cc/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (227/270 opcodes, 749/719 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 227,
+        "opcode_total": 270,
+        "candidate_bytes": 749,
+        "target_bytes": 719,
+        "register_only": 20,
+        "branch": 14,
+        "stack": 46,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x2e5",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x2e0",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x2d6",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x29a",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x292",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x27d",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x273"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_DoRecruitAnt",
       "component": "simant1:0000",
       "segment": "SIMANT1_MODULE",
@@ -20396,6 +21866,108 @@
           "REGISTER_ALLOCATION",
           "ALIGNMENT_UNCERTAIN",
           "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_CountAnts",
+      "component": "simone:04DE",
+      "segment": "SIMONE_MODULE",
+      "size": 725,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "CountAnts-f30514ed05",
+      "attempts": 5,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/d4cb57b33ad89a4a5da470abc8eae84c39e1c9ee9f029e0824beb84677802b64/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (198/233 opcodes, 765/725 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 198,
+        "opcode_total": 233,
+        "candidate_bytes": 765,
+        "target_bytes": 725,
+        "register_only": 20,
+        "branch": 12,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2f6",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2f1",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2ed",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2e9",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2e5",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2e0",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2db"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_ScrollEditArrays",
+      "component": "antedit:00F4",
+      "segment": "ANTEDIT_MODULE",
+      "size": 734,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "ScrollEditArrays-3e1e532292",
+      "attempts": 1,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/31a2f1dec845acdb58345146ced51bae719e611274f311a2fffdd072d846a208/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout under the current profile (119/301 opcodes, 800/734 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 119,
+        "opcode_total": 301,
+        "candidate_bytes": 800,
+        "target_bytes": 734,
+        "register_only": 27,
+        "branch": 5,
+        "stack": 0,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2fa",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2f5",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2e5",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2e0",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2d3",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2c7",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2c2"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
           "MEMORY_OPERAND",
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
@@ -20455,7 +22027,7 @@
     },
     {
       "symbol": "_win_Recalc",
-      "component": "simtwo:E6E2",
+      "component": "simtwo:E4E8",
       "segment": "SIMTWO_MODULE",
       "size": 738,
       "profile": "baseline",
@@ -20643,6 +22215,57 @@
       }
     },
     {
+      "symbol": "_DoWater",
+      "component": "simone:04DE",
+      "segment": "SIMONE_MODULE",
+      "size": 773,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoWater-3796e1e6c9",
+      "attempts": 4,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/b8662788a2756c01ce874062e99ed6eed59876fad37fc1913739e9c6db187fe7/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (260/308 opcodes, 763/773 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 260,
+        "opcode_total": 308,
+        "candidate_bytes": 763,
+        "target_bytes": 773,
+        "register_only": 3,
+        "branch": 31,
+        "stack": 6,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2e3",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2d7",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2d0",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2ae",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x2a2",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x28d",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x265"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_GetMyDir",
       "component": "simant1:75F4",
       "segment": "SIMANT1_MODULE",
@@ -20692,6 +22315,92 @@
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
         ]
+      }
+    },
+    {
+      "symbol": "_MciOutWave",
+      "component": "gr:7712",
+      "segment": "GR_MODULE",
+      "size": 788,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "MciOutWave-3a675ce3d7",
+      "attempts": 1,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/36fa062a4a31b52f0e408618688012589213297631575e313c03aae8949e84e1/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (207/288 opcodes, 827/788 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 207,
+        "opcode_total": 288,
+        "candidate_bytes": 827,
+        "target_bytes": 788,
+        "register_only": 3,
+        "branch": 16,
+        "stack": 15,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints SIMANT_DATA_GROUP",
+          "conflicting private placement constraints CONST",
+          "conflicting private placement constraints _DATA",
+          "GR_MODULE unresolved/mismatched fixup at 0x330",
+          "GR_MODULE unresolved/mismatched fixup at 0x328",
+          "GR_MODULE unresolved/mismatched fixup at 0x323",
+          "GR_MODULE unresolved/mismatched fixup at 0x31c",
+          "GR_MODULE unresolved/mismatched fixup at 0x317"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_InitMenu",
+      "component": "gr:4C36",
+      "segment": "GR_MODULE",
+      "size": 790,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "InitMenu-cab4002bb6",
+      "attempts": 0,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/InitMenu-cab4002bb6/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
       }
     },
     {
@@ -20850,6 +22559,109 @@
       }
     },
     {
+      "symbol": "_DrawCastePopUp",
+      "component": "simant:5530",
+      "segment": "SIMANT_MODULE",
+      "size": 814,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DrawCastePopUp-6de54bcbe1",
+      "attempts": 3,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/596b059a98ec6cf9acc38db364340980a7d68340cb68f17f18f837d96d1585af/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (206/293 opcodes, 650/814 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 206,
+        "opcode_total": 293,
+        "candidate_bytes": 650,
+        "target_bytes": 814,
+        "register_only": 6,
+        "branch": 13,
+        "stack": 37,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x27f",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x274",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x26c",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x263",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x257",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x24b",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x246"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DoMonoBitmap",
+      "component": "gr:364C",
+      "segment": "GR_MODULE",
+      "size": 870,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoMonoBitmap-f9fe60d2ea",
+      "attempts": 2,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/cca4dc7d7d2d497dd805284d3e13de63b741a5f63307332cbe9e45f04c7f7612/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (210/314 opcodes, 824/870 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 210,
+        "opcode_total": 314,
+        "candidate_bytes": 824,
+        "target_bytes": 870,
+        "register_only": 19,
+        "branch": 18,
+        "stack": 42,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "conflicting private placement constraints _DATA",
+          "GR_MODULE unresolved/mismatched fixup at 0x32d",
+          "GR_MODULE unresolved/mismatched fixup at 0x320",
+          "GR_MODULE unresolved/mismatched fixup at 0x30d",
+          "GR_MODULE unresolved/mismatched fixup at 0x302",
+          "GR_MODULE unresolved/mismatched fixup at 0x2f7",
+          "GR_MODULE unresolved/mismatched fixup at 0x2ef"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_ProcCasteEvent",
       "component": "simant:B324",
       "segment": "SIMANT_MODULE",
@@ -20899,6 +22711,41 @@
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
         ]
+      }
+    },
+    {
+      "symbol": "_DrawBalloons",
+      "component": "antedit:00F4",
+      "segment": "ANTEDIT_MODULE",
+      "size": 897,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "DrawBalloons-ddca13e229",
+      "attempts": 0,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/DrawBalloons-ddca13e229/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
       }
     },
     {
@@ -20954,6 +22801,144 @@
       }
     },
     {
+      "symbol": "_YellowBirth",
+      "component": "simant:6A38",
+      "segment": "SIMANT_MODULE",
+      "size": 936,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "YellowBirth-4908a07a2f",
+      "attempts": 0,
+      "previous_blockers": [
+        "DATA_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/YellowBirth-4908a07a2f/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
+      }
+    },
+    {
+      "symbol": "_PlaceQueenInYard",
+      "component": "simant:9D04",
+      "segment": "SIMANT_MODULE",
+      "size": 937,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "PlaceQueenInYard-28a1feb636",
+      "attempts": 6,
+      "previous_blockers": [
+        "EXPRESSION_SHAPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/5eb3dd41c1402797cf32a7c419dd9ed29b90139b2142f817c1c9040cae6cfd94/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (208/326 opcodes, 855/937 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 208,
+        "opcode_total": 326,
+        "candidate_bytes": 855,
+        "target_bytes": 937,
+        "register_only": 4,
+        "branch": 20,
+        "stack": 23,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x351",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x34b",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x32c",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x324",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x316",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x313",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x2f9"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_SmoothACell",
+      "component": "antedit:7022",
+      "segment": "ANTEDIT_MODULE",
+      "size": 944,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "SmoothACell-f43227e84e",
+      "attempts": 1,
+      "previous_blockers": [
+        "FAR_POINTER_TYPE"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/95a91d9f3a7e1787bd40795b3b08f9542d7ba3a55ef8f0f876939e4b26a8ed77/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "ABI_TYPE_INFERENCE",
+      "cause": "call/pointer-shape differences (FAR_POINTER_TYPE)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 219,
+        "opcode_total": 398,
+        "candidate_bytes": 818,
+        "target_bytes": 944,
+        "register_only": 50,
+        "branch": 51,
+        "stack": 5,
+        "layout_match": false,
+        "issues": [
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x32a",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x31e",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x310",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x302",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2f4",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2d1",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2aa",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x29c"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_SimDog",
       "component": "simtwo:1378",
       "segment": "SIMTWO_MODULE",
@@ -20991,6 +22976,124 @@
           "SIMTWO_MODULE unresolved/mismatched fixup at 0x391",
           "SIMTWO_MODULE unresolved/mismatched fixup at 0x38b",
           "SIMTWO_MODULE unresolved/mismatched fixup at 0x384"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_GiveLesson",
+      "component": "simtwo:78CA",
+      "segment": "SIMTWO_MODULE",
+      "size": 948,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "GiveLesson-ee9dd35249",
+      "attempts": 2,
+      "previous_blockers": [
+        "PRIVATE_CONST_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/3029e4e8b016b98ec3377c9623238a99661f376c0e4df02de404d1c4d3b67453/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "SOURCE_BINDING_INELIGIBLE",
+      "cause": "native body_exact source gate rejects current binding identities; correct source before unit assembly",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 383,
+        "opcode_total": 383,
+        "candidate_bytes": 948,
+        "target_bytes": 948,
+        "register_only": 0,
+        "branch": 0,
+        "stack": 0,
+        "layout_match": true,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x37c",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x336",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x2e2",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x2ca",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x236",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x15e",
+          "SIMTWO_MODULE unresolved/mismatched fixup at 0x159"
+        ],
+        "categories": [
+          "MEMORY_OPERAND"
+        ],
+        "source_gate": {
+          "resolved_wrong_bindings": [
+            {
+              "offset": 350,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_modeLevels"
+              }
+            },
+            {
+              "offset": 345,
+              "reason": "resolved offset and frame",
+              "target": {
+                "kind": "external",
+                "name": "_modeLevels"
+              }
+            }
+          ],
+          "unknown_externals": [],
+          "plain_literal_offsets": []
+        }
+      }
+    },
+    {
+      "symbol": "_FileSelect",
+      "component": "antedit:9248",
+      "segment": "ANTEDIT_MODULE",
+      "size": 970,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "FileSelect-627a6e5433",
+      "attempts": 2,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/35ba96e58fa14bbcda8e362f35596817985a29f129ebc0791b2fc7ab0d4a6d39/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (73/367 opcodes, 397/970 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 73,
+        "opcode_total": 367,
+        "candidate_bytes": 397,
+        "target_bytes": 970,
+        "register_only": 4,
+        "branch": 8,
+        "stack": 14,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x17a",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x175",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x16b",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x162",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x159",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x147",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x112"
         ],
         "categories": [
           "CONTROL_FLOW",
@@ -21055,6 +23158,41 @@
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
         ]
+      }
+    },
+    {
+      "symbol": "_hanim_SetObjectPos",
+      "component": "gr:6410",
+      "segment": "GR_MODULE",
+      "size": 974,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "hanim_SetObjectPos-5d1f8b4c30",
+      "attempts": 0,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/hanim_SetObjectPos-5d1f8b4c30/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
       }
     },
     {
@@ -21159,6 +23297,41 @@
           "IMMEDIATE_OR_BINDING",
           "BRANCH_TARGET"
         ]
+      }
+    },
+    {
+      "symbol": "_SetYardMode",
+      "component": "simant:9D04",
+      "segment": "SIMANT_MODULE",
+      "size": 1009,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "SetYardMode-a07dc0c103",
+      "attempts": 0,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/SetYardMode-a07dc0c103/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
       }
     },
     {
@@ -21315,6 +23488,144 @@
       }
     },
     {
+      "symbol": "_DropMyEgg",
+      "component": "simone:5AD2",
+      "segment": "SIMONE_MODULE",
+      "size": 1126,
+      "profile": "og",
+      "profile_basis": "ASSIGNED",
+      "job": "DropMyEgg-5dfe003e00",
+      "attempts": 4,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/27646a0be2f7327dc5ac0ec23f9eeb9ece1f773642c675e12535933cfb84e234/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (215/450 opcodes, 968/1126 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 215,
+        "opcode_total": 450,
+        "candidate_bytes": 968,
+        "target_bytes": 1126,
+        "register_only": 23,
+        "branch": 43,
+        "stack": 32,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints CONST",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x3ae",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x3a5",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x3a1",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x39d",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x396",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x392",
+          "SIMONE_MODULE unresolved/mismatched fixup at 0x38b"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_OpenMiniMapWin",
+      "component": "antedit:E100",
+      "segment": "ANTEDIT_MODULE",
+      "size": 1254,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "OpenMiniMapWin-7aac93a2e0",
+      "attempts": 0,
+      "previous_blockers": [
+        "TRANSLATION_UNIT_CONTEXT_REQUIRED"
+      ],
+      "stale_profile": false,
+      "source": "evidence/recovery/workflow/jobs/OpenMiniMapWin-7aac93a2e0/candidate.c",
+      "source_basis": "LEDGER_DRAFT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "UNKNOWN",
+      "cause": "no comparable candidate (compile failed or unmeasured)",
+      "evidence": {
+        "result": "UNSUPPORTED_COMPARISON",
+        "opcode_matches": null,
+        "opcode_total": null,
+        "candidate_bytes": null,
+        "target_bytes": null,
+        "register_only": null,
+        "branch": null,
+        "stack": null,
+        "layout_match": null,
+        "issues": [
+          "missing or ambiguous requested target public"
+        ],
+        "categories": []
+      }
+    },
+    {
+      "symbol": "_ConnectAll",
+      "component": "antedit:7022",
+      "segment": "ANTEDIT_MODULE",
+      "size": 1267,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "ConnectAll-27d8b93f45",
+      "attempts": 2,
+      "previous_blockers": [
+        "LOCAL_FRAME_LAYOUT"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/333d7d75098804624671df6c7378f27d7a48d5d0633d38e31e242facbf5694b3/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (269/538 opcodes, 1249/1267 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 269,
+        "opcode_total": 538,
+        "candidate_bytes": 1249,
+        "target_bytes": 1267,
+        "register_only": 23,
+        "branch": 55,
+        "stack": 14,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x38b",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x35b",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x32e",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x304",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2f1",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2e3",
+          "ANTEDIT_MODULE unresolved/mismatched fixup at 0x2dc"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
       "symbol": "_DoAntSimA",
       "component": "simant1:0000",
       "segment": "SIMANT1_MODULE",
@@ -21358,6 +23669,57 @@
           "EXPRESSION_SHAPE",
           "REGISTER_ALLOCATION",
           "CALL_FRAME_OR_SEGMENT_REGISTER",
+          "ALIGNMENT_UNCERTAIN",
+          "LOCAL_FRAME_LAYOUT",
+          "MEMORY_OPERAND",
+          "IMMEDIATE_OR_BINDING",
+          "BRANCH_TARGET"
+        ]
+      }
+    },
+    {
+      "symbol": "_DoKeyDown",
+      "component": "simant:01B6",
+      "segment": "SIMANT_MODULE",
+      "size": 1385,
+      "profile": "baseline",
+      "profile_basis": "DEFAULT",
+      "job": "DoKeyDown-785609ef21",
+      "attempts": 2,
+      "previous_blockers": [
+        "SEMANTICS_UNKNOWN"
+      ],
+      "stale_profile": false,
+      "source": "build/codegen-cache/ef288fda868eec732254ba538dd3a4dbeaec0c3bce6d36f7396f41989e34a24f/INPUT.C",
+      "source_basis": "BEST_CANDIDATE_NOT_EXACT",
+      "mirror_partner": null,
+      "partner_state": null,
+      "category": "TRUE_SOURCE_SHAPE_MISMATCH",
+      "cause": "instruction shape, register allocation, branch layout, frame layout under the current profile (137/514 opcodes, 989/1385 bytes)",
+      "evidence": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcode_matches": 137,
+        "opcode_total": 514,
+        "candidate_bytes": 989,
+        "target_bytes": 1385,
+        "register_only": 1,
+        "branch": 21,
+        "stack": 18,
+        "layout_match": false,
+        "issues": [
+          "conflicting private placement constraints _DATA",
+          "conflicting private placement constraints _BSS",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x39d",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x39a",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x382",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x368",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x365",
+          "SIMANT_MODULE unresolved/mismatched fixup at 0x34d"
+        ],
+        "categories": [
+          "CONTROL_FLOW",
+          "EXPRESSION_SHAPE",
+          "REGISTER_ALLOCATION",
           "ALIGNMENT_UNCERTAIN",
           "LOCAL_FRAME_LAYOUT",
           "MEMORY_OPERAND",

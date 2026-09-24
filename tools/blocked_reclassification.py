@@ -10,8 +10,11 @@ the category. Historical labels are kept only as `previous_blockers`.
 Categories (first match wins):
 
 - BODY_EXACT_LAYOUT_BLOCKED: opcode body exact, zero register / branch /
-  stack differences; only offset bindings, private DATA/BSS/CONST placement
-  or translation-unit context remain. Admissible through a scaffolded unit.
+  stack differences; native TU source gate accepts every binding and only
+  private DATA/BSS/CONST placement or translation-unit context remain.
+- SOURCE_BINDING_INELIGIBLE: instruction shape agrees but the native TU gate
+  rejects wrong resolved bindings, unknown external identities or plain
+  literal differences. The source needs correction before unit assembly.
 - PROFILE_CONTEXT_RETEST: the job's recorded flags differ from the profile
   now assigned to its object context (the fresh compile below already uses
   the current profile; the category records that the parked evidence was
@@ -108,6 +111,18 @@ def classify_fresh(comparison, symbol, job, profile_flags, partner_state, compon
         t = f.get('target') or {}
         return t.get('kind') == 'internal' and t.get('segment') == 10 and (t.get('offset') in data_words or t.get('offset') in pool_words or any(abs(t.get('offset', -1) - w) < 64 for w in data_words))
     if exact_opcodes and clean and not shape:
+        import tu_assembly as tu
+        if not tu.body_exact(comparison):
+            unknown = sorted({f['omf']['target'].get('name') for f in failed
+                              if f.get('target') is None and f['omf']['target'].get('kind') == 'external'
+                              and not tu.known_symbol(f['omf']['target'].get('name', ''))})
+            plain = [r['target_offset'] for r in d.get('aligned_asm', [])
+                     if 'immediate_or_binding' in r.get('differences', [])
+                     and 'fixup' not in r.get('candidate', '') and 'fixup' not in r.get('target', '')]
+            evidence['source_gate'] = dict(
+                resolved_wrong_bindings=[dict(offset=f['offset'], reason=f['reason'], target=f['omf']['target']) for f in wrong_literal],
+                unknown_externals=unknown, plain_literal_offsets=plain)
+            return 'SOURCE_BINDING_INELIGIBLE', 'native body_exact source gate rejects current binding identities; correct source before unit assembly', evidence
         if classify(comparison) is not None:
             return 'BODY_EXACT_LAYOUT_BLOCKED', 'exact body; only unresolved offset bindings (pool / private data / TU context)', evidence
         if wrong_literal and all(private_target(f) for f in wrong_literal):
