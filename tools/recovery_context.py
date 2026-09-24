@@ -19,6 +19,7 @@ def declaration_index(recipes):
 
 def compact_packet(card,cards,recipes,ledger):
     from library_match import import_symbols
+    from compiler_profiles import component_of
     imports=import_symbols(ROOT/'toolchain/sdk300/WLIB/LIBW.LIB')
     imported_names={}
     for name,target in imports.items():imported_names.setdefault((target['module'],target['ordinal']),[]).append(name)
@@ -53,9 +54,12 @@ def compact_packet(card,cards,recipes,ledger):
            'Declared types in other verified sources are useful hypotheses, not proof of a shared historical header.']
     if far_calls:
         notes.append('Named NOP; PUSH CS; CALL near sites match LINK same-segment far-call translation. Use linker_lowered_far_calls for site offsets; do not infer a near C prototype from the final CALL opcode.')
+    component_id=(component_of(card['symbol']) or {}).get('id')
+    unit_declaration_order=read_json(ROOT/'layout/declaration-order.json')['components'].get(component_id,[])
     return dict(symbol=card['symbol'],segment=card['segment'],code_segment=card['segment_name'],offset=card['offset'],extent=card['extent'],
                 disassembly=rows,referenced_declarations=declarations,neighbors=neighbors,incoming_references=card['incoming_references'],
                 linker_lowered_far_calls=far_calls,prior_draft=ledger.get(card['symbol']),
+                unit_declaration_order=unit_declaration_order,
                 interpretation_notes=notes)
 
 

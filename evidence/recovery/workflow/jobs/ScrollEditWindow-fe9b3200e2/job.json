@@ -1,7 +1,7 @@
 {
   "id": "ScrollEditWindow-fe9b3200e2",
   "symbol": "_ScrollEditWindow",
-  "status": "ESCALATED",
+  "status": "PROMOTED",
   "created": "2026-09-21T13:20:35.121077+00:00",
   "flags": [
     "/AL",
@@ -60,24 +60,24 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 11737,
+      "sha256": "e1fbb084bd68e95fea9fad90f03af1e36119558b0e22df0e16ca95829eb3feae"
     },
     "tools/factory_queue.py": {
       "size": 5468,
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 31882,
-      "sha256": "8f23a441dc9dd18f1c7149ab133bb62906a6fd82810ea38061e0658c7bd49cca"
+      "size": 33368,
+      "sha256": "c7018c5c35f07d16f2a5d5b64482ac08a6955e74ffb2449b925bad80a4af4c3b"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
       "sha256": "042be9f6dae0b3588eb08c009c947723028bf12a99c03a05058b217dcc2f5d1c"
     },
     "tools/codegen_grinder.py": {
-      "size": 10125,
-      "sha256": "23dc5026990141a8558c94091cedd083b25feae75efd623edbb820dfb4addf58"
+      "size": 14506,
+      "sha256": "d7b361c7fe079414335747884717562bbb8e4544968cc38c7478b303a4f3ef62"
     },
     "tools/codegen_transforms.py": {
       "size": 2491,
@@ -343,6 +343,20 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "e8907fa3d61a16ec281f6905e9d6861ab8682c7dca1fde4a1b15acfb7c8a27d0",
+      "report": "evidence/recovery/workflow/jobs/ScrollEditWindow-fe9b3200e2/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "STRONGLY_SUPPORTED_MEMBER"
     }
   ],
   "root_cause": {
@@ -424,5 +438,6 @@
     "EXPRESSION_SHAPE"
   ],
   "reason": "3 attempts, plateaued at score 0.965 (57/57 opcodes, exact instruction layout and CFG match, only category MEMORY_OPERAND). The remaining 4 divergent bytes are the near-variable operands of tileWidth/tileHeight/editWidth/editHeight (offsets 0x2a,0x30,0x38,0x3c): the target has literal DGROUP-relative absolute addresses (e.g. 'mov ax, word ptr [0x143a]') with zero NE loader relocation, while any isolated compile of this function can only reference these same externs (correctly bound: the matcher's own resolved fixup identifies them by the right MAPSYM names _tileWidth/_tileHeight/_editWidth/_editHeight) through an unresolved-in-isolation offset fixup, since the real DGROUP layout is only fixed at full link. Swapping the multiplicand order (tileWidth*(nx-MapPnt.x) vs (nx-MapPnt.x)*tileWidth) produced an identical result, ruling out an expression-shape cause -- the divergence is purely in the literal near-data addresses these correctly-identified externs resolve to.",
-  "next_experiment": "Compose ScrollEditWindow into its real antedit:00F4 unit assembly (tu_assembly.py) alongside the other members that reference the same tileWidth/tileHeight/editWidth/editHeight pool words, so the near-variable offsets resolve against the unit's real DGROUP layout instead of an isolated per-function compile."
+  "next_experiment": "Compose ScrollEditWindow into its real antedit:00F4 unit assembly (tu_assembly.py) alongside the other members that reference the same tileWidth/tileHeight/editWidth/editHeight pool words, so the near-variable offsets resolve against the unit's real DGROUP layout instead of an isolated per-function compile.",
+  "promotion_evidence": "evidence/recovery/workflow/jobs/ScrollEditWindow-fe9b3200e2/promotion.json"
 }

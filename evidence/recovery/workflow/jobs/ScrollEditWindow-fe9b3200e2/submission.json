@@ -1,6 +1,6 @@
 {
   "symbol": "_ScrollEditWindow",
-  "source": "evidence/recovery/workflow/jobs/ScrollEditWindow-fe9b3200e2/candidate.c",
+  "source": "evidence/experiments/scroll-edit-window-declaration-order/candidate.c",
   "compiler": "msc700",
   "flags": [
     "/AL",
@@ -9,11 +9,12 @@
     "/Oeglw",
     "/NTANTEDIT_MODULE"
   ],
-  "max_candidates": 96,
+  "max_candidates": 1,
   "axes": [],
-  "semantic_summary": "Swap multiplicand order (tileWidth*(nx-MapPnt.x)) to test whether the target's operand ordering at the imul sites changes; the remaining divergence is 4 near-variable (tileWidth/tileHeight/editWidth/editHeight) literal DGROUP offsets that an isolated compile cannot bake without the real link layout",
+  "semantic_summary": "Reorder same-scope externs to match antedit:00F4 declaration-order constraints; isolated native body_exact now resolves the four width/height operands.",
   "binding_evidence": [
-    "Candidate declarations and source comments; inspect packet bindings before acceptance"
+    "layout/declaration-order.json antedit:00F4: editWidth before tileWidth; editHeight before tileHeight, proved by exact _PreDrawSpider and balloon members",
+    "evidence/experiments/scroll-edit-window-declaration-order/run/native-gate.json: body_exact_native_gate=true; four binding sites exact"
   ],
   "publics": [
     "_ScrollEditWindow"

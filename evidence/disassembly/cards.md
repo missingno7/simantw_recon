@@ -40298,8 +40298,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ScrollEditWindow — ANTEDIT_MODULE:113A
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 165 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 165 bytes.
+Source: src/recovered/wf_ScrollEditWindow-fe9b3200e2.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTANTEDIT_MODULE'].
 
 ```asm
 113A  c8080000                 enter 8, 0

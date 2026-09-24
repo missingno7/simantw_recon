@@ -25,6 +25,7 @@ source translation unit -> declarations / private data / selector pool -> compil
 - `python tools/parked_review.py` reclassifies every parked job by root cause (`evidence/recovery/parked-reclassification.json`): A profile, B unit layout (with the assemblable group or the missing introducers / static helpers), C matcher tooling, D semantic, E ABI/type, F structural, G unknown.
 - Expert replays: `tools/topology_retest.py JOB --profile-reissue` (assigned profile) and `--tool-replay` (validated proof-tool change) archive the previous job context and grant at most one recorded budget extension each.
 - Worker packets carry `compiler_profile`, `unit_context` and the matching `reconstruction_rules` from `layout/reconstruction-rules.json`.
+- Isolated `grind.py inspect` packets also carry `unit_declaration_order` from `layout/declaration-order.json` for the assigned component. These established MSC7 operand-scheduling constraints guide source hypotheses; the unit assembler already applies them, and the packet field grants no proof credit.
 
 Grinders run in parallel: a short global lock covers queue allocation, shared evidence rebuilds and the core manifest transaction; each job has its own lock for attempts, deferral and promotion, and compilation runs outside the global lock. Interrupted attempts are detected by a free per-job lock, never by assuming a single process.
 
@@ -164,3 +165,4 @@ At the historical factory-infrastructure checkpoint, no manually matched functio
 - `preserved_sources` walks chains of superseded unit recipes back to a member's isolated text, and marks members first admitted inside a unit as ADMITTED so later units of the same object do not re-propose them. `build/scratch/assemble.py` skips promotion when a unit would admit nothing new.
 - `scaffold_plan` drops (rather than fails on) a member whose original calls an unrecovered static helper, and `build_unit` recomposes the declaration set after any member leaves the unit.
 - `compose` compares struct/union layouts (`struct_key`), so `struct P { int x, y; }` and `struct P { int x; int y; }` are one tag with no rename and no view macro.
+
