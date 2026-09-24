@@ -74,6 +74,10 @@ def markdown(packet):
         lines.append(f"{row['offset']:04x} {row['mnemonic']} {row['operands']}"+bindings+(refs if refs!=' ; ' else ''))
     lines+=['```','','## Known declaration examples','']
     for declaration in packet['referenced_declarations']:lines+=['- `'+declaration['declaration']+'` — '+declaration['source']]
+    if packet.get('unit_declaration_order'):
+        lines+=['','## Verified unit declaration order','']
+        for fact in packet['unit_declaration_order']:
+            lines+=['- `'+fact['before']+'` before `'+fact['after']+'` ('+fact['rule']+'): '+fact['evidence']]
     lines+=['','## Interpretation','']+['- '+n for n in packet['interpretation_notes']]
     if packet.get('linker_lowered_far_calls'):
         lines+=['','## LINK-lowered far-call evidence','']

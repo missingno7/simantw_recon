@@ -119250,8 +119250,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _GiveLesson — SIMTWO_MODULE:7B4E
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 948 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 948 bytes.
+Source: src/recovered/wf_tu_simtwo_78CA_GiveLesson_1_scaffold-3b94adb426.c. Flags: ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMTWO_MODULE'].
 
 ```asm
 7B4E  55                       push bp

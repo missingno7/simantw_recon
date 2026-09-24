@@ -1,6 +1,6 @@
 # Fresh classification of the MATCH_BLOCKED population
 
-Generated 2026-09-24T06:01:48.925831+00:00 from the current HEAD: every blocked function's best preserved candidate recompiled under the current object profile and compared strictly. Historical labels are shown only as `previous`.
+Generated 2026-09-24T08:06:27.713277+00:00 from the current HEAD: every blocked function's best preserved candidate recompiled under the current object profile and compared strictly. Historical labels are shown only as `previous`.
 
 ## Counts by fresh root cause
 
@@ -8,10 +8,10 @@ Generated 2026-09-24T06:01:48.925831+00:00 from the current HEAD: every blocked 
 - ABI_TYPE_INFERENCE: 22
 - UNKNOWN: 21
 - BODY_EXACT_LAYOUT_BLOCKED: 5
-- SOURCE_BINDING_INELIGIBLE: 3
+- SOURCE_BINDING_INELIGIBLE: 2
 - MIRRORED_SOURCE_PAIR: 1
 
-Historical labels that no longer describe the fresh result: 101
+Historical labels that no longer describe the fresh result: 100
 
 ## By historical object / TU context
 
@@ -665,21 +665,6 @@ Historical labels that no longer describe the fresh result: 101
 | _ScanForAnts | 113 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (45/46 opcodes, 111/113 bytes) | EXPRESSION_SHAPE |  |
 | _SpiderScan | 387 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (124/160 opcodes | EXPRESSION_SHAPE |  |
 
-### simtwo:78CA — 4 members, 0 matched, 4 blocked, 0 ready; profile baseline
-
-- exact bodies awaiting admission: 0; mirrored blocked members: 0
-- selector pool: 0/17 words introduced by admitted or exact members; private data words 0 (reproduced)
-- likely next missing introducer: _Feedback
-- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
-- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, UNKNOWN 1, SOURCE_BINDING_INELIGIBLE 1
-
-| symbol | size | fresh category | cause | previous | partner |
-|---|---|---|---|---|---|
-| _GiveLesson | 948 | SOURCE_BINDING_INELIGIBLE | native body_exact source gate rejects current binding identities; correct source before unit assembly | PRIVATE_CONST_LAYOUT |  |
-| _Feedback | 453 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (80/150 opcodes, | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
-| _RunTutor | 190 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (41/66 opcodes,  | OPTIMIZER_VARIANT_REQUIRED |  |
-| _LessonDone | 627 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
-
 ### simtwo:E4E8 — 4 members, 0 matched, 4 blocked, 0 ready; profile baseline
 
 - exact bodies awaiting admission: 0; mirrored blocked members: 0
@@ -722,6 +707,20 @@ Historical labels that no longer describe the fresh result: 101
 | _DoRedInitiator | 619 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (77/208 opcodes, | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
 | _GetNewRedTask | 215 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout under the current profile (54/72 opcodes, 227/215 bytes) | SEMANTICS_UNKNOWN |  |
 | _GetRedBestDirs | 220 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, branch layout, frame layout under the current profile (62/89 opcodes, 219/220 bytes) | REGISTER_ALLOCATION |  |
+
+### simtwo:78CA — 4 members, 1 matched, 3 blocked, 0 ready; profile baseline
+
+- exact bodies awaiting admission: 0; mirrored blocked members: 0
+- selector pool: 4/17 words introduced by admitted or exact members; private data words 0 (reproduced)
+- likely next missing introducer: _Feedback
+- estimated unlock fan-out (exact + scaffold + mirrored + profile-retest rows): 0
+- fresh causes: TRUE_SOURCE_SHAPE_MISMATCH 2, UNKNOWN 1
+
+| symbol | size | fresh category | cause | previous | partner |
+|---|---|---|---|---|---|
+| _Feedback | 453 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (80/150 opcodes, | TRANSLATION_UNIT_CONTEXT_REQUIRED |  |
+| _RunTutor | 190 | TRUE_SOURCE_SHAPE_MISMATCH | instruction shape, register allocation, branch layout, frame layout under the current profile (41/66 opcodes,  | OPTIMIZER_VARIANT_REQUIRED |  |
+| _LessonDone | 627 | UNKNOWN | no comparable candidate (compile failed or unmeasured) | DATA_LAYOUT |  |
 
 ### simtwo:858A — 5 members, 2 matched, 3 blocked, 0 ready; profile baseline
 
