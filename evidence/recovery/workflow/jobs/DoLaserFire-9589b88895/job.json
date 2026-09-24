@@ -324,11 +324,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 2,
+      "submission_digest": "4e95530c2bb7d04b92d039b23235d690e456c67c32924ed2e0357703e841bef1",
+      "report": "evidence/recovery/workflow/jobs/DoLaserFire-9589b88895/attempt02/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "LOCAL_FRAME_LAYOUT"
   ],
-  "reason": "The first evidence-backed candidate is supported by the target body, incoming SpiderScan call, and named segment-9 operands, but strict matching rejected it: 749 candidate bytes versus 719 target, with 35 ordinary bytes matching, 62 versus 3 fixups, and conflicting private CONST placement. The draft also reuses one RECT and invalidates the screen window outside the target's win_IsWinOpen(0) guard, so this negative is not evidence that the behavior or member is unrecoverable. Preserved source: build/grind/recover_convertbitmap/DoLaserFire.c; report: evidence/recovery/workflow/jobs/DoLaserFire-9589b88895/attempt01/results.json.",
-  "next_experiment": "Use SpiderScan-751c813c80/candidate.c's direct call DoLaserFire(SpidX, SpidY, tileX*16+7, tileY*16+7) and the target's disjoint RECT stack ranges to revise the source shape. Keep clip_Push around the outer function; screen drawing, MSClipEnd, screen RECT construction and InvalidateRect(win_hwnd[0],...) must all be guarded by win_IsWinOpen(0); use a distinct four-word minimap RECT for the conditional win_IsWinOpen(0x100) path. Preserve observed screen/map coordinate expressions, then test one revised candidate before expression search."
+  "reason": "One source-backed expert reissue tested the recorded separate-RECT and screen-window guard hypothesis. Attempt02 still is not an exact member: target 719 bytes versus candidate 996, 212/343 opcodes, candidate frame 0x16 versus target 0x14, and private CONST/fixup conflicts. The aligned diagnostic shows the compiler loads x2/y2 into SI/DI at candidate offsets 0x1f/0x22 before the displayType test, whereas the target branches/scales first and computes the second endpoint only inside the open-screen path. The frame/control-flow hypothesis was real, but this candidate does not reproduce the target lifetime shape. Source: build/grind/recover_convertbitmap/DoLaserFire-reissue02.c; report: evidence/recovery/workflow/jobs/DoLaserFire-9589b88895/attempt02/results.json.",
+  "next_experiment": "For any future evidenced reissue, isolate the endpoint live-range question from broad expression changes: derive x2/y2 only after the displayType==2 scaling branch and only inside the win_IsWinOpen(0) draw path, while keeping the two distinct RECT locals. Compare the first aligned instructions to verify x2/y2 are not preloaded before the target's displayType test, then test exactly one source form. Preserve the existing direct call, data bindings and window guards.",
+  "budget_extensions": []
 }
