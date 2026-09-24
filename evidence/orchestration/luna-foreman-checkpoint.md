@@ -114,3 +114,23 @@ Four jobs allocated just before root's stop request remain OPEN with zero attemp
 Root requested three isolated near-exact investigations: `_NotMowed` (simtwo:1378/og), `_db_GetObjectSize` (simtwo:81AC/baseline), and `_PlacePillTile` (simtwo:4CDC/og). Their preserved best sources are used, output stays under `build/grinder/near-exact/`, and no production jobs are created. Each owner must inspect existing negative coverage first and avoid register hints/profile fishing.
 
 A separate profile-context retest is assigned for `_MakeNewTailR` using only `tools/topology_retest.py --profile-reissue` under the existing simant1:5344 `og` assignment. A read-only helper ownership/TU audit checks `_OpenMiniMapWin`/`_MapAreaEvent` ANTEDIT near helpers at 0x11620/0x111e0; no stub, TU claim, or recovery credit is allowed. Fleet count is nine active owners across routine and research tasks.
+
+
+## Quiescent handoff checkpoint (2026-09-24 00:47 UTC)
+
+All current child investigations have settled; no strict operation or refill remains active. HEAD is `073742b9` on `codex/simantw-recovery`. After `python tools/recovery_workflow.py doctor`, readiness is `READY_FOR_BOUNDED_HANDOFF`: 518 game / 77 runtime, 56 MATCH_READY / 489 MATCH_BLOCKED / 2 STRUCTURE_BLOCKED / 518 matched, 516 durable escalations; all 217 handoff tests pass. Root owns commit/push.
+
+The ledger now contains 40 distinct production job IDs and 34 jobs with strict attempt records; recomputed totals across tracked job IDs are 157 candidate slots, 134 unique effective OMF identities (compile-failed empty-object hashes excluded), zero strict promotions, and zero recovered bytes. This is the all-ledger total, not a delta since the prior checkpoint. Model-weighted token cost remains unavailable. No ownership collisions occurred this batch.
+
+| Target | Settled result |
+|---|---|
+| `_snd_Install` | One compiler failure then one strict candidate; 225/291 opcodes, 755/804 bytes; private DATA/CONST placement and body gaps remain. |
+| `_DoMonoBitmap` | Attempt 02 improves alignment to 210/314 opcodes and 824/870 bytes; still 0/35 fixups and semantic shift/mask/clipping gaps; escalated. |
+| `_GiveLesson` | Attempt 02 is body-layout exact (948 bytes, 383/383 opcodes); 13 selector-memory differences and CONST placement/fixups remain. Candidate for `simtwo:78CA` selector composition if exact-body members/evidence satisfy the supported lane. |
+| `_FileSelect` | One strict candidate, 71/367 opcodes and 0/26 fixups; custom dialog fallback/path semantics unresolved. |
+| `_DropMyFood` | TU feasibility run did not include the current candidate. The near prototype is unsupported: target calls at `0x7769` and `0x78AD` are `90 0E E8`, LINK's same-segment lowering of a source far call, corroborated by the packet and admitted `IsClearTile` declarations. The scaffold conflict is not TU-boundary evidence. Far-prototype retest is next. |
+| `_DoWater` / `_MakeNewTailR` | Current bodies are not exact, so the scaffold lane excluded them; no TU test or claim. |
+
+Root's read-only ABI survey found 40 of 131 resolved near-function declarations across 23 jobs conflict with target `90 0E E8` call signatures (39 ESCALATED jobs, one stale PROMOTED candidate). Root will assess a deterministic diagnostic after this stable checkpoint; this is not a proof result. The current diff consists of worker evidence, generated queue/readiness data, refreshed job contexts, and this ownership checkpoint; no proof infrastructure or manifest changes were made by the foreman.
+
+After root checkpoints this stable state, resume with a supported far-prototype retest for `_DropMyFood`, then review `_GiveLesson` unit composition.

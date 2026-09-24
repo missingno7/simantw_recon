@@ -1,0 +1,25 @@
+{
+  "symbol": "_FileSelect",
+  "source": "evidence/recovery/workflow/jobs/FileSelect-627a6e5433/candidate.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NTANTEDIT_MODULE"
+  ],
+  "max_candidates": 96,
+  "axes": [],
+  "semantic_summary": "Evidence-backed first hypothesis: clear the caller far output buffer; construct the SDK OPENFILENAME record; dynamically call GetOpenFileName for mode 0 or GetSaveFileName for mode 1; and confirm replacement when a selected save path already exists. This candidate leaves the observed custom-dialog fallback and path normalization unresolved, so the strict run is diagnostic and is not claimed as a complete reconstruction.",
+  "binding_evidence": [
+    "Packet entry loads the first argument as ES:BX and clears its first byte; callers pass a far pointer. No caller buffer capacity is inferred.",
+    "_LoadGame and _SaveGame callers pass modes 0 and 1.",
+    "The assigned Win 3.1 SDK COMMDLG.H provides the OPENFILENAME fields and dynamic GetOpenFileName/GetSaveFileName prototypes; its 0x48-byte record is consistent with target initialization offsets.",
+    "The target selects function-name offsets 0x1735/0x1753 and mode-specific flags 0x1800/0x0802, and sets nMaxFile to 0x100.",
+    "Target save branch calls access(path,0), then USER ordinal 1 and compares the result to 6."
+  ],
+  "publics": [
+    "_FileSelect"
+  ]
+}
