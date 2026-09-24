@@ -7,9 +7,9 @@
  * remains a far pointer because the target pushes its selector.
  */
 extern int far GetDir(int a, int b, int c, int d);
-extern void near GetMyRandDirs(int far *rotation,
+extern void far GetMyRandDirs(int far *rotation,
                                int near *direction,
-                               int near *positions,
+                               int selector,
                                int a, int b, int c, int d, int e);
 extern int far match_position[];
 extern int far MeCrazyDir;
@@ -26,6 +26,6 @@ void far GetMyInitialRandDir(int unused1, int unused2, int unused3,
     MeCrazyCnt = 0x10;
     MeCrazyRot = 0;
     positions = (int near *)match_position;
-    GetMyRandDirs(&MeCrazyRot, (int near *)&MeCrazyDir, positions,
+    GetMyRandDirs(&MeCrazyRot, (int near *)&MeCrazyDir, __segname("PACK"),
                   count, a, b, c, d);
 }

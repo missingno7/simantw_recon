@@ -1,7 +1,7 @@
 {
   "id": "GetMyInitialRandDir-72875fbed4",
   "symbol": "_GetMyInitialRandDir",
-  "status": "NEEDS_REVISION",
+  "status": "ESCALATED",
   "created": "2026-09-21T02:25:10.110738+00:00",
   "flags": [
     "/AL",
@@ -371,13 +371,41 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 6,
+      "submission_digest": "92338576e65ebcdad8fbca13f3d6c06b9f00e26bd80955d80322443e43084781",
+      "report": "evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/attempt06/results.json",
+      "completed": 0,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "COMPILE_FAILED"
+    },
+    {
+      "number": 7,
+      "submission_digest": "5865ad08911b1a110c35e2659e56a1569794a5d8890111dc4fb96c60bd2aea06",
+      "report": "evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/attempt07/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "TRANSLATION_UNIT_CONTEXT"
+    "DATA_LAYOUT"
   ],
-  "reason": "Four bounded probes recover the nine-argument frame, exact GetDir call, MeCrazyDir/Cnt/Rot assignments, all five GetMyRandDirs input pushes, and the final match_position/MeCrazyDir/push-es/MeCrazyRot output sequence. Strict proof remains blocked by three private CONST selector slots at 0xc3f6/0xc3f8/0xc3fa and the target's same-TU push-CS near-call identity for _GetMyRandDirs; the best body reaches 34/36 exact opcodes.",
-  "next_experiment": "Recover the SIMANT1_MODULE translation unit containing _GetMyRandDirs and the MeCrazy selector bindings, then retest the unchanged nine-argument wrapper.",
+  "reason": "Attempt07 fixes the PACK selector binding and matches all 36 opcodes, but strict proof leaves three unresolved CONST selector fixups and an unplaced/conflicting CONST contribution; no source-backed expression or eligible TU path remains until the private selector identities and placement are established.",
+  "next_experiment": "Resolve the three CONST selector targets and shared private contribution placement from independent unit/MAPSYM evidence; only then reassess a complete-member test.",
   "root_cause": {
     "category": "TRUE_SOURCE_SHAPE_MISMATCH",
     "cause": "instruction shape under the current profile (34/36 opcodes, 89/91 bytes)",
@@ -391,5 +419,41 @@
   "previous_blockers": [
     "TRANSLATION_UNIT_CONTEXT"
   ],
-  "budget_extensions": []
+  "budget_extensions": [],
+  "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+  "topology_diagnostic": {
+    "state": "BODY_MATCHED_BINDING_BLOCKED",
+    "recovery_credit": 0,
+    "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+    "failed_bindings": [
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 49,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 38,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      },
+      {
+        "contribution": "SIMANT1_MODULE",
+        "offset": 30,
+        "target": {
+          "kind": "segment",
+          "name": "CONST"
+        },
+        "reason": "unsupported or unresolved target/frame"
+      }
+    ],
+    "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+  }
 }

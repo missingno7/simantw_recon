@@ -1,0 +1,131 @@
+{
+  "experiment": "GetMyInitialRandDir formal-shape microfixture",
+  "scope": "isolated C7 codegen only; no production job edits, TU, or admission",
+  "evidence": {
+    "caller_target": "evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/factory-packet.json: call +0x46 is an NE type-2 relocation to internal segment 9 offset 0 (PACK selector)",
+    "callee_target": "evidence/recovery/workflow/jobs/GetMyRandDirs-10df8416ea/factory-packet.json: third overall argument is [bp+0xe], passed onward at first parameter position; callee source candidate and sibling caller drafts declare the five ordinary inputs as int",
+    "admitted_selector_form": "src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c uses static const __segment near mmSelector = __segname(\"SIMANT_DATA_GROUP\")"
+  },
+  "results": [
+    {
+      "name": "scalar-int",
+      "source": "evidence/experiments/getmyinitialranddir-formal-shape/scalar-int.c",
+      "source_sha256": "8b798ffed38926b932171944e2bf0ece3dd4472cb62b956b18ea637574394090",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMANT1_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\n",
+      "compiler_stderr": "",
+      "object_sha256": "122c2bfe12094712208a4d7feaf4963a6138b0e687473dcc2ee02f098f407c7e",
+      "code_hex": "6a046a036a026a016800006a006a006a009a0000000083c410cb",
+      "code_bytes": 26,
+      "fixups": [
+        {
+          "segment": 1,
+          "offset": 18,
+          "location_type": 3,
+          "width": 4,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 2,
+          "target_index": 1,
+          "displacement": 0,
+          "target": {
+            "kind": "external",
+            "name": "_GetMyRandDirs"
+          }
+        },
+        {
+          "segment": 1,
+          "offset": 9,
+          "location_type": 2,
+          "width": 2,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 0,
+          "target_index": 5,
+          "displacement": 0,
+          "target": {
+            "kind": "segment",
+            "name": "PACK"
+          }
+        }
+      ],
+      "externals": [
+        {
+          "name": "_GetMyRandDirs",
+          "type_index": 0,
+          "local": false
+        }
+      ]
+    },
+    {
+      "name": "segment-formal",
+      "source": "evidence/experiments/getmyinitialranddir-formal-shape/segment-formal.c",
+      "source_sha256": "ae029dc3e40ba246df7cfcc5521f42d6dc6c419cd90df70b3f45ec1b138ade46",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMANT1_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(3) : warning C4040: memory attribute on 'selector' ignored\n",
+      "compiler_stderr": "",
+      "object_sha256": "122c2bfe12094712208a4d7feaf4963a6138b0e687473dcc2ee02f098f407c7e",
+      "code_hex": "6a046a036a026a016800006a006a006a009a0000000083c410cb",
+      "code_bytes": 26,
+      "fixups": [
+        {
+          "segment": 1,
+          "offset": 18,
+          "location_type": 3,
+          "width": 4,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 2,
+          "target_index": 1,
+          "displacement": 0,
+          "target": {
+            "kind": "external",
+            "name": "_GetMyRandDirs"
+          }
+        },
+        {
+          "segment": 1,
+          "offset": 9,
+          "location_type": 2,
+          "width": 2,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 0,
+          "target_index": 5,
+          "displacement": 0,
+          "target": {
+            "kind": "segment",
+            "name": "PACK"
+          }
+        }
+      ],
+      "externals": [
+        {
+          "name": "_GetMyRandDirs",
+          "type_index": 0,
+          "local": false
+        }
+      ]
+    }
+  ],
+  "comparison_control": "evidence/experiments/getmyinitialranddir-segment-expression/offset-control.c emits LOC1 width-2 external _match_position when passing its near offset; direct PACK selector treatment there emits LOC2 width-2 segment PACK. Production attempt06 also established that casting __segname(\"PACK\") to int near * is rejected (C2440).",
+  "conclusion": "Only the scalar int formal is directly supported by the callee stack use; the __segment near function-parameter form is an exploratory compiler-shape control, not established source semantics. Results distinguish compilability, argument code and fixup class."
+}

@@ -3,16 +3,16 @@
   "proof_boundary": "Routing only; no recovery credit or new structural certificate",
   "inputs": {
     "docs/production-queue.json": {
-      "size": 890411,
-      "sha256": "3cd05ab865b8c9c92f403fa86ae53672cb197d56347c51d4f7e93e28b8a1a865"
+      "size": 890470,
+      "sha256": "168c1ba4c90608eed2fcc46da8e7dad7879724e64407129471c3973bea5a69de"
     },
     "evidence/recovery/blockers.json": {
-      "size": 46861223,
-      "sha256": "31818825ac60ef6ab163633efe3673062e8a1826e65e1b92b502478912693ce5"
+      "size": 46893731,
+      "sha256": "eb4626d1f1d50cea7ae82743a37750b150ae62c5290a449dc2725e504d20b7fd"
     },
     "evidence/disassembly/cards.jsonl": {
-      "size": 18390057,
-      "sha256": "fbe33a7273fe1dabfdc3b03d425cc7fc9050dcd3c90eb43095a750d0146c4e5e"
+      "size": 18390244,
+      "sha256": "6e63c98bfaab7f8980ccb2b6a8103295feb23b0efc969f0ce05ece59be33e15a"
     }
   },
   "families": [
@@ -717,30 +717,6 @@
       "recovery_credit": 0
     },
     {
-      "id": "binding-SRand1",
-      "members": [
-        "_SRand1",
-        "_SRand128",
-        "_SRand16",
-        "_SRand2",
-        "_SRand256",
-        "_SRand32",
-        "_SRand4",
-        "_SRand64",
-        "_SRand8",
-        "_SeedRRand"
-      ],
-      "objects": [
-        "DGROUP:CBF2"
-      ],
-      "confidence": "SHARED_REFERENCE_FAMILY",
-      "evidence_state_counts": {
-        "BODY_UNRESOLVED_OR_UNMEASURED": 10
-      },
-      "historical_filename": null,
-      "recovery_credit": 0
-    },
-    {
       "id": "binding-AnimYellowInsane",
       "members": [
         "_AnimYellowInsane",
@@ -749,6 +725,7 @@
         "_GetMyBestDirs",
         "_GetMyDir",
         "_GetMyDis",
+        "_GetMyInitialRandDir",
         "_GetMyNextRandDirs",
         "_GetMyRandDirs",
         "_YellowFight"
@@ -777,7 +754,32 @@
       ],
       "confidence": "SHARED_REFERENCE_FAMILY",
       "evidence_state_counts": {
-        "BODY_UNRESOLVED_OR_UNMEASURED": 9
+        "BODY_UNRESOLVED_OR_UNMEASURED": 9,
+        "BODY_MATCHED_BINDING_BLOCKED": 1
+      },
+      "historical_filename": null,
+      "recovery_credit": 0
+    },
+    {
+      "id": "binding-SRand1",
+      "members": [
+        "_SRand1",
+        "_SRand128",
+        "_SRand16",
+        "_SRand2",
+        "_SRand256",
+        "_SRand32",
+        "_SRand4",
+        "_SRand64",
+        "_SRand8",
+        "_SeedRRand"
+      ],
+      "objects": [
+        "DGROUP:CBF2"
+      ],
+      "confidence": "SHARED_REFERENCE_FAMILY",
+      "evidence_state_counts": {
+        "BODY_UNRESOLVED_OR_UNMEASURED": 10
       },
       "historical_filename": null,
       "recovery_credit": 0
@@ -8893,6 +8895,63 @@
       "recovery_credit": 0,
       "family": "binding-AnimYellowInsane"
     },
+    "_GetMyInitialRandDir": {
+      "evidence_state": "BODY_MATCHED_BINDING_BLOCKED",
+      "diagnosis": {
+        "state": "BODY_MATCHED_BINDING_BLOCKED",
+        "recovery_credit": 0,
+        "scope": "Literal body and control flow agree outside unresolved offset bindings; data identity and semantics still require review",
+        "failed_bindings": [
+          {
+            "contribution": "SIMANT1_MODULE",
+            "offset": 49,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "reason": "unsupported or unresolved target/frame"
+          },
+          {
+            "contribution": "SIMANT1_MODULE",
+            "offset": 38,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "reason": "unsupported or unresolved target/frame"
+          },
+          {
+            "contribution": "SIMANT1_MODULE",
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "reason": "unsupported or unresolved target/frame"
+          }
+        ],
+        "next_action": "Preserve body; reconstruct shared declarations/contributions and retest complete members"
+      },
+      "evidence": "evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/attempt07/results.json",
+      "candidate": 0,
+      "source": "build/codegen-cache/7164410607aa2700d2ba04332a6a079d955fbcececd3c259381f285f6d278c2d/INPUT.C",
+      "source_identity": {
+        "size": 1303,
+        "sha256": "4f0c201e18a7a755d4e7821b6efc3ccff58608f3bbf55907b99d5a3fcd503908"
+      },
+      "objects": [
+        "DGROUP:C3F6",
+        "DGROUP:C3F8",
+        "DGROUP:C3FA"
+      ],
+      "blockers": [
+        "DATA_LAYOUT"
+      ],
+      "next_experiment": "Resolve the three CONST selector targets and shared private contribution placement from independent unit/MAPSYM evidence; only then reassess a complete-member test.",
+      "recovery_credit": 0,
+      "preserved_source": "evidence/recovery/body-solved/_GetMyInitialRandDir-4f0c201e18a7.c",
+      "family": "binding-AnimYellowInsane"
+    },
     "_GetMyNextRandDirs": {
       "evidence_state": "BODY_UNRESOLVED_OR_UNMEASURED",
       "diagnosis": null,
@@ -16085,9 +16144,9 @@
       },
       "objects": [],
       "blockers": [
-        "IMPORT_ORDINAL"
+        "REGISTER_ALLOCATION"
       ],
-      "next_experiment": "Inspect the verified WLIB/NE import-symbol evidence for the target's far calls at 0x99, 0x153, 0x168, 0xf0 and 0x11f, especially GRectInv/GSetAttrib/MSClipStart/MSClipEnd/DrawBitMapAtObj, then run one small authenticated declaration/link-binding probe for the segment-2:0000 calls before reopening body-shape search.",
+      "next_experiment": "Preserve the far win_IsWinOpen ABI finding. Reopen only with source-backed evidence for the selection-state register/local expression and the remaining DGROUP/segment-10 data declarations or far-call bindings; then compare the complete 331-byte member, all 18 fixups, and NE relocation coverage.",
       "recovery_credit": 0,
       "family": "binding-win_SetObjSelectedStateI"
     },
@@ -16213,7 +16272,7 @@
     "evidence_states": {
       "BODY_UNRESOLVED_OR_UNMEASURED": 488,
       "SOLVED_STRICT": 13,
-      "BODY_MATCHED_BINDING_BLOCKED": 4
+      "BODY_MATCHED_BINDING_BLOCKED": 5
     },
     "structural_families": {
       "INTERRUPT_OR_NONRETURN": 2

@@ -1,0 +1,118 @@
+{
+  "experiment": "GetMyInitialRandDir selector vs offset microfixture",
+  "scope": "isolated compiler experiment; no production job changes, TU construction, or admission",
+  "target_evidence": {
+    "symbol": "_GetMyInitialRandDir",
+    "packet": "evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/factory-packet.json",
+    "site_member_offset": 70,
+    "NE_source_type": 2,
+    "target": "internal segment 9 offset 0 (_match_position / PACK selector)",
+    "previous_candidate": "evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/attempt05/candidate0000.c",
+    "previous_candidate_location_type": 1
+  },
+  "results": [
+    {
+      "name": "offset-control",
+      "source": "evidence/experiments/getmyinitialranddir-segment-expression/offset-control.c",
+      "source_sha256": "58a48e3e572c630759a23b4e2b87647d5f65223ba789f35a7f5e1f8f881b1a34",
+      "object_sha256": "b637f60d326c0e021f0107de98120e8ed60706bc7f93f35593019d214589bfa2",
+      "compiler": "MSC C/C++ 7.00",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMANT1_MODULE"
+      ],
+      "exit_code": 0,
+      "code_hex": "6800009a0000000083c402cb",
+      "code_bytes": 12,
+      "fixups": [
+        {
+          "segment": 1,
+          "offset": 4,
+          "location_type": 3,
+          "width": 4,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 2,
+          "target_index": 2,
+          "displacement": 0,
+          "target": {
+            "kind": "external",
+            "name": "_TakeSelector"
+          }
+        },
+        {
+          "segment": 1,
+          "offset": 1,
+          "location_type": 1,
+          "width": 2,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 2,
+          "target_index": 1,
+          "displacement": 0,
+          "target": {
+            "kind": "external",
+            "name": "_match_position"
+          }
+        }
+      ]
+    },
+    {
+      "name": "selector-treatment",
+      "source": "evidence/experiments/getmyinitialranddir-segment-expression/selector-treatment.c",
+      "source_sha256": "c41dce8d00bca26b665cf6ed847f9603d0e148dca71c36cbd1af28f4d90aee16",
+      "object_sha256": "a75c5bd172e5f3a8e6d5527962e07f0fedcd3a1f9cd2d295c53ae4d051a2d340",
+      "compiler": "MSC C/C++ 7.00",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMANT1_MODULE"
+      ],
+      "exit_code": 0,
+      "code_hex": "6800009a0000000083c402cb",
+      "code_bytes": 12,
+      "fixups": [
+        {
+          "segment": 1,
+          "offset": 4,
+          "location_type": 3,
+          "width": 4,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 2,
+          "target_index": 1,
+          "displacement": 0,
+          "target": {
+            "kind": "external",
+            "name": "_TakeSelector"
+          }
+        },
+        {
+          "segment": 1,
+          "offset": 1,
+          "location_type": 2,
+          "width": 2,
+          "self_relative": false,
+          "frame_method": 5,
+          "frame_index": null,
+          "target_method": 0,
+          "target_index": 5,
+          "displacement": 0,
+          "target": {
+            "kind": "segment",
+            "name": "PACK"
+          }
+        }
+      ]
+    }
+  ],
+  "conclusion": "Positive: direct MSC __segname(\"PACK\") in a word argument creates an OMF LOC2, width-2 fixup to segment PACK, at the immediate operand of PUSH; near-pointer cast creates LOC1, width-2 external offset fixup to _match_position. Both code byte streams are identical (push imm16; far call; cleanup; retf). The selector form can distinguish the target relocation class; this does not prove full function source identity or admission."
+}

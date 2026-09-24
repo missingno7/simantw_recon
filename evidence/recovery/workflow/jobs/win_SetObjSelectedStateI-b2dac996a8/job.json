@@ -85,8 +85,8 @@
       "sha256": "042be9f6dae0b3588eb08c009c947723028bf12a99c03a05058b217dcc2f5d1c"
     },
     "tools/codegen_grinder.py": {
-      "size": 10125,
-      "sha256": "23dc5026990141a8558c94091cedd083b25feae75efd623edbb820dfb4addf58"
+      "size": 14506,
+      "sha256": "d7b361c7fe079414335747884717562bbb8e4544968cc38c7478b303a4f3ef62"
     },
     "tools/codegen_transforms.py": {
       "size": 2491,
@@ -422,11 +422,36 @@
       },
       "best_candidate": 24,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 9,
+      "submission_digest": "03bbd49532f9bcf43bfb8104baf5eb9babad72bbc7fc5f1d78a4ee19df4ea423",
+      "report": "evidence/recovery/workflow/jobs/win_SetObjSelectedStateI-b2dac996a8/attempt09/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 1,
+        "misses": 0,
+        "environment_launches": 0
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
-    "IMPORT_ORDINAL"
+    "REGISTER_ALLOCATION"
   ],
-  "reason": "Best candidate attempt08/candidate0024.c (attempt08/results.json): 328/331 bytes, 105/128 opcodes aligned, 14/18 fixups and 162/286 literal bytes equal. The closed target extent is confirmed (331 bytes). The body still has the current-selection update sequence in different registers (target loads bp+8 into BX; candidate uses CX and emits OR/Jcc/OR/AND instead of the target XOR sequence), the bitmap descriptor selection differs (target computes byte offsets 2 or 4 from object+0x26; candidate indexes with a different instruction sequence), and strict matching reports unresolved/mismatched fixups at 0x25, 0x113, 0x11f, and 0x13d plus uncovered NE relocations and literal differences. Earlier batch candidates approach the type dispatch but none is exact.",
-  "next_experiment": "Inspect the verified WLIB/NE import-symbol evidence for the target's far calls at 0x99, 0x153, 0x168, 0xf0 and 0x11f, especially GRectInv/GSetAttrib/MSClipStart/MSClipEnd/DrawBitMapAtObj, then run one small authenticated declaration/link-binding probe for the segment-2:0000 calls before reopening body-shape search."
+  "reason": "Attempt09 preserved a source-backed far win_IsWinOpen declaration and the target/candidate call bytes now match through local 0x2e. Whole-member strict proof still fails: target extent 331 bytes versus candidate contribution 330, first divergence at local 0x31 (target loads selection into BX; candidate uses CX), only 50/318 literal bytes equal, and 3/18 fixups equal. Fifteen remaining fixups span unresolved far API calls and DGROUP/segment-10 data bindings; strict output also reports uncovered NE relocations. No private contributions are reported. Evidence: attempt09/results.json and attempt09/candidate0000.diff.txt; reissue source abi-far-reissue.c and OMF receipt hash c38059097b5d8a03fba5d0357c0e74ba18fd1b706824a9a35cd9da7804698e60.",
+  "next_experiment": "Preserve the far win_IsWinOpen ABI finding. Reopen only with source-backed evidence for the selection-state register/local expression and the remaining DGROUP/segment-10 data declarations or far-call bindings; then compare the complete 331-byte member, all 18 fixups, and NE relocation coverage.",
+  "budget_extensions": [
+    {
+      "kind": "HYPOTHESIS_REISSUE",
+      "cause": "ABI",
+      "attempts": 1,
+      "candidates": 1,
+      "reason": "Current best candidate uses near win_IsWinOpen and first diverges at its call site: target NOP/PUSH CS/CALL versus candidate direct call. Verified neighboring sources declare it far. Earlier far candidates diverged before this site under different bodies; this is one isolated ABI reissue against the current best body.",
+      "reviewed": "2026-09-24T03:10:04.304021+00:00",
+      "spec": "evidence/recovery/workflow/jobs/win_SetObjSelectedStateI-b2dac996a8/abi-far-reissue.json"
+    }
+  ]
 }
