@@ -6,10 +6,13 @@ reasons, search diagnostics) into one root-cause class:
 
   A PROFILE_RESOLVABLE       a catalog profile reaches a strict result (A) or a
                              diagnostic gain without regression (A_CANDIDATE)
-  B TU_LAYOUT_RESOLVABLE     body exact; only private placement / selector-pool
-                             / private data obligations fail (with the unit
-                             group that can assemble it, or the missing
-                             introducers / static helpers that block it)
+  B TU_LAYOUT_RESOLVABLE     source passes the native unit body gate; only
+                             private placement / selector-pool / private data
+                             obligations remain (with the unit group or its
+                             missing introducers / static helpers)
+  B TU_SOURCE_INELIGIBLE     opcode-exact source has a resolved wrong binding,
+                             unknown external identity or plain literal error;
+                             source correction is required before unit assembly
   C MATCHER_TOOLING          a fixup form the strict matcher cannot yet express
   D SOURCE_SEMANTIC_MISMATCH body differs in branches, calls, constants or CFG
   E ABI_TYPE_INFERENCE       pointer loads, cleanup, frame or calling convention
@@ -23,6 +26,7 @@ import argparse
 import json
 from collections import Counter
 from common import ROOT, read_json, write_json, identity
+from tu_assembly import body_exact as unit_body_exact, known_symbol
 
 REPORT = ROOT / 'evidence/recovery/parked-reclassification.json'
 GOOD = {'CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'}
@@ -77,10 +81,22 @@ def classify(job, row, probe, topology, proposals, unnamed, unit_tests=()):
         return 'C_MATCHER_TOOLING', evidence
     # B: unit layout - body exact, only private placement obligations fail.
     private_issue = any(k in ' '.join(issues) for k in ('private placement', 'unplaced contribution', 'CONST', '_DATA', '_BSS', 'uncovered NE relocations'))
-    private_fixups = all(f['omf']['target'].get('kind') == 'segment' or f['reason'].startswith('unsupported') for f in failed) if failed else True
     if body_exact(d) and (private_issue or set(blockers) & {'DATA_LAYOUT', 'PRIVATE_CONST_LAYOUT', 'TRANSLATION_UNIT_CONTEXT', 'TRANSLATION_UNIT_CONTEXT_REQUIRED'}):
         comp = topology.get(job['symbol'])
         detail = dict(evidence, component=comp['id'] if comp else None, component_size=len(comp['publics']) if comp else None)
+        if not unit_body_exact(c):
+            wrong = [dict(offset=f['offset'], reason=f['reason'], target=f['omf']['target']) for f in failed
+                     if f.get('target') is not None and f.get('reason') in ('resolved offset and frame', 'same-segment relative offset')]
+            unknown = sorted({f['omf']['target'].get('name') for f in failed
+                              if f.get('target') is None and f['omf']['target'].get('kind') == 'external'
+                              and not known_symbol(f['omf']['target'].get('name', ''))})
+            plain = [r['target_offset'] for r in d.get('aligned_asm', [])
+                     if 'immediate_or_binding' in r.get('differences', [])
+                     and 'fixup' not in r.get('candidate', '') and 'fixup' not in r.get('target', '')]
+            detail.update(subclass='B0_SOURCE_INELIGIBLE', source_gate=dict(resolved_wrong_bindings=wrong,
+                          unknown_externals=unknown, plain_literal_offsets=plain),
+                          next_action='Correct and strictly retest the current source before TU assembly; no unit result or recovery credit is implied')
+            return 'B_TU_SOURCE_INELIGIBLE', detail
         prop = proposals.get(comp['id']) if comp else None
         if prop:
             group = next((g for g in prop['groups'] if job['symbol'] in g), None)
@@ -170,6 +186,8 @@ def review():
     # Introducers whose recovery would unblock the most unit-layout functions.
     unlock = Counter()
     for r in rows.values():
+        if r['root_cause'] != 'B_TU_LAYOUT_RESOLVABLE':
+            continue
         for m in r['detail'].get('missing_introducers', []):
             unlock[m] += 1
     queue_states = {}
@@ -178,7 +196,7 @@ def review():
         queue_states = {f['symbol']: f['state'] for f in read_json(queue_path)['functions']}
     unlock_targets = [dict(symbol=m, unblocks=n, state=queue_states.get(m)) for m, n in unlock.most_common(25)]
     sub = Counter(r['detail'].get('subclass') for r in rows.values() if r['root_cause'].startswith('B'))
-    out = dict(schema_version=1, scope='Supervisor re-evaluation of parked jobs; classification only, no budget or escalation change, no recovery credit',
+    out = dict(schema_version=2, scope='Supervisor re-evaluation of parked jobs; classification only, no budget or escalation change, no recovery credit',
                inputs={p: identity(ROOT / p) for p in ['evidence/topology/build-topology.json', 'evidence/recovery/units/proposals.json'] if (ROOT / p).exists()},
                summary=dict(summary), unit_subclasses=dict(sub), unlock_targets=unlock_targets, unnamed_code_regions=unnamed, functions=rows)
     write_json(REPORT, out)

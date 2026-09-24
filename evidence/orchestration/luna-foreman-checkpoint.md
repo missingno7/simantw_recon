@@ -183,3 +183,34 @@ Since `9d91461f`: 10 targets investigated, two strict candidates compiled, two u
 Fresh `python tools/parked_review.py` returned 351 semantic, 38 profile-candidate, 39 ABI/type, 64 TU-layout, 27 unknown, and 2 profile-resolvable rows. Intersecting with live `docs/production-queue.json` leaves seven blocked exact-body TU-layout rows: `_ClearHistory`, `_GiveLesson`, `_MapToYard`, `_PauseGame`, `_SetPause`, `_ToggleMapCursor`, `_win_SetObjBitmap`; the first, third, fourth, fifth and seventh remain root-reserved. `_SetAntLion`, `_SendBoyMsg`, `_StartAttack`, `_FollowCatDir`, and `_FindInAList` from the old shortlist are already MATCHED. The remaining `_GiveLesson` and `_ToggleMapCursor` warrant fresh packet/unit feasibility review before any reissue.
 
 Changed evidence includes the fresh parked review and doctor-generated queue/readiness/blocker/topology/cards snapshots; worker attempt/reissue data for `_GetStrategy` and `_DoLaserFire`; job/packet/blocker records for assigned symbols; and this ownership checkpoint. Seven additional explicit inspect packets (`_hanim_RenderAnimSet`, `_UpdateEdit`, `_AboutDialog`, `_ProcMenu`, `_YellowDeath`, `_myBeginSong`, `_CopyMonoMaskBitmap`) were created while preparing replacements but remain unassigned/zero-attempt. Their job IDs are recorded in the machine ledger. Root should validate changed scope before commit; the foreman did not touch tools, protected proof, or manifests by hand.
+
+
+## Fleet restart after checkpoint 058e3158 (2026-09-24 02:02 UTC)
+
+Root validated and pushed the previous quiet state as `058e3158`. Doctor remains `READY_FOR_BOUNDED_HANDOFF`: 518 game / 77 runtime, 52 MATCH_READY / 493 MATCH_BLOCKED / 2 STRUCTURE_BLOCKED / 518 MATCHED, 521 durable escalations, 220 tests.
+
+Nine disjoint assignments are active. The research-heavy five are `_ToggleMapCursor` and `_GiveLesson` (fresh B_TU feasibility, with explicit warning that opcode identity is not body-exact), `_GetMyInitialRandDir` (simant1 component/selector feasibility), and `_win_DrawModeWindow` plus `_ConvertMonoMaskToTandy` (unit-level profile evidence only). Four guided fresh targets are `SAVEASDLG`, `_IBMInitStuff`, `_Draw_SimYard`, and `_LoadTiles`, each capped at one source-grounded candidate/test, or an early blocker report. Packet identities, starting attempts, owner and exact hypothesis are in [luna-ownership.json](luna-ownership.json). No root-reserved B_TU member is assigned.
+
+
+### Early TU feasibility result (2026-09-24 02:06 UTC)
+
+`_GiveLesson` attempt02 was reviewed against fresh `simtwo:78CA` unit evidence. The current source is not `body_exact` despite 948B and 383/383 opcodes: two resolved `_modeLevels` frame/offset mismatches and 11 selector fixups remain. `tu_assembly propose` has no usable members/groups (`_Feedback` and `_RunTutor` nonexact, `_LessonDone` absent); selector pool continuity alone cannot admit it. No build or reissue. Eight other owners remain active.
+
+
+### Post-restart blocked-lane progress (2026-09-24 02:12 UTC)
+
+Six of nine assignments have settled, all without compilation; three remain active (`_ConvertMonoMaskToTandy`, `SAVEASDLG`, `_IBMInitStuff`). `_ToggleMapCursor` exposed a source-backed candidate-only hypothesis: reverse the crossed `just`/`_mapTileRect` additions to clear two resolved offset fixups, but the unit still has no eligible group and nine CONST selectors remain. Root requested one isolated expression-reversal test only after the pending classifier checkpoint, then TU consideration only if native `body_exact` and introducer gates pass. `_GiveLesson` and `_GetMyInitialRandDir` remain excluded by resolved offset/frame mismatches. `_win_DrawModeWindow` cannot assign `og` to `simant:B324` due sibling/profile-invariance conflict. `_Draw_SimYard` and `_LoadTiles` stopped on unresolved private state/data contracts. No tests, candidates or promotions in this sub-batch.
+
+
+## Quiescence before parked-classifier correction (2026-09-24 02:25 UTC)
+
+All nine assignments after `058e3158` settled with zero strict candidates or promotions. Fresh blocked-lane review: `_GiveLesson` remains body_exact-ineligible; `_GetMyInitialRandDir` remains excluded by `_match_position` frame/offset mismatch and uneligible selector introducers; `_win_DrawModeWindow` cannot assign og to 20-public `simant:B324`; `_ToggleMapCursor` has a source-backed reversal of crossed `_just`/`_mapTileRect` additions but still lacks an eligible antedit:C19C TU group. Root will correct parked B_TU classification based on native body_exact gates, then permit one isolated expression-reversal test; no TU is planned until exact-body and introducer gates pass.
+
+`_ConvertMonoMaskToTandy` probe supports og for a single-public component `gr:5E30`; the preserved profile probe source is older than attempt04’s current best, so this merits a reviewed component-level profile assignment and source-specific profile reissue after the checkpoint. Four guided starts (SAVEASDLG, IBMInitStuff, Draw_SimYard, LoadTiles) stopped before compile on unsupported state/API/data bindings. No strict credit. One accidental `partial_resources.py --help` run changed only random output paths in `resource-probe.json` and created `build/REShg9sh212`; root checked semantic identity unchanged and will restore at quiescence.
+
+All workers have settled. No one is invoking `parked_review.py`, `doctor`, or `tu_assembly`; root has a safe classifier edit/validation window. Packet identities, assignments, and per-job outcomes remain in [luna-ownership.json](luna-ownership.json).
+
+
+### Parked classifier correction validated (2026-09-24 02:22 UTC)
+
+Root’s classifier/tooling correction is validated. Fresh `parked_review.py` now reports 58 `B_TU_LAYOUT_RESOLVABLE` and 6 `B_TU_SOURCE_INELIGIBLE`, using native `tu_assembly.body_exact` as the source gate. `_GiveLesson` is excluded for two resolved `_modeLevels` bindings; `_ToggleMapCursor` is excluded for two resolved crossed `_mapTileRect`/`_just` bindings. The other four ineligible records are in `evidence/recovery/parked-reclassification.json`. Handoff validation passed all 220 tests and cache replay; doctor is READY at 518/77, 52 ready / 493 blocked, no problems. The accidental resource-probe JSON is restored and `--help` is side-effect-free. Root will commit/push before fleet resume.

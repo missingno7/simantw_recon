@@ -1,5 +1,5 @@
 """Attach an explicitly synthetic resource with the authentic Windows 3.0 SDK RC."""
-import shutil, subprocess, os, tempfile
+import argparse, shutil, subprocess, os, tempfile
 from pathlib import Path
 from common import ROOT, read_json, write_json, identity, FormatError
 from compiler import verify_lock
@@ -29,4 +29,6 @@ def main():
     print('Resource compiler exit:',runs[-1]['exit_code'],'resources:',len(result.get('resources',[])))
     return runs[-1]['exit_code']
 
-if __name__=='__main__':raise SystemExit(main())
+if __name__=='__main__':
+    argparse.ArgumentParser(description=__doc__).parse_args()
+    raise SystemExit(main())
