@@ -1,6 +1,7 @@
 """Compact, relocation-aware work packets for bounded source recovery."""
 import re
 from common import ROOT, read_json
+from call_abi_audit import linker_lowered_far_calls
 
 
 def declaration_index(recipes):
@@ -45,13 +46,17 @@ def compact_packet(card,cards,recipes,ledger):
     siblings=[c for c in cards if c['segment']==card['segment']]
     pos=next(i for i,c in enumerate(siblings) if c['symbol']==card['symbol'])
     neighbors=[dict(symbol=c['symbol'],offset=c['offset'],source=c['source'],size=c['extent']['size']) for c in siblings[max(0,pos-2):pos+3] if c['symbol']!=card['symbol']]
+    far_calls=linker_lowered_far_calls(card)
+    notes=['?? bytes belong to NE loader relocation chains, never literal C addresses.',
+           'Global DS annotations assume normal DGROUP; far/huge and aggregate types require evidence.',
+           'Next MAPSYM public is an upper bound, not the function end.',
+           'Declared types in other verified sources are useful hypotheses, not proof of a shared historical header.']
+    if far_calls:
+        notes.append('Named NOP; PUSH CS; CALL near sites match LINK same-segment far-call translation. Use linker_lowered_far_calls for site offsets; do not infer a near C prototype from the final CALL opcode.')
     return dict(symbol=card['symbol'],segment=card['segment'],code_segment=card['segment_name'],offset=card['offset'],extent=card['extent'],
                 disassembly=rows,referenced_declarations=declarations,neighbors=neighbors,incoming_references=card['incoming_references'],
-                prior_draft=ledger.get(card['symbol']),
-                interpretation_notes=['?? bytes belong to NE loader relocation chains, never literal C addresses.',
-                                      'Global DS annotations assume normal DGROUP; far/huge and aggregate types require evidence.',
-                                      'Next MAPSYM public is an upper bound, not the function end.',
-                                      'Declared types in other verified sources are useful hypotheses, not proof of a shared historical header.'])
+                linker_lowered_far_calls=far_calls,prior_draft=ledger.get(card['symbol']),
+                interpretation_notes=notes)
 
 
 def markdown(packet):
@@ -66,5 +71,9 @@ def markdown(packet):
     lines+=['```','','## Known declaration examples','']
     for declaration in packet['referenced_declarations']:lines+=['- `'+declaration['declaration']+'` — '+declaration['source']]
     lines+=['','## Interpretation','']+['- '+n for n in packet['interpretation_notes']]
+    if packet.get('linker_lowered_far_calls'):
+        lines+=['','## LINK-lowered far-call evidence','']
+        for call in packet['linker_lowered_far_calls']:
+            lines+=['- '+str(call)]
     lines+=['','## Neighbors','']+['- '+str(n) for n in packet['neighbors']]
     return '\n'.join(lines)+'\n'

@@ -65,6 +65,32 @@ def named_call_sites(card, callee):
     return sites
 
 
+def linker_lowered_far_calls(card):
+    """Compact named target sites with the exact LINK-lowered call signature."""
+    rows = card["disassembly"]
+    groups = {}
+    for index in range(2, len(rows)):
+        row = rows[index]
+        if (
+            row["mnemonic"] != "call" or not row["bytes"].startswith("e8")
+            or rows[index - 2]["bytes"] != "90"
+            or rows[index - 1]["bytes"] != "0e"
+            or rows[index - 2]["offset"] + 1 != rows[index - 1]["offset"]
+            or rows[index - 1]["offset"] + 1 != row["offset"]
+        ):
+            continue
+        for ref in row["references"]:
+            if ref.get("kind") != "near_call" or not ref.get("names"):
+                continue
+            key = (ref["segment"], ref["offset"], tuple(ref["names"]))
+            groups.setdefault(key, []).append(row["offset"] - card["offset"])
+    return [
+        {"callee_names": list(names), "segment": segment,
+         "target_offset": target, "caller_offsets": sites}
+        for (segment, target, names), sites in sorted(groups.items())
+    ]
+
+
 def audit_source(source, card):
     """Flag declarations contradicted by at least one named target call site."""
     findings = []

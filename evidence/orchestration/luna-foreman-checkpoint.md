@@ -134,3 +134,32 @@ The ledger now contains 40 distinct production job IDs and 34 jobs with strict a
 Root's read-only ABI survey found 40 of 131 resolved near-function declarations across 23 jobs conflict with target `90 0E E8` call signatures (39 ESCALATED jobs, one stale PROMOTED candidate). Root will assess a deterministic diagnostic after this stable checkpoint; this is not a proof result. The current diff consists of worker evidence, generated queue/readiness data, refreshed job contexts, and this ownership checkpoint; no proof infrastructure or manifest changes were made by the foreman.
 
 After root checkpoints this stable state, resume with a supported far-prototype retest for `_DropMyFood`, then review `_GiveLesson` unit composition.
+
+
+## Resumed fleet after checkpoint 2346d3ae (2026-09-24 00:52 UTC)
+
+Root pushed the stable checkpoint as `2346d3ae`. `_DropMyFood` received one documented ABI reissue based on the exact `90 0E E8` call evidence and admitted far prototype. Attempt03 remains `NO_COMPLETE_MATCH` (520 candidate bytes, 128/445 opcodes, 56/514 literal bytes, 2/31 fixups; first divergence at 55). Candidate `far` emits an `lcall`, while the strict target member contains the LINK-lowered five-byte sequence; no promotion or TU claim. The target source-level far signature is supported, but this isolated attempt does not reproduce the linker transformation. Attempt report and ABI reissue spec are under the job directory.
+
+`_GiveLesson` unit feasibility closed without a build/test: `simtwo:78CA` proposal has no usable exact-body sources. Attempt02's 948-byte/383-opcode layout still fails `body_exact()` with two resolved `_modeLevels` frame/offset mismatches plus 11 unresolved selector fixups. `_Feedback` and `_RunTutor` are nonexact; `_LessonDone` has no source. Contiguous predicted selector order alone is insufficient.
+
+Eight active Luna workers now hold disjoint explicit symbols (each starts with source-backed packet review and may compile at most one supported candidate): `_DoLaserFire` (`DoLaserFire-9589b88895`), `_SmoothACell` (`SmoothACell-f43227e84e`), `_ProcYardRibbonEvent` (`ProcYardRibbonEvent-68cf4fce3a`), `_DrawBalloons` (`DrawBalloons-ddca13e229`), `_win_DrawMapWindow` (`win_DrawMapWindow-eebfb870f2`), `_ch_AddEntry` (`ch_AddEntry-677911eac6`), `_YellowBirth` (`YellowBirth-4908a07a2f`), and `_DoKeyDown` (`DoKeyDown-785609ef21`). All allocations used explicit `grind.py inspect SYMBOL`; none used concurrent `grind next`. Ownership/source packet hashes and task statuses are in [luna-ownership.json](luna-ownership.json). Root is separately validating a read-only audit of near declarations inconsistent with LINK-lowered far calls; no tool edits or strict result reinterpretation are underway.
+
+
+## ABI-audit triage and fleet checkpoint (2026-09-24 01:04 UTC)
+
+Root committed the read-only ABI audit at HEAD `49821b00`: 39 current near-prototype conflicts across 23 jobs, two focused tests and 219-test handoff validation pass; doctor remains ready. The audit reports mismatches only and does not prove a recovered C type or unit boundary.
+
+The first controlled replay, `_DropMyFood` near-to-far `IsClearTile`, was nonexact after one ABI reissue: 520B, 128/445 opcodes, 56/514 literal bytes, 2/31 fixups. It supports the source-level far call but the strict object-to-image comparison still differs at the linked lowering. `_GiveLesson` remains ineligible for TU composition because its exact-byte/opcode layout has two `_modeLevels` fixup mismatches and 11 unresolved selector fixups, while the other family sources are not body exact.
+
+High-value audit triage selected one more bounded reissue, `_GetMyInitialRandDir`: the current audited source identity is stable, the single near `GetMyRandDirs` call targets `90 0E E8`, and the candidate is 89B against 91B with 34/36 opcodes. `_GetStrategy`, `_EditMessage`, and `_CustomerIDDialog` are read-only triage only. A separate `_CopyMonoBitmap` task traces DS state only if prior evidence lacks the answer.
+
+Routine work since the prior checkpoint: `_DoLaserFire` and `_SmoothACell` each had one strict candidate and were escalated for distinct frame and selector-view gaps. `_DrawBalloons`, `_win_DrawMapWindow`, and `_ch_AddEntry` stopped without compiling because target storage/API contracts remain unsupported. Eight disjoint Luna workers are active on `_GetMyInitialRandDir`, `_GetStrategy`, `_EditMessage`, `_CustomerIDDialog`, `_CopyMonoBitmap` DS state, `_ProcYardRibbonEvent`, `_YellowBirth`, and `_DoKeyDown`. Root requested a short quiescent boundary before updating `recovery_context.py` to surface target-specific far-call evidence; no foreman changes to tools or proof logic were made. See machine ownership for source packet identities and statuses.
+
+
+## Quiescent boundary for packet ABI note (2026-09-24 01:16 UTC)
+
+All assigned child work settled and is stable; root can proceed with the requested `recovery_context.py` packet-note update. HEAD remains `49821b00`. I refreshed doctor at 01:15Z: `READY_FOR_BOUNDED_HANDOFF`, 518 game / 77 runtime, 53 ready / 492 blocked / 2 structure blocked / 518 matched, 519 durable escalations, 219 tests pass.
+
+Since root commit `2346d3ae`, five strict candidates were tested: `_DropMyFood`, `_GetMyInitialRandDir`, `_DoLaserFire`, `_SmoothACell`, and `_DoKeyDown`; zero promotions or recovered bytes. The one clear ABI-layout discriminator is `_GetMyInitialRandDir` attempt05: one `GetMyRandDirs near→far` edit changed candidate size 89→91 bytes and opcode alignment 34/36→36/36, with exact layout and no register/branch/stack differences. Remaining fixups are three unresolved CONST selector refs and `_match_position` frame/offset. No promotion.
+
+Read-only triage: `_GetStrategy` has a source-backed single `GstrR near→far` probe candidate, but CFG extent is unknown and fixup/data residue remains; held pending root's packet update. `_EditMessage` and `_CustomerIDDialog` have valid far-call evidence but their main body/frame mismatches dominate, so no reissue. `_CopyMonoBitmap` preserves inherited DS but does not prove it is DGROUP. `_DoKeyDown` attempt01 was 989/1385B, 89/514 opcodes, 1/58 fixups; the candidate is missing event/object-selection semantics. `_YellowBirth` remains 0-attempt DATA_LAYOUT on six unnamed DGROUP words. `_ProcYardRibbonEvent` was incorrectly considered in C19C; packet confirms `antedit:A51E`, with only the 0x2302 path grounded and unknown prompt state. All worker-specific evidence is in the workflow job directories and machine ledger.

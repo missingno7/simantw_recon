@@ -24,6 +24,15 @@ share the same `90 0E E8` signature as admitted `_IsClear3x3` far
 `IsClearTile` calls. The controlled far-prototype retest remains nonexact
 (`attempt03`); it does not establish a complete body or unit context.
 
+The stronger controlled replay is `_GetMyInitialRandDir`. Its preserved
+attempt04 used `near GetMyRandDirs` and yielded 89 code bytes with 34/36 opcode
+matches. The source-identical except for `near` to `far` attempt05 yields the
+target's 91-byte extent, 36/36 opcodes, and exact instruction layout. Strict
+comparison still fails at four of 11 fixups: three unresolved CONST selector
+references and one `_match_position` offset/frame difference. The
+[attempt05 strict report](../../recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/attempt05/results.json)
+isolates the ABI codegen effect without claiming recovery credit.
+
 This audit is scoped to the current cards and current candidate files; it
 does not infer declarations for unresolved or indirect calls. The established
 linker behavior and independent proof remain in
