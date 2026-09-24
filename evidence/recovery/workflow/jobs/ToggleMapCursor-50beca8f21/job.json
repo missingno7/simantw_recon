@@ -69,24 +69,24 @@
       "sha256": "b1ea407544fca96d16015aa6525a4683b334668cd96cd8b689c3761c6e9dea0c"
     },
     "tools/grind.py": {
-      "size": 10300,
-      "sha256": "f7034cc52e800578fcbe5db5899f8e161b0f380e9b2fe4b871d1e2d9ae67fd1a"
+      "size": 11407,
+      "sha256": "7e461d599328ce73a634ce24dda932de67e21c757dbac75f369dc114e9bf8a9d"
     },
     "tools/factory_queue.py": {
       "size": 5468,
       "sha256": "a2ab4a9ab9f50586fd5d33923347c143019334a9f630beffc40ce5c471c9a9e5"
     },
     "tools/recovery_workflow.py": {
-      "size": 32027,
-      "sha256": "cd18a799d3a3649b333478b940aceaf39c42b5563f39cba8b6c5e1d9c8b08a7e"
+      "size": 33368,
+      "sha256": "c7018c5c35f07d16f2a5d5b64482ac08a6955e74ffb2449b925bad80a4af4c3b"
     },
     "tools/topology_diagnostics.py": {
       "size": 2918,
       "sha256": "042be9f6dae0b3588eb08c009c947723028bf12a99c03a05058b217dcc2f5d1c"
     },
     "tools/codegen_grinder.py": {
-      "size": 10125,
-      "sha256": "23dc5026990141a8558c94091cedd083b25feae75efd623edbb820dfb4addf58"
+      "size": 14506,
+      "sha256": "d7b361c7fe079414335747884717562bbb8e4544968cc38c7478b303a4f3ef62"
     },
     "tools/codegen_transforms.py": {
       "size": 2491,
@@ -352,11 +352,26 @@
       },
       "best_candidate": 0,
       "result": "NO_COMPLETE_MATCH"
+    },
+    {
+      "number": 4,
+      "submission_digest": "226aeb543d52e32b1629fb03f4527405f4ce0fa8488a7c311f0d0170aa76ba94",
+      "report": "evidence/recovery/workflow/jobs/ToggleMapCursor-50beca8f21/attempt04/results.json",
+      "completed": 1,
+      "candidates": 1,
+      "cache": {
+        "hits": 0,
+        "misses": 1,
+        "environment_launches": 1
+      },
+      "best_candidate": 0,
+      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "blockers": [
     "PRIVATE_CONST_LAYOUT"
   ],
-  "reason": "Attempts 01-03 preserve one readable semantic candidate with equal 261-byte extents, identical layout/CFG and 85/85 opcodes. The complete-member failures are confined to the shared private CONST selector pool: 11 two-byte selector operands account for all 22 literal divergences, with 28/45 fixups currently equal and conflicting/unplaced CONST obligations. Independent topology places _ToggleMapCursor in antedit:C19C, whose shared pool spans C1E0-C216 and includes its target selector sites C1E2, C1E4, C1F0, C1F2, C1F4 and C1F6. The documented scaffold build cannot derive a slot map because this body is not an isolated strict match; a partial no-scaffold compile also fails because the selected public placements are noncontiguous without the intervening members. No source-shape edit can resolve this unit-wide ordering obligation, and no recovery credit is claimed.",
-  "next_experiment": "Build a contiguous antedit:C19C unit with the preceding map members that introduce the shared C1E0-C1F6 selector pool, then strict-test this preserved candidate in that complete unit context."
+  "reason": "Attempt04 source reversal compiled to the same effective OMF as attempt03 and did not change either crossed binding. The isolated declaration-order fixture independently shows that declaring _just before _mapTileRect changes +0xC4 and +0xCD to target bindings, but the production candidate still has nine unresolved CONST selector fixups and private placement obligations; native body_exact remains false and no eligible unit introducer group exists.",
+  "next_experiment": "Use the tested declaration order in a source candidate only after grounding the antedit:C19C selector introducers. Compare the two named fixups and strict whole-member result; enter TU assembly only if native body_exact and all introducer eligibility gates pass.",
+  "budget_extensions": []
 }

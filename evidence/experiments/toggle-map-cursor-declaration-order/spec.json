@@ -1,0 +1,32 @@
+{
+  "symbol": "_ToggleMapCursor",
+  "source": "evidence/experiments/toggle-map-cursor-declaration-order/template.c",
+  "compiler": "msc700",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTANTEDIT_MODULE"
+  ],
+  "max_candidates": 2,
+  "axes": [
+    {
+      "name": "just_mapTileRect_declaration_order",
+      "marker": "/* DECL_ORDER_PAIR */",
+      "values": [
+        "extern struct Rect far mapTileRect;\nextern int far just;",
+        "extern int far just;\nextern struct Rect far mapTileRect;"
+      ],
+      "rationale": "Both named far objects are file-scope declarations in the tested C source. Keep mapYsize/mapXsize in the same place in both variants and change only the relative order of mapTileRect and just. The antedit:C19C declaration-order ledger has no constraint for this pair."
+    }
+  ],
+  "publics": [
+    "_ToggleMapCursor"
+  ],
+  "semantic_summary": "Two-order micro-fixture isolates the relative file-scope declaration order of mapTileRect and just; function body and all other declaration positions remain identical.",
+  "binding_evidence": [
+    "evidence/topology/supervisor-far-names/named-far-operands.json records target ANTEDIT_MODULE+0xC4 as _mapTileRect and +0xCD as _just.",
+    "layout/declaration-order.json records other antedit:C19C pairs but no just/mapTileRect constraint."
+  ]
+}

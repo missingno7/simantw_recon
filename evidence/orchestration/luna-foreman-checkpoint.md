@@ -214,3 +214,30 @@ All workers have settled. No one is invoking `parked_review.py`, `doctor`, or `t
 ### Parked classifier correction validated (2026-09-24 02:22 UTC)
 
 Root’s classifier/tooling correction is validated. Fresh `parked_review.py` now reports 58 `B_TU_LAYOUT_RESOLVABLE` and 6 `B_TU_SOURCE_INELIGIBLE`, using native `tu_assembly.body_exact` as the source gate. `_GiveLesson` is excluded for two resolved `_modeLevels` bindings; `_ToggleMapCursor` is excluded for two resolved crossed `_mapTileRect`/`_just` bindings. The other four ineligible records are in `evidence/recovery/parked-reclassification.json`. Handoff validation passed all 220 tests and cache replay; doctor is READY at 518/77, 52 ready / 493 blocked, no problems. The accidental resource-probe JSON is restored and `--help` is side-effect-free. Root will commit/push before fleet resume.
+
+
+## Resumed after classifier push d7bdbfb0 (2026-09-24 02:30 UTC)
+
+Root validated and pushed the B_TU eligibility correction as `d7bdbfb0`. Two priority one-candidate tasks are active: `_ConvertMonoMaskToTandy` receives a reviewed `gr:5E30 -> og` component assignment and profile reissue of the current attempt04 source if context checks pass; `_ToggleMapCursor` receives a source-layout reissue reversing only the crossed side-effect-free integer additions. Both retain strict factory-only promotion and TU gating on native `body_exact` plus eligible introducers.
+
+
+## 2026-09-24T02:50Z-quiescent-after-d7bdbfb0
+
+- Root checkpoint HEAD: `d7bdbfb0`; all ten assignments since the classifier push are settled, with no active child operations. Root may commit the stable generated/job/orchestration state.
+- Doctor: `READY_FOR_BOUNDED_HANDOFF`; 519 game functions, 77 runtime members, 53 ready, 491 blocked, 2 structure-blocked, 519 matched, zero problems. Handoff validation passed 220 tests and cache replay.
+- Promotion: `_ConvertMonoMaskToTandy` now contributes 221 verified bytes under reviewed singleton `gr:5E30→og`. The preserved old probe source SHA `4914bd3c…354d9537` was decisive; attempt05 on the newer attempt04 source remained 16 `GR_MODULE` bytes off despite 11/11 fixups and 22/22 `_DATA`. Attempt06 exactly matched 208/208 bytes and 11/11 fixups and passed native `grind.py accept`. Source: `src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c`; recipe `src/recovery.json`; proof `evidence/recovery/workflow/jobs/ConvertMonoMaskToTandy-4e3e71229c/promotion.json`.
+- Since `d7bdbfb0`: 10 targets investigated; 5 workflow candidates, 2 declaration-order research fixture candidates, 4 new unique effective workflow OMFs, 1 strict promotion / 221 bytes. Six reviews stopped before compile/reissue because their proposed axis did not explain the principal mismatch or was already exhausted. No ownership collisions.
+- `ToggleMapCursor`: expression reversal canonicalized to the old OMF. A separate two-order fixture proves `_just` before `_mapTileRect` flips both bindings at +0xC4/+0xCD; fixups improve 28/45→30/45. Nine `CONST` selector obligations/private placement remain, so no production promotion/TU. Artifact: `evidence/experiments/toggle-map-cursor-declaration-order/`.
+- ABI selective replays: `_QueenMoveR` and `_MakeLint2` each confirmed a LINK-lowered far-call transformation, but whole members still fail on independent layout, fixup, frame, and private `CONST` obligations. `_CustomerIDDialog`, `_EditMessage`, and `_DropMyFood` were not reissued because the call form occurs downstream of the dominant gap or unresolved TU/data context.
+- `_GetMyInitialRandDir` has a distinct selector-versus-offset source question: target +0x46 is an NE selector relocation to PACK seg9:0, while attempt05 emits LOC1 offset for `_match_position`. Native `body_exact` remains false and `tu_assembly.propose(15)` has no eligible group/introducers; preserve as an isolated probe axis only.
+- Changed files include generated production/recovery queue and blocker snapshots, `_ConvertMonoMaskToTandy` profile assignment/recipe/source/promotion proof, four job attempt histories (ConvertMonoMaskToTandy, ToggleMapCursor, QueenMoveR, MakeLint2), the ToggleMapCursor research fixture, and the ownership/checkpoint metadata. No proof tools were edited.
+
+
+### 2026-09-24T02:56Z-togglemap-close follow-up
+
+After the prior quiescent snapshot, `_ToggleMapCursor` was formally closed through the supported `python tools/grind.py block` workflow as `ESCALATED` / `PRIVATE_CONST_LAYOUT`. The record includes attempt04’s unchanged effective OMF after expression reversal, the new microfixture result that `_just` before `_mapTileRect` fixes both crossed named operands, and the remaining nine `CONST` selector/private placement blockers. No queue or blocker ledger was hand-edited. Doctor passed at 02:55Z: 519 game / 77 runtime, 54 ready / 490 blocked / 2 structural blocked / 519 matched, zero problems; validation remains 220 tests plus cache replay. Generated queue, blocker, card, frontier, and progress files were refreshed by the supported workflow and are stable for root commit.
+
+
+### 2026-09-24T03:00Z-abi-reissue-close post-reissue closeout
+
+Root audit found `_MakeLint2` and `_QueenMoveR` had been reclassified MATCH_READY after failed expert reissues. Both were closed through supported `python tools/grind.py block`, retaining their scoped negatives and source-backed next requirements. `_MakeLint2` is `REGISTER_ALLOCATION` (attempt05 corrects neither frame/local allocation nor `MapA` and SRand1 fixups); `_QueenMoveR` is `PRIVATE_CONST_LAYOUT` (attempt05 confirms the far GetBestDir LINK transformation but retains CONST/LifeR/unit residues). `_ToggleMapCursor` was already re-escalated through the same workflow. No hand edits to manifests/queue/blockers. Doctor now READY at 02:59Z: 519 game / 77 runtime, 52 ready / 492 blocked / 2 structural blocked / 519 matched / 520 durable escalations, zero problems; 220 tests/cache replay pass. All child workers are idle and the regenerated state is stable for root commit.

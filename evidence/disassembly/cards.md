@@ -31578,8 +31578,8 @@ Source: unrecovered. Flags: unresolved.
 ```
 
 ## _ConvertMonoMaskToTandy — GR_MODULE:5E30
-Ownership: GAME (PROBABLE). Extent: PROBABLE, 221 bytes.
-Source: unrecovered. Flags: unresolved.
+Ownership: GAME (PROBABLE). Extent: CONFIRMED, 221 bytes.
+Source: src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c. Flags: ['/AL', '/G2', '/Gs', '/Oeglw', '/NTGR_MODULE'].
 
 ```asm
 5E30  c80a0000                 enter 0xa, 0
