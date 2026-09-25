@@ -501,8 +501,135 @@ def _raw_fixup_target(reloc, site, model, import_reverse, export_by_ordinal):
     raise FormatError("unsupported NE relocation target kind " + str(target["kind"]))
 
 
+def _carve_crt0msg_member(model):
+    """Extract the exact pinned CRT0MSG member and remove its bytes from RAWDEBT.
+
+    MAPSYM anchors _DATA through __adbgmsg; MSG is uniquely byte-placed and
+    PAD is required to immediately follow it.  The member has no fixups, so
+    these contributions can be carried by LINK without synthesizing fixups.
+    """
+    library_rel = "toolchain/sdk300/CLIB/LLIBCW.LIB"
+    library_path = ROOT / library_rel
+    module_bytes = None
+    module = None
+    for candidate in omf.library_modules(library_path.read_bytes()):
+        try:
+            parsed = omf.parse(candidate)
+        except FormatError:
+            continue
+        if parsed["name"].lower() == "dos\\crt0msg.asm":
+            module_bytes, module = candidate, parsed
+            break
+    if module is None:
+        raise FormatError("pinned CRT library lacks dos\\crt0msg.asm")
+    if module["fixups"]:
+        raise FormatError("CRT0MSG member fixup layout changed; cannot safely carve it")
+
+    ne_seg = model["image"]["segments"][9]
+    if ne_seg["number"] != 10:
+        raise FormatError("expected NE data segment 10 for CRT0MSG placement")
+    raw = model["raw"][ne_seg["file_offset"]:ne_seg["file_offset"] + ne_seg["logical_size"]]
+    mapsym_segment = next(s for s in model["symbols"]["segments"] if s["number"] == 10)
+    public = next((p for p in module["publics"] if p["name"] == "__adbgmsg" and p["segment"]), None)
+    mapped = next((p for p in mapsym_segment["symbols"] if p["name"] == "__adbgmsg"), None)
+    if public is None or mapped is None:
+        raise FormatError("CRT0MSG __adbgmsg public/MAPSYM anchor missing")
+    data_segment = module["segments"][public["segment"] - 1]
+    data_start = mapped["offset"] - public["offset"]
+    if data_segment["name"] != "_DATA" or data_start < 0:
+        raise FormatError("CRT0MSG _DATA anchor is not the expected MAPSYM contribution")
+
+    msg_segment = next((s for s in module["segments"] if s["name"] == "MSG" and s["length"]), None)
+    pad_segment = next((s for s in module["segments"] if s["name"] == "PAD" and s["length"]), None)
+    if not msg_segment or not pad_segment:
+        raise FormatError("CRT0MSG MSG/PAD contributions missing")
+    msg_bytes = bytes.fromhex(msg_segment["data_hex"])
+    pad_bytes = bytes.fromhex(pad_segment["data_hex"])
+    msg_start = raw.find(msg_bytes)
+    if not msg_bytes or msg_start < 0 or raw.find(msg_bytes, msg_start + 1) >= 0:
+        raise FormatError("CRT0MSG MSG bytes are not a unique data-segment placement")
+    edata = next((p for p in mapsym_segment["symbols"] if p["name"] == "_edata"), None)
+    if not pad_bytes or edata is None:
+        raise FormatError("CRT0MSG PAD or exact _edata MAPSYM boundary missing")
+    # PAD is a distinct OMF segment class/name. LINK coalesces the runtime
+    # message segments before the initialized-data boundary; its two 0xFF
+    # bytes are therefore anchored by the unique matching suffix immediately
+    # before MAPSYM _edata, with zero alignment bytes between PAD and _edata.
+    pad_candidates = [p for p in range(max(0, edata["offset"] - 16),
+                                      edata["offset"] - len(pad_bytes) + 1)
+                      if raw[p:p + len(pad_bytes)] == pad_bytes
+                      and not any(raw[p + len(pad_bytes):edata["offset"]])]
+    if len(pad_candidates) != 1:
+        raise FormatError("CRT0MSG PAD has no unique initialized-data suffix placement")
+    pad_start = pad_candidates[0]
+    if pad_start < msg_start + len(msg_bytes):
+        raise FormatError("CRT0MSG PAD suffix precedes its MSG contribution")
+
+    claims = []
+    for segment, start in ((data_segment, data_start), (msg_segment, msg_start), (pad_segment, pad_start)):
+        payload = bytes.fromhex(segment["data_hex"])
+        end = start + len(payload)
+        if end > len(raw) or raw[start:end] != payload:
+            raise FormatError("CRT0MSG %s bytes do not match their target placement" % segment["name"])
+        claims.append({"segment": segment["name"], "class": segment["class"],
+                       "start": start, "end": end, "sha256": _sha(payload)})
+
+    spans = model["spans"][10]
+    sites = [(r, q) for r in ne_seg["relocations"] for q in r["sites"]]
+    chains = set(model["raw_chain_sites"].get(10, []))
+    for claim in claims:
+        a, b = claim["start"], claim["end"]
+        if not any(span["start"] <= a and b <= span["end"] for span in spans):
+            raise FormatError("CRT0MSG %s is not wholly uncovered RAWDEBT" % claim["segment"])
+        if any(a <= q < b for _, q in sites) or any(a <= q < b for q in chains):
+            raise FormatError("CRT0MSG %s overlaps an NE loader/chain site" % claim["segment"])
+
+    carved = []
+    for span in spans:
+        pieces = [(span["start"], span["end"])]
+        for claim in claims:
+            updated = []
+            for a, b in pieces:
+                if claim["end"] <= a or claim["start"] >= b:
+                    updated.append((a, b))
+                else:
+                    if a < claim["start"]:
+                        updated.append((a, claim["start"]))
+                    if claim["end"] < b:
+                        updated.append((claim["end"], b))
+            pieces = updated
+        for a, b in pieces:
+            if a < b:
+                carved.append({"start": a, "end": b,
+                    "chain_sites": [q for q in span.get("chain_sites", []) if a <= q < b]})
+    model["spans"][10] = carved
+    member_path = WORK / "objects" / "RUNTIME_CRT0MSG.OBJ"
+    member_path.parent.mkdir(parents=True, exist_ok=True)
+    member_path.write_bytes(module_bytes)
+    evidence = {"library": library_rel, "library_sha256": identity(library_path)["sha256"],
+        "member": module["name"], "member_sha256": _sha(module_bytes),
+        "object": member_path.relative_to(ROOT).as_posix(), "claims": claims,
+        "placement_basis": ["_DATA anchored by exact __adbgmsg MAPSYM public",
+                            "MSG byte sequence has a unique placement in NE segment 10",
+                            "PAD uniquely matches the suffix before MAPSYM _edata after zero alignment"],
+        "fixups": len(module["fixups"]), "scope": "pinned runtime library member; never RAWDEBT or recovered source"}
+    model["runtime_library_claims"] = [evidence]
+    order = model["evidence"]["link_order"]
+    order["raw_gap_spans"]["10"] = carved
+    order["counts"]["raw_gap_spans"] = sum(map(len, model["spans"].values()))
+    order["counts"]["raw_chain_sites"] = sum(len(x) for x in model["raw_chain_sites"].values())
+    model["evidence"]["runtime_library_claims"] = [evidence]
+    write_json(EVIDENCE / "link-container.json", model["evidence"])
+    write_json(WORK / "layout-model.json", {"objects": model["layouts"],
+        "known_publics": sorted(model["known_publics"]),
+        "spans": {str(k): v for k, v in model["spans"].items()},
+        "runtime_library_claims": [evidence]})
+    return evidence
+
+
 def package():
     model = analyze(write=True)
+    runtime_claim = _carve_crt0msg_member(model)
     import_rows = library_match.import_symbols(ROOT / "toolchain/sdk300/WLIB/LIBW.LIB")
     import_reverse = defaultdict(list)
     for symbol, target in import_rows.items():
@@ -622,6 +749,7 @@ def package():
     receipt = {"scope": "RAWDEBT placeholders only; zero recovery credit",
         "objects": packaged, "object_count": len(packaged), "raw_ne_relocation_sites": len(raw_fixup_sites),
         "expected_raw_ne_relocation_sites": len(expected_sites), "missing_sites": missing,
+        "runtime_library_members": [runtime_claim],
         "def_imports": sorted(def_imports),
         "limitations": ["Every copied byte remains explicit raw debt", "Raw section names are inferred from mapped neighbors; hidden original logical-segment names are not recoverable from MAPSYM"]}
     write_json(WORK / "rawdebt-package.json", receipt)
@@ -630,10 +758,12 @@ def package():
 
 def _link_input_key(row):
     """Stable per-layout ordering heuristic; original global input order remains partly inferred."""
-    if row["kind"] == "RAWDEBT":
+    if row["kind"] in ("RAWDEBT", "RUNTIME_MEMBER"):
         seg, start = row["ne_segment"], row["start"]
         if seg == 10:
-            return (0, start, 0, row["object"])
+            # Match the field positions used by admitted DGROUP contributions
+            # so raw gaps and pinned runtime members can interleave by offset.
+            return (0, 0, start, row["object"])
         if seg == 4:
             return (2, start, 0, row["object"])
         return (1, seg, start, row["object"])
@@ -647,7 +777,7 @@ def _link_input_key(row):
     return (group, segment, anchor, row["object"])
 
 
-def link(out_path="build/workers/linkdef/LINKED.EXE"):
+def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
     model, packaged, package_receipt = package()
     out = ROOT / "build/workers/linkdef/link"
     out.mkdir(parents=True, exist_ok=True)
@@ -666,6 +796,14 @@ def link(out_path="build/workers/linkdef/LINKED.EXE"):
         by_digest[digest] = dest
         rows.append({"kind": "ADMITTED_" + layout["group"], "object": dest.name, "layout": layout,
                      "path": dest, "identity": identity(dest)})
+    for member in model.get("runtime_library_claims", []):
+        src = ROOT / member["object"]
+        dest = in_dir / ("R%04d.OBJ" % len([x for x in rows if x["kind"] == "RUNTIME_MEMBER"]))
+        shutil.copyfile(src, dest)
+        anchor = next(c["start"] for c in member["claims"] if c["segment"] == "_DATA")
+        rows.append({"kind": "RUNTIME_MEMBER", "object": dest.name, "ne_segment": 10,
+                     "start": anchor, "path": dest, "identity": identity(dest),
+                     "runtime_member": member["member"]})
     for item in packaged:
         src = ROOT / item["object"]
         dest = in_dir / ("P%04d.OBJ" % len([x for x in rows if x["kind"] == "RAWDEBT"]))
@@ -685,55 +823,77 @@ def link(out_path="build/workers/linkdef/LINKED.EXE"):
     shutil.copyfile(ROOT / DEF_STUB, out / "WINSTUB.EXE")
     shutil.copyfile(WORK / "SIMANTW.DEF", out / "SIMANTW.DEF")
     output_name = Path(out_path).name
-    rsp = "+\n".join(object_names) + ",\n" + output_name + ",\nSIMANTW.MAP,\n" + "+".join(lib_sources) + ",\nSIMANTW.DEF /NOD /NOI /MAP /PACKCODE;\n"
+    code_packing_switch = "/PACKCODE" if pack_code else "/NOPACKCODE"
+    rsp = "+\n".join(object_names) + ",\n" + output_name + ",\nSIMANTW.MAP,\n" + "+".join(lib_sources) + ",\nSIMANTW.DEF /NOD /NOI /MAP " + code_packing_switch + ";\n"
     (out / "SIMANTW.RSP").write_text(rsp, encoding="ascii")
     lock = read_json(ROOT / "layout/toolchain.json")
     runner = ROOT / lock["runner"]
     linker = ROOT / "toolchain/msc700/BIN/LINK.EXE"
     command = [str(runner), "-d", str(linker), "@SIMANTW.RSP"]
+    exe = out / output_name
+    # Remove only this worker's stale candidate before LINK runs. LINK can emit a
+    # structurally useful NE file and still exit nonzero when some fixups fail.
+    if exe.exists():
+        exe.unlink()
     result = subprocess.run(command, cwd=out, capture_output=True, timeout=300)
     log = (result.stdout + result.stderr).decode("latin1", errors="replace")
     (out / "link.log").write_text(log, encoding="latin1")
-    exe = out / output_name
-    if exe.exists():
-        exe.unlink()
     report = {"scope": "RAWDEBT placeholders plus admitted OMF objects; placeholders receive no recovery credit",
+        "code_packing": code_packing_switch,
         "command": command, "exit_code": result.returncode, "linker": identity(linker),
         "def": identity(out / "SIMANTW.DEF"), "stub": identity(out / "WINSTUB.EXE"),
-        "input_object_count": len(rows), "rawdebt_object_count": len(packaged),
+         "input_object_count": len(rows), "rawdebt_object_count": len(packaged),
+         "runtime_library_member_count": sum(1 for x in rows if x["kind"] == "RUNTIME_MEMBER"),
         "rawdebt_fixup_sites": package_receipt["raw_ne_relocation_sites"],
-        "input_order": [{"kind": x["kind"], "object": x["object"], "ne_segment": x.get("ne_segment"), "start": x.get("start")} for x in rows],
+        "link_error_count": len(re.findall(r"error L\d+:", log)),
+        "link_error_codes": dict(Counter(re.findall(r"error (L\d+):", log))),
+         "input_order": [{"kind": x["kind"], "object": x["object"], "ne_segment": x.get("ne_segment"), "start": x.get("start"), "runtime_member": x.get("runtime_member")} for x in rows],
         "log": log}
-    if exe.exists() and result.returncode == 0:
+    if exe.exists():
         out_target = ROOT / out_path
         out_target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(exe, out_target)
         report["output"] = identity(exe)
         report["delivered_candidate"] = out_target.relative_to(ROOT).as_posix()
         report["comparison"] = compare_outputs(model["raw"], exe.read_bytes())
+        write_json(WORK / ("comparison-" + Path(output_name).stem + ".json"), report["comparison"])
+        write_json(WORK / "comparison.json", report["comparison"])
+    write_json(WORK / ("link-receipt-" + Path(output_name).stem + ".json"), report)
     write_json(WORK / "link-receipt.json", report)
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     compact = {k:v for k,v in report.items() if k not in ("input_order", "log")}
     compact["input_order_sha256"] = _sha(json.dumps(report["input_order"], sort_keys=True).encode())
     compact["log_tail"] = "\n".join(log.splitlines()[-24:])
+    write_json(EVIDENCE / ("link-result-" + Path(output_name).stem + ".json"), compact)
     write_json(EVIDENCE / "link-result.json", compact)
     print("LINK exit:", result.returncode, "objects:", len(rows), "RAWDEBT:", len(packaged))
-    if exe.exists() and result.returncode == 0:
+    if exe.exists():
         print("Comparison:", report["comparison"]["different_region_count"], "different regions")
     else:
         print("LINK log:", "\n".join(log.splitlines()[-12:]))
     return result.returncode
+
+def _byte_region_facts(expected_region, actual_region):
+    return {
+        "equal": expected_region == actual_region,
+        "matching_bytes_at_region_offsets": sum(
+            left == right for left, right in zip(expected_region, actual_region)),
+        "common_prefix_bytes": next((i for i, (left, right) in enumerate(
+            zip(expected_region, actual_region)) if left != right),
+            min(len(expected_region), len(actual_region))),
+    }
+
 
 def compare_outputs(oracle_bytes, candidate_bytes):
     """Compare the NE container structurally and by raw region bytes."""
     expected = ne.parse(oracle_bytes)
     actual = ne.parse(candidate_bytes)
     rows = []
-    def add(name, ebytes, abytes, note="", excluded=False):
-        rows.append({"region": name, "expected_bytes": len(ebytes), "actual_bytes": len(abytes),
-            "equal": ebytes == abytes, "matching_bytes_at_region_offsets": sum(a == b for a, b in zip(ebytes, abytes)),
-            "common_prefix_bytes": next((i for i, (a, b) in enumerate(zip(ebytes, abytes)) if a != b), min(len(ebytes), len(abytes))),
-            "expected_sha256": _sha(ebytes), "actual_sha256": _sha(abytes),
+    def add(name, expected_region, actual_region, note="", excluded=False):
+        facts = _byte_region_facts(expected_region, actual_region)
+        rows.append({"region": name, "expected_bytes": len(expected_region), "actual_bytes": len(actual_region),
+            **facts,
+            "expected_sha256": _sha(expected_region), "actual_sha256": _sha(actual_region),
             "excluded_lane": excluded, "note": note})
     def table_bytes(data, image, start, size, relative=True):
         base = image["header"]["file_offset"] if relative else 0
@@ -836,6 +996,7 @@ def main():
     sub.add_parser("package", help="build explicit RAWDEBT OMF placeholder objects")
     p_link = sub.add_parser("link", help="run pinned LINK 5.30 with recovered objects and RAWDEBT placeholders")
     p_link.add_argument("--out", default="build/workers/linkdef/LINKED.EXE")
+    p_link.add_argument("--no-packcode", action="store_true", help="diagnostic run without /PACKCODE")
     p_cmp = sub.add_parser("compare", help="compare a linked NE executable by region")
     p_cmp.add_argument("candidate")
     args = parser.parse_args()
@@ -848,7 +1009,7 @@ def main():
         _, _, receipt = package()
         print(json.dumps({"rawdebt_objects": receipt["object_count"], "relocation_sites": receipt["raw_ne_relocation_sites"], "package": str(WORK / "rawdebt-package.json")}, indent=2))
     elif args.action == "link":
-        raise SystemExit(link(args.out))
+        raise SystemExit(link(args.out, pack_code=not args.no_packcode))
     else:
         model = _oracle_model()
         result = compare_outputs(model[0], Path(args.candidate).read_bytes())

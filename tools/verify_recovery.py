@@ -1,6 +1,7 @@
 """Verify built recovery artifacts separately from construction."""
 from common import ROOT,read_json,write_json,fixture,identity,FormatError
 from compiler import validate_receipt
+import assembler
 from matcher import compare
 from recovery_gate import check_member
 from library_match import compare_member,import_symbols
@@ -15,9 +16,18 @@ def verify(manifest=None,recipes=None,publish=True):
     good={'FUNCTION_MATCH','CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER'}
     for row in manifest['game_objects']:
         if identity(ROOT/row['object'])!=row['identity']:raise FormatError('changed built object')
-        validate_receipt(row['receipt'],validated_locks);target=recipes[row['symbol']]
+        target=recipes[row['symbol']]
+        language=target.get('language','c')
+        if language=='asm':
+            assembler.validate_receipt(row['receipt'])
+        else:
+            validate_receipt(row['receipt'],validated_locks)
         if row['identity']!=row['receipt']['object_identity']:raise FormatError('object differs from compile receipt')
-        if row['receipt']['source']!=target['source'] or row['receipt']['flags']!=target['flags'] or row['receipt']['compiler']!=target['compiler']:raise FormatError('stale build recipe')
+        if language=='asm':
+            if row['receipt']['source']!=target['source'] or row['receipt']['flags']!=target['flags'] or row['receipt'].get('assembler')!=target.get('assembler'):
+                raise FormatError('stale assembler recipe')
+        elif row['receipt']['source']!=target['source'] or row['receipt']['flags']!=target['flags'] or row['receipt']['compiler']!=target['compiler']:
+            raise FormatError('stale build recipe')
         m=omf.parse((ROOT/row['object']).read_bytes())
         if target['comparison']=='data_member':
             from recovery_gate import check_data_member

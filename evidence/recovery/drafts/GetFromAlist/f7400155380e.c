@@ -1,0 +1,36 @@
+/*
+ * Hypothesis: the A-list index word is stored in PACK at 0x80f0.  A positive
+ * index names the next A-list record; after stepping back one record, the
+ * high bit of its type byte at 0x2f62 is the requested list class.  A matching
+ * nonzero index is removed from the A-list and reported as success; all other
+ * paths return zero.
+ */
+extern int far ListIndexA[];
+extern unsigned char far Dx8[];
+extern void near RemoveFromAList(int index);
+
+int GetFromAlist(int wanted)
+{
+    int index;
+    int listType;
+
+    index = ListIndexA[0];
+    if (index <= 0)
+        goto no_match;
+
+find_match:
+    --index;
+    listType = Dx8[index + 0x2f62];
+    if (listType != 0 && (listType >> 7) == wanted) {
+        if (index > 0) {
+            RemoveFromAList(index);
+            return 1;
+        }
+        goto no_match;
+    }
+    if (index > 0)
+        goto find_match;
+
+no_match:
+    return 0;
+}

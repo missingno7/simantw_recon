@@ -16,7 +16,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from common import ROOT, FormatError, identity, read_json, recipes, relative, write_json
+from common import ROOT, FormatError, fixture, identity, ownership_review, read_json, recipes, relative, write_json
 from codegen_grinder import GOOD, run
 import drafts
 
@@ -57,8 +57,94 @@ def summary_row(row, label, out):
                 diff=relative(out / ('candidate%04d.diff.txt' % row['candidate'])) if d else None)
 
 
-def search(symbol, files=(), template=None, meta=None, note=None, full=False):
+def search_asm(symbol, files, meta=None, note=None, full=False, assembler_version='masm500', asm_flags=None):
+    import assembler
+    import mapsym
+    import ne
+    import omf
+    from library_match import compare_member, import_symbols
+    from recovery_gate import admission_targets, check_member
+    began = time.perf_counter()
+    review = ownership_review()
+    if review.get(symbol, {}).get('class') != 'GAME_ASM':
+        raise FormatError('assembly search is limited to reviewed GAME_ASM symbols')
+    spec = assembler.versions().get(assembler_version)
+    if spec is None:
+        raise FormatError('unknown or unprovisioned assembler version: ' + assembler_version)
+    flags = assembler._validate_flags(spec.get('default_flags', []) if asm_flags is None else asm_flags)
+    stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S') + '-%d' % os.getpid()
+    out = ROOT / 'build/search' / symbol.lstrip('_') / stamp
+    out.mkdir(parents=True, exist_ok=True)
+    raw = fixture('SIMANTW.EXE'); image = ne.parse(raw); symbols = mapsym.parse(fixture('SIMANTW.SYM'))
+    imports = import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB')
+    rows = []
+    for index, name in enumerate(files):
+        path = Path(name).resolve()
+        if path.suffix.lower() != '.asm':
+            raise FormatError('ASM search accepts only .asm candidates; do not mix source languages')
+        snapshot = out / ('candidate%04d.asm' % index)
+        if not path.is_file():
+            raise FormatError('candidate does not exist: ' + name)
+        text = path.read_text(encoding='latin1')
+        snapshot.write_text(text, encoding='latin1')
+        row = dict(candidate=index, input=name, comparison=None, receipt=None, issues=[])
+        try:
+            assembler.check_asm_source(text)
+            obj, receipt = assembler.assemble_source(relative(snapshot), assembler_version, flags)
+            row['receipt'] = receipt
+            module = omf.parse(obj.read_bytes())
+            comparison = compare_member(module, raw, image, symbols, imports)
+            if not comparison:
+                comparison = dict(result='UNPLACED_MEMBER', issues=['no unique MAPSYM public anchor'])
+            if comparison.get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'):
+                targets = admission_targets(module, raw, image, symbols, [symbol])
+                comparison = check_member(module, raw, image, symbols, imports, targets)
+            row['comparison'] = comparison
+            if comparison.get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'):
+                from codegen_diff import diagnose, render
+                comparison['diagnostic'] = diagnose(module, raw, image, symbols, symbol, comparison)
+                (out / ('candidate%04d.diff.txt' % index)).write_text(render(comparison['diagnostic']), encoding='utf-8')
+        except FormatError as exc:
+            row['comparison'] = dict(result='ASM_REJECTED', issues=[str(exc)])
+            row['issues'] = [str(exc)]
+        rows.append(row)
+    summaries = []
+    for row in rows:
+        comparison = row['comparison'] or {}
+        diagnostic = comparison.get('diagnostic') or {}
+        summaries.append(dict(input=row['input'], result=comparison.get('result'),
+                              bytes='%s/%s' % (comparison.get('literal_equal'), comparison.get('literal_compared')),
+                              fixups='%s/%s' % (comparison.get('fixups_equal'), comparison.get('fixups_total')),
+                              object=(row.get('receipt', {}).get('object_identity') or {}).get('sha256'),
+                              issues=(comparison.get('issues') or [])[:4],
+                              aligned_asm=diagnostic.get('aligned_asm', []) if full else focused_alignment(diagnostic.get('aligned_asm', []))))
+    exact = [row['input'] for row in rows if row['comparison'] and row['comparison'].get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')]
+    if note:
+        drafts.note(symbol, note, origin=relative(out))
+    report = dict(symbol=symbol, language='asm', assembler=assembler_version, assembler_version=spec['display_version'],
+                  flags=flags, candidates=len(rows), ranking=summaries, exact=exact,
+                  report=relative(out / 'results.json'), seconds=round(time.perf_counter() - began, 2),
+                  promotion='NONE: promote.py must freshly assemble and run publication gates')
+    if exact:
+        report['next'] = 'python tools/promote.py %s %s --assembler %s' % (symbol, exact[0], assembler_version)
+    write_json(out / 'results.json', dict(spec=dict(symbol=symbol, language='asm', assembler=assembler_version, flags=flags,
+                                                   sources=[relative(Path(x).resolve()) for x in files]), results=rows, summary=report))
+    history = dict(time=stamp, meta=read_json(meta) if meta else None, note=note, report=report['report'],
+                   rows=[dict(input=r['input'], result=(r['comparison'] or {}).get('result'),
+                              object=(r.get('receipt', {}).get('object_identity') or {}).get('sha256')) for r in rows])
+    history_path = ROOT / 'build/search' / symbol.lstrip('_') / 'history.jsonl'
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    with history_path.open('a', encoding='utf-8') as stream:
+        stream.write(json.dumps(history) + '\n')
+    return report
+
+
+def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm500', asm_flags=None):
     from promote import check_source, function_flags
+    if files and any(Path(name).suffix.lower() == '.asm' for name in files):
+        if template:
+            raise FormatError('ASM candidates do not use C template batches')
+        return search_asm(symbol, files, meta, note, full, assembler_version, asm_flags)
     began = time.perf_counter()
     profile, flags = function_flags(symbol)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S') + '-%d' % os.getpid()
@@ -130,10 +216,12 @@ def main():
     ap.add_argument('--meta', help='JSON describing the round: family, prediction, falsifier')
     ap.add_argument('--note', help='durable free-text finding for this function (kept in the draft ledger)')
     ap.add_argument('--full', action='store_true', help='complete ranking and aligned assembly')
+    ap.add_argument('--assembler', default='masm500', help='authentic MASM version for .asm candidates')
+    ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     args = ap.parse_args()
     from contextlib import redirect_stdout
     with redirect_stdout(sys.stderr):
-        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full)
+        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag)
     print(json.dumps(result, indent=2))
 
 

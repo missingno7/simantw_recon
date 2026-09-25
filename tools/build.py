@@ -3,6 +3,7 @@ import argparse
 import shutil
 from common import ROOT, read_json, write_json, identity, sha256, FormatError
 from compiler import compile_source
+import assembler
 import omf
 
 def main():
@@ -24,13 +25,16 @@ def main():
         if selected is not None and name not in selected:
             if name not in previous:raise FormatError('missing prior object; run full build')
             objects.append(previous[name]);continue
-        key=(target['source'],tuple(target['flags']),target.get('compiler','msc600a'))
-        if key not in compile_cache:compile_cache[key]=compile_source(key[0],list(key[1]),key[2])
+        language=target.get('language','c')
+        tool=target.get('assembler') if language=='asm' else target.get('compiler','msc600a')
+        key=(language,target['source'],tuple(target['flags']),tool)
+        if key not in compile_cache:
+            compile_cache[key]=assembler.assemble_source(key[1],key[3],list(key[2])) if language=='asm' else compile_source(key[1],list(key[2]),key[3])
         obj,receipt=compile_cache[key]
         suffix=('__case%d'%case_collisions[name]) if name in case_collisions and case_collisions[name]>1 else ''
         dest=out/(name+suffix+'.obj');shutil.copyfile(obj,dest)
         objects.append(dict(symbol=name,object=dest.relative_to(ROOT).as_posix(),identity=identity(dest),receipt=receipt))
-        print('Recovered C:',name,flush=True)
+        print('Recovered ASM:' if language=='asm' else 'Recovered C:',name,flush=True)
     runtime=[];cache={}
     for index,member in enumerate(read_json(ROOT/'layout/runtime-ownership.json')['members']):
         lib=member['library']

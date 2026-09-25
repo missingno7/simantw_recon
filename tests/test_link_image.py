@@ -62,6 +62,12 @@ class LinkImageTests(unittest.TestCase):
         self.assertEqual([x['ordinal'] for x in exports], [1, 2])
         self.assertTrue(all('source' in row for row in evidence))
 
+    def test_region_byte_comparison_uses_both_sides(self):
+        facts = link_image._byte_region_facts(b'\x01\x02\x03', b'\x01\x04\x03\x05')
+        self.assertFalse(facts['equal'])
+        self.assertEqual(facts['matching_bytes_at_region_offsets'], 2)
+        self.assertEqual(facts['common_prefix_bytes'], 1)
+
 
 if __name__ == '__main__':
     unittest.main()

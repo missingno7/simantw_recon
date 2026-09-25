@@ -1,14 +1,44 @@
-/* Candidate translation unit antedit_A998_DrawYard_2: composed from preserved exact-body sources
- * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _DrawYard, _UpdateYard */
-
+/*
+ * Redraw the yard window only while it exists.  The simulation draw receives
+ * the current yard mode and the historical redraw selector, then the yard
+ * window handle (win_hwnd[25], window id 0x1900 >> 8) is updated and the
+ * yard data pass is refreshed.
+ */
 extern int far win_IsWinOpen(int window);
 extern void far Draw_SimYard(int mode, int selector);
 extern void far pascal UpdateWindow(int window);
 extern void far DrawYardData(void);
 extern int near YardMode;
-static int near yardDrawFlag = 1;
+
 extern int near win_hwnd[];
+
+static int near dogObject = -1;
+static unsigned char pool_data_fill_1890_prefix[2] = {0xFF, 0xFF};
+static int near forSaleObject = -1;
+static unsigned char pool_data_fill_1894[32] = {
+    0xA9,0x00,0x43,0x00,0xC0,0x00,0x43,0x00,0xB9,0x00,0x4A,0x00,0xA2,0x00,0x4A,0x00,
+    0xA9,0x00,0x43,0x00,0xC1,0x00,0x43,0x00,0xBA,0x00,0x4A,0x00,0xA2,0x00,0x4A,0x00
+};
+static int near yardDrawFlag = 1;
+static unsigned char pool_data_fill_18B6[12] = {
+    0x00,0x00,0x25,0x73,0x00,0x28,0x25,0x64,0x29,0x00,0x0A,0x00
+};
+static char near yardFormatBlackPopulation[4] = "%-d";
+static char near yardFormatRedPopulation[4] = "%-d";
+static char near yardFormatQueenStorage[3] = "%d";
+static char near yardFormatBlackTotal[3] = "%d";
+static char near yardFormatRedTotal[3] = "%d";
+static unsigned char pool_data_fill_18D3[5] = {0x00,0x03,0x03,0x01,0x00};
+static char near dogRunX[4] = {3,0,1,4};
+static char near dogRunY[4] = {4,3,7,2};
+static unsigned char pool_data_fill_18E0[56] = {
+    0x02,0x00,0x02,0x03,0x02,0x03,0x02,0x00,0x02,0x03,0x02,0x03,0x04,0x05,0x04,0x06,
+    0x00,0x02,0x00,0x02,0x00,0x03,0x02,0x01,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x01,0x00,0x01,0x01,0x00,0x01,0x01,0x00,0x01,0x01,0x00,0x01,0x6B,0x69,0x64,0x62,
+    0x61,0x6C,0x6C,0x6F,0x6F,0x6E,0x00,0x00
+};
+static char near dogWalkX[12] = {1,0,1,2,0,1,2,2,2,1,0,1};
+static char near dogWalkY[12] = {0,1,0,1,2,1,2,0,0,1,2,1};
 
 void DrawYard(void)
 {
@@ -20,15 +50,3 @@ void DrawYard(void)
     yardDrawFlag = 1;
     DrawYardData();
 }
-
-void UpdateYard(void)
-{
-    if (!win_IsWinOpen(0x1900))
-        return;
-    Draw_SimYard(YardMode, 1);
-    yardDrawFlag = 0;
-    UpdateWindow(win_hwnd[25]);
-    yardDrawFlag = 1;
-    DrawYardData();
-}
-

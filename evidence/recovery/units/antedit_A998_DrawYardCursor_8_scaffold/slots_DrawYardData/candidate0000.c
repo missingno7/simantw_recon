@@ -1,6 +1,6 @@
 /* Reviewed DrawYardData source. The five target format offsets 18C2,
- * 18C6, 18CA, 18CD and 18D0 point to two "%-d" strings and three
- * "%d" strings in original DGROUP. Preserve each literal separately. */
+ * 18C6, 18CA, 18CD and 18D0 point to two yardFormatBlackPopulation strings and three
+ * yardFormatQueenStorage strings in original DGROUP. Preserve each literal separately. */
 /*
  * DrawYardData: refresh the numeric readouts and health/population bars in
  * the yard status window (window 0x2300), clipped through win_hwnd[35].
@@ -42,6 +42,34 @@ extern void far win_GetObjRect(int object, struct WinRect far *rect);
 extern void far GInvBox(int x1, int y1, int x2, int y2);
 extern void far win_DrawHBar(int objectNumber, long fraction);
 
+static int near dogObject = -1;
+static unsigned char pool_data_fill_1890_prefix[2] = {0xFF, 0xFF};
+static int near forSaleObject = -1;
+static unsigned char pool_data_fill_1894[32] = {
+    0xA9,0x00,0x43,0x00,0xC0,0x00,0x43,0x00,0xB9,0x00,0x4A,0x00,0xA2,0x00,0x4A,0x00,
+    0xA9,0x00,0x43,0x00,0xC1,0x00,0x43,0x00,0xBA,0x00,0x4A,0x00,0xA2,0x00,0x4A,0x00
+};
+static int near yardDrawFlag = 1;
+static unsigned char pool_data_fill_18B6[12] = {
+    0x00,0x00,0x25,0x73,0x00,0x28,0x25,0x64,0x29,0x00,0x0A,0x00
+};
+static char near yardFormatBlackPopulation[4] = "%-d";
+static char near yardFormatRedPopulation[4] = "%-d";
+static char near yardFormatQueenStorage[3] = "%d";
+static char near yardFormatBlackTotal[3] = "%d";
+static char near yardFormatRedTotal[3] = "%d";
+static unsigned char pool_data_fill_18D3[5] = {0x00,0x03,0x03,0x01,0x00};
+static char near dogRunX[4] = {3,0,1,4};
+static char near dogRunY[4] = {4,3,7,2};
+static unsigned char pool_data_fill_18E0[56] = {
+    0x02,0x00,0x02,0x03,0x02,0x03,0x02,0x00,0x02,0x03,0x02,0x03,0x04,0x05,0x04,0x06,
+    0x00,0x02,0x00,0x02,0x00,0x03,0x02,0x01,0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x01,0x00,0x01,0x01,0x00,0x01,0x01,0x00,0x01,0x01,0x00,0x01,0x6B,0x69,0x64,0x62,
+    0x61,0x6C,0x6C,0x6F,0x6F,0x6E,0x00,0x00
+};
+static char near dogWalkX[12] = {1,0,1,2,0,1,2,2,2,1,0,1};
+static char near dogWalkY[12] = {0,1,0,1,2,1,2,0,0,1,2,1};
+
 void far DrawYardData(void)
 {
     int popMax;
@@ -63,7 +91,7 @@ void far DrawYardData(void)
     redHealth = RpopT == 0 ? 0 : HealthR;
 
     font_SetFont(3);
-    win_PrintfAtObj(0x231b, "%-d", BpopT);
+    win_PrintfAtObj(0x231b, yardFormatRedPopulation, BpopT);
     win_PrintfAtObj(0x231c, "%-d", RpopT);
     font_SetFont(0);
 
@@ -83,8 +111,8 @@ void far DrawYardData(void)
     splitX = rect.left + (rect.right - rect.left) * MeWarnHealth / 100;
     GInvBox(splitX, rect.top, splitX, rect.bottom);
 
-    win_PrintfAtObj(0x231a, "%d", QueenStorageB < 0 ? 0 : QueenStorageB);
-    win_PrintfAtObj(0x231d, "%d", ColonyTotalBlack);
+    win_PrintfAtObj(0x231a, yardFormatBlackTotal, QueenStorageB < 0 ? 0 : QueenStorageB);
+    win_PrintfAtObj(0x231d, yardFormatRedTotal, ColonyTotalBlack);
     win_PrintfAtObj(0x231e, "%d", ColonyTotalRed);
 
     MSClipEnd();

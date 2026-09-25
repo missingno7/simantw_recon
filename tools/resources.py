@@ -23,6 +23,7 @@ RC_CANDIDATES = {
     'msc600a': 'toolchain/msc600a/BIN',
 }
 DEFAULT_TEST_EXE = 'build/PARTLINK/PARTIAL.EXE'
+DEFAULT_EXTRACT = 'build/resources/extracted/final'
 MEMORY_BITS = {'MOVEABLE': 0x0010, 'PURE': 0x0020, 'PRELOAD': 0x0040, 'DISCARDABLE': 0x1000}
 KNOWN_TYPES = {1: 'CURSOR', 2: 'BITMAP', 3: 'ICON', 4: 'MENU', 5: 'DIALOG',
                6: 'STRING', 7: 'FONTDIR', 8: 'FONT', 9: 'ACCELERATOR', 10: 'RCDATA',
@@ -436,10 +437,32 @@ def build_script(image, raw, output_dir):
     payload_dir.mkdir(parents=True, exist_ok=True)
     resources = image['resources']
     payloads = {_resource_key(row): raw[row['offset']:row['offset'] + row['size']] for row in resources}
+    lookup = {}
+    for row in resources:
+        t = row['type'].get('id')
+        rid = row['identity'].get('id')
+        if t is not None and rid is not None: lookup[(t, rid)] = row
     lines = ['/* Decompiled from the verified SIMANTW.EXE fixture. */']
     strings = [row for row in resources if row['type'].get('id') == 6]
     string_lines = _stringtable_source(strings, payloads)
     string_emitted = False
+    grouped_leaf_keys = set()
+    group_files = {}
+    for index, row in enumerate(resources):
+        t = row['type'].get('id')
+        if t not in (12, 14): continue
+        cursor = t == 12
+        ext = 'CUR' if cursor else 'ICO'
+        name = 'R%02d.%s' % (index, ext)
+        path = payload_dir / name
+        _build_group_image(row, payloads, lookup, path, cursor=cursor)
+        group_files[_resource_key(row)] = name
+        group_type = 1 if cursor else 3
+        packed = payloads[_resource_key(row)]
+        count = int.from_bytes(packed[4:6], 'little')
+        for child in range(count):
+            entry = packed[6 + child * 14:6 + (child + 1) * 14]
+            grouped_leaf_keys.add((group_type, int.from_bytes(entry[12:14], 'little')))
     inventory = []
     for index, row in enumerate(resources):
         type_id = row['type'].get('id')
@@ -451,16 +474,24 @@ def build_script(image, raw, output_dir):
             if not string_emitted:
                 lines.extend(string_lines); string_emitted = True
             continue
+        if type_id in (1, 3) and (type_id, row['identity'].get('id')) in grouped_leaf_keys:
+            # RC emits these RT_CURSOR/RT_ICON leaf entries when it reads each
+            # CUR/ICO directory, preserving their original ordinal IDs.
+            continue
         if type_id == 4:
             lines.append(menu_source(row, decode_menu(payloads[_resource_key(row)])))
         elif type_id == 5:
             lines.append(dialog_source(row, decode_dialog(payloads[_resource_key(row)])))
         elif type_id == 9:
             lines.append(accelerator_source(row, decode_accelerators(payloads[_resource_key(row)])))
-        elif type_id in (1, 3, 12, 14):
-            # Numeric RT_CURSOR/RT_ICON/group types request raw bytes. The
-            # CUR/ICO keywords instead reinterpret the file and synthesize
-            # group and leaf records, which can change historical payloads.
+        elif type_id in (12, 14):
+            ext = 'CURSOR' if type_id == 12 else 'ICON'
+            name = group_files[_resource_key(row)]
+            lines.append('%s %s %s "%s"' % (_rc_id(row['identity']), ext,
+                         ' '.join(_mem_options(row['flags'])), 'payloads/' + name))
+        elif type_id in (1, 3):
+            # A standalone image needs an image-directory source for RC.
+            raise FormatError('orphan cursor/icon leaf has no group directory to name it')
             name = 'R%02d.BIN' % index
             (payload_dir / name).write_bytes(payloads[_resource_key(row)])
             lines.append('%s %s %s "%s"' % (_rc_id(row['identity']), str(type_id),
@@ -485,6 +516,10 @@ def build_script(image, raw, output_dir):
                 name = 'R%02d.BIN' % index
                 (payload_dir / name).write_bytes(payloads[_resource_key(row)])
                 lines.append('%s RCDATA %s "%s"' % (_rc_id(row['identity']), ' '.join(_mem_options(row['flags'])), 'payloads/' + name))
+            elif token == 'FONT':
+                name = 'R%02d.FNT' % index
+                (payload_dir / name).write_bytes(payloads[_resource_key(row)])
+                lines.append('%s FONT %s "%s"' % (_rc_id(row['identity']), ' '.join(_mem_options(row['flags'])), 'payloads/' + name))
             else:
                 raise FormatError('text/binary resource type needs a dedicated decompiler: ' + token)
         else:
@@ -509,7 +544,7 @@ def build_script(image, raw, output_dir):
     return manifest, script_path
 
 def extract(output=None):
-    output_dir = _repo_path(output, 'build/resources/extracted')
+    output_dir = _repo_path(output, DEFAULT_EXTRACT)
     output_dir.mkdir(parents=True, exist_ok=True)
     raw = fixture(ORACLE)
     image = ne.parse(raw)
@@ -659,7 +694,7 @@ def compare_resources(oracle_raw, oracle, candidate_raw, candidate):
 
 
 def check(test_exe=None, output=None, version_names=None):
-    extracted = ROOT / 'build/resources/extracted'
+    extracted = ROOT / DEFAULT_EXTRACT
     extract()
     script = extracted / 'SIMANTW.RC'
     exe = _repo_path(test_exe, DEFAULT_TEST_EXE)

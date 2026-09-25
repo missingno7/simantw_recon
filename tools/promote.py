@@ -16,8 +16,9 @@ import json
 import re
 import shutil
 import sys
-from common import ROOT, FormatError, cards, fixture, identity, ownership, read_json, recipes, relative, sha256, write_json
+from common import ROOT, FormatError, cards, fixture, identity, ownership, ownership_review, read_json, recipes, relative, sha256, write_json
 from compiler import compile_source, validate_receipt
+import assembler
 from library_match import SCAFFOLD_SEGMENT, import_symbols
 from recovery_gate import admission_targets, check_data_member, check_member, data_targets
 from verify_recovery import verify
@@ -28,7 +29,7 @@ import omf
 import publication
 
 GOOD = ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')
-PROOF_TOOLS = ['tools/matcher.py', 'tools/library_match.py', 'tools/recovery_gate.py', 'tools/verify_recovery.py', 'tools/compiler.py',
+PROOF_TOOLS = ['tools/matcher.py', 'tools/library_match.py', 'tools/recovery_gate.py', 'tools/verify_recovery.py', 'tools/compiler.py', 'tools/assembler.py',
                'tools/cfg_solver.py', 'tools/ne.py', 'tools/omf.py', 'tools/mapsym.py', 'tools/promote.py', 'tools/publication.py',
                'layout/toolchain.json', 'layout/fixtures.json', 'layout/compiler-profiles.json', 'layout/runtime-ownership.json']
 
@@ -82,7 +83,8 @@ def function_flags(symbol):
     return profile, compiler_profiles.profile_flags(profile['name'], card['segment_name'])
 
 
-def admit(label, publics, source_bytes, flags, profile, summary, verify_only, unit=None, scaffold=None, data=False):
+def admit(label, publics, source_bytes, flags, profile, summary, verify_only, unit=None, scaffold=None, data=False,
+          language='c', assembler_version=None):
     """Compile the frozen source and admit every public, or change nothing."""
     with publication.publication_lock():
         publication.recover()
@@ -94,15 +96,20 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
         verify(dict(manifest, game_objects=[g for g in manifest['game_objects'] if g['symbol'] not in superseded]),
                {k: v for k, v in current['targets'].items() if k not in superseded}, publish=False)
         ident = label + '-' + sha256(source_bytes)[:10]
-        destination = (ROOT / 'build/promote' / ident / 'source.c') if verify_only else (ROOT / 'src/recovered' / (ident + '.c'))
+        extension = '.asm' if language == 'asm' else '.c'
+        destination = (ROOT / 'build/promote' / ident / ('source' + extension)) if verify_only else (ROOT / 'src/recovered' / (ident + extension))
         created = not destination.exists()
         if not created and destination.read_bytes() != source_bytes:
             raise FormatError('destination exists with different source; refusing overwrite')
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(source_bytes)
         try:
-            obj, receipt = compile_source(relative(destination), flags, 'msc700')
-            validate_receipt(receipt)
+            if language == 'asm':
+                obj, receipt = assembler.assemble_source(relative(destination), assembler_version, flags)
+                assembler.validate_receipt(receipt)
+            else:
+                obj, receipt = compile_source(relative(destination), flags, 'msc700')
+                validate_receipt(receipt)
             module = omf.parse(obj.read_bytes())
             raw = fixture('SIMANTW.EXE'); image = ne.parse(raw); symbols = mapsym.parse(fixture('SIMANTW.SYM'))
             imports = import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB')
@@ -124,9 +131,13 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             if data:
                 if any(inventory.get(name, {}).get('kind') != 'DATA_SYMBOL' for name in names):
                     raise FormatError('data lane admits only original data symbols')
+            elif language == 'asm':
+                review = ownership_review()
+                if any(review.get(name, {}).get('class') != 'GAME_ASM' for name in names):
+                    raise FormatError('assembly promotion is limited to reviewed GAME_ASM symbols')
             elif any(ownership(name, inventory.get(name, {})) != 'GAME' for name in names):
                 raise FormatError('runtime/unknown ownership cannot receive game-source promotion')
-            if compiler_profiles.identify_profile(flags)[0] != profile['name']:
+            if language == 'c' and compiler_profiles.identify_profile(flags)[0] != profile['name']:
                 raise FormatError('flags disagree with the resolved compiler profile')
             if data:
                 targets = data_targets(module, raw, image, symbols, sorted(names))
@@ -136,7 +147,9 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
                 comparison = check_member(module, raw, image, symbols, imports, targets, scaffold=bool(scaffold))
             proof = dict(id=ident, publics=sorted(names), admitted=True, verify_only=verify_only, semantic_summary=summary, source=relative(destination),
                          source_identity=identity(destination), receipt=receipt, comparison=comparison, targets=targets,
-                         compiler_profile=dict(profile, flags=flags), unit=unit, scaffold=scaffold, superseded_recipes=superseded,
+                         compiler_profile=dict(profile, flags=flags) if language == 'c' else None,
+                         assembler=dict(name=assembler_version, version=receipt.get('assembler_version'), flags=flags) if language == 'asm' else None,
+                         language=language, unit=unit, scaffold=scaffold, superseded_recipes=superseded,
                          proof_tools={p: identity(ROOT / p) for p in PROOF_TOOLS}, created=publication.timestamp(),
                          scope='Exact readable reconstruction, not original text or filename')
             if verify_only:
@@ -148,8 +161,12 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             proof_path = ROOT / 'evidence/recovery/promotions' / (ident + '.json')
             game = {r['symbol']: r for r in manifest['game_objects']}
             for name, target in targets.items():
-                target.update(source=relative(destination), compiler='msc700', flags=flags, profile=profile['name'],
-                              profile_evidence=profile.get('assignment'), promotion_evidence=relative(proof_path))
+                if language == 'asm':
+                    target.update(source=relative(destination), language='asm', assembler=assembler_version,
+                                  flags=flags, promotion_evidence=relative(proof_path))
+                else:
+                    target.update(source=relative(destination), compiler='msc700', flags=flags, profile=profile['name'],
+                                  profile_evidence=profile.get('assignment'), promotion_evidence=relative(proof_path))
                 if unit:
                     target['unit'] = unit
                 if scaffold:
@@ -184,10 +201,46 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
                 destination.unlink(missing_ok=True)
 
 
-def promote_function(symbol, path, summary=None, verify_only=False):
+def asm_semantic_summary(text, summary=None):
+    if summary and summary.strip():
+        return summary.strip()
+    lines = []
+    for line in text.splitlines():
+        value = line.strip()
+        if not value:
+            continue
+        if value.startswith(';'):
+            lines.append(value[1:].strip())
+            continue
+        break
+    result = ' '.join(x for x in lines if x).strip()
+    if not result:
+        raise FormatError('state the assembly hypothesis in leading semicolon comments or with --summary')
+    return result
+
+
+def promote_asm_function(symbol, path, summary=None, verify_only=False, assembler_version='masm500', asm_flags=None):
+    path = path.resolve()
+    if path.suffix.lower() != '.asm' or not path.is_file():
+        raise FormatError('assembly candidate must be an existing .asm file')
+    if ownership_review().get(symbol, {}).get('class') != 'GAME_ASM':
+        raise FormatError('assembly promotion is limited to reviewed GAME_ASM symbols')
+    text = path.read_text(encoding='latin1')
+    assembler.check_asm_source(text)
+    spec = assembler.versions().get(assembler_version)
+    if spec is None:
+        raise FormatError('unknown or unprovisioned assembler version: ' + assembler_version)
+    flags = assembler._validate_flags(spec.get('default_flags', []) if asm_flags is None else asm_flags)
+    return admit(symbol.lstrip('_'), [symbol], path.read_bytes(), flags, None,
+                 asm_semantic_summary(text, summary), verify_only, language='asm', assembler_version=assembler_version)
+
+
+def promote_function(symbol, path, summary=None, verify_only=False, assembler_version='masm500', asm_flags=None):
     path = path.resolve()
     if not path.is_file():
         raise FormatError('candidate source does not exist')
+    if path.suffix.lower() == '.asm':
+        return promote_asm_function(symbol, path, summary, verify_only, assembler_version, asm_flags)
     profile, flags = function_flags(symbol)
     source_bytes = path.read_bytes()
     text = path.read_text()
@@ -246,6 +299,8 @@ def main():
     ap.add_argument('--data', help='data-only module: initialized public data definitions')
     ap.add_argument('--reason', default='')
     ap.add_argument('--verify-only', action='store_true')
+    ap.add_argument('--assembler', default='masm500', help='authentic MASM version for .asm candidates')
+    ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     ap.add_argument('--recover', action='store_true')
     args = ap.parse_args()
     if args.recover:
@@ -258,7 +313,7 @@ def main():
         result = promote_unit(args.unit, args.reason, args.verify_only)
     elif args.symbol and args.source:
         from pathlib import Path
-        result = promote_function(args.symbol, Path(args.source), args.summary, args.verify_only)
+        result = promote_function(args.symbol, Path(args.source), args.summary, args.verify_only, args.assembler, args.asm_flag)
     else:
         ap.error('give SYMBOL SOURCE, --unit UNIT or --recover')
     print(json.dumps(result, indent=2))
