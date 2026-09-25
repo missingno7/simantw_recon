@@ -14,8 +14,8 @@ about the real asymmetry rather than a guess.
 
 `run` compiles the derived candidate under the target's object profile with
 the strict matcher, records the result under evidence/recovery/mirror-pairs
-and, when the body is exact, registers it on the target's workflow job as an
-ordinary attempt (same budget rules) so the scaffolded-unit lane can admit it.
+and, when the body is exact, runs it through tools/search.py so the draft
+ledger keeps it for the scaffolded-unit lane.
 Nothing here grants credit.
 """
 import argparse
@@ -138,30 +138,26 @@ def run(from_symbol, to_symbol, register=True):
 
 
 def register_attempt(symbol, path, flags, from_symbol):
-    """Record the derived exact body on the target's job through the ordinary
-    reissue path (escalated job) or a test (open job)."""
-    import subprocess, sys
-    import recovery_workflow as wf
-    job = next((j for j in wf.jobs() if j['symbol'] == symbol), None)
-    if job is None:
-        return 'no job'
-    spec = dict(symbol=symbol, source=path.relative_to(ROOT).as_posix(), compiler='msc700', flags=job['flags'], max_candidates=1, axes=[],
-                semantic_summary='Mirrored derivation from %s (tools/mirror_pairs.py): colony-specific identifiers swapped, structure unchanged' % from_symbol,
-                binding_evidence=['tools/mirror_pairs.py twin map over MAPSYM names'], publics=[symbol])
-    spec_path = OUT / (symbol.lstrip('_') + '-spec.json')
-    write_json(spec_path, spec)
-    if job['flags'] != flags:
-        return 'job flags %s differ from the context profile %s; profile reissue needed first' % (job['flags'], flags)
-    if job['status'] == 'ESCALATED':
-        r = subprocess.run([sys.executable, 'tools/topology_retest.py', job['id'], spec_path.relative_to(ROOT).as_posix(), '--reason', 'mirrored derivation from ' + from_symbol], capture_output=True, text=True)
-    else:
-        r = subprocess.run([sys.executable, 'tools/grind.py', 'test', symbol, path.relative_to(ROOT).as_posix()], capture_output=True, text=True)
-    out = r.stdout + r.stderr
-    return [l.strip() for l in out.splitlines() if '"status"' in l or 'ERROR' in l or 'Error' in l][:3] or out[-200:]
+    """Record the derived exact body through an ordinary search round (durable draft)."""
+    from search import search
+    outcome = search(symbol, [path.relative_to(ROOT).as_posix()], note='mirrored derivation from %s (tools/mirror_pairs.py)' % from_symbol)
+    return dict(result=outcome['best']['result'], exact_body=outcome['best']['exact_body'], draft_ledger=outcome['draft_ledger'], report=outcome['report'])
+
+
+PAIR_RULES = [(re.compile(r'B$'), 'R'), (re.compile(r'R$'), 'B'), (re.compile(r'Blk'), 'Red'), (re.compile(r'Red'), 'Blk'), (re.compile(r'Black'), 'Red'), (re.compile(r'Red'), 'Black')]
+
+
+def mirror_partner(symbol, universe):
+    """The structurally mirrored counterpart of a colony function, if it exists."""
+    for pattern, repl in PAIR_RULES:
+        if pattern.search(symbol):
+            other = pattern.sub(repl, symbol, count=1)
+            if other != symbol and other in universe:
+                return other
+    return None
 
 
 def pairs(universe):
-    from blocked_reclassification import mirror_partner
     seen = set()
     for s in sorted(universe):
         p = mirror_partner(s, universe)
@@ -172,10 +168,10 @@ def pairs(universe):
 
 def main(args):
     import tu_assembly as tu
-    import recovery_workflow as wf
+    from common import cards, recipes as load_recipes
     preserved = tu.preserved_sources()
-    recipes = wf.recipes()
-    queue = {f['symbol']: f['state'] for f in read_json(ROOT / 'docs/production-queue.json')['functions']}
+    recipes = load_recipes()
+    queue = {c['symbol']: 'MATCHED' if c['symbol'] in recipes else 'OPEN' for c in cards() if c['ownership'] == 'GAME'}
     solved = {s for s, v in preserved.items() if v['basis'] in ('ADMITTED', 'BODY_MATCHED_BINDING_BLOCKED', 'EXACT_BODY_CANDIDATE')}
     results = []
     if args.pair:
@@ -183,13 +179,13 @@ def main(args):
     else:
         for a, b in pairs(set(queue) | set(recipes)):
             for src, dst in ((a, b), (b, a)):
-                if src in solved and dst not in recipes and queue.get(dst) in ('MATCH_BLOCKED', 'MATCH_READY'):
+                if src in solved and dst not in recipes and queue.get(dst) == 'OPEN':
                     print(src, '->', dst, flush=True)
                     try:
                         results.append(run(src, dst, register=not args.no_register))
                     except FormatError as exc:
                         results.append(dict(source_symbol=src, target_symbol=dst, error=str(exc)))
-                elif args.all and src in preserved and dst not in recipes and queue.get(dst) in ('MATCH_BLOCKED', 'MATCH_READY'):
+                elif args.all and src in preserved and dst not in recipes and queue.get(dst) == 'OPEN':
                     # Both sides open: derive from the better-matching side as evidence only.
                     print(src, '->', dst, '(evidence)', flush=True)
                     try:

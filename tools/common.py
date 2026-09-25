@@ -68,3 +68,32 @@ def fixture(name):
     if len(b) != expected['size'] or sha256(b) != expected['sha256']:
         raise FormatError(f'fixture identity mismatch: {name}')
     return b
+def relative(path):
+    return Path(path).resolve().relative_to(ROOT).as_posix()
+def recipes():
+    return read_json(ROOT/'src/recovery.json')['targets']
+def ownership_review():
+    """Reviewed ownership reclassifications (symbol -> {ownership, class, evidence}); empty when absent."""
+    path = ROOT/'layout/ownership-review.json'
+    if not path.exists():
+        return {}
+    review = read_json(path)['symbols']
+    for name, row in review.items():
+        if row.get('ownership') not in ('GAME', 'MICROSOFT_CRT', 'FLOAT_RUNTIME', 'THIRD_PARTY', 'UNKNOWN') or not row.get('evidence'):
+            raise FormatError('ownership review needs a known ownership and evidence: ' + name)
+    return review
+def ownership(name, inventory_row):
+    """Inventory ownership, overridden only by an evidenced review."""
+    return ownership_review().get(name, {}).get('ownership', inventory_row.get('ownership'))
+def cards():
+    """Original function cards; the admitted source always comes from the live recipes."""
+    targets = recipes()
+    review = ownership_review()
+    rows = [json.loads(line) for line in (ROOT/'evidence/disassembly/cards.jsonl').read_text().splitlines()]
+    for card in rows:
+        if card['symbol'] in review and card.get('ownership') != 'HISTORICAL_LIBRARY':
+            card['ownership'] = review[card['symbol']]['ownership']
+            card['ownership_review'] = review[card['symbol']]
+        if card.get('ownership') == 'GAME':
+            card['source'] = targets.get(card['symbol'], {}).get('source')
+    return rows

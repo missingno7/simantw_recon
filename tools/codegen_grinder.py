@@ -16,6 +16,10 @@ import ne, mapsym, omf
 GOOD={'CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER'}
 
 def variants(spec):
+    if 'sources' in spec:
+        # Independent hypotheses compiled together; the caller maps indices back to files.
+        for i,source in enumerate(spec['sources']):yield source,{'input':i}
+        return
     template=spec.get('template')
     if template is None:template=(ROOT/spec['source']).read_text()
     budget=spec.get('max_candidates',1000)

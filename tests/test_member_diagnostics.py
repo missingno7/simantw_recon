@@ -4,14 +4,14 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from common import ROOT,fixture
 import ne
 from codegen_diff import unresolved_member_obligations,render,compare_code
-from grind import focused_alignment
+from search import focused_alignment
 
 class MemberDiagnosticTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls): cls.image=ne.parse(fixture('SIMANTW.EXE'))
     def comparison(self,attempt):
-        path=ROOT/f'evidence/recovery/workflow/jobs/IsItFood-c02f58780a/attempt{attempt:02}/results.json'
-        return json.loads(path.read_text())['results'][0]['comparison']
+        path=ROOT/f'tests/fixtures/IsItFood-attempt{attempt:02}.json'
+        return json.loads(path.read_text())['comparison']
 
     def test_clean_body_does_not_hide_wrong_selector_segment(self):
         old=self.comparison(4);before=copy.deepcopy(old)

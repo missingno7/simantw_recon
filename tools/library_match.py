@@ -24,7 +24,7 @@ def import_symbols(path):
    if ordinal:out[name]={'kind':'import','module':module,'ordinal':r.u16()}
  return out
 
-def compare_member(m,raw,n,s,imports):
+def compare_member(m,raw,n,s,imports,allow_data=False):
  names=defaultdict(set)
  absolute={p['name']:p['offset'] for p in s['absolute_symbols']}
  for seg in s['segments']:
@@ -75,7 +75,8 @@ def compare_member(m,raw,n,s,imports):
   hi=next(iter(names['_end']))[1] if names['_end'] else absolute.get('_end')
   if sg!=10 or lo is None or hi is None or off<lo or off+ss['length']>hi:
    issues.append(ss['name']+' contribution placed outside the original BSS region')
- if not any(m['segments'][si-1]['class']=='CODE' for si in placements):return None
+ # Library scanning only considers members with code; the data lane asks for data-only members explicitly.
+ if not allow_data and not any(m['segments'][si-1]['class']=='CODE' for si in placements):return None
  details=[];total=equal=fixequal=0;selectors_ok=set();pending_far_offsets=[];scaffold=[]
  for ss in m['segments']:
   si=ss['index']

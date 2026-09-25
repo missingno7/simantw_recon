@@ -1,10 +1,64 @@
-# Matching-decompilation factory
+# Recovery workflow
 
-Use [the grinding prompt](cheap-model-prompt.md) to hand this workspace to a cheaper model. The primary interface is `python tools/grind.py`; the model does not need to edit recovery manifests or understand worker internals. The working compiler remains MSC C/C++ 7.00 `/AL /G2 /Gs /Oelw /NT<original code group>`.
+The everyday path is **context → search → promote**, with complete validation at acceptance or tooling boundaries. The working compiler is MSC C/C++ 7.00 `/AL /G2 /Gs /Oelw /NT<original code group>` unless the symbol's object context has a catalogued, evidence-backed profile. Read [recovery lessons](grinder-lessons.md) before a new target's first search.
 
-Read [supervisor lessons](grinder-lessons.md) before a new target's first test: declaration choices, evidence-backed mismatch triage, admitted private-state examples and actionable escalation records. These lessons preserve automatic stop rules and strict proof requirements.
+```powershell
+python tools/context.py --list --open            # unrecovered functions, closest drafts first
+python tools/context.py _Symbol                   # full working packet (--brief, --history)
+python tools/search.py _Symbol build/workers/me/a.c build/workers/me/b.c [--meta round.json] [--note "..."]
+python tools/promote.py _Symbol build/workers/me/b.c [--verify-only]
+python tools/validate.py
+```
 
-For current verified counts and queue states, use `python tools/recovery_workflow.py doctor`, [handoff-readiness.json](handoff-readiness.json), and [production-queue.json](production-queue.json). Milestone counts in historical sections below record earlier checkpoints.
+Commands print JSON on stdout; compiler progress goes to stderr.
+
+- **context** is read-only. The packet has masked disassembly with loader bindings, basic blocks, calls, globals, `direct_data_bindings` (exact MAPSYM names, selector slots, addressed segments and the DS-frame assumption), the compiler profile, `unit_context`, `unit_declaration_order`, relevant `reconstruction_rules`, similar admitted functions, the best preserved draft, notes and legacy job summaries. `structural_extent` reports whether the closed CFG extent is independently confirmed. That is informational: admission checks the complete original scope itself.
+- **search** compiles any number of files in one round under the symbol's profile, runs the strict member matcher and the instruction diagnostic, and ranks the results. It has no budget, duplicate-experiment refusal, job state or eligibility gate, and old blocker labels never block it. Output goes to `build/search/SYMBOL/<run>/` (sources, `.diff.txt`, full `results.json`) and a per-symbol `history.jsonl`. When a candidate outranks the stored draft (strict, then exact body, then aligned opcodes, then size delta), it is copied into the durable ledger `evidence/recovery/drafts/`. `--template spec.json` runs a controlled equivalence-class batch (`codegen_grinder` template/axes). `source_warnings` lists anything promotion would reject.
+- **promote** freezes the source into `src/recovered/`, compiles it fresh, and admits it only if full original/candidate scope, public placement, ordinary bytes, semantic fixups, private contributions and ownership all check out. It re-verifies the complete manifest before and after. Publication holds one OS lock and a journal (`build/publication.json`), and `--recover` rolls back an interrupted publication without overwriting later edits. The proof goes to `evidence/recovery/promotions/<id>.json` and records the proof-tool identities. `--verify-only` runs the whole gate, also for an already admitted control, without publishing.
+- **validate** runs the unit/negative tests, independently re-verifies every admitted object (`build/recovery/verified-objects.json`, totals in [progress.json](progress.json)), checks the profile catalog, replays an exact control through the compiler cache and checks the persistent-service evidence.
+
+Similarity scores, diagnostic ranks, structural certificates and scaffold stubs never grant credit.
+
+## Whole binary: image ledger and lanes
+
+`python tools/image.py` rebuilds all 516,096 bytes of SIMANTW.EXE, giving every byte exactly one owner:
+
+- **C**: bytes regenerated from admitted game objects.
+- **RUNTIME**: bytes regenerated from complete historical library members.
+- **NE_CHAIN**: relocation-chain words taken from the loader metadata.
+- **RAW**: explicit debt classified by lane.
+
+A small binder regenerates object bytes: initialized data, the LINK far-call translation, and every fixup resolved by the same rules the strict matcher validates. The result must equal the oracle (`HYBRID_EXACT`). `validate.py` and every promotion enforce this and report the owned/debt delta. Totals go in [image.json](image.json), details in `build/image/ledger.json`, and `python tools/image.py --debt` lists every raw interval. `claim_conflicts` counts bytes proved by two admitted objects (a superseded unit still owning code, or one private literal declared twice). They must be merged into one unit before a real LINK.
+
+| Lane | Work | Tools |
+| --- | --- | --- |
+| GAME_CODE | unrecovered game functions | `context.py --list --open`, `search.py`, `promote.py` |
+| CODE_GAP | code bytes outside known extents | usually owned once the neighbouring function is admitted as a complete member |
+| MERGE | double-claimed bytes | `tu_assembly.py build/test`, `promote.py --unit` |
+| DATA | initialized public data | `context.py --list --data --open`, `context.py --data SYMBOL`, `promote.py --data FILE.c` |
+| RUNTIME_CODE | `_TEXT` code not matched to a library member | ownership classification, library matching (`evidence/experiments/text-ownership/`) |
+| RESOURCES | resource table and data | authentic RC (`tools/resources.py`, in progress) |
+| LINK | NE header/tables/relocation tables/chains/padding | authentic LINK 5.30 + DEF once all contributions exist |
+
+**Data modules** are data-only C files: `__based(__segname("SIMANT_DATA_GROUP"))` or `__based(__segname("PACK"))` for the far data segments, ordinary near data for DGROUP. Each public spans to the next public of the object (or the contribution end), and no other original public may lie inside that span. Every byte must be initialized, placed and compared, fixups and loader sites included. Code, BSS, the DGROUP selector pools (`BE6E`-`C6DF`, owned by code objects) and the linker BSS region `[_edata,_end)` are refused, as is any overlap with bytes an admitted object already owns. Zero-filled arrays need explicit initializers (`= {0}`) to become initialized contributions. Whether the originals were initialized or communal remains an open LINK-lane question. Data recipes are counted separately (`game_data_symbols`, `game_data_bytes`).
+
+## Worker prompt
+
+A ready-to-paste brief for a subagent (any model):
+
+```text
+Work in D:\Prog\simantw_recon; run every command from there with python. Read AGENTS.md,
+docs/factory.md and docs/grinder-lessons.md. Targets: <SYMBOLS> (or choose from
+`python tools/context.py --list --open`). Use only build/workers/<NAME>/ for scratch files.
+Per target: `context.py SYMBOL`, write readable C with a semantic block comment, then run
+`search.py SYMBOL files...` for as many rounds as are useful, reading the aligned diff and
+adapting each time. There is no attempt limit. On a strict match run `promote.py SYMBOL file`. If the
+body is exact but only private data/selector placement fails, say so (unit lane). Stop at a
+match, a concrete missing dependency, or when no useful next investigation remains; then
+record the finding with `search.py SYMBOL best.c --note "..."`. Do not hand-edit tools/,
+layout/, src/recovery.json or evidence/, and do not run git. Report per target: result,
+rounds, best opcodes/bytes, and the decisive idiom or remaining residue.
+```
 
 ## Build model: units, profiles and lanes
 
@@ -14,89 +68,34 @@ The factory models the original build instead of one universal isolated-function
 source translation unit -> declarations / private data / selector pool -> compiler profile -> object member -> LINK -> SIMANTW.EXE
 ```
 
-- [build-topology.md](build-topology.md) reconstructs candidate units (objects) from the selector pools and private data the linker preserved; `python tools/build_topology.py` regenerates `evidence/topology/build-topology.json`.
-- `layout/compiler-profiles.json` is the catalog of admissible MSC 7.00 profiles. `baseline` (`/Oelw`) stays the default; `og`, `ogi`, `ga`, `og-ga` apply only through a reviewed assignment attached to a unit context with probe evidence (`python tools/compiler_profiles.py probe JOB`, `assign CONTEXT PROFILE --evidence ...`). Every job, recipe and promotion proof records its profile; `validate` fails closed on any recipe whose flags disagree with its declared profile.
-- `python tools/tu_assembly.py propose | build | test | job` composes preserved exact-body sources of a unit component into one candidate translation unit (contiguous run of publics, predicted contiguous selector block), strict-tests all contributions and issues a `TU_ASSEMBLY` job whose promotion may explicitly supersede isolated recipes of its members.
-- `python tools/private_placement_report.py evidence/recovery/units/UNIT/test/results.json` explains each private-segment placement constraint in a preserved test: source public, candidate and historical operands, implied base, and exact repeated-byte period. It is a read-only diagnostic; an implied base is not a proved object boundary or admission.
-- **Scaffolded units** (`tu_assembly.py build COMPONENT --members ... --scaffold --harmonize`): when a unit's exact bodies are separated by members that are not recovered, the composer emits *stand-in functions* into the reserved code segment `POOLSTUB_TEXT` that only reproduce the selector-pool allocation order of the unclaimed members (one far reference per original pool word, named through the claimed members' own slot symbols, an exact MAPSYM site name, or a representative public symbol of the addressed segment; based-segment words through an extern based reference). Later runs of claimed members are placed in `RUNk_TEXT` by `#pragma alloc_text`. The matcher skips only that reserved segment and records it (`scaffold_segments`); the pool words the stand-ins allocate are still validated through the CONST selector fixups, and every claimed member is anchored and compared byte for byte. Stand-ins are never compared, never credited and never become recovered source; recipes, promotion proofs and unit records carry the `scaffold` record. Controls: `evidence/topology/supervisor-scaffold/controls.json` (positive: simtwo:5AB0 without GenerateTutorial; negatives: wrong segment, missing word). Pool-word attribution follows the block: a function's words are one contiguous ascending range, introducer positions never decrease, and words no visible ES site introduces (static helpers, other load forms) are attached to the preceding introducer or to a filler stand-in.
+- [build-topology.md](build-topology.md) reconstructs candidate units (objects) from the selector pools and private data the linker preserved. `python tools/build_topology.py` regenerates `evidence/topology/build-topology.json`.
+- `layout/compiler-profiles.json` catalogs the admissible MSC 7.00 profiles. `baseline` (`/Oelw`) stays the default. `og`, `ogi`, `ga` and `og-ga` apply only through a reviewed assignment attached to a unit context with probe evidence (`python tools/compiler_profiles.py probe SYMBOL [--source PATH]`, `assign CONTEXT PROFILE --evidence ...`). Every search, recipe and promotion proof records its profile, and `validate` fails closed on any recipe whose flags disagree with its declared profile.
+- `python tools/tu_assembly.py propose | build | test` composes preserved exact-body sources of a unit component into one candidate translation unit (a contiguous run of publics, predicted contiguous selector block) and strict-tests all contributions. An exact unit is admitted with `python tools/promote.py --unit UNIT --reason "..."`, which may explicitly supersede isolated recipes of its members. Preserved sources come from admitted recipes, reviewed sources and the draft ledger.
+- `python tools/private_placement_report.py evidence/recovery/units/UNIT/test/results.json` explains each private-segment placement constraint in a preserved test: source public, candidate and historical operands, implied base, and exact repeated-byte period. It is a read-only diagnostic. An implied base is not a proved object boundary or admission.
+- **Scaffolded units** (`tu_assembly.py build COMPONENT --members ... --scaffold --harmonize`): when a unit's exact bodies are separated by members that are not recovered, the composer emits *stand-in functions* into the reserved code segment `POOLSTUB_TEXT`. They only reproduce the selector-pool allocation order of the unclaimed members: one far reference per original pool word, named through the claimed members' own slot symbols, an exact MAPSYM site name, or a representative public symbol of the addressed segment (based-segment words through an extern based reference). Later runs of claimed members are placed in `RUNk_TEXT` by `#pragma alloc_text`. The matcher skips only that reserved segment and records it (`scaffold_segments`). The pool words the stand-ins allocate are still validated through the CONST selector fixups, and every claimed member is anchored and compared byte for byte. Stand-ins are never compared, credited or treated as recovered source; recipes, promotion proofs and unit records carry the `scaffold` record. Controls: `evidence/topology/supervisor-scaffold/controls.json` (positive: simtwo:5AB0 without GenerateTutorial; negatives: wrong segment, missing word). Pool-word attribution follows the block: a function's words are one contiguous ascending range, introducer positions never decrease, and words that no visible ES site introduces (static helpers, other load forms) are attached to the preceding introducer or to a filler stand-in.
+- A reviewed scaffold may record measured, unclaimed zero CONST words with `--private-zero-gap OFFSET:SCALAR,SCALAR:POOLSTUB`. The build gate requires separately declared zero `static const __segment near` scalars used by the named reserved-code stand-in. The unit test verifies that the interval is initialized zero OMF data without fixups. Promotion retains the native complete-member comparison of the whole CONST contribution. The unit and promotion proof label the interval `UNCLAIMED_LAYOUT_SCAFFOLD`; this does not identify its historical owner or recover those scalars.
+- **Declaration harmonization** inside a unit works by verification, never by preference. `--harmonize` accepts a spelling for a conflicting name only if every claimed member that uses it keeps its exact body when recompiled in isolation with that spelling (trials are kept under the unit folder). Shape and element-type variants of one object become per-member view macros (`#define LifeB ((unsigned char near *)LifeB)`), conflicting macros and macros shadowing objects are scoped to their member, struct tags defined differently are renamed per source, and two symbols naming one original pool word are unified over the enclosing MAPSYM object (`#define AlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x3D18))`).
+- `python tools/mirror_pairs.py` derives a black/red colony function from its admitted or exact mirror (MAPSYM twin identifiers and mirrored Dx8 field offsets swapped, structure unchanged) and runs it through `search`. `--all` records the derivation from both sides of still-open pairs as asymmetry evidence (`evidence/recovery/mirror-pairs/`).
+- `python tools/declaration_order.py SYMBOL [--write]` derives private static declaration order from the original data word positions for an exact body. `--write` tests the rewritten source through `search`.
+- `python tools/review_source.py SYMBOL PATH --note "..."` verifies a reviewed isolated source strictly under the symbol's object profile and records it in `evidence/topology/supervisor-unit-sources/reviewed.json`. Only an exact body (`tu_assembly.body_exact`) is offered to units, as basis `REVIEWED_EXACT_BODY`. `rebind_pack_index.py` and `rebind_based_fields.py` record their results the same way. The ledger keys on the file's identity, so an edited source must be re-verified.
+- `layout/declaration-order.json` records object-level (before, after) declaration pairs with the evidence that established them, and `tu_assembly.compose` reorders unit declarations to satisfy them. MSC 7 decides the operand order of a commutative expression of two globals by declaration order, so this is a real TU-level fact rather than a formatting choice (rule `commutative-operand-declaration-order`).
+- `body_exact` rejects a candidate whose differing immediate sits at a site with no fixup (a swapped switch case is not a binding), and one that references an external that neither MAPSYM nor the import library knows (an invented name can never be resolved by a unit).
 
-- A reviewed scaffold may record measured, unclaimed zero CONST words with `--private-zero-gap OFFSET:SCALAR,SCALAR:POOLSTUB`. The build gate requires separately declared zero `static const __segment near` scalars used by the named reserved-code stand-in. The unit test verifies that the interval is initialized zero OMF data without fixups. Independent promotion retains the native complete-member comparison of the whole CONST contribution. The unit and promotion proof label the interval `UNCLAIMED_LAYOUT_SCAFFOLD`; this does not identify its historical owner or recover those scalars.
-- **Declaration harmonization** inside a unit is by verification, never by preference: `--harmonize` accepts a spelling for a conflicting name only if every claimed member using it keeps its exact body when recompiled in isolation with that spelling (trials kept under the unit folder). Shape and element-type variants of one object become per-member view macros (`#define LifeB ((unsigned char near *)LifeB)`), conflicting macros and macros shadowing objects are scoped to their member, struct tags defined differently are renamed per source, and two symbols naming one original pool word are unified over the enclosing MAPSYM object (`#define AlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x3D18))`).
-- `python tools/blocked_reclassification.py` recompiles every MATCH_BLOCKED function's best preserved candidate under the *current* object profile and classifies the fresh strict comparison (BODY_EXACT_LAYOUT_BLOCKED, SOURCE_BINDING_INELIGIBLE, PROFILE_CONTEXT_RETEST, TU_SCAFFOLD_CANDIDATE, MIRRORED_SOURCE_PAIR, ABI_TYPE_INFERENCE, TRUE_SOURCE_SHAPE_MISMATCH, UNKNOWN) into `evidence/recovery/blocked-reclassification.json` and the per-context report `docs/blocked-reclassification.md`; `--write-back` records the fresh `root_cause` on each job (historical labels stay as `previous_blockers`). The native TU source gate excludes wrong or unknown bindings before a row can be called body-exact. Fresh recompilations under `build/reclassify/` feed `tu_assembly.preserved_sources`, so a source-eligible exact body found this way can proceed to the scaffold lane.
-- `python tools/mirror_pairs.py` derives a black/red colony function from its admitted or exact mirror (MAPSYM twin identifiers and mirrored Dx8 field offsets swapped, structure unchanged), tests it strictly under the target's profile and registers an exact result on the target's job; `--all` records the derivation from both sides of still-open pairs as asymmetry evidence (`evidence/recovery/mirror-pairs/`).
-- `python tools/parked_review.py` reclassifies every parked job by root cause (`evidence/recovery/parked-reclassification.json`): A profile, B unit layout (with the assemblable group or the missing introducers / static helpers), C matcher tooling, D semantic, E ABI/type, F structural, G unknown.
-- Expert replays: `tools/topology_retest.py JOB --profile-reissue` (assigned profile) and `--tool-replay` (validated proof-tool change) archive the previous job context and grant at most one recorded budget extension each.
-- Worker packets carry `compiler_profile`, `unit_context` and the matching `reconstruction_rules` from `layout/reconstruction-rules.json`.
-- Isolated `grind.py inspect` packets also carry `unit_declaration_order` from `layout/declaration-order.json` for the assigned component. These established MSC7 operand-scheduling constraints guide source hypotheses; the unit assembler already applies them, and the packet field grants no proof credit.
-
-Grinders run in parallel: a short global lock covers queue allocation, shared evidence rebuilds and the core manifest transaction; each job has its own lock for attempts, deferral and promotion, and compilation runs outside the global lock. Interrupted attempts are detected by a free per-job lock, never by assuming a single process.
-
-## Production loop
-
-```powershell
-python tools/recovery_workflow.py doctor
-python tools/grind.py next
-python tools/grind.py inspect _Symbol
-python tools/grind.py test _Symbol candidate.c --summary "Concrete semantic hypothesis"
-python tools/grind.py accept _Symbol candidate.c
-python tools/grind.py block _Symbol "Observed mismatch and supporting evidence" --cause REGISTER_ALLOCATION --next-experiment "One discriminating experiment"
-```
-
-Commands return JSON on stdout; progress messages go to stderr. `next` resumes active work or selects a match-ready target. `inspect` includes the working packet inline and saves it to disk: target ASM/bytes, CFG scope and basic blocks, calls, globals, loader bindings, imported symbols, declaration examples, original code group, compiler profile, similar verified functions and known TU membership.
-
-Put the semantic hypothesis in a C block comment or supply `--summary`. `test` compiles the source, parses OMF, invokes the existing strict member matcher and returns instruction diagnostics plus aligned ASM. It does not accept anything. Revisions can address ordinary C syntax failures without immediate expert escalation.
-
-The budget is **eight attempts, at most 96 variants per attempt and 192 candidates total per target**. This permits several cheap single-source revisions or larger controlled variant batches without an endless search. Identical experiments are rejected even when their descriptions change. For explained equivalence-class batches, the lower-level `recovery_workflow.py` interface and template generators remain available; they share the same job and budget.
-
-`accept` requires exactly the source identity of an exact tested candidate, then performs fresh compilation and the independent recovery admission procedure. It checks full original/candidate scope, public placement, ordinary bytes, semantic fixups, private contributions and the proposed complete manifest. Updates are transactional. Similarity scores, structural certificates and scaffold stubs never grant credit.
-
-When the budget expires or a concrete blocker is established, preserve the candidate and use `block`. The ledger records sources, scores, logs, failed variants and the next experiment. Do not keep retrying the same blocked draft. Testing an unchanged already-matched source is allowed as a regression and grants zero credit.
+Searches run in parallel: each run has its own directory, compilation goes through the shared persistent compiler service, and the draft ledger takes a short lock. Only publication is serialized.
 
 ## Proof rules added by the build model
 
 - OMF LOC 5 offsets of far code symbols (statically linked, no NE obligation) are validated only together with a validated selector fixup to the same symbol (`tests/test_far_code_offsets.py`).
-- A derived `_BSS` placement must lie in the original BSS region `[_edata, _end)`; a candidate static placed below `_edata` is initialised data or another object's public data in the original (`tests/test_bss_region.py`).
-- Promotion of several exact unit jobs happens in one core transaction (`recovery_workflow.py promote JOB [JOB ...]`); superseded recipes are archived in the promotion proof.
-
-## Production and research states
-
-[production-queue.json](production-queue.json) and
-[handoff-readiness.json](handoff-readiness.json) are the live sources for
-state counts. Run `python tools/recovery_workflow.py doctor` before selecting
-work; historical counts in older prose describe their dated checkpoints.
-
-| State | Meaning |
-| --- | --- |
-| MATCH_READY | Confirmed structural test extent, game ownership, available bytes/disassembly and contained evaluable relocation obligations. |
-| MATCH_BLOCKED | Readable attempted drafts with specific matching blockers. |
-| STRUCTURE_BLOCKED | Unclosed, ambiguous or otherwise unsupported structural scope. |
-| MATCHED | Existing independently verified source recovery. |
-
-Structural confirmation is source-independent. It checks recursive closure, a second linear instruction-boundary pass, NOP-only gaps, entry/alias/incoming-branch evidence and relocation containment. It does not relabel the original CFG evidence as recovered source, establish an original OMF boundary, or substitute for admission. Certificates retain the original CFG status and their scope explicitly. They are cached against fixture, extent and analysis-tool identities so each candidate test does not rerun the entire structural census.
-
-The older READY/GUIDED/LARGE/EXPERT queue remains useful for estimating semantic effort. The four production states above are the factory routing interface. Unknown historical compiler patch identity is not a blanket blocker.
-
-## Expert topology pass and automatic stop
-
-At its recorded checkpoint, the [expert pass](expert-blocker-pass.md) promoted 13 functions, reaching 243 functions / 6,950 bytes. Live machine-readable files remain authoritative. Three shared data families were solved, and two adjacent TUs gained independent complete-member evidence. The strict matcher, admission gate, compiler profile and worker remained unchanged in that pass.
-
-`BODY_MATCHED_BINDING_BLOCKED` is a diagnostic substate of MATCH_BLOCKED, not recovery credit. It requires known equal extents, layout/CFG/opcode agreement, no register/stack/branch differences, and complete literal differences covered by unresolved two-byte offset fixups. The workflow automatically escalates such an attempt immediately. Preserve the source and move to the next target; do not reopen it with cosmetic C changes. Unknown CFGs, constant differences outside bindings, or wrong calls do not qualify.
-
-`evidence/recovery/blocker-families.json`, `layout/private-data-topology.json` and [blocker-families.md](blocker-families.md) record shared operand evidence. `refresh` rebuilds these with the ledger and production queue. Family observations and stored body states do not authorize promotion. Family packets link preserved source identities; expert-only `tools/topology_retest.py JOB SPEC --reason REVIEW` reissues a parked job for an explicitly new experiment while preserving old context and budgets.
-
-Inspection packets now expose exact MAPSYM names for direct DGROUP operands and NE selector-slot targets, with an explicit DS-frame assumption. This surfaces names such as `_MapA` instead of encouraging invented unresolved externs.
-
-Size ordering is retained: this pass establishes a useful stop signal, but does not measure model effort well enough to justify new scheduling weights. Every ready target remains eligible; no hard target is hidden or removed by a heuristic.
+- A derived `_BSS` placement must lie in the original BSS region `[_edata, _end)`. A candidate static placed below `_edata` is initialized data or another object's public data in the original (`tests/test_bss_region.py`).
+- A unit promotion commits all of its members in one journaled transaction. Superseded recipes are archived in the promotion proof.
+- Structural confirmation is source-independent. It checks recursive closure, a second linear instruction-boundary pass, NOP-only gaps, entry/alias/incoming-branch evidence and relocation containment. It does not relabel the original CFG evidence as recovered source, establish an original OMF boundary, or substitute for admission.
+- `BODY_MATCHED_BINDING_BLOCKED` (`topology_diagnostics.classify`) describes a body with known equal extents, layout/CFG/opcode agreement, no register/stack/branch differences, and literal differences covered entirely by unresolved two-byte offset fixups. It is diagnostic, not credit, and means the remaining work is data layout (usually the unit lane), not expression search.
 
 ## Measured runner decision
 
-The repository has two distinct execution paths: MSC 6.00A continues to use MS-DOS Player; MSC 7.00 selects DOSBox-X and Windows 3.x through its explicit runner override.
+The repository has two execution paths: MSC 6.00A continues to use MS-DOS Player, and MSC 7.00 selects DOSBox-X and Windows 3.x through its explicit runner override.
 
-Lighter-host screening is recorded under `evidence/experiments/runner/`. Direct CL and C13216 execution in MS-DOS Player fail with DOSX32 R6901 (required DPMI services), including the VCPI-enabled path. The available HDPMI32/CWSDPMI combinations in MS-DOS Player and bare DOSBox also produced no usable first-probe object. HDPMI32/Player reported insufficient memory; the DOSBox HDPMI32 trial timed out; CWSDPMI trials returned abnormal output without an object. These are failures of those pinned configurations, not a proof that every possible DOS host is incompatible. No alternative was adopted merely because its executable started.
-
-C7 does not support the attempted `/Bt` timing option. The compiler wrapper now recognizes that unknown-option warning correctly. Instrumentation uses external host timestamps and an empty-TU startup calibration instead.
-
-Representative reference measurements covered ABS, WindowsMemCpy, MyPow and CreateMonoSolidBrush:
+Lighter-host screening is recorded under `evidence/experiments/runner/`. Direct CL and C13216 execution in MS-DOS Player fail with DOSX32 R6901 (required DPMI services), including the VCPI-enabled path. The available HDPMI32/CWSDPMI combinations in MS-DOS Player and bare DOSBox also produced no usable first-probe object. These are failures of those pinned configurations, not proof that every possible DOS host is incompatible. No alternative was adopted merely because its executable started. C7 does not support the attempted `/Bt` timing option; instrumentation uses external host timestamps and an empty-TU startup calibration instead.
 
 | Measurement | Observed local result |
 | --- | ---: |
@@ -104,67 +103,28 @@ Representative reference measurements covered ABS, WindowsMemCpy, MyPow and Crea
 | Execute C7, including internal pass startup | About 0.33-0.36 seconds |
 | Parse OMF | About 0.3 milliseconds |
 | Strict match/feature extraction | About 4-9 milliseconds |
-| Total original candidate test | About 3.72-3.75 seconds |
 | Warm persistent compile request | About 0.37 seconds |
-| Warm uncached `grind test`, including inspection/diff | 1.12 seconds in the API regression |
-| Cached `grind test`, still rematched | 0.81 seconds in the API regression |
-
-Compiler startup and incremental compilation estimates are reported separately using the empty TU. They are estimates: external instrumentation cannot isolate initialization inside each authentic C7 pass. The receipt's measured compiler-execution time includes those phases. Cached receipts retain their historical compile timing; the API's cache fields and total-test time identify the current request. A cold worker also copies its private Windows environment, and the first structural queue build adds a one-time cost.
+| Cached search, still rematched | About 0.5 seconds |
 
 ## Persistent workers and reproducibility
 
 `tools/compiler_service.py` implements the filesystem protocol under ignored `build/compiler-service/`: immutable source snapshots, pending/running/completed requests, request-batch records and receipts. Each worker has a separate Windows copy, scratch directory, temp files and DOSBox process. Only compiler/tool and construction directories are mounted; original game assets are never mounted.
 
-One persistent worker first reproduced all 18 canonical probes twice with identical raw OMF bytes and identical strict results. Only then were four workers enabled and checked against the same oracle. The 36-job runs took 17.69 seconds with one worker and 8.15 seconds with four. A subsequent complete client/server stress run compiled **400 canonical candidates in 50.53 seconds**, with all objects byte-identical and eight environment launches across four workers. Sessions recycle after 96 jobs. This is persistence across submissions with bounded recycling, not a claim of unlimited C7 process longevity.
+One persistent worker first reproduced all 18 canonical probes twice with identical raw OMF bytes and identical strict results. Only then were four workers enabled and checked against the same oracle. A complete client/server stress run compiled **400 canonical candidates in 50.53 seconds**, with all objects byte-identical and eight environment launches across four workers. Sessions recycle after 96 jobs.
 
-Idle DOSBox processes are suspended by the host, avoiding busy CPU consumption. The service stops after two idle minutes and starts automatically on demand. The pinned historical tools remain unchanged. Source, object, helper, configuration and tool identities are retained. Compiler caching also includes source, flags/code group, tool lock, worker implementation and production profile.
+Idle DOSBox processes are suspended by the host. The service stops after two idle minutes and starts automatically on demand. Compiler caching keys on source, flags/code group, tool lock, worker implementation and profile, and matching always runs again.
 
 ```powershell
 python tools/compiler_service.py status
 python tools/compiler_service.py start --workers 4
 python tools/compiler_service.py stop
+python tools/worker_validate.py --workers 4
 ```
 
-`layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. The compiler worker uses DOS 8.3 names and disables directory caching for its exchange directory. DOS-side idle calls proved unreliable in this Win3.x environment; the host owns suspension/resumption instead. Windows rename/read sharing races are retried, with request identities retained, rather than causing silent recompilation.
-
-The production service verifies unchanged worker/tool identities against its canonical oracle before starting. After changing the worker or wait helper, rerun single-worker validation before parallel validation. Then rerun the service workload and handoff checks. Do not edit recorded fingerprints to bypass them.
+`layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. After changing the worker or wait helper, rerun single-worker validation before parallel validation, then `validate.py`. Do not edit recorded fingerprints to bypass them.
 
 ## Search diagnostics versus proof
 
-`codegen_grinder.py --evidence PATH` now includes a compact
-`compiler_response` in its archived report. It groups candidate choices by
-raw OMF identity under that batch's fixed compiler/profile, lists reliable
-codegen dimensions for one representative of each group, and shows which
-dimensions changed from candidate 0. Full receipts, source variants and
-strict comparisons remain in the run's `results.json`. This diagnostic view
-does not rank variants or change recovery admission; identical object classes
-are a signal to change the next experiment's analysis level.
+`tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. The diagnostic view accounts for LINK transformations only when the strict matcher has independently validated them. It never modifies an object, and it never participates in admission.
 
-`tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. Per-candidate JSON and compact `.diff.txt` files accompany the strict matcher output.
-
-For `_db_GetObjectSize`, the current candidate has **39/39 opcodes aligned, matching layout and CFG, seven register-only differences, no immediate/memory/branch differences, and 7/7 fixups correct**. It remains unaccepted. See `evidence/codegen/db-instruction-diff.json` and `.txt`.
-
-The diagnostic view accounts for LINK transformations only when the strict matcher has independently validated them. It does not modify an object. This prevents a genuine linker far-call translation from being mistaken for an expression-shape error. Diagnostic scoring never participates in recovery admission.
-
-## Validation and remaining work
-
-```powershell
-python tools/worker_validate.py
-python tools/worker_validate.py --workers 4
-python tools/handoff_validate.py
-python tools/recovery_workflow.py doctor
-```
-
-Handoff validation runs parser/proof/failure-path tests, canonical cache replay and fresh pilot admission. It also checks the 400-job service evidence against current runner identities. [handoff-readiness.json](handoff-readiness.json) records the current test count and result.
-
-At the historical factory-infrastructure checkpoint, no manually matched functions had been added: recovery remains **208 game functions / 4,995 bytes** plus **77 historical runtime members / 12,960 bytes**. It has not benchmarked a particular cheap language model. The existing 38 matching blockers and 42 structural blockers remain explicit research work, and the whole reconstructed game remains unbuilt. LINK 5.30/RC outputs are structural scaffolding only.
-
-## Reviewed sources and declaration order (2026-09-22)
-
-- `python tools/review_source.py SYMBOL evidence/topology/supervisor-unit-sources/NAME.c --note "..."` verifies a supervisor-reviewed isolated source strictly under the symbol's object profile and records it in `evidence/topology/supervisor-unit-sources/reviewed.json`. Only an exact body (`tu_assembly.body_exact`) is offered to units, as basis `REVIEWED_EXACT_BODY`; nothing is admitted here. `rebind_pack_index.py` and `rebind_based_fields.py` record their results the same way. The ledger keys on the file's identity, so an edited source must be re-verified.
-- `layout/declaration-order.json` records object-level (before, after) declaration pairs with the evidence that established them; `tu_assembly.compose` reorders unit declarations to satisfy them. MSC 7 decides the operand order of a commutative expression of two globals by declaration order, so this is a real TU-level fact, not a formatting choice (rule `commutative-operand-declaration-order`).
-- `body_exact` now also rejects a candidate whose differing immediate sits at a site with no fixup (a swapped switch case is not a binding), and one that references an external MAPSYM and the import library do not know (an invented name can never be resolved by a unit).
-- `preserved_sources` walks chains of superseded unit recipes back to a member's isolated text, and marks members first admitted inside a unit as ADMITTED so later units of the same object do not re-propose them. `build/scratch/assemble.py` skips promotion when a unit would admit nothing new.
-- `scaffold_plan` drops (rather than fails on) a member whose original calls an unrecovered static helper, and `build_unit` recomposes the declaration set after any member leaves the unit.
-- `compose` compares struct/union layouts (`struct_key`), so `struct P { int x, y; }` and `struct P { int x; int y; }` are one tag with no rename and no view macro.
-
+`codegen_grinder.py --evidence PATH` includes a compact `compiler_response` in its archived report that groups candidates by raw OMF identity. `search.py` reports each candidate's object hash for the same purpose: identical objects mean the next experiment needs a different analysis level.

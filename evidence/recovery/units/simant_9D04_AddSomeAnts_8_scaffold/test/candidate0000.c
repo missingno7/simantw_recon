@@ -1,6 +1,6 @@
 /* Candidate translation unit simant_9D04_AddSomeAnts_8_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _AddSomeAnts, _SetEditMode, _SetMapModeAnt, _GotoMapPoint, _CenterAnt, _GotoSpider, _GotoRQueen
+ * Members: _AddSomeAnts, _SetEditMode, _SetMapModeAnt, _GotoMapPoint, _CenterAnt, _GotoSpider, _GotoQueen, _GotoRQueen
  * SCAFFOLDED: unclaimed members _KillSomeAnts, _SubtractFood, _SetYardMode, _SetMapPlaneLocation, _SetMapPlane, _GotoMyAnt are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern int far ListIndexA;
@@ -40,22 +40,23 @@ extern int near SpidX;
 extern int near SpidY;
 extern int far SpidOn;
 extern void far myBeginSound(unsigned int first, unsigned int second, unsigned int third);
+extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) Dx8[];
 extern void far GotoQueen(int value);
 
-extern int far AlistX;  /* scaffold reference for pool word C0DE (segment 8, MAPSYM_SITE_NAME) */
-extern int far FoodA;  /* scaffold reference for pool word C0E0 (segment 9, MAPSYM_SITE_NAME) */
-extern int far mapBuf;  /* scaffold reference for pool word C0E6 (segment 10, MAPSYM_SITE_NAME) */
-extern int far mapXsize;  /* scaffold reference for pool word C0E8 (segment 9, MAPSYM_SITE_NAME) */
-extern int far mapYsize;  /* scaffold reference for pool word C0EA (segment 9, MAPSYM_SITE_NAME) */
-extern int far EditRows;  /* scaffold reference for pool word C0EC (segment 9, MAPSYM_SITE_NAME) */
-extern int far EditColumns;  /* scaffold reference for pool word C0EE (segment 9, MAPSYM_SITE_NAME) */
-extern int far hScrollMax;  /* scaffold reference for pool word C0F0 (segment 9, MAPSYM_SITE_NAME) */
-extern int far CurYardPnt;  /* scaffold reference for pool word C0F2 (segment 9, MAPSYM_SITE_NAME) */
-extern int far YMapPnt;  /* scaffold reference for pool word C0F4 (segment 9, MAPSYM_SITE_NAME) */
-extern int far MapPlane2EditTab;  /* scaffold reference for pool word C0F8 (segment 8, MAPSYM_SITE_NAME) */
-extern int far AMapPnt;  /* scaffold reference for pool word C0FA (segment 9, MAPSYM_SITE_NAME) */
-extern int far BMapPnt;  /* scaffold reference for pool word C0FC (segment 9, MAPSYM_SITE_NAME) */
-extern int far RMapPnt;  /* scaffold reference for pool word C0FE (segment 9, MAPSYM_SITE_NAME) */
+extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;  /* scaffold reference for pool word C0DE (based segment) */
+extern int far match_position;  /* scaffold reference for pool word C0E0 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far bHelp;  /* scaffold reference for pool word C0E6 (segment 10, SEGMENT_REPRESENTATIVE) */
+extern int far match_length;  /* scaffold reference for pool word C0E8 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far pack_buf;  /* scaffold reference for pool word C0EA (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far Scycle;  /* scaffold reference for pool word C0EC (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far EditColumns;  /* scaffold reference for pool word C0EE (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far MiscStrs;  /* scaffold reference for pool word C0F0 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far LastQueenPlane;  /* scaffold reference for pool word C0F2 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far EditDragPnt;  /* scaffold reference for pool word C0F4 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far Dy8;  /* scaffold reference for pool word C0F8 (segment 8, SEGMENT_REPRESENTATIVE) */
+extern int far SMode;  /* scaffold reference for pool word C0FA (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far modeButtonState;  /* scaffold reference for pool word C0FC (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far CurRestPlane;  /* scaffold reference for pool word C0FE (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far CurGameType;  /* scaffold reference for pool word C102 (segment 9, MAPSYM_SITE_NAME) */
 
 void far pool_stub_KillSomeAnts(void);
@@ -69,6 +70,7 @@ void far SetMapModeAnt(int mode);
 void far GotoMapPoint(int plane, int x, int y);
 void far CenterAnt(void);
 void far GotoSpider(void);
+void far GotoQueen(int type);
 void GotoRQueen(void);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_KillSomeAnts)
@@ -80,7 +82,7 @@ void GotoRQueen(void);
 #pragma alloc_text(RUN2_TEXT, SetEditMode, SetMapModeAnt)
 #pragma alloc_text(RUN3_TEXT, GotoMapPoint)
 #pragma alloc_text(RUN4_TEXT, CenterAnt)
-#pragma alloc_text(RUN5_TEXT, GotoSpider)
+#pragma alloc_text(RUN5_TEXT, GotoSpider, GotoQueen)
 #pragma alloc_text(RUN6_TEXT, GotoRQueen)
 
 void far AddSomeAnts(int kind)
@@ -111,7 +113,7 @@ void far pool_stub_KillSomeAnts(void)
 {
     volatile int t;
 
-    t = AlistX;
+    t = pool_segment_ref_SIMANT_DATA_GROUP;
 }
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _SubtractFood.
@@ -122,7 +124,7 @@ void far pool_stub_SubtractFood(void)
 {
     volatile int t;
 
-    t = FoodA;
+    t = match_position;
 }
 
 void SetEditMode(int value)
@@ -188,9 +190,9 @@ void far pool_stub_SetYardMode(void)
 {
     volatile int t;
 
-    t = mapBuf;
-    t = mapXsize;
-    t = mapYsize;
+    t = bHelp;
+    t = match_length;
+    t = pack_buf;
 }
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _SetMapPlaneLocation.
@@ -201,11 +203,11 @@ void far pool_stub_SetMapPlaneLocation(void)
 {
     volatile int t;
 
-    t = EditRows;
+    t = Scycle;
     t = EditColumns;
-    t = hScrollMax;
-    t = CurYardPnt;
-    t = YMapPnt;
+    t = MiscStrs;
+    t = LastQueenPlane;
+    t = EditDragPnt;
 }
 
 void far GotoMapPoint(int plane, int x, int y)
@@ -239,10 +241,10 @@ void far pool_stub_SetMapPlane(void)
 {
     volatile int t;
 
-    t = MapPlane2EditTab;
-    t = AMapPnt;
-    t = BMapPnt;
-    t = RMapPnt;
+    t = Dy8;
+    t = SMode;
+    t = modeButtonState;
+    t = CurRestPlane;
 }
 
 void far CenterAnt(void)
@@ -306,6 +308,88 @@ void far GotoSpider(void)
         DrawMapCursor();
         MSClipEnd();
     }
+}
+
+void far GotoQueen(int type)
+{
+    int si;
+    int x, y;
+
+    for (si = 0; si < 500; si++)
+        if ((Dx8[si + 0x3d18] & 0xf8) == type) {
+            x = Dx8[si + 0x3736];
+            y = Dx8[si + 0x392c];
+            if (win_IsWinOpen(0x100)) {
+                MSClipStart(win_hwnd[1]);
+                EraseMapCursor();
+                MSClipEnd();
+            }
+            if (MapPlane == 2) {
+                if (CenterEdit(x, y))
+                    UpdateEdit();
+                UDMapFlip = 0;
+            } else {
+                SetMapPlaneLocation(2, x, y);
+                if (win_IsWinOpen(0x100))
+                    DrawMap();
+            }
+            if (win_IsWinOpen(0x100)) {
+                MSClipStart(win_hwnd[1]);
+                DrawMapCursor();
+                MSClipEnd();
+            }
+            return;
+        }
+    for (si = 0; si < 1000; si++)
+        if ((Dx8[si + 0x2f62] & 0xf8) == type) {
+            x = Dx8[si + 0x23a4];
+            y = Dx8[si + 0x278e];
+            if (win_IsWinOpen(0x100)) {
+                MSClipStart(win_hwnd[1]);
+                EraseMapCursor();
+                MSClipEnd();
+            }
+            if (MapPlane == 1) {
+                if (CenterEdit(x, y))
+                    UpdateEdit();
+                UDMapFlip = 0;
+            } else {
+                SetMapPlaneLocation(1, x, y);
+                if (win_IsWinOpen(0x100))
+                    DrawMap();
+            }
+            if (win_IsWinOpen(0x100)) {
+                MSClipStart(win_hwnd[1]);
+                DrawMapCursor();
+                MSClipEnd();
+            }
+            return;
+        }
+    for (si = 0; si < 500; si++)
+        if ((Dx8[si + 0x46e6] & 0xf8) == type) {
+            x = Dx8[si + 0x4104];
+            y = Dx8[si + 0x42fa];
+            if (win_IsWinOpen(0x100)) {
+                MSClipStart(win_hwnd[1]);
+                EraseMapCursor();
+                MSClipEnd();
+            }
+            if (MapPlane == 3) {
+                if (CenterEdit(x, y))
+                    UpdateEdit();
+                UDMapFlip = 0;
+            } else {
+                SetMapPlaneLocation(3, x, y);
+                if (win_IsWinOpen(0x100))
+                    DrawMap();
+            }
+            if (win_IsWinOpen(0x100)) {
+                MSClipStart(win_hwnd[1]);
+                DrawMapCursor();
+                MSClipEnd();
+            }
+            return;
+        }
 }
 
 void GotoRQueen(void)

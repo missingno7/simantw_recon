@@ -19,7 +19,10 @@ def verify(manifest=None,recipes=None,publish=True):
         if row['identity']!=row['receipt']['object_identity']:raise FormatError('object differs from compile receipt')
         if row['receipt']['source']!=target['source'] or row['receipt']['flags']!=target['flags'] or row['receipt']['compiler']!=target['compiler']:raise FormatError('stale build recipe')
         m=omf.parse((ROOT/row['object']).read_bytes())
-        result=check_member(m,raw,n,s,imports,{row['symbol']:target},scaffold=bool(target.get('scaffold'))) if target['comparison']=='member' else compare(m,raw,n,s,dict(target,symbol=row['symbol']))
+        if target['comparison']=='data_member':
+            from recovery_gate import check_data_member
+            result=check_data_member(m,raw,n,s,imports,{k:v for k,v in recipes.items() if v['source']==target['source']})
+        else:result=check_member(m,raw,n,s,imports,{row['symbol']:target},scaffold=bool(target.get('scaffold'))) if target['comparison']=='member' else compare(m,raw,n,s,dict(target,symbol=row['symbol']))
         if not result or result['result'] not in good:raise FormatError('recovery mismatch '+row['symbol'])
         game.append(dict(symbol=row['symbol'],source=target['source'],object=row['object'],receipt=row['receipt'],comparison=result,size=target['size']))
     ledger=read_json(ROOT/'layout/runtime-ownership.json')
@@ -30,10 +33,14 @@ def verify(manifest=None,recipes=None,publish=True):
         if not result or result['result'] not in good:raise FormatError('runtime mismatch '+row['member'])
         runtime.append(dict(member=row['member'],object=row['object'],identity=row['identity'],comparison=result))
     if set(row['symbol'] for row in game)!=set(recipes):raise FormatError('incomplete game build')
-    report=dict(phase='MATCHED_OBJECT_RECOVERY',game_functions=len(game),game_code_bytes=sum(r['size'] for r in game),runtime_members=len(runtime),runtime_code_bytes=ledger['unique_code_bytes'],whole_executable_build=False,game=game,runtime=runtime)
+    code=[r for r in game if recipes[r['symbol']].get('kind')!='DATA'];data=[r for r in game if recipes[r['symbol']].get('kind')=='DATA']
+    report=dict(phase='MATCHED_OBJECT_RECOVERY',game_functions=len(code),game_code_bytes=sum(r['size'] for r in code),game_data_symbols=len(data),game_data_bytes=sum(r['size'] for r in data),
+                runtime_members=len(runtime),runtime_code_bytes=ledger['unique_code_bytes'],whole_executable_build=False,game=game,runtime=runtime)
     if publish:
-        write_json(ROOT/'evidence/recovery/verified-objects.json',report)
-        print('Verified',len(game),'recovered game functions and',len(runtime),'complete historical runtime members')
+        # The detailed report is derived output; only the compact totals are versioned.
+        write_json(ROOT/'build/recovery/verified-objects.json',report)
+        write_json(ROOT/'docs/progress.json',{k:v for k,v in report.items() if k not in ('game','runtime')})
+        print('Verified',report['game_functions'],'recovered game functions,',report['game_data_symbols'],'data symbols and',len(runtime),'complete historical runtime members')
     return report
 
 def main():return verify()

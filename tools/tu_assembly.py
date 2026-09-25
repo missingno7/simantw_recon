@@ -5,7 +5,7 @@ pool, private DATA/BSS/CONST or string ordering. This lane composes the
 preserved exact-body sources of a build-topology component (or a reviewed
 explicit group) into one candidate translation unit, compiles it under the
 context's compiler profile and compares every contribution with the strict
-member matcher. Admission still goes through the workflow's fresh promotion.
+member matcher. Admission goes through `promote.py --unit UNIT` (fresh compilation).
 
 Unit identities are internal evidence ids (topology component ids); no
 historical filename is claimed. Function bodies are never rewritten here.
@@ -533,13 +533,6 @@ def preserved_sources():
                 result[symbol] = dict(source=old['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'), unit=target.get('unit'))
             continue
         result[symbol] = dict(source=target['source'], basis='ADMITTED', profile=target.get('profile', 'baseline'))
-    families = ROOT / 'evidence/recovery/blocker-families.json'
-    if families.exists():
-        for symbol, f in read_json(families)['functions'].items():
-            if symbol in result:
-                continue
-            if f.get('preserved_source'):
-                result[symbol] = dict(source=f['preserved_source'], basis='ADMITTED' if symbol in recipes else 'BODY_MATCHED_BINDING_BLOCKED')
     # Reviewed sources: isolated candidates rewritten by the supervisor tools
     # (rebind_pack_index, rebind_based_fields, review_source) and verified as
     # exact bodies under the object profile; the ledger records the check.
@@ -551,49 +544,19 @@ def preserved_sources():
             if identity(ROOT / row['source']) != row.get('identity'):
                 continue
             result[symbol] = dict(source=row['source'], basis='REVIEWED_EXACT_BODY', note=row.get('note'))
-    for path in (ROOT / 'evidence/recovery/workflow/jobs').glob('*/job.json'):
-        job = read_json(path)
-        if job['symbol'] in result or job.get('lane') == 'TU_ASSEMBLY' or not job.get('attempts'):
+    # Best durable draft per symbol (tools/drafts.py): search keeps the
+    # highest-ranked readable candidate there, including every exact body.
+    from drafts import load as load_drafts
+    for symbol, row in load_drafts().items():
+        best = row.get('best')
+        if symbol in result or not best or not (ROOT / best['source']).exists():
             continue
-        admitted_in_unit = job['symbol'] in recipes
-        best = None
-        # Fresh recompilations under the current object profile
-        # (blocked_reclassification) count like attempts: same strict matcher.
-        fresh = ROOT / 'build/reclassify' / job['symbol'].lstrip('_') / 'results.json'
-        reports = [ROOT / a['report'] for a in job['attempts']] + ([fresh] if fresh.exists() else [])
-        for report_path in reports:
-            if not report_path.exists():
-                continue
-            report = read_json(report_path)
-            for row in report['results']:
-                d = (row.get('comparison') or {}).get('diagnostic') or {}
-                if d.get('opcode_matches') is None:
-                    continue
-                # An exact body is one the binding classifier accepts: every
-                # differing literal is an unresolved offset binding. A resolved
-                # fixup with a wrong literal (e.g. Dx8/Dy8 swapped) is a
-                # semantic difference even when the instruction layout aligns.
-                exact_body = body_exact(row['comparison'])
-                strict = row['comparison'].get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')
-                # A strict isolated success outranks an exact body whose data
-                # or bindings still differ (e.g. an earlier attempt with the
-                # same code but a wrong string literal).
-                key = (strict, exact_body, d['opcode_matches'], -abs(d.get('candidate_bytes', 0) - d.get('target_bytes', 0)))
-                source = ROOT / row['receipt']['source']
-                if source.exists() and (best is None or key > best[0]):
-                    best = (key, source.relative_to(ROOT).as_posix(), exact_body)
-        if best:
-            result[job['symbol']] = dict(source=best[1], basis=('ADMITTED' if admitted_in_unit and best[2] else 'EXACT_BODY_CANDIDATE' if best[2] else 'BEST_CANDIDATE_NOT_EXACT'))
-    # Ledger drafts without a workflow job: only their fresh recompilation counts.
-    for fresh in (ROOT / 'build/reclassify').glob('*/results.json') if (ROOT / 'build/reclassify').exists() else []:
-        report = read_json(fresh)
-        symbol = report.get('spec', {}).get('symbol')
-        if not symbol or symbol in result:
-            continue
-        row = report['results'][0]
-        source = ROOT / row['receipt']['source']
-        if source.exists() and (row.get('comparison') or {}).get('diagnostic'):
-            result[symbol] = dict(source=source.relative_to(ROOT).as_posix(), basis='EXACT_BODY_CANDIDATE' if body_exact(row['comparison']) else 'BEST_CANDIDATE_NOT_EXACT')
+        if identity(ROOT / best['source'])['sha256'] != best['sha256']:
+            raise FormatError('draft ledger source changed: ' + best['source'])
+        basis = best['basis']
+        if symbol in recipes and basis == 'EXACT_BODY_CANDIDATE':
+            basis = 'ADMITTED'
+        result[symbol] = dict(source=best['source'], basis=basis)
     # A member first admitted inside a unit has no isolated recipe; its
     # isolated text (reviewed source or exact candidate) still stands for it,
     # and the member is admitted.
@@ -621,7 +584,7 @@ def admitted_unit_member_source(symbol, target):
         # Compiler-cache paths are ignored build products, unavailable after
         # a fresh checkout. Keep the older durable-source fallback for them.
         return None
-    if Path(source['source']).name.startswith('wf_tu_') or Path(source['source']).name == 'unit.c':
+    if Path(source['source']).name.startswith(('wf_tu_', 'tu_')) or Path(source['source']).name == 'unit.c':
         # A previous unit's whole source is not an isolated member source.
         return None
     source_path = ROOT / source['source']
@@ -786,7 +749,7 @@ def far_sites(card_list=None):
     """Original selector-pool word -> exact MAPSYM names observed at its ES sites."""
     import ne, mapsym
     from common import fixture
-    from recovery_workflow import cards
+    from common import cards
     from topology_context import far_data_bindings
     image = ne.parse(fixture('SIMANTW.EXE'))
     symbols = mapsym.parse(fixture('SIMANTW.SYM'))
@@ -1329,7 +1292,7 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
     never compared or credited."""
     import mapsym
     from common import fixture
-    from recovery_workflow import cards
+    from common import cards
     comp = topology_units()[component_id]
     functions = read_json(TOPOLOGY)['functions']
     publics = comp['publics']
@@ -1576,7 +1539,7 @@ def harmonize(component_id, members, flags, folder, layout='preambles-first', ov
     first) becomes a recorded override; a name with no admissible spelling
     stays a conflict. Every trial compile is kept under the unit folder."""
     from codegen_grinder import run
-    from recovery_workflow import cards
+    from common import cards
     sources = preserved_sources()
     comp = topology_units()[component_id]
     order = [m for m in comp['publics'] if m in members]
@@ -1643,7 +1606,7 @@ def harmonize(component_id, members, flags, folder, layout='preambles-first', ov
 def build_unit(component_id, members=None, layout='preambles-first', overrides=None, reason='', source_overrides=None, unit_source=None, scaffold=False, harmonize_conflicts=False, data_layout='definitions', private_zero_gap=None):
     """Compose a candidate unit from preserved sources and write its evidence folder."""
     import compiler_profiles
-    from recovery_workflow import cards
+    from common import cards
     comps = topology_units()
     if component_id not in comps:
         raise FormatError('unknown build-topology component ' + component_id)
@@ -1827,51 +1790,6 @@ def test_unit(unit_id):
     return summary
 
 
-def unit_job(unit_id, reason):
-    """Create a TU_ASSEMBLY workflow job so admission uses the ordinary fresh promotion path."""
-    import recovery_workflow as wf
-    folder = UNITS / unit_id
-    spec = read_json(folder / 'unit.json')
-    if spec['status'] != 'COMPOSED':
-        raise FormatError('unit is not composed')
-    if not spec.get('last_test') or spec['last_test']['result'] not in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'):
-        raise FormatError('unit has no exact test result; a job is only issued for an exact unit')
-    if not reason.strip():
-        raise FormatError('reviewed reason required')
-    recipes = wf.recipes()
-    members = spec['members']
-    supersedes = [m for m in members if m in recipes]
-    key = sha256((unit_id + spec['source_identity']['sha256']).encode())[:10]
-    job_id = 'tu_' + unit_id + '-' + key
-    directory = wf.STATE / 'jobs' / job_id
-    if directory.exists():
-        previous = read_json(directory / 'job.json')
-        if previous['status'] == 'PROMOTED':
-            raise FormatError('unit job already exists: ' + job_id)
-        # Same unit source, different admission context (e.g. members admitted
-        # since): archive the stale job and issue a fresh one.
-        import shutil
-        archive = wf.STATE / 'superseded-unit-jobs' / ('%s-%s' % (job_id, wf.timestamp().replace(':', '').replace('-', '')[:15]))
-        archive.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(directory), str(archive))
-    directory.mkdir(parents=True)
-    candidate = directory / 'candidate.c'
-    candidate.write_bytes((ROOT / spec['source']).read_bytes())
-    submission = dict(symbol=members[0], source=wf.relative(candidate), compiler='msc700', flags=spec['flags'], max_candidates=1, axes=[],
-                      semantic_summary='Unit assembly %s: %s' % (unit_id, reason), binding_evidence=['evidence/topology/build-topology.json', wf.relative(folder / 'unit.json')], publics=members)
-    write_json(directory / 'submission.json', submission)
-    job = dict(id=job_id, symbol=members[0], lane='TU_ASSEMBLY', unit=unit_id, component=spec['component'], publics=members, supersedes=supersedes,
-               status='OPEN', created=wf.timestamp(), flags=spec['flags'], profile=__import__('compiler_profiles').resolve(members[0]), protected=wf.protected(),
-               fixture_identity=read_json(ROOT / 'layout/fixtures.json'), attempts=[], reason=reason, unit_evidence=wf.relative(folder / 'unit.json'))
-    if spec.get('scaffold'):
-        job['scaffold'] = dict(unit=unit_id, segment=spec['scaffold']['segment'], stand_ins=[s['function'] for s in spec['scaffold']['stubs']], runs=spec['scaffold']['runs'])
-        if spec['scaffold'].get('private_zero_gaps'):
-            job['scaffold']['private_zero_gaps'] = spec['scaffold']['private_zero_gaps']
-    wf.atomic_json(directory / 'job.json', job)
-    (directory / 'packet.md').write_text('# Unit assembly job %s\n\nMembers: %s\n\nEvidence: %s\n' % (job_id, ', '.join(members), wf.relative(folder / 'unit.json')), encoding='utf-8')
-    return dict(job=job_id, publics=members, supersedes=supersedes)
-
-
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest='action', required=True)
@@ -1879,7 +1797,6 @@ def main():
     p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--harmonize', action='store_true', help='resolve declaration conflicts by isolated exact-body verification'); p.add_argument('--data-layout', default='definitions', choices=['definitions', 'preamble', 'split'], help='where a scaffolded unit emits claimed statics: with their definitions or at the top in address order'); p.add_argument('--reason', default='')
     p.add_argument('--private-zero-gap', action='append', default=[], help='reviewed scaffold CONST gap OFFSET:SCALARS:POOLSTUB')
     p = sub.add_parser('test'); p.add_argument('unit')
-    p = sub.add_parser('job'); p.add_argument('unit'); p.add_argument('--reason', required=True)
     args = ap.parse_args()
     if args.action == 'propose':
         rows = propose(args.min)
@@ -1894,10 +1811,8 @@ def main():
         source_overrides = dict(item.split('=', 1) for item in args.source)
         result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source, args.scaffold, args.harmonize, args.data_layout, args.private_zero_gap)
         print(json.dumps({k: v for k, v in result.items() if k not in ('sources',)}, indent=2))
-    elif args.action == 'test':
-        print(json.dumps(test_unit(args.unit), indent=2))
     else:
-        print(json.dumps(unit_job(args.unit, args.reason), indent=2))
+        print(json.dumps(test_unit(args.unit), indent=2))
 
 
 if __name__ == '__main__':

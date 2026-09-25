@@ -20,7 +20,7 @@ source as a complete 520-byte pair. The durable reviewed source is
 `evidence/topology/supervisor-unit-sources/gr_1560-bss-fields.c`.
 
 Fresh independent unit proof:
-`evidence/recovery/workflow/jobs/tu_gr_1560_GSetSmallFont_2_reviewed-d4616416c8/promotion.json`.
+`evidence/recovery/promotions/tu_gr_1560_GSetSmallFont_2_reviewed-d4616416c8.json`.
 It matches 520 code bytes, 41 DATA bytes, two CONST bytes, four BSS bytes, two
 PACK bytes, and all 77 fixups. The prior individual jobs are linked as
 superseded; their attempts are retained.

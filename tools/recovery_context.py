@@ -1,4 +1,4 @@
-"""Compact, relocation-aware work packets for bounded source recovery."""
+"""Compact, relocation-aware work packets for source recovery."""
 import re
 from common import ROOT, read_json
 from call_abi_audit import linker_lowered_far_calls
@@ -61,27 +61,3 @@ def compact_packet(card,cards,recipes,ledger):
                 linker_lowered_far_calls=far_calls,prior_draft=ledger.get(card['symbol']),
                 unit_declaration_order=unit_declaration_order,
                 interpretation_notes=notes)
-
-
-def markdown(packet):
-    lines=['# Recovery task '+packet['symbol'],'',
-           'Use `docs/cheap-model-handoff.md`. Write readable C and a semantic hypothesis; use the workflow commands for proof and promotion.','',
-           'Code group: `'+packet['code_segment']+'`. Closed extent: '+str(packet['extent']['size'])+' bytes.','',
-           '```asm']
-    for row in packet['disassembly']:
-        bindings=' ; '+str(row['bindings']) if row['bindings'] else ''
-        refs=' ; '+','.join(name for ref in row['references'] for name in ref.get('names',[]))
-        lines.append(f"{row['offset']:04x} {row['mnemonic']} {row['operands']}"+bindings+(refs if refs!=' ; ' else ''))
-    lines+=['```','','## Known declaration examples','']
-    for declaration in packet['referenced_declarations']:lines+=['- `'+declaration['declaration']+'` — '+declaration['source']]
-    if packet.get('unit_declaration_order'):
-        lines+=['','## Verified unit declaration order','']
-        for fact in packet['unit_declaration_order']:
-            lines+=['- `'+fact['before']+'` before `'+fact['after']+'` ('+fact['rule']+'): '+fact['evidence']]
-    lines+=['','## Interpretation','']+['- '+n for n in packet['interpretation_notes']]
-    if packet.get('linker_lowered_far_calls'):
-        lines+=['','## LINK-lowered far-call evidence','']
-        for call in packet['linker_lowered_far_calls']:
-            lines+=['- '+str(call)]
-    lines+=['','## Neighbors','']+['- '+str(n) for n in packet['neighbors']]
-    return '\n'.join(lines)+'\n'

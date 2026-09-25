@@ -1,0 +1,67 @@
+Whole-member issues: inconsistent public placements for GR_MODULE
+Target | Candidate | Difference
+0000 enter 6, 0 | 0000 enter 6, 0 | 
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 mov ax, word ptr [bp + 6] | 0006 mov ax, word ptr [bp + 6] | 
+0009 mov dx, word ptr [bp + 8] | 0009 mov dx, word ptr [bp + 8] | 
+000c add ax, 0x11 | 000c add ax, 0x11 | 
+000f adc dx, 0 | 000f adc dx, 0 | 
+0012 push dx | 0012 push dx | 
+0013 push ax | 0013 push ax | 
+0014 mov si, ax | 0014 mov si, ax | 
+0016 mov di, dx | 0016 mov di, dx | 
+0018 nop  | 0018 lcall 0, 0 | instruction_shape
+0019 push cs |  | instruction_shape
+001a call 0xfffffeb6 |  | instruction_shape
+001d add sp, 4 | 001d add sp, 4 | 
+0020 push 2 | 0020 push 2 | 
+0022 push di | 0022 push di | 
+0023 push si | 0023 push si | 
+0024 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 15}] | 0024 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+0029 mov word ptr [bp - 2], ax | 0029 mov word ptr [bp - 2], ax | 
+002c or ax, ax | 002c or ax, ax | 
+002e jne 0x38 | 002e jne 0x38 | 
+0030 xor ax, ax | 0030 xor ax, ax | 
+0032 cdq  | 0032 cdq  | 
+0033 pop si | 0033 pop si | 
+0034 pop di | 0034 pop di | 
+0035 leave  | 0035 leave  | 
+0036 retf  | 0036 retf  | 
+0037 nop  | 0037 nop  | 
+0038 push ax | 0038 push ax | 
+0039 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 18}] | 0039 lcall 0, 0 | immediate_or_binding,immediate_or_binding
+003e mov si, ax | 003e mov si, ax | 
+0040 mov word ptr [bp - 4], dx | 0040 mov word ptr [bp - 4], dx | 
+0043 or dx, ax | 0043 or dx, ax | 
+0045 jne 0x52 | 0045 jne 0x52 | 
+0047 push word ptr [bp - 2] | 0047 push word ptr [bp - 2] | 
+004a lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 17}] | 004a lcall 0, 0 | immediate_or_binding,immediate_or_binding
+004f jmp 0x30 | 004f jmp 0x30 | 
+0051 nop  | 0051 nop  | 
+0052 mov cx, word ptr [bp - 4] | 0052 mov cx, word ptr [bp - 4] | 
+0055 lea ax, [si + 0x10] | 0055 lea ax, [si + 0x10] | 
+0058 mov es, cx | 0058 mov es, cx | 
+005a mov word ptr es:[si], ax | 005a mov word ptr es:[si], ax | 
+005d mov word ptr es:[si + 2], cx | 005d mov word ptr es:[si + 2], cx | 
+0061 mov ax, word ptr [bp - 2] | 0061 mov ax, word ptr [bp - 2] | 
+0064 mov word ptr es:[si + 4], ax | 0064 mov word ptr es:[si + 4], ax | 
+0068 mov di, cx | 0068 mov di, cx | 
+006a lcall <resolved fixup> [{'kind': 'import', 'module': 'USER', 'ordinal': 13}] | 006a lcall 0, 0 | immediate_or_binding,immediate_or_binding
+006f mov es, di | 006f mov es, di | 
+0071 mov word ptr es:[si + 0xa], ax | 0071 mov word ptr es:[si + 0xa], ax | 
+0075 mov word ptr es:[si + 0xc], dx | 0075 mov word ptr es:[si + 0xc], dx | 
+0079 mov ax, word ptr [bp + 0xa] | 0079 mov ax, word ptr [bp + 0xa] | 
+007c mov word ptr es:[si + 0xe], ax | 007c mov word ptr es:[si + 0xe], ax | 
+0080 mov ax, word ptr [bp + 6] | 0080 mov ax, word ptr [bp + 6] | 
+0083 mov dx, word ptr [bp + 8] | 0083 mov dx, word ptr [bp + 8] | 
+0086 mov word ptr es:[si + 6], ax | 0086 mov word ptr es:[si + 6], ax | 
+008a mov word ptr es:[si + 8], dx | 008a mov word ptr es:[si + 8], dx | 
+008e add word ptr [0x85c], 1 | 008e add word ptr [0], 1 | memory_operand
+0093 adc word ptr [0x85e], 0 | 0093 adc word ptr [2], 0 | memory_operand
+0098 mov ax, si | 0098 mov ax, si | 
+009a mov dx, di | 009a mov dx, di | 
+009c pop si | 009c pop si | 
+009d pop di | 009d pop di | 
+009e leave  | 009e leave  | 
+009f retf  | 009f retf  | 

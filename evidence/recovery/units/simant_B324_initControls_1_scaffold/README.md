@@ -17,5 +17,5 @@ the claimed body. The C144 stand-in name is only a segment representative; it
 does not identify the historical object. Authentic C7 compilation and the
 strict member matcher then agreed on the 291-byte target extent and 50-byte
 CONST block, with no member or CONST divergences or failed fixups. Fresh proof:
-`evidence/recovery/workflow/jobs/tu_simant_B324_initControls_1_scaffold-03091459d8/promotion.json`.
+`evidence/recovery/promotions/tu_simant_B324_initControls_1_scaffold-03091459d8.json`.
 The stand-in is uncredited construction context.

@@ -9,9 +9,6 @@ def main():
     raw=fixture('SIMANTW.EXE');s=mapsym.parse(fixture('SIMANTW.SYM'));n=ne.parse(raw)
     inventory=read_json(ROOT/'evidence/symbols/inventory.json')['symbols']
     recipes=read_json(ROOT/'src/recovery.json')['targets'];cards=[]
-    ledger_path=ROOT/'evidence/recovery/blockers.json'
-    ledger=read_json(ledger_path) if ledger_path.exists() else {}
-    drafts={**ledger.get('drafts',{}),**ledger.get('workflow_cases',{})}
     cfgpath=ROOT/'evidence/disassembly/cfg-extents.json'
     cfg=read_json(cfgpath) if cfgpath.exists() else {}
     if cfg and (cfg['exe_sha256']!=sha256(raw) or cfg['sym_sha256']!=s['sha256']):raise ValueError('stale CFG evidence')
@@ -35,9 +32,7 @@ def main():
              'disassembly':rows,'source':recipe['source'] if recipe else None,'compiler_flags':recipe['flags'] if recipe else None,
              'known_fixups':[dict(r,sites=[p for p in r['sites'] if start<=p<limit]) for r in ns['relocations'] if any(start<=p<limit for p in r['sites'])],
              'proof':recipe.get('proof','SEMANTIC_CANDIDATE') if recipe else 'DISASSEMBLED',
-             'blockers':[] if recipe else ['SOURCE_NOT_RECOVERED']+drafts.get(item['name'],{}).get('blockers',[])+([] if e['end'] else ['EXTENT_UNKNOWN'])}
-        if not recipe and item['name'] in drafts:
-            card.update(draft_source=drafts[item['name']]['source'],blocker_evidence='evidence/recovery/blockers.json')
+             'blockers':[] if recipe else ['SOURCE_NOT_RECOVERED']+([] if e['end'] else ['EXTENT_UNKNOWN'])}
         reuse=[m for m in runtime if any(c['segment']==seg and c['offset']<=start<c['offset']+c['size'] for c in m['code_ranges'])]
         if reuse:
             card.update(ownership='HISTORICAL_LIBRARY',ownership_confidence=reuse[0]['status'],proof='COMPLETE_MEMBER_MATCH',blockers=[],runtime_members=reuse,reconstruction_scope='EXCLUDED_REUSE_OBJECT')

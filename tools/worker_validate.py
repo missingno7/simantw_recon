@@ -9,7 +9,8 @@ import omf,ne,mapsym
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--workers',type=int,default=1);args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--workers',type=int,default=1);ap.add_argument('--service-stress',action='store_true',help='400 canonical compiles through the running service');args=ap.parse_args()
+    if args.service_stress:return service_stress()
     if not 1<=args.workers<=4:raise FormatError('worker count must be 1..4')
     inputs={p:identity(ROOT/p) for p in ['tools/compiler_worker.py','tools/compiler_wait.asm','layout/toolchain.json']}
     if args.workers>1:
@@ -40,5 +41,25 @@ def main():
     write_json(ROOT/('evidence/experiments/runner/worker-%d.json'%args.workers),report)
     if not report['passed']:raise FormatError('canonical worker oracle failed')
     print('PASS',args.workers,'workers',len(results),'jobs',report['elapsed_seconds'],'seconds',flush=True)
+
+def service_stress(total=400):
+    """Canonical probes through the persistent service: every object must be byte-identical."""
+    from compiler_service import compile_jobs,signature
+    inputs={p:identity(ROOT/p) for p in ['tools/compiler_service.py','tools/compiler_worker.py','tools/compiler_wait.asm','layout/toolchain.json']}
+    for n in (1,4):
+        prior=read_json(ROOT/('evidence/experiments/runner/worker-%d.json'%n))
+        if not prior['passed'] or any(identity(ROOT/k)!=v for k,v in prior['inputs'].items()):raise FormatError('prove single and parallel workers before the service stress')
+    oracle=read_json(ROOT/'evidence/experiments/toolchain/msc700-baseline-Oelw.json')['results']
+    jobs=[oracle[i%len(oracle)] for i in range(total)]
+    started=time.perf_counter()
+    compiled=compile_jobs([dict(source=j['receipt']['source'],flags=j['flags']) for j in jobs])
+    equal=[bool(obj) and obj.read_bytes()==(ROOT/j['receipt']['object']).read_bytes() for (obj,_),j in zip(compiled,jobs)]
+    report=dict(jobs=total,passed=all(equal),elapsed_seconds=time.perf_counter()-started,
+                environment_launches=sum(r['timing'].get('environment_launches',0) for _,r in compiled),
+                worker_sessions=len({r.get('worker_session') for _,r in compiled}),inputs=inputs,
+                mismatches=[j['probe'] for j,e in zip(jobs,equal) if not e][:20])
+    write_json(ROOT/'evidence/experiments/runner/service-stress.json',report)
+    if not report['passed']:raise FormatError('service stress produced a non-canonical object')
+    print('PASS service stress',total,'jobs',round(report['elapsed_seconds'],1),'seconds',flush=True)
 
 if __name__=='__main__':main()

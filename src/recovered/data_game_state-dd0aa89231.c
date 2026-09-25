@@ -1,0 +1,35 @@
+/* DGROUP game state: display mode, animal positions and frames, player and colony health, and caste population counts. */
+
+int near ELayerMode = -1;
+int near ForSaleState = {0};
+int near DogX = {0};
+int near DogY = {0};
+int near DogFrame = {0};
+int near BirdFrame = {0};
+int near BirdOn = {0};
+int near BirdX = {0};
+int near BirdY = {0};
+int near CatFrame = {0};
+int near CatOn = {0};
+int near CatX = {0};
+int near CatY = {0};
+int near RainOn = {0};
+int near BoyHere = {0};
+int near BoyX = 180;
+int near BoyY = 73;
+int near BoyFrame = {0};
+int near SpidX = {0};
+int near SpidY = {0};
+int near SpidDir = {0};
+int near BpopT = {0};
+int near RpopT = {0};
+int near HealthB = {0};
+int near HealthR = {0};
+int near MeHealth = {0};
+int near QueenStorageB = {0};
+int near QueenStorageR = {0};
+int near ColonyTotalBlack = {0};
+int near ColonyTotalRed = {0};
+int near CastePopB[6] = {0};
+int near CastePopR[6] = {0};
+int near DataBlockEnd = {0};

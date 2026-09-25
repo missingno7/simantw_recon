@@ -71,3 +71,71 @@ def admission_targets(module,raw,image,symbols,names,scaffold=False):
                     if dest_segment==target['segment'] and target['offset']<=edge['target']<target['offset']+target['size'] and (source_segment['number'],start)!=(target['segment'],target['offset']):
                         raise FormatError('incoming cross-entry branch requires expert TU/extent review: '+name)
     return targets
+
+
+# DGROUP words that belong to code objects or to the linker, never to a data module:
+# the compiler-generated CONST selector pools, and BSS the linker zero-fills.
+DGROUP = 10
+POOL_REGION = (0xBE6E, 0xC6E0)
+
+
+def data_targets(module, raw, image, symbols, names):
+    """Scopes for a data-only object: each public spans to the next public or the contribution end.
+
+    Every byte of every contribution must be initialized and compared; no other
+    original public may lie inside a claimed span; code, BSS, the selector pools
+    and the linker-allocated BSS region are refused.
+    """
+    absolute = {p['name']: p['offset'] for p in symbols['absolute_symbols']}
+    def symbol_offset(name):
+        try:
+            return unique_symbol(symbols, name)[1]
+        except FormatError:
+            return absolute.get(name)
+    edata, end = symbol_offset('_edata'), symbol_offset('_end')
+    targets = {}
+    for name in names:
+        segment, offset = unique_symbol(symbols, name)
+        if image['segments'][segment - 1]['kind'] != 'DATA':
+            raise FormatError('not a data-segment symbol: ' + name)
+        pubs = [p for p in module['publics'] if p['name'] == name]
+        if len(pubs) != 1 or not 1 <= pubs[0]['segment'] <= len(module['segments']):
+            raise FormatError('requested public missing/ambiguous: ' + name)
+        pub = pubs[0]; seg = module['segments'][pub['segment'] - 1]
+        if seg['class'] in ('CODE', 'BSS') or seg['name'] == '_BSS':
+            raise FormatError('data lane admits initialized data only: ' + name)
+        stop = min([p['offset'] for p in module['publics'] if p['segment'] == pub['segment'] and p['offset'] > pub['offset']] + [seg['length']])
+        size = stop - pub['offset']
+        if size <= 0 or not any(a <= pub['offset'] and stop <= b for a, b in seg['initialized_ranges']):
+            raise FormatError('incomplete initialized data coverage: ' + name)
+        inside = [x['name'] for x in symbols['segments'][segment - 1]['symbols'] if offset < x['offset'] < offset + size]
+        if inside:
+            raise FormatError('%s would swallow original public(s) %s' % (name, ', '.join(inside[:4])))
+        if segment == DGROUP:
+            if offset < POOL_REGION[1] and offset + size > POOL_REGION[0]:
+                raise FormatError('selector-pool words belong to code objects: ' + name)
+            if edata is not None and end is not None and offset < end and offset + size > edata:
+                raise FormatError('BSS region is linker-allocated: ' + name)
+        targets[name] = dict(segment=segment, offset=offset, size=size, data_segment=symbols['segments'][segment - 1]['name'], kind='DATA',
+                             extent_status='CONFIRMED', comparison='data_member', historical_filename=None, proof='BYTE_MATCHED_DATA_RECONSTRUCTION',
+                             extent_evidence='MAPSYM anchor, span to the next public of the object, fully initialized and compared')
+    return targets
+
+
+def check_data_member(module, raw, image, symbols, imports, targets):
+    """Complete data-only member: every contribution initialized, placed and compared, fixups included."""
+    for name, target in targets.items():
+        if unique_symbol(symbols, name) != (target['segment'], target['offset']):
+            raise FormatError('recipe address differs from MAPSYM: ' + name)
+    if any(s['class'] == 'CODE' and s['length'] for s in module['segments']):
+        raise FormatError('data member carries code')
+    publics = {p['name'] for p in module['publics'] if p['segment']}
+    if publics != set(targets):
+        raise FormatError('data member publics differ from its targets')
+    result = compare_member(module, raw, image, symbols, imports, allow_data=True)
+    if not result or result['result'] not in GOOD:
+        raise FormatError('complete member comparison failed: ' + str(result and result.get('issues')))
+    for c in result['contributions']:
+        if c['initialized_ranges'] != [[0, c['length']]] and c['initialized_ranges'] != [(0, c['length'])]:
+            raise FormatError('data contribution %s is not fully initialized' % c['segment'])
+    return result

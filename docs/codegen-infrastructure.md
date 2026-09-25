@@ -2,7 +2,7 @@
 
 The working profile remains MSC C/C++ 7.00 `/AL /G2 /Gs /Oelw`, with the original code-group name supplied through `/NT`. Historical patch identity is not a global recovery blocker.
 
-The subsequent [model handoff](cheap-model-handoff.md) adds a bounded task queue, compact context packets, validated compiler cache, crash recovery and strict promotion admission. Its end-to-end pilot adds `_IsItWall`; current source totals are **208 functions / 4,995 bytes**. The results below retain the infrastructure-phase milestones.
+The subsequent model handoff (retired on 2026-09-25; see [MIGRATION.md](../MIGRATION.md)) added a bounded task queue, compact context packets, validated compiler cache, crash recovery and strict promotion admission. Its end-to-end pilot adds `_IsItWall`; current source totals are **208 functions / 4,995 bytes**. The results below retain the infrastructure-phase milestones.
 
 The phase report is [codegen-progress.json](codegen-progress.json). Independent source-recovery totals remain in [progress.json](progress.json). Generated scaffolding never enters those totals.
 

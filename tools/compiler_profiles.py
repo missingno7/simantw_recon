@@ -142,36 +142,26 @@ def validate(cat=None):
     return dict(profiles=sorted(cat['profiles']), assignments=len(cat['assignments']), contexts=len(cat['contexts']), refutations=len(cat['refutations']))
 
 
-def best_candidate(job):
-    """The job's best preserved candidate by search diagnostic, never a new source."""
-    best = None
-    for attempt in job.get('attempts', []):
-        report = read_json(ROOT / attempt['report'])
-        for row in report['results']:
-            d = (row.get('comparison') or {}).get('diagnostic') or {}
-            if d.get('opcode_matches') is None:
-                continue
-            key = (row['comparison']['result'] in GOOD, d['opcode_matches'], -abs(d.get('candidate_bytes', 0) - d.get('target_bytes', 0)))
-            source = ROOT / row['receipt']['source']
-            if source.exists() and (best is None or key > best[0]):
-                best = (key, source, row)
-    if best is None:
-        raise FormatError('job has no preserved compiled candidate')
-    return best[1], best[2]
+def best_candidate(symbol):
+    """The symbol's best preserved draft (tools/drafts.py), never a new source."""
+    from drafts import best_source
+    source = best_source(symbol)
+    if source is None or not source.exists():
+        raise FormatError('no preserved draft for ' + symbol + '; pass --source')
+    return source, None
 
 
-def probe(job_id, source=None):
-    import recovery_workflow as wf
+def probe(symbol, source=None):
+    from common import cards
     from codegen_cache import compile_cached
     from library_match import compare_member, import_symbols
     from codegen_diff import compare_code
     import omf, ne, mapsym
-    directory = wf.STATE / 'jobs' / job_id
-    job = read_json(directory / 'job.json')
     cat = catalog()
-    card = next(c for c in wf.cards() if c['symbol'] == job['symbol'])
+    card = next(c for c in cards() if c['symbol'] == symbol)
+    job_id = symbol.lstrip('_')
     if source is None:
-        source, row = best_candidate(job)
+        source, row = best_candidate(symbol)
     else:
         source, row = ROOT / source, None
     if not source.resolve().is_relative_to(ROOT):
@@ -213,9 +203,9 @@ def probe(job_id, source=None):
         outcomes = [gain(r, results.get(parent, {})) for parent in cat['profiles'][name].get('parents', [cat['default_profile']])]
         return 'NONE' if any(o == 'NONE' for o in outcomes) else 'STRICT' if all(o == 'STRICT' for o in outcomes) else 'DIAGNOSTIC'
     minimal = {name: over_parents(name, r) for name, r in results.items() if name != cat['default_profile']}
-    record = dict(job=job_id, symbol=job['symbol'], segment=card['segment_name'], source=stable.relative_to(ROOT).as_posix(), source_identity=identity(stable),
+    record = dict(job=job_id, symbol=symbol, segment=card['segment_name'], source=stable.relative_to(ROOT).as_posix(), source_identity=identity(stable),
                   origin=str(source.relative_to(ROOT).as_posix()), origin_candidate=row['candidate'] if row else None, checked=datetime.now(timezone.utc).isoformat(),
-                  component=(component_of(job['symbol']) or {}).get('id'), string_ops=sorted({r['mnemonic'] for r in card['disassembly'] if any(x in r['mnemonic'] for x in ('stos', 'movs', 'scas', 'lods', 'cmps'))}),
+                  component=(component_of(symbol) or {}).get('id'), string_ops=sorted({r['mnemonic'] for r in card['disassembly'] if any(x in r['mnemonic'] for x in ('stos', 'movs', 'scas', 'lods', 'cmps'))}),
                   results=results, discriminating=discriminating, minimal_over_parent=minimal, cache=cache,
                   scope='Bounded profile probe of one preserved candidate: evidence for a context assignment, never recovery credit or a queue change')
     path = PROBES / (job_id + '.json')
@@ -274,7 +264,7 @@ def main():
     sub = ap.add_subparsers(dest='action', required=True)
     sub.add_parser('validate')
     p = sub.add_parser('show'); p.add_argument('symbol')
-    p = sub.add_parser('probe'); p.add_argument('job'); p.add_argument('--source')
+    p = sub.add_parser('probe'); p.add_argument('symbol'); p.add_argument('--source')
     p = sub.add_parser('assign'); p.add_argument('context'); p.add_argument('profile'); p.add_argument('--reason', required=True); p.add_argument('--evidence', action='append', required=True); p.add_argument('--symbol', action='append')
     args = ap.parse_args()
     if args.action == 'validate':
@@ -282,7 +272,7 @@ def main():
     elif args.action == 'show':
         print(json.dumps(resolve(args.symbol), indent=2))
     elif args.action == 'probe':
-        record = probe(args.job, args.source)
+        record = probe(args.symbol, args.source)
         print(json.dumps(dict(job=record['job'], discriminating=record['discriminating'], results={k: (v['result'], v.get('opcode_matches'), v.get('opcode_total'), v.get('candidate_bytes')) for k, v in record['results'].items()}), indent=2))
     else:
         print(json.dumps(assign(args.context, args.profile, args.reason, args.evidence, args.symbol), indent=2))

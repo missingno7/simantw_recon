@@ -27,7 +27,7 @@ source pointer words into AX/DX at +0x120 and an omitted jump after
 `mem_Unlock`. The corrected source was reissued through the recorded
 single-candidate `SOURCE_LAYOUT` extension (`reissue-spec.json`), then
 freshly admitted by the normal production gate in
-`evidence/recovery/workflow/jobs/DoFastMonoBitmap-4c72c58f17/promotion.json`.
+`evidence/recovery/promotions/DoFastMonoBitmap-4c72c58f17.json`.
 
 An exact text search across preserved C sources found no other draft using
 this `imageSize` expression. The adjacent ready `_DoFastBitmap` is a useful

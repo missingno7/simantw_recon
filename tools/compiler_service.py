@@ -49,6 +49,11 @@ def serve(workers=4,idle_seconds=120):
         proof=read_json(ROOT/('evidence/experiments/runner/worker-%d.json'%(1 if workers==1 else 4)))
         if not proof['passed'] or any(identity(ROOT/p)!=h for p,h in proof['inputs'].items()):raise FormatError('worker implementation has not passed canonical oracle')
         for name in ['pending','running','completed','jobs']:(BASE/name).mkdir(exist_ok=True)
+        # Under the service lock no host copy is live: remove orphans of crashed sessions.
+        from compiler_worker import remove_tree
+        for orphan in (ROOT/'build/compiler-workers').glob('W*_*') if (ROOT/'build/compiler-workers').exists() else []:
+            try:remove_tree(orphan)
+            except OSError:pass
         for p in (BASE/'running').glob('*.json'):
             atomic(BASE/'completed'/p.name,dict(error='Service interrupted this job; output is not accepted'))
             p.rename((BASE/'jobs'/p.stem/'interrupted.json'))

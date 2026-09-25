@@ -8,6 +8,14 @@ def validate_flags(flags):
     if not flags or any(not isinstance(f,str) or not re.fullmatch(r'/[A-Za-z][A-Za-z0-9_:+-]*',f) for f in flags):raise FormatError('unsafe worker compiler flags')
 
 
+def remove_tree(path):
+    """Delete a host copy; its toolchain files keep their read-only attribute."""
+    import stat
+    def writable(function,target,_):
+        os.chmod(target,stat.S_IWRITE);function(target)
+    shutil.rmtree(path,onerror=writable) if Path(path).exists() else None
+
+
 class Win31Worker:
     def __init__(self,worker_id=0,session_limit=96):
         self.worker_id=worker_id;self.session_limit=session_limit;self.count=0;self.process=None;self.boots=0;self.paused=False
@@ -68,7 +76,9 @@ class Win31Worker:
             time.sleep(.002)
         else:self.close();raise FormatError('persistent compiler job timeout')
         ended=time.perf_counter();self.pause();self.count+=1
-        archive=self.directory/('job%04d'%self.count);archive.mkdir()
+        # Job outputs outlive the session: receipts name these files, while the
+        # Windows host copy in self.directory is removed when the session closes.
+        archive=ROOT/'build/compiler-jobs'/self.directory.name/('job%04d'%self.count);archive.mkdir(parents=True)
         for name in ['INPUT.C','OUTPUT.OBJ','OUTPUT.LOG','JOB.BAT','JOB.RC']:shutil.copyfile(self.work/name,archive/name)
         obj=archive/'OUTPUT.OBJ';log=(archive/'OUTPUT.LOG').read_text(encoding='latin1')
         success=(archive/'JOB.RC').read_text().strip()=='0' and obj.stat().st_size>0
@@ -79,5 +89,9 @@ class Win31Worker:
         if self.process is not None:
             if self.process.poll() is None:self.process.kill()
             self.process.wait();self.process=None;self.paused=False
+        # Each session copies the Windows host; never leave the copy behind
+        # (hundreds of thousands of stale files slowed every workspace scan).
+        if getattr(self,'directory',None) is not None:
+            remove_tree(self.directory);self.directory=None
     def __enter__(self):return self
     def __exit__(self,*args):self.close()

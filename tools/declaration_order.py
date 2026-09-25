@@ -1,19 +1,19 @@
 """Derive private static declaration order from the original data word positions.
 
-For a parked job whose body matches and whose only failing obligations are
+For a function whose best draft body matches and whose only failing obligations are
 offset fixups into one private segment (_DATA or _BSS), the original operand
 values give the historical position of every private object. If those
 positions form one block whose gaps equal the declared object sizes, the
 candidate merely declared its statics in the wrong order: this tool rewrites
-the declaration order, records the evidence and issues the reviewed replay
-through the expert reissue path. Anything else (gaps for other functions'
+the declaration order, records the evidence and (with --write) tests the
+rewritten source through tools/search.py. Anything else (gaps for other functions'
 statics, mixed segments, BSS words below _edata) is reported, not forced.
 """
 import argparse
 import json
 import re
-from common import ROOT, FormatError, read_json, write_json, identity
-import recovery_workflow as wf
+from common import ROOT, FormatError, cards, fixture, read_json, write_json, identity
+import mapsym
 import omf
 
 EVIDENCE = ROOT / 'evidence/topology/supervisor-declaration-order'
@@ -58,21 +58,24 @@ def static_declarations(source):
     return rows
 
 
-def analyse(job_id):
-    directory = wf.STATE / 'jobs' / job_id
-    job = read_json(directory / 'job.json')
-    if job['status'] != 'ESCALATED':
-        raise FormatError('job is not parked')
+def analyse(symbol):
+    from codegen_grinder import run
     from compiler_profiles import best_candidate
-    source_path, row = best_candidate(job)
+    from promote import function_flags
+    source_path, _ = best_candidate(symbol)
+    _, flags = function_flags(symbol)
+    job_id = symbol.lstrip('_')
+    report = run(dict(symbol=symbol, source=source_path.relative_to(ROOT).as_posix(), compiler='msc700', flags=flags, publics=[symbol], max_candidates=1),
+                 'build/declaration-order/' + job_id, cache=True)
+    row = report['results'][0]
     comparison = row['comparison']
     d = comparison.get('diagnostic') or {}
     if not (d.get('instruction_layout_match') and d.get('opcode_matches') == d.get('opcode_total') and d.get('register_only_differences') == 0):
         raise FormatError('body is not exact; declaration order cannot be the only problem')
     module = omf.parse((ROOT / row['receipt']['object']).read_bytes())
-    pub = next(p for p in module['publics'] if p['name'] == job['symbol'])
+    pub = next(p for p in module['publics'] if p['name'] == symbol)
     code = bytes.fromhex(module['segments'][pub['segment'] - 1]['data_hex'])
-    card = next(c for c in wf.cards() if c['symbol'] == job['symbol'])
+    card = next(c for c in cards() if c['symbol'] == symbol)
     target = bytes.fromhex(''.join(x['bytes'] for x in card['disassembly']))
     failing = []
     for con in comparison.get('contributions', []):
@@ -122,10 +125,10 @@ def analyse(job_id):
             gaps.append(dict(name=s['name'], expected=expected, original=mapping[s['name']]))
         expected = mapping[s['name']] + s['size'] + (s['size'] & 1)
     if segment == '_BSS':
-        names = {p['name']: p['offset'] for p in wf.mapsym.parse(wf.fixture('SIMANTW.SYM'))['segments'][9]['symbols']}
+        names = {p['name']: p['offset'] for p in mapsym.parse(fixture('SIMANTW.SYM'))['segments'][9]['symbols']}
         if mapping[order[0]['name']] < names['_edata']:
             raise FormatError('original words lie below _edata: the statics are initialised data or another object; not a BSS order problem')
-    result = dict(job=job_id, symbol=job['symbol'], segment=segment, source=str(source_path.relative_to(ROOT).as_posix()),
+    result = dict(job=job_id, symbol=symbol, segment=segment, source=str(source_path.relative_to(ROOT).as_posix()),
                   positions={s['name']: '%04X' % mapping[s['name']] for s in order}, order=[s['name'] for s in order], gaps=gaps, statics=[dict(name=s['name'], size=s['size'], initialised=s['initialised']) for s in statics])
     if gaps:
         result['status'] = 'GAPS_REQUIRE_UNIT'
@@ -149,40 +152,30 @@ def analyse(job_id):
     return result, rewritten
 
 
-def reissue(job_id):
-    result, rewritten = analyse(job_id)
+def write(symbol):
+    result, rewritten = analyse(symbol)
     if rewritten is None:
         return result
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     path = EVIDENCE / (result['symbol'].lstrip('_') + '.c')
     header = '/* Private %s declaration order derived from the original word positions %s (tools/declaration_order.py). */\n' % (result['segment'], ', '.join('%s=%s' % kv for kv in result['positions'].items()))
     path.write_text(header + rewritten, encoding='latin1')
-    directory = wf.STATE / 'jobs' / job_id
-    job = read_json(directory / 'job.json')
-    spec = dict(symbol=result['symbol'], source=path.relative_to(ROOT).as_posix(), compiler='msc700', flags=job['flags'], max_candidates=1, axes=[],
-                semantic_summary=read_json(directory / 'submission.json').get('semantic_summary', 'Preserved body with derived static order'),
-                binding_evidence=['original private %s words %s; candidate statics reordered to reproduce them' % (result['segment'], ', '.join(result['positions'].values()))], publics=[result['symbol']])
-    spec_path = EVIDENCE / (result['symbol'].lstrip('_') + '-spec.json')
-    write_json(spec_path, spec)
     write_json(EVIDENCE / (result['symbol'].lstrip('_') + '-analysis.json'), result)
-    import topology_retest
-    outcome = topology_retest.reissue(job_id, spec_path.relative_to(ROOT).as_posix(), 'Private %s declaration order derived from the original word positions' % result['segment'])
-    result['outcome'] = dict(status=outcome['status'], result=outcome['attempt']['result'])
+    from search import search
+    outcome = search(symbol, [path.relative_to(ROOT).as_posix()])
+    result['outcome'] = dict(result=outcome['best']['result'], exact_body=outcome['best']['exact_body'], report=outcome['report'])
     return result
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('job')
-    ap.add_argument('--reissue', action='store_true')
+    ap.add_argument('symbol')
+    ap.add_argument('--write', action='store_true', help='write the reordered source and test it with search.py')
     args = ap.parse_args()
-    if args.reissue:
-        with wf.global_lock():
-            wf.recover_transaction()
-        with wf.job_lock(args.job):
-            print(json.dumps(reissue(args.job), indent=2))
+    if args.write:
+        print(json.dumps(write(args.symbol), indent=2))
     else:
-        result, rewritten = analyse(args.job)
+        result, rewritten = analyse(args.symbol)
         print(json.dumps(result, indent=2))
 
 

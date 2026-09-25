@@ -51,11 +51,9 @@ class ReconstructionRuleTriggerTests(unittest.TestCase):
                             for r in relevant_rules(card, matching)))
 
     def test_inline_hole_flag_rule_reaches_matching_simant1_packets(self):
-        root = Path(__file__).resolve().parents[1]
-        for job in ('DoToAlarm-eebd22beab', 'DoAttackAnt-80be755651',
-                    'DoRecruitAnt-f80269cf27'):
-            packet = json.loads((root / 'evidence' / 'recovery' / 'workflow' /
-                                 'jobs' / job / 'factory-packet.json').read_text())
+        from context import packet as context_packet
+        for symbol in ('_DoToAlarm', '_DoAttackAnt', '_DoRecruitAnt'):
+            packet = context_packet(symbol)
             card = {'symbol': packet['symbol'], 'disassembly': packet['disassembly'],
                     'calls': packet['calls'], 'segment': packet['segment']}
             with self.subTest(symbol=packet['symbol']):

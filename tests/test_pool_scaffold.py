@@ -239,21 +239,18 @@ class ComposerConflictTests(unittest.TestCase):
 
 class SubmissionPragmaTests(unittest.TestCase):
     def submission(self, lines, scaffold, reviewed=False, tested=True):
-        import recovery_workflow as wf
-        from common import identity, write_json
+        from promote import check_source
+        from common import identity
         folder = ROOT / 'build/tests/scaffold'
         folder.mkdir(parents=True, exist_ok=True)
         source = folder / 'sub.c'
         source.write_text(chr(10).join(lines) + chr(10), encoding='latin1')
         flags = ['/AL', '/G2', '/Gs', '/Oelw', '/NTSIMANT_MODULE']
-        job = dict(symbol='_A', flags=flags, lane='TU_ASSEMBLY', publics=['_A'], scaffold=dict(unit='x') if scaffold else None)
-        spec = dict(symbol='_A', compiler='msc700', flags=flags, publics=['_A'], semantic_summary='test', max_candidates=1, axes=[], source=source.relative_to(ROOT).as_posix())
+        unit = dict(scaffold=dict(unit='x') if scaffold else None)
         if reviewed:
-            evidence = folder / 'unit.json'
-            write_json(evidence, dict(unit='x', layout='reviewed', members=['_A'], source=spec['source'], source_identity=identity(source),
-                                      last_test=dict(result='STRONGLY_SUPPORTED_MEMBER' if tested else 'NO_COMPLETE_MATCH')))
-            job.update(unit='x', unit_evidence=evidence.relative_to(ROOT).as_posix())
-        return lambda: wf.check_submission(spec, job)
+            unit.update(layout='reviewed', source=source.relative_to(ROOT).as_posix(), source_identity=identity(source),
+                        last_test=dict(result='STRONGLY_SUPPORTED_MEMBER' if tested else 'NO_COMPLETE_MATCH'))
+        return lambda: check_source(source.read_text(), flags, unit)
 
     def test_alloc_text_allowed_only_for_scaffolded_units(self):
         from common import FormatError

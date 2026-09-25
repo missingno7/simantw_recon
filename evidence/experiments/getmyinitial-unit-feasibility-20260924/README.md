@@ -4,7 +4,7 @@ This is a read-only TU_ASSEMBLY feasibility review. No unit compile or TU job wa
 
 ## Proposal and source identity
 
-A fresh `python tools/tu_assembly.py propose --min 2 --limit 100` reports `simant1:75F4 unlock=0 usable=4/15 groups=[] blocked=3`. The promoted 3-member scaffold is `evidence/recovery/workflow/jobs/tu_simant1_75F4_DoAntSimY_3_scaffold-7e7e8ed0c2/promotion.json`: claimed runs are `_DoAntSimY`, `_EnterNest`, `_CheckMyBestDirs`; `_DoAntMoveY` is a pool-only stand-in. Its exact result is `STRONGLY_SUPPORTED_MEMBER`. The recovered unit source identity is recorded in `source-audit.json`.
+A fresh `python tools/tu_assembly.py propose --min 2 --limit 100` reports `simant1:75F4 unlock=0 usable=4/15 groups=[] blocked=3`. The promoted 3-member scaffold is `evidence/recovery/promotions/tu_simant1_75F4_DoAntSimY_3_scaffold-7e7e8ed0c2.json`: claimed runs are `_DoAntSimY`, `_EnterNest`, `_CheckMyBestDirs`; `_DoAntMoveY` is a pool-only stand-in. Its exact result is `STRONGLY_SUPPORTED_MEMBER`. The recovered unit source identity is recorded in `source-audit.json`.
 
 The current `_GetMyInitialRandDir` attempt07 source is `evidence/recovery/workflow/jobs/GetMyInitialRandDir-72875fbed4/attempt07/candidate0000.c` (SHA `4f0c201e18a7a755d4e7821b6efc3ccff58608f3bbf55907b99d5a3fcd503908`). `tu_assembly.body_exact` returns true: 91/91 bytes, 36/36 opcodes, and instruction layout exact. Its isolated strict result is still `NO_COMPLETE_MATCH`, with 8/14 fixups; strict member proof would require every target byte and all 14 fixups resolved in the actual unit, plus the exact CONST contribution and placement.
 

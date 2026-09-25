@@ -102,7 +102,7 @@ def name_token(symbol):
 
 def admitted_private():
     result = defaultdict(list)
-    path = ROOT / 'evidence/recovery/verified-objects.json'
+    path = ROOT / 'build/recovery/verified-objects.json'
     if not path.exists():
         return result
     for g in read_json(path)['game']:
@@ -155,10 +155,8 @@ def build():
     named = {p['offset'] for p in symbols['segments'][9]['symbols']}
     private = admitted_private()
     recipes = read_json(ROOT / 'src/recovery.json')['targets']
-    jobs = {}
-    for path in (ROOT / 'evidence/recovery/workflow/jobs').glob('*/job.json'):
-        job = read_json(path)
-        jobs[job['symbol']] = job
+    from drafts import load as load_drafts
+    jobs = {s: (row.get('legacy_jobs') or [{}])[-1] for s, row in load_drafts().items()}
     functions = {}
     for card in cards():
         if card['ownership'] != 'GAME':
@@ -169,7 +167,7 @@ def build():
         functions[card['symbol']] = dict(symbol=card['symbol'], group=card['segment_name'], segment=card['segment'], offset=card['offset'],
             size=card['extent']['size'], slots=slots, unnamed_ds_operands=unnamed, token=name_token(card['symbol']),
             admitted=card['symbol'] in recipes, private_contributions=private.get(card['symbol'], []),
-            string_ops=string_ops, job_status=job['status'] if job else None, job_blockers=job.get('blockers') if job else None,
+            string_ops=string_ops, job_status=job.get('status') if job else None, job_blockers=job.get('blockers') if job else None,
             calls=sorted({n for r in card['calls'] for n in r.get('names', [])}))
     # Words attributable to each function in two link-order coordinates: the
     # CONST selector pool (slots plus admitted CONST contributions) and admitted
@@ -209,7 +207,7 @@ def build():
     # explicit objects) whose _DATA/CONST placements are known exactly.
     foreign = {space: {(w, f['group']) for f in functions.values() for w in f['words'][space]} for space in ('pool', 'data')}
     runtime_words = []
-    verified = ROOT / 'evidence/recovery/verified-objects.json'
+    verified = ROOT / 'build/recovery/verified-objects.json'
     if verified.exists():
         for r in read_json(verified)['runtime']:
             for c in r['comparison'].get('contributions', []):
@@ -370,7 +368,7 @@ def build():
         homes = {next((u['candidate_unit'] for u in units if p in u['publics']), None) for p in unit['publics'] if p in functions}
         control_results.append(dict(unit=unit['id'], status=unit['status'], publics=unit['publics'], candidate_units=sorted(h for h in homes if h), passed=len(homes) == 1))
     report = dict(schema_version=1, scope='Probable historical build topology; routing and grouping evidence only, never recovery credit or historical filenames',
-        inputs={p: identity(ROOT / p) for p in ['evidence/disassembly/cards.jsonl', 'evidence/recovery/verified-objects.json', 'layout/translation-units.json']},
+        inputs={p: identity(ROOT / p) for p in ['evidence/disassembly/cards.jsonl', 'build/recovery/verified-objects.json', 'layout/translation-units.json']},
         code_group_naming=dict(observed=GAME_GROUPS, compiler_default='<basename>_TEXT (observed INPUT_TEXT for INPUT.C under MSC 7.00)',
             interpretation='Explicitly assigned code segment names (/NT or equivalent); not compiler defaults and not linker-generated',
             evidence='evidence/experiments/toolchain/link-layout/'),

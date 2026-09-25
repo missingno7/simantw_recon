@@ -29,7 +29,7 @@ functions. The original DGROUP 0AF0-0CAA span has no NE relocations. The
 reviewed unit matched all claimed code (including 122 bytes for
 `_vocMciClose`), 454 DATA bytes, two CONST bytes, 20 far-state bytes, and
 the ordinary/fixup obligations in a fresh independent admission:
-`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_11_reviewed-20da90de50/promotion.json`.
+`evidence/recovery/promotions/tu_gr_7712_IsMMMidiAvail_11_reviewed-20da90de50.json`.
 The older individual job `vocMciClose-671a37cab0` is linked as superseded;
 its failed isolated trial remains in history.
 
@@ -55,7 +55,7 @@ reproduce the target's two-byte CONST selector slot without adding a near DATA
 word. Using that view throughout the unit gives exact bodies for the eleven
 earlier members and `_snd_IsSongDone`, the 454-byte DATA span, two CONST bytes,
 and 22 far-state bytes. Fresh independent admission:
-`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_12_reviewed-5d2b970b1c/promotion.json`.
+`evidence/recovery/promotions/tu_gr_7712_IsMMMidiAvail_12_reviewed-5d2b970b1c.json`.
 The old individual `snd_IsSongDone-18a6b4f887` job is linked as superseded.
 This establishes a coherent source representation and byte identity for the
 claimed unit; it does not prove the original identifier or macro spelling.
@@ -70,7 +70,7 @@ thirteen-member match: 982/982 ordinary bytes, all 44 fixups in claimed
 contributions, 454 DATA bytes, two CONST bytes, and the same 22 far-state
 bytes. The 28 other reported fixups are in explicitly noncredited stand-in
 code. Fresh independent admission:
-`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c/promotion.json`.
+`evidence/recovery/promotions/tu_gr_7712_IsMMMidiAvail_13_reviewed-a2f2d7598c.json`.
 The five-attempt individual job `MultiMediaSong-f2993ef613` is linked as
 superseded. This second member confirms that the selector view is useful
 beyond the single song-done spelling.
@@ -99,7 +99,7 @@ reports all 1114 claimed ordinary code bytes and 57 claimed fixups exact,
 plus 454 near DATA bytes, two CONST bytes, and 22 far-state bytes. The other
 25 fixups are in explicitly noncredited stand-ins. Fresh independent
 promotion is recorded at
-`evidence/recovery/workflow/jobs/tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59/promotion.json`;
+`evidence/recovery/promotions/tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.json`;
 the previous thirteen members were reverified, and the zero-attempt
 `CheckMMWave-9d5b57c59b` job was linked as superseded. This unit establishes
 the source representation and complete member bytes, not the original
