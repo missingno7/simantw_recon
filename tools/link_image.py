@@ -253,6 +253,29 @@ def _raw_spans(image, ledger, owned):
     return spans, raw_chain_sites
 
 
+def _subtract_spans(spans, claims):
+    """Split raw gaps around independently evidenced non-RAW contributions."""
+    carved = []
+    for span in spans:
+        pieces = [(span["start"], span["end"])]
+        for claim in claims:
+            updated = []
+            for a, b in pieces:
+                if claim["end"] <= a or claim["start"] >= b:
+                    updated.append((a, b))
+                else:
+                    if a < claim["start"]:
+                        updated.append((a, claim["start"]))
+                    if claim["end"] < b:
+                        updated.append((claim["end"], b))
+            pieces = updated
+        for a, b in pieces:
+            if a < b:
+                carved.append({"start": a, "end": b,
+                    "chain_sites": [q for q in span.get("chain_sites", []) if a <= q < b]})
+    return carved
+
+
 def analyze(write=True):
     raw, image, symbols, ledger, manifest = _oracle_model()
     def_text, def_lines, exports = build_def(image, symbols)
@@ -501,6 +524,13 @@ def _raw_fixup_target(reloc, site, model, import_reverse, export_by_ordinal):
     raise FormatError("unsupported NE relocation target kind " + str(target["kind"]))
 
 
+def _pair_segment_frame(target):
+    """Keep a segment-relative OMF frame on the internal target SEGDEF."""
+    if target.get("frame_method") == 0 and target.get("frame_index") is None:
+        target["frame_index"] = target["target_index"]
+    return target
+
+
 def _carve_crt0msg_member(model):
     """Extract the exact pinned CRT0MSG member and remove its bytes from RAWDEBT.
 
@@ -584,25 +614,7 @@ def _carve_crt0msg_member(model):
         if any(a <= q < b for _, q in sites) or any(a <= q < b for q in chains):
             raise FormatError("CRT0MSG %s overlaps an NE loader/chain site" % claim["segment"])
 
-    carved = []
-    for span in spans:
-        pieces = [(span["start"], span["end"])]
-        for claim in claims:
-            updated = []
-            for a, b in pieces:
-                if claim["end"] <= a or claim["start"] >= b:
-                    updated.append((a, b))
-                else:
-                    if a < claim["start"]:
-                        updated.append((a, claim["start"]))
-                    if claim["end"] < b:
-                        updated.append((claim["end"], b))
-            pieces = updated
-        for a, b in pieces:
-            if a < b:
-                carved.append({"start": a, "end": b,
-                    "chain_sites": [q for q in span.get("chain_sites", []) if a <= q < b]})
-    model["spans"][10] = carved
+    model["spans"][10] = _subtract_spans(spans, claims)
     member_path = WORK / "objects" / "RUNTIME_CRT0MSG.OBJ"
     member_path.parent.mkdir(parents=True, exist_ok=True)
     member_path.write_bytes(module_bytes)
@@ -615,9 +627,39 @@ def _carve_crt0msg_member(model):
         "fixups": len(module["fixups"]), "scope": "pinned runtime library member; never RAWDEBT or recovered source"}
     model["runtime_library_claims"] = [evidence]
     order = model["evidence"]["link_order"]
-    order["raw_gap_spans"]["10"] = carved
+    order["raw_gap_spans"]["10"] = model["spans"][10]
     order["counts"]["raw_gap_spans"] = sum(map(len, model["spans"].values()))
     order["counts"]["raw_chain_sites"] = sum(len(x) for x in model["raw_chain_sites"].values())
+    full_orders = defaultdict(list)
+    for layout in model["layouts"]:
+        for c in layout["contributions"]:
+            full_orders[(c["ne_segment"], c["logical_segment"])].append({
+                "kind": "ADMITTED_" + layout["group"], "object": layout["object"],
+                "start": c["start"], "end": c["end"], "class": c["class"]})
+    for segnum, spans in model["spans"].items():
+        for gap_index, span in enumerate(spans):
+            logical, cls = _active_for_raw_span(model, segnum, span)
+            full_orders[(segnum, logical)].append({
+                "kind": "RAWDEBT", "object": "RAWDEBT_S%02d_G%03d.OBJ" % (segnum, gap_index),
+                "start": span["start"], "end": span["end"], "class": cls})
+    for claim in claims:
+        full_orders[(10, claim["segment"])].append({
+            "kind": "RUNTIME_MEMBER", "object": "RUNTIME_CRT0MSG.OBJ",
+            "start": claim["start"], "end": claim["end"], "class": claim["class"]})
+    order["logical_orders_with_gaps"] = [
+        {"ne_segment": segnum, "logical_segment": logical,
+         "contributions": sorted(rows, key=lambda x: (x["start"], x["end"], x["kind"], x["object"]))}
+        for (segnum, logical), rows in sorted(full_orders.items())]
+    order["counts"]["ordered_contributions_with_gaps"] = sum(map(len, full_orders.values()))
+    write_json(EVIDENCE / "link-order.json", {
+        "scope": "oracle placement constraints; RAWDEBT rows are scaffolding and receive zero recovery credit",
+        "oracle_sha256": model["evidence"]["oracle"]["sha256"],
+        "topology_basis": order["topology_basis"],
+        "sort_rule": "within each NE segment and logical SEGDEF, contributions are ordered by strict oracle start/end offsets; RAWDEBT gaps and pinned runtime members are explicit rows",
+        "counts": order["counts"],
+        "logical_orders": order["logical_orders_with_gaps"]})
+    order.pop("logical_orders_with_gaps")
+    order["detail_path"] = "evidence/experiments/link-container/link-order.json"
     model["evidence"]["runtime_library_claims"] = [evidence]
     write_json(EVIDENCE / "link-container.json", model["evidence"])
     write_json(WORK / "layout-model.json", {"objects": model["layouts"],
@@ -685,6 +727,11 @@ def package():
                             if not any(x[0] == extra_name for x in extras):
                                 extras.append((extra_name, extra_class, 0, 3))
                             target["target_index"] = 1 + next(i for i, x in enumerate(extras) if x[0] == extra_name)
+                        # OMF frame method 0 carries a SEGDEF index. Keep it
+                        # paired with the internal target SEGDEF; defaulting
+                        # every such frame to segment 1 silently changes the
+                        # NE relocation's segment-relative meaning.
+                        _pair_segment_frame(target)
                     target["site"] = site - span["start"]
                     target["location_type"] = reloc["source_type"]
                     target["width"] = reloc["width"]
@@ -847,7 +894,7 @@ def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
         "rawdebt_fixup_sites": package_receipt["raw_ne_relocation_sites"],
         "link_error_count": len(re.findall(r"error L\d+:", log)),
         "link_error_codes": dict(Counter(re.findall(r"error (L\d+):", log))),
-         "input_order": [{"kind": x["kind"], "object": x["object"], "ne_segment": x.get("ne_segment"), "start": x.get("start"), "runtime_member": x.get("runtime_member")} for x in rows],
+         "input_order": [{"kind": x["kind"], "object": x["object"], "ne_segment": x.get("ne_segment"), "start": x.get("start"), "runtime_member": x.get("runtime_member"), "identity": x["identity"]} for x in rows],
         "log": log}
     if exe.exists():
         out_target = ROOT / out_path

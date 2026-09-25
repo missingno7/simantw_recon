@@ -38,6 +38,11 @@ class LinkImageTests(unittest.TestCase):
         self.assertFalse(fixup['self_relative'])
         self.assertEqual(fixup['displacement'], 0)
 
+    def test_segment_relative_frame_uses_the_internal_target_segdef(self):
+        target = {'frame_method': 0, 'frame_index': None, 'target_index': 2}
+        self.assertIs(link_image._pair_segment_frame(target), target)
+        self.assertEqual(target['frame_index'], 2)
+
     def test_def_records_segment_defaults_and_named_exports(self):
         image = {
             'header': {'heap_size': 4096, 'stack_size': 8192, 'cs': 4, 'ip': 0x61, 'other_flags': 0, 'return_thunk_offset': 0, 'segment_reference_offset': 0},
@@ -67,6 +72,15 @@ class LinkImageTests(unittest.TestCase):
         self.assertFalse(facts['equal'])
         self.assertEqual(facts['matching_bytes_at_region_offsets'], 2)
         self.assertEqual(facts['common_prefix_bytes'], 1)
+
+    def test_runtime_claim_splits_rawdebt_and_keeps_chain_sites_outside(self):
+        spans = [{'start': 10, 'end': 30, 'chain_sites': [12, 18, 26]}]
+        claims = [{'start': 15, 'end': 20}, {'start': 24, 'end': 26}]
+        self.assertEqual(link_image._subtract_spans(spans, claims), [
+            {'start': 10, 'end': 15, 'chain_sites': [12]},
+            {'start': 20, 'end': 24, 'chain_sites': []},
+            {'start': 26, 'end': 30, 'chain_sites': [26]},
+        ])
 
 
 if __name__ == '__main__':

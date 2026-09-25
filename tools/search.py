@@ -141,6 +141,10 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
 
 def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm500', asm_flags=None):
     from promote import check_source, function_flags
+    if not files and not template and note:
+        # A finding without a new candidate: record it durably, compile nothing.
+        drafts.note(symbol, note, origin='search.py --note')
+        return dict(symbol=symbol, note_recorded=True, candidates=0)
     if files and any(Path(name).suffix.lower() == '.asm' for name in files):
         if template:
             raise FormatError('ASM candidates do not use C template batches')

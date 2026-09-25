@@ -87,6 +87,16 @@ class ComposerScaffoldTests(unittest.TestCase):
     def test_admitted_unit_yard_source_supersedes_parked_draft(self):
         target = json.loads((ROOT / 'src/recovery.json').read_text())['targets']['_YardArea']
         reviewed = tu.admitted_unit_member_source('_YardArea', target)
+        unit_record = tu.read_json(tu.UNITS / target['unit'] / 'unit.json')
+        unit_sources = unit_record.get('sources') or {}
+        if reviewed is None and '*' in unit_sources:
+            # A composed whole-unit source cannot be used as an isolated member
+            # source. Keep the durable member draft distinct from that wildcard
+            # build input while live recovery recipes transition between shapes.
+            preserved = tu.preserved_sources()['_YardArea']
+            self.assertIn('source', preserved)
+            self.assertNotEqual(preserved['source'], unit_sources['*']['source'])
+            return
         self.assertEqual(reviewed['source'], 'evidence/topology/supervisor-unit-sources/YardArea-patchRgn2.c')
         self.assertEqual(tu.preserved_sources()['_YardArea']['source'], reviewed['source'])
         with mock.patch.object(tu, 'identity', return_value={'sha256': 'stale'}):

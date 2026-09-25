@@ -14,7 +14,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from common import ROOT, FormatError, identity, read_json, sha256, write_json
+from common import ROOT, FormatError, identity, read_json, relative, sha256, write_json
 
 PROPOSAL = ROOT / 'build/workers/masm/toolchain-lock-proposal.json'
 DOSBOX = 'toolchain/dosbox-x/bin/x64/Release/dosbox-x.exe'
@@ -25,7 +25,7 @@ WIN31 = 'toolchain/win31'
 # admitted by the recovered-source lane.
 DIRECTIVES = {
     'SEGMENT', 'ENDS', 'GROUP', 'ASSUME', 'PUBLIC', 'EXTRN', 'EXTERN',
-    'EXTERNDEF', 'COMM', 'COMMON', 'PROC', 'ENDP', 'END', 'LABEL', 'EQU',
+    'EXTERNDEF', 'COMM', 'COMMON', 'PROC', 'ENDP', 'END', 'LABEL', 'EQU', 'LOCAL',
     'ORG', 'EVEN', 'ALIGN', 'PUSHCONTEXT', 'POPCONTEXT', 'ALIAS',
     'STRUCT', 'UNION', 'RECORD', 'TYPEDEF',
     'TITLE', 'SUBTITLE', 'PAGE', 'NAME', 'RADIX', 'OPTION', 'MODEL',
@@ -46,8 +46,10 @@ SETPO SETS SETZ SGDT SHL SHR SIDT SLDT SMSW STC STD STI STOS STOSB STOSW STR SUB
 VERR VERW WAIT WBINVD XADD XCHG XLAT XOR'''.split())
 PSEUDO_LANGUAGE = re.compile(
     r'\b(?:MACRO|ENDM|INVOKE|INCBIN|INCLUDE|TEXTEQU|REPT|IRP|IRPC|WHILE|'
-    r'EXITM|PURGE|LOCAL|ERR(?:NZ|DEF|NDEF|B)?|ERR1|ERR2|ERR3)\b', re.I)
+    r'EXITM|PURGE|ERR(?:NZ|DEF|NDEF|B)?|ERR1|ERR2|ERR3)\b', re.I)
 DATA_DIRECTIVES = {'DB', 'DW', 'DD', 'DQ', 'DT', 'BYTE', 'WORD', 'DWORD', 'QWORD', 'TBYTE'}
+DOTTED_DIRECTIVES = {'.CODE', '.DATA', '.DATA?', '.STACK', '.MODEL', '.186', '.286', '.286P',
+                     '.386', '.386P', '.8086', '.8087', '.287', '.387', '.CONST', '.FARDATA', '.FARDATA?'}
 LABEL_OPERAND = re.compile(r'(?:(?:OFFSET|SEG)\s+)?[A-Za-z_?$@.][A-Za-z0-9_?$@.]*\Z', re.I)
 FLAG_RE = re.compile(r'/[A-Za-z0-9_:+.-]+\Z')
 
@@ -132,12 +134,16 @@ def check_asm_source(source):
         # Data declarations and ordinary directives often have a leading name
         # without a colon (``jump_table DW ...``, ``_f PROC FAR``).
         value = line
-        label = re.match(r'^([A-Za-z_?$@.][A-Za-z0-9_?$@.]*)\s+(.*)$', value)
-        if label:
-            rest = label.group(2).lstrip()
-            following = rest.split(None, 1)[0].upper() if rest else ''
-            if following in DATA_DIRECTIVES or following in DIRECTIVES or following in INSTRUCTIONS:
-                value = rest
+        leading, _ = _line_opcode(value)
+        # Do not interpret instruction operands (for example, ``jmp word ptr
+        # [bx]``) as an uncolonized label followed by a WORD declaration.
+        if leading not in INSTRUCTIONS and leading not in DIRECTIVES and leading not in DATA_DIRECTIVES and leading not in DOTTED_DIRECTIVES:
+            label = re.match(r'^([A-Za-z_?$@.][A-Za-z0-9_?$@.]*)\s+(.*)$', value)
+            if label:
+                rest = label.group(2).lstrip()
+                following = rest.split(None, 1)[0].upper() if rest else ''
+                if following in DATA_DIRECTIVES or following in DIRECTIVES or following in INSTRUCTIONS:
+                    value = rest
         opcode, operands = _line_opcode(value)
         if opcode in DATA_DIRECTIVES and active_code:
             if opcode in ('DB', 'BYTE'):
@@ -157,7 +163,7 @@ def check_asm_source(source):
             raise FormatError('assembler comment blocks are refused (line %d)' % number)
         normalized_opcode = opcode.lstrip('.')
         if normalized_opcode and normalized_opcode not in DIRECTIVES and normalized_opcode not in DATA_DIRECTIVES and \
-                opcode not in INSTRUCTIONS and not opcode.startswith('.'):
+                opcode not in INSTRUCTIONS and opcode not in DOTTED_DIRECTIVES:
             # Unknown tokens in instruction position can be undocumented
             # pseudo-ops; let only real instruction mnemonics or ordinary
             # directives reach the selected assembler.
@@ -171,11 +177,11 @@ def _catalog():
     lock_path = ROOT / 'layout/toolchain.json'
     lock = read_json(lock_path)
     if lock.get('assemblers'):
-        return lock, lock['assemblers'], lock.get('files', {}), 'layout/toolchain.json'
+        return lock, lock['assemblers'], lock.get('files', {}), lock_path
     if not PROPOSAL.exists():
         raise FormatError('no reviewed assembler entries in layout/toolchain.json or worker proposal')
     proposal = read_json(PROPOSAL)
-    return lock, proposal.get('assemblers', {}), proposal.get('files', {}), 'build/workers/masm/toolchain-lock-proposal.json'
+    return lock, proposal.get('assemblers', {}), proposal.get('files', {}), PROPOSAL
 
 
 def versions():
@@ -237,7 +243,7 @@ def _dosbox_assemble(spec, flags, work):
     shutil.copytree(ROOT / WIN31, host)
     batch = [
         '@echo off', 'set PATH=T:\\;C:\\WINDOWS', 'set TMP=W:\\', 'set TEMP=W:\\',
-        'W:', 'T:\\ML.EXE ' + ' '.join(flags + ['/c', '/FoW:\\OUTPUT.OBJ', 'W:\\INPUT.ASM']) + ' > W:\\LOG.TXT',
+        'W:', 'T:\\ML.EXE ' + ' '.join(flags + ['/c', '/FoOUTPUT.OBJ', 'INPUT.ASM']) + ' > LOG.TXT',
         'if errorlevel 1 echo failed > W:\\FAIL.TXT', 'echo done > W:\\DONE.TXT', 'exit',
     ]
     (work / 'GO.BAT').write_text('\n'.join(batch) + '\n', encoding='ascii')
@@ -264,7 +270,7 @@ def _dosbox_assemble(spec, flags, work):
         process.kill()
     process.wait()
     done = (work / 'DONE.TXT').exists()
-    failed = (work / 'FAIL.TXT').exists()
+    failed = (work / 'FAIL.TXT').exists() and (work / 'FAIL.TXT').stat().st_size > 0
     log = (work / 'LOG.TXT').read_bytes() if (work / 'LOG.TXT').exists() else b''
     receipt = dict(command=command, compile_command=' '.join(batch[5]), configuration=str(conf_path.relative_to(ROOT).as_posix()),
                    configuration_identity=identity(conf_path), host_tree_identity=_tree_identity(str(host.relative_to(ROOT))),
@@ -340,11 +346,12 @@ def assemble_source(source, version, flags=None):
             raise FormatError('unsupported MASM runner: ' + spec['runner'])
 
         obj = work / 'OUTPUT.OBJ'
-        receipt = dict(source=source_name, source_identity=identity(source_path), assembler=version,
+        receipt = dict(source=source_name, source_identity=identity(source_path),
+                       source_snapshot=relative(work / 'INPUT.ASM'), assembler=version,
                        assembler_version=spec['display_version'], flags=flags,
                        toolchain_lock_sha256=sha256((ROOT / 'layout/toolchain.json').read_bytes()),
                        assembler_catalog=catalog_path.relative_to(ROOT).as_posix(),
-                       assembler_catalog_identity=identity(catalog_path), tool_identities=tool_identities,
+                       assembler_catalog_identity=identity(catalog_path), assembler_spec=spec, tool_identities=tool_identities,
                        runner=spec['runner'], runner_identities=runner_identities, **run,
                        object=obj.relative_to(ROOT).as_posix(), fixture_dependencies=[])
         if run['exit_code'] != 0 or not obj.is_file() or not obj.stat().st_size:
@@ -373,6 +380,8 @@ def validate_receipt(receipt):
         raise FormatError('unsuccessful or unsupported assembler receipt')
     if identity(ROOT / receipt['source']) != receipt['source_identity']:
         raise FormatError('stale assembly source receipt')
+    if identity(ROOT / receipt['source_snapshot']) != receipt.get('source_snapshot_identity'):
+        raise FormatError('stale assembler input snapshot')
     if identity(ROOT / receipt['object']) != receipt['object_identity']:
         raise FormatError('stale assembler object receipt')
     lock, catalog, proposal_files, catalog_path = _catalog()
@@ -387,11 +396,16 @@ def validate_receipt(receipt):
         actual = _tree_identity(path) if path == WIN31 else _verify_path(path, _expected_identity(path, lock, proposal_files), 'assembler runner')
         if actual != expected:
             raise FormatError('assembler runner differs from receipt: ' + path)
-    if receipt.get('runner') != spec['runner'] or receipt.get('assembler_version') != spec['display_version']:
+    if receipt.get('runner') != spec['runner'] or receipt.get('assembler_version') != spec['display_version'] or receipt.get('assembler_spec') != spec:
         raise FormatError('assembler recipe differs from the current catalog')
     catalog_digest = receipt.get('assembler_catalog_identity')
-    if catalog_digest and identity(ROOT / receipt['assembler_catalog']) != catalog_digest:
-        raise FormatError('stale assembler catalog receipt')
+    catalog_file = ROOT / receipt.get('assembler_catalog', '')
+    if catalog_digest and catalog_file.exists() and identity(catalog_file) != catalog_digest:
+        # A proposed record can be retired after the supervisor integrates its
+        # exact spec into the canonical lock. The assembler_spec check above
+        # preserves the same binding without requiring ignored scratch files.
+        if receipt.get('assembler_catalog') != 'build/workers/masm/toolchain-lock-proposal.json' or not lock.get('assemblers', {}).get(version):
+            raise FormatError('stale assembler catalog receipt')
     if spec['runner'] == 'dosbox-x-win31' and receipt.get('configuration_identity'):
         if identity(ROOT / receipt['configuration']) != receipt['configuration_identity']:
             raise FormatError('stale DOSBox-X assembler configuration')

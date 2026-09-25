@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "question": "Which authentic MASM version and options produced the reviewed GAME_ASM routines in segment 4 (_TEXT)?",
+  "conclusion": "NOT_UNIQUELY_IDENTIFIED_FROM_AVAILABLE_EXECUTABLE_EVIDENCE",
+  "reason": [
+    "The supplied executable and MAPSYM data preserve linked bytes and loader relocations, not the original assembler OMF records.",
+    "A synthetic unmarked forward-jump probe separates MASM 5.x from the tested MASM 6.x tools, but the corresponding EB displacement followed by 90h signature occurs zero times in the 32 reviewed GAME_ASM extents.",
+    "All seven authentic assemblers can independently produce the same strict _exchange complete member from readable source, so that member does not discriminate versions. Explicit SHORT qualifiers and source-level layout can also remove the probe distinction."
+  ],
+  "probe": {
+    "source": "build/workers/masm/jump.asm",
+    "shape": "mov ax,1; unmarked forward JMP; explicit NOP; forward label; RET",
+    "result_interpretation": "The 5.x tools preserve the original forward-jump span with EB 02 90 followed by the explicit 90. The tested 6.x tools shorten the jump and emit only the explicit 90.",
+    "segment_bytes_hex": {
+      "masm500": "b80100eb029090c3",
+      "masm510": "b80100eb029090c3",
+      "masm51a": "b80100eb029090c3",
+      "masm600": "b80100eb0190c3",
+      "masm600b": "b80100eb0190c3",
+      "masm611": "b80100eb0190c3",
+      "masm614": "b80100eb0190c3"
+    },
+    "runners": {
+      "masm500_masm510_masm51a_masm600_masm600b": "Pinned MS-DOS Player",
+      "masm611": "DOSBox-X with the provisioned Windows 3.1 runtime for its DOS extender",
+      "masm614": "Native Windows x86 execution; this update is a Win32 ML executable, not a DOS executable"
+    }
+  },
+  "original_byte_scan": {
+    "image": "fixtures/SIMANTW.EXE",
+    "classification": "evidence/experiments/text-ownership/classification.json",
+    "segment": 4,
+    "signature": "EB xx 90 where xx is a positive signed short displacement",
+    "segment_wide_counts": {
+      "GAME_C": 33,
+      "UNKNOWN": 13,
+      "UNCLASSIFIED": 19,
+      "GAME_ASM": 0
+    },
+    "reviewed_game_asm_symbols": 32,
+    "interpretation": "This signature is present elsewhere in _TEXT, but none of its occurrences falls in a reviewed GAME_ASM extent; it cannot identify the assembler used for those routines."
+  },
+  "strict_member_proof": {
+    "symbol": "_exchange",
+    "source": "build/workers/masm/exchange/exchange.asm",
+    "search_report": "build/search/exchange/20260925T232609-86480/results.json",
+    "result": "CONFIRMED_MEMBER",
+    "assembler": "masm500",
+    "flags": ["/MX"],
+    "placement": {"segment": 4, "offset": 28165, "size": 30},
+    "literal_bytes_equal": "30/30",
+    "semantic_fixups_equal": "0/0",
+    "omf_object": {
+      "size": 108,
+      "sha256": "6504e4d57fe2a89bb2bc835d2fb9b2b7dea6c529f9311a8ec85432f1b62ec3bd"
+    },
+    "cross_version_observation": "The same readable member source was also a strict complete-member match with MASM 5.1, 5.1A, 6.0, 6.0B, 6.11, and 6.14. MASM 5.x used /MX to preserve the lowercase public name; the tested 6.x commands used no additional flags."
+  },
+  "scope_limit": "No historical source object or assembler command record was supplied. The evidence supports a proven assembler lane and a bounded version-family discriminator, not a unique historical version/options claim."
+}
