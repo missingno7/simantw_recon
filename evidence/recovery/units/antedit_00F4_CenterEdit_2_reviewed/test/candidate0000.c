@@ -497,7 +497,7 @@ void far ResetEditScrollRange(void)
 
 static int near ScrollEditBy(int dx, int dy)
 {
-    int unused[3];
+    int zeroResult[3];
     int yStep;
     int xStep;
     register int i;
@@ -507,8 +507,10 @@ static int near ScrollEditBy(int dx, int dy)
     unsigned long error;
 
     if (dx == 0) {
-        if (dy == 0)
-            return 0;
+        if (dy == 0) {
+            zeroResult[0] = 0;
+            return zeroResult[0];
+        }
     }
 
     xDistance = dx;

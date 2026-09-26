@@ -34,6 +34,10 @@ extern void far pascal InvalidateRect(int window, struct WinRect far *rect, int 
 extern void far pascal UpdateWindow(int window);
 extern void far DrawMapData(void);
 
+void far drawmap_pool_scaffold(void);
+#pragma alloc_text(POOLSTUB_TEXT, drawmap_pool_scaffold)
+void far drawmap_pool_scaffold(void) { }
+
 void far DrawMap(void)
 {
     struct WinRect rect;

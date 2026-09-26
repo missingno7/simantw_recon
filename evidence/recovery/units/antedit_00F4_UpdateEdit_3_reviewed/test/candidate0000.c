@@ -36,6 +36,10 @@ extern void far ScrollEditArrays(int dx, int dy);
 extern void far UpdateEditWindow(void);
 extern void far UpdateEditWindow(void);
 
+void far updateedit_pool_scaffold(void);
+#pragma alloc_text(POOLSTUB_TEXT, updateedit_pool_scaffold)
+void far updateedit_pool_scaffold(void) { }
+
 void far UpdateEditIfBufInvalid(void);
 extern void far ResetEditScrollRange(int window);
 extern void far DrawEditGraphs(void);
