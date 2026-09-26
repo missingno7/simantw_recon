@@ -20,7 +20,7 @@ void far * far font_ReadFont(char far *filename)
     struct Font far *font;
     int far *word;
     void far *stream;
-    int i, tableCount, value, imageSize;
+    int i, tableCount, imageSize;
 
     font = (struct Font far *)mem_malloc(0x2a, "FontHeader");
     if (font == 0)
@@ -34,9 +34,8 @@ void far * far font_ReadFont(char far *filename)
 
     word = font->header;
     fread(word, 0x0d, 2, stream);
-    for (i = 13; i != 0; --i, ++word) {
-        value = *word;
-        *word = (value << 8) + ((unsigned int)value >> 8);
+    for (i = 0; i < 13; ++i, ++word) {
+        *word = (unsigned char)(*word >> 8) | ((unsigned int)(unsigned char)*word << 8);
     }
 
     if (font->header[7] > buffer_max_height) {
@@ -44,9 +43,9 @@ void far * far font_ReadFont(char far *filename)
         return 0;
     }
 
+    tableCount = font->header[2] - font->header[1] + 3;
     imageSize = font->header[7] * font->header[12] * 2;
     font->image = (unsigned int far *)mem_malloc(imageSize, "FONTIMAGE");
-    tableCount = font->header[2] - font->header[1] + 3;
     font->locTable = (unsigned int far *)mem_malloc(tableCount * 2,
                                                      "locTable");
     font->owTable = (unsigned int far *)mem_malloc(tableCount * 2,
@@ -56,17 +55,15 @@ void far * far font_ReadFont(char far *filename)
     fread(font->locTable, 2, tableCount, stream);
     if (tableCount > 0) {
         word = (int far *)font->locTable;
-        for (i = tableCount; i != 0; --i, ++word) {
-            value = *word;
-            *word = (value << 8) + ((unsigned int)value >> 8);
+        for (i = 0; i < tableCount; ++i, ++word) {
+            *word = ((*word & 0xff) << 8) + ((unsigned int)*word >> 8);
         }
     }
     fread(font->owTable, 2, tableCount, stream);
     if (tableCount > 0) {
         word = (int far *)font->owTable;
-        for (i = tableCount; i != 0; --i, ++word) {
-            value = *word;
-            *word = (value << 8) + ((unsigned int)value >> 8);
+        for (i = 0; i < tableCount; ++i, ++word) {
+            *word = ((*word & 0xff) << 8) + ((unsigned int)*word >> 8);
         }
     }
     fclose(stream);

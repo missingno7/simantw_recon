@@ -55,33 +55,6 @@ extern void far myBeginSound(unsigned int first,
 
 void far vocMciClose(unsigned int buffer1, unsigned int buffer2);
 int CheckMMWave(void);
-int far IsDLLAvail(char far *name)
-{
-    char buf[0x100];
-    char far *p;
-
-    GetWindowsDirectory(buf, 0x100);
-    if (buf[strlen(buf) - 1] != 0x5c)
-        lstrcat(buf, "\\");
-    lstrcat(buf, name);
-    if (access(buf, 0) == 0)
-        return 1;
-
-    GetSystemDirectory(buf, 0x100);
-    if (buf[strlen(buf) - 1] != 0x5c)
-        lstrcat(buf, "\\");
-    lstrcat(buf, name);
-    if (access(buf, 0) == 0)
-        return 1;
-
-    GetModuleFileName(hInst, buf, 0x100);
-    p = strrchr(buf, '\\');
-    *p = 0;
-    lstrcat(buf, "\\");
-    lstrcat(buf, name);
-    return (access(buf, 0) == 0) ? 1 : 0;
-}
-
 int snd_IsSongDone(void);
 void far poolstub_sound_before_voc(void);
 void far poolstub_sound_after_voc(void);
