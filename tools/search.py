@@ -139,7 +139,7 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
     return report
 
 
-def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None):
+def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None, frame=False):
     from promote import check_source, function_flags
     if not files and not template and note:
         # A finding without a new candidate: record it durably, compile nothing.
@@ -197,6 +197,13 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
                             aligned_asm=diagnostic.get('aligned_asm', []) if full else focused_alignment(diagnostic.get('aligned_asm', []))),
                   exact=exact, draft_ledger='improved' if improved else 'unchanged',
                   report=relative(out / 'results.json'), seconds=round(time.perf_counter() - began, 2))
+    if frame and best['comparison'].get('result') != 'COMPILE_FAILED' and best['receipt'].get('object'):
+        # Diagnostic only: named-local homes from a /Zi recompile (code must be identical).
+        from common import cards
+        from frame_map import frame_report
+        card = next(c for c in cards() if c['symbol'] == symbol)
+        result['best']['frame'] = frame_report(symbol, relative(out / ('candidate%04d.c' % best['candidate'])), flags,
+                                               ROOT / best['receipt']['object'], card['disassembly'])
     if warnings:
         result['source_warnings'] = warnings
     if admitted:
@@ -222,10 +229,11 @@ def main():
     ap.add_argument('--full', action='store_true', help='complete ranking and aligned assembly')
     ap.add_argument('--assembler', default='masm600', help='authentic MASM version for .asm candidates')
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
+    ap.add_argument('--frame', action='store_true', help='diagnostic frame map of the best candidate: named-local BP homes/registers (CodeView via /Zi) versus the target frame')
     args = ap.parse_args()
     from contextlib import redirect_stdout
     with redirect_stdout(sys.stderr):
-        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag)
+        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag, args.frame)
     print(json.dumps(result, indent=2))
 
 
