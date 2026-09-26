@@ -57,6 +57,56 @@ def summary_row(row, label, out):
                 diff=relative(out / ('candidate%04d.diff.txt' % row['candidate'])) if d else None)
 
 
+def output_history(symbol):
+    """Earlier searches of SYMBOL: first input that produced each object, and best opcode score per round."""
+    log = ROOT / 'build/search' / symbol.lstrip('_') / 'history.jsonl'
+    seen, bests = {}, []
+    if not log.is_file():
+        return seen, bests
+    for line in log.read_text(encoding='utf-8').splitlines():
+        try:
+            rows = json.loads(line).get('rows') or []
+        except ValueError:
+            continue
+        scores = []
+        for row in rows:
+            if row.get('object'):
+                seen.setdefault(row['object'], row['input'])
+            try:
+                scores.append(int(str(row.get('opcodes')).split('/')[0]))
+            except ValueError:
+                pass
+        if scores:
+            bests.append(max(scores))
+    return seen, bests
+
+
+def effective_output(rows, seen, bests):
+    """Group candidates by produced object: edits that do not reach the compiler's output are visible at once."""
+    first, repeated = dict(seen), {}
+    for _, s in rows:
+        if s.get('object') and s['object'] in first:
+            earlier = first[s['object']]
+            repeated[s['input']] = 'an earlier run of this file' if earlier == s['input'] else earlier
+        elif s.get('object'):
+            first[s['object']] = s['input']
+    scores = []
+    for _, s in rows:
+        try:
+            scores.append(int(str(s.get('opcodes')).split('/')[0]))
+        except ValueError:
+            pass
+    history = bests + ([max(scores)] if scores else [])
+    flat = 0
+    if history:
+        top = max(history)
+        flat = len(history) - 1 - min(i for i, v in enumerate(history) if v == top)
+    return dict(distinct_outputs=len({s['object'] for _, s in rows if s.get('object')}), candidates=len(rows),
+                same_output_as=repeated, rounds_since_best_opcodes_improved=flat,
+                hint='candidates listed in same_output_as compiled to an object already produced by the named earlier input; '
+                     'their source differences never reach the output' if repeated else None)
+
+
 def search_asm(symbol, files, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None):
     import assembler
     import mapsym
@@ -173,6 +223,7 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
             except FormatError as exc:
                 warnings[name] = 'promotion would reject this source: ' + str(exc)
         spec = dict(symbol=symbol, compiler='msc700', flags=flags, publics=[symbol], sources=sources, max_candidates=len(sources))
+    seen, bests = output_history(symbol)
     report = run(spec, relative(out), cache=True)
     rows = []
     for row in report['results']:
@@ -195,7 +246,7 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
                             unresolved_member_obligations=diagnostic.get('unresolved_member_obligations'),
                             categories=diagnostic.get('categories'),
                             aligned_asm=diagnostic.get('aligned_asm', []) if full else focused_alignment(diagnostic.get('aligned_asm', []))),
-                  exact=exact, draft_ledger='improved' if improved else 'unchanged',
+                  exact=exact, effective_output=effective_output(rows, seen, bests), draft_ledger='improved' if improved else 'unchanged',
                   report=relative(out / 'results.json'), seconds=round(time.perf_counter() - began, 2))
     if frame and best['comparison'].get('result') != 'COMPILE_FAILED' and best['receipt'].get('object'):
         # Diagnostic only: named-local homes from a /Zi recompile (code must be identical).

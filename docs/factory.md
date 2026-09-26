@@ -54,7 +54,7 @@ Work in D:\Prog\simantw_recon; run every command from there with python. Read AG
 docs/factory.md and docs/grinder-lessons.md. Targets: <SYMBOLS> (or choose from
 `python tools/context.py --list --open`). Use only build/workers/<NAME>/ for scratch files.
 Per target: `context.py SYMBOL`, write readable C with a semantic block comment, then run
-`search.py SYMBOL files...` (add `--frame` for the CodeView frame map when stack homes differ) for as many rounds as are useful, reading the aligned diff and
+`search.py SYMBOL files...` (add `--frame` for the CodeView frame map when stack homes differ; `effective_output` in the result names candidates whose object repeats an earlier one) for as many rounds as are useful, reading the aligned diff and
 adapting each time. Write sources as plain ASCII without a UTF-8 BOM (MSC 7.00 rejects
 `0xEF 0xBB 0xBF`; PowerShell Set-Content/Out-File add one). There is no attempt limit. On a strict match run `promote.py SYMBOL file`. If the
 body is exact but only private data/selector placement fails, say so (unit lane). Stop at a

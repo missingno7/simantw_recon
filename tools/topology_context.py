@@ -21,10 +21,21 @@ def ds_states(instructions):
     return states
 
 
+def inside_public(address,starts,names,reach=64):
+    """Nearest preceding DGROUP public within `reach` bytes: an element or field of it, or a private static placed after it."""
+    import bisect
+    i=bisect.bisect_right(starts,address)-1
+    if i<0 or address-starts[i]>reach:return None
+    return dict(names=names[starts[i]],offset=address-starts[i],
+                hint='unnamed word %d bytes into a named public; check admitted sources that index it (e.g. name[%d] for a word array) before inventing a private static'
+                     %(address-starts[i],(address-starts[i])//2))
+
+
 def direct_data_bindings(card,symbols,image):
     names={}
     for symbol in symbols['segments'][9]['symbols']:
         names.setdefault(symbol['offset'],[]).append(symbol['name'])
+    starts=sorted(names)
     selectors={site:r['target'] for r in image['segments'][9]['relocations']
                if r['source_type']==2 for site in r['sites']}
     result=[]
@@ -42,6 +53,7 @@ def direct_data_bindings(card,symbols,image):
             result.append(dict(instruction=ins.address,operand=ins.op_str,
                 observed_displacement=address,exact_mapsym_names=names.get(address,[]) if known else [],
                 possible_dgroup_names=[] if known else names.get(address,[]),
+                inside_public=inside_public(address,starts,names) if not names.get(address) else None,
                 selector_loader_target=selectors.get(address) if known else None,
                 ds_state=states[ins.address],
                 frame_assumption='Name lookup assumes DS=DGROUP only along the uninterrupted entry path; UNKNOWN after DS writes, calls or joins',
