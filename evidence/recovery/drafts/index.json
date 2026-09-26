@@ -1366,6 +1366,11 @@
         "text": "Best remains the prior draft class: 151/158 opcodes, 460 bytes vs 454, exact_body false. Target stores X in DI at BP-0xe and interval mask in SI at BP-0xa, with count at BP-8, then enters the body; draft stores X on stack and keeps interval in DI. The target string push is literal 0x22f6 while the draft uses a _DATA relocation. Tried parameter/register qualifiers, coordinate copies, local type/order/register/volatile variants, and while/do/for/goto tail-loop forms (29 full candidates across six rounds plus probes); no better allocation or exact body. Next idea: use source evidence from archived/adjacent routines for the local lifetime/order around X and interval that holds X in DI and spills the interval to BP-0xa, then revisit translation-unit string placement.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T09:47:43.835767+00:00"
+      },
+      {
+        "text": "Regalloc model trial: copying active X into a register local and ordering interval before X yields 149/158 opcodes and 462/454 bytes, below the preserved 151/158 draft. The target keeps interval in SI and active X in DI; this source shape does not reproduce it. See evidence/experiments/regalloc/results.json, target run 20260926T110248-67208.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:19.947516+00:00"
       }
     ]
   },
@@ -6467,6 +6472,11 @@
         "text": "Best remains 96/104 opcodes, 324/320 bytes, 14/35 fixups. First structural difference is target +0x8A: mov [bp-4],DI and mov [bp-2],SI after SetPause(1), ENTER 0x18, event at bp-0x18; best uses ENTER 0x16, omits delayed homes, event at bp-0x16. 24 full-source variants in five rounds plus five reduced probes covered declaration order/scope, widths/narrowing, init order, parameter copies, named/indexed pointer forms, branch polarity/if/else/goto, loop forms, event layout, and register/volatile forms. No body-exact result. Next useful evidence is the original lifetime/address/alias reason for those two homes; avoid dummy stores.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T09:44:14.453033+00:00"
+      },
+      {
+        "text": "Regalloc model trial: swapping declaration order to choice then oldPause produces the same 96/104 opcodes, 324/320 bytes, and 10 stack-local differences. Target frame is 0x18 and stores DI/SI to bp-4/bp-2 after SetPause; simple far-call, setjmp, volatile, and address-taking probes did not reproduce this delayed home. See evidence/experiments/regalloc/results.json, target run 20260926T110248-70564.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:20.013042+00:00"
       }
     ]
   },
@@ -7368,7 +7378,14 @@
         "/Oeglw",
         "/NTSIMANT1_MODULE"
       ]
-    }
+    },
+    "notes": [
+      {
+        "text": "Concrete source dependency: target reads the near DGROUP word at 0xAC98 in two food/health calculations; context direct_data_bindings gives no MAPSYM/public name or possible object, while the preserved C invents extern BdigT. The packet-backed candidates vary by declaration order, initial dir lifetime, and block scope (round 1, 4 candidates) but collapse to 96/257 opcodes, target ENTER 0x0A versus candidate 0x08, and unresolved selector/data bindings. Stop until the source identity/owning declaration for DGROUP 0xAC98 is established; next inspect MAPSYM-neighbor or sibling references without inventing a public.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:19:10.280055+00:00"
+      }
+    ]
   },
   "_DoNestingR": {
     "legacy_jobs": [
@@ -9918,6 +9935,16 @@
         "text": "Thirty target-directed C variants plus four compiler probes completed; no exact body. Best is the volatile far-pointee draft at 158/161 opcodes, 515/507 bytes, 15/68 fixups. Target ENTER is 0x10; candidate ENTER is 0x14. Target stores the yardBalloonHandle far-slot address at BP-0xC/-0xA, while candidate uses BP-0x14/-0x12; the balloon slot at BP-0x10/-0xE does align. At +0x19A target reloads yardBalloonPtr with LES BX, ES:[0xA072], then reads [BX+0xA]. Declaring yardBalloonPtr as a volatile far pointee object made the height-field read align, but candidate uses the mem_Lock return pointer directly and still omits that LES reload. Scalar/array/struct pointer homes, scope/order, widths, register hints, table control flow and near/far/volatile pointer-object qualifiers otherwise did not improve the best. Private _DATA/CONST and selector fixups remain unresolved. Next use antedit:A4BC MAPSYM and translation-unit selector/data ordering evidence to reproduce the segment-9 yardBalloonPtr access and four-byte frame shift; isolated spelling changes are exhausted.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T08:22:20.721630+00:00"
+      },
+      {
+        "text": "Regalloc model trial: volatile far-pointer objects create LES-reloaded stack homes in exact-profile probes, but the full direct-local candidate remains 149/161 (517/507 bytes) and the struct-member/record qualifiers are 149/161 (519/507). Target pointer home at bp-c still differs from candidate bp-a; volatile struct qualifiers add frame/stack residue rather than fixing layout. See evidence/experiments/regalloc/results.json, runs 20260926T110248-124148 and 20260926T111315-62620.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:20.063944+00:00"
+      },
+      {
+        "text": "Follow-up: making the original FarSlots pointer members volatile, or qualifying the local struct, compiles to the same 149/161, 519/507 result (object hash identical). ENTER grows to 0x16 versus target 0x10; the first differing home is target [bp-4] versus candidate [bp-0xc]. The volatile pointer rule is confirmed in isolation but does not recover this original struct layout.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:15:19.356847+00:00"
       }
     ]
   },
@@ -11873,20 +11900,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/Feedback/a2bcb88fe11a.c",
-      "sha256": "a2bcb88fe11a0f2396c98602fa2edded96c505e5af4d1f8f5d03a429826f6899",
+      "source": "evidence/recovery/drafts/Feedback/fb362deacf42.c",
+      "sha256": "fb362deacf42e8f74fbc66d12917ac90f44f8826c6cba7dab200209608df392c",
       "key": [
         false,
         false,
-        80,
-        -31
+        82,
+        -34
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/Feedback-c97a1d616e/attempt04/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 80,
+      "opcode_matches": 82,
       "opcode_total": 150,
-      "candidate_bytes": 422,
+      "candidate_bytes": 419,
       "target_bytes": 453,
       "flags": [
         "/AL",
@@ -11894,7 +11920,9 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/Feedback/20260926T111925-56868/results.json",
+      "recorded": "2026-09-26T11:19:28.243361+00:00"
     }
   },
   "_FightBalloons": {
@@ -12302,20 +12330,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/FindEggAt/1169d682111a.c",
-      "sha256": "1169d682111a03ea2f56351a2578386599f306c27f7bf6920ee2d2ace6540464",
+      "source": "evidence/recovery/drafts/FindEggAt/ab470521089d.c",
+      "sha256": "ab470521089d90d2442d3c19d8075aa7ea5fae7e00f705b97599688bc72954b7",
       "key": [
         false,
         false,
-        37,
-        -401
+        92,
+        -72
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/FindEggAt-97670f4b6e/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 37,
+      "opcode_matches": 92,
       "opcode_total": 199,
-      "candidate_bytes": 98,
+      "candidate_bytes": 427,
       "target_bytes": 499,
       "flags": [
         "/AL",
@@ -12323,7 +12350,9 @@
         "/Gs",
         "/Oeglw",
         "/NTSIMONE_MODULE"
-      ]
+      ],
+      "origin": "build/search/FindEggAt/20260926T111925-116824/results.json",
+      "recorded": "2026-09-26T11:19:28.396363+00:00"
     }
   },
   "_FindInAList": {
@@ -12534,20 +12563,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/FindLifeAt/7a0b9b147919.c",
-      "sha256": "7a0b9b147919addadbf41b220c2514ec7d7b3f5e11d4f8a350d3b5d3a35b1cfe",
+      "source": "evidence/recovery/drafts/FindLifeAt/e484f4c072e5.c",
+      "sha256": "e484f4c072e5445f8c10f1419676ab15136497a3d86e528ed323eeeb067fb776",
       "key": [
         false,
         false,
-        37,
-        -375
+        128,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/FindLifeAt-498485e7de/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 37,
+      "opcode_matches": 128,
       "opcode_total": 189,
-      "candidate_bytes": 98,
+      "candidate_bytes": 473,
       "target_bytes": 473,
       "flags": [
         "/AL",
@@ -12555,7 +12583,9 @@
         "/Gs",
         "/Oeglw",
         "/NTSIMONE_MODULE"
-      ]
+      ],
+      "origin": "build/search/FindLifeAt/20260926T111916-174612/results.json",
+      "recorded": "2026-09-26T11:19:17.677963+00:00"
     }
   },
   "_FindLifeIndex": {
@@ -15013,6 +15043,11 @@
         "text": "No strict match after ten six-variant rounds. Best aligned candidate reached 87/94 opcodes and 260/256 bytes; first body residue is target MOV DI,0xffff vs candidate storing -1 to [BP-0xe], then local homes differ. Tried corrected helper signatures/argument order, declaration/register permutations, shared and early returns, loop and pointer forms, threshold branch forms, combined life/clear tests, and plane copy. Next investigate the original local declaration/lifetime idiom that keeps best in DI and matches target homes, plus exact DGROUP/selector access for direction and goal globals.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T10:31:47.320220+00:00"
+      },
+      {
+        "text": "Regalloc model trial: two declaration-order variants added register int dir and best; both stay NO_COMPLETE_MATCH at 87/94 opcodes, 260/256 bytes, with four register-only and five stack-local differences. Target starts DI=-1 then homes it after GetDis; declaration swaps do not select that schedule. See evidence/experiments/regalloc/results.json, target run 20260926T110248-33240.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:19.712521+00:00"
       }
     ]
   },
@@ -15030,18 +15065,17 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/GetMyDir/48411ec222ad.c",
-      "sha256": "48411ec222adcbc979864b38209122a9dc8608b291779cb407b39548b35a7bd8",
+      "source": "evidence/recovery/drafts/GetMyDir/e5b1394574cc.c",
+      "sha256": "e5b1394574cc02d0481f211bd1ca0013111f715ac6be9a115337724efabf7bf6",
       "key": [
         false,
         false,
-        66,
+        68,
         -190
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/GetMyDir-6dd9f063f0/attempt02/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 66,
+      "opcode_matches": 68,
       "opcode_total": 296,
       "candidate_bytes": 598,
       "target_bytes": 788,
@@ -15051,7 +15085,9 @@
         "/Gs",
         "/Oelw",
         "/NTSIMANT1_MODULE"
-      ]
+      ],
+      "origin": "build/search/GetMyDir/20260926T111507-105976/results.json",
+      "recorded": "2026-09-26T11:15:09.669397+00:00"
     }
   },
   "_GetMyDis": {
@@ -16867,6 +16903,11 @@
         "text": "After 20 fresh full-function variants in five batches, plus four initial and four based-segment probes, best remains 121/123 opcodes, 353/347 code bytes, and 14/44 fixups; no body-exact candidate. First body residue: target ENTER 12h, far pointer home [bp-10]/[bp-0e], and LES reloads at +100/+13d; the best draft uses ENTER 0Ch and folds the pointer address. Target also uses [bp-12] for the staged second random result while draft uses [bp-0c]. Tried declaration/scope/order, pointer initializers and const/volatile/huge/far/based forms, pointer-to-pointer address-taking, signed/unsigned/byte widths, named random temporaries, pure operand order, if/else/goto, while/for, parameter copy, and register locals. The binding remains unresolved: slot C582 and offset 8A88 address segment 8 and the packet names Dx8, while the preserved source says LionIndex; both external-name and based probes emitted offset fixups the target does not have. Next evidence needed is a source-backed identity/declaration for the object at that selector/offset and why its pointer address remains materialized across calls. Private CONST ordering is separate simtwo:3EF8 unit work if the body converges.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T08:16:06.641435+00:00"
+      },
+      {
+        "text": "Regalloc model trial: int far * volatile pli forces a four-byte frame home and LES reloads, as predicted by the controlled pointer probe, but this full candidate is 105/136 opcodes and 399/347 bytes versus the preserved 121/123 near miss. Pointer allocation is isolated; body/control-flow residue dominates this source. See evidence/experiments/regalloc/results.json, target run 20260926T110248-178924 and pointer run 20260926T105748-127952.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:19.834504+00:00"
       }
     ]
   },
@@ -23667,19 +23708,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/PictureDialog/8837c8d6bf3a.c",
-      "sha256": "8837c8d6bf3af4e4a3a2372fa57038b03315478ab28d52e85a53ba89fd20f9fe",
+      "source": "evidence/recovery/drafts/PictureDialog/7390f2ae8392.c",
+      "sha256": "7390f2ae83927eee217dea83567792b46d26e4d9e5c39e84c8b99f521d0b8d01",
       "key": [
         false,
         false,
-        166,
-        -28
+        167,
+        -20
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 166,
+      "opcode_matches": 167,
       "opcode_total": 186,
-      "candidate_bytes": 507,
+      "candidate_bytes": 515,
       "target_bytes": 535,
       "flags": [
         "/AL",
@@ -23688,8 +23729,8 @@
         "/Oelw",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/PictureDialog/20260926T110541-64620/results.json",
-      "recorded": "2026-09-26T11:05:43.037127+00:00"
+      "origin": "build/search/PictureDialog/20260926T111448-162604/results.json",
+      "recorded": "2026-09-26T11:14:50.205151+00:00"
     },
     "notes": [
       {
@@ -24285,28 +24326,29 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/ProcCasteEvent/365f8a14c31a.c",
-      "sha256": "365f8a14c31ac7f4b25af7f3e3d5d67ebdf9c8b4014b9d823a21e015438206c3",
+      "source": "evidence/recovery/drafts/ProcCasteEvent/9e11855d1b80.c",
+      "sha256": "9e11855d1b80ba618dda33f3e5d038a8e0ed12871bf6dd2238cc7b922f0bca94",
       "key": [
         false,
         false,
-        294,
-        -34
+        296,
+        -36
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/ProcCasteEvent-a435278e8e/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 294,
+      "opcode_matches": 296,
       "opcode_total": 346,
-      "candidate_bytes": 915,
+      "candidate_bytes": 917,
       "target_bytes": 881,
       "flags": [
         "/AL",
         "/G2",
         "/Gs",
-        "/Oelw",
+        "/Oeglw",
         "/NTSIMANT_MODULE"
-      ]
+      ],
+      "origin": "build/search/ProcCasteEvent/20260926T111925-166504/results.json",
+      "recorded": "2026-09-26T11:19:28.132313+00:00"
     },
     "notes": [
       {
@@ -25290,6 +25332,11 @@
         "text": "After 20 fresh full-function variants in five batches, plus four small compiler probes, best remains the switch candidate at 114/117 opcodes, 329/329 code bytes, and 18/35 fixups; no body-exact candidate. First body residue at +C4: target MOV DX,[DGROUP:0880]; OR DX,DX; JNE, while direct forms use CMP [0880],0 and switch forms use MOV/OR AX. Truthiness, signed/unsigned/char/long snapshots, 32-bit shift/product/promotion, wide named temporaries, pointer-indirect and volatile loads, register locals, parameter copies, reversed comparison, branch polarity, and one-shot loop forms did not materialize the flag in DX; MSC folded the high-word forms back to CMP. Remaining independent obligations are private _DATA at 087C/087E/0880, literals at 0882/0897/08BC (192/258 bytes match), and LINK-lowered same-segment PopMsg/WinPrintf calls. Next evidence is the original GR_MODULE state declaration/use context that explains the DX test, plus complete private DATA/call context; do not repeat local zero-test spellings.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T08:16:06.695978+00:00"
+      },
+      {
+        "text": "Regalloc model trial: snapshotting lowMemoryReported into a local, with or without register, leaves the original 114/117-opcode, 329/329-byte shape and one register-only difference; the target tests the flag in DX. A minimal GlobalCompact/flag/switch control also does not produce that schedule. See evidence/experiments/regalloc/results.json, target run 20260926T110249-82724.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:19.893423+00:00"
       }
     ]
   },
@@ -27572,20 +27619,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/SetLife/e43f2668de8a.c",
-      "sha256": "e43f2668de8a95fa4f8bd652fbf462da36d3ed8301b077db73958f89fb884f3b",
+      "source": "evidence/recovery/drafts/SetLife/5ccf9efbf0c7.c",
+      "sha256": "5ccf9efbf0c71d07cb77c5b1bdc96414ff265917252a557abbf4e4eb4433f1b1",
       "key": [
         false,
         false,
-        110,
-        -61
+        116,
+        -67
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/SetLife-a5d246356a/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 110,
+      "opcode_matches": 116,
       "opcode_total": 180,
-      "candidate_bytes": 371,
+      "candidate_bytes": 365,
       "target_bytes": 432,
       "flags": [
         "/AL",
@@ -27593,7 +27639,9 @@
         "/Gs",
         "/Oeglw",
         "/NTSIMONE_MODULE"
-      ]
+      ],
+      "origin": "build/search/SetLife/20260926T111549-7724/results.json",
+      "recorded": "2026-09-26T11:15:52.302587+00:00"
     }
   },
   "_SetMap": {
@@ -28877,6 +28925,11 @@
         "text": "Follow-up after prior note: inspected the available SimQueenB source draft; it uses the same direct targetX = Dx8[dir] + x expression. Tested five full-function splits (load targetX from Dx8 then += x, named dx_value, reversed operand/assignment orders); MSC canonicalized all to the same 207/215-opcode result and did not emit target mov bx,ax. Total now 62 compiled full-source candidates in 15 batches, plus the reduced probes. The direct assignment and ordinary temporary/order family has no further useful variant. Best remains sim_r46 at 208/215, 643/639 bytes, 27/78 fixups; target +0xa9 register/home residue and ENTER 8 vs A remain. Next work should start from new source evidence about hidden local lifetime or addressability, not another syntactic spelling of the same expression.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T09:51:32.814926+00:00"
+      },
+      {
+        "text": "Regalloc model trial: scalarizing and reordering check_values worsens the preserved 208/215 result to 207/215, 643/639 bytes, and 17 stack-local differences. The /Oe pressure probes support at most two scalar register values, but do not explain the target BX/[bp-4] scheduling at +0xa9. See evidence/experiments/regalloc/results.json, target run 20260926T110248-154780.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T11:14:19.782918+00:00"
       }
     ]
   },
@@ -29310,19 +29363,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/SpiderDialog/988671d52b33.c",
-      "sha256": "988671d52b3340d2cc5e3dad0df64bc46101dc8cc65d073f4921783f55a50288",
+      "source": "evidence/recovery/drafts/SpiderDialog/1ac069fadb8b.c",
+      "sha256": "1ac069fadb8b1d8bbcb48d5d62c5b14fb301086bbe8281bebbadf412ea828ea8",
       "key": [
         false,
         false,
-        163,
-        -4
+        165,
+        -42
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 163,
-      "opcode_total": 195,
-      "candidate_bytes": 541,
+      "opcode_matches": 165,
+      "opcode_total": 202,
+      "candidate_bytes": 579,
       "target_bytes": 537,
       "flags": [
         "/AL",
@@ -29331,8 +29384,8 @@
         "/Oelw",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/SpiderDialog/20260926T104035-77880/results.json",
-      "recorded": "2026-09-26T10:40:36.401223+00:00"
+      "origin": "build/search/SpiderDialog/20260926T111301-27336/results.json",
+      "recorded": "2026-09-26T11:13:02.227265+00:00"
     },
     "notes": [
       {
@@ -30854,19 +30907,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/UnpackFileOpen/aeae194026a5.c",
-      "sha256": "aeae194026a52b8650915be54668c10fd6faa728740c355b0c717371d41092fa",
+      "source": "evidence/recovery/drafts/UnpackFileOpen/c6e8506ab566.c",
+      "sha256": "c6e8506ab566986acc930ff4f90cd212f93dbd6c5cfdf2eb4c5fb95f37002aee",
       "key": [
         false,
         false,
-        5,
-        -5
+        12,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 5,
+      "opcode_matches": 12,
       "opcode_total": 27,
-      "candidate_bytes": 52,
+      "candidate_bytes": 57,
       "target_bytes": 57,
       "flags": [
         "/AL",
@@ -30875,8 +30928,8 @@
         "/Oelw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/UnpackFileOpen/20260926T085809-186188/results.json",
-      "recorded": "2026-09-26T08:58:10.027181+00:00"
+      "origin": "build/search/UnpackFileOpen/20260926T111659-86848/results.json",
+      "recorded": "2026-09-26T11:17:01.750496+00:00"
     },
     "notes": [
       {

@@ -2,6 +2,9 @@
 /* MAPSYM INDIRECTDLGPROC() is the Pascal export IndirectDlgProc. */
 void far pool_stub_prox_pair(void);
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_prox_pair)
+void far _win_SetProxItem(int obj);
+long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wParam, long lParam);
+#pragma alloc_text(RUN8_TEXT, _win_SetProxItem, IndirectDlgProc)
 /*
  * The low byte is an unsigned object index.  Dispatch case zero to the
  * empty path and all nonzero byte values to the invalidation path; the

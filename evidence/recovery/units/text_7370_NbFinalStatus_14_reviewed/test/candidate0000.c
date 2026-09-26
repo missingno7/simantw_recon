@@ -9,12 +9,12 @@ struct NetbiosControlBlock {
     unsigned char reserved[0x2f];
     unsigned char final_status;
 };
-static const char __based(__segname("SIMANT_DATA_GROUP")) nbFinalFormatLow[] = "NetBIOS Final RetCode(%#x): %s\n";
-static const char __based(__segname("SIMANT_DATA_GROUP")) nbFinalAdapter[] = "NetBIOS Final RetCode(%#x): Adapter malfunction.\n";
-static const char __based(__segname("SIMANT_DATA_GROUP")) nbFinalFormatHigh[] = "NetBIOS Final RetCode(%#x): %s\n";
-static const char __based(__segname("SIMANT_DATA_GROUP")) nbImmediateFormatLow[] = "NetBIOS RetCode(%#x): %s\n";
-static const char __based(__segname("SIMANT_DATA_GROUP")) nbImmediateAdapter[] = "NetBIOS RetCode(%#x): Adapter malfunction.\n";
-static const char __based(__segname("SIMANT_DATA_GROUP")) nbImmediateFormatHigh[] = "NetBIOS RetCode(%#x): %s\n";
+static char nbFinalFormatLow[] = "NetBIOS Final RetCode(%#x): %s\n";
+static char nbFinalAdapter[] = "NetBIOS Final RetCode(%#x): Adapter malfunction.\n";
+static char nbFinalFormatHigh[] = "NetBIOS Final RetCode(%#x): %s\n";
+static char nbImmediateFormatLow[] = "NetBIOS RetCode(%#x): %s\n";
+static char nbImmediateAdapter[] = "NetBIOS RetCode(%#x): Adapter malfunction.\n";
+static char nbImmediateFormatHigh[] = "NetBIOS RetCode(%#x): %s\n";
 void far NbFinalStatus(struct NetbiosControlBlock far *ncb)
 {
     union StatusSlot { unsigned short whole; unsigned char value; } statusSlot;

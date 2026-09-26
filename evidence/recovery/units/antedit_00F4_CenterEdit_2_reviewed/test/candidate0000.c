@@ -497,31 +497,37 @@ void far ResetEditScrollRange(void)
 
 static int near ScrollEditBy(int dx, int dy)
 {
-    extern struct MapPoint __based(__segname("SIMANT_DATA_GROUP")) MapPnt;
     int yStep;
     int xStep;
     register int i;
+    int xDistance;
+    int yDistance;
     unsigned long fraction;
     unsigned long error;
 
-    if (dx == 0 && dy == 0) return 0;
+    if (dx == 0) {
+        if (dy == 0)
+            return 0;
+    }
 
+    xDistance = dx;
     yStep = 1;
     xStep = 1;
-    if (dx < 0) {
+    yDistance = dy;
+    if (xDistance < 0) {
+        xDistance = -xDistance;
         yStep = -1;
-        dx = -dx;
     }
-    if (dy < 0) {
+    if (yDistance < 0) {
+        yDistance = -yDistance;
         xStep = -1;
-        dy = -dy;
     }
 
     error = 0UL;
-    if (dy >= dx) {
-        fraction = ((unsigned long)dx << 16) / (unsigned long)dy;
-        if (dy > 0) {
-            i = dy;
+    if (yDistance >= xDistance) {
+        fraction = ((unsigned long)xDistance << 16) / (unsigned long)yDistance;
+        if (yDistance > 0) {
+            i = yDistance;
             do {
                 MapPnt.y += xStep;
                 error += fraction;
@@ -532,9 +538,9 @@ static int near ScrollEditBy(int dx, int dy)
             } while (--i);
         }
     } else {
-        fraction = ((unsigned long)dy << 16) / (unsigned long)dx;
-        if (dx > 0) {
-            i = dx;
+        fraction = ((unsigned long)yDistance << 16) / (unsigned long)xDistance;
+        if (xDistance > 0) {
+            i = xDistance;
             do {
                 MapPnt.x += yStep;
                 error += fraction;
