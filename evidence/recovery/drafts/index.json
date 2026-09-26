@@ -1190,6 +1190,11 @@
         "text": "Base replay is 22/28 opcodes, 63/56 bytes; scalar far-base indexing preserved this shape, while volatile level reads raised alignment to 23/29 at 66/56. Target accesses the selected Dx8 segment directly as ES:[index+0x52d2], but ordinary far-array syntax still folds the expression to a segment8:0x52d2 fixup; the coordinate register schedule also differs. Next evidence must establish the original selector-relative object/type from the unit; do not invent a private table or absolute pointer.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T05:43:11.238357+00:00"
+      },
+      {
+        "text": "Round 8 ended without a match. Best remains 23/29 opcodes, 66/56 bytes with volatile level. Tested coordinate/index algebra, local order, based arrays, selector-backed views, far base/cell pointers, and register parameters. Direct far arrays emit the segment-8 plus 0x52d2 offset fixup instead of the target selector-only Dx8 reference and ES:[index+0x52d2]; register parameters moved y to DI but left x in CX. Next needs independent evidence for the selector-relative Dx8 view and its unit placement; do not invent a table or absolute-address cast.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:19:15.065682+00:00"
       }
     ]
   },
@@ -2068,6 +2073,11 @@
         "text": "Best source still 106/147 opcodes, 372/364 bytes, 1/13 fixups; target and candidate first diverge at target offset 9 in parameter/register homes. The target also has REPNE SCASB and REP MOVS for its string search/copy, while the source hypothesis uses C loops. The eight prior batches exhaust parameter-copy ordering, separator/path variants, and Dx8+0x9F10/0x94A0 addressing; repository search found only the separately recovered _SeparateFile using AnsiPrev, which does not establish this function's input path ABI or string idiom. No independent evidence distinguishes another safe source hypothesis; stop pending such evidence.",
         "origin": "build/search/ChangeDirectory/20260925T230256-168440",
         "recorded": "2026-09-25T23:02:56.568431+00:00"
+      },
+      {
+        "text": "Round 8 ended without a match. Best remains 106/147 opcodes, 372/364 bytes, 1/13 fixups. Tested named far and based Dx8 arrays, array-address buffer references, scratch copy loops, lstrcpy/strcpy/memcpy/lstrlen forms, separator order, parameter copies/register hints, and local declaration order. First difference remains parameter/register homes at target offset 9; target also has inline REPNE SCASB and REP MOVS absent from the C loop/call candidates. Next needs independent evidence for input path ABI and the source idiom that emits the scan/copy block.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:19:15.115807+00:00"
       }
     ]
   },
@@ -2740,20 +2750,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/CloseIndex/776d0aa3bb9c.c",
-      "sha256": "776d0aa3bb9c25748683b7ae0e27e9d9355d49a4f9be0475869c26431bbec890",
+      "source": "evidence/recovery/drafts/CloseIndex/72694e5db7ac.c",
+      "sha256": "72694e5db7ac4f114d5999cb1f9804918d165b10c8e3634307298490dd1611cd",
       "key": [
         false,
         false,
-        66,
-        -22
+        67,
+        -14
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/CloseIndex-64f52e1d15/attempt03/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 66,
-      "opcode_total": 91,
-      "candidate_bytes": 244,
+      "opcode_matches": 67,
+      "opcode_total": 85,
+      "candidate_bytes": 236,
       "target_bytes": 222,
       "flags": [
         "/AL",
@@ -2761,13 +2770,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/CloseIndex/20260926T140430-38108/results.json",
+      "recorded": "2026-09-26T14:04:31.272797+00:00"
     },
     "notes": [
       {
         "text": "Best remains 66/91 opcodes, 244/222 bytes; first differences are at entry frame/register scheduling (target has SI parameter then separate IMUL, candidate fuses the parameter into IMUL) and later DI handle retention/branch polarity. Added register to idx and handle (including both together); MSC output was byte-identical to the preserved candidate. Prior four source restructurings reached same result. Private match_position/openDBData segment identity also blocks proof. Next useful step is the unit-context database-record declarations with sibling source context; isolated C expression changes are exhausted for this source family.",
         "origin": "build/search/CloseIndex/20260925T224843-56000",
         "recorded": "2026-09-25T22:48:44.098162+00:00"
+      },
+      {
+        "text": "Best remains 65/83 opcodes and 219/222 bytes (CloseIndex_r05a); residues are the fused IMUL instead of MOV SI; IMUL; base local omitted; handle kept at BP-2 instead of DI; and 0x6C frame/name slot differs. Eight four-variant rounds covered OpenDB struct/far/based forms, raw match_position byte/word views, direct/indexed slot pointers, declaration order and scope, header/buffer far-pointer locals, volatile homes, and dirty-branch forms. The target also binds PACK selector 0xC68C and DATA strings at 0xB6C4/0xB6CB within simtwo:9A86's seven-public unit; next useful step is recover/compose that unit's selector pool while testing a separate local-copy/frame family.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:06:51.585625+00:00"
       }
     ]
   },
@@ -3348,20 +3364,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/ConvertMaskBitmap/2aaa8ebd08d5.c",
-      "sha256": "2aaa8ebd08d55bf2edc932999f5a942538c9849859aec99da0c78b41fec68a9a",
+      "source": "evidence/recovery/drafts/ConvertMaskBitmap/6a298cc92345.c",
+      "sha256": "6a298cc923456c69c3b5f3315ec85269d9834caeae3d33dbf61578c71d28619d",
       "key": [
         false,
         false,
-        231,
-        -98
+        240,
+        -179
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/ConvertMaskBitmap-0b5587ae1e/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 231,
-      "opcode_total": 328,
-      "candidate_bytes": 801,
+      "opcode_matches": 240,
+      "opcode_total": 360,
+      "candidate_bytes": 882,
       "target_bytes": 703,
       "flags": [
         "/AL",
@@ -3369,13 +3384,20 @@
         "/Gs",
         "/Oelw",
         "/NTGR_MODULE"
-      ]
+      ],
+      "origin": "build/search/ConvertMaskBitmap/20260926T143100-46396/results.json",
+      "recorded": "2026-09-26T14:31:02.970916+00:00"
     },
     "notes": [
       {
         "text": "Best remains 231/328 opcodes, 801/703 bytes, 0 relocations. Source semantics recover bottom-up mask-row copy and four-plane 4bpp assembly; remaining code differs across signed stride arithmetic, huge-pointer multiplies, and nested plane/pixel calculations. Eight prior attempts already explored expression shapes, and this best source matches the semantic families but leaves a 98-byte excess. Next needs a changed hypothesis for row/address expression structure; no useful isolated follow-up is indicated from current evidence.",
         "origin": "build/search/ConvertMaskBitmap/20260925T231252-147120",
         "recorded": "2026-09-25T23:12:53.283091+00:00"
+      },
+      {
+        "text": "Round 1: compare prior bottom-up address form against reverse traversal, row-base factoring, power-of-two pixel indexing, and typed copy-loop width.",
+        "origin": "build/search/ConvertMaskBitmap/20260926T143100-46396",
+        "recorded": "2026-09-26T14:31:03.013550+00:00"
       }
     ]
   },
@@ -4589,6 +4611,16 @@
         "text": "Best candidate 81/109 opcodes, 302/259 bytes. Front and tail semantics align; first new body instructions at candidate +0x93 guard the first copy with SHL/OR/JLE, while target proceeds to REP MOVSW/ADC/REP MOVSB unconditionally. Count-down far-pointer loops expanded to scalar code and added frame (74/120); an explicit memcpy call lowered to a different far helper (66/94; 258 bytes). Next idea: try a decrementing loop over the existing oldBuf/newBuf aliases without extra src/dest locals, or a record-sized copy form that makes MSC emit the generic REP/ADC sequence without a zero-count branch. Private CONST/DATA and bindings remain unresolved.",
         "origin": "build/search/DeleteCurrentIndex/20260925T224332-109560",
         "recorded": "2026-09-25T22:43:32.348103+00:00"
+      },
+      {
+        "text": "After 10 rounds, best score remains the original-shape draft at 81/109 opcodes, 302/259 bytes; another round reached 82/115, 320/259. Target enters the first REP MOVSW/ADC/REP MOVSB copy unconditionally, while candidates add a shift/or/conditional guard. match_position/PACK views compile to external segment9 offsets or imul 0x3e + add 0x3a2c + shl, versus target imul 0x7c plus 0x7458; private selector data also differs. Tried countdown/pointer/index/word/struct-copy, match_position alias and based PACK views, and return shapes. Next idea: recover the unit selector/data view together with the C operation that triggers an unguarded counted REP copy.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:55:06.459255+00:00"
+      },
+      {
+        "text": "Supervisor: the unresolved REP MOVS copy may be an intrinsic memcpy/_fmemcpy expansion (/Oi): write the copy as a library call and run python tools/compiler_profiles.py probe _DeleteCurrentIndex on that draft. An ogi context needs the whole component's admitted members to stay exact (see build/workers/text-ctx/REPORT.md and the _BlockMove assignment); record the evidence rather than forcing flags.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:57:06.358434+00:00"
       }
     ]
   },
@@ -6055,20 +6087,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoDigOutAntA/be92cf8f1d35.c",
-      "sha256": "be92cf8f1d35752227b7c7082abb4f5733933daf4459d13707f1fcaa1367bfd3",
+      "source": "evidence/recovery/drafts/DoDigOutAntA/ace33b6b08a2.c",
+      "sha256": "ace33b6b08a248ad0b308efdf1174f5fa349f66b36af6dff4f63936b94b4df47",
       "key": [
         false,
         false,
-        118,
-        0
+        156,
+        -22
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/DoDigOutAntA-00b8a10c92/attempt02/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 118,
-      "opcode_total": 167,
-      "candidate_bytes": 502,
+      "opcode_matches": 156,
+      "opcode_total": 173,
+      "candidate_bytes": 524,
       "target_bytes": 502,
       "flags": [
         "/AL",
@@ -6076,13 +6107,20 @@
         "/Gs",
         "/Oeglw",
         "/NTSIMANT1_MODULE"
-      ]
+      ],
+      "origin": "build/search/DoDigOutAntA/20260926T141315-69164/results.json",
+      "recorded": "2026-09-26T14:13:17.385348+00:00"
     },
     "notes": [
       {
         "text": "Best remains 118/167 opcodes at 502/502 bytes. First real difference is the function prologue and list access: target enters 0x12 bytes, loads index to SI, uses the C318 segment-8 selector with fixed AlistX/Y/T displacements, and stores x/y at target stack slots; this candidate enters 0x14 and emits individual segment-8 offset fixups (54 total, only 2 match) with 20 stack/local differences. A nested scope for the bounce temporary and direct MapA comparison emitted identical code to the preserved draft. Families retained: list-field macros, current local layout, explicit x register copy, tile sentinel and switch/direct-map forms. Next inspect the simant1:0000 neighbors' exact segment-8 view and local declaration order, then seek a source form for selector-plus-public-offset accesses that passes binding proof.",
         "origin": "build/search/DoDigOutAntA/20260925T224550-138172",
         "recorded": "2026-09-25T22:45:51.216183+00:00"
+      },
+      {
+        "text": "Eight fresh rounds; best is 120/167 opcodes, 500/502 bytes, 1/54 fixups (signed TurnTab variant). Tried based A-list arrays, shared and separate based fields, local order and widths, register/index copies, loop and branch forms, combined obstruction checks, signed direction and selector declarations. First residue is the prologue and field access: target loads index to SI, loads the SIMANT_DATA_GROUP selector from DGROUP 0xC318, and uses fixed Alist offsets 0x23A4/0x278E/0x2F62; isolated candidates use CONST selectors and per-field fixups. GetNewMode also binds to the segment 7 public offset 0x12EC instead of target segment 7 offset 0. Next idea: resolve the shared unit selector and segment-7 call alias in the simant1:0000 unit context.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:20:42.541640+00:00"
       }
     ]
   },
@@ -6838,19 +6876,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoHealthSetY/2ced8de71fd0.c",
-      "sha256": "2ced8de71fd0baa1fc6f0882372525e26983044ad66a1d699c5287871f400df1",
+      "source": "evidence/recovery/drafts/DoHealthSetY/17c342115bc0.c",
+      "sha256": "17c342115bc09a6ea4c75f9f00d336e581e4525022b4947bb829b67b7623a78f",
       "key": [
         false,
         false,
-        25,
-        0
+        26,
+        -13
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 25,
-      "opcode_total": 35,
-      "candidate_bytes": 86,
+      "opcode_matches": 26,
+      "opcode_total": 39,
+      "candidate_bytes": 99,
       "target_bytes": 86,
       "flags": [
         "/AL",
@@ -6859,14 +6897,19 @@
         "/Oelw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/DoHealthSetY/20260925T221914-97288/results.json",
-      "recorded": "2026-09-25T22:19:15.446450+00:00"
+      "origin": "build/search/DoHealthSetY/20260926T140502-111196/results.json",
+      "recorded": "2026-09-26T14:05:03.057043+00:00"
     },
     "notes": [
       {
         "text": "Extent 86 confirmed; legacy best is 25/35 opcodes and 80/86 bytes. Tried normal far-pointer access, a based view, K&R split based offset plus __segment, then register locals and register parameters. Split __segment compiles to direct ES:[BP+8] addressing but reloads the based offset only after the rectangle call, while the target loads SI before the call and preserves it; register copies spill to BP and register-parameter qualifiers emitted identical code. The call fixup remains unresolved against MAPSYM win_GetObjRect at 0xC2D2 versus the original segment-7 loader binding, and MeWarnHealth still has private selector placement residue. Next: establish the incoming argument representation from caller evidence or a source form that keeps only the based offset live across the far call; do not repeat the far-pointer/register variants.",
         "origin": "build/search/DoHealthSetY/20260925T223143-42448",
         "recorded": "2026-09-25T22:31:44.102506+00:00"
+      },
+      {
+        "text": "Eight fresh rounds; best remains 25/35 opcodes, 86/86 bytes, 3/4 fixups. Tried far pointer and based views, split offset plus segment parameters with __segment casts, register copies, union pointer splitting, declaration order and widths, branch forms, and arithmetic order. Target copies objectNumber to DI and object offset to SI before win_GetObjRect; candidates reload the object pointer after the call. First strict residue is the call fixup at 0x15: target loader binding is segment 7 offset 0, while the candidate binds the MAPSYM public at segment 7 offset 0xC2D2. Next idea: establish the original call alias and argument representation from caller or unit evidence.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:20:42.479734+00:00"
       }
     ]
   },
@@ -7108,28 +7151,30 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoMenuEntry/6b72ab6dda45.c",
-      "sha256": "6b72ab6dda45e2a2ac5058933a7d61b7bf31e9cd59014b8b3ec187085539b887",
+      "source": "evidence/recovery/drafts/DoMenuEntry/58cf65aa156f.c",
+      "sha256": "58cf65aa156fcb67f8ca0177505e14c3fe8703ffa7e6d4a626406682df8b8a51",
       "key": [
         false,
         false,
-        137,
-        -67
+        138,
+        -60
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/DoMenuEntry-3595df4ece/attempt02/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 137,
+      "opcode_matches": 138,
       "opcode_total": 183,
-      "candidate_bytes": 436,
+      "candidate_bytes": 443,
       "target_bytes": 503,
       "flags": [
         "/AL",
         "/G2",
         "/Gs",
         "/Oelw",
+        "/GA",
         "/NTSIMANT_MODULE"
-      ]
+      ],
+      "origin": "build/search/DoMenuEntry/20260926T142518-94248/results.json",
+      "recorded": "2026-09-26T14:25:19.385956+00:00"
     },
     "notes": [
       {
@@ -8703,19 +8748,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoWarnSetB/8ad11350a13f.c",
-      "sha256": "8ad11350a13f47197a1ece1312dd98695cce5d36c5e4c27d597b606fe2d246a7",
+      "source": "evidence/recovery/drafts/DoWarnSetB/02f62519a36c.c",
+      "sha256": "02f62519a36cd284d34577017fbd65c9b5f15133e5560ab6fa35c85f55edebb2",
       "key": [
         false,
         false,
-        25,
-        -1
+        32,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 25,
+      "opcode_matches": 32,
       "opcode_total": 35,
-      "candidate_bytes": 87,
+      "candidate_bytes": 86,
       "target_bytes": 86,
       "flags": [
         "/AL",
@@ -8724,14 +8769,24 @@
         "/Oelw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/DoWarnSetB/20260925T223037-144588/results.json",
-      "recorded": "2026-09-25T22:30:38.296924+00:00"
+      "origin": "build/search/DoWarnSetB/20260926T140805-118368/results.json",
+      "recorded": "2026-09-26T14:08:06.475717+00:00"
     },
     "notes": [
       {
         "text": "Tried the preserved far-pointer/register draft and two split __segment plus __based variants, including a register parameter. The split form emits direct ES-based fields but loads the event offset into SI only after the far rectangle call; target places it in SI before that call. The win_GetObjRect binding and BlkWarnHealth private selector placement remain unresolved. Next: use caller evidence to establish the incoming based pointer shape and retain SI across the call.",
         "origin": "build/search/DoWarnSetB/20260925T223929-45144",
         "recorded": "2026-09-25T22:39:29.329131+00:00"
+      },
+      {
+        "text": "Seven batches total (the first had three invalid placeholder-based declarations; six later batches compiled four variants each). Best source is warn06c: 32/35 opcodes and 86/86 bytes. Plain far pointers emit LES BX, while the target uses the split offset/segment shape (SI from BP+6, ES from BP+8); split based-pointer sources keep the event number in SI and load the object offset only after win_GetObjRect. Concrete dependencies: target call relocates to SIMANT_MODULE segment 7 offset 0 while the packet's named win_GetObjRect is at 0xC272; target BlkWarnHealth is an unnamed segment-9 offset 0x769c through CONST selector slot 0xC252. Next need source/caller evidence for the original object argument and the owning CONST/data contribution before further register tuning.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:10:45.248382+00:00"
+      },
+      {
+        "text": "Correction: the mapped win_GetObjRect public is at decimal offset 49874 (not the earlier mistyped hex). Seven batches total; the first had three invalid placeholder-based declarations, and six later batches compiled four variants each. Best source is warn06c: 32/35 opcodes and 86/86 bytes. Plain far pointers emit LES BX, while the target uses offset/segment stack words (SI from BP+6, ES from BP+8); split based-pointer sources keep the event number in SI and load the object offset only after win_GetObjRect. Concrete dependencies: target call frame is segment 7 offset 0 while the packet's named win_GetObjRect public is at 49874; target BlkWarnHealth is an unnamed segment-9 offset 0x769c through CONST selector slot 0xC252. Next need source/caller evidence for the original object argument and owning CONST/data contribution before further register tuning.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:11:19.727403+00:00"
       }
     ]
   },
@@ -8843,6 +8898,11 @@
         "text": "simtwo:8F0C unit test: 36/40 literal bytes and 7/9 fixups. Pushes at member +0x0C and +0x30 target DGROUP 0xB4E4 and 0xB56A; compiler DATA constraints imply incompatible bases 0xB472 and 0xB4E4. The composer measured a 114-byte unclaimed gap from 0xB4F8 to 0xB56A, but this source does not place both strings in one valid contribution.",
         "origin": "build/search/DosPunt/20260926T093618-181472",
         "recorded": "2026-09-26T09:36:18.732095+00:00"
+      },
+      {
+        "text": "Supervisor: 0xB4E4 ('Too many files open...') and 0xB56A ('%s\\nDos error: %d: %s') are pushed by BOTH _OpenDB (code 0x8BF0, earlier) and _DosPunt. MSC does not share a literal between functions without /Gf, so these are most likely file-scope static char arrays of the simtwo:8BF0 module, declared in address order with the other module data between them (flag 0xB4E2 first). Recovering _OpenDB's body (and its use of both arrays) is the dependency; a DosPunt-only unit cannot place them.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:31:14.566250+00:00"
       }
     ]
   },
@@ -9611,34 +9671,40 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DrawMapSpider/08709aa59ec8.c",
-      "sha256": "08709aa59ec83416e40b43746dcdc85b0839bb59c551296c6a6e43f96311de49",
+      "source": "evidence/recovery/drafts/DrawMapSpider/3baa6c9866a2.c",
+      "sha256": "3baa6c9866a2c880e4cad9b8e30d677d4fc95d4db5d14e31e92c0985c743a85f",
       "key": [
         false,
         false,
-        82,
-        -38
+        98,
+        -12
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/DrawMapSpider-def468f6e3/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 82,
-      "opcode_total": 113,
-      "candidate_bytes": 318,
+      "opcode_matches": 98,
+      "opcode_total": 108,
+      "candidate_bytes": 292,
       "target_bytes": 280,
       "flags": [
         "/AL",
         "/G2",
         "/Gs",
-        "/Oelw",
+        "/Oeglw",
         "/NTANTEDIT_MODULE"
-      ]
+      ],
+      "origin": "build/search/DrawMapSpider/20260926T135719-98244/results.json",
+      "recorded": "2026-09-26T13:57:19.925167+00:00"
     },
     "notes": [
       {
         "text": "Best isolated result remains 82/113 opcodes, 318/280 bytes, 0/34 fixups. Parameter register qualifiers change no output; previous tries already changed x/y evaluation order and used explicit coordinate copies. Target's prologue preloads x into DI and y into SI, reuses them across the bitmap call/rect and dashed loop, and stack-caches the far patch pointer before mem_Lock; isolated source selects other registers and keeps different locals. The far patch handle is PACK segment 8+0x72ca and this is shared with DrawMapFoot. Next useful step is the full antedit:C19C unit with DrawMap/DrawMapFoot/win_DrawMapWindow, outside this slice.",
         "origin": "build/search/DrawMapSpider/20260925T230203-83004",
         "recorded": "2026-09-25T23:02:03.934937+00:00"
+      },
+      {
+        "text": "One fresh Oeglw batch tested the preserved body, x/y register copies, separate rectangle expressions, and a corrected tail loop. Best was 78/105 opcodes, 290/280 bytes; no exact body. The aligned target's PACK handle is a literal offset 0x72ca under CONST selector slot 0xC1e0, with no exact MAPSYM identity in the packet, and every candidate hits conflicting private CONST placement plus unbound data/call fixups. Concrete dependency: the complete antedit:C19C unit and source-backed identity/order for that PACK handle and selector block; target unit has 15 publics and shared layout constraints.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:11:19.782199+00:00"
       }
     ]
   },
@@ -12698,20 +12764,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/FindIndex/d2028d5c322e.c",
-      "sha256": "d2028d5c322ecbf3d770c86f5dc718250dff47086c2e655c96cfe87523e1b295",
+      "source": "evidence/recovery/drafts/FindIndex/54bf49876cea.c",
+      "sha256": "54bf49876ceabd7fe770b43ba7dba977a7b745c6494f54b27c272181c764b827",
       "key": [
         false,
         false,
-        62,
-        -13
+        63,
+        -11
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/FindIndex-d630cb2793/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 62,
+      "opcode_matches": 63,
       "opcode_total": 88,
-      "candidate_bytes": 224,
+      "candidate_bytes": 226,
       "target_bytes": 237,
       "flags": [
         "/AL",
@@ -12719,13 +12784,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/FindIndex/20260926T140807-33136/results.json",
+      "recorded": "2026-09-26T14:08:12.276291+00:00"
     },
     "notes": [
       {
         "text": "Current candidate gives 62/88 opcodes and reconstructs the lower-bound search, but prior independent register/index variants did not improve it. Target loads the shared match_position selector into DS and ES at entry, restores DS on exit, and keeps the caste argument in DI; isolated compilation never generates those shared segment/register homes. The next concrete dependency is unit assembly with simtwo:9A86 siblings (OpenIndex/CreateIndex/CloseIndex/DeleteCurrentIndex/AddIndex/DeleteIndex), as recorded in the legacy finding.",
         "origin": "build/search/FindIndex/20260925T230211-52972",
         "recorded": "2026-09-25T23:02:11.737470+00:00"
+      },
+      {
+        "text": "Eight fresh rounds; best is 63/88 opcodes, 218/237 bytes, 0/17 fixups. Tried far and PACK-based match_position views, based static state, volatile pointer/state forms, divide/shift midpoint expressions, lower-bound comparison and loop forms, parameter copies, local order, and exact-match tail layouts. Entry residue: target loads match_position selector into both ES and DS, and accesses private lowPos/probe storage at PACK offsets 0x9E92 and 0x9C7A/0x9C7C. Isolated candidates cannot reproduce that unit DATA/CONST placement or the early DS load; based forms add private placement conflicts. Next idea: compile the complete simtwo:9A86 unit with its index siblings to settle shared selector and private-state placement.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:20:42.591046+00:00"
       }
     ]
   },
@@ -13392,19 +13464,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/FootFall/2230a15f8e68.c",
-      "sha256": "2230a15f8e684df7e2ceda4c5443f51b61642d700e6e683b5f5231ac09eba72c",
+      "source": "evidence/recovery/drafts/FootFall/297e537ca8d3.c",
+      "sha256": "297e537ca8d377acc67268c3b2d4d7379d11e1ba93e56772e5c0b3d1eb5d526b",
       "key": [
         false,
         false,
-        95,
-        -11
+        97,
+        -1
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 95,
+      "opcode_matches": 97,
       "opcode_total": 130,
-      "candidate_bytes": 328,
+      "candidate_bytes": 338,
       "target_bytes": 339,
       "flags": [
         "/AL",
@@ -13413,8 +13485,8 @@
         "/Oeglw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/FootFall/20260925T225717-115360/results.json",
-      "recorded": "2026-09-25T22:57:18.800544+00:00"
+      "origin": "build/search/FootFall/20260926T141006-84068/results.json",
+      "recorded": "2026-09-26T14:10:07.676682+00:00"
     },
     "notes": [
       {
@@ -14185,20 +14257,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/GRectPartialMixedOutline/1b182f69fcb1.c",
-      "sha256": "1b182f69fcb10d1890fe757a3662809d0328e128043e586dbc232ff7e641b982",
+      "source": "evidence/recovery/drafts/GRectPartialMixedOutline/9d39ce157dad.c",
+      "sha256": "9d39ce157dad25ae565a27b00f6bbd423e0d9f797737ecbc4435409a197f551d",
       "key": [
-        false,
-        false,
-        85,
-        -12
+        true,
+        true,
+        119,
+        0
       ],
-      "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/GRectPartialMixedOutline-a927ac94f2/attempt02/results.json",
-      "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 85,
+      "basis": "EXACT_BODY_CANDIDATE",
+      "result": "CONFIRMED_MEMBER",
+      "opcode_matches": 119,
       "opcode_total": 119,
-      "candidate_bytes": 279,
+      "candidate_bytes": 291,
       "target_bytes": 291,
       "flags": [
         "/AL",
@@ -14206,7 +14277,9 @@
         "/Gs",
         "/Oelw",
         "/NTGR_MODULE"
-      ]
+      ],
+      "origin": "build/search/GRectPartialMixedOutline/20260926T141023-30528/results.json",
+      "recorded": "2026-09-26T14:10:24.527166+00:00"
     },
     "notes": [
       {
@@ -15934,20 +16007,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/GetRedBestDirs/46614162b027.c",
-      "sha256": "46614162b02744d45a0b72f652d76566d027ecb23e313cbe5224049d9424135f",
+      "source": "evidence/recovery/drafts/GetRedBestDirs/f03c77f79b00.c",
+      "sha256": "f03c77f79b002006cd59feb01c73cab1c7d31d08a9746be24cf74589d7c0568e",
       "key": [
         false,
         false,
-        62,
-        -1
+        63,
+        -11
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/GetRedBestDirs-f1476bf095/attempt02/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 62,
-      "opcode_total": 89,
-      "candidate_bytes": 219,
+      "opcode_matches": 63,
+      "opcode_total": 86,
+      "candidate_bytes": 209,
       "target_bytes": 220,
       "flags": [
         "/AL",
@@ -15955,13 +16027,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMANT1_MODULE"
-      ]
+      ],
+      "origin": "build/search/GetRedBestDirs/20260926T143100-14588/results.json",
+      "recorded": "2026-09-26T14:31:02.136439+00:00"
     },
     "notes": [
       {
         "text": "Best remains 62/89 opcodes and 219/220 bytes; exact_body is false with 1/11 fixups and conflicting private CONST placement. First code divergence is target offset 0x26: it branches to a shared epilogue that loads the initialized best local, while the candidate emits a separate `mov ax,-1; retf`; the target best slot is bp-0xc, candidate bp-0xa. Reused admitted GetLife/IsClearTile declarations with `plane` first and corrected calls; score did not change. Tried preserving plane in a register and routing the early return through a label; the compiler emitted the same object (the plane copy exceeded the member extent). Next inspect target local declarations and selector-pool ordering for simant1:96D4, while keeping the corrected helper ABI.",
         "origin": "build/search/GetRedBestDirs/20260925T225048-59060",
         "recorded": "2026-09-25T22:50:48.433622+00:00"
+      },
+      {
+        "text": "Round 1: test local declaration order and shared-return idioms around the best/fallback slots.",
+        "origin": "build/search/GetRedBestDirs/20260926T143100-14588",
+        "recorded": "2026-09-26T14:31:02.229880+00:00"
       }
     ]
   },
@@ -18181,6 +18260,11 @@
         "text": "Best remains 78/113 opcodes (12/214 literals; 1/4 fixups; candidate 216 bytes against 240 target), NO_COMPLETE_MATCH. Target first tests plane in DI, then loads x into DX; lead candidate copies plane and x before the early gate, with x in DX but plane in SI and later bounds registers reversed. Explicit materialized bounds boolean improved 68 to 74; plane+x copies improved to 78. Tried separate plane/x/y copies and goto-negative flow; delaying x until after the plane test regressed to 77. Next test nested early bounds checks without the saved boolean/copy layout to preserve the target DI-then-DX register roles.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T08:08:58.138798+00:00"
+      },
+      {
+        "text": "Round 1: compare saved bounds state, nested early checks, explicit parameter copies, and result expression form.",
+        "origin": "build/search/IsItDigable/20260926T143100-9620",
+        "recorded": "2026-09-26T14:31:01.757459+00:00"
       }
     ]
   },
@@ -21435,19 +21519,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/MapAreaEvent/033d172916db.c",
-      "sha256": "033d172916dbd42caafc826824e9036086074de8a1f48735466594102d9fb920",
+      "source": "evidence/recovery/drafts/MapAreaEvent/ccc12369ec4d.c",
+      "sha256": "ccc12369ec4daee117b27aa00283051db833708d03c0b0c38f2b1f2d2d4d8a3a",
       "key": [
         false,
         false,
-        131,
-        -48
+        136,
+        -43
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 131,
+      "opcode_matches": 136,
       "opcode_total": 182,
-      "candidate_bytes": 466,
+      "candidate_bytes": 471,
       "target_bytes": 514,
       "flags": [
         "/AL",
@@ -21456,8 +21540,8 @@
         "/Oelw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/MapAreaEvent/20260925T223619-153896/results.json",
-      "recorded": "2026-09-25T22:36:20.210479+00:00"
+      "origin": "build/search/MapAreaEvent/20260926T142719-11708/results.json",
+      "recorded": "2026-09-26T14:27:25.688492+00:00"
     },
     "notes": [
       {
@@ -29774,6 +29858,11 @@
         "text": "Fresh context candidate is 135/175 ops, 453/490 bytes. Replacing the invented pad-only WindPromptTable with the admitted neighbor declaration (same header/yard/tool fields through +0x48), extending by eight evidenced bytes to transferPrompt at +0x50, and accessing WindPromptStrs directly reduces to 135/175, 445/490 with stack diffs 6->1 and register diffs3. Candidate still lacks 40 ops and has unresolved unit private selector/call bindings; this type-backed variant is the new best. Remaining source-shape family is not grounded by the generic eight-attempt history.",
         "origin": "build/search/SpecialXfer/20260925T213904-153560",
         "recorded": "2026-09-25T21:39:05.159977+00:00"
+      },
+      {
+        "text": "Eight worker rounds completed. Best worker candidate is SpecialXfer-r7b.c at 154/175 opcodes and 484/490 bytes; separate outside/zero-cell prompt paths and near-call XferPatch improved the earlier draft. Tested branch polarity, x/y destination/order, local declarations and volatility, grouped frame fields, based data declarations, direct versus indirect prompt pointer, array indexing, and completion-loop idioms. Stopping on concrete dependency: target selector slots [bf60..bf6a] and operands 0x1894/0x1896, 0x8110/0x8112, and 0x789e/0x78a0 have no exact packet names (only possible bindings), while the target near call at 0x2cda does not resolve to the candidate XferPatch target. Candidate remains exact_body=false; recover the original unit's private selector/table and near-call declarations before another source-shape pass.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:51:51.283184+00:00"
       }
     ]
   },
@@ -31973,28 +32062,30 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/UpdateWindows/38ee8f0b36c7.c",
-      "sha256": "38ee8f0b36c7525ad9dce9ff611f7244c2e3264ca299caaadf55313dc7d94fee",
+      "source": "evidence/recovery/drafts/UpdateWindows/4db46b3f8318.c",
+      "sha256": "4db46b3f831883ab7d06a1bbb550c8e07a1842f07f2904987e4265e96b533fc9",
       "key": [
         false,
         false,
-        122,
-        -25
+        134,
+        -12
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/UpdateWindows-919eb91672/attempt08/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 122,
-      "opcode_total": 173,
-      "candidate_bytes": 565,
+      "opcode_matches": 134,
+      "opcode_total": 168,
+      "candidate_bytes": 552,
       "target_bytes": 540,
       "flags": [
         "/AL",
         "/G2",
         "/Gs",
         "/Oelw",
+        "/GA",
         "/NTSIMANT_MODULE"
-      ]
+      ],
+      "origin": "build/search/UpdateWindows/20260926T141429-98584/results.json",
+      "recorded": "2026-09-26T14:14:31.185572+00:00"
     },
     "notes": [
       {
@@ -34161,17 +34252,17 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/font_SetFont/08045a04b4a9.c",
-      "sha256": "08045a04b4a92edefbf5b2783619925f00b1ad2baf6864d1b64341c6a2a6be59",
+      "source": "evidence/recovery/drafts/font_SetFont/ed50963ba760.c",
+      "sha256": "ed50963ba76055a930ed619b0636bb0a8de3b9b70b882259d99553ac270d215e",
       "key": [
-        false,
-        false,
-        33,
+        true,
+        true,
+        38,
         0
       ],
-      "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 33,
+      "basis": "EXACT_BODY_CANDIDATE",
+      "result": "STRONGLY_SUPPORTED_MEMBER",
+      "opcode_matches": 38,
       "opcode_total": 38,
       "candidate_bytes": 80,
       "target_bytes": 80,
@@ -34182,8 +34273,8 @@
         "/Oelw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/font_SetFont/20260926T134822-87328/results.json",
-      "recorded": "2026-09-26T13:48:23.348695+00:00"
+      "origin": "build/search/font_SetFont/20260926T135540-16296/results.json",
+      "recorded": "2026-09-26T13:55:41.496606+00:00"
     },
     "notes": [
       {
@@ -34774,20 +34865,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/gr_GetFromBuf/d9babf3ada8d.c",
-      "sha256": "d9babf3ada8dc6778c42bf938991f96f6c94704e9037ef06d0d1c707c30a00ff",
+      "source": "evidence/recovery/drafts/gr_GetFromBuf/97b2deccd3dd.c",
+      "sha256": "97b2deccd3ddc9f911d1fab0e37fa41071d2e5d8f67400f2e61d1a624e71abe5",
       "key": [
         false,
         false,
-        106,
-        -21
+        120,
+        -40
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/gr_GetFromBuf-685602277f/attempt07/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 106,
-      "opcode_total": 147,
-      "candidate_bytes": 363,
+      "opcode_matches": 120,
+      "opcode_total": 156,
+      "candidate_bytes": 382,
       "target_bytes": 342,
       "flags": [
         "/AL",
@@ -34795,13 +34885,20 @@
         "/Gs",
         "/Oelw",
         "/NTGR_MODULE"
-      ]
+      ],
+      "origin": "build/search/gr_GetFromBuf/20260926T141736-103808/results.json",
+      "recorded": "2026-09-26T14:17:38.084058+00:00"
     },
     "notes": [
       {
         "text": "Best remains 106/147 opcodes, 363/342 bytes, correct _displayType binding. The meaningful residual is the same packing-dependent row-copy shape and 0x16 candidate frame versus 0x14 target; the separate loops compile byte/word loops instead of the target REP copy, and loop locals remain mislaid. Eight prior attempts already explored row counts and local-frame variants. Next evidence should recover the original copy idiom and locals from GR_MODULE neighbors; no untried isolated hypothesis is currently indicated.",
         "origin": "build/search/gr_GetFromBuf/20260925T225558-99860",
         "recorded": "2026-09-25T22:55:59.064326+00:00"
+      },
+      {
+        "text": "After 10 rounds (40 variants), no strict match. Search-score best is gr_r5d at 112/141 opcodes, 333/342 bytes; gr_r9b had the highest raw count at 113/142, 331/342. First persistent residue: target ENTER 0x14 versus candidate ENTER 0xe, then row-copy shape; target uses REP MOVSW with an odd-byte path, while memcpy/fmemcpy, byte-index, pointer, and word-loop variants did not reproduce it. Also tried loop forms, widths, row extents, and parameter/local copies. Next idea: find the baseline compiler-recognized far word-copy idiom and local-home ordering that yields REP MOVSW.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:28:31.548592+00:00"
       }
     ]
   },
@@ -34903,6 +35000,11 @@
         "text": "Best remains 107/142 opcodes, 345/342 bytes, correct _displayType fixup. The direct byte-index row loop misses the target's REP MOVSW with conditional MOVSB and has a 0x16 frame versus 0x14. Replacing it with memcpy produced extra external fixups and 67/140; typed word-plus-tail loops ballooned to 420 bytes and 98/169. Tried loop-form changes without a useful closer shape. Next source evidence needed for original row-copy idiom/local order from neighboring GR code.",
         "origin": "build/search/gr_PutToBuf/20260925T225224-65852",
         "recorded": "2026-09-25T22:52:24.922087+00:00"
+      },
+      {
+        "text": "Ten worker rounds completed (four variants each). Best fresh result is the existing readable source at 107/142 opcodes and 345/342 bytes, with exact _displayType fixup; the closest corrected-width form is 107/143 and 346/342. Confirmed that a far-word copy loop causes MSC 7.00 to emit REP MOVSW with a conditional MOVSB tail. Tested memcpy/_fmemcpy, byte and word loops, indexed and pointer loops, mono copy length +1, signed/narrowed row widths, explicit row-count do loops and guards, local declaration/scope/register variants, and declaration permutations. No match. Residue: target frame is ENTER 0x14 versus candidate 0x16; target computes stride before row width, uses distinct branch stack slots, and emits the paired REP MOVSW/MOVSB sequence with target-specific DS/ES setup. Original GR unit's row-copy source and local declarations are needed to choose the remaining idiom; no missing name/fixup is implicated.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:10:33.895381+00:00"
       }
     ]
   },
@@ -35182,6 +35284,11 @@
         "text": "Recovered ABI and strings from target evidence: arguments are (handle, objectId, far objectName), format is 'hanim_RemoveAnimObject object not found(%s)(%u)', caption 'SimAnt Internal Error'; reuse the admitted AnimFrame/AnimSet declarations and target 0x100-byte buffer. Best 78/107 opcodes, 260/260 code bytes, 3/9 fixups, but not body exact. Pointer-result form improved over found flag; using scan pointer as result fell to 60/107, declaration order and register qualifiers were object-identical, volatile set count fell to 76/107. First remaining code difference is initial set/frame register and spill layout; target keeps set offset in DI and compares its far count directly, while candidate reloads a local pointer/count. Next try a representation that keeps the locked set offset live in DI while the frame pointer occupies SI.",
         "origin": "build/search/hanim_RemoveAnimObject/20260925T224250-87816",
         "recorded": "2026-09-25T22:42:51.021690+00:00"
+      },
+      {
+        "text": "Eight fresh rounds; best remains 78/107 opcodes, 260/260 bytes, 3/9 fixups. Tried result pointer, scan index, for/while/do forms, count caching, local order and widths, register pointer hints, explicit frame fields, and split far offset/selector forms. First real code residue follows the second mem_Lock: target keeps the set offset in DI and frame offset in SI, saves the frame selector at BP-8, and switches DS/ES for set and frame fields; candidates shift these homes and use different register/memory forms. Private DATA literal placement also conflicts. Next idea: assemble/review the complete gr:6410 unit with its set/frame siblings to resolve the shared selector and private data layout, then retest the source shape.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:20:42.429879+00:00"
       }
     ]
   },
@@ -35661,6 +35768,11 @@
         "text": "Closest is the preserved source at 30/39 opcodes and 77/78 bytes with the same three KERNEL APIs/constants. First real instruction difference: candidate copies the type parameter through DX and decrements DX before testing; target loads the type directly into AX, tests AX, executes its JL/JO exits, then has DEC AX; DEC AX; JLE; DEC AX; JE. Two range/control-flow variants and an explicit three-decrement partition did not reproduce that ordering; adding a local copy/register qualifier collapsed to the same output. APIs and type-class behavior are known, but the target's signed guard/decrement idiom remains unresolved. Next useful test: isolate a source condition that yields the AX-preserving JL/JO guard, then rerun the verified call branches.",
         "origin": "build/search/mem_SetType/20260925T224912-96360",
         "recorded": "2026-09-25T22:49:12.366137+00:00"
+      },
+      {
+        "text": "After 10 rounds, no strict match; best useful alignment is 30/39 opcodes at about 77/78 bytes. Highest score was 39/43, 84/78, but still uses DX and reconstructs AX with INC/DEC; target uses AX then JL/JO and DEC/DEC/JLE/DEC/JE. Tried signed/range/switch forms, early/shared return, postfix/prefix updates, local copies/order, widths and operand order. Next idea: recover the original type-state expression that preserves AX and emits individual decrements; keep the profile fixed.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:55:06.312967+00:00"
       }
     ]
   },
@@ -35789,6 +35901,16 @@
         "text": "Best replay is 121/157 opcodes, 335/359 bytes, 6/7 fixups; prologue/setup and the first resource scan align, then local slots diverge and the target switches DS to the allocated segment, copies each string with REP MOVSW/MOVSB, advances a far input cursor and near table cursor, and exits through a shared completion path. The attempt05 mem_Unlock far external still leaves the LINK-translated call at target +0x135 unresolved. Fresh memcpy and _fmemcpy variants emitted an extra runtime call; a typed far word-copy loop ballooned the body to 426 bytes. Next useful idea: derive the target's counted far-copy source idiom and local declaration order independently, then recheck the _mem_Unlock declaration against the translated same-segment call.",
         "origin": "build/search/ms_LoadPopUpResource/20260925T223713-134904",
         "recorded": "2026-09-25T22:37:14.039529+00:00"
+      },
+      {
+        "text": "After 10 rounds, best score is R8 at 125/157 opcodes and 340/359 bytes; best raw count is 130/173 and 426/359. The target has different table/allocation local layout and dynamic REP MOVSW/ADC/REP MOVSB copying; byte/word/typed and memcpy/_fmemcpy forms emitted scalar loops or a helper, with an extra private fixup. Tried pointer/index, declaration order/scope, widths, near/far table pointers and loop forms. Next idea: review unit-profile evidence for the /Oi REP MOVSB signature and verify the _mem_Unlock call binding in unit; do not try per-symbol flags.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:55:06.366147+00:00"
+      },
+      {
+        "text": "Supervisor: the unresolved REP MOVS copy may be an intrinsic memcpy/_fmemcpy expansion (/Oi): write the copy as a library call and run python tools/compiler_profiles.py probe _ms_LoadPopUpResource on that draft. An ogi context needs the whole component's admitted members to stay exact (see build/workers/text-ctx/REPORT.md and the _BlockMove assignment); record the evidence rather than forcing flags.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:57:05.893022+00:00"
       }
     ]
   },
@@ -36108,19 +36230,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/mySongIsDone/1804298a09d9.c",
-      "sha256": "1804298a09d9cb27863fc71600ea0f5c2bf67c66c38925addc33dc02881e2e2a",
+      "source": "evidence/recovery/drafts/mySongIsDone/b32d35f96be4.c",
+      "sha256": "b32d35f96be46fda442d2c8d8a2ccd1bee27a316dd1ec6ab9ea7cbe9448f20ee",
       "key": [
         false,
         false,
-        15,
-        -4
+        16,
+        -8
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 15,
+      "opcode_matches": 16,
       "opcode_total": 21,
-      "candidate_bytes": 62,
+      "candidate_bytes": 58,
       "target_bytes": 66,
       "flags": [
         "/AL",
@@ -36129,14 +36251,19 @@
         "/Oelw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/mySongIsDone/20260925T231710-110372/results.json",
-      "recorded": "2026-09-25T23:17:11.479218+00:00"
+      "origin": "build/search/mySongIsDone/20260926T135905-150888/results.json",
+      "recorded": "2026-09-26T13:59:06.805913+00:00"
     },
     "notes": [
       {
         "text": "Best with the admitted MultimediaState view is 15/21 opcodes, 62/66 bytes. The named field reads at 8D08/0A/0C/1C now use the exact admitted declaration; a register return variable produced no object change. Residue: the initial far word at 8D06 has no identity in the packet, SIMANT_DATA_GROUP/CONST placement conflicts in isolation, and target joins the final boolean through BX. Next needs independent evidence for 8D06 and original return-flow shape.",
         "origin": "build/search/mySongIsDone/20260925T231801-132528",
         "recorded": "2026-09-25T23:18:01.592438+00:00"
+      },
+      {
+        "text": "Round 8 ended without a match. Best is 16/21 opcodes, 58/66 bytes. Tested a preceding-word pointer anchored to stateViaSelector.moduleHandle, based/selector declarations, pointer volatility, final zero comparisons, and separate, joined, and result-variable return forms. First difference at target offset 4: target compares ES:[0x8d06], while the based-pointer candidate emits a SIMANT_DATA_GROUP segment fixup; the field reads and final BX return join also differ. Next needs independent identity and selector-view evidence for the word before mmState plus unit-level private CONST/DATA placement.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:19:15.162799+00:00"
       }
     ]
   },
@@ -37287,19 +37414,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/win_DrawExamineWindow/147b809e7fd1.c",
-      "sha256": "147b809e7fd1649205f1c0202cf3e716ca228b3f1980079cfc383ad2889dea86",
+      "source": "evidence/recovery/drafts/win_DrawExamineWindow/f272505e8f6c.c",
+      "sha256": "f272505e8f6c9255f26ff419b4574a3a179399d3932617de6f6b3fb9176f69aa",
       "key": [
         false,
         false,
-        105,
-        -49
+        129,
+        -20
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 105,
-      "opcode_total": 143,
-      "candidate_bytes": 444,
+      "opcode_matches": 129,
+      "opcode_total": 144,
+      "candidate_bytes": 415,
       "target_bytes": 395,
       "flags": [
         "/AL",
@@ -37308,14 +37435,24 @@
         "/Oeglw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/win_DrawExamineWindow/20260925T230900-108828/results.json",
-      "recorded": "2026-09-25T23:09:01.536794+00:00"
+      "origin": "build/search/win_DrawExamineWindow/20260926T141736-88704/results.json",
+      "recorded": "2026-09-26T14:17:37.684982+00:00"
     },
     "notes": [
       {
         "text": "Adding near qualifiers to the three inherited ExamineX/Y/List guesses shortens the candidate from 558 to 444 bytes and raises opcode alignment from 101/179 to 105/143. The target loads the three words directly from DGROUP offsets CB6C/CB6E/CB70; inherited names remain unproved. It also selects terrain from three segment-8 bases and indexes anonymous string tables through private selectors, while this candidate has far-table CONST placement and FindIn*/format-call residue. Next: identify those DGROUP globals and table entries in verified unit sources before fixing types or names.",
         "origin": "build/search/win_DrawExamineWindow/20260925T230917-130772",
         "recorded": "2026-09-25T23:09:18.085496+00:00"
+      },
+      {
+        "text": "After 8 rounds (32 variants), best remains round 2 at 126/140 opcodes, 407/395 bytes; no new strict match. First fixed residue is target's direct DGROUP reads at CB6C/CB6E/CB70 versus unproved ExamineX/Y/List externs, followed by private CONST selector and table-placement mismatches. Tried local list/mode dispatch, switch and shared tails, near Life arrays, table declarations, declaration/order and register variants. Concrete dependency: verified ANTEDIT unit declarations and placement for those three DGROUP words and the private string/terrain tables; continue in unit context when available.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:25:35.231729+00:00"
+      },
+      {
+        "text": "Correction after reviewing all rounds: the best search score is draw_r7b at 129/144 opcodes and 415/395 bytes, not 126/140. Eight rounds (32 variants) did not match. The fixed unresolved state is three direct DGROUP words at CB6C/CB6E/CB70 with unproved names, plus private CONST selector/table placement; candidate externs and isolated pool bindings cannot establish those identities. Tried near Life arrays, table pointer types, mode dispatch and shared tails, declaration order, and local/register variants. Next dependency is verified ANTEDIT unit declarations and placement for those globals and tables.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:28:31.685805+00:00"
       }
     ]
   },
@@ -37441,20 +37578,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/win_DrawHistoryWindow/1f95476be25b.c",
-      "sha256": "1f95476be25b49de2657caf736cd51e1a318b9fe705d4927a3c13b4b5e084c62",
+      "source": "evidence/recovery/drafts/win_DrawHistoryWindow/a0d97320e14b.c",
+      "sha256": "a0d97320e14b383a82671e0c6b4b1f99a868cda6fb633df400f9b453bef34dce",
       "key": [
         false,
         false,
-        24,
-        -6
+        25,
+        -1
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/win_DrawHistoryWindow-7f768c6675/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 24,
+      "opcode_matches": 25,
       "opcode_total": 34,
-      "candidate_bytes": 74,
+      "candidate_bytes": 81,
       "target_bytes": 80,
       "flags": [
         "/AL",
@@ -37462,13 +37598,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMANT_MODULE"
-      ]
+      ],
+      "origin": "build/search/win_DrawHistoryWindow/20260926T140000-122220/results.json",
+      "recorded": "2026-09-26T14:00:00.779114+00:00"
     },
     "notes": [
       {
         "text": "Best is 24/34, 74/80 bytes. The aligned target keeps the history array pointer in SI under direct DGROUP selector 0xc084 and uses near same-segment calls; far-array forms reload selectors and change call lowering. Next recover the simant:8A76 Dx8 declaration and exact callee prototypes.",
         "origin": "build/search/win_DrawHistoryWindow/20260925T230253-69076",
         "recorded": "2026-09-25T23:02:53.708104+00:00"
+      },
+      {
+        "text": "Three fresh batches tested direct indexing, pointer loops, near versus far graph calls, corrected Dx8 indexing (byte offset 0x8e54 means int element 0x472a), and a PACK-based view. Best fresh body was 25/34 opcodes, 81/80 bytes (history03c); prior stored draft remains 24/34, 74/80. The target has literal SI start/end offsets 0x8e54/0x8e5c and selector slot 0xC084, but the packet identifies no exact data public at that location; candidate references to Dx8 create offset/selector fixups. The same-unit drawHistGraph near call also remains a relative fixup in isolation. Concrete dependency: simant:8A76 unit source/layout for the unnamed history array, selector pool, and local graph callee.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:11:19.823161+00:00"
       }
     ]
   },
@@ -37814,6 +37957,11 @@
         "text": "Best is DrawTitle_signed.c at 61/78 opcodes, 194/193 bytes. Signed char type fixes the target MOV AL/CWDE classification; unsigned char zero-extended instead. Signed if/switch, local declaration order, pointer alias, and long win_handles views leave the target LDS SI,ES:[DI] at +0x4B and 20-byte frame versus candidate LES/18-byte frame unresolved. Next idea is a source declaration/liveness shape that keeps the child pointer in DS:SI and bucket in ES.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T08:03:31.851174+00:00"
+      },
+      {
+        "text": "After 10 rounds, best is R7 at 69/78 opcodes, 194/193 bytes, and 3/6 fixups; it reproduces the frame and LDS child load, but candidate reads through ES:[BX] rather than target ES:[DI], and count handling differs. Tried signed switch/if, pointer versus index, declaration/scope/register and volatile count variants, and loop forms. Next idea: combine the frame-matched R7 index loop with a direct numChildren guard/reload and DI cursor.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:55:06.266710+00:00"
       }
     ]
   },
@@ -38652,6 +38800,11 @@
         "text": "Best is WinOpen_nested.c at 19/22 opcodes, 43/49 bytes. Nested nonzero-HWND and IsWindowVisible tests reproduce the target call, OR AX,AX, and both return values. Residue is ENTER 2 plus a local pointer home, BX where candidates use SI, and target literal base BCA6 versus candidate win_hwnd fixup to the same DGROUP offset. Parameter-copy/register-order variants did not change this. Next idea is a natural source shape that retains the two-byte pointer home and test in the original unit context.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T08:03:31.648535+00:00"
+      },
+      {
+        "text": "Round 1 tested nested/early-return, repeated indexed access, register-index and cached near-pointer forms; best was 16/22 opcodes, 43/49 bytes. Every named win_hwnd candidate creates a fixup to SIMANT_DATA_GROUP offset 0xBCA6, while the target adds 0xBCA6 as an unbound literal and has no direct MAPSYM binding. Needed dependency: source-backed identity/declaration of the local DGROUP window table (and a way to prove its private fixup semantics); do not force the literal with an absolute cast.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T13:56:31.715186+00:00"
       }
     ]
   },
@@ -39120,20 +39273,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/win_MakeObjSelected/b253ae904d15.c",
-      "sha256": "b253ae904d15e9cc802c1a6ae884abc05b448a687c909844c8ead3a3d47a7fb0",
+      "source": "evidence/recovery/drafts/win_MakeObjSelected/9512e2cf6cc9.c",
+      "sha256": "9512e2cf6cc984a0f3f1fddb99a0d8def31bec27195b8cfd382cd3ed493211b2",
       "key": [
         false,
         false,
-        60,
-        -8
+        61,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/win_MakeObjSelected-5103147d50/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 60,
+      "opcode_matches": 61,
       "opcode_total": 85,
-      "candidate_bytes": 202,
+      "candidate_bytes": 194,
       "target_bytes": 194,
       "flags": [
         "/AL",
@@ -39141,13 +39293,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/win_MakeObjSelected/20260926T142418-95168/results.json",
+      "recorded": "2026-09-26T14:24:19.181884+00:00"
     },
     "notes": [
       {
         "text": "The baseline reproduces 60/85 and the mapped exclusive-group cleanup, but still omits target mov di,bx at +0x1f, flips the flag branch, and changes the target spill/loop homes. Making the object far-pointer variable volatile worsens it to 57/85 and 208 bytes. The next structural lead is the historical unit-level far-pointer/frame pattern; target table selector identity also remains private, so the isolated fixups cannot be proved.",
         "origin": "build/search/win_MakeObjSelected/20260925T225558-179472",
         "recorded": "2026-09-25T22:55:58.538292+00:00"
+      },
+      {
+        "text": "Stopped after 11 rounds / 44 variants, no strict member match. Best is R10a/R10b/R10c at 61/85 opcodes and 194/194 bytes (5/9 fixups); R10d has a real stack cursor but worse alignment. Families tried: original structured loop, handle declaration/type and raw selector views, local declaration ordering, object-pointer aliases, index/loop direction, far-pointer cursor, incremental window-plus-index loop, volatile cursor and reordered locals. Best aligned diff still lacks target mov di,bx and far-segment home after win_ObjAddr; candidate frame is 0x10 vs target 0x0e, cursor/local homes and DI/SI roles differ. Whole-member issues remain private win_handles selector/data at SIMTWO_MODULE offsets 0x4b/0x4f and same-segment far-call translation. Next useful experiment: recover the original source's two live object-pointer aliases and local lifetime/layout from the wider unit context; current loop-form families did not reproduce them.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:27:19.908441+00:00"
       }
     ]
   },
@@ -39165,20 +39324,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/win_MakeObjUnselected/e51a0140b6b0.c",
-      "sha256": "e51a0140b6b007b396a0ecd528f5dd017ec4e22156bdd80933574d5d8e3ee12b",
+      "source": "evidence/recovery/drafts/win_MakeObjUnselected/9e21cb7c2e83.c",
+      "sha256": "9e21cb7c2e83f64e74a00dd0f775c87d9286ced7963364a281d1221c687931a4",
       "key": [
         false,
         false,
-        60,
-        -9
+        64,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/win_MakeObjUnselected-9d27a12818/attempt01/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 60,
+      "opcode_matches": 64,
       "opcode_total": 85,
-      "candidate_bytes": 203,
+      "candidate_bytes": 194,
       "target_bytes": 194,
       "flags": [
         "/AL",
@@ -39186,13 +39344,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/win_MakeObjUnselected/20260926T140945-27588/results.json",
+      "recorded": "2026-09-26T14:09:47.050896+00:00"
     },
     "notes": [
       {
         "text": "The mapped exclusive-group cleanup gives the legacy best 60/85, but the same allocation residues remain: target copies the object offset into DI, homes the far table pointer and increments the spilled cursor; the source's pointer loop does not. Volatile pointer storage worsens the result to 58/85 and 208 bytes. Next test only with unit-level far-table selector and frame evidence.",
         "origin": "build/search/win_MakeObjUnselected/20260925T225646-153664",
         "recorded": "2026-09-25T22:56:46.970973+00:00"
+      },
+      {
+        "text": "Round 8 ended without a match. Best is 64/85 opcodes at 194/194 bytes. Tested indexed versus cursor scans, near/far/based win_handles declarations, group widths, register hints and aliases, loop forms, and local homes. First residue is ENTER 0x12 versus target 0x0e; target copies the object offset BX to DI, while candidates read group through BX. Target loads one far table entry with LES from DS:[BX-0x3166]; candidates emit two segment-10 fixups at offsets 0xCE9A/0xCE9C. Next needs unit-level win_handles storage, frame, and allocation evidence from the related selection-state members.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:19:15.205097+00:00"
       }
     ]
   },
@@ -39694,20 +39859,19 @@
   },
   "_win_RectFillOutline": {
     "best": {
-      "source": "evidence/recovery/drafts/win_RectFillOutline/9692a09261e4.c",
-      "sha256": "9692a09261e45c6cb082fb23f39401f4ef317a5a96da49bfebd6ef06dc392377",
+      "source": "evidence/recovery/drafts/win_RectFillOutline/852bef4b1bc5.c",
+      "sha256": "852bef4b1bc51d30214fe61db3d8059dd092a6542f08661bd8380a1918ce80e7",
       "key": [
-        false,
-        false,
-        19,
-        -4
+        true,
+        true,
+        22,
+        0
       ],
-      "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy build/reclassify/win_RectFillOutline/results.json",
-      "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 19,
+      "basis": "EXACT_BODY_CANDIDATE",
+      "result": "CONFIRMED_MEMBER",
+      "opcode_matches": 22,
       "opcode_total": 22,
-      "candidate_bytes": 36,
+      "candidate_bytes": 40,
       "target_bytes": 40,
       "flags": [
         "/AL",
@@ -39715,7 +39879,9 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/win_RectFillOutline/20260926T135216-79520/results.json",
+      "recorded": "2026-09-26T13:52:17.136251+00:00"
     },
     "legacy_draft": {
       "source": "src/recovered/win_RectFillOutline.c",
@@ -40245,20 +40411,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/win_SetObjSelectedState/7767c66f0acb.c",
-      "sha256": "7767c66f0acb14927acf1fb503c06e9ff2d32290881b15c639848d92830b6bba",
+      "source": "evidence/recovery/drafts/win_SetObjSelectedState/48251af6a19c.c",
+      "sha256": "48251af6a19c2b178b10c37fc2f69d9f232895152d1eecf31c0484ac5dbc4522",
       "key": [
         false,
         false,
-        60,
-        -9
+        63,
+        -6
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/win_SetObjSelectedState-eff61da9d3/attempt02/results.json",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 60,
+      "opcode_matches": 63,
       "opcode_total": 85,
-      "candidate_bytes": 204,
+      "candidate_bytes": 201,
       "target_bytes": 195,
       "flags": [
         "/AL",
@@ -40266,13 +40431,20 @@
         "/Gs",
         "/Oelw",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/win_SetObjSelectedState/20260926T140357-122700/results.json",
+      "recorded": "2026-09-26T14:03:59.480297+00:00"
     },
     "notes": [
       {
         "text": "The mapped selection cleanup gives the legacy 60/85 baseline. Making the object far pointer volatile adds spills and loses opcodes; the target still requires object offset in DI and a frame-homed far table cursor with ADD [bp-4],4. The private table selector is unresolved in isolation. Next use unit-level selector/frame evidence rather than more pointer qualifiers.",
         "origin": "build/search/win_SetObjSelectedState/20260925T225647-17456",
         "recorded": "2026-09-25T22:56:48.208157+00:00"
+      },
+      {
+        "text": "After 10 rounds (40 variants), no strict match. Best search score is obj_r5d at 62/85 opcodes, 206/195 bytes; obj_r7b/r7c reached 63/85 at 201/195 with lower overall score. First aligned divergence is target mov di,bx versus candidate storing bx at [bp-4]; then target compares group through DI while candidates use BX and different local homes. Only 2/9 fixups align. Tried array indexing, far-pointer cursors, volatile homes, casts, count snapshots, loop forms, declaration order, recomputed indexes, and early return. Next idea: use verified WinBucket table-field layout and unit local ordering to keep the object in DI while the cursor occupies its target home.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T14:28:31.627168+00:00"
       }
     ]
   },
@@ -40415,20 +40587,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/win_Swap/fb6a6c9cbd51.c",
-      "sha256": "fb6a6c9cbd51409b92320ed7cf043eb0577fe2cf860fc802e55b7bfa99e5b74c",
+      "source": "evidence/recovery/drafts/win_Swap/a253085877ab.c",
+      "sha256": "a253085877abe57e3e2f883c2118ff3415be5245f00cc57862455d00b67f352a",
       "key": [
         false,
         false,
-        105,
-        -29
+        120,
+        -13
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "origin": "legacy evidence/recovery/workflow/jobs/win_Swap-c4ae07a0e5/attempt03/results.json",
-      "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 105,
+      "result": "UNSUPPORTED_COMPARISON",
+      "opcode_matches": 120,
       "opcode_total": 148,
-      "candidate_bytes": 330,
+      "candidate_bytes": 346,
       "target_bytes": 359,
       "flags": [
         "/AL",
@@ -40437,7 +40608,9 @@
         "/Oelw",
         "/GA",
         "/NTSIMTWO_MODULE"
-      ]
+      ],
+      "origin": "build/search/win_Swap/20260926T141939-78716/results.json",
+      "recorded": "2026-09-26T14:19:40.639584+00:00"
     },
     "notes": [
       {
