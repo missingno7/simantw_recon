@@ -1103,18 +1103,6 @@
       "reviewed": "2026-09-21T20:40:34.701516+00:00"
     },
     {
-      "id": "asg-simtwo-1378-og",
-      "context": "simtwo:1378",
-      "profile": "og",
-      "symbols": [],
-      "strength": "DIAGNOSTIC",
-      "evidence": [
-        "evidence/experiments/optimizer-profile/probes/FollowBoyDir-c4608a8423.json"
-      ],
-      "reason": "FollowBoyDir reaches full opcode alignment with zero register differences (124/125, every non-fixup byte equal, the candidate only adds the trailing alignment nop) only under /Og: the abs if/else pair with dx/adx tracked in AX as memory locals, the constant-switch peephole and the direct memory compares of dx in the tail; under the baseline profile dx/dy take SI/DI and adx/ady go to memory (102/125, 5 register differences). The yard-simulation object simtwo:1378 shares one profile; its admitted members (InitSimYard unit, IsValidYard, InitGrassMap, MaintainSwarm, NotMowed) compile to identical objects under baseline and og (checked with the cached compiler service).",
-      "reviewed": "2026-09-21T20:46:57.386026+00:00"
-    },
-    {
       "id": "asg-simant1-2d4e-og",
       "context": "simant1:2D4E",
       "profile": "og",
@@ -1199,31 +1187,6 @@
       ],
       "reason": "The recorded profile probe for the only public in component gr:5E30 is STRONGLY_SUPPORTED_MEMBER under /Og and NO_COMPLETE_MATCH under baseline and GA; /Og is minimal because og-ga and ogi add no parent improvement. Scope this assignment to the singleton topology component.",
       "reviewed": "2026-09-24T02:24:54.551656+00:00"
-    },
-    {
-      "id": "asg-simant-01b6-ga",
-      "context": "simant:01B6",
-      "profile": "ga",
-      "symbols": [],
-      "strength": "STRICT",
-      "evidence": [
-        "evidence/experiments/profile-residues/probes/MYENUMFUNC.json"
-      ],
-      "reason": "MYENUMFUNC is a CONFIRMED_MEMBER under /GA with an __export callback entry; all 13 admitted simant:01B6 members retain issue-free literal-exact member contributions under baseline and ga (profiles worker, reviewed by supervisor)",
-      "reviewed": "2026-09-25T22:56:41.877848+00:00"
-    },
-    {
-      "id": "asg-simant-b324-og",
-      "context": "simant:B324",
-      "profile": "og",
-      "symbols": [],
-      "strength": "STRICT",
-      "evidence": [
-        "evidence/experiments/profile-residues/probes/win_DrawCasteWindow.json",
-        "evidence/experiments/profile-residues/probes/win_DrawModeWindow.json"
-      ],
-      "reason": "/Oeglw turns both bit-0 guards of _win_DrawCasteWindow/_win_DrawModeWindow into the target AND AL,1 (strict member); all six admitted simant:B324 members stay exact under og (profiles worker, reviewed by supervisor)",
-      "reviewed": "2026-09-25T22:56:52.176690+00:00"
     },
     {
       "id": "asg-text-8252-og",
@@ -1638,6 +1601,47 @@
       ],
       "reason": "The row-copy _fmemcpy candidate reproduces REP MOVSW/ADC/REP MOVSB and improves _CopyMonoBitmap from 36/316 to 49/316 opcodes under oi and ogi equally. Admitted sources of the context compile identically under oi (supervisor check 2026-09-26).",
       "reviewed": "2026-09-26T21:17:57.030761+00:00"
+    },
+    {
+      "id": "asg-simant-b324-ogi",
+      "context": "simant:B324",
+      "profile": "ogi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/profile-residues/probes/win_DrawCasteWindow.json",
+        "evidence/experiments/profile-residues/probes/win_DrawModeWindow.json",
+        "evidence/experiments/optimizer-profile/probes/ProcCasteEvent.json",
+        "evidence/experiments/optimizer-profile/probes/ProcModeEvent.json"
+      ],
+      "reason": "Both fixed four-byte point memcmp sites reproduce REP CMPS under /Oi; _ProcCasteEvent improves 277/342 opcodes and 928 bytes under og to 292/344 and 920 bytes under ogi, while _ProcModeEvent's size delta tightens from 13 to 5 bytes. Supersedes asg-simant-b324-og. Admitted sources of the context compile identically under ogi (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:39:28.605504+00:00"
+    },
+    {
+      "id": "asg-simtwo-1378-ogi",
+      "context": "simtwo:1378",
+      "profile": "ogi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/FollowBoyDir-c4608a8423.json",
+        "evidence/experiments/optimizer-profile/probes/SimKidOutside.json"
+      ],
+      "reason": "The nine-word 0xffff fill of match_position is a far memset site, not a zero aggregate; adding the natural call improves _SimKidOutside from 42/692 opcodes and 234 bytes under og to 49/692 and 230 bytes under ogi. Supersedes asg-simtwo-1378-og. Admitted sources of the context compile identically under ogi (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:39:29.784434+00:00"
+    },
+    {
+      "id": "asg-simant-01b6-oi-ga",
+      "context": "simant:01B6",
+      "profile": "oi-ga",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/profile-residues/probes/MYENUMFUNC.json",
+        "evidence/experiments/optimizer-profile/probes/WINMAIN.json"
+      ],
+      "reason": "Keeps the /GA evidence of asg-simant-01b6-ga (MYENUMFUNC) and adds /Oi: WINMAIN's REPE CMPSB/CMPSW compare sites are inline memcmp, and its natural source improves from 291/581 to 303/581 opcodes only with /Oi (oi minimal over baseline; og adds nothing). Supersedes asg-simant-01b6-ga; admitted sources of the context compile identically under oi-ga (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:39:52.581881+00:00"
     }
   ],
   "refutations": [

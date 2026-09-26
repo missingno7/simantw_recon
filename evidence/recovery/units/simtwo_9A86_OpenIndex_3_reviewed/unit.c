@@ -44,7 +44,6 @@ void far pool_stub_CloseIndex(void);
 void far pool_data_fill_B73E(void);
 int far DeleteIndex(int recIndex, int b, int c);
 
-#pragma alloc_text(RUN2_TEXT, OpenIndex)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_CreateIndex)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_CloseIndex)
 #pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_B73E)

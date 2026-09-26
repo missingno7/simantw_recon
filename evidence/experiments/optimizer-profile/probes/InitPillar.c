@@ -61,7 +61,7 @@ void far InitPillar(void)
     if (sowGuard != 0)
         return;
 
-    for (i = 2; i != 0; i--) {
+    for (i = 2; i > 0; i--) {
         x = SRand1(0x80);
         y = SRand1(0x40);
         if (MapA[x * 64 + y] < 0x10) {
@@ -71,5 +71,6 @@ void far InitPillar(void)
             SowSave[i] = MapA[x * 64 + y];
             MapA[x * 64 + y] = SowTab[SowDir[i]];
         }
+    
     }
 }
