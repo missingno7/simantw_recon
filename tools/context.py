@@ -106,7 +106,7 @@ def packet(symbol, brief=False, history=False):
     write_json(path, result)
     if brief:
         result = dict(size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
-                                         'direct_data_bindings', 'codegen_shape', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs')})
+                                         'direct_data_bindings', 'codegen_shape', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs') if k in result})
     result['packet'] = relative(path)
     return result
 
