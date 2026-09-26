@@ -1,3 +1,4 @@
+/* R2 v1: force the recall value into a one-word aggregate home. */
 extern int near db_numOfHandles;
 extern int near db_cacheTable;
 extern void far Punt(char far *message);
@@ -11,6 +12,7 @@ extern int far DBRecall(int position, int object, int kind, int far *out);
 
 unsigned int far db_LoadObject(int object, int kind, int lock)
 {
+    struct { int value; } resultSlot;
     int handle;
     int i;
     int dummy;
@@ -20,11 +22,10 @@ unsigned int far db_LoadObject(int object, int kind, int lock)
     handle = ch_LookUpId(object, kind, db_cacheTable);
     if (!handle) {
         for (i = 0; i < db_numOfHandles; i++) {
-            handle = DBRecall(MatchPos(i), object, kind, &dummy);
-            if (handle) {
-                if (!ch_AddEntry(object, kind, db_cacheTable, handle))
+            if ((resultSlot.value = DBRecall(MatchPos(i), object, kind, &dummy)) != 0) {
+                if (!ch_AddEntry(object, kind, db_cacheTable, resultSlot.value))
                     Punt("LoadObject: can't add to cache(%d)(%d)", object, kind);
-                return handle;
+                return resultSlot.value;
             }
         }
         WinPrintf("LoadObject: object not found(%d)(%d)", object, kind);

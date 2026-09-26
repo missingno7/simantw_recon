@@ -22,13 +22,14 @@
  * Requires the og profile (/Oeglw); only idx survives as a stack local
  * (enter 2, 0).
  */
-extern int __based(__segname("PACK")) Tindex;
+extern int far Tindex;
 extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistT[];
 extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistS[];
 extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistM[];
 extern unsigned char near MapR[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) HoleMapR[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) ExitMapR[];
+extern unsigned char far HoleMapR[];
+extern unsigned char near LifeR[];
+extern unsigned char far ExitMapR[];
 
 extern void far MakeNewHoleR(int x);
 extern int far ExitHole(int hole, int x, int val, int mode, int stam);
@@ -50,7 +51,7 @@ int far GetOutR(int x)
             MakeNewHoleR(x);
         if (ExitHole(HoleMapR[x], x, SRand8() + (raw & 0xf8),
                       RlistM[Tindex], RlistS[Tindex]) != 0) {
-            MapR[x << 6] = 0;
+            LifeR[(x << 6) + 1] = 0;
             return 1;
         }
         RlistT[Tindex] = raw;

@@ -1,0 +1,25 @@
+{
+  "description": "Supervisor-reviewed extents for originals whose CFG the solver cannot close (non-returning terminators, a far call at the segment end, unusual instruction streams). recovery_gate accepts a reviewed size only when it reaches the next MAPSYM entry or the segment end, up to one zero alignment byte, so the span has no other possible owner; the candidate must cover exactly the same span, and the complete member comparison and cross-entry branch check still apply.",
+  "symbols": {
+    "_DoInt3": {
+      "size": 1,
+      "evidence": "One INT 3 byte (0xCC) at SIMTWO_MODULE:F85B, the last byte of the segment; the solver refuses only because INT 3 does not return. Reviewed 2026-09-26."
+    },
+    "_NetBios": {
+      "size": 17,
+      "evidence": "Instructions tile SIMTWO_MODULE:8380..8391 up to the segment end, ending in the far call to the NetBIOS entry; the solver reports SHARED_TAIL only because nothing follows the call. Reviewed 2026-09-26."
+    },
+    "_EditMultipleScrollUpAsm": {
+      "size": 231,
+      "evidence": "Instructions tile 510C..51F3 exactly, ending POP DS; POPA; POP BP; RETF, and _EditMultipleScrollDownAsm starts at 51F3; the solver's gap/overlap refusal has no bytes outside the span. Reviewed 2026-09-26."
+    },
+    "_EditMultipleScrollDownAsm": {
+      "size": 228,
+      "evidence": "Instructions tile 51F3..52D7 ending in RETF, followed by one zero alignment byte before _XFlipLong at 52D8. Reviewed 2026-09-26."
+    },
+    "_NetBIOSPost": {
+      "size": 77,
+      "evidence": "MSC interrupt function (PUSHA/PUSH DS/PUSH ES ... POPA; IRET) whose instructions tile SIMANT_MODULE:1D72..1DBF up to the next MAPSYM entry; the solver refuses only because IRET is an interrupt terminator. Reviewed 2026-09-26."
+    }
+  }
+}

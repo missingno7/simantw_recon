@@ -3,7 +3,7 @@
 A matching member prefix is not proof of the requested function. Promotion must
 cover each requested public's independently established original extent.
 """
-from common import FormatError
+from common import FormatError, ROOT, read_json
 from matcher import unique_symbol
 from cfg_solver import solve
 from library_match import compare_member
@@ -31,6 +31,29 @@ def check_member(module, raw, image, symbols, imports, targets, scaffold=False):
     if not result or result['result'] not in GOOD:raise FormatError('complete member comparison failed: '+str(result and result.get('issues')))
     return result
 
+
+REVIEWED_EXTENTS = ROOT / 'layout/extent-review.json'
+
+
+def reviewed_extent(name, code, offset, upper):
+    """A supervisor-reviewed span for an original the CFG solver cannot close.
+
+    Accepted only when the reviewed size reaches the next MAPSYM entry (or the
+    segment end) up to at most one zero alignment byte, so the span has no other
+    possible owner. The candidate must then cover exactly the same span, and the
+    complete member comparison and the cross-entry branch check still apply.
+    """
+    if not REVIEWED_EXTENTS.is_file():
+        return None
+    entry = read_json(REVIEWED_EXTENTS)['symbols'].get(name)
+    if not entry:
+        return None
+    size = entry['size']
+    padding = code[offset + size:upper]
+    if not isinstance(size, int) or size <= 0 or offset + size > upper or len(padding) > 1 or any(padding):
+        raise FormatError('reviewed extent for %s does not reach the next entry: %s bytes of %d' % (name, size, upper - offset))
+    return dict(size=size, end=offset + size, status='REVIEWED', evidence=entry['evidence'])
+
 def admission_targets(module,raw,image,symbols,names,scaffold=False):
     """Derive bounded promotion scopes only for closed original AND candidate CFGs.
 
@@ -45,15 +68,27 @@ def admission_targets(module,raw,image,symbols,names,scaffold=False):
         if entries.count(offset)!=1:raise FormatError('overlapping/alias entry needs expert review: '+name)
         upper=min([p for p in entries if p>offset]+[len(code)])
         original=solve(code,offset,upper,entries,ns['relocations'],segment)
-        if original['end'] is None or original['status']!='PROBABLE':raise FormatError('original CFG needs expert extent review: '+name)
+        review=None
+        if original['end'] is None or original['status']!='PROBABLE':
+            review=reviewed_extent(name,code,offset,upper)
+            if not review:raise FormatError('original CFG needs expert extent review: '+name)
+            original=review
         pubs=[p for p in module['publics'] if p['name']==name]
         if len(pubs)!=1 or not pubs[0]['segment']:raise FormatError('requested candidate public missing: '+name)
         pub=pubs[0];ss=module['segments'][pub['segment']-1];candidate=bytes.fromhex(ss['data_hex'])
         next_public=min([p['offset'] for p in module['publics'] if p['segment']==pub['segment'] and p['offset']>pub['offset']]+[len(candidate)])
-        ce=solve(candidate,pub['offset'],next_public)
-        if ce['end'] is None or ce['status']!='PROBABLE' or ce['size']!=original['size']:raise FormatError('candidate CFG does not cover full original function: '+name)
+        if review:
+            # The candidate must occupy exactly the reviewed span up to its next public.
+            span=next_public-pub['offset']
+            if span not in (review['size'],review['size']+1) or any(candidate[pub['offset']+review['size']:next_public]):
+                raise FormatError('candidate does not cover exactly the reviewed extent: '+name)
+            evidence='Reviewed span extent (layout/extent-review.json: %s), candidate covering the same span and exact complete-member comparison'%review['evidence']
+        else:
+            ce=solve(candidate,pub['offset'],next_public)
+            if ce['end'] is None or ce['status']!='PROBABLE' or ce['size']!=original['size']:raise FormatError('candidate CFG does not cover full original function: '+name)
+            evidence='Closed original and candidate recursive CFGs, explicit NOP gaps, full initialized coverage and exact complete-member comparison'
         targets[name]=dict(segment=segment,offset=offset,size=original['size'],code_segment=original_segment['name'],extent_status='CONFIRMED',
-                           extent_evidence='Closed original and candidate recursive CFGs, explicit NOP gaps, full initialized coverage and exact complete-member comparison',comparison='member',historical_filename=None,proof='BYTE_MATCHED_RECONSTRUCTION')
+                           extent_evidence=evidence,comparison='member',historical_filename=None,proof='BYTE_MATCHED_RECONSTRUCTION')
     check_coverage(module,symbols,targets,scaffold)
     # Recompute cross-entry branch evidence from the original; a closed local
     # graph alone cannot establish that a tail has a single owner.

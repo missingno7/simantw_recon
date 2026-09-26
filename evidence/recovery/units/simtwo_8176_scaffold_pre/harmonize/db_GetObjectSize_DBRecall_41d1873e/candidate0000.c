@@ -1,3 +1,4 @@
+/* Return the saved object size for the first recalled handle matching name; release that handle, or return zero when no match exists. */
 extern int near db_numOfHandles;
 extern int far db_handles[];
 extern int far DBRecall(int position, int object, int kind, int far *out);
