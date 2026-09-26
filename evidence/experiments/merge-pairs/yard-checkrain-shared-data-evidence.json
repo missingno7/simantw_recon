@@ -1,0 +1,54 @@
+{
+  "publics": [
+    "_CheckRainArray",
+    "_ProcYardEvent",
+    "_ProcYardRibbonEvent",
+    "_DrawYardCursor"
+  ],
+  "claim_conflict": {
+    "range": "0x18B8-0x18C1",
+    "bytes": "25 73 00 28 25 64 29 00 0A 00",
+    "owner": "_CheckRainArray format strings (pushed at ANTEDIT_MODULE:0xA4E0/0xA4F1/0xA506)"
+  },
+  "private_words_without_mapsym_public": {
+    "0x18B4": [
+      "_ProcYardEvent",
+      "_ProcYardRibbonEvent",
+      "_win_DrawYardWindow",
+      "_DrawYard",
+      "_UpdateYard"
+    ],
+    "0x18B6": [
+      "_DrawYardCursor",
+      "_EraseYardCursor",
+      "_win_DrawYardWindow",
+      "_Draw_SimYard",
+      "_YardArea"
+    ],
+    "0x1900": [
+      "_ProcYardEvent",
+      "_ProcYardRibbonEvent",
+      "_UpdateYardMessage",
+      "_DrawYard",
+      "_UpdateYard",
+      "_DrawAnimYardMessage",
+      "_Draw_SimYard",
+      "_InvertPatch"
+    ],
+    "0x18C2-0x18D0": [
+      "_DrawYardData"
+    ]
+  },
+  "nearest_publics": {
+    "0x1886": "_yardAnimHandle",
+    "0x1894": "_patchRgn",
+    "0x18A4": "_patchRgn2"
+  },
+  "reasoning": [
+    "_ProcYardEvent/_ProcYardRibbonEvent (antedit:A51E) share unnamed private _DATA words 0x18B4 and 0x1900 with the yard component (antedit:A998): one object.",
+    "That object's private _DATA runs from at most 0x18AC to at least 0x1936 and is contiguous in link order; _CheckRainArray's three format literals at 0x18B8-0x18C1 lie inside it, so _CheckRainArray is in the same object.",
+    "Order is consistent with MSC 7.00 emission: file-scope initialized statics first, then literals in function order starting with the first function (_CheckRainArray at antedit:A4BC).",
+    "units-3a trial: removing the 10 bytes from the yard unit gives incompatible _DATA bases 0x188E and 0x1898 (build/workers/units-3a/REPORT.md)."
+  ],
+  "reviewed_by": "supervisor"
+}

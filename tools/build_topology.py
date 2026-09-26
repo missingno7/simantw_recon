@@ -25,12 +25,14 @@ from common import ROOT, fixture, read_json, write_json, identity
 from analysis import decoder, cs
 import ne, mapsym
 
-GAME_GROUPS = ['SIMANT_MODULE', 'GR_MODULE', 'ANTEDIT_MODULE', 'SIMONE_MODULE', 'SIMANT1_MODULE', 'SIMTWO_MODULE']
+GAME_GROUPS = ['SIMANT_MODULE', 'GR_MODULE', 'ANTEDIT_MODULE', 'SIMONE_MODULE', 'SIMANT1_MODULE', 'SIMTWO_MODULE', '_TEXT']
 REPORT = ROOT / 'evidence/topology/build-topology.json'
 
 
 def cards():
-    return [json.loads(line) for line in (ROOT / 'evidence/disassembly/cards.jsonl').read_text().splitlines()]
+    # Reviewed ownership applies: game routines reclassified out of _TEXT count.
+    from common import cards as reviewed_cards
+    return reviewed_cards()
 
 
 def selector_sites(image):
@@ -158,7 +160,8 @@ def build():
     from drafts import load as load_drafts
     jobs = {s: (row.get('legacy_jobs') or [{}])[-1] for s, row in load_drafts().items()}
     functions = {}
-    for card in cards():
+    all_cards = cards()
+    for card in all_cards:
         if card['ownership'] != 'GAME':
             continue
         slots, unnamed = function_features(card, sites, pool, named)
@@ -229,6 +232,14 @@ def build():
         fs = sorted([f for f in functions.values() if f['group'] == group], key=lambda f: f['offset'])
         index = {f['symbol']: i for i, f in enumerate(fs)}
         different = []   # (earlier symbol, later symbol, reason)
+        # Non-game code linked between two game functions of one segment (the
+        # C runtime and libraries in _TEXT) separates their objects.
+        others = sorted(c['offset'] for c in all_cards if c['segment_name'] == group and c['ownership'] != 'GAME')
+        for a, b in zip(fs, fs[1:]):
+            between = [o for o in others if a['offset'] < o < b['offset']]
+            if between:
+                different.append((a['symbol'], b['symbol'], dict(kind='foreign_code_between', count=len(between),
+                                  note='Library or runtime code lies between these functions; one object is contiguous in its code segment')))
         # Link-order relations between consecutive located functions of one
         # group, per coordinate; a proven difference localises a boundary to
         # the stretch between them.
@@ -330,7 +341,7 @@ def build():
             joint = sorted({r['unit'] for r in joins if r['kind'] == 'joint_compile_evidence'})
             tokens = Counter(m['token'] for m in members)
             inner = [b for b in boundaries if any(b['after'] == m['symbol'] for m in members[:-1]) and b['kind'] != 'SAME_OBJECT']
-            unit_id = '%s:%04X-%04X' % (group.split('_')[0].lower(), members[0]['offset'], members[-1]['offset'] + (members[-1]['size'] or 0))
+            unit_id = '%s:%04X-%04X' % (group.strip('_').split('_')[0].lower(), members[0]['offset'], members[-1]['offset'] + (members[-1]['size'] or 0))
             located_run = any(m['positions'] for m in members)
             confidence = ('UNLOCATED' if not located_run else 'STRONGLY_SUPPORTED_TU' if joint and len(comps) == 1 else
                           'CANDIDATE_TU' if len(comps) == 1 and (len(members) == 1 or joins) else 'CANDIDATE_RANGE')
@@ -340,7 +351,7 @@ def build():
             for root in dict.fromkeys(union.find(m['symbol']) for m in members):
                 span = [m for m in members if union.find(m['symbol']) == root]
                 kinds = Counter(r['kind'] for pair, rs in union.reasons.items() for r in rs if all(functions.get(q, {}).get('group') == group for q in pair) and any(m['symbol'] in pair for m in span) and r['kind'] != 'contiguity')
-                components.append(dict(id='%s:%04X' % (group.split('_')[0].lower(), span[0]['offset']), publics=[m['symbol'] for m in span],
+                components.append(dict(id='%s:%04X' % (group.strip('_').split('_')[0].lower(), span[0]['offset']), publics=[m['symbol'] for m in span],
                     pool_words=sorted({'%04X' % w for m in span for w in m['words']['pool']}), data_words=sorted({w for m in span for w in m['words']['data']}),
                     join_evidence=dict(kinds), admitted=sum(m['admitted'] for m in span), parked=[m['symbol'] for m in span if m['job_status'] == 'ESCALATED']))
             units.append(dict(candidate_unit=unit_id, segment=group, range=[members[0]['symbol'], members[-1]['symbol']],

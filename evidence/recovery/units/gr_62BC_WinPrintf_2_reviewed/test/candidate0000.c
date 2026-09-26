@@ -9,7 +9,6 @@ static char near winDebugCR[] = "\r";
 static char near winDebugLF[] = "\r";
 static char near debugCR[] = "\r";
 static char near debugTrailingCR[] = "\r";
-static char near debugFormat[] = "%s";
 
 int far WinPrintf(char far *format, ...)
 {

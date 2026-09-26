@@ -7,11 +7,11 @@
   ],
   "sources": {
     "*": {
-      "source": "evidence/topology/supervisor-unit-sources/db_SetDataBase-unit.c",
+      "source": "build/workers/units-3a/database.c",
       "basis": "REVIEWED_UNIT_SOURCE",
       "identity": {
-        "size": 1875,
-        "sha256": "ddb2d9313cb85b7ac54e71edd0bc5662d595c56bab5d86d1647725d463353859"
+        "size": 1483,
+        "sha256": "3a8e84323533bd0335e81f310f6e1e1abaa57d78fa6ba61cdbdcb6823f77a78d"
       }
     }
   },
@@ -25,47 +25,36 @@
   ],
   "layout": "reviewed",
   "overrides": {},
-  "reason": "Measured DGROUP B1EA flag plus unclaimed seven-byte %s.dat literal at B1EC precede claimed format at B1F3 and error at B1FA",
-  "created": "2026-09-23T07:44:28.751113+00:00",
+  "reason": "Remove the unreferenced B1EC literal filler; retain only _db_SetDataBase's private DATA.",
+  "created": "2026-09-26T06:58:45.049202+00:00",
   "topology": {
     "join_evidence": {
       "shared_slot": 5,
-      "shared_private": 4
+      "shared_private": 6
     },
     "range": "simtwo:8176-858A"
   },
   "status": "COMPOSED",
   "source": "evidence/recovery/units/simtwo_81AC_db_SetDataBase_1_reviewed/unit.c",
   "source_identity": {
-    "size": 1887,
-    "sha256": "d7e6faeb45da7eb3b6a895dd27d380848fe264e6416a39687484ad7fd9191e4a"
-  },
-  "scaffold": {
-    "segment": "POOLSTUB_TEXT",
-    "stubs": [
-      {
-        "function": "pool_data_fill_B1EC"
-      }
-    ],
-    "runs": [
-      [
-        "_db_SetDataBase"
-      ]
-    ],
-    "scope": "Reviewed stand-ins occupy reserved code only; their private contributions remain strictly compared"
+    "size": 1483,
+    "sha256": "3a8e84323533bd0335e81f310f6e1e1abaa57d78fa6ba61cdbdcb6823f77a78d"
   },
   "last_test": {
     "unit": "simtwo_81AC_db_SetDataBase_1_reviewed",
-    "result": "STRONGLY_SUPPORTED_MEMBER",
-    "issues": [],
+    "result": "NO_COMPLETE_MATCH",
+    "issues": [
+      "conflicting private placement constraints _DATA",
+      "SIMTWO_MODULE unresolved/mismatched fixup at 0x7c",
+      "SIMTWO_MODULE unresolved/mismatched fixup at 0x30",
+      "SIMTWO_MODULE unresolved/mismatched fixup at 0xd",
+      "SIMTWO_MODULE literal bytes differ",
+      "unplaced contribution _DATA"
+    ],
     "placements": {
       "1": [
         7,
         33196
-      ],
-      "2": [
-        10,
-        45546
       ],
       "3": [
         10,
@@ -73,27 +62,19 @@
       ]
     },
     "private_constraint_placements": [
-      2,
       3
     ],
-    "literal_equal": 144,
-    "literal_compared": 144,
-    "fixups_equal": 17,
+    "literal_equal": 104,
+    "literal_compared": 110,
+    "fixups_equal": 14,
     "fixups_total": 17,
     "contributions": [
       {
         "segment": "SIMTWO_MODULE",
         "original_offset": 33196,
         "length": 146,
-        "divergences": 0,
-        "failed_fixups": 0
-      },
-      {
-        "segment": "_DATA",
-        "original_offset": 45546,
-        "length": 40,
-        "divergences": 0,
-        "failed_fixups": 0
+        "divergences": 6,
+        "failed_fixups": 3
       },
       {
         "segment": "CONST",
@@ -105,6 +86,6 @@
     ],
     "compiler_log": null,
     "report": "evidence/recovery/units/simtwo_81AC_db_SetDataBase_1_reviewed/test/results.json",
-    "tested": "2026-09-23T07:44:35.844808+00:00"
+    "tested": "2026-09-26T06:58:45.688827+00:00"
   }
 }

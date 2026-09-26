@@ -79,3 +79,31 @@ class RecoveredTUProofTests(unittest.TestCase):
 
 if __name__=='__main__':unittest.main()
 
+
+
+class UnplaceableCandidateTests(unittest.TestCase):
+    def test_unplaceable_candidate_is_refused_but_keeps_diagnostic(self):
+        import codegen_diff, codegen_grinder, tempfile
+        from common import identity
+        with tempfile.TemporaryDirectory(dir=ROOT/'build') as tmp:
+            out = Path(tmp)
+            obj = out/'fake.obj'; obj.write_bytes(b'x')
+            src = out/'fake.c'; src.write_text('int f(void){return 0;}\n')
+            receipt = dict(unsupported_option=False, source=src.relative_to(ROOT).as_posix(), source_identity=identity(src),
+                           object_identity=identity(obj), exit_code=0, stdout='', batch_directory='b')
+            def raise_outside(*a, **k):
+                raise FormatError('contribution outside original')
+            spec = dict(symbol='_drawHistGraph', flags=['/AL'], template='int f(void){return 0;}\n', choices={}, max_candidates=1)
+            with patch.object(codegen_grinder, 'variants', return_value=iter([('int f(void){return 0;}\n', {})])), \
+                 patch.object(codegen_grinder, 'compile_batch', return_value=[(obj, receipt)]), \
+                 patch.object(codegen_grinder, 'import_symbols', return_value={}), \
+                 patch.object(codegen_grinder.omf, 'parse', return_value={}), \
+                 patch.object(codegen_grinder, 'score_object', side_effect=raise_outside), \
+                 patch.object(codegen_diff, 'diagnose', return_value=dict(marker=True)), \
+                 patch.object(codegen_diff, 'render', return_value='diff'):
+                report = codegen_grinder.run(spec, out.relative_to(ROOT).as_posix())
+            r = report['results'][0]['comparison']
+            self.assertEqual(r['result'], 'UNSUPPORTED_COMPARISON')
+            self.assertEqual(r['issues'], ['contribution outside original'])
+            self.assertEqual(r['diagnostic'], dict(marker=True))
+            self.assertEqual(report['exact_candidates'], [])

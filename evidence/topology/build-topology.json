@@ -3,16 +3,16 @@
   "scope": "Probable historical build topology; routing and grouping evidence only, never recovery credit or historical filenames",
   "inputs": {
     "evidence/disassembly/cards.jsonl": {
-      "size": 18391819,
-      "sha256": "4f45664877b3cecc66b8c22c76f4b65e284295cfbd487f972197ebe7e23f86a7"
+      "size": 18325030,
+      "sha256": "fc2f742d2c0f9a2d6e4eddc814f56e0ddc53ab51af25103237cdd146bfa697d8"
     },
     "build/recovery/verified-objects.json": {
-      "size": 52854196,
-      "sha256": "9eef46884cb15f5753195129a0cc2047a332cd75c6c0ce0251b9a64b7f279208"
+      "size": 53243900,
+      "sha256": "f2f5f3c00bc6e4b95fd81ca13b1250486d160b4cf4f1d3e47727881c76017384"
     },
     "layout/translation-units.json": {
-      "size": 28774,
-      "sha256": "d345a5473c72bc56d430abb255e36eef7ccd4f0f8efa3f1dd313d9f64ec83c5f"
+      "size": 30005,
+      "sha256": "9c569737ae1ab8c6d0826ba6f9fdb33385ecfccec607b85ae314fa8ee9a1abd8"
     }
   },
   "code_group_naming": {
@@ -22,7 +22,8 @@
       "ANTEDIT_MODULE",
       "SIMONE_MODULE",
       "SIMANT1_MODULE",
-      "SIMTWO_MODULE"
+      "SIMTWO_MODULE",
+      "_TEXT"
     ],
     "compiler_default": "<basename>_TEXT (observed INPUT_TEXT for INPUT.C under MSC 7.00)",
     "interpretation": "Explicitly assigned code segment names (/NT or equivalent); not compiler defaults and not linker-generated",
@@ -60,7 +61,8 @@
             "RUNTIME",
             "SIMANT1_MODULE",
             "SIMONE_MODULE",
-            "SIMTWO_MODULE"
+            "SIMTWO_MODULE",
+            "_TEXT"
           ],
           "note": "Another code group contributed between these link positions; one object is contiguous in link order"
         },
@@ -79,7 +81,8 @@
             "RUNTIME",
             "SIMANT1_MODULE",
             "SIMONE_MODULE",
-            "SIMTWO_MODULE"
+            "SIMTWO_MODULE",
+            "_TEXT"
           ],
           "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments"
         },
@@ -88,13 +91,6 @@
     ],
     "single_logical_segment_assumptions": [],
     "observed_reversals": [
-      {
-        "group": "SIMANT_MODULE",
-        "earlier": "_StopSimulation",
-        "later": "_RestartSimulation",
-        "space": "data",
-        "same_object": true
-      },
       {
         "group": "GR_MODULE",
         "earlier": "_RallocInfo",
@@ -125,17 +121,10 @@
       },
       {
         "group": "ANTEDIT_MODULE",
-        "earlier": "_DoTool",
-        "later": "_SpecialTutorialInit",
-        "space": "data",
-        "same_object": false
-      },
-      {
-        "group": "ANTEDIT_MODULE",
         "earlier": "_CheckRainArray",
         "later": "_DrawYardCursor",
         "space": "data",
-        "same_object": false
+        "same_object": true
       },
       {
         "group": "ANTEDIT_MODULE",
@@ -156,10 +145,10 @@
         "earlier": "_db_Exists",
         "later": "_db_SetDataBase",
         "space": "data",
-        "same_object": false
+        "same_object": true
       }
     ],
-    "reversals_inside_proven_objects": 3
+    "reversals_inside_proven_objects": 4
   },
   "code_groups": {
     "SIMANT_MODULE": {
@@ -597,24 +586,13 @@
         {
           "after": "_EndGameDialog",
           "before": "_SpiderDialog",
-          "kind": "HARD_ZONE_START",
+          "kind": "SOFT",
           "reasons": [
             {
-              "kind": "interleaved_object",
-              "space": "data",
-              "other_groups": [
-                "ANTEDIT_MODULE",
-                "GR_MODULE"
-              ],
-              "note": "Another code group contributed between these link positions; one object is contiguous in link order",
-              "between": [
-                "_DoScenario",
-                "_myDelay"
-              ],
-              "zone": [
-                "_EndGameDialog",
-                "_UpdateLayQueenModeDisplay"
-              ]
+              "kind": "name_token_change",
+              "left": "End",
+              "right": "Spider",
+              "note": "Weak signal only"
             }
           ]
         },
@@ -634,13 +612,24 @@
         {
           "after": "_CustomerIDDialog",
           "before": "_processEdit",
-          "kind": "SOFT",
+          "kind": "HARD_ZONE_START",
           "reasons": [
             {
-              "kind": "name_token_change",
-              "left": "Customer",
-              "right": "proc",
-              "note": "Weak signal only"
+              "kind": "interleaved_object",
+              "space": "data",
+              "other_groups": [
+                "ANTEDIT_MODULE",
+                "GR_MODULE"
+              ],
+              "note": "Another code group contributed between these link positions; one object is contiguous in link order",
+              "between": [
+                "_CustomerIDDialog",
+                "_myDelay"
+              ],
+              "zone": [
+                "_CustomerIDDialog",
+                "_UpdateLayQueenModeDisplay"
+              ]
             }
           ]
         },
@@ -846,11 +835,11 @@
               ],
               "note": "Another code group contributed between these link positions; one object is contiguous in link order",
               "between": [
-                "_DoScenario",
+                "_CustomerIDDialog",
                 "_myDelay"
               ],
               "zone": [
-                "_EndGameDialog",
+                "_CustomerIDDialog",
                 "_UpdateLayQueenModeDisplay"
               ]
             }
@@ -2180,7 +2169,8 @@
                 "SIMANT1_MODULE",
                 "SIMANT_MODULE",
                 "SIMONE_MODULE",
-                "SIMTWO_MODULE"
+                "SIMTWO_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2416,7 +2406,8 @@
               "other_groups": [
                 "SIMANT1_MODULE",
                 "SIMONE_MODULE",
-                "SIMTWO_MODULE"
+                "SIMTWO_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2578,7 +2569,8 @@
                 "SIMANT1_MODULE",
                 "SIMANT_MODULE",
                 "SIMONE_MODULE",
-                "SIMTWO_MODULE"
+                "SIMTWO_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2626,7 +2618,8 @@
               "space": "data",
               "other_groups": [
                 "ANTEDIT_MODULE",
-                "SIMANT_MODULE"
+                "SIMANT_MODULE",
+                "_TEXT"
               ],
               "note": "Another code group contributed between these link positions; one object is contiguous in link order",
               "between": [
@@ -2693,7 +2686,8 @@
               "other_groups": [
                 "SIMANT1_MODULE",
                 "SIMONE_MODULE",
-                "SIMTWO_MODULE"
+                "SIMTWO_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2716,7 +2710,8 @@
               "kind": "logical_segment_reversal",
               "space": "pool",
               "other_groups": [
-                "ANTEDIT_MODULE"
+                "ANTEDIT_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2733,7 +2728,8 @@
               "space": "data",
               "other_groups": [
                 "ANTEDIT_MODULE",
-                "SIMANT_MODULE"
+                "SIMANT_MODULE",
+                "_TEXT"
               ],
               "note": "Another code group contributed between these link positions; one object is contiguous in link order",
               "between": [
@@ -2756,7 +2752,8 @@
               "kind": "logical_segment_reversal",
               "space": "data",
               "other_groups": [
-                "ANTEDIT_MODULE"
+                "ANTEDIT_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2804,7 +2801,8 @@
               "kind": "logical_segment_reversal",
               "space": "pool",
               "other_groups": [
-                "ANTEDIT_MODULE"
+                "ANTEDIT_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -2820,7 +2818,8 @@
               "kind": "logical_segment_reversal",
               "space": "data",
               "other_groups": [
-                "ANTEDIT_MODULE"
+                "ANTEDIT_MODULE",
+                "_TEXT"
               ],
               "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
               "between": [
@@ -3276,7 +3275,7 @@
       "segment": 3,
       "functions": 145,
       "code_bytes": 55663,
-      "units": 4,
+      "units": 6,
       "boundaries": [
         {
           "after": "_ZapEuMapAt",
@@ -3565,7 +3564,8 @@
               "space": "data",
               "other_groups": [
                 "GR_MODULE",
-                "SIMANT_MODULE"
+                "SIMANT_MODULE",
+                "_TEXT"
               ],
               "note": "Another code group contributed between these link positions; one object is contiguous in link order",
               "between": [
@@ -3668,7 +3668,8 @@
               "space": "data",
               "other_groups": [
                 "GR_MODULE",
-                "SIMANT_MODULE"
+                "SIMANT_MODULE",
+                "_TEXT"
               ],
               "note": "Another code group contributed between these link positions; one object is contiguous in link order",
               "between": [
@@ -3817,13 +3818,23 @@
         {
           "after": "_SetSM",
           "before": "_clip_SetWin",
-          "kind": "SOFT",
+          "kind": "HARD_ZONE_START",
           "reasons": [
             {
-              "kind": "name_token_change",
-              "left": "Set",
-              "right": "clip_",
-              "note": "Weak signal only"
+              "kind": "logical_segment_reversal",
+              "space": "data",
+              "other_groups": [
+                "_TEXT"
+              ],
+              "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
+              "between": [
+                "_DoTool",
+                "_SpecialTutorialInit"
+              ],
+              "zone": [
+                "_SetSM",
+                "OPENDLG"
+              ]
             }
           ]
         },
@@ -3917,13 +3928,23 @@
         {
           "after": "_ChangeDirectory",
           "before": "OPENDLG",
-          "kind": "SOFT",
+          "kind": "HARD_ZONE_END",
           "reasons": [
             {
-              "kind": "name_token_change",
-              "left": "Change",
-              "right": "OPEN",
-              "note": "Weak signal only"
+              "kind": "logical_segment_reversal",
+              "space": "data",
+              "other_groups": [
+                "_TEXT"
+              ],
+              "note": "Later code introduces an earlier link position with foreign contributions between: different objects in different logical segments",
+              "between": [
+                "_DoTool",
+                "_SpecialTutorialInit"
+              ],
+              "zone": [
+                "_SetSM",
+                "OPENDLG"
+              ]
             }
           ]
         },
@@ -3991,15 +4012,8 @@
         {
           "after": "_CheckRainArray",
           "before": "_ProcYardEvent",
-          "kind": "SOFT",
-          "reasons": [
-            {
-              "kind": "name_token_change",
-              "left": "Check",
-              "right": "Proc",
-              "note": "Weak signal only"
-            }
-          ]
+          "kind": "SAME_OBJECT",
+          "reasons": []
         },
         {
           "after": "_ProcYardEvent",
@@ -4010,15 +4024,8 @@
         {
           "after": "_ProcYardRibbonEvent",
           "before": "_DrawYardCursor",
-          "kind": "SOFT",
-          "reasons": [
-            {
-              "kind": "name_token_change",
-              "left": "Proc",
-              "right": "Draw",
-              "note": "Weak signal only"
-            }
-          ]
+          "kind": "SAME_OBJECT",
+          "reasons": []
         },
         {
           "after": "_DrawYardCursor",
@@ -4319,7 +4326,7 @@
           "reasons": []
         }
       ],
-      "proven_different_pairs": 2
+      "proven_different_pairs": 3
     },
     "SIMONE_MODULE": {
       "segment": 5,
@@ -7300,7 +7307,7 @@
         {
           "after": "_db_Exists",
           "before": "_db_SetDataBase",
-          "kind": "UNKNOWN",
+          "kind": "SAME_OBJECT",
           "reasons": []
         },
         {
@@ -8657,6 +8664,613 @@
         }
       ],
       "proven_different_pairs": 5
+    },
+    "_TEXT": {
+      "segment": 4,
+      "functions": 72,
+      "code_bytes": 15732,
+      "units": 4,
+      "boundaries": [
+        {
+          "after": "_WindowsMono_MakeTable4x4a",
+          "before": "_WindowsMono_MakeTable4x4b",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_WindowsMono_MakeTable4x4b",
+          "before": "_WindowsMono_MakeTable2x2a",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_WindowsMono_MakeTable2x2a",
+          "before": "_WindowsMono_MakeTable2x2b",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_WindowsMono_MakeTable2x2b",
+          "before": "_Windows_MakeTable4x4",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_Windows_MakeTable4x4",
+          "before": "_Windows_MakeTable1x1",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_Windows_MakeTable1x1",
+          "before": "_GenOverMap",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Windows",
+              "right": "Gen",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_GenOverMap",
+          "before": "_GenNestMap",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_GenNestMap",
+          "before": "_XferTileColor",
+          "kind": "HARD_ZONE_START",
+          "reasons": [
+            {
+              "kind": "interleaved_object",
+              "space": "data",
+              "other_groups": [
+                "ANTEDIT_MODULE",
+                "GR_MODULE"
+              ],
+              "note": "Another code group contributed between these link positions; one object is contiguous in link order",
+              "between": [
+                "_GenNestMap",
+                "_CopyChar"
+              ],
+              "zone": [
+                "_GenNestMap",
+                "_CopyChar"
+              ]
+            }
+          ]
+        },
+        {
+          "after": "_XferTileColor",
+          "before": "_XferTileMono",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_XferTileMono",
+          "before": "_XferLifeTileColor",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_XferLifeTileColor",
+          "before": "_XferLifeTileMono",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_XferLifeTileMono",
+          "before": "_DoCalcTile",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Xfer",
+              "right": "Do",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_DoCalcTile",
+          "before": "_EditScrollRightColor",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Do",
+              "right": "Edit",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_EditScrollRightColor",
+          "before": "_EditScrollLeftColor",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollLeftColor",
+          "before": "_EditScrollDownColor",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollDownColor",
+          "before": "_EditScrollUpColor",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollUpColor",
+          "before": "_EditScrollRightAsm",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollRightAsm",
+          "before": "_EditScrollLeftAsm",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollLeftAsm",
+          "before": "_EditScrollDownAsm",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollDownAsm",
+          "before": "_EditScrollUpAsm",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditScrollUpAsm",
+          "before": "_EditMultipleScrollUpAsm",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditMultipleScrollUpAsm",
+          "before": "_EditMultipleScrollDownAsm",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_EditMultipleScrollDownAsm",
+          "before": "_XFlipLong",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Edit",
+              "right": "XFli",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_XFlipLong",
+          "before": "_FlipWords",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "XFli",
+              "right": "Flip",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_FlipWords",
+          "before": "_win_DrawInfoWindow",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Flip",
+              "right": "win_",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_win_DrawInfoWindow",
+          "before": "_win_PrintStyleTextInRect",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_win_PrintStyleTextInRect",
+          "before": "_win_GetStyleTextHeight",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_win_GetStyleTextHeight",
+          "before": "_DisplayCard",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_DisplayCard",
+          "before": "_OpenInfoWindow",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_OpenInfoWindow",
+          "before": "_PopUpInfoWindow",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_PopUpInfoWindow",
+          "before": "_ProcInfoEvent",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_ProcInfoEvent",
+          "before": "_CheatKeys",
+          "kind": "HARD",
+          "reasons": [
+            {
+              "kind": "interleaved_object",
+              "space": "pool",
+              "other_groups": [
+                "GR_MODULE"
+              ],
+              "note": "Another code group contributed between these link positions; one object is contiguous in link order",
+              "between": [
+                "_ProcInfoEvent",
+                "_CheatKeys"
+              ],
+              "zone": [
+                "_ProcInfoEvent",
+                "_CheatKeys"
+              ]
+            }
+          ]
+        },
+        {
+          "after": "_CheatKeys",
+          "before": "_CopyChar",
+          "kind": "HARD_ZONE_END",
+          "reasons": [
+            {
+              "kind": "interleaved_object",
+              "space": "data",
+              "other_groups": [
+                "ANTEDIT_MODULE",
+                "GR_MODULE"
+              ],
+              "note": "Another code group contributed between these link positions; one object is contiguous in link order",
+              "between": [
+                "_GenNestMap",
+                "_CopyChar"
+              ],
+              "zone": [
+                "_GenNestMap",
+                "_CopyChar"
+              ]
+            }
+          ]
+        },
+        {
+          "after": "_CopyChar",
+          "before": "_CopyCharRep",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_CopyCharRep",
+          "before": "_MoveTextToBalloon",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_MoveTextToBalloon",
+          "before": "_MaskMono2Tandy",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Move",
+              "right": "Mask",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_MaskMono2Tandy",
+          "before": "_exchange",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Mask",
+              "right": "exch",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_exchange",
+          "before": "_os_ClipLine",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "exch",
+              "right": "os_",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_os_ClipLine",
+          "before": "_PlotLine",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "os_",
+              "right": "Plot",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_PlotLine",
+          "before": "_PlotMonoLine",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_PlotMonoLine",
+          "before": "_FlipWord",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Plot",
+              "right": "Flip",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_FlipWord",
+          "before": "_FlipLong",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_FlipLong",
+          "before": "_NbFinalStatus",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Flip",
+              "right": "Nb",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_NbFinalStatus",
+          "before": "_NbImmediateStatus",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbImmediateStatus",
+          "before": "_CopyName",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Nb",
+              "right": "Copy",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_CopyName",
+          "before": "_NbCall",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Copy",
+              "right": "Nb",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_NbCall",
+          "before": "_NbAddName",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbAddName",
+          "before": "_NbReset",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbReset",
+          "before": "_NbSend",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbSend",
+          "before": "_NbListen",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbListen",
+          "before": "_NbPostListen",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbPostListen",
+          "before": "_NbDeleteName",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbDeleteName",
+          "before": "_NbReceive",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbReceive",
+          "before": "_NbPostReceiveAny",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbPostReceiveAny",
+          "before": "_NbHangUp",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbHangUp",
+          "before": "_NbCheck",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_NbCheck",
+          "before": "GTCLIENTWNDPROC",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Nb",
+              "right": "GTCL",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "GTCLIENTWNDPROC",
+          "before": "_GtRegisterClass",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_GtRegisterClass",
+          "before": "_GtInitiateDDE",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_GtInitiateDDE",
+          "before": "_GtAppToGateway",
+          "kind": "SAME_OBJECT",
+          "reasons": []
+        },
+        {
+          "after": "_GtAppToGateway",
+          "before": "_MaAlloc",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Gt",
+              "right": "Ma",
+              "note": "Weak signal only"
+            }
+          ]
+        },
+        {
+          "after": "_MaAlloc",
+          "before": "_MaFree",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaFree",
+          "before": "_MaReAlloc",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaReAlloc",
+          "before": "_MaAllocHandle",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaAllocHandle",
+          "before": "_MaReAllocHandle",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaReAllocHandle",
+          "before": "_MaFreeHandle",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaFreeHandle",
+          "before": "_MaLock",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaLock",
+          "before": "_MaUnlock",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaUnlock",
+          "before": "_MaMemCpy",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaMemCpy",
+          "before": "_MaMemMove",
+          "kind": "UNKNOWN",
+          "reasons": []
+        },
+        {
+          "after": "_MaMemMove",
+          "before": "_NetBios",
+          "kind": "SOFT",
+          "reasons": [
+            {
+              "kind": "name_token_change",
+              "left": "Ma",
+              "right": "Net",
+              "note": "Weak signal only"
+            }
+          ]
+        }
+      ],
+      "proven_different_pairs": 2
     }
   },
   "units": [
@@ -8766,10 +9380,9 @@
           "_DATA:1653",
           "_DATA:48362",
           "_DATA:64",
-          "_DATA:668",
-          "_DATA:68"
+          "_DATA:668"
         ],
-        "hard_join_count": 54,
+        "hard_join_count": 55,
         "reversed_reuse_joins": 0,
         "joint_compile_evidence": [
           "simant_stop_restart_shared_counter"
@@ -8810,10 +9423,10 @@
           ],
           "pool_words": [],
           "data_words": [
-            64,
-            68
+            64
           ],
           "join_evidence": {
+            "shared_private": 1,
             "joint_compile_evidence": 1
           },
           "admitted": 2,
@@ -9078,11 +9691,11 @@
       "after_runtime_data": false
     },
     {
-      "candidate_unit": "simant:4C24-673A",
+      "candidate_unit": "simant:4C24-6A37",
       "segment": "SIMANT_MODULE",
       "range": [
         "_SetMenuEntries",
-        "_EndGameDialog"
+        "_CustomerIDDialog"
       ],
       "publics": [
         "_SetMenuEntries",
@@ -9103,18 +9716,20 @@
         "_win_DrawPictureWindow",
         "_PictureDialog",
         "_win_DrawEndGameWindow",
-        "_EndGameDialog"
+        "_EndGameDialog",
+        "_SpiderDialog",
+        "_CustomerIDDialog"
       ],
-      "function_count": 19,
-      "code_bytes": 6924,
-      "admitted": 9,
+      "function_count": 21,
+      "code_bytes": 7688,
+      "admitted": 10,
       "pool_range": [
         "BECA",
-        "BF00"
+        "BF04"
       ],
       "data_range": [
         2304,
-        2384
+        2415
       ],
       "evidence": {
         "contiguous_publics": true,
@@ -9146,14 +9761,18 @@
           "BEFA",
           "BEFC",
           "BEFE",
-          "BF00"
+          "BF00",
+          "BF02",
+          "BF04"
         ],
         "shared_private_data": [
           "CONST:48842",
           "CONST:48858",
+          "CONST:48900",
           "_BSS:51892",
           "_DATA:2304",
-          "_DATA:2384"
+          "_DATA:2384",
+          "_DATA:2415"
         ],
         "hard_join_count": 30,
         "reversed_reuse_joins": 0,
@@ -9178,11 +9797,13 @@
           "rep stosw",
           "repne scasb"
         ],
-        "same_object_components": 4,
+        "same_object_components": 6,
         "internal_soft_boundaries": [
           "_ProcMenu|_InitApplicationWindows",
           "_InitApplicationWindows|_InitApplicationStuff",
-          "_InitApplicationStuff|_CalcScore"
+          "_InitApplicationStuff|_CalcScore",
+          "_EndGameDialog|_SpiderDialog",
+          "_SpiderDialog|_CustomerIDDialog"
         ]
       },
       "components": [
@@ -9294,21 +9915,51 @@
             "_win_DrawEndGameWindow",
             "_EndGameDialog"
           ]
+        },
+        {
+          "id": "simant:673A",
+          "publics": [
+            "_SpiderDialog"
+          ],
+          "pool_words": [
+            "BF02"
+          ],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": [
+            "_SpiderDialog"
+          ]
+        },
+        {
+          "id": "simant:6954",
+          "publics": [
+            "_CustomerIDDialog"
+          ],
+          "pool_words": [
+            "BF04"
+          ],
+          "data_words": [
+            2415
+          ],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": [
+            "_CustomerIDDialog"
+          ]
         }
       ],
       "confidence": "CANDIDATE_RANGE",
       "after_runtime_data": false
     },
     {
-      "candidate_unit": "simant:673A-8A6A",
+      "candidate_unit": "simant:6A38-8A6A",
       "segment": "SIMANT_MODULE",
       "range": [
-        "_SpiderDialog",
+        "_processEdit",
         "_YellowHelp"
       ],
       "publics": [
-        "_SpiderDialog",
-        "_CustomerIDDialog",
         "_processEdit",
         "_DoLaserFire",
         "_processSpider",
@@ -9325,19 +9976,17 @@
         "_YellowCommand",
         "_YellowHelp"
       ],
-      "function_count": 17,
-      "code_bytes": 8999,
-      "admitted": 5,
+      "function_count": 15,
+      "code_bytes": 8235,
+      "admitted": 6,
       "pool_range": [
-        "BF02",
+        "BF06",
         "BF72"
       ],
       "data_range": null,
       "evidence": {
         "contiguous_publics": true,
         "shared_selectors": [
-          "BF02",
-          "BF04",
           "BF06",
           "BF08",
           "BF0A",
@@ -9397,7 +10046,7 @@
         "shared_private_data": [
           "CONST:48902"
         ],
-        "hard_join_count": 66,
+        "hard_join_count": 67,
         "reversed_reuse_joins": 0,
         "joint_compile_evidence": [],
         "semantic_cluster": [
@@ -9415,43 +10064,10 @@
           ]
         ],
         "string_intrinsic_fingerprints": [],
-        "same_object_components": 3,
-        "internal_soft_boundaries": [
-          "_SpiderDialog|_CustomerIDDialog",
-          "_CustomerIDDialog|_processEdit"
-        ]
+        "same_object_components": 1,
+        "internal_soft_boundaries": []
       },
       "components": [
-        {
-          "id": "simant:673A",
-          "publics": [
-            "_SpiderDialog"
-          ],
-          "pool_words": [
-            "BF02"
-          ],
-          "data_words": [],
-          "join_evidence": {},
-          "admitted": 0,
-          "parked": [
-            "_SpiderDialog"
-          ]
-        },
-        {
-          "id": "simant:6954",
-          "publics": [
-            "_CustomerIDDialog"
-          ],
-          "pool_words": [
-            "BF04"
-          ],
-          "data_words": [],
-          "join_evidence": {},
-          "admitted": 0,
-          "parked": [
-            "_CustomerIDDialog"
-          ]
-        },
         {
           "id": "simant:6A38",
           "publics": [
@@ -9531,9 +10147,9 @@
           "data_words": [],
           "join_evidence": {
             "shared_slot": 62,
-            "shared_private": 4
+            "shared_private": 5
           },
-          "admitted": 5,
+          "admitted": 6,
           "parked": [
             "_DoLaserFire",
             "_processSpider",
@@ -9548,7 +10164,7 @@
           ]
         }
       ],
-      "confidence": "CANDIDATE_RANGE",
+      "confidence": "CANDIDATE_TU",
       "after_runtime_data": false
     },
     {
@@ -9982,7 +10598,7 @@
           "_DATA:5386",
           "_DATA:5388",
           "_DATA:5441",
-          "_DATA:5482",
+          "_DATA:5490",
           "_DATA:5562",
           "_DATA:5690"
         ],
@@ -10183,7 +10799,7 @@
             "C11A"
           ],
           "data_words": [
-            5482
+            5490
           ],
           "join_evidence": {
             "shared_slot": 21,
@@ -12813,7 +13429,7 @@
           "_DATA:2768",
           "_DATA:2800"
         ],
-        "hard_join_count": 46,
+        "hard_join_count": 47,
         "reversed_reuse_joins": 0,
         "joint_compile_evidence": [
           "sound-availability-candidate"
@@ -12968,7 +13584,7 @@
           ],
           "join_evidence": {
             "shared_slot": 17,
-            "shared_private": 27,
+            "shared_private": 28,
             "joint_compile_evidence": 1
           },
           "admitted": 15,
@@ -13704,11 +14320,11 @@
       "after_runtime_data": false
     },
     {
-      "candidate_unit": "antedit:7022-E9E9",
+      "candidate_unit": "antedit:7022-8E44",
       "segment": "ANTEDIT_MODULE",
       "range": [
         "_processExp",
-        "_ToggleMiniMapCursor"
+        "_SetSM"
       ],
       "publics": [
         "_processExp",
@@ -13733,191 +14349,22 @@
         "_SmoothACell",
         "_IsValidSLoc",
         "_GetSM",
-        "_SetSM",
-        "_clip_SetWin",
-        "_clip_Off",
-        "_clip_KillWin",
-        "_clip_SubInclude",
-        "_clip_SubExclude",
-        "_clip_Pop",
-        "_clip_Push",
-        "_clip_ToRect",
-        "_clip_ToObj",
-        "_UpdateListBox",
-        "_SeparateFile",
-        "_ChangeDirectory",
-        "OPENDLG",
-        "SAVEASDLG",
-        "_FileSelect",
-        "_SpecialTutorialInit",
-        "_DoPreLoadInits",
-        "_DoLoadInitializations",
-        "_LoadGame",
-        "_SaveGame",
-        "_ClearLastFileName",
-        "_CheckRainArray",
-        "_ProcYardEvent",
-        "_ProcYardRibbonEvent",
-        "_DrawYardCursor",
-        "_EraseYardCursor",
-        "_win_DrawYardWindow",
-        "_UpdateYardMessage",
-        "_DrawYardData",
-        "_DrawYard",
-        "_UpdateYard",
-        "_DrawSimKid",
-        "_DrawDog",
-        "_DrawSimBird",
-        "_DrawSimCat",
-        "_DrawForSale",
-        "_DrawMower",
-        "_DrawAnimYardMessage",
-        "_Draw_SimYard",
-        "_DrawRain",
-        "_DrawSwarm",
-        "_TooFar",
-        "_InvertPatch",
-        "_DrawSimColonies",
-        "_DrawColonyBars",
-        "_YardArea",
-        "_DeinitMapFunctions",
-        "_InitMapFunctions",
-        "_ProcMapEvent",
-        "_ProcMapRibbonEvent",
-        "_OpenMapWindow",
-        "_DrawMapCursor",
-        "_EraseMapCursor",
-        "_ToggleMapCursor",
-        "_DrawMapData",
-        "_AllocateMapBuffer",
-        "_DrawMap",
-        "_win_DrawMapWindow",
-        "_DrawMapSpider",
-        "_DrawMapFoot",
-        "_MapToYellowAnt",
-        "_Mini_DrawMapI",
-        "_MapToolsMenu",
-        "_RibbonToolsMenu",
-        "_MapAreaEvent",
-        "_Mini_MakeTable",
-        "_OpenMiniMapWin",
-        "_DrawMiniMapCursor",
-        "_EraseMiniMapCursor",
-        "_ToggleMiniMapCursor"
+        "_SetSM"
       ],
-      "function_count": 93,
-      "code_bytes": 29195,
-      "admitted": 56,
+      "function_count": 23,
+      "code_bytes": 7701,
+      "admitted": 16,
       "pool_range": [
-        "C170",
+        "C25E",
         "C282"
       ],
       "data_range": [
-        6109,
+        7118,
         7118
       ],
       "evidence": {
         "contiguous_publics": true,
         "shared_selectors": [
-          "C170",
-          "C172",
-          "C174",
-          "C176",
-          "C178",
-          "C17A",
-          "C17C",
-          "C17E",
-          "C180",
-          "C182",
-          "C184",
-          "C186",
-          "C188",
-          "C18A",
-          "C18C",
-          "C18E",
-          "C190",
-          "C192",
-          "C194",
-          "C196",
-          "C198",
-          "C19A",
-          "C19C",
-          "C19E",
-          "C1A0",
-          "C1A2",
-          "C1A4",
-          "C1A6",
-          "C1A8",
-          "C1AA",
-          "C1AC",
-          "C1AE",
-          "C1B0",
-          "C1B2",
-          "C1B4",
-          "C1B6",
-          "C1B8",
-          "C1BA",
-          "C1BC",
-          "C1BE",
-          "C1C0",
-          "C1C2",
-          "C1C4",
-          "C1C6",
-          "C1C8",
-          "C1CA",
-          "C1CC",
-          "C1CE",
-          "C1D0",
-          "C1D2",
-          "C1D4",
-          "C1D6",
-          "C1D8",
-          "C1DA",
-          "C1DC",
-          "C1DE",
-          "C1E0",
-          "C1E2",
-          "C1E4",
-          "C1E6",
-          "C1E8",
-          "C1EA",
-          "C1EC",
-          "C1EE",
-          "C1F0",
-          "C1F2",
-          "C1F4",
-          "C1F6",
-          "C1F8",
-          "C1FC",
-          "C1FE",
-          "C200",
-          "C202",
-          "C204",
-          "C206",
-          "C208",
-          "C20A",
-          "C20C",
-          "C20E",
-          "C210",
-          "C212",
-          "C214",
-          "C216",
-          "C218",
-          "C21A",
-          "C21C",
-          "C21E",
-          "C220",
-          "C222",
-          "C224",
-          "C226",
-          "C228",
-          "C22A",
-          "C22C",
-          "C22E",
-          "C230",
-          "C232",
-          "C234",
-          "C236",
           "C25E",
           "C260",
           "C262",
@@ -13939,75 +14386,29 @@
           "C282"
         ],
         "shared_private_data": [
-          "CONST:49520",
-          "CONST:49522",
-          "CONST:49524",
-          "CONST:49566",
-          "CONST:49580",
-          "CONST:49632",
-          "CONST:49688",
-          "CONST:49694",
-          "CONST:49704",
           "CONST:49758",
-          "_BSS:51972",
-          "_DATA:6109",
-          "_DATA:6284",
-          "_DATA:6286",
-          "_DATA:6328",
-          "_DATA:6572",
           "_DATA:7118"
         ],
-        "hard_join_count": 155,
+        "hard_join_count": 49,
         "reversed_reuse_joins": 0,
-        "joint_compile_evidence": [
-          "yard-private-state"
-        ],
+        "joint_compile_evidence": [],
         "semantic_cluster": [
-          [
-            "Draw",
-            21
-          ],
-          [
-            "clip_",
-            9
-          ],
           [
             "Exp",
             5
+          ],
+          [
+            "Clear",
+            2
+          ],
+          [
+            "Connect",
+            2
           ]
         ],
-        "string_intrinsic_fingerprints": [
-          "movsb",
-          "movsw",
-          "rep movsb",
-          "rep movsw",
-          "rep stosb",
-          "rep stosw",
-          "repne scasb"
-        ],
-        "same_object_components": 21,
-        "internal_soft_boundaries": [
-          "_SetSM|_clip_SetWin",
-          "_clip_SetWin|_clip_Off",
-          "_clip_Off|_clip_KillWin",
-          "_clip_KillWin|_clip_SubInclude",
-          "_clip_SubInclude|_clip_SubExclude",
-          "_clip_SubExclude|_clip_Pop",
-          "_clip_Pop|_clip_Push",
-          "_clip_Push|_clip_ToRect",
-          "_clip_ToRect|_clip_ToObj",
-          "_clip_ToObj|_UpdateListBox",
-          "_UpdateListBox|_SeparateFile",
-          "_SeparateFile|_ChangeDirectory",
-          "_ChangeDirectory|OPENDLG",
-          "_ClearLastFileName|_CheckRainArray",
-          "_CheckRainArray|_ProcYardEvent",
-          "_ProcYardRibbonEvent|_DrawYardCursor",
-          "_YardArea|_DeinitMapFunctions",
-          "_DeinitMapFunctions|_InitMapFunctions",
-          "_Mini_DrawMapI|_MapToolsMenu",
-          "_RibbonToolsMenu|_MapAreaEvent"
-        ]
+        "string_intrinsic_fingerprints": [],
+        "same_object_components": 1,
+        "internal_soft_boundaries": []
       },
       "components": [
         {
@@ -14079,7 +14480,79 @@
             "_GetSM",
             "_SetSM"
           ]
-        },
+        }
+      ],
+      "confidence": "CANDIDATE_TU",
+      "after_runtime_data": false
+    },
+    {
+      "candidate_unit": "antedit:8E44-9248",
+      "segment": "ANTEDIT_MODULE",
+      "range": [
+        "_clip_SetWin",
+        "_ChangeDirectory"
+      ],
+      "publics": [
+        "_clip_SetWin",
+        "_clip_Off",
+        "_clip_KillWin",
+        "_clip_SubInclude",
+        "_clip_SubExclude",
+        "_clip_Pop",
+        "_clip_Push",
+        "_clip_ToRect",
+        "_clip_ToObj",
+        "_UpdateListBox",
+        "_SeparateFile",
+        "_ChangeDirectory"
+      ],
+      "function_count": 12,
+      "code_bytes": 1018,
+      "admitted": 10,
+      "pool_range": null,
+      "data_range": null,
+      "evidence": {
+        "contiguous_publics": true,
+        "shared_selectors": [],
+        "shared_private_data": [],
+        "hard_join_count": 0,
+        "reversed_reuse_joins": 0,
+        "joint_compile_evidence": [],
+        "semantic_cluster": [
+          [
+            "clip_",
+            9
+          ],
+          [
+            "Update",
+            1
+          ],
+          [
+            "Separate",
+            1
+          ]
+        ],
+        "string_intrinsic_fingerprints": [
+          "rep movsb",
+          "rep movsw",
+          "repne scasb"
+        ],
+        "same_object_components": 12,
+        "internal_soft_boundaries": [
+          "_clip_SetWin|_clip_Off",
+          "_clip_Off|_clip_KillWin",
+          "_clip_KillWin|_clip_SubInclude",
+          "_clip_SubInclude|_clip_SubExclude",
+          "_clip_SubExclude|_clip_Pop",
+          "_clip_Pop|_clip_Push",
+          "_clip_Push|_clip_ToRect",
+          "_clip_ToRect|_clip_ToObj",
+          "_clip_ToObj|_UpdateListBox",
+          "_UpdateListBox|_SeparateFile",
+          "_SeparateFile|_ChangeDirectory"
+        ]
+      },
+      "components": [
         {
           "id": "antedit:8E44",
           "publics": [
@@ -14215,7 +14688,248 @@
           "parked": [
             "_ChangeDirectory"
           ]
-        },
+        }
+      ],
+      "confidence": "UNLOCATED",
+      "after_runtime_data": false
+    },
+    {
+      "candidate_unit": "antedit:9248-E9E9",
+      "segment": "ANTEDIT_MODULE",
+      "range": [
+        "OPENDLG",
+        "_ToggleMiniMapCursor"
+      ],
+      "publics": [
+        "OPENDLG",
+        "SAVEASDLG",
+        "_FileSelect",
+        "_SpecialTutorialInit",
+        "_DoPreLoadInits",
+        "_DoLoadInitializations",
+        "_LoadGame",
+        "_SaveGame",
+        "_ClearLastFileName",
+        "_CheckRainArray",
+        "_ProcYardEvent",
+        "_ProcYardRibbonEvent",
+        "_DrawYardCursor",
+        "_EraseYardCursor",
+        "_win_DrawYardWindow",
+        "_UpdateYardMessage",
+        "_DrawYardData",
+        "_DrawYard",
+        "_UpdateYard",
+        "_DrawSimKid",
+        "_DrawDog",
+        "_DrawSimBird",
+        "_DrawSimCat",
+        "_DrawForSale",
+        "_DrawMower",
+        "_DrawAnimYardMessage",
+        "_Draw_SimYard",
+        "_DrawRain",
+        "_DrawSwarm",
+        "_TooFar",
+        "_InvertPatch",
+        "_DrawSimColonies",
+        "_DrawColonyBars",
+        "_YardArea",
+        "_DeinitMapFunctions",
+        "_InitMapFunctions",
+        "_ProcMapEvent",
+        "_ProcMapRibbonEvent",
+        "_OpenMapWindow",
+        "_DrawMapCursor",
+        "_EraseMapCursor",
+        "_ToggleMapCursor",
+        "_DrawMapData",
+        "_AllocateMapBuffer",
+        "_DrawMap",
+        "_win_DrawMapWindow",
+        "_DrawMapSpider",
+        "_DrawMapFoot",
+        "_MapToYellowAnt",
+        "_Mini_DrawMapI",
+        "_MapToolsMenu",
+        "_RibbonToolsMenu",
+        "_MapAreaEvent",
+        "_Mini_MakeTable",
+        "_OpenMiniMapWin",
+        "_DrawMiniMapCursor",
+        "_EraseMiniMapCursor",
+        "_ToggleMiniMapCursor"
+      ],
+      "function_count": 58,
+      "code_bytes": 20476,
+      "admitted": 31,
+      "pool_range": [
+        "C170",
+        "C236"
+      ],
+      "data_range": [
+        6109,
+        6572
+      ],
+      "evidence": {
+        "contiguous_publics": true,
+        "shared_selectors": [
+          "C170",
+          "C172",
+          "C174",
+          "C176",
+          "C178",
+          "C17A",
+          "C17C",
+          "C17E",
+          "C180",
+          "C182",
+          "C184",
+          "C186",
+          "C188",
+          "C18A",
+          "C18C",
+          "C18E",
+          "C190",
+          "C192",
+          "C194",
+          "C196",
+          "C198",
+          "C19A",
+          "C19C",
+          "C19E",
+          "C1A0",
+          "C1A2",
+          "C1A4",
+          "C1A6",
+          "C1A8",
+          "C1AA",
+          "C1AC",
+          "C1AE",
+          "C1B0",
+          "C1B2",
+          "C1B4",
+          "C1B6",
+          "C1B8",
+          "C1BA",
+          "C1BC",
+          "C1BE",
+          "C1C0",
+          "C1C2",
+          "C1C4",
+          "C1C6",
+          "C1C8",
+          "C1CA",
+          "C1CC",
+          "C1CE",
+          "C1D0",
+          "C1D2",
+          "C1D4",
+          "C1D6",
+          "C1D8",
+          "C1DA",
+          "C1DC",
+          "C1DE",
+          "C1E0",
+          "C1E2",
+          "C1E4",
+          "C1E6",
+          "C1E8",
+          "C1EA",
+          "C1EC",
+          "C1EE",
+          "C1F0",
+          "C1F2",
+          "C1F4",
+          "C1F6",
+          "C1F8",
+          "C1FC",
+          "C1FE",
+          "C200",
+          "C202",
+          "C204",
+          "C206",
+          "C208",
+          "C20A",
+          "C20C",
+          "C20E",
+          "C210",
+          "C212",
+          "C214",
+          "C216",
+          "C218",
+          "C21A",
+          "C21C",
+          "C21E",
+          "C220",
+          "C222",
+          "C224",
+          "C226",
+          "C228",
+          "C22A",
+          "C22C",
+          "C22E",
+          "C230",
+          "C232",
+          "C234",
+          "C236"
+        ],
+        "shared_private_data": [
+          "CONST:49520",
+          "CONST:49522",
+          "CONST:49524",
+          "CONST:49566",
+          "CONST:49580",
+          "CONST:49632",
+          "CONST:49688",
+          "CONST:49694",
+          "CONST:49704",
+          "_BSS:51972",
+          "_DATA:6109",
+          "_DATA:6284",
+          "_DATA:6286",
+          "_DATA:6328",
+          "_DATA:6572"
+        ],
+        "hard_join_count": 107,
+        "reversed_reuse_joins": 0,
+        "joint_compile_evidence": [
+          "antedit_yard_checkrain_shared_data",
+          "yard-private-state"
+        ],
+        "semantic_cluster": [
+          [
+            "Draw",
+            21
+          ],
+          [
+            "Proc",
+            4
+          ],
+          [
+            "Erase",
+            3
+          ]
+        ],
+        "string_intrinsic_fingerprints": [
+          "movsb",
+          "movsw",
+          "rep movsb",
+          "rep movsw",
+          "rep stosb",
+          "rep stosw",
+          "repne scasb"
+        ],
+        "same_object_components": 6,
+        "internal_soft_boundaries": [
+          "_ClearLastFileName|_CheckRainArray",
+          "_YardArea|_DeinitMapFunctions",
+          "_DeinitMapFunctions|_InitMapFunctions",
+          "_Mini_DrawMapI|_MapToolsMenu",
+          "_RibbonToolsMenu|_MapAreaEvent"
+        ]
+      },
+      "components": [
         {
           "id": "antedit:9248",
           "publics": [
@@ -14267,41 +14981,9 @@
         {
           "id": "antedit:A4BC",
           "publics": [
-            "_CheckRainArray"
-          ],
-          "pool_words": [],
-          "data_words": [
-            6328
-          ],
-          "join_evidence": {},
-          "admitted": 1,
-          "parked": []
-        },
-        {
-          "id": "antedit:A51E",
-          "publics": [
+            "_CheckRainArray",
             "_ProcYardEvent",
-            "_ProcYardRibbonEvent"
-          ],
-          "pool_words": [
-            "C196",
-            "C198",
-            "C19A",
-            "C19C"
-          ],
-          "data_words": [],
-          "join_evidence": {
-            "shared_slot": 4
-          },
-          "admitted": 0,
-          "parked": [
-            "_ProcYardEvent",
-            "_ProcYardRibbonEvent"
-          ]
-        },
-        {
-          "id": "antedit:A998",
-          "publics": [
+            "_ProcYardRibbonEvent",
             "_DrawYardCursor",
             "_EraseYardCursor",
             "_win_DrawYardWindow",
@@ -14326,6 +15008,10 @@
             "_YardArea"
           ],
           "pool_words": [
+            "C196",
+            "C198",
+            "C19A",
+            "C19C",
             "C19E",
             "C1A0",
             "C1A2",
@@ -14362,15 +15048,18 @@
           ],
           "data_words": [
             6284,
-            6286
+            6286,
+            6328
           ],
           "join_evidence": {
-            "shared_slot": 20,
-            "shared_private": 15,
-            "joint_compile_evidence": 1
+            "shared_slot": 24,
+            "shared_private": 16,
+            "joint_compile_evidence": 4
           },
-          "admitted": 13,
+          "admitted": 15,
           "parked": [
+            "_ProcYardEvent",
+            "_ProcYardRibbonEvent",
             "_win_DrawYardWindow",
             "_DrawSimKid",
             "_DrawSimCat",
@@ -16393,7 +17082,7 @@
       ],
       "function_count": 104,
       "code_bytes": 37300,
-      "admitted": 47,
+      "admitted": 51,
       "pool_range": [
         "C2FE",
         "C3FA"
@@ -16533,8 +17222,10 @@
         "shared_private_data": [
           "CONST:49918",
           "CONST:49998",
+          "CONST:50018",
           "CONST:50020",
           "CONST:50050",
+          "CONST:50068",
           "CONST:50070",
           "CONST:50092",
           "_DATA:8902"
@@ -16742,7 +17433,7 @@
             "shared_slot": 81,
             "shared_private": 12
           },
-          "admitted": 14,
+          "admitted": 16,
           "parked": [
             "_DoNestAntB",
             "_RaidInB",
@@ -16828,7 +17519,7 @@
             "shared_slot": 76,
             "shared_private": 11
           },
-          "admitted": 13,
+          "admitted": 15,
           "parked": [
             "_DoNestAntR",
             "_RaidInR",
@@ -18552,7 +19243,9 @@
         ],
         "hard_join_count": 11,
         "reversed_reuse_joins": 0,
-        "joint_compile_evidence": [],
+        "joint_compile_evidence": [
+          "simtwo_db_exists_setdatabase_shared_data"
+        ],
         "semantic_cluster": [
           [
             "db_",
@@ -18560,28 +19253,14 @@
           ]
         ],
         "string_intrinsic_fingerprints": [],
-        "same_object_components": 2,
-        "internal_soft_boundaries": [
-          "_db_Exists|_db_SetDataBase"
-        ]
+        "same_object_components": 1,
+        "internal_soft_boundaries": []
       },
       "components": [
         {
           "id": "simtwo:8176",
           "publics": [
-            "_db_Exists"
-          ],
-          "pool_words": [],
-          "data_words": [
-            45548
-          ],
-          "join_evidence": {},
-          "admitted": 1,
-          "parked": []
-        },
-        {
-          "id": "simtwo:81AC",
-          "publics": [
+            "_db_Exists",
             "_db_SetDataBase",
             "_db_GetObjectSize",
             "_db_LoadObject",
@@ -18599,6 +19278,7 @@
           ],
           "data_words": [
             45546,
+            45548,
             45723,
             45796,
             45877,
@@ -18606,15 +19286,16 @@
           ],
           "join_evidence": {
             "shared_slot": 5,
-            "shared_private": 6
+            "shared_private": 6,
+            "joint_compile_evidence": 1
           },
-          "admitted": 9,
+          "admitted": 10,
           "parked": [
             "_db_LoadObject"
           ]
         }
       ],
-      "confidence": "CANDIDATE_RANGE",
+      "confidence": "STRONGLY_SUPPORTED_TU",
       "after_runtime_data": true
     },
     {
@@ -20042,7 +20723,7 @@
       ],
       "function_count": 85,
       "code_bytes": 13509,
-      "admitted": 42,
+      "admitted": 46,
       "pool_range": [
         "C6CC",
         "C6DE"
@@ -20280,7 +20961,7 @@
           "join_evidence": {
             "shared_slot": 3
           },
-          "admitted": 9,
+          "admitted": 13,
           "parked": [
             "_win_LoadAllWindows",
             "_win_Close",
@@ -20925,6 +21606,1077 @@
       ],
       "confidence": "CANDIDATE_RANGE",
       "after_runtime_data": true
+    },
+    {
+      "candidate_unit": "text:442C-47DD",
+      "segment": "_TEXT",
+      "range": [
+        "_WindowsMono_MakeTable4x4a",
+        "_GenNestMap"
+      ],
+      "publics": [
+        "_WindowsMono_MakeTable4x4a",
+        "_WindowsMono_MakeTable4x4b",
+        "_WindowsMono_MakeTable2x2a",
+        "_WindowsMono_MakeTable2x2b",
+        "_Windows_MakeTable4x4",
+        "_Windows_MakeTable1x1",
+        "_GenOverMap",
+        "_GenNestMap"
+      ],
+      "function_count": 8,
+      "code_bytes": 945,
+      "admitted": 8,
+      "pool_range": null,
+      "data_range": [
+        7030,
+        7030
+      ],
+      "evidence": {
+        "contiguous_publics": true,
+        "shared_selectors": [],
+        "shared_private_data": [
+          "_DATA:7030"
+        ],
+        "hard_join_count": 1,
+        "reversed_reuse_joins": 0,
+        "joint_compile_evidence": [],
+        "semantic_cluster": [
+          [
+            "Windows",
+            6
+          ],
+          [
+            "Gen",
+            2
+          ]
+        ],
+        "string_intrinsic_fingerprints": [
+          "lodsb",
+          "stosb",
+          "stosw"
+        ],
+        "same_object_components": 7,
+        "internal_soft_boundaries": [
+          "_WindowsMono_MakeTable4x4a|_WindowsMono_MakeTable4x4b",
+          "_WindowsMono_MakeTable4x4b|_WindowsMono_MakeTable2x2a",
+          "_WindowsMono_MakeTable2x2a|_WindowsMono_MakeTable2x2b",
+          "_WindowsMono_MakeTable2x2b|_Windows_MakeTable4x4",
+          "_Windows_MakeTable4x4|_Windows_MakeTable1x1",
+          "_Windows_MakeTable1x1|_GenOverMap"
+        ]
+      },
+      "components": [
+        {
+          "id": "text:442C",
+          "publics": [
+            "_WindowsMono_MakeTable4x4a"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:44B9",
+          "publics": [
+            "_WindowsMono_MakeTable4x4b"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4542",
+          "publics": [
+            "_WindowsMono_MakeTable2x2a"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:45DB",
+          "publics": [
+            "_WindowsMono_MakeTable2x2b"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4674",
+          "publics": [
+            "_Windows_MakeTable4x4"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:46BB",
+          "publics": [
+            "_Windows_MakeTable1x1"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:46E9",
+          "publics": [
+            "_GenOverMap",
+            "_GenNestMap"
+          ],
+          "pool_words": [],
+          "data_words": [
+            7030
+          ],
+          "join_evidence": {
+            "shared_private": 1
+          },
+          "admitted": 2,
+          "parked": []
+        }
+      ],
+      "confidence": "CANDIDATE_RANGE",
+      "after_runtime_data": false
+    },
+    {
+      "candidate_unit": "text:47DD-67DD",
+      "segment": "_TEXT",
+      "range": [
+        "_XferTileColor",
+        "_ProcInfoEvent"
+      ],
+      "publics": [
+        "_XferTileColor",
+        "_XferTileMono",
+        "_XferLifeTileColor",
+        "_XferLifeTileMono",
+        "_DoCalcTile",
+        "_EditScrollRightColor",
+        "_EditScrollLeftColor",
+        "_EditScrollDownColor",
+        "_EditScrollUpColor",
+        "_EditScrollRightAsm",
+        "_EditScrollLeftAsm",
+        "_EditScrollDownAsm",
+        "_EditScrollUpAsm",
+        "_EditMultipleScrollUpAsm",
+        "_EditMultipleScrollDownAsm",
+        "_XFlipLong",
+        "_FlipWords",
+        "_win_DrawInfoWindow",
+        "_win_PrintStyleTextInRect",
+        "_win_GetStyleTextHeight",
+        "_DisplayCard",
+        "_OpenInfoWindow",
+        "_PopUpInfoWindow",
+        "_ProcInfoEvent"
+      ],
+      "function_count": 24,
+      "code_bytes": 7727,
+      "admitted": 16,
+      "pool_range": [
+        "C284",
+        "C286"
+      ],
+      "data_range": null,
+      "evidence": {
+        "contiguous_publics": true,
+        "shared_selectors": [
+          "C284",
+          "C286"
+        ],
+        "shared_private_data": [
+          "CONST:49796"
+        ],
+        "hard_join_count": 4,
+        "reversed_reuse_joins": 0,
+        "joint_compile_evidence": [],
+        "semantic_cluster": [
+          [
+            "Edit",
+            10
+          ],
+          [
+            "Xfer",
+            4
+          ],
+          [
+            "win_",
+            3
+          ]
+        ],
+        "string_intrinsic_fingerprints": [
+          "lodsb",
+          "lodsw",
+          "movsw",
+          "rep movsb",
+          "rep movsw",
+          "rep stosb",
+          "rep stosw",
+          "repe cmpsb",
+          "repne scasb",
+          "stosb",
+          "stosw"
+        ],
+        "same_object_components": 18,
+        "internal_soft_boundaries": [
+          "_XferTileColor|_XferTileMono",
+          "_XferTileMono|_XferLifeTileColor",
+          "_XferLifeTileColor|_XferLifeTileMono",
+          "_XferLifeTileMono|_DoCalcTile",
+          "_DoCalcTile|_EditScrollRightColor",
+          "_EditScrollRightColor|_EditScrollLeftColor",
+          "_EditScrollLeftColor|_EditScrollDownColor",
+          "_EditScrollDownColor|_EditScrollUpColor",
+          "_EditScrollUpColor|_EditScrollRightAsm",
+          "_EditScrollRightAsm|_EditScrollLeftAsm",
+          "_EditScrollLeftAsm|_EditScrollDownAsm",
+          "_EditScrollDownAsm|_EditScrollUpAsm",
+          "_EditScrollUpAsm|_EditMultipleScrollUpAsm",
+          "_EditMultipleScrollUpAsm|_EditMultipleScrollDownAsm",
+          "_EditMultipleScrollDownAsm|_XFlipLong",
+          "_XFlipLong|_FlipWords",
+          "_FlipWords|_win_DrawInfoWindow"
+        ]
+      },
+      "components": [
+        {
+          "id": "text:47DD",
+          "publics": [
+            "_XferTileColor"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:486C",
+          "publics": [
+            "_XferTileMono"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:48FA",
+          "publics": [
+            "_XferLifeTileColor"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:49B7",
+          "publics": [
+            "_XferLifeTileMono"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4A6B",
+          "publics": [
+            "_DoCalcTile"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4C60",
+          "publics": [
+            "_EditScrollRightColor"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4D25",
+          "publics": [
+            "_EditScrollLeftColor"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4E1A",
+          "publics": [
+            "_EditScrollDownColor"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4F10",
+          "publics": [
+            "_EditScrollUpColor"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:4FD6",
+          "publics": [
+            "_EditScrollRightAsm"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:501F",
+          "publics": [
+            "_EditScrollLeftAsm"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:506F",
+          "publics": [
+            "_EditScrollDownAsm"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:50B5",
+          "publics": [
+            "_EditScrollUpAsm"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:510C",
+          "publics": [
+            "_EditMultipleScrollUpAsm"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:51F3",
+          "publics": [
+            "_EditMultipleScrollDownAsm"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:52D8",
+          "publics": [
+            "_XFlipLong"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:52EE",
+          "publics": [
+            "_FlipWords"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:534E",
+          "publics": [
+            "_win_DrawInfoWindow",
+            "_win_PrintStyleTextInRect",
+            "_win_GetStyleTextHeight",
+            "_DisplayCard",
+            "_OpenInfoWindow",
+            "_PopUpInfoWindow",
+            "_ProcInfoEvent"
+          ],
+          "pool_words": [
+            "C284",
+            "C286"
+          ],
+          "data_words": [],
+          "join_evidence": {
+            "shared_slot": 4
+          },
+          "admitted": 1,
+          "parked": []
+        }
+      ],
+      "confidence": "CANDIDATE_RANGE",
+      "after_runtime_data": false
+    },
+    {
+      "candidate_unit": "text:67DE-6C61",
+      "segment": "_TEXT",
+      "range": [
+        "_CheatKeys",
+        "_CheatKeys"
+      ],
+      "publics": [
+        "_CheatKeys"
+      ],
+      "function_count": 1,
+      "code_bytes": 1155,
+      "admitted": 0,
+      "pool_range": [
+        "C28A",
+        "C2A8"
+      ],
+      "data_range": null,
+      "evidence": {
+        "contiguous_publics": true,
+        "shared_selectors": [
+          "C28A",
+          "C28C",
+          "C28E",
+          "C290",
+          "C292",
+          "C294",
+          "C296",
+          "C298",
+          "C29A",
+          "C29C",
+          "C29E",
+          "C2A0",
+          "C2A2",
+          "C2A4",
+          "C2A6",
+          "C2A8"
+        ],
+        "shared_private_data": [],
+        "hard_join_count": 0,
+        "reversed_reuse_joins": 0,
+        "joint_compile_evidence": [],
+        "semantic_cluster": [
+          [
+            "Cheat",
+            1
+          ]
+        ],
+        "string_intrinsic_fingerprints": [],
+        "same_object_components": 1,
+        "internal_soft_boundaries": []
+      },
+      "components": [
+        {
+          "id": "text:67DE",
+          "publics": [
+            "_CheatKeys"
+          ],
+          "pool_words": [
+            "C28A",
+            "C28C",
+            "C28E",
+            "C290",
+            "C292",
+            "C294",
+            "C296",
+            "C298",
+            "C29A",
+            "C29C",
+            "C29E",
+            "C2A0",
+            "C2A2",
+            "C2A4",
+            "C2A6",
+            "C2A8"
+          ],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        }
+      ],
+      "confidence": "CANDIDATE_TU",
+      "after_runtime_data": false
+    },
+    {
+      "candidate_unit": "text:6C62-8380",
+      "segment": "_TEXT",
+      "range": [
+        "_CopyChar",
+        "_NetBios"
+      ],
+      "publics": [
+        "_CopyChar",
+        "_CopyCharRep",
+        "_MoveTextToBalloon",
+        "_MaskMono2Tandy",
+        "_exchange",
+        "_os_ClipLine",
+        "_PlotLine",
+        "_PlotMonoLine",
+        "_FlipWord",
+        "_FlipLong",
+        "_NbFinalStatus",
+        "_NbImmediateStatus",
+        "_CopyName",
+        "_NbCall",
+        "_NbAddName",
+        "_NbReset",
+        "_NbSend",
+        "_NbListen",
+        "_NbPostListen",
+        "_NbDeleteName",
+        "_NbReceive",
+        "_NbPostReceiveAny",
+        "_NbHangUp",
+        "_NbCheck",
+        "GTCLIENTWNDPROC",
+        "_GtRegisterClass",
+        "_GtInitiateDDE",
+        "_GtAppToGateway",
+        "_MaAlloc",
+        "_MaFree",
+        "_MaReAlloc",
+        "_MaAllocHandle",
+        "_MaReAllocHandle",
+        "_MaFreeHandle",
+        "_MaLock",
+        "_MaUnlock",
+        "_MaMemCpy",
+        "_MaMemMove",
+        "_NetBios"
+      ],
+      "function_count": 39,
+      "code_bytes": 5905,
+      "admitted": 12,
+      "pool_range": [
+        "C2AA",
+        "C2AA"
+      ],
+      "data_range": [
+        7536,
+        7540
+      ],
+      "evidence": {
+        "contiguous_publics": true,
+        "shared_selectors": [
+          "C2AA"
+        ],
+        "shared_private_data": [
+          "_DATA:7536",
+          "_DATA:7540"
+        ],
+        "hard_join_count": 3,
+        "reversed_reuse_joins": 0,
+        "joint_compile_evidence": [],
+        "semantic_cluster": [
+          [
+            "Nb",
+            13
+          ],
+          [
+            "Ma",
+            10
+          ],
+          [
+            "Copy",
+            3
+          ]
+        ],
+        "string_intrinsic_fingerprints": [
+          "lodsb",
+          "movsb",
+          "rep movsb",
+          "rep movsw",
+          "rep stosb",
+          "repne scasb",
+          "stosb"
+        ],
+        "same_object_components": 34,
+        "internal_soft_boundaries": [
+          "_MoveTextToBalloon|_MaskMono2Tandy",
+          "_MaskMono2Tandy|_exchange",
+          "_exchange|_os_ClipLine",
+          "_os_ClipLine|_PlotLine",
+          "_PlotLine|_PlotMonoLine",
+          "_PlotMonoLine|_FlipWord",
+          "_FlipWord|_FlipLong",
+          "_FlipLong|_NbFinalStatus",
+          "_NbFinalStatus|_NbImmediateStatus",
+          "_NbImmediateStatus|_CopyName",
+          "_CopyName|_NbCall",
+          "_NbCall|_NbAddName",
+          "_NbAddName|_NbReset",
+          "_NbReset|_NbSend",
+          "_NbSend|_NbListen",
+          "_NbListen|_NbPostListen",
+          "_NbPostListen|_NbDeleteName",
+          "_NbDeleteName|_NbReceive",
+          "_NbReceive|_NbPostReceiveAny",
+          "_NbPostReceiveAny|_NbHangUp",
+          "_NbHangUp|_NbCheck",
+          "_NbCheck|GTCLIENTWNDPROC",
+          "_GtAppToGateway|_MaAlloc",
+          "_MaAlloc|_MaFree",
+          "_MaFree|_MaReAlloc",
+          "_MaReAlloc|_MaAllocHandle",
+          "_MaAllocHandle|_MaReAllocHandle",
+          "_MaReAllocHandle|_MaFreeHandle",
+          "_MaFreeHandle|_MaLock",
+          "_MaLock|_MaUnlock",
+          "_MaUnlock|_MaMemCpy",
+          "_MaMemCpy|_MaMemMove",
+          "_MaMemMove|_NetBios"
+        ]
+      },
+      "components": [
+        {
+          "id": "text:6C62",
+          "publics": [
+            "_CopyChar",
+            "_CopyCharRep",
+            "_MoveTextToBalloon"
+          ],
+          "pool_words": [],
+          "data_words": [
+            7536
+          ],
+          "join_evidence": {
+            "shared_private": 2
+          },
+          "admitted": 3,
+          "parked": []
+        },
+        {
+          "id": "text:6D57",
+          "publics": [
+            "_MaskMono2Tandy"
+          ],
+          "pool_words": [],
+          "data_words": [
+            7540
+          ],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:6E05",
+          "publics": [
+            "_exchange"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:6E24",
+          "publics": [
+            "_os_ClipLine"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:6FBE",
+          "publics": [
+            "_PlotLine"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:71A7",
+          "publics": [
+            "_PlotMonoLine"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7356",
+          "publics": [
+            "_FlipWord"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7360",
+          "publics": [
+            "_FlipLong"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7370",
+          "publics": [
+            "_NbFinalStatus"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:73D4",
+          "publics": [
+            "_NbImmediateStatus"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7438",
+          "publics": [
+            "_CopyName"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7486",
+          "publics": [
+            "_NbCall"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:75B0",
+          "publics": [
+            "_NbAddName"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:767E",
+          "publics": [
+            "_NbReset"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7706",
+          "publics": [
+            "_NbSend"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:77A6",
+          "publics": [
+            "_NbListen"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:78F8",
+          "publics": [
+            "_NbPostListen"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7A38",
+          "publics": [
+            "_NbDeleteName"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7B06",
+          "publics": [
+            "_NbReceive"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7BBA",
+          "publics": [
+            "_NbPostReceiveAny"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7C70",
+          "publics": [
+            "_NbHangUp"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7CFE",
+          "publics": [
+            "_NbCheck"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:7D3E",
+          "publics": [
+            "GTCLIENTWNDPROC",
+            "_GtRegisterClass",
+            "_GtInitiateDDE",
+            "_GtAppToGateway"
+          ],
+          "pool_words": [
+            "C2AA"
+          ],
+          "data_words": [],
+          "join_evidence": {
+            "shared_slot": 1
+          },
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:81B8",
+          "publics": [
+            "_MaAlloc"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:81C8",
+          "publics": [
+            "_MaFree"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:81D8",
+          "publics": [
+            "_MaReAlloc"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:81EC",
+          "publics": [
+            "_MaAllocHandle"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:822E",
+          "publics": [
+            "_MaReAllocHandle"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:8244",
+          "publics": [
+            "_MaFreeHandle"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:8252",
+          "publics": [
+            "_MaLock"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:826A",
+          "publics": [
+            "_MaUnlock"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 1,
+          "parked": []
+        },
+        {
+          "id": "text:827C",
+          "publics": [
+            "_MaMemCpy"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:82B6",
+          "publics": [
+            "_MaMemMove"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        },
+        {
+          "id": "text:8380",
+          "publics": [
+            "_NetBios"
+          ],
+          "pool_words": [],
+          "data_words": [],
+          "join_evidence": {},
+          "admitted": 0,
+          "parked": []
+        }
+      ],
+      "confidence": "CANDIDATE_RANGE",
+      "after_runtime_data": false
     }
   ],
   "controls": [
@@ -20991,6 +22743,32 @@
       "passed": true
     },
     {
+      "unit": "antedit_yard_checkrain_shared_data",
+      "status": "STRONGLY_SUPPORTED_TU",
+      "publics": [
+        "_CheckRainArray",
+        "_ProcYardEvent",
+        "_ProcYardRibbonEvent",
+        "_DrawYardCursor"
+      ],
+      "candidate_units": [
+        "antedit:9248-E9E9"
+      ],
+      "passed": true
+    },
+    {
+      "unit": "simtwo_db_exists_setdatabase_shared_data",
+      "status": "STRONGLY_SUPPORTED_TU",
+      "publics": [
+        "_db_Exists",
+        "_db_SetDataBase"
+      ],
+      "candidate_units": [
+        "simtwo:8176-858A"
+      ],
+      "passed": true
+    },
+    {
       "unit": "dialog-private-tables",
       "status": "STRICT_FAMILY",
       "publics": [
@@ -21028,7 +22806,7 @@
         "_UpdateYard"
       ],
       "candidate_units": [
-        "antedit:7022-E9E9"
+        "antedit:9248-E9E9"
       ],
       "passed": true
     }
@@ -21049,8 +22827,8 @@
       "private_contributions": [
         [
           "_DATA",
-          68,
-          2
+          64,
+          6
         ]
       ],
       "string_ops": [],
@@ -21059,18 +22837,18 @@
       "introduced": {
         "pool": [],
         "data": [
-          68
+          64
         ]
       },
       "pool_position": null,
       "data_position": [
-        68,
-        68
+        64,
+        64
       ],
       "positions": {
         "data": [
-          68,
-          68
+          64,
+          64
         ]
       }
     },
@@ -21099,9 +22877,7 @@
       "job_blockers": null,
       "introduced": {
         "pool": [],
-        "data": [
-          64
-        ]
+        "data": []
       },
       "pool_position": null,
       "data_position": [
@@ -23456,8 +25232,19 @@
       ],
       "unnamed_ds_operands": [],
       "token": "Customer",
-      "admitted": false,
-      "private_contributions": [],
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          2415,
+          4
+        ],
+        [
+          "CONST",
+          48900,
+          2
+        ]
+      ],
       "string_ops": [],
       "job_status": "ESCALATED",
       "job_blockers": [
@@ -23467,17 +25254,26 @@
         "pool": [
           48900
         ],
-        "data": []
+        "data": [
+          2415
+        ]
       },
       "pool_position": [
         48900,
         48900
       ],
-      "data_position": null,
+      "data_position": [
+        2415,
+        2415
+      ],
       "positions": {
         "pool": [
           48900,
           48900
+        ],
+        "data": [
+          2415,
+          2415
         ]
       }
     },
@@ -23563,8 +25359,14 @@
         48296
       ],
       "token": "Do",
-      "admitted": false,
-      "private_contributions": [],
+      "admitted": true,
+      "private_contributions": [
+        [
+          "CONST",
+          48902,
+          36
+        ]
+      ],
       "string_ops": [],
       "job_status": "ESCALATED",
       "job_blockers": [
@@ -25634,8 +27436,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -25652,7 +27454,7 @@
           49372
         ],
         "data": [
-          5482
+          5490
         ]
       },
       "pool_position": [
@@ -25660,8 +27462,8 @@
         49372
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -25669,8 +27471,8 @@
           49372
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -25762,8 +27564,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -25785,8 +27587,8 @@
         49378
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -25794,8 +27596,8 @@
           49378
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -25816,8 +27618,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -25839,8 +27641,8 @@
         49380
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -25848,8 +27650,8 @@
           49380
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -25956,8 +27758,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -25979,8 +27781,8 @@
         49398
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -25988,8 +27790,8 @@
           49398
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -26063,8 +27865,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -26086,8 +27888,8 @@
         49408
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -26095,8 +27897,8 @@
           49408
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -26158,8 +27960,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -26183,8 +27985,8 @@
         49412
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -26192,8 +27994,8 @@
           49412
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -26215,8 +28017,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -26238,8 +28040,8 @@
         49398
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -26247,8 +28049,8 @@
           49398
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -26301,8 +28103,8 @@
       "private_contributions": [
         [
           "_DATA",
-          5482,
-          28
+          5490,
+          20
         ],
         [
           "CONST",
@@ -26322,8 +28124,8 @@
         49370
       ],
       "data_position": [
-        5482,
-        5482
+        5490,
+        5490
       ],
       "positions": {
         "pool": [
@@ -26331,8 +28133,8 @@
           49370
         ],
         "data": [
-          5482,
-          5482
+          5490,
+          5490
         ]
       }
     },
@@ -31321,7 +33123,7 @@
         [
           "_DATA",
           2290,
-          13
+          10
         ]
       ],
       "string_ops": [],
@@ -31361,7 +33163,7 @@
         [
           "_DATA",
           2290,
-          13
+          10
         ]
       ],
       "string_ops": [],
@@ -33050,6 +34852,11 @@
       "admitted": true,
       "private_contributions": [
         [
+          "_DATA",
+          2800,
+          454
+        ],
+        [
           "CONST",
           49016,
           2
@@ -33068,11 +34875,18 @@
         49016,
         49016
       ],
-      "data_position": null,
+      "data_position": [
+        2800,
+        2800
+      ],
       "positions": {
         "pool": [
           49016,
           49016
+        ],
+        "data": [
+          2800,
+          2800
         ]
       }
     },
@@ -38313,8 +40127,14 @@
       ],
       "unnamed_ds_operands": [],
       "token": "Draw",
-      "admitted": false,
-      "private_contributions": [],
+      "admitted": true,
+      "private_contributions": [
+        [
+          "CONST",
+          49566,
+          64
+        ]
+      ],
       "string_ops": [],
       "job_status": "ESCALATED",
       "job_blockers": [
@@ -38325,13 +40145,13 @@
         "data": []
       },
       "pool_position": [
-        49604,
+        49566,
         49628
       ],
       "data_position": null,
       "positions": {
         "pool": [
-          49604,
+          49566,
           49628
         ]
       }
@@ -39423,6 +41243,2034 @@
           49718
         ]
       }
+    },
+    "_WindowsMono_MakeTable4x4a": {
+      "symbol": "_WindowsMono_MakeTable4x4a",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 17452,
+      "size": 141,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Windows",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_WindowsMono_MakeTable4x4b": {
+      "symbol": "_WindowsMono_MakeTable4x4b",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 17593,
+      "size": 137,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Windows",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_WindowsMono_MakeTable2x2a": {
+      "symbol": "_WindowsMono_MakeTable2x2a",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 17730,
+      "size": 153,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Windows",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_WindowsMono_MakeTable2x2b": {
+      "symbol": "_WindowsMono_MakeTable2x2b",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 17883,
+      "size": 153,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Windows",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_Windows_MakeTable4x4": {
+      "symbol": "_Windows_MakeTable4x4",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18036,
+      "size": 71,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Windows",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb",
+        "stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_Windows_MakeTable1x1": {
+      "symbol": "_Windows_MakeTable1x1",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18107,
+      "size": 46,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Windows",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb",
+        "stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_GenOverMap": {
+      "symbol": "_GenOverMap",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18153,
+      "size": 107,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7030,
+        7032
+      ],
+      "token": "Gen",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          7030,
+          7
+        ]
+      ],
+      "string_ops": [
+        "lodsb",
+        "stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": [
+          7030
+        ]
+      },
+      "pool_position": null,
+      "data_position": [
+        7030,
+        7030
+      ],
+      "positions": {
+        "data": [
+          7030,
+          7030
+        ]
+      }
+    },
+    "_GenNestMap": {
+      "symbol": "_GenNestMap",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18260,
+      "size": 137,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7032,
+        7034,
+        7035,
+        7036
+      ],
+      "token": "Gen",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          7030,
+          7
+        ]
+      ],
+      "string_ops": [
+        "lodsb",
+        "stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": [
+        7030,
+        7030
+      ],
+      "positions": {
+        "data": [
+          7030,
+          7030
+        ]
+      }
+    },
+    "_XferTileColor": {
+      "symbol": "_XferTileColor",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18397,
+      "size": 143,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Xfer",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_XferTileMono": {
+      "symbol": "_XferTileMono",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18540,
+      "size": 142,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Xfer",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_XferLifeTileColor": {
+      "symbol": "_XferLifeTileColor",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18682,
+      "size": 189,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Xfer",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb",
+        "stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_XferLifeTileMono": {
+      "symbol": "_XferLifeTileMono",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 18871,
+      "size": 180,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Xfer",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_DoCalcTile": {
+      "symbol": "_DoCalcTile",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 19051,
+      "size": 501,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Do",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollRightColor": {
+      "symbol": "_EditScrollRightColor",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 19552,
+      "size": 197,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsw",
+        "rep movsb",
+        "rep movsw",
+        "stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollLeftColor": {
+      "symbol": "_EditScrollLeftColor",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 19749,
+      "size": 245,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsw",
+        "rep movsb",
+        "rep movsw",
+        "stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollDownColor": {
+      "symbol": "_EditScrollDownColor",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 19994,
+      "size": 246,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsw",
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "rep stosw",
+        "stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollUpColor": {
+      "symbol": "_EditScrollUpColor",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20240,
+      "size": 198,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsw",
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "rep stosw",
+        "stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollRightAsm": {
+      "symbol": "_EditScrollRightAsm",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20438,
+      "size": 73,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollLeftAsm": {
+      "symbol": "_EditScrollLeftAsm",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20511,
+      "size": 80,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollDownAsm": {
+      "symbol": "_EditScrollDownAsm",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20591,
+      "size": 70,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditScrollUpAsm": {
+      "symbol": "_EditScrollUpAsm",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20661,
+      "size": 87,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditMultipleScrollUpAsm": {
+      "symbol": "_EditMultipleScrollUpAsm",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20748,
+      "size": null,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_EditMultipleScrollDownAsm": {
+      "symbol": "_EditMultipleScrollDownAsm",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 20979,
+      "size": null,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Edit",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_XFlipLong": {
+      "symbol": "_XFlipLong",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 21208,
+      "size": 22,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "XFli",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_FlipWords": {
+      "symbol": "_FlipWords",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 21230,
+      "size": 96,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Flip",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_win_DrawInfoWindow": {
+      "symbol": "_win_DrawInfoWindow",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 21326,
+      "size": 25,
+      "slots": [
+        49796
+      ],
+      "unnamed_ds_operands": [],
+      "token": "win_",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "CONST",
+          49796,
+          2
+        ]
+      ],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [
+          49796
+        ],
+        "data": []
+      },
+      "pool_position": [
+        49796,
+        49796
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49796,
+          49796
+        ]
+      }
+    },
+    "_win_PrintStyleTextInRect": {
+      "symbol": "_win_PrintStyleTextInRect",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 21352,
+      "size": 1224,
+      "slots": [
+        49796
+      ],
+      "unnamed_ds_operands": [],
+      "token": "win_",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "repe cmpsb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": [
+        49796,
+        49796
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49796,
+          49796
+        ]
+      }
+    },
+    "_win_GetStyleTextHeight": {
+      "symbol": "_win_GetStyleTextHeight",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 22576,
+      "size": 491,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "win_",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_DisplayCard": {
+      "symbol": "_DisplayCard",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 23068,
+      "size": 1725,
+      "slots": [
+        49796
+      ],
+      "unnamed_ds_operands": [],
+      "token": "Display",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": [
+        49796,
+        49796
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49796,
+          49796
+        ]
+      }
+    },
+    "_OpenInfoWindow": {
+      "symbol": "_OpenInfoWindow",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 24794,
+      "size": 49,
+      "slots": [
+        49796
+      ],
+      "unnamed_ds_operands": [],
+      "token": "Open",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": [
+        49796,
+        49796
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49796,
+          49796
+        ]
+      }
+    },
+    "_PopUpInfoWindow": {
+      "symbol": "_PopUpInfoWindow",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 24844,
+      "size": 1231,
+      "slots": [
+        49798
+      ],
+      "unnamed_ds_operands": [
+        48304
+      ],
+      "token": "Pop",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "movsw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [
+          49798
+        ],
+        "data": []
+      },
+      "pool_position": [
+        49798,
+        49798
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49798,
+          49798
+        ]
+      }
+    },
+    "_ProcInfoEvent": {
+      "symbol": "_ProcInfoEvent",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 26076,
+      "size": 513,
+      "slots": [
+        49796
+      ],
+      "unnamed_ds_operands": [
+        48304
+      ],
+      "token": "Proc",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": [
+        49796,
+        49796
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49796,
+          49796
+        ]
+      }
+    },
+    "_CheatKeys": {
+      "symbol": "_CheatKeys",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 26590,
+      "size": 1155,
+      "slots": [
+        49802,
+        49804,
+        49806,
+        49808,
+        49810,
+        49812,
+        49814,
+        49816,
+        49818,
+        49820,
+        49822,
+        49824,
+        49826,
+        49828,
+        49830,
+        49832
+      ],
+      "unnamed_ds_operands": [
+        7564
+      ],
+      "token": "Cheat",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [
+          49802,
+          49804,
+          49806,
+          49808,
+          49810,
+          49812,
+          49814,
+          49816,
+          49818,
+          49820,
+          49822,
+          49824,
+          49826,
+          49828,
+          49830,
+          49832
+        ],
+        "data": []
+      },
+      "pool_position": [
+        49802,
+        49832
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49802,
+          49832
+        ]
+      }
+    },
+    "_CopyChar": {
+      "symbol": "_CopyChar",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 27746,
+      "size": 72,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7536
+      ],
+      "token": "Copy",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          7536,
+          2
+        ]
+      ],
+      "string_ops": [
+        "movsb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": [
+          7536
+        ]
+      },
+      "pool_position": null,
+      "data_position": [
+        7536,
+        7536
+      ],
+      "positions": {
+        "data": [
+          7536,
+          7536
+        ]
+      }
+    },
+    "_CopyCharRep": {
+      "symbol": "_CopyCharRep",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 27818,
+      "size": 78,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7536
+      ],
+      "token": "Copy",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          7536,
+          2
+        ]
+      ],
+      "string_ops": [
+        "lodsb",
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": [
+        7536,
+        7536
+      ],
+      "positions": {
+        "data": [
+          7536,
+          7536
+        ]
+      }
+    },
+    "_MoveTextToBalloon": {
+      "symbol": "_MoveTextToBalloon",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 27896,
+      "size": 95,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7536
+      ],
+      "token": "Move",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          7536,
+          2
+        ]
+      ],
+      "string_ops": [
+        "lodsb",
+        "stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": [
+        7536,
+        7536
+      ],
+      "positions": {
+        "data": [
+          7536,
+          7536
+        ]
+      }
+    },
+    "_MaskMono2Tandy": {
+      "symbol": "_MaskMono2Tandy",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 27991,
+      "size": 174,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7541,
+        7540,
+        7542
+      ],
+      "token": "Mask",
+      "admitted": true,
+      "private_contributions": [
+        [
+          "_DATA",
+          7540,
+          3
+        ]
+      ],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": [
+          7540
+        ]
+      },
+      "pool_position": null,
+      "data_position": [
+        7540,
+        7540
+      ],
+      "positions": {
+        "data": [
+          7540,
+          7540
+        ]
+      }
+    },
+    "_exchange": {
+      "symbol": "_exchange",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 28165,
+      "size": 30,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "exch",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [
+        "lodsb",
+        "stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_os_ClipLine": {
+      "symbol": "_os_ClipLine",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 28196,
+      "size": 410,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7554,
+        7546,
+        7544
+      ],
+      "token": "os_",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_PlotLine": {
+      "symbol": "_PlotLine",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 28606,
+      "size": 489,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7560,
+        7558,
+        7562,
+        7546,
+        7544,
+        7556,
+        7550,
+        7553,
+        7548,
+        7552
+      ],
+      "token": "Plot",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_PlotMonoLine": {
+      "symbol": "_PlotMonoLine",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29095,
+      "size": 431,
+      "slots": [],
+      "unnamed_ds_operands": [
+        7560,
+        7562,
+        7546,
+        7544,
+        7556,
+        7550,
+        7553,
+        7548,
+        7552
+      ],
+      "token": "Plot",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_FlipWord": {
+      "symbol": "_FlipWord",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29526,
+      "size": 10,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Flip",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_FlipLong": {
+      "symbol": "_FlipLong",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29536,
+      "size": 15,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Flip",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbFinalStatus": {
+      "symbol": "_NbFinalStatus",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29552,
+      "size": 100,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbImmediateStatus": {
+      "symbol": "_NbImmediateStatus",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29652,
+      "size": 100,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_CopyName": {
+      "symbol": "_CopyName",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29752,
+      "size": 78,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Copy",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbCall": {
+      "symbol": "_NbCall",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 29830,
+      "size": 298,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbAddName": {
+      "symbol": "_NbAddName",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 30128,
+      "size": 206,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbReset": {
+      "symbol": "_NbReset",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 30334,
+      "size": 136,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbSend": {
+      "symbol": "_NbSend",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 30470,
+      "size": 160,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbListen": {
+      "symbol": "_NbListen",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 30630,
+      "size": 338,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbPostListen": {
+      "symbol": "_NbPostListen",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 30968,
+      "size": 320,
+      "slots": [],
+      "unnamed_ds_operands": [
+        52082,
+        52107,
+        52123,
+        52124,
+        52125,
+        52126,
+        52128,
+        52083
+      ],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbDeleteName": {
+      "symbol": "_NbDeleteName",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 31288,
+      "size": 205,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsb",
+        "rep movsw",
+        "rep stosb",
+        "repne scasb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbReceive": {
+      "symbol": "_NbReceive",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 31494,
+      "size": 179,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbPostReceiveAny": {
+      "symbol": "_NbPostReceiveAny",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 31674,
+      "size": 181,
+      "slots": [],
+      "unnamed_ds_operands": [
+        52146,
+        52149,
+        52150,
+        52152,
+        52154,
+        52190,
+        52192,
+        52147
+      ],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbHangUp": {
+      "symbol": "_NbHangUp",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 31856,
+      "size": 142,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NbCheck": {
+      "symbol": "_NbCheck",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 31998,
+      "size": 64,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Nb",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep stosb"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "GTCLIENTWNDPROC": {
+      "symbol": "GTCLIENTWNDPROC",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 32062,
+      "size": 138,
+      "slots": [
+        49834
+      ],
+      "unnamed_ds_operands": [
+        8294,
+        8296
+      ],
+      "token": "GTCL",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [
+          49834
+        ],
+        "data": []
+      },
+      "pool_position": [
+        49834,
+        49834
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49834,
+          49834
+        ]
+      }
+    },
+    "_GtRegisterClass": {
+      "symbol": "_GtRegisterClass",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 32200,
+      "size": 94,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Gt",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_GtInitiateDDE": {
+      "symbol": "_GtInitiateDDE",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 32294,
+      "size": 195,
+      "slots": [],
+      "unnamed_ds_operands": [
+        8298,
+        8294,
+        8296
+      ],
+      "token": "Gt",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_GtAppToGateway": {
+      "symbol": "_GtAppToGateway",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 32490,
+      "size": 718,
+      "slots": [
+        49834
+      ],
+      "unnamed_ds_operands": [
+        8296,
+        8298
+      ],
+      "token": "Gt",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [
+        "rep movsw"
+      ],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": [
+        49834,
+        49834
+      ],
+      "data_position": null,
+      "positions": {
+        "pool": [
+          49834,
+          49834
+        ]
+      }
+    },
+    "_MaAlloc": {
+      "symbol": "_MaAlloc",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33208,
+      "size": 15,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaFree": {
+      "symbol": "_MaFree",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33224,
+      "size": 16,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaReAlloc": {
+      "symbol": "_MaReAlloc",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33240,
+      "size": 19,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaAllocHandle": {
+      "symbol": "_MaAllocHandle",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33260,
+      "size": 66,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaReAllocHandle": {
+      "symbol": "_MaReAllocHandle",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33326,
+      "size": 21,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaFreeHandle": {
+      "symbol": "_MaFreeHandle",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33348,
+      "size": 13,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaLock": {
+      "symbol": "_MaLock",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33362,
+      "size": 23,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaUnlock": {
+      "symbol": "_MaUnlock",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33386,
+      "size": 18,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": true,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaMemCpy": {
+      "symbol": "_MaMemCpy",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33404,
+      "size": 57,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_MaMemMove": {
+      "symbol": "_MaMemMove",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33462,
+      "size": 201,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Ma",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
+    },
+    "_NetBios": {
+      "symbol": "_NetBios",
+      "group": "_TEXT",
+      "segment": 4,
+      "offset": 33664,
+      "size": null,
+      "slots": [],
+      "unnamed_ds_operands": [],
+      "token": "Net",
+      "admitted": false,
+      "private_contributions": [],
+      "string_ops": [],
+      "job_status": null,
+      "job_blockers": null,
+      "introduced": {
+        "pool": [],
+        "data": []
+      },
+      "pool_position": null,
+      "data_position": null,
+      "positions": {}
     },
     "_initStuff": {
       "symbol": "_initStuff",
@@ -46965,7 +50813,7 @@
       "slots": [],
       "unnamed_ds_operands": [],
       "token": "Kill",
-      "admitted": false,
+      "admitted": true,
       "private_contributions": [],
       "string_ops": [],
       "job_status": "ESCALATED",
@@ -47235,8 +51083,14 @@
       ],
       "unnamed_ds_operands": [],
       "token": "Steal",
-      "admitted": false,
-      "private_contributions": [],
+      "admitted": true,
+      "private_contributions": [
+        [
+          "CONST",
+          50018,
+          2
+        ]
+      ],
       "string_ops": [],
       "job_status": "ESCALATED",
       "job_blockers": [
@@ -48141,7 +51995,7 @@
       "slots": [],
       "unnamed_ds_operands": [],
       "token": "Kill",
-      "admitted": false,
+      "admitted": true,
       "private_contributions": [],
       "string_ops": [],
       "job_status": "ESCALATED",
@@ -48407,8 +52261,14 @@
       ],
       "unnamed_ds_operands": [],
       "token": "Steal",
-      "admitted": false,
-      "private_contributions": [],
+      "admitted": true,
+      "private_contributions": [
+        [
+          "CONST",
+          50068,
+          2
+        ]
+      ],
       "string_ops": [],
       "job_status": "ESCALATED",
       "job_blockers": [
@@ -57576,7 +61436,7 @@
       "slots": [],
       "unnamed_ds_operands": [],
       "token": "win_",
-      "admitted": false,
+      "admitted": true,
       "private_contributions": [],
       "string_ops": [],
       "job_status": "ESCALATED",
@@ -57920,7 +61780,7 @@
       "slots": [],
       "unnamed_ds_operands": [],
       "token": "win_",
-      "admitted": false,
+      "admitted": true,
       "private_contributions": [],
       "string_ops": [
         "movsw"
@@ -57946,7 +61806,7 @@
       "slots": [],
       "unnamed_ds_operands": [],
       "token": "win_",
-      "admitted": false,
+      "admitted": true,
       "private_contributions": [],
       "string_ops": [
         "movsw"
@@ -58040,7 +61900,7 @@
       "slots": [],
       "unnamed_ds_operands": [],
       "token": "win_",
-      "admitted": false,
+      "admitted": true,
       "private_contributions": [],
       "string_ops": [],
       "job_status": "ESCALATED",

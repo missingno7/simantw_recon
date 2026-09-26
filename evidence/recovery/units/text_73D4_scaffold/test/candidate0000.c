@@ -1,0 +1,32 @@
+/* Candidate translation unit text_73D4_scaffold: composed from preserved exact-body sources
+ * in MAPSYM order. Internal evidence id, not a historical filename.
+ * Members: _NbImmediateStatus
+ * SCAFFOLDED: claimed members in 1 code runs; no pool stand-ins were needed. */
+
+extern void far DebugWinPrintf(char far *format, ...);
+extern char __based(__segname("SIMANT_DATA_GROUP")) NB_RETCODE[128][60];
+struct NetbiosControlBlock {
+    unsigned char command;
+    unsigned char immediate_status;
+    unsigned char reserved[0x2f];
+    unsigned char final_status;
+};
+
+
+
+
+void far NbImmediateStatus(struct NetbiosControlBlock far *ncb)
+{
+    union StatusSlot { unsigned short whole; unsigned char value; } statusSlot;
+
+    statusSlot.value = ncb->immediate_status;
+    if (statusSlot.value < 0x50)
+        DebugWinPrintf("NetBIOS RetCode(%#x): %s\n", statusSlot.value,
+                       (char far *)NB_RETCODE[statusSlot.value]);
+    else if (ncb->immediate_status < 0xf0)
+        DebugWinPrintf("NetBIOS RetCode(%#x): Adapter malfunction.\n", statusSlot.value);
+    else
+        DebugWinPrintf("NetBIOS RetCode(%#x): %s\n", statusSlot.value,
+                       (char far *)NB_RETCODE[statusSlot.value - 0xa0]);
+}
+

@@ -1,6 +1,6 @@
-/* Draw the cat's current animation frame. The short initial frame range and
- * the following range use separate signed displacement tables; positions
- * are then passed to the animation manager, creating the cached object once. */
+/* Cat animation displacement windows share one 40-byte initialized table.
+   The four source views overlap at byte offsets 0, 2, 6 and 10; the accesses
+   use the absolute CatFrame index, which accounts for those base offsets. */
 extern int near CatFrame;
 extern int near CatX;
 extern int near CatY;
@@ -11,10 +11,16 @@ extern int far hanim_AddAnimObject(int animation, int right, int bottom,
                                    int size, int layer);
 
 static int near catObject = -1;
-static char near catFirstX[10] = {0};
-static char near catFirstY[10] = {0};
-static char near catSecondX[20] = {0};
-static char near catSecondY[20] = {0};
+static signed char near catFrameData[40] = {
+     0,   1,   2,   1,   2,   0,   2,   0,   1,   1,
+     3,   3, -10,  -9, -10, -10, -21, -19, -18,   0,
+     0,   2,   4,   6,   8,  10,  12,  14,  16,  18,
+     0, -16, -23, -24, -22, -18, -10, -10,  -4,  -2
+};
+#define catFirstX  (catFrameData)
+#define catSecondX (catFrameData + 2)
+#define catSecondY (catFrameData + 6)
+#define catFirstY  (catFrameData + 10)
 
 void far DrawSimCat(void)
 {

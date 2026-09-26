@@ -105,14 +105,22 @@ def run(spec,path,limit=None,cache=False):
         stage_timing={}
         if obj and not receipt['unsupported_option']:
             if identity(ROOT/receipt['source'])!=receipt['source_identity'] or identity(obj)!=receipt['object_identity']:raise FormatError('changed batch input/output')
+            r=None
             try:
                 parse_started=time.perf_counter();module=omf.parse(obj.read_bytes());parse_seconds=time.perf_counter()-parse_started
-                match_started=time.perf_counter();r=score_object(module,raw,n,s,imports,spec['symbol']);match_seconds=time.perf_counter()-match_started
+                match_started=time.perf_counter()
+                try:r=score_object(module,raw,n,s,imports,spec['symbol'])
+                # A candidate that cannot be placed (e.g. longer than the rest of
+                # the original segment) is refused strictly; the aligned
+                # diagnostic diff below is still produced as feedback.
+                except FormatError as e:r=dict(result='UNSUPPORTED_COMPARISON',issues=[str(e)])
+                match_seconds=time.perf_counter()-match_started
                 from codegen_diff import diagnose,render
                 diff_started=time.perf_counter();r['diagnostic']=diagnose(module,raw,n,s,spec['symbol'],r)
                 (output/('candidate%04d.diff.txt'%i)).write_text(render(r['diagnostic']),encoding='utf-8')
                 stage_timing=dict(omf_parse_seconds=parse_seconds,strict_match_seconds=match_seconds,diagnostic_diff_seconds=time.perf_counter()-diff_started)
-            except FormatError as e:r=dict(result='UNSUPPORTED_COMPARISON',issues=[str(e)])
+            except FormatError as e:
+                if not (r and r.get('result')=='UNSUPPORTED_COMPARISON'):r=dict(result='UNSUPPORTED_COMPARISON',issues=[str(e)])
         else:r=dict(result='COMPILE_FAILED',issues=[receipt['stdout']])
         results.append(dict(candidate=i,choices=candidates[i][1],receipt=receipt,comparison=r,timing=stage_timing))
     results.sort(key=rank,reverse=True)

@@ -14,17 +14,6 @@ extern int near db_cacheTable;
 extern int far db_handles[];
 static int near db_closed = 1;
 
-/* The prior unclaimed member contributes a second, independently emitted
- * "%s.dat" at DGROUP B1EC. This stand-in's code is excluded from credit;
- * its seven DATA bytes remain part of the strict unit comparison. */
-void far pool_data_fill_B1EC(void);
-#pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_B1EC)
-void far pool_data_fill_B1EC(void)
-{
-    volatile char far *p;
-    p = "%s.dat";
-}
-
 extern int far sprintf(char far *buffer, char far *format, ...);
 extern int far access(char far *path, int mode);
 extern void far Punt(char far *message, ...);
