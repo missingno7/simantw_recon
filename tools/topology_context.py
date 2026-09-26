@@ -45,6 +45,25 @@ def codegen_shape(card):
     return None
 
 
+INTRINSIC_ONLY = ('repne scas', 'repe cmps')
+
+
+def intrinsic_hint(card, profile_flags):
+    """String-intrinsic fingerprints in the target while the object's profile lacks /Oi."""
+    rows = ['%s %s' % (r['mnemonic'], r['operands']) for r in card.get('disassembly') or []]
+    sites = sorted({r.split(' ')[0] + ' ' + r.split(' ')[1] for r in rows if r.startswith(INTRINSIC_ONLY)})
+    copies = any(r.startswith('adc cx, cx') for r in rows) and any(r.startswith('rep movs') for r in rows)
+    if copies:
+        sites.append('rep movsw; adc cx, cx; rep movsb')
+    optimise = next((f for f in profile_flags if f.startswith('/O')), '')
+    if not sites or 'i' in optimise[2:]:
+        return None
+    return dict(fingerprints=sites, profile_optimisation=optimise,
+                hint='these inline string sequences come only from /Oi intrinsics (strlen/strcat/strcmp/memcmp/memcpy) in admitted C, '
+                     'but this object\'s profile has no /Oi: no source can reproduce them. Write the natural library calls, run '
+                     'python tools/compiler_profiles.py probe SYMBOL --source FILE.c and ask the supervisor for a profile assignment')
+
+
 def direct_data_bindings(card,symbols,image):
     names={}
     for symbol in symbols['segments'][9]['symbols']:

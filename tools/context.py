@@ -59,7 +59,8 @@ def packet(symbol, brief=False, history=False):
     from codegen_diff import blocks, instructions
     from recovery_context import compact_packet
     from reconstruction_rules import relevant_rules
-    from topology_context import codegen_shape, direct_data_bindings
+    from topology_context import codegen_shape, direct_data_bindings, intrinsic_hint
+    import compiler_profiles
     all_cards = cards(); targets = recipes()
     card = next((c for c in all_cards if c['symbol'] == symbol), None)
     if card is None:
@@ -86,6 +87,12 @@ def packet(symbol, brief=False, history=False):
     shape = codegen_shape(card)
     if shape:
         result['codegen_shape'] = shape
+    try:
+        hint = intrinsic_hint(card, compiler_profiles.flags_for(symbol, card['segment_name']))
+    except FormatError:
+        hint = None
+    if hint:
+        result['intrinsic_profile_mismatch'] = hint
     # Rule triggers include named far-data bindings, so evaluate only after
     # those semantic bindings have been attached.
     result['reconstruction_rules'] = relevant_rules(card, result)
@@ -106,7 +113,7 @@ def packet(symbol, brief=False, history=False):
     write_json(path, result)
     if brief:
         result = dict(size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
-                                         'direct_data_bindings', 'codegen_shape', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs') if k in result})
+                                         'direct_data_bindings', 'codegen_shape', 'intrinsic_profile_mismatch', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs') if k in result})
     result['packet'] = relative(path)
     return result
 

@@ -38,5 +38,20 @@ class CodegenShape(unittest.TestCase):
         self.assertIsNone(topology_context.codegen_shape(dict(disassembly=rows('enter 2, 0', 'pop bp', 'retf'))))
 
 
+class IntrinsicHint(unittest.TestCase):
+    card = dict(disassembly=rows('push bp', 'repne scasb al, byte ptr es:[di]', 'retf'))
+
+    def test_fingerprint_without_oi(self):
+        hit = topology_context.intrinsic_hint(self.card, ['/AL', '/G2', '/Gs', '/Oeglw', '/NTX'])
+        self.assertEqual(hit['fingerprints'], ['repne scasb'])
+
+    def test_quiet_under_oi(self):
+        self.assertIsNone(topology_context.intrinsic_hint(self.card, ['/AL', '/Oeilw', '/GA']))
+
+    def test_copy_idiom(self):
+        card = dict(disassembly=rows('rep movsw word ptr es:[di], word ptr [si]', 'adc cx, cx', 'rep movsb byte ptr es:[di], byte ptr [si]'))
+        self.assertIn('rep movsw; adc cx, cx; rep movsb', topology_context.intrinsic_hint(card, ['/Oelw'])['fingerprints'])
+
+
 if __name__ == '__main__':
     unittest.main()
