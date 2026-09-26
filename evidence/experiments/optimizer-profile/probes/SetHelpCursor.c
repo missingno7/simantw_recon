@@ -1,23 +1,19 @@
-/* Build the help path in the PACK scratch bytes immediately after GameTime. */
+/* Rebuild the shared help path in a file-scope far buffer. */
 extern unsigned int near hInst;
 extern int far hHelpCursor;
-extern unsigned long far GameTime;
 extern char far * far helpFileName;
 extern unsigned int far pascal LoadCursor(unsigned int instance, char far *name);
 extern char far *getcwd(char far *buffer, int maxlen);
 extern unsigned int strlen(const char far *s);
 extern char far *strcat(char far *dest, const char far *src);
+static char far helpPath[256];
 void far SetHelpCursor(void)
 {
-    char far *path;
-    path = (char far *)&GameTime + 4;
+    unsigned int length;
     hHelpCursor = LoadCursor(hInst, "HelpCursor");
-    path = getcwd(path, 0x100);
-    {
-        int length;
-        length = strlen(path);
-        if (length != 0 && path[length - 1] != 0x5c)
-            strcat(path, "\\");
-        strcat(path, helpFileName);
-    }
+    getcwd(helpPath, 0x100);
+    length = strlen(helpPath);
+    if (length != 0 && helpPath[length - 1] != 0x5c)
+        strcat(helpPath, "\\");
+    strcat(helpPath, helpFileName);
 }

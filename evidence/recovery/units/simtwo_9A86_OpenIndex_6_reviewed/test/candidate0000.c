@@ -39,41 +39,7 @@ extern int far lastTop;
 
 
 void far OpenIndex(char far *path, int idx);
-void far CreateIndex(char far *name, int idx)
-{
-    char buf[100];
-    int handle;
-    int far *header;
-    unsigned size;
-
-    sprintf(buf, "%s.ndx", name);
-    handle = openDBData[idx].pad2 = _lcreat(buf, 0);
-    if (handle <= 0)
-        DosPunt("Can't create index file", buf, errno);
-
-    openDBData[idx].recordCount = 0;
-    openDBData[idx].headerWords[0] = 0;
-    openDBData[idx].headerWords[2] = 0;
-    openDBData[idx].headerWords[1] = 0;
-    openDBData[idx].headerWords[4] = 0;
-    openDBData[idx].headerWords[3] = 0;
-    openDBData[idx].headerWords[6] = 0;
-    openDBData[idx].headerWords[5] = 0;
-    openDBData[idx].headerWords[7] = 0;
-    openDBData[idx].headerWords[8] = 0;
-
-    header = &openDBData[idx].recordCount;
-    _lwrite(handle, header, 0x14);
-    size = (unsigned)(openDBData[idx].recordCount * 8);
-    if (openDBData[idx].recordCount != 0) {
-        openDBData[idx].indexTable = mem_malloc(size, "index");
-    } else {
-        openDBData[idx].indexTable = 0;
-    }
-    _lclose(handle);
-}
-
-
+void far CreateIndex(char far *name, int idx);
 void far CloseIndex(int idx);
 void far pool_data_fill_B73E(void);
 int far DeleteIndex(int recIndex, int b, int c);
@@ -108,25 +74,30 @@ void far CreateIndex(char far *name, int idx)
 {
     char buf[100];
     int handle;
-    int far *hdr;
+    int far *header;
     unsigned size;
-    void far *data;
 
     sprintf(buf, "%s.ndx", name);
-    handle = _lcreat(buf, 0);
-    openDBData[idx].pad2 = handle;
+    handle = openDBData[idx].pad2 = _lcreat(buf, 0);
     if (handle <= 0)
         DosPunt("Can't create index file", buf, errno);
 
-    hdr = &openDBData[idx].recordCount;
-    hdr[0] = 0; hdr[1] = 0; hdr[2] = 0; hdr[3] = 0; hdr[4] = 0;
-    hdr[5] = 0; hdr[6] = 0; hdr[7] = 0; hdr[8] = 0; hdr[9] = 0;
+    openDBData[idx].recordCount = 0;
+    openDBData[idx].headerWords[0] = 0;
+    openDBData[idx].headerWords[2] = 0;
+    openDBData[idx].headerWords[1] = 0;
+    openDBData[idx].headerWords[4] = 0;
+    openDBData[idx].headerWords[3] = 0;
+    openDBData[idx].headerWords[6] = 0;
+    openDBData[idx].headerWords[5] = 0;
+    openDBData[idx].headerWords[7] = 0;
+    openDBData[idx].headerWords[8] = 0;
 
-    _lwrite(handle, hdr, 0x14);
-    size = (unsigned)(hdr[0] * 8);
-    if (hdr[0] != 0) {
-        data = mem_malloc(size, "index");
-        openDBData[idx].indexTable = data;
+    header = &openDBData[idx].recordCount;
+    _lwrite(handle, header, 0x14);
+    size = (unsigned)(openDBData[idx].recordCount * 8);
+    if (size != 0) {
+        openDBData[idx].indexTable = mem_malloc(size, "index");
     } else {
         openDBData[idx].indexTable = 0;
     }

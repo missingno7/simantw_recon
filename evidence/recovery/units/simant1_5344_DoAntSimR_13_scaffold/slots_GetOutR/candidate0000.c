@@ -23,9 +23,10 @@
  * (enter 2, 0).
  */
 extern int far Tindex;
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistT[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistS[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistM[];
+extern unsigned char far Dx8[];
+#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))
+#define RlistM ((unsigned char far *)((unsigned char far *)Dx8 + 0x44F0))
+#define RlistS ((unsigned char far *)((unsigned char far *)Dx8 + 0x48DC))
 extern unsigned char near MapR[];
 extern unsigned char far HoleMapR[];
 extern unsigned char near LifeR[];

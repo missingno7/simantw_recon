@@ -1,6 +1,4 @@
-static char near sharedPauseMenuText[] = "Un&pause\tShift+0\0&Pause\tShift+0";
-#define UNPAUSE_MENU_TEXT sharedPauseMenuText
-#define PAUSE_MENU_TEXT (sharedPauseMenuText + 17)
+/* Reviewed owner-unit trial: admitted _SetMenuEntries precedes _PauseGame; _SetPause aliases the same 369-byte target extent. */
 
 /*
  * SetMenuEntries: refresh the game menu.  Speed items 0x43..0x46 show
@@ -28,7 +26,7 @@ void far SetMenuEntries(void)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? UNPAUSE_MENU_TEXT : PAUSE_MENU_TEXT);
+    SetMenuOptionText(0x41, GamePaused ? "Un&pause\tShift+0" : "&Pause\tShift+0");
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
@@ -105,7 +103,7 @@ void far PauseGame(int mode)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? UNPAUSE_MENU_TEXT : PAUSE_MENU_TEXT);
+    SetMenuOptionText(0x41, GamePaused ? "Un&pause\tShift+0" : "&Pause\tShift+0");
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
@@ -114,6 +112,8 @@ void far PauseGame(int mode)
 }
 
 
+/* SCAFFOLD, not recovered source: _ProcMenu is an unrecovered later member.
+ * Its first new selector-pool word is _fileWaitFlag at 0xBED8. */
 extern int far fileWaitFlag;
 void far pool_stub_ProcMenu(void);
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_ProcMenu)

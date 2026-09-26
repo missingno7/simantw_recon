@@ -290,7 +290,7 @@ def main():
     sub = ap.add_subparsers(dest='action', required=True)
     sub.add_parser('validate')
     p = sub.add_parser('show'); p.add_argument('symbol')
-    p = sub.add_parser('probe'); p.add_argument('symbol'); p.add_argument('--source')
+    p = sub.add_parser('probe'); p.add_argument('symbol'); p.add_argument('--source'); p.add_argument('--out', help='directory for the record (default: the cited evidence directory); use a build/ path for exploratory variants')
     p = sub.add_parser('assign'); p.add_argument('context'); p.add_argument('profile'); p.add_argument('--reason', required=True); p.add_argument('--evidence', action='append', required=True); p.add_argument('--symbol', action='append')
     args = ap.parse_args()
     if args.action == 'validate':
@@ -298,7 +298,7 @@ def main():
     elif args.action == 'show':
         print(json.dumps(resolve(args.symbol), indent=2))
     elif args.action == 'probe':
-        record = probe(args.symbol, args.source)
+        record = probe(args.symbol, args.source, out=(ROOT / args.out) if args.out else None)
         print(json.dumps(dict(job=record['job'], discriminating=record['discriminating'], results={k: (v['result'], v.get('opcode_matches'), v.get('opcode_total'), v.get('candidate_bytes')) for k, v in record['results'].items()}), indent=2))
     else:
         print(json.dumps(assign(args.context, args.profile, args.reason, args.evidence, args.symbol), indent=2))
