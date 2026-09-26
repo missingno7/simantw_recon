@@ -1,10 +1,11 @@
 /* Count via a far-pointer walk and preserve a shared result tail. */
+extern unsigned int strlen(const char far *text);
 struct Font { unsigned char header[6]; int cellWidth; int spacing; unsigned char rest[0x22-0x0a]; int far *widths; int defaultChar; };
 int far _font_StringWidth(char far *text, struct Font far *font) {
  int width, i, extra, defaultWidth, entry, result;
  width=0; i=0;
  if (font->defaultChar == 0) {
-   { char far *p; int n; p=text; n=0; while(*p++) n++; result=n*font->cellWidth; }
+   result = font->cellWidth * strlen(text);
  } else {
    extra = (font->spacing < 0) ? 1 : 0;
    if (text[0] != 0) {

@@ -63,6 +63,17 @@
       "parents": [
         "baseline"
       ]
+    },
+    "oi-ga": {
+      "flags": [
+        "/Oeilw",
+        "/GA"
+      ],
+      "description": "oi plus /GA: Windows application prologue optimisation with /Oi intrinsics. Requires both exported-prologue and string-intrinsic evidence.",
+      "parents": [
+        "oi",
+        "ga"
+      ]
     }
   },
   "evidence_rules": {
@@ -964,30 +975,6 @@
       "reviewed": "2026-09-21T17:56:24.644590+00:00"
     },
     {
-      "id": "asg-antedit-9248-og",
-      "context": "antedit:9248",
-      "profile": "og",
-      "symbols": [],
-      "strength": "STRICT",
-      "evidence": [
-        "evidence/experiments/optimizer-profile/probes/SpecialTutorialInit-e0cff25916.json"
-      ],
-      "reason": "SpecialTutorialInit reaches a strict member result only under /Og (probe); the file-dialog/load-save object OPENDLG..ClearLastFileName (10 shared-slot joins) shares one profile; SeparateFile next to it matched under og",
-      "reviewed": "2026-09-21T17:56:26.816308+00:00"
-    },
-    {
-      "id": "asg-simtwo-c806-ga",
-      "context": "simtwo:C806",
-      "profile": "ga",
-      "symbols": [],
-      "strength": "STRICT",
-      "evidence": [
-        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json"
-      ],
-      "reason": "INDIRECTDLGPROC (exported dialog procedure) reaches a strict member result only with /GA (probe): the exported-prologue evidence; the window framework core win_LoadAllWindows..win_DoProxMenu is one object; all admitted members are /GA-invariant",
-      "reviewed": "2026-09-21T17:56:29.031242+00:00"
-    },
-    {
       "id": "asg-gr-6410-og",
       "context": "gr:6410",
       "profile": "og",
@@ -1085,18 +1072,6 @@
       ],
       "reason": "DoRandR reaches STRONGLY_SUPPORTED_MEMBER only under /Og (probe); the red-colony object mirrors the black one; admitted members are /Og-invariant",
       "reviewed": "2026-09-21T21:34:52.121264+00:00"
-    },
-    {
-      "id": "asg-antedit-00f4-og",
-      "context": "antedit:00F4",
-      "profile": "og",
-      "symbols": [],
-      "strength": "STRICT",
-      "evidence": [
-        "evidence/experiments/optimizer-profile/probes/OverlayTileSet-83853d3d3a.json"
-      ],
-      "reason": "OverlayTileSet natural source (no pointer local) is STRONGLY_SUPPORTED_MEMBER under og/og-ga/ogi and NO_COMPLETE_MATCH under baseline/ga (56/70 opcodes, 216 bytes): the far-address home on the frame reloaded via LES is /Og global CSE. og is the minimal profile.",
-      "reviewed": "2026-09-21T21:48:19.707951+00:00"
     },
     {
       "id": "asg-antedit-67c6-og",
@@ -1344,20 +1319,6 @@
       "reviewed": "2026-09-26T09:22:13.467570+00:00"
     },
     {
-      "id": "asg-simtwo-c32e-ga",
-      "context": "simtwo:C32E",
-      "profile": "ga",
-      "symbols": [],
-      "strength": "STRICT",
-      "evidence": [
-        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json",
-        "evidence/experiments/optimizer-profile/probes/win_ObjAddr.json",
-        "evidence/experiments/optimizer-profile/probes/win_WinAddr.json"
-      ],
-      "reason": "Joint-compile evidence (simtwo_window_module_shared_string) merges simtwo:C32E..C662 into the window-framework object previously assigned ga as simtwo:C806 (asg-simtwo-c806-ga, INDIRECTDLGPROC strict only under /GA). One object has one profile; the newly joined admitted members _win_ObjAddr and _win_WinAddr are profile-invariant (probes). Reviewed by supervisor.",
-      "reviewed": "2026-09-26T09:42:09.558428+00:00"
-    },
-    {
       "id": "asg-gr-364c-ogi",
       "context": "gr:364C",
       "profile": "ogi",
@@ -1500,6 +1461,67 @@
       ],
       "reason": "The UpdateListBox target contains repne scasb and rep movs intrinsic fingerprints. A source using admitted far strcpy/strcat declarations improves from 112/177 to 161/187 opcode matches under ogi and reduces the size delta; the antedit:8E56 component is a singleton with no admitted members to regress.",
       "reviewed": "2026-09-26T17:30:36.428251+00:00"
+    },
+    {
+      "id": "asg-antedit-9248-ogi",
+      "context": "antedit:9248",
+      "profile": "ogi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/SpecialTutorialInit-e0cff25916.json",
+        "evidence/experiments/optimizer-profile/probes/OPENDLG.json",
+        "evidence/experiments/optimizer-profile/probes/SAVEASDLG.json",
+        "evidence/experiments/optimizer-profile/probes/FileSelect.json",
+        "evidence/experiments/optimizer-profile/probes/LoadGame.json",
+        "evidence/experiments/optimizer-profile/probes/SaveGame.json"
+      ],
+      "reason": "The path string sites carry REPNE SCASB and REP MOVSW/ADC CX,CX/REP MOVSB fingerprints; current og diagnostics rise to 55/259, 142/413, 226/367, 150/248, and 145/253 under ogi from 16/259, 67/413, 190/367, 124/248, and 94/253, so /Oi is the minimal added switch while retaining /Og. Supersedes asg-antedit-9248-og (og evidence kept); the 7 admitted sources of this context compile to identical CODE under og and ogi (supervisor invariance check 2026-09-26).",
+      "reviewed": "2026-09-26T21:12:54.707767+00:00"
+    },
+    {
+      "id": "asg-antedit-00f4-ogi",
+      "context": "antedit:00F4",
+      "profile": "ogi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/OverlayTileSet-83853d3d3a.json",
+        "evidence/experiments/optimizer-profile/probes/LoadTiles.json",
+        "evidence/experiments/optimizer-profile/probes/SetEditWinTitle.json"
+      ],
+      "reason": "The _LoadTiles far-copy sites and _SetEditWinTitle concatenation sites match /Oi fingerprints; ogi raises current-og diagnostics from 102/799 to 144/799 and 42/106 to 89/106 while retaining the object's existing /Og requirement. Supersedes asg-antedit-00f4-og (og evidence kept); the 7 admitted sources of this context compile to identical CODE under og and ogi (supervisor invariance check 2026-09-26).",
+      "reviewed": "2026-09-26T21:12:54.707767+00:00"
+    },
+    {
+      "id": "asg-simtwo-c806-oi-ga",
+      "context": "simtwo:C806",
+      "profile": "oi-ga",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json",
+        "evidence/experiments/optimizer-profile/probes/win_LoadAllWindows.json",
+        "evidence/experiments/optimizer-profile/probes/win_ObjFormatPrint.json"
+      ],
+      "reason": "The window-framework object keeps its /GA evidence (asg-simtwo-c806-ga) and adds /Oi: _win_LoadAllWindows and _win_ObjFormatPrint carry REPNE SCASB / REP MOVSW intrinsic fingerprints and improve from 128/228 and 135/226 opcodes under ga to 158/228 and 178/226 under /Oi (oi minimal over baseline; og adds nothing). Supersedes asg-simtwo-c806-ga; the admitted sources of simtwo:C806 and simtwo:C32E, including INDIRECTDLGPROC, compile to identical CODE under ga and oi-ga (supervisor invariance check 2026-09-26).",
+      "reviewed": "2026-09-26T21:14:00.256635+00:00"
+    },
+    {
+      "id": "asg-simtwo-c32e-oi-ga",
+      "context": "simtwo:C32E",
+      "profile": "oi-ga",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/INDIRECTDLGPROC-3e701072c7.json",
+        "evidence/experiments/optimizer-profile/probes/win_ObjAddr.json",
+        "evidence/experiments/optimizer-profile/probes/win_WinAddr.json",
+        "evidence/experiments/optimizer-profile/probes/win_LoadAllWindows.json",
+        "evidence/experiments/optimizer-profile/probes/win_ObjFormatPrint.json"
+      ],
+      "reason": "The window-framework object keeps its /GA evidence (asg-simtwo-c32e-ga) and adds /Oi: _win_LoadAllWindows and _win_ObjFormatPrint carry REPNE SCASB / REP MOVSW intrinsic fingerprints and improve from 128/228 and 135/226 opcodes under ga to 158/228 and 178/226 under /Oi (oi minimal over baseline; og adds nothing). Supersedes asg-simtwo-c32e-ga; the admitted sources of simtwo:C806 and simtwo:C32E, including INDIRECTDLGPROC, compile to identical CODE under ga and oi-ga (supervisor invariance check 2026-09-26).",
+      "reviewed": "2026-09-26T21:14:00.257135+00:00"
     }
   ],
   "refutations": [
