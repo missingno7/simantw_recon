@@ -1,6 +1,6 @@
 /* Candidate translation unit antedit_A998_DrawYardCursor_8_scaffold_pre: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _DrawYardCursor, _EraseYardCursor, _DrawYardData, _DrawYard, _UpdateYard, _DrawDog, _DrawForSale, _YardArea
+ * Members: _CheckRainArray, _DrawYardCursor, _EraseYardCursor, _DrawYardData, _DrawYard, _UpdateYard, _DrawDog, _DrawSimBird, _DrawSimCat, _DrawForSale, _YardArea
  * SCAFFOLDED: unclaimed members _win_DrawYardWindow, _UpdateYardMessage, _DrawSimKid, _Draw_SimYard, _DrawSwarm, _DrawSimColonies are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 struct YardPoint {
@@ -74,10 +74,10 @@ static int near catObject = -1;
 static int near birdObject = -1;
 struct YardPrivateHead {
     int dogObject;
-    unsigned char kidPrefix[2];
+    int kidObject;
     int forSaleObject;
 };
-static struct YardPrivateHead near yardPrivateHead = {-1, {0xFF, 0xFF}, -1};
+static struct YardPrivateHead near yardPrivateHead = {-1, -1, -1};
 
 struct Point near patchRgn[4] = {
     {0x00A9, 0x0043}, {0x00C0, 0x0043},
@@ -94,6 +94,8 @@ struct YardPrivateTail {
     unsigned char kidAnimationData[56];
     signed char dogWalkX[12];
 };
+/* DrawSimKid's initialized private animation records are carried as named
+ * object data and referenced by its uncredited reserved stand-in. */
 static struct YardPrivateTail near yardPrivateTail = {
     1,
     0x00, 0x00, 0x25, 0x73, 0x00, 0x28, 0x25, 0x64, 0x29, 0x00, 0x0A, 0x00, 0x25, 0x2D, 0x64, 0x00, 0x25, 0x2D, 0x64, 0x00, 0x25, 0x64, 0x00, 0x25, 0x64, 0x00, 0x25, 0x64, 0x00, 0x00, 0x03, 0x03, 0x01, 0x00,
@@ -345,6 +347,9 @@ void far pool_stub_DrawSimKid(void)
     t = LastQueenPlane;
     t = EditDragPnt;
     t = *(int far *)&mapTileRect;
+    t = yardPrivateHead.kidObject;
+    t = yardPrivateTail.kidAnimationData[0];
+    t = yardPrivateTail.kidAnimationData[55];
 }
 
 void far DrawDog(void)
@@ -514,5 +519,5 @@ void far YardArea(struct AntRec far *p)
     }
     MSClipEnd();
 }
-#undef CurYardPnt
+
 

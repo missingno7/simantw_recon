@@ -28,7 +28,10 @@ extern void far SetMenuOptionText(int item, char far *text);
 extern void far UpdateUserButtons(void);
 
 
-static char UnpauseMenuText[] = "Un&pause\tShift+0", PauseMenuText[] = "&Pause\tShift+0";
+struct PauseMenuTextBlock { char unpause[17]; char pause[15]; };
+static struct PauseMenuTextBlock PauseMenuTextBlock = { "Un&pause\tShift+0", "&Pause\tShift+0" };
+#define UnpauseMenuText PauseMenuTextBlock.unpause
+#define PauseMenuText PauseMenuTextBlock.pause
 
 void far pool_stub_SetMenuEntries(void);
 
