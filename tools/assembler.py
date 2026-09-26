@@ -52,6 +52,7 @@ DOTTED_DIRECTIVES = {'.CODE', '.DATA', '.DATA?', '.STACK', '.MODEL', '.186', '.2
                      '.386', '.386P', '.8086', '.8087', '.287', '.387', '.CONST', '.FARDATA', '.FARDATA?'}
 LABEL_OPERAND = re.compile(r'(?:(?:OFFSET|SEG)\s+)?[A-Za-z_?$@.][A-Za-z0-9_?$@.]*\Z', re.I)
 FLAG_RE = re.compile(r'/[A-Za-z0-9_:+.-]+\Z')
+ABSOLUTE_MEMORY = re.compile(r'\b(?:DS|ES|CS|SS)\s*:\s*\[?\s*[0-9][0-9A-F]*H?\b|\[\s*[0-9][0-9A-F]*H?\s*\]', re.I)
 
 
 def _strip_comment(line):
@@ -151,9 +152,17 @@ def check_asm_source(source):
             entries = [part.strip() for part in operands.split(',')]
             if not entries or any(not LABEL_OPERAND.fullmatch(part) for part in entries):
                 raise FormatError('code-segment data must be a label/offset jump table (line %d)' % number)
-        # Explicitly reject data forms even when hidden behind a label token.
-        if active_code and re.match(r'^[A-Za-z_?$@.][A-Za-z0-9_?$@.]*\s+(?:DB|BYTE)\b', line, re.I):
+        # Explicitly reject data forms even when hidden behind a label token
+        # (``name DB ...``), but not instruction operands such as ``mov BYTE PTR [bx], 0``.
+        hidden = re.match(r'^([A-Za-z_?$@.][A-Za-z0-9_?$@.]*)\s+(?:DB|BYTE)\b', line, re.I)
+        if active_code and hidden and hidden.group(1).upper() not in INSTRUCTIONS:
             raise FormatError('byte data in a code segment is refused (line %d)' % number)
+        # Hard-coded linked addresses are the assembly form of a literal-address
+        # cast: name the variable (EXTRN for a MAPSYM public, or this module's own
+        # _DATA definition) so the object carries a real fixup.
+        if opcode in INSTRUCTIONS and ABSOLUTE_MEMORY.search(operands):
+            raise FormatError('absolute memory operand %r: reference a named variable instead (line %d)'
+                              % (ABSOLUTE_MEMORY.search(operands).group(0), number))
 
         # This is a source-subset gate, not a complete MASM parser. Unknown
         # opcodes still go through the selected period assembler and OMF parser.

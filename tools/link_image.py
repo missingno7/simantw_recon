@@ -9,7 +9,7 @@ Typical use:
     python tools/link_image.py analyze
     python tools/link_image.py package
     python tools/link_image.py link
-    python tools/link_image.py compare build/workers/linkdef/LINKED.EXE
+    python tools/link_image.py compare build/workers/linkdef-2/LINKED.EXE
 """
 import argparse
 import hashlib
@@ -30,7 +30,10 @@ import omf
 
 
 EVIDENCE = ROOT / "evidence/experiments/link-container"
-WORK = ROOT / "build/workers/linkdef"
+WORK = ROOT / "build/workers/linkdef-2"
+EVIDENCE_CONTAINER = EVIDENCE / "link-container-linkdef-2.json"
+EVIDENCE_ORDER = EVIDENCE / "link-order-linkdef-2.json"
+EVIDENCE_RESULT = EVIDENCE / "link-result-linkdef-2.json"
 RAW_LANES = {"GAME_CODE", "CODE_GAP", "RUNTIME_CODE", "DATA"}
 RESOURCE_LANES = {"RESOURCES"}
 LINK_LANES = {"LINK"}
@@ -316,7 +319,7 @@ def analyze(write=True):
         "schema_version": 1,
         "scope": "LINK-container investigation; raw placeholder OMF contributions are scaffolding only",
         "oracle": {"size": len(raw), "sha256": _sha(raw)},
-        "def": {"path": "build/workers/linkdef/SIMANTW.DEF", "directives": def_lines,
+        "def": {"path": "build/workers/linkdef-2/SIMANTW.DEF", "directives": def_lines,
                 "exports": exports, "stub": {"source": DEF_STUB, "source_sha256": _sha(stub_exe),
                     "oracle_body_sha256": _sha(stub[:98]), "oracle_stub_area_bytes": len(stub),
                     "body_bytes": 98, "body_equal": stub[:98] == stub_exe[512:],
@@ -337,7 +340,7 @@ def analyze(write=True):
         WORK.mkdir(parents=True, exist_ok=True)
         EVIDENCE.mkdir(parents=True, exist_ok=True)
         (WORK / "SIMANTW.DEF").write_text(def_text, encoding="ascii")
-        write_json(EVIDENCE / "link-container.json", evidence)
+        write_json(EVIDENCE_CONTAINER, evidence)
         write_json(WORK / "layout-model.json", {"objects": layouts, "known_publics": sorted(known_publics),
                      "spans": {str(k): v for k, v in spans.items()}})
     return {"raw": raw, "image": image, "symbols": symbols, "ledger": ledger, "manifest": manifest,
@@ -347,13 +350,16 @@ def analyze(write=True):
 
 
 def build_omf(module_name, active_name, active_class, payload, publics=(), externals=(), fixups=(), extra_segments=()):
-    """Serialize one RAWDEBT contribution as a valid OMF module."""
+    """Serialize one RAWDEBT scaffolding contribution as a valid OMF module."""
     names = []
     def name_index(value):
         if value not in names:
             names.append(value)
         return names.index(value) + 1
-    seg_specs = [(active_name, active_class, len(payload), 3)]
+    # A raw span already includes the alignment bytes present in the image.
+    # Aligning every placeholder to a paragraph inserts new bytes before each
+    # span and shifts following contributions; BYTE alignment preserves slots.
+    seg_specs = [(active_name, active_class, len(payload), 1)]
     for spec in extra_segments:
         if all(spec[0] != row[0] for row in seg_specs):
             seg_specs.append(spec)
@@ -607,12 +613,23 @@ def _carve_crt0msg_member(model):
     spans = model["spans"][10]
     sites = [(r, q) for r in ne_seg["relocations"] for q in r["sites"]]
     chains = set(model["raw_chain_sites"].get(10, []))
+    carve_issues = []
     for claim in claims:
         a, b = claim["start"], claim["end"]
         if not any(span["start"] <= a and b <= span["end"] for span in spans):
-            raise FormatError("CRT0MSG %s is not wholly uncovered RAWDEBT" % claim["segment"])
+            carve_issues.append({"segment": claim["segment"], "reason": "current ledger has admitted coverage or splits the runtime interval"})
         if any(a <= q < b for _, q in sites) or any(a <= q < b for q in chains):
-            raise FormatError("CRT0MSG %s overlaps an NE loader/chain site" % claim["segment"])
+            carve_issues.append({"segment": claim["segment"], "reason": "interval intersects an NE loader or chain site"})
+    if carve_issues:
+        evidence = {"library": library_rel, "library_sha256": identity(library_path)["sha256"],
+            "member": module["name"], "member_sha256": _sha(module_bytes), "claims": claims,
+            "included": False, "omitted_reasons": carve_issues,
+            "scope": "pinned runtime member omitted because current admitted objects own part of its mapped interval"}
+        model["runtime_library_claims"] = []
+        model["runtime_library_skips"] = [evidence]
+        model["evidence"]["runtime_library_skips"] = [evidence]
+        write_json(EVIDENCE_CONTAINER, model["evidence"])
+        return evidence
 
     model["spans"][10] = _subtract_spans(spans, claims)
     member_path = WORK / "objects" / "RUNTIME_CRT0MSG.OBJ"
@@ -626,6 +643,7 @@ def _carve_crt0msg_member(model):
                             "PAD uniquely matches the suffix before MAPSYM _edata after zero alignment"],
         "fixups": len(module["fixups"]), "scope": "pinned runtime library member; never RAWDEBT or recovered source"}
     model["runtime_library_claims"] = [evidence]
+    model["runtime_library_skips"] = []
     order = model["evidence"]["link_order"]
     order["raw_gap_spans"]["10"] = model["spans"][10]
     order["counts"]["raw_gap_spans"] = sum(map(len, model["spans"].values()))
@@ -651,7 +669,7 @@ def _carve_crt0msg_member(model):
          "contributions": sorted(rows, key=lambda x: (x["start"], x["end"], x["kind"], x["object"]))}
         for (segnum, logical), rows in sorted(full_orders.items())]
     order["counts"]["ordered_contributions_with_gaps"] = sum(map(len, full_orders.values()))
-    write_json(EVIDENCE / "link-order.json", {
+    write_json(EVIDENCE_ORDER, {
         "scope": "oracle placement constraints; RAWDEBT rows are scaffolding and receive zero recovery credit",
         "oracle_sha256": model["evidence"]["oracle"]["sha256"],
         "topology_basis": order["topology_basis"],
@@ -659,9 +677,9 @@ def _carve_crt0msg_member(model):
         "counts": order["counts"],
         "logical_orders": order["logical_orders_with_gaps"]})
     order.pop("logical_orders_with_gaps")
-    order["detail_path"] = "evidence/experiments/link-container/link-order.json"
+    order["detail_path"] = EVIDENCE_ORDER.relative_to(ROOT).as_posix()
     model["evidence"]["runtime_library_claims"] = [evidence]
-    write_json(EVIDENCE / "link-container.json", model["evidence"])
+    write_json(EVIDENCE_CONTAINER, model["evidence"])
     write_json(WORK / "layout-model.json", {"objects": model["layouts"],
         "known_publics": sorted(model["known_publics"]),
         "spans": {str(k): v for k, v in model["spans"].items()},
@@ -685,6 +703,27 @@ def package():
     packaged = []
     raw_fixup_sites = set()
     def_imports = set()
+    selector_alias = "_pool_segment_ref_SIMANT_DATA_GROUP"
+    needs_selector_alias = any(
+        ext["name"] == selector_alias
+        for layout in model["layouts"]
+        for ext in omf.parse((ROOT / layout["object"]).read_bytes())["externals"])
+    if needs_selector_alias and selector_alias not in existing_publics:
+        # Scaffolded TU members use this external only as an OMF reference to
+        # the beginning of the original far-data logical segment.  A zero-byte
+        # RAWDEBT bridge supplies that linker name without copying or crediting
+        # any executable/data bytes.
+        module = "RAWDEBT_SELECTOR_SIMANT_DATA_GROUP"
+        out_path = object_dir / (module + ".OBJ")
+        omf_bytes = build_omf(module, "SIMANT_DATA_GROUP", "FAR_DATA", b"",
+                              publics=[(selector_alias, 0)])
+        out_path.write_bytes(omf_bytes)
+        packaged.append({"object": out_path.relative_to(ROOT).as_posix(), "module": module,
+            "ne_segment": 8, "start": 0, "end": 0,
+            "logical_segment": "SIMANT_DATA_GROUP", "class": "FAR_DATA",
+            "public_count": 1, "omf_fixup_count": 0, "ne_relocation_site_count": 0,
+            "rawdebt_bytes": 0, "scaffolding_role": "selector-symbol bridge; no image bytes",
+            "identity": identity(out_path)})
     for segnum, spans in sorted(spans_by_seg.items()):
         ne_seg = model["image"]["segments"][segnum - 1]
         seg_bytes = model["raw"][ne_seg["file_offset"]:ne_seg["file_offset"] + ne_seg["logical_size"]]
@@ -791,7 +830,7 @@ def package():
         evidence = model["evidence"]
         for statement in sorted(def_imports):
             evidence["def"]["directives"].append({"line": statement, "source": "NE import relocation target not named by the Windows import libraries", "interpretation": "define missing imported module/ordinal from the original relocation table"})
-        (EVIDENCE / "link-container.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+        EVIDENCE_CONTAINER.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
     (WORK / "SIMANTW.DEF").write_text(def_text, encoding="ascii")
     receipt = {"scope": "RAWDEBT placeholders only; zero recovery credit",
         "objects": packaged, "object_count": len(packaged), "raw_ne_relocation_sites": len(raw_fixup_sites),
@@ -804,29 +843,90 @@ def package():
 
 
 def _link_input_key(row):
-    """Stable per-layout ordering heuristic; original global input order remains partly inferred."""
-    if row["kind"] in ("RAWDEBT", "RUNTIME_MEMBER"):
-        seg, start = row["ne_segment"], row["start"]
-        if seg == 10:
-            # Match the field positions used by admitted DGROUP contributions
-            # so raw gaps and pinned runtime members can interleave by offset.
-            return (0, 0, start, row["object"])
-        if seg == 4:
-            return (2, start, 0, row["object"])
-        return (1, seg, start, row["object"])
-    obj = row["layout"]
-    const = [c["start"] for c in obj["contributions"] if c["ne_segment"] == 10 and c["class"] == "CONST"]
-    data = [c["start"] for c in obj["contributions"] if c["ne_segment"] == 10 and c["class"] in ("DATA", "BEGDATA", "BSS")]
-    code = [(c["ne_segment"], c["start"]) for c in obj["contributions"] if c["class"] == "CODE"]
-    group = 2 if obj["group"] == "RUNTIME" else 0
-    anchor = min(const or data) if const or data else min(code, default=(99, 0))[1]
-    segment = 0 if const or data else min(code, default=(99, 0))[0]
-    return (group, segment, anchor, row["object"])
+    """Stable tie breaker after hard per-logical-segment constraints."""
+    contributions = row.get("layout", {}).get("contributions", [])
+    if not contributions and row.get("kind") == "RAWDEBT":
+        contributions = [{"ne_segment": row.get("ne_segment", 99),
+                          "start": row.get("start", 0)}]
+    anchor = min(((c.get("ne_segment", 99), c.get("start", 0)) for c in contributions),
+                 default=(99, 0))
+    return (anchor[0], anchor[1], row["object"])
 
 
-def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
+def _order_link_inputs(rows):
+    """Topologically order modules using measured contribution positions.
+
+    LINK consumes one global object list, so every logical SEGDEF contribution
+    imposes an order on the same list.  Sorting by only DGROUP or one code
+    anchor can silently reverse another segment; this graph keeps all measured
+    constraints and reports overlaps that the image ledger already identifies.
+    """
+    by_segment = defaultdict(list)
+    nodes = {row["object"]: row for row in rows}
+    for row in rows:
+        for c in row.get("layout", {}).get("contributions", []):
+            name = c.get("logical_segment", c.get("segment"))
+            if name is None:
+                continue
+            by_segment[(c.get("ne_segment", 99), name, c.get("class"))].append({
+                "object": row["object"], "start": c["start"], "end": c["end"],
+                "ne_segment": c.get("ne_segment", 99)})
+
+    edges = set()
+    overlaps = []
+    name_to_ne = defaultdict(set)
+    for (ne_segment, segment, cls), records in sorted(by_segment.items()):
+        name_to_ne[(segment, cls)].add(ne_segment)
+        records.sort(key=lambda x: (x["start"], x["end"], x["object"]))
+        for i, left in enumerate(records):
+            for right in records[i + 1:]:
+                if left["object"] == right["object"]:
+                    continue
+                if left["end"] <= right["start"]:
+                    edges.add((left["object"], right["object"]))
+                elif right["end"] <= left["start"]:
+                    edges.add((right["object"], left["object"]))
+                else:
+                    overlaps.append({"ne_segment": ne_segment,
+                        "logical_segment": segment, "class": cls,
+                        "left": left, "right": right})
+
+    outgoing = {name: set() for name in nodes}
+    indegree = {name: 0 for name in nodes}
+    for before, after in edges:
+        if after not in outgoing[before]:
+            outgoing[before].add(after)
+            indegree[after] += 1
+    ready = sorted((name for name, degree in indegree.items() if degree == 0),
+                   key=lambda name: _link_input_key(nodes[name]))
+    ordered = []
+    while ready:
+        name = ready.pop(0)
+        ordered.append(nodes[name])
+        for after in sorted(outgoing[name], key=lambda x: _link_input_key(nodes[x])):
+            indegree[after] -= 1
+            if indegree[after] == 0:
+                ready.append(after)
+                ready.sort(key=lambda x: _link_input_key(nodes[x]))
+    cycles = sorted((name for name, degree in indegree.items() if degree),
+                    key=lambda name: _link_input_key(nodes[name]))
+    ordered.extend(nodes[name] for name in cycles)
+    reused_names = [{"logical_segment": segment, "class": cls,
+        "ne_segments": sorted(ne_segments)}
+        for (segment, cls), ne_segments in sorted(name_to_ne.items()) if len(ne_segments) > 1]
+    facts = {"basis": "topological order of strict member and RAWDEBT interval positions per target NE segment and OMF logical segment",
+        "node_count": len(nodes), "constraint_count": len(edges),
+        "overlap_count": len(overlaps), "cycle_count": len(cycles),
+        "logical_names_reused_across_ne_segments": reused_names,
+        "reused_name_count": len(reused_names),
+        "overlaps": overlaps[:64], "cycle_objects": cycles,
+        "ordered_objects": [row["object"] for row in ordered]}
+    return ordered, facts
+
+
+def link(out_path="build/workers/linkdef-2/LINKED.EXE", pack_code=True):
     model, packaged, package_receipt = package()
-    out = ROOT / "build/workers/linkdef/link"
+    out = WORK / "link"
     out.mkdir(parents=True, exist_ok=True)
     in_dir = out
     in_dir.mkdir(parents=True, exist_ok=True)
@@ -850,14 +950,23 @@ def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
         anchor = next(c["start"] for c in member["claims"] if c["segment"] == "_DATA")
         rows.append({"kind": "RUNTIME_MEMBER", "object": dest.name, "ne_segment": 10,
                      "start": anchor, "path": dest, "identity": identity(dest),
+                     "layout": {"contributions": [{"logical_segment": c["segment"],
+                         "class": c["class"], "ne_segment": 10,
+                         "start": c["start"], "end": c["end"], "length": c["end"] - c["start"]}
+                         for c in member["claims"]]},
                      "runtime_member": member["member"]})
     for item in packaged:
         src = ROOT / item["object"]
         dest = in_dir / ("P%04d.OBJ" % len([x for x in rows if x["kind"] == "RAWDEBT"]))
         shutil.copyfile(src, dest)
         rows.append({"kind": "RAWDEBT", "object": dest.name, "ne_segment": item["ne_segment"],
-                     "start": item["start"], "path": dest, "identity": identity(dest)})
-    rows.sort(key=_link_input_key)
+                     "start": item["start"], "path": dest, "identity": identity(dest),
+                     "layout": {"contributions": [{"logical_segment": item["logical_segment"],
+                         "class": item["class"], "ne_segment": item["ne_segment"],
+                         "start": item["start"], "end": item["end"],
+                         "length": item["end"] - item["start"]}]}})
+    rows, input_order_constraints = _order_link_inputs(rows)
+    write_json(WORK / "link-order-constraints.json", input_order_constraints)
     object_names = [x["object"] for x in rows]
     lib_sources = {
         "CRT.LIB": "toolchain/sdk300/CLIB/LLIBCW.LIB",
@@ -887,6 +996,7 @@ def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
     (out / "link.log").write_text(log, encoding="latin1")
     report = {"scope": "RAWDEBT placeholders plus admitted OMF objects; placeholders receive no recovery credit",
         "code_packing": code_packing_switch,
+        "input_order_constraints": {k:v for k,v in input_order_constraints.items() if k != "ordered_objects"},
         "command": command, "exit_code": result.returncode, "linker": identity(linker),
         "def": identity(out / "SIMANTW.DEF"), "stub": identity(out / "WINSTUB.EXE"),
          "input_object_count": len(rows), "rawdebt_object_count": len(packaged),
@@ -894,7 +1004,7 @@ def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
         "rawdebt_fixup_sites": package_receipt["raw_ne_relocation_sites"],
         "link_error_count": len(re.findall(r"error L\d+:", log)),
         "link_error_codes": dict(Counter(re.findall(r"error (L\d+):", log))),
-         "input_order": [{"kind": x["kind"], "object": x["object"], "ne_segment": x.get("ne_segment"), "start": x.get("start"), "runtime_member": x.get("runtime_member"), "identity": x["identity"]} for x in rows],
+        "input_order": [{"kind": x["kind"], "object": x["object"], "ne_segment": x.get("ne_segment"), "start": x.get("start"), "runtime_member": x.get("runtime_member"), "identity": x["identity"]} for x in rows],
         "log": log}
     if exe.exists():
         out_target = ROOT / out_path
@@ -911,8 +1021,7 @@ def link(out_path="build/workers/linkdef/LINKED.EXE", pack_code=True):
     compact = {k:v for k,v in report.items() if k not in ("input_order", "log")}
     compact["input_order_sha256"] = _sha(json.dumps(report["input_order"], sort_keys=True).encode())
     compact["log_tail"] = "\n".join(log.splitlines()[-24:])
-    write_json(EVIDENCE / ("link-result-" + Path(output_name).stem + ".json"), compact)
-    write_json(EVIDENCE / "link-result.json", compact)
+    write_json(EVIDENCE_RESULT, compact)
     print("LINK exit:", result.returncode, "objects:", len(rows), "RAWDEBT:", len(packaged))
     if exe.exists():
         print("Comparison:", report["comparison"]["different_region_count"], "different regions")
@@ -1042,7 +1151,7 @@ def main():
     sub.add_parser("analyze", help="derive the DEF, NE evidence, and per-segment object order")
     sub.add_parser("package", help="build explicit RAWDEBT OMF placeholder objects")
     p_link = sub.add_parser("link", help="run pinned LINK 5.30 with recovered objects and RAWDEBT placeholders")
-    p_link.add_argument("--out", default="build/workers/linkdef/LINKED.EXE")
+    p_link.add_argument("--out", default="build/workers/linkdef-2/LINKED.EXE")
     p_link.add_argument("--no-packcode", action="store_true", help="diagnostic run without /PACKCODE")
     p_cmp = sub.add_parser("compare", help="compare a linked NE executable by region")
     p_cmp.add_argument("candidate")
@@ -1050,7 +1159,7 @@ def main():
     if args.action == "analyze":
         model = analyze()
         print(json.dumps({"def": str(WORK / "SIMANTW.DEF"), "layout_model": str(WORK / "layout-model.json"),
-            "evidence": str(EVIDENCE / "link-container.json"), "layout_failures": len(model["failures"]),
+            "evidence": str(EVIDENCE_CONTAINER), "layout_failures": len(model["failures"]),
             "raw_spans": sum(map(len, model["spans"].values()))}, indent=2))
     elif args.action == "package":
         _, _, receipt = package()

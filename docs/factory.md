@@ -124,7 +124,7 @@ python tools/compiler_service.py stop
 python tools/worker_validate.py --workers 4
 ```
 
-`layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. After changing the worker or wait helper, rerun single-worker validation before parallel validation, then `validate.py`. Do not edit recorded fingerprints to bypass them.
+When many workers run under `cx`, start the service from the supervisor's own session (`python tools/compiler_service.py serve --workers 4 --idle-seconds 86400`). Otherwise the first worker's compile request starts it as that worker's descendant, and `cx` stops it, and with it everyone's compiles, when that worker exits. `layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. After changing the worker or wait helper, rerun single-worker validation before parallel validation, then `validate.py`. Do not edit recorded fingerprints to bypass them.
 
 ## Search diagnostics versus proof
 

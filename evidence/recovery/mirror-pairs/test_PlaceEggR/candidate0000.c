@@ -3,12 +3,11 @@
  * Verified only by the strict matcher; where the pair is not a pure mirror the
  * diagnostic names the asymmetry. */
 /*
- * Hypothesis: place one B-side egg only while the B list has room and the
- * supplied row/column is inside the playable grid.  The calls use the same
- * argument order established by the verified B-list insertion routine:
- * DigTileB receives row, column, while AddAntToBList receives the life byte,
- * coordinate pair, state 8, and direction 0.  LifeB is the near DS grid;
- * match_position is the far DGROUP view of the selected B-list count.
+ * Hypothesis: place one R-side egg below the 500-entry R-list bound and
+ * inside rows 0..63 and columns 1..63.  DigTileB receives the coordinate
+ * pair, AddAntToBList receives life, column, attribute 8, state 8's paired
+ * direction 0 in the observed push order, and LifeB records the life byte
+ * in the 64-byte row-strided grid.
  */
 extern int far ListIndexR;
 extern unsigned char near LifeR[];
@@ -18,24 +17,27 @@ extern void far AddAntToRList(int life, int column, int attribute,
 
 void far PlaceEggR(int row, int column, int life)
 {
-    int direction;
+    int valid;
 
     if (ListIndexR >= 500)
         return;
-
-    if (row < 0) {
-        column = column;
-        direction = 0;
-    } else {
-        if (row > 63 || column < 1 || column > 63)
-            direction = 0;
-        else
-            direction = 1;
+    if (row < 0)
+        goto invalid;
+    if (row > 63)
+        goto invalid;
+    if (column < 1)
+        goto invalid;
+    if (column > 63)
+        goto invalid;
+    valid = 1;
+    goto checked;
+invalid:
+    valid = 0;
+checked:
+    if (valid) {
+        DigTileR(row, column);
+        AddAntToRList(row, column, life, 8, 0);
+        LifeR[(row << 6) + column] = (unsigned char)life;
     }
-    if (direction == 0)
-        return;
-
-    DigTileR(row, column);
-    AddAntToRList(row, column, life, 8, 0);
-    LifeR[(row << 6) + column] = (unsigned char)life;
 }
+

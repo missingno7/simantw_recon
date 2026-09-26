@@ -224,3 +224,13 @@ class SearchHasNoBudgetTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PackIndexBindingTests(unittest.TestCase):
+    def test_nonzero_match_position_index_is_refused(self):
+        for code in ('int a(void) { return match_position[0x3957]; }', 'int a(void) { return match_position[12]; }'):
+            with self.assertRaisesRegex(FormatError, 'another PACK object'):
+                promote.check_source('/* x */ ' + code, FLAGS)
+    def test_named_object_and_index_zero_are_allowed(self):
+        promote.check_source('/* x */ int a(void) { return match_position[0]; }', FLAGS)
+        promote.check_source('/* x */ int a(void) { return mapCursorRect; }', FLAGS)

@@ -139,8 +139,9 @@ def compile_jobs(jobs,workers=4):
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('action',choices=['start','serve','status','stop']);ap.add_argument('--workers',type=int,default=4);args=ap.parse_args()
-    if args.action=='serve':serve(args.workers)
+    ap=argparse.ArgumentParser();ap.add_argument('action',choices=['start','serve','status','stop']);ap.add_argument('--workers',type=int,default=4)
+    ap.add_argument('--idle-seconds',type=int,default=120,help='serve: stop after this long without work (a supervisor-owned service may use a long value)');args=ap.parse_args()
+    if args.action=='serve':serve(args.workers,args.idle_seconds)
     elif args.action=='start':print(json.dumps(start(args.workers),indent=2))
     elif args.action=='stop':
         BASE.mkdir(parents=True,exist_ok=True);(BASE/'STOP').write_text('stop');print('Stop requested; active jobs finish before shutdown.')

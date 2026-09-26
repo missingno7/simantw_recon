@@ -55,11 +55,23 @@ def reviewed_intrinsic_source(unit, source):
     return source == unit_source.read_text()
 
 
+PACK_INDEX = re.compile(r'\bmatch_position\s*\[\s*(0[xX][0-9A-Fa-f]+|\d+)\s*\]')
+
+
+def pack_index_bindings(code):
+    return [m.group(0) for m in PACK_INDEX.finditer(code) if int(m.group(1), 0) > 0]
+
+
 def check_source(source, flags, unit=None):
     """Ordinary self-contained C under a catalogued profile; fail closed on anything else."""
     code = re.sub(r'/\*.*?\*/|//[^\n]*', '', source, flags=re.S)
     if 'TODO' in source or not code.strip():
         raise FormatError('unfinished source')
+    if pack_index_bindings(code):
+        # match_position is a 2-byte PACK word: a nonzero constant index reaches a
+        # different PACK object and, inside a unit, allocates the wrong selector-pool
+        # words. Name the object instead (tools/rebind_pack_index.py).
+        raise FormatError('match_position[K] reaches another PACK object; declare and use that object')
     stripped = code
     if unit and unit.get('scaffold'):
         # A scaffolded unit may only carry `#pragma alloc_text(...)` placements
@@ -84,14 +96,14 @@ def function_flags(symbol):
 
 
 def admit(label, publics, source_bytes, flags, profile, summary, verify_only, unit=None, scaffold=None, data=False,
-          language='c', assembler_version=None):
+          language='c', assembler_version=None, rework=False):
     """Compile the frozen source and admit every public, or change nothing."""
     with publication.publication_lock():
         publication.recover()
         current = read_json(ROOT / 'src/recovery.json')
         manifest = read_json(ROOT / 'build/recovered/manifest.json')
         superseded = {name: current['targets'][name] for name in publics or () if name in current['targets']}
-        if superseded and unit is None and not verify_only:
+        if superseded and unit is None and not verify_only and not rework:
             raise FormatError('already admitted; only a unit promotion may supersede recipes: ' + ', '.join(sorted(superseded)))
         verify(dict(manifest, game_objects=[g for g in manifest['game_objects'] if g['symbol'] not in superseded]),
                {k: v for k, v in current['targets'].items() if k not in superseded}, publish=False)
@@ -119,10 +131,24 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
                 names = {p['name'] for p in module['publics'] if p['segment']}
             else:
                 names = {p['name'] for p in module['publics'] if p['segment'] and module['segments'][p['segment'] - 1]['class'] == 'CODE' and p['segment'] not in stubs}
-            if publics is None and data:
+            if publics is None:
+                # Data and assembly modules: the scope is the compiled object's publics.
                 publics = sorted(names)
-                if not verify_only and any(name in current['targets'] for name in names):
-                    raise FormatError('already admitted: ' + ', '.join(sorted(n for n in names if n in current['targets'])))
+                prior = {n: current['targets'][n] for n in names if n in current['targets']}
+                if prior and not verify_only:
+                    if not rework:
+                        raise FormatError('already admitted: ' + ', '.join(sorted(prior)))
+                    if data:
+                        if any(v.get('kind') != 'DATA' for v in prior.values()):
+                            raise FormatError('data rework may only supersede data recipes')
+                        sources = {v['source'] for v in prior.values()}
+                        rest = sorted(k for k, v in current['targets'].items() if v['source'] in sources and k not in names)
+                        if rest:
+                            raise FormatError('data rework must replace whole earlier modules; also define: ' + ', '.join(rest))
+                    elif language == 'asm':
+                        if any(v.get('language') != 'asm' for v in prior.values()):
+                            raise FormatError('an assembly module may only supersede assembly recipes')
+                    superseded = prior
             if not names or names != set(publics):
                 raise FormatError('compiled code publics differ from the promotion scope: ' + ', '.join(sorted(names ^ set(publics))))
             if stubs and not scaffold:
@@ -182,7 +208,8 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             whole = build_image(manifest=manifest, write=False)
             if whole['status'] != 'HYBRID_EXACT':
                 raise FormatError('whole-image check failed: ' + '; '.join(whole['problems'][:5]))
-            if data and whole['claim_conflicts']['bytes'] != before['claim_conflicts']['bytes']:
+            if data and (whole['claim_conflicts']['bytes'] > before['claim_conflicts']['bytes'] or
+                         (not rework and whole['claim_conflicts']['bytes'] != before['claim_conflicts']['bytes'])):
                 # Data modules may only take unowned bytes: private data of an
                 # admitted object belongs to that object's unit, not a data module.
                 raise FormatError('data module overlaps bytes already owned by an admitted object')
@@ -219,7 +246,7 @@ def asm_semantic_summary(text, summary=None):
     return result
 
 
-def promote_asm_function(symbol, path, summary=None, verify_only=False, assembler_version='masm500', asm_flags=None):
+def promote_asm_function(symbol, path, summary=None, verify_only=False, assembler_version='masm600', asm_flags=None):
     path = path.resolve()
     if path.suffix.lower() != '.asm' or not path.is_file():
         raise FormatError('assembly candidate must be an existing .asm file')
@@ -231,11 +258,25 @@ def promote_asm_function(symbol, path, summary=None, verify_only=False, assemble
     if spec is None:
         raise FormatError('unknown or unprovisioned assembler version: ' + assembler_version)
     flags = assembler._validate_flags(spec.get('default_flags', []) if asm_flags is None else asm_flags)
+    # Rework: an admitted assembly recipe whose source no longer satisfies the
+    # current source rules (e.g. hard-coded linked addresses) may be replaced
+    # by a compliant source for the same symbol; the old recipe is archived.
+    rework = False
+    existing = recipes().get(symbol)
+    if existing and not verify_only:
+        if existing.get('language') != 'asm':
+            raise FormatError('already admitted as C; assembly rework applies only to assembly recipes')
+        try:
+            assembler.check_asm_source((ROOT / existing['source']).read_text(encoding='latin1'))
+        except FormatError:
+            rework = True
+        else:
+            raise FormatError('already admitted with a compliant assembly source: ' + symbol)
     return admit(symbol.lstrip('_'), [symbol], path.read_bytes(), flags, None,
-                 asm_semantic_summary(text, summary), verify_only, language='asm', assembler_version=assembler_version)
+                 asm_semantic_summary(text, summary), verify_only, language='asm', assembler_version=assembler_version, rework=rework)
 
 
-def promote_function(symbol, path, summary=None, verify_only=False, assembler_version='masm500', asm_flags=None):
+def promote_function(symbol, path, summary=None, verify_only=False, assembler_version='masm600', asm_flags=None):
     path = path.resolve()
     if not path.is_file():
         raise FormatError('candidate source does not exist')
@@ -245,7 +286,17 @@ def promote_function(symbol, path, summary=None, verify_only=False, assembler_ve
     source_bytes = path.read_bytes()
     text = path.read_text()
     check_source(text, flags)
-    return admit(symbol.lstrip('_'), [symbol], source_bytes, flags, profile, semantic_summary(text, summary), verify_only)
+    # Rework: an isolated recipe whose admitted source fails a later source rule
+    # (index-based PACK bindings) may be replaced by a compliant source.
+    rework = False
+    existing = recipes().get(symbol)
+    if existing and not verify_only:
+        if existing.get('unit') or existing.get('language') == 'asm':
+            raise FormatError('already admitted; unit members are reworked through promote.py --unit')
+        if not pack_index_bindings((ROOT / existing['source']).read_text(encoding='latin1')):
+            raise FormatError('already admitted with a compliant source: ' + symbol)
+        rework = True
+    return admit(symbol.lstrip('_'), [symbol], source_bytes, flags, profile, semantic_summary(text, summary), verify_only, rework=rework)
 
 
 def promote_unit(unit_id, reason, verify_only=False):
@@ -277,7 +328,22 @@ def promote_unit(unit_id, reason, verify_only=False):
     return admit('tu_' + unit_id, members, path.read_bytes(), spec['flags'], profile, 'Unit assembly %s: %s' % (unit_id, reason), verify_only, unit=unit_id, scaffold=scaffold)
 
 
-def promote_data(path, summary=None, verify_only=False):
+def promote_asm_module(path, summary=None, verify_only=False, assembler_version='masm600', asm_flags=None):
+    """Several reviewed GAME_ASM procedures from one assembly module, admitted together."""
+    path = path.resolve()
+    if path.suffix.lower() != '.asm' or not path.is_file():
+        raise FormatError('assembly module must be an existing .asm file')
+    text = path.read_text(encoding='latin1')
+    assembler.check_asm_source(text)
+    spec = assembler.versions().get(assembler_version)
+    if spec is None:
+        raise FormatError('unknown or unprovisioned assembler version: ' + assembler_version)
+    flags = assembler._validate_flags(spec.get('default_flags', []) if asm_flags is None else asm_flags)
+    return admit('asmmod_' + re.sub(r'[^A-Za-z0-9_]+', '_', path.stem), None, path.read_bytes(), flags, None,
+                 asm_semantic_summary(text, summary), verify_only, language='asm', assembler_version=assembler_version, rework=True)
+
+
+def promote_data(path, summary=None, verify_only=False, rework=False):
     """A data-only module: initialized public data at its MAPSYM addresses."""
     path = path.resolve()
     if not path.is_file():
@@ -287,7 +353,7 @@ def promote_data(path, summary=None, verify_only=False):
     text = path.read_text()
     check_source(text, flags)
     # The admitted names are exactly the compiled object's publics (checked in admit).
-    return admit('data_' + re.sub(r'[^A-Za-z0-9_]+', '_', path.stem), None, path.read_bytes(), flags, profile, semantic_summary(text, summary), verify_only, data=True)
+    return admit('data_' + re.sub(r'[^A-Za-z0-9_]+', '_', path.stem), None, path.read_bytes(), flags, profile, semantic_summary(text, summary), verify_only, data=True, rework=rework)
 
 
 def main():
@@ -297,9 +363,11 @@ def main():
     ap.add_argument('--summary')
     ap.add_argument('--unit')
     ap.add_argument('--data', help='data-only module: initialized public data definitions')
+    ap.add_argument('--rework', action='store_true', help='with --data: replace whole earlier data modules (claim conflicts may not increase)')
+    ap.add_argument('--asm-module', help='assembly module whose reviewed GAME_ASM procedures are admitted together')
     ap.add_argument('--reason', default='')
     ap.add_argument('--verify-only', action='store_true')
-    ap.add_argument('--assembler', default='masm500', help='authentic MASM version for .asm candidates')
+    ap.add_argument('--assembler', default='masm600', help='authentic MASM version for .asm candidates')
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     ap.add_argument('--recover', action='store_true')
     args = ap.parse_args()
@@ -308,7 +376,10 @@ def main():
             result = publication.recover()
     elif args.data:
         from pathlib import Path
-        result = promote_data(Path(args.data), args.summary, args.verify_only)
+        result = promote_data(Path(args.data), args.summary, args.verify_only, args.rework)
+    elif args.asm_module:
+        from pathlib import Path
+        result = promote_asm_module(Path(args.asm_module), args.summary, args.verify_only, args.assembler, args.asm_flag)
     elif args.unit:
         result = promote_unit(args.unit, args.reason, args.verify_only)
     elif args.symbol and args.source:

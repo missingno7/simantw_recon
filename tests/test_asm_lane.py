@@ -57,3 +57,25 @@ class AssemblySourceRuleTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class AbsoluteAddressAndOperandTests(unittest.TestCase):
+    BASE = "_TEXT SEGMENT WORD PUBLIC 'CODE'\n_f PROC FAR\n%s\n    retf\n_f ENDP\n_TEXT ENDS\nEND\n"
+
+    def check(self, line):
+        import assembler
+        return assembler.check_asm_source(self.BASE % line)
+
+    def test_byte_ptr_instruction_operand_is_not_data(self):
+        self.check('    mov BYTE PTR [bx], 0')
+        self.check('    mov al, BYTE PTR es:[bx+1]')
+
+    def test_hard_coded_linked_addresses_are_refused(self):
+        from common import FormatError
+        for line in ('    mov WORD PTR DS:[1B78h], ax', '    mov al, [1D70h]', '    mov ds:1234h, al'):
+            with self.assertRaisesRegex(FormatError, 'absolute memory operand'):
+                self.check(line)
+
+    def test_register_and_stack_addressing_stay_allowed(self):
+        self.check('    mov ax, [bp+0Eh]')
+        self.check('    mov al, es:[di]')

@@ -57,7 +57,7 @@ def summary_row(row, label, out):
                 diff=relative(out / ('candidate%04d.diff.txt' % row['candidate'])) if d else None)
 
 
-def search_asm(symbol, files, meta=None, note=None, full=False, assembler_version='masm500', asm_flags=None):
+def search_asm(symbol, files, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None):
     import assembler
     import mapsym
     import ne
@@ -115,7 +115,7 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
         summaries.append(dict(input=row['input'], result=comparison.get('result'),
                               bytes='%s/%s' % (comparison.get('literal_equal'), comparison.get('literal_compared')),
                               fixups='%s/%s' % (comparison.get('fixups_equal'), comparison.get('fixups_total')),
-                              object=(row.get('receipt', {}).get('object_identity') or {}).get('sha256'),
+                              object=((row.get('receipt') or {}).get('object_identity') or {}).get('sha256'),
                               issues=(comparison.get('issues') or [])[:4],
                               aligned_asm=diagnostic.get('aligned_asm', []) if full else focused_alignment(diagnostic.get('aligned_asm', []))))
     exact = [row['input'] for row in rows if row['comparison'] and row['comparison'].get('result') in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')]
@@ -131,7 +131,7 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
                                                    sources=[relative(Path(x).resolve()) for x in files]), results=rows, summary=report))
     history = dict(time=stamp, meta=read_json(meta) if meta else None, note=note, report=report['report'],
                    rows=[dict(input=r['input'], result=(r['comparison'] or {}).get('result'),
-                              object=(r.get('receipt', {}).get('object_identity') or {}).get('sha256')) for r in rows])
+                              object=((r.get('receipt') or {}).get('object_identity') or {}).get('sha256')) for r in rows])
     history_path = ROOT / 'build/search' / symbol.lstrip('_') / 'history.jsonl'
     history_path.parent.mkdir(parents=True, exist_ok=True)
     with history_path.open('a', encoding='utf-8') as stream:
@@ -139,7 +139,7 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
     return report
 
 
-def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm500', asm_flags=None):
+def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None):
     from promote import check_source, function_flags
     if not files and not template and note:
         # A finding without a new candidate: record it durably, compile nothing.
@@ -220,7 +220,7 @@ def main():
     ap.add_argument('--meta', help='JSON describing the round: family, prediction, falsifier')
     ap.add_argument('--note', help='durable free-text finding for this function (kept in the draft ledger)')
     ap.add_argument('--full', action='store_true', help='complete ranking and aligned assembly')
-    ap.add_argument('--assembler', default='masm500', help='authentic MASM version for .asm candidates')
+    ap.add_argument('--assembler', default='masm600', help='authentic MASM version for .asm candidates')
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     args = ap.parse_args()
     from contextlib import redirect_stdout
