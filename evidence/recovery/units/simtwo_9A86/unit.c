@@ -37,17 +37,15 @@ extern void far *FindIndex(int recIndex, int p2, int p3);
 extern struct OpenDB far openDBData[];
 extern int far lastTop;
 
-void far OpenIndex(int p1, int p2, int idx)
+void far OpenIndex(char far *path, int idx)
 {
     char name[100];
     int handle;
-    int recordIndex = idx;
     unsigned size;
     void far *buf;
 
-    sprintf(name, "index%d.%d", p1, p2);
-    handle = _lopen(name, 2);
-    openDBData[recordIndex].pad2 = handle;
+    sprintf(name, "%s.ndx", path);
+    openDBData[idx].pad2 = handle = _lopen(name, 2);
     if (handle <= 0)
         DosPunt("Can't open index file");
     _lread(handle, &openDBData[idx].recordCount, 20);

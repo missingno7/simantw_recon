@@ -54,6 +54,15 @@
         "og",
         "ga"
       ]
+    },
+    "oi": {
+      "flags": [
+        "/Oeilw"
+      ],
+      "description": "Baseline plus /Oi intrinsic generation without /Og (inline strlen/memcpy/memset/strcat forms). Requires string-intrinsic fingerprints in the target and must beat baseline; added 2026-09-26 because 17 open targets carry intrinsic fingerprints while their objects are assigned a profile without /Oi.",
+      "parents": [
+        "baseline"
+      ]
     }
   },
   "evidence_rules": {
@@ -61,7 +70,8 @@
     "og": "At least one member of the context reaches a strict GOOD member result under og but not under baseline (STRICT), or improves the search diagnostic without regressions (DIAGNOSTIC). Any admitted member of the context must be profile-invariant between baseline and og (invariance evidence).",
     "ogi": "Rules for og plus a target containing string-intrinsic fingerprints (rep stosb/movsb, repne scasb) that the baseline candidate can only produce through library calls.",
     "ga": "Original exported-function prologue evidence in the context that baseline cannot reproduce.",
-    "refutation": "An admitted member whose object changes under a profile refutes that profile for its context."
+    "refutation": "An admitted member whose object changes under a profile refutes that profile for its context.",
+    "oi": "Rules for baseline discrimination plus a target containing string-intrinsic fingerprints (rep stosb/movsb, repne scasb) that the baseline candidate can only produce through library calls."
   },
   "invariance": {
     "evidence": "evidence/experiments/optimizer-profile/invariance2.json",

@@ -66,8 +66,7 @@ void far pool_stub_ch_CleanupTable(void) { volatile int t; t = 0; }
 void far pool_stub_ch_DumpOldest(void) { volatile int t; t = 0; }
 void far pool_stub_ch_GetPrime(void) { volatile int t; t = 0; }
 
-/* SCAFFOLD, not recovered source: keep the cache module's private literals
- * and zero-initialized shared state in the observed DGROUP order. */
+/* SCAFFOLD, not recovered source: following index-private literals are reserved for the unclaimed index unit (DGROUP B65C-B7BD). */
 void far cache_private_literal_scaffold(void)
 {
     volatile char far *literal;

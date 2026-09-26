@@ -1540,6 +1540,11 @@
         "text": "Decision-class frame probe: best remains 79/83 opcodes, 232/232 bytes, 5/18 fixups; target ENTER 8 vs candidate 6 (mode at BP-6, extra modeRef at BP-2; target far pointer home BP-8/-6). The 8-byte pointer aggregate candidate reserves ENTER 8 with mode at BP-8 and no frame findings, but falls to 78/83, 226/232, 5/19; first body residue is target LES BX,[BP-8] at +0x6D with no aligned candidate instruction. Private _DATA/CONST and selector/call bindings remain unresolved. Tried direct/volatile far pointer, 8-byte aggregate and volatile aggregate forms; next useful evidence is antedit:67C6 unit selector/declaration order and the original reload lifetime.",
         "origin": "build/search/AntMenu/20260926T200428-49200",
         "recorded": "2026-09-26T20:04:28.523161+00:00"
+      },
+      {
+        "text": "Target size 232; controlled aggregate-field and volatile-pointer batch remains NO_COMPLETE_MATCH. Best new object is 78/83 opcodes, 226/232 bytes, 5/19 fixups; pointer home is BP-4/-2 versus target BP-8/-6, and target LES at +0x6D is still unmatched. All three outputs repeat earlier objects. Private _DATA/CONST, selector and call bindings remain; the isolated pointer-home rule does not explain this offset. Next useful evidence is the antedit TU declaration/home ordering.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.115082+00:00"
       }
     ]
   },
@@ -2894,19 +2899,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/CloseIndex/2a1016c6991f.c",
-      "sha256": "2a1016c6991f25e5049a7b42d1a0fe377786be82cde4cc2093b353564a4e2e25",
+      "source": "evidence/recovery/drafts/CloseIndex/5fc58cc8b5a4.c",
+      "sha256": "5fc58cc8b5a4a79327386861baabd4a395a3f28f05e473eeb3f543f10c49c4ad",
       "key": [
         false,
         false,
-        70,
-        -13
+        77,
+        -6
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 70,
-      "opcode_total": 83,
-      "candidate_bytes": 209,
+      "opcode_matches": 77,
+      "opcode_total": 84,
+      "candidate_bytes": 228,
       "target_bytes": 222,
       "flags": [
         "/AL",
@@ -2915,8 +2920,8 @@
         "/Oegilw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/CloseIndex/20260926T163219-57952/results.json",
-      "recorded": "2026-09-26T16:32:22.905680+00:00"
+      "origin": "build/search/CloseIndex/20260926T203620-124860/results.json",
+      "recorded": "2026-09-26T20:36:21.054566+00:00"
     },
     "notes": [
       {
@@ -4393,6 +4398,11 @@
         "text": "Frame replay matches ENTER 0x6e and reports no findings. Best remains 82/86, 243/251 bytes. The main residue is representation: target uses ES from selector C68C and indexed stores at header offsets 745E onward; candidate emits a far pointer/direct PACK accesses and different store offsets. Pointer, index and ten-word loop families are already covered; next evidence is the simtwo:9A86 selector and header declaration context.",
         "origin": "build/search/CreateIndex/20260926T195514-121552",
         "recorded": "2026-09-26T19:55:14.754043+00:00"
+      },
+      {
+        "text": "The OpenDB far-row declaration puts the 20-byte header at recordCount +0x54 while indexTable begins +0x50. Removing/inlining the candidate data pointer local compiled to the same MSC object; current shared-source body is 82/86 opcodes, 243/251 bytes, 5/22 fixups. Body/layout mismatch remains.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:58:25.498563+00:00"
       }
     ]
   },
@@ -4836,6 +4846,11 @@
         "text": "Frame replay matches ENTER 8 and reports no findings. Best remains 114/126, 369/353 bytes; target materializes PACK DdPtr as a far pointer at BP-6/BP-4 and reloads with LES, while the candidate folds it into direct accesses. Numerous pointer/index aliases already collapsed or regressed; next evidence is the simant1:0000 declaration and selector ownership for DdPtr, DeadX and DeadY.",
         "origin": "build/search/DeadAntHere/20260926T195514-68428",
         "recorded": "2026-09-26T19:55:15.325897+00:00"
+      },
+      {
+        "text": "Target size 353; volatile DdPtr cursor test is NO_COMPLETE_MATCH at 107/127 opcodes, 377/353 bytes, 1/30 fixups. Target home is BP-6/-4 and reloads with LES; candidate uses BP-4 and emits LES before the target store, with ENTER 0x0a versus 8. Effective output repeats w5-near-5/dead_r1_04.c. PACK selector/data obligations remain.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.363747+00:00"
       }
     ]
   },
@@ -5045,6 +5060,16 @@
         "text": "Based inline PACK view removed the extra records home: 94/94 opcodes, 259/259 bytes, exact_body, ENTER 10/10. Scaffold build in simtwo:9A86 failed before testing because two private _DATA pieces of this member overlap; investigate their source literal/data identity and placement. The rsrvptrs hint is on a LEA pointer-arithmetic operand, not a dereference.",
         "origin": "build/search/DeleteCurrentIndex/20260926T201410-161684",
         "recorded": "2026-09-26T20:14:10.972280+00:00"
+      },
+      {
+        "text": "Exact 259-byte body after using the shared OpenDB far object (header at +0x54, index handle at +0x76). Pair TU test with _DeleteIndex is STRONGLY_SUPPORTED with no literal divergences; publication is blocked by shared private index strings in the admitted simtwo_8F46 cache unit (this routine's 96-byte _DATA block begins at DGROUP 0xB6DE).",
+        "origin": "build/search/DeleteCurrentIndex/20260926T203514-138556",
+        "recorded": "2026-09-26T20:35:15.055835+00:00"
+      },
+      {
+        "text": "Resolution: _DeleteCurrentIndex and _DeleteIndex are now admitted together in simtwo_9A86_DeleteCurrentIndex_2_scaffold. The earlier overlap with the cache unit was resolved by marking its index literal range as scaffold (DGROUP B65C-B7BD); the pair promotion introduced no claim conflicts.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:55:57.910559+00:00"
       }
     ]
   },
@@ -5106,6 +5131,21 @@
         "text": "After 24 own variants (8 each across return ABI, record pointer/raw struct view, int/unsigned widths and local order, direct struct indexing, and far-pointer returns), the best direct-struct candidate is 97/97 aligned opcodes and 245/245 bytes; ENTER, branch flow and register roles match. Remaining first residues are target ES:[BX+745C/7458/745A] versus source-symbol fixups to segment 9 offsets 4/0/2, plus three literal offsets 0xB784/0xB794/0xB79B versus private _DATA relocations. Packet has no MAPSYM name for the segment-9 record array at base 0x7458, and its selector pool/neighbor data ordering is unit-owned. Next establish the authentic shared record object and selector/string layout with the simtwo:9A86 members, then replay the exact direct-struct body in that unit.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T16:03:54.789516+00:00"
+      },
+      {
+        "text": "Exact 245-byte body after using the shared OpenDB far object (header at +0x54, index handle at +0x76). Fresh verify-only passes, but publication is blocked: this object's 57-byte _DATA string contribution at DGROUP 0xB784-0xB7BB overlaps the admitted simtwo_8F46 ch unit's private-literal scaffold byte-for-byte. Merge/rework the shared literal owner before promotion.",
+        "origin": "build/search/DeleteIndex/20260926T203513-151776",
+        "recorded": "2026-09-26T20:35:14.155209+00:00"
+      },
+      {
+        "text": "Correction to the recorded range: _DeleteIndex's 57-byte _DATA string block is DGROUP [0xB784,0xB7BD) (the NUL of the final string is at 0xB7BC). Exact 245-byte body and all 21 fixups still match; standalone promotion is blocked by identical bytes contributed by the admitted simtwo_8F46 cache-unit scaffold.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:41:52.253897+00:00"
+      },
+      {
+        "text": "Resolution: _DeleteIndex and _DeleteCurrentIndex were promoted together as unit simtwo_9A86_DeleteCurrentIndex_2_scaffold after the earlier exact standalone candidate hit the shared-string claim. The admitted cache unit was reworked with a DGROUP B65C-B7BD scaffold marker; index bytes remain unclaimed there. Unit test had no literal divergences; promotion added no claim conflicts.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:55:57.520890+00:00"
       }
     ]
   },
@@ -7128,6 +7168,11 @@
         "text": "Decision-class frame probe: best 96/104 opcodes, 324/320 bytes, 14/35 fixups; candidate ENTER 22 vs target 24 and event base BP-0x16 vs BP-0x18. Extending the event tail by two bytes gives ENTER 24 and event at BP-0x18, but score is unchanged (96/104, 324/320, 14/35); the first body difference remains target +0x8A storing DI/SI at BP-4/BP-2 after SetPause while candidate omits those delayed homes. Volatile live-value variants regressed. Private CONST bindings remain unresolved. Next useful evidence is the original live-value lifetime/call-clobber idiom in antedit:6EE2; do not add dummy stores.",
         "origin": "build/search/DoExpMenu/20260926T200428-111528",
         "recorded": "2026-09-26T20:04:28.929829+00:00"
+      },
+      {
+        "text": "Target size 320; volatile pair test is NO_COMPLETE_MATCH at 87/103 opcodes, 326/320 bytes, 1/35 fixups. Candidate stores volatile values at definition before setup; target stores DI/SI at BP-4/-2 after SetPause at +0x8A/+0x8D. Effective output repeats w22-small-1. Controlled event-loop pressure stores oldPause after setup but leaves choice in SI, so the paired delayed spill remains unexplained; do not infer a strict match.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.185437+00:00"
       }
     ]
   },
@@ -13785,6 +13830,11 @@
         "text": "No strict match after 20 successful variants. Best observed 66/88 opcodes, 215/237 bytes. First residue: target ENTER 0x6 vs candidate 0xc; target initializes ES and DS from selector C68C and stores lowPos at absolute 9E92, while candidate uses a PACK static and one DS access; target probes ES:[BX+7458]. Tried signed/unsigned and register locals, static vs automatic probe pointer, midpoint and comparison operand forms, parameter copies, loop forms, and based PACK accesses. Next: resolve the existing lowPos/lastTop private data and shared selector in the unit layout, then recover target's BX/DI homes.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T16:37:07.106396+00:00"
+      },
+      {
+        "text": "Object-level binding: _FindIndex reads recordCount at row+0x54 and writes a far pointer to PACK _lastPos at 0x9c7a; the search cursor is _lastTop at PACK 0x9e92 via selector C68E. Current shared-declaration C still misses target frame (ENTER 6 vs 8) and has 59/88 opcode alignment.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:39:35.675555+00:00"
       }
     ]
   },
@@ -18183,6 +18233,11 @@
         "text": "Decision-class frame probe: best 86/93 opcodes, 317/317 bytes, 0/74 fixups; candidate has no ENTER (v in CX) while target ENTER is 2 and stores the graph sample at BP-2 near +0x111. A volatile sample reaches ENTER 2 and the BP-2 home, but falls to 87/94, 328/317 bytes, 31/74 fixups; an ordinary aggregate sample folds to the earlier output. Remaining dependency is simant:8A76 unit selector/pool evidence: 0xC084 is editBufInvalidFlag, and H_* PACK ranges/calls need the same-unit contribution to resolve; graph-loop register/branch roles also differ.",
         "origin": "build/search/HistUpdate/20260926T200428-188716",
         "recorded": "2026-09-26T20:04:28.695559+00:00"
+      },
+      {
+        "text": "Target size 317; volatile sample test is NO_COMPLETE_MATCH at 87/97 opcodes, 337/317 bytes, 31/74 fixups. Candidate homes sample at BP-6 with ENTER 6; target ENTER is 2 and stores AX at BP-2 at +0x111, then continues using AX. Volatile accesses add reads; this only confirms an observable home, not the target spill. PACK bindings and graph-loop register/branch residue remain.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.301353+00:00"
       }
     ]
   },
@@ -20894,6 +20949,11 @@
         "text": "Decision-class frame probe: best 106/108 opcodes, 275/278 bytes, 4/14 fixups; candidate ENTER 12 vs target 14, with count at BP-6 and missing target homes at BP-8/-14 plus extra copySource/copyDestination homes. A two-field count aggregate reaches ENTER 14 with no frame findings but regresses to 102/108, 273/278, 4/14; first remaining code difference is target +0x52 store of 0x18 at BP-6, and source/destination roles still differ. Volatile count and direct-pointer variants also regressed. Next needs evidence for the original two count/buffer locals and private _DATA/TU placement; stop repeating isolated count spellings.",
         "origin": "build/search/LoadMonoPats/20260926T200428-136800",
         "recorded": "2026-09-26T20:04:28.767934+00:00"
+      },
+      {
+        "text": "Target size 278; volatile count test is NO_COMPLETE_MATCH at 102/111 opcodes, 281/278 bytes, 11/14 fixups. Target's second ",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.247005+00:00"
       }
     ]
   },
@@ -24656,6 +24716,21 @@
         "text": "Frame replay matches ENTER 0x70 with no findings; target keeps idx in SI before sprintf, candidate uses DI and later SI for handle state. The all-record-copy and far-record-pointer probes scored 66/75 and 65/75, and both reproduced earlier objects; best remains 72/75, 194/194 bytes. Parameter-copy and pointer representation trials are stagnant; resolving the unit selector/literal bindings is now the useful lane.",
         "origin": "build/search/OpenIndex/20260926T195514-142216",
         "recorded": "2026-09-26T19:55:14.858925+00:00"
+      },
+      {
+        "text": "Object-level declaration finding: C68C is the selector for PACK public _openDBData (base 0x7408), not the small _match_position/_match_length words. Rows stride 0x7c; indexTable at row+0x50 (0x7458), 20-byte on-disk header starts at recordCount row+0x54 (0x745c), pad2 handle at +0x76. C68E resolves _lastTop at PACK 0x9e92. Private index strings occupy DGROUP 0xB65C-0xB7BD and are also present in the older admitted cache-unit literal scaffold.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:39:35.287323+00:00"
+      },
+      {
+        "text": "Semantic correction from target bytes: third parameter is the record index; first parameter is a far path pointer (stack words [bp+6]/[bp+8]), and B65C contains %s.ndx. Candidate now has target 112-byte frame but still emits index in DI and handle in SI versus target index SI/handle DI (72/75 opcodes); pool word C68C must be proved in a composed unit.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:56:03.501202+00:00"
+      },
+      {
+        "text": "Register-allocation note: target keeps idx in SI and handle in DI; corrected far-path/%s.ndx semantics and frame match, but candidate still swaps them (72/75 opcodes). Local order, register hints, and assignment regrouping compiled to the same MSC object; pursue a different expression/codegen hypothesis.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:58:25.721750+00:00"
       }
     ]
   },
@@ -29440,6 +29515,11 @@
         "text": "Frame decision: initial best was 80/82 opcodes, 191/185 bytes, ENTER 76 vs target 72. --frame found the local far pointer p home at bp-4 plus n at bp-6, while the target uses its loop word at bp-2; target stack scratch slots bp-66..bp-72 also lack named candidate locals. Direct use of the far parameter colors removes p and yields ENTER 72 with no frame findings, but only 76/80 opcodes, 187/185 bytes; it splits target LDS into separate parameter loads and still has unresolved fixup/private data. Register-pointer spelling repeated an old object; register n is rejected because Escape takes &n. Frame issue is isolated; body remains blocked on pointer lowering.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T20:00:10.926349+00:00"
+      },
+      {
+        "text": "Target size 185; direct-parameter test is NO_COMPLETE_MATCH at 76/80 opcodes, 187/185 bytes, 1/2 fixups and repeats simant-a2/palette_a3.c. Target uses LDS SI,[BP+0xC] at +0x27; candidate splits offset/selector loads. Making the parameter object volatile worsens it to 65/86, 207/185 bytes, ENTER 0x4e versus target 0x48. The LDS lowering trigger remains unresolved.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.481829+00:00"
       }
     ]
   },
@@ -31883,6 +31963,11 @@
         "text": "Frame batch: ENTER=4 matches; target saves both far-pointer words at BP-4/BP-2, while preserved candidate saves the offset at BP-4 and keeps ES live, omitting target MOV [BP-2],ES. Plain far-pointer declaration and declaration reorder scored 39/45 (122/121), below the preserved 44/45 (118/121); target's selector home was not recovered. Prior pointer, volatile, scope, and based-pointer families already covered this lifetime. MigrateX/MigrateY/YMapPopB bindings remain isolated-placement obligations. No strict match; only a new compiler/source lifetime observation would justify reopening this decision.",
         "origin": "build/search/StartMigrate/20260926T195658-160548",
         "recorded": "2026-09-26T19:56:58.450976+00:00"
+      },
+      {
+        "text": "Target size 121; direct volatile pointer and volatile aggregate-field variants collapse to one NO_COMPLETE_MATCH object: 39/46 opcodes, 128/121 bytes, 1/9 fixups. Target computes MigrateY at +0x16/+0x19 then stores offset/selector to BP-4/-2; candidate instead LES-loads from BP-4 before that point. Output repeats deep90-6/StartMigrate_17_volatile_far_member.c. MigrateX/MigrateY/YMapPopB bindings remain.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-26T20:38:29.427770+00:00"
       }
     ]
   },
@@ -35221,6 +35306,11 @@
         "text": "Exact stopping residue: target offset 0x0d is mov si,0x96; best candidate offset 0x0d stores 0x96 to [bp+6], then jumps from 0x12 versus target 0x10. Prime locals and the _DATA literal/fixups also differ. Ten four-candidate continuation rounds found no better member.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T09:10:36.731060+00:00"
+      },
+      {
+        "text": "Object evidence: admitted ch_DeleteEntry uses a CacheTable header with count at +0, used at +2, and four-byte slots starting +4; each slot has id at +0 and a second word at +2, and the age words begin at base+4*(count+1). Cache module DGROUP state and literals are shared with other ch_* members, including chFoundIndex B594 and the prime string B655. The combined cache unit remains blocked until open bodies expose their pool slot maps.",
+        "origin": "build/search/ch_CreateTable/20260926T203309-133008",
+        "recorded": "2026-09-26T20:33:10.159286+00:00"
       }
     ]
   },
@@ -35796,6 +35886,11 @@
         "text": "Frame is aligned (ENTER 4; resultSlot BP-2, dummy BP-4, handle SI, i DI). The best remains 77/83 opcodes, 192/188 bytes; db_handles[i] is the exact pool/public binding for C686 and improves fixup equality only to 11/18. Target AddEntry pushes AX, db_cacheTable, [BP+8], [BP+6] before a LINK-lowered same-segment call; the candidate homes object/kind in DI/SI. A success-first tail scored 72/84; volatile object/kind parameters scored 74/81 with 3 register differences. The db_handles object repeated an earlier pool candidate, so that family is exhausted. Remaining dependency is the original AddEntry call ABI and _DATA/CONST contribution order; no exact body.",
         "origin": "build/search/db_LoadObject/20260926T201434-111568",
         "recorded": "2026-09-26T20:14:35.080477+00:00"
+      },
+      {
+        "text": "Object evidence: C686 maps to PACK _db_handles at 0x7AD6; this member near-calls _DBRecall, _ch_LookUpId, and _ch_AddEntry. In the attempted 8176 component composition, _db_LoadObject was omitted by harmonization because its DBRecall call prototype disagreed with the other member declaration (four versus three arguments). The component also has residual _DATA placement conflict between _db_SetDataBase and _db_Exists; no member admission follows from this evidence.",
+        "origin": "build/search/db_LoadObject/20260926T203309-56620",
+        "recorded": "2026-09-26T20:33:10.095403+00:00"
       }
     ]
   },
