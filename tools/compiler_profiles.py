@@ -175,7 +175,8 @@ def best_candidate(symbol):
     return source, None
 
 
-def probe(symbol, source=None):
+def probe(symbol, source=None, out=None):
+    """out: a directory for sweep records, so they never overwrite cited evidence."""
     from common import cards
     from codegen_cache import compile_cached
     from library_match import compare_member, import_symbols
@@ -192,8 +193,9 @@ def probe(symbol, source=None):
         raise FormatError('probe source must be inside the repository')
     target = bytes.fromhex(''.join(r['bytes'] for r in card['disassembly']))
     names = sorted(cat['profiles'])
-    PROBES.mkdir(parents=True, exist_ok=True)
-    stable = PROBES / (job_id + '.c')
+    folder = out or PROBES
+    folder.mkdir(parents=True, exist_ok=True)
+    stable = folder / (job_id + '.c')
     stable.write_bytes(source.read_bytes())
     jobs = [dict(source=stable.relative_to(ROOT).as_posix(), flags=profile_flags(name, card['segment_name'], cat)) for name in names]
     compiled, cache = compile_cached(jobs, cat['compiler'])
@@ -232,7 +234,7 @@ def probe(symbol, source=None):
                   component=(component_of(symbol) or {}).get('id'), string_ops=sorted({r['mnemonic'] for r in card['disassembly'] if any(x in r['mnemonic'] for x in ('stos', 'movs', 'scas', 'lods', 'cmps'))}),
                   results=results, discriminating=discriminating, minimal_over_parent=minimal, cache=cache,
                   scope='Bounded profile probe of one preserved candidate: evidence for a context assignment, never recovery credit or a queue change')
-    path = PROBES / (job_id + '.json')
+    path = folder / (job_id + '.json')
     write_json(path, record)
     return record
 

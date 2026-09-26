@@ -5,7 +5,8 @@ struct OpenDB {
     char name[0x50];
     void far *indexTable;
     int recordCount;
-    unsigned char pad1[0x6c - 0x56];
+    int headerWords[9];
+    unsigned char pad1[4];
     int count;
     long freeBytes;
     long wastedBytes;
@@ -38,7 +39,41 @@ extern int far lastTop;
 
 
 void far OpenIndex(char far *path, int idx);
-void far CreateIndex(char far *name, int idx);
+void far CreateIndex(char far *name, int idx)
+{
+    char buf[100];
+    int handle;
+    int far *header;
+    unsigned size;
+
+    sprintf(buf, "%s.ndx", name);
+    handle = openDBData[idx].pad2 = _lcreat(buf, 0);
+    if (handle <= 0)
+        DosPunt("Can't create index file", buf, errno);
+
+    openDBData[idx].recordCount = 0;
+    openDBData[idx].headerWords[0] = 0;
+    openDBData[idx].headerWords[2] = 0;
+    openDBData[idx].headerWords[1] = 0;
+    openDBData[idx].headerWords[4] = 0;
+    openDBData[idx].headerWords[3] = 0;
+    openDBData[idx].headerWords[6] = 0;
+    openDBData[idx].headerWords[5] = 0;
+    openDBData[idx].headerWords[7] = 0;
+    openDBData[idx].headerWords[8] = 0;
+
+    header = &openDBData[idx].recordCount;
+    _lwrite(handle, header, 0x14);
+    size = (unsigned)(openDBData[idx].recordCount * 8);
+    if (openDBData[idx].recordCount != 0) {
+        openDBData[idx].indexTable = mem_malloc(size, "index");
+    } else {
+        openDBData[idx].indexTable = 0;
+    }
+    _lclose(handle);
+}
+
+
 void far CloseIndex(int idx);
 void far pool_data_fill_B73E(void);
 int far DeleteIndex(int recIndex, int b, int c);

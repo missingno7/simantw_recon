@@ -35,9 +35,8 @@ extern int far EatCountR;
 extern int near CastePopR[];
 extern int near RpopT;
 extern int near HealthR;
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) GetOutR_RlistT[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) GetOutR_RlistS[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) GetOutR_RlistM[];
+#define RlistM ((unsigned char far *)((unsigned char far *)Dx8 + 0x44F0))
+#define RlistS ((unsigned char far *)((unsigned char far *)Dx8 + 0x48DC))
 extern unsigned char far HoleMapR[];
 extern unsigned char far ExitMapR[];
 extern void far MakeNewHoleR(int x);
@@ -46,7 +45,6 @@ extern int far SRand2(void);
 extern int far IsItDirt(int tile);
 extern void far DigTileThemR(int x, int count);
 
-extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;  /* scaffold reference for pool word C386 (based segment) */
 extern int far match_position;  /* scaffold reference for pool word C388 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far match_length;  /* scaffold reference for pool word C38A (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far pack_buf;  /* scaffold reference for pool word C38E (segment 9, SEGMENT_REPRESENTATIVE) */
@@ -112,7 +110,7 @@ void far pool_stub_DoNestAntR(void)
 {
     volatile int t;
 
-    t = pool_segment_ref_SIMANT_DATA_GROUP;
+    t = Dx8[0];
     t = match_position;
     t = match_length;
     t = OptionStates[0];
@@ -422,23 +420,25 @@ void DecEatR(void)
     }
 }
 
+#undef RlistT
+#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))
 int far GetOutR(int x)
 {
     
     int raw;
 
     if (MapR[x << 6] == 0x18) {
-        raw = GetOutR_RlistT[Tindex];
-        GetOutR_RlistT[Tindex] = 0;
+        raw = RlistT[Tindex];
+        RlistT[Tindex] = 0;
         if (HoleMapR[x] == 0)
             MakeNewHoleR(x);
         if (ExitHole(HoleMapR[x], x, SRand8() + (raw & 0xf8),
-                      GetOutR_RlistM[Tindex], GetOutR_RlistS[Tindex]) != 0) {
+                      RlistM[Tindex], RlistS[Tindex]) != 0) {
             LifeR[(x << 6) + 1] = 0;
             return 1;
         }
-        GetOutR_RlistT[Tindex] = raw;
-        GetOutR_RlistM[Tindex] = 0;
+        RlistT[Tindex] = raw;
+        RlistM[Tindex] = 0;
         return 0;
     }
 
@@ -456,4 +456,6 @@ int far GetOutR(int x)
     TryMoveDirR(x, 1, SRand8());
     return 0;
 }
+#undef RlistT
+#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))  /* pool word C386: one object, MAPSYM _Dx8+18150 */
 

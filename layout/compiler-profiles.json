@@ -1553,20 +1553,6 @@
       "reviewed": "2026-09-26T21:14:00.257135+00:00"
     },
     {
-      "id": "asg-gr-7712-oi",
-      "context": "gr:7712",
-      "profile": "oi",
-      "symbols": [],
-      "strength": "DIAGNOSTIC",
-      "evidence": [
-        "evidence/experiments/optimizer-profile/probes/myBeginSong.json",
-        "evidence/experiments/optimizer-profile/probes/snd_Install.json",
-        "evidence/experiments/optimizer-profile/probes/IsDLLAvail.json"
-      ],
-      "reason": "The far _fmemcmp MIDI-header candidate improves _myBeginSong from 104/1653 to 143/1653 opcodes, while natural strlen probes improve _snd_Install from 227/291 to 241/291 and _IsDLLAvail from 103/122 to 120/122; /Oi alone emits the fingerprints, so oi is the minimal profile. Admitted sources of the context compile identically under oi (supervisor check 2026-09-26).",
-      "reviewed": "2026-09-26T21:17:55.801320+00:00"
-    },
-    {
       "id": "asg-gr-0000-oi",
       "context": "gr:0000",
       "profile": "oi",
@@ -1642,6 +1628,20 @@
       ],
       "reason": "Keeps the /GA evidence of asg-simant-01b6-ga (MYENUMFUNC) and adds /Oi: WINMAIN's REPE CMPSB/CMPSW compare sites are inline memcmp, and its natural source improves from 291/581 to 303/581 opcodes only with /Oi (oi minimal over baseline; og adds nothing). Supersedes asg-simant-01b6-ga; admitted sources of the context compile identically under oi-ga (supervisor check 2026-09-26).",
       "reviewed": "2026-09-26T21:39:52.581881+00:00"
+    },
+    {
+      "id": "asg-gr-7712-ogi",
+      "context": "gr:7712",
+      "profile": "ogi",
+      "symbols": [],
+      "strength": "STRICT",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/myBeginSong.json",
+        "evidence/experiments/optimizer-profile/probes/snd_Install.json",
+        "evidence/experiments/optimizer-profile/probes/IsDLLAvail.json"
+      ],
+      "reason": "_IsDLLAvail reaches STRONGLY_SUPPORTED_MEMBER only under ogi (122/122 opcodes, 17/17 fixups; oi 120/122: /Og makes the third lstrcat reload the name segment through AX), and ogi is at least as good as oi for _myBeginSong (148 vs 143) and _snd_Install (241). Supersedes asg-gr-7712-oi (oi chosen when the earlier probes tied); admitted sources of the context compile identically under ogi (supervisor check 2026-09-27).",
+      "reviewed": "2026-09-26T22:20:16.141922+00:00"
     }
   ],
   "refutations": [

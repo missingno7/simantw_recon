@@ -4,17 +4,17 @@
  * (same 314-byte extent, same call sequence MakeNewHoleR/SRand8/
  * ExitHole/SRand2/IsItDirt x2/DigTileThemR/SRand8/TryMoveDirR) with the
  * R-side offsets substituted: MapR[x << 6] (idx = x<<6) sealed-hole tile
- * 0x18 check; GetOutR_RlistT 0x46e6, GetOutR_RlistS 0x48dc, GetOutR_RlistM 0x44f0 (same Dx8[]
+ * 0x18 check; RlistT 0x46e6, RlistS 0x48dc, RlistM 0x44f0 (same Dx8[]
  * object as the B twin); HoleMapR[x]; the unnamed per-row Dx8[idx+CONST]
  * counter is at 0x13a4 here (0x3a4 for B); the two dirt-check offsets
  * are 0x58a9 (x-1 side) and 0x5929 (x+1 side).
  *
  * See GetOutB.c for the full semantic account: sealed-hole path reads
- * and clears GetOutR_RlistT[Tindex], creates a hole entry via MakeNewHoleR(x)
+ * and clears RlistT[Tindex], creates a hole entry via MakeNewHoleR(x)
  * when HoleMapR[x]==0, tries ExitHole(HoleMapR[x], x,
- * SRand8()+(raw&0xf8), GetOutR_RlistM[Tindex], GetOutR_RlistS[Tindex]) -- success
- * clears the tile and returns 1, failure restores GetOutR_RlistT[Tindex],
- * zeroes GetOutR_RlistM[Tindex] and returns 0; otherwise the per-row counter is
+ * SRand8()+(raw&0xf8), RlistM[Tindex], RlistS[Tindex]) -- success
+ * clears the tile and returns 1, failure restores RlistT[Tindex],
+ * zeroes RlistM[Tindex] and returns 0; otherwise the per-row counter is
  * decremented if nonzero, a SRand2() roll and IsItDirt gate a
  * DigTileThemR(x +/- 1, 1) call, and a TryMoveDirR(x, 1, SRand8())
  * attempt always ends the turn with a 0 return.
@@ -23,9 +23,10 @@
  * (enter 2, 0).
  */
 extern int far Tindex;
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) GetOutR_RlistT[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) GetOutR_RlistS[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) GetOutR_RlistM[];
+extern unsigned char far Dx8[];
+#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))
+#define RlistM ((unsigned char far *)((unsigned char far *)Dx8 + 0x44F0))
+#define RlistS ((unsigned char far *)((unsigned char far *)Dx8 + 0x48DC))
 extern unsigned char near MapR[];
 extern unsigned char far HoleMapR[];
 extern unsigned char near LifeR[];
@@ -45,17 +46,17 @@ int far GetOutR(int x)
     int raw;
 
     if (MapR[x << 6] == 0x18) {
-        raw = GetOutR_RlistT[Tindex];
-        GetOutR_RlistT[Tindex] = 0;
+        raw = RlistT[Tindex];
+        RlistT[Tindex] = 0;
         if (HoleMapR[x] == 0)
             MakeNewHoleR(x);
         if (ExitHole(HoleMapR[x], x, SRand8() + (raw & 0xf8),
-                      GetOutR_RlistM[Tindex], GetOutR_RlistS[Tindex]) != 0) {
+                      RlistM[Tindex], RlistS[Tindex]) != 0) {
             LifeR[(x << 6) + 1] = 0;
             return 1;
         }
-        GetOutR_RlistT[Tindex] = raw;
-        GetOutR_RlistM[Tindex] = 0;
+        RlistT[Tindex] = raw;
+        RlistM[Tindex] = 0;
         return 0;
     }
 

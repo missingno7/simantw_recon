@@ -24,14 +24,14 @@ int far IsDLLAvail(char far *name)
     char buf[0x100];
     char far *p;
 
-    GetSystemDirectory(buf, 0x100);
+    GetWindowsDirectory(buf, 0x100);
     if (buf[strlen(buf) - 1] != 0x5c)
         lstrcat(buf, "\\");
     lstrcat(buf, name);
     if (access(buf, 0) == 0)
         return 1;
 
-    GetWindowsDirectory(buf, 0x100);
+    GetSystemDirectory(buf, 0x100);
     if (buf[strlen(buf) - 1] != 0x5c)
         lstrcat(buf, "\\");
     lstrcat(buf, name);
