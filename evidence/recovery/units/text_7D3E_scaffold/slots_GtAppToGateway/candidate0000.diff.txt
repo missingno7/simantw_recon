@@ -1,0 +1,110 @@
+Whole-member issues: _TEXT unresolved/mismatched fixup at 0xe5; _TEXT unresolved/mismatched fixup at 0xdc; _TEXT unresolved/mismatched fixup at 0xd3; _TEXT unresolved/mismatched fixup at 0x76; _TEXT unresolved/mismatched fixup at 0x41; _TEXT unresolved/mismatched fixup at 0x2e; _TEXT unresolved/mismatched fixup at 0x17; _TEXT uncovered NE relocations; _TEXT literal bytes differ
+  _TEXT+0xe5: candidate {'kind': 'external', 'name': '_GlobalFree'}; original loader []
+  _TEXT+0xdc: candidate {'kind': 'external', 'name': '_GlobalUnlock'}; original loader []
+  _TEXT+0xd3: candidate {'kind': 'internal', 'segment': 4, 'offset': 33404}; original loader [{'site': 32702, 'source_type': 3, 'target': {'kind': 'import', 'module': 'KERNEL', 'ordinal': 19}, 'additive': False}]
+  _TEXT+0x76: candidate {'kind': 'internal', 'segment': 4, 'offset': 33404}; original loader []
+  _TEXT+0x41: candidate {'kind': 'external', 'name': '_GlobalFree'}; original loader [{'site': 32556, 'source_type': 3, 'target': {'kind': 'import', 'module': 'KERNEL', 'ordinal': 15}, 'additive': False}]
+  _TEXT+0x2e: candidate {'kind': 'external', 'name': '_GlobalLock'}; original loader []
+  _TEXT+0x17: candidate {'kind': 'external', 'name': '_GlobalAlloc'}; original loader []
+Target | Candidate | Difference
+0000 enter 0xc, 0 | 0000 enter 4, 0 | immediate_or_binding
+0004 push di | 0004 push si | register_allocation,alignment_uncertain
+0005 push si |  | instruction_shape
+0006 cmp word ptr [0x2068], 0 |  | instruction_shape
+000b jne 0x22 |  | instruction_shape
+000d push ds |  | instruction_shape
+000e push 0x21ef |  | instruction_shape
+0011 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] |  | instruction_shape
+0016 add sp, 4 |  | instruction_shape
+0019 mov ax, 0xffff |  | instruction_shape
+001c cdq  |  | instruction_shape
+001d pop si |  | instruction_shape
+001e pop di |  | instruction_shape
+001f leave  |  | instruction_shape
+0020 retf  |  | instruction_shape
+0021 nop  |  | instruction_shape
+0022 cmp word ptr [0x206a], 0 |  | instruction_shape
+0027 jne 0x30 |  | instruction_shape
+0029 push ds |  | instruction_shape
+002a push 0x221d |  | instruction_shape
+002d jmp 0x11 |  | instruction_shape
+002f nop  |  | instruction_shape
+0030 push 0x2042 |  | instruction_shape
+0033 mov ax, word ptr [bp + 0x18] | 0005 mov ax, word ptr [bp + 0x18] | 
+0036 mov dx, word ptr [bp + 0x1a] | 0008 mov dx, word ptr [bp + 0x1a] | 
+0039 add ax, 0x3a | 000b add ax, 0x3a | 
+003c adc dx, 0 | 000e adc dx, 0 | 
+003f push dx | 0011 push dx | 
+0040 push ax | 0012 push ax | 
+ | 0013 push 0x2042 | instruction_shape
+0041 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 15}] | 0016 lcall <resolved fixup> [{'kind': 'external', 'name': '_GlobalAlloc'}] | immediate_or_binding,immediate_or_binding
+ | 001b add sp, 6 | instruction_shape
+0046 mov di, ax | 001e mov si, ax | register_allocation,alignment_uncertain
+ | 0020 or si, si | instruction_shape
+ | 0022 jne 0x2c | instruction_shape
+ | 0024 mov ax, 0xffff | instruction_shape
+ | 0027 cdq  | instruction_shape
+ | 0028 pop si | instruction_shape
+ | 0029 leave  | instruction_shape
+ | 002a retf  | instruction_shape
+ | 002b nop  | instruction_shape
+0048 push di | 002c push si | register_allocation,alignment_uncertain
+0049 lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 18}] | 002d lcall <resolved fixup> [{'kind': 'external', 'name': '_GlobalLock'}] | immediate_or_binding,immediate_or_binding
+004e add ax, 4 | 0032 add sp, 2 | register_role,immediate_or_binding
+0051 mov si, ax |  | instruction_shape
+0053 mov word ptr [bp - 2], dx | 0035 mov word ptr [bp - 4], ax | memory_operand,stack_local_layout,register_role
+0056 mov es, dx | 0038 mov word ptr [bp - 2], dx | instruction_shape
+0058 mov bx, si | 003b or dx, ax | instruction_shape
+ | 003d jne 0x4a | instruction_shape
+ | 003f push si | instruction_shape
+ | 0040 lcall <resolved fixup> [{'kind': 'external', 'name': '_GlobalFree'}] | instruction_shape
+ | 0045 add sp, 2 | instruction_shape
+ | 0048 jmp 0x24 | instruction_shape
+005a mov cx, word ptr [bp + 6] | 004a mov ax, word ptr [bp + 6] | register_allocation,alignment_uncertain
+ | 004d les bx, ptr [bp - 4] | instruction_shape
+005d mov word ptr es:[bx], cx | 0050 mov word ptr es:[bx], ax | register_allocation,alignment_uncertain
+0060 mov cx, word ptr [bp + 8] | 0053 mov ax, word ptr [bp + 8] | register_allocation,alignment_uncertain
+0063 mov word ptr es:[bx + 4], cx | 0056 mov word ptr es:[bx + 2], ax | memory_operand,register_role
+0067 mov ax, word ptr [bp + 0xc] | 005a mov ax, word ptr [bp + 0xc] | 
+006a or ax, word ptr [bp + 0xa] | 005d or ax, word ptr [bp + 0xa] | 
+006d je 0x7f | 0060 je 0x7d | branch_target
+006f lea ax, [si + 6] | 0062 push 0 | instruction_shape
+ | 0064 push 0x20 | instruction_shape
+ | 0066 push word ptr [bp + 0xc] | instruction_shape
+ | 0069 push word ptr [bp + 0xa] | instruction_shape
+ | 006c mov ax, bx | instruction_shape
+ | 006e mov dx, es | instruction_shape
+ | 0070 add ax, 4 | instruction_shape
+0072 push dx | 0073 push dx | 
+0073 push ax | 0074 push ax | 
+0074 push word ptr [bp + 0xc] |  | instruction_shape
+0077 push word ptr [bp + 0xa] |  | instruction_shape
+007a lcall <resolved fixup> [{'kind': 'import', 'module': 'KERNEL', 'ordinal': 88}] | 0075 lcall <resolved fixup> [{'kind': 'internal', 'segment': 4, 'offset': 33404}] | immediate_or_binding,immediate_or_binding
+ | 007a add sp, 0xc | instruction_shape
+007f mov es, word ptr [bp - 2] | 007d mov ax, word ptr [bp + 0xe] | call_frame_or_segment_register,memory_operand,stack_local_layout,alignment_uncertain
+0082 mov ax, word ptr [bp + 0xe] | 0080 les bx, ptr [bp - 4] | instruction_shape
+0085 mov word ptr es:[si + 0x26], ax | 0083 mov word ptr es:[bx + 0x24], ax | memory_operand
+0089 mov ax, word ptr [bp + 0x10] | 0087 mov ax, word ptr [bp + 0x10] | 
+008c mov dx, word ptr [bp + 0x12] | 008a mov dx, word ptr [bp + 0x12] | 
+008f mov word ptr es:[si + 0x28], ax | 008d mov word ptr es:[bx + 0x26], ax | memory_operand
+0093 mov word ptr es:[si + 0x2a], dx | 0091 mov word ptr es:[bx + 0x28], dx | memory_operand
+0097 mov ax, word ptr [bp + 0x14] | 0095 mov ax, word ptr [bp + 0x14] | 
+009a mov word ptr es:[si + 0x2c], ax | 0098 mov word ptr es:[bx + 0x2a], ax | memory_operand
+009e mov ax, word ptr [bp + 0x16] | 009c mov ax, word ptr [bp + 0x16] | 
+00a1 mov word ptr es:[si + 0x2e], ax | 009f mov word ptr es:[bx + 0x2c], ax | memory_operand
+00a5 mov ax, word ptr [bp + 0x18] | 00a3 mov ax, word ptr [bp + 0x18] | 
+00a8 mov dx, word ptr [bp + 0x1a] | 00a6 mov dx, word ptr [bp + 0x1a] | 
+00ab mov word ptr es:[si + 0x30], ax | 00a9 mov word ptr es:[bx + 0x2e], ax | memory_operand
+00af mov word ptr es:[si + 0x32], dx | 00ad mov word ptr es:[bx + 0x30], dx | memory_operand
+00b3 or dx, ax | 00b1 or dx, ax | 
+00b5 je 0xd2 | 00b3 je 0xda | branch_target
+ | 00b5 mov cx, word ptr [bp + 0x1c] | instruction_shape
+ | 00b8 mov ax, word ptr [bp + 0x1e] | instruction_shape
+ | 00bb or ax, cx | instruction_shape
+ | 00bd je 0xda | instruction_shape
+ | 00bf push word ptr [bp + 0x1a] | instruction_shape
+ | 00c2 push word ptr [bp + 0x18] | instruction_shape
+00b7 push word ptr [bp + 0x1a] | 00c5 push word ptr [bp + 0x1e] | memory_operand,stack_local_layout
+00ba push ax | 00c8 push cx | register_allocation,alignment_uncertain
+00bb push word ptr [bp + 0x1e] |  | instruction_shape
+... see structured diagnostic for remaining instructions

@@ -43,39 +43,47 @@ static int near ScrollEditBy(int dx, int dy)
 {
     int xStep;
     int yStep;
-    int xCount;
-    int yCount;
-    int i;
-    long fraction;
-    long error;
+    register int i;
+    unsigned long fraction;
+    unsigned long error;
 
     if (dx == 0 && dy == 0)
         return 0;
 
-    xStep = dx < 0 ? -1 : 1;
-    yStep = dy < 0 ? -1 : 1;
-    xCount = dx < 0 ? -dx : dx;
-    yCount = dy < 0 ? -dy : dy;
-    error = 0L;
+    xStep = 1;
+    yStep = 1;
+    if (dx < 0) {
+        xStep = -1;
+        dx = -dx;
+    }
+    if (dy < 0) {
+        yStep = -1;
+        dy = -dy;
+    }
 
-    if (yCount >= xCount) {
-        fraction = ((long)xCount << 16) / yCount;
-        for (i = 0; i < yCount; ++i) {
-            MapPnt.y += yStep;
-            error += fraction;
-            if ((error >> 16) & 1L) {
-                MapPnt.x += xStep;
-                error ^= 0x10000L;
+    error = 0UL;
+    if (dy >= dx) {
+        fraction = ((unsigned long)dx << 16) / (unsigned long)dy;
+        if (dy > 0) {
+            for (i = dy; i > 0; --i) {
+                MapPnt.y += yStep;
+                error += fraction;
+                if ((error >> 16) & 1UL) {
+                    MapPnt.x += xStep;
+                    error ^= 0x10000UL;
+                }
             }
         }
     } else {
-        fraction = ((long)yCount << 16) / xCount;
-        for (i = 0; i < xCount; ++i) {
-            MapPnt.x += xStep;
-            error += fraction;
-            if ((error >> 16) & 1L) {
-                MapPnt.y += yStep;
-                error ^= 0x10000L;
+        fraction = ((unsigned long)dy << 16) / (unsigned long)dx;
+        if (dx > 0) {
+            for (i = dx; i > 0; --i) {
+                MapPnt.x += xStep;
+                error += fraction;
+                if ((error >> 16) & 1UL) {
+                    MapPnt.y += yStep;
+                    error ^= 0x10000UL;
+                }
             }
         }
     }
