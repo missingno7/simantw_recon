@@ -820,6 +820,33 @@
         "evidence/experiments/asm-signatures/classification.json",
         "exact MASM match as part of the LZSS codec module: CONFIRMED_MEMBER 45/45, 5/5"
       ]
+    },
+    "_invert": {
+      "ownership": "GAME",
+      "class": "GAME_ASM",
+      "confidence": "PROBABLE",
+      "evidence": [
+        "build/workers/supervisor-srand/invert: plain C forms reach 7/15 opcodes and never produce LES DI / NOT AL / STOSB / LOOP",
+        "an MSC 7.00 inline _asm body reproduces the loop but saves SI and DI and exits with LEAVE; the target saves only DI and exits POP DI; POP BP, the MASM PROC USES DI shape"
+      ]
+    },
+    "_MemRChr": {
+      "ownership": "GAME",
+      "class": "GAME_ASM",
+      "confidence": "PROBABLE",
+      "evidence": [
+        "epilogue POP BP without LEAVE after PUSH BP; MOV BP,SP: never produced by MSC 7.00 C (all 224 admitted C functions with that prologue exit through LEAVE)",
+        "STD / REPNE SCASB / CLD backward scan"
+      ]
+    },
+    "_CopyMaskBitmap2": {
+      "ownership": "GAME",
+      "class": "GAME_ASM",
+      "confidence": "PROBABLE",
+      "evidence": [
+        "epilogue POP BP without LEAVE after PUSH BP; MOV BP,SP: never produced by MSC 7.00 C (all 224 admitted C functions with that prologue exit through LEAVE)",
+        "PUSHA / PUSH DS / PUSH ES entry with DGROUP scratch words, like the reviewed GAME_ASM bitmap routines"
+      ]
     }
   }
 }

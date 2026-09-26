@@ -31,6 +31,20 @@ def inside_public(address,starts,names,reach=64):
                      %(address-starts[i],(address-starts[i])//2))
 
 
+def codegen_shape(card):
+    """Entry/exit shapes MSC 7.00 C never produces: a hint that the original is assembly or inline _asm."""
+    rows = card.get('disassembly') or []
+    text = [('%s %s' % (r['mnemonic'], r['operands'])).strip() for r in rows]
+    if text[:2] != ['push bp', 'mov bp, sp']:
+        return None
+    exits = [i for i, r in enumerate(rows) if r['mnemonic'] in ('ret', 'retf') and i]
+    if exits and all(text[i - 1] == 'pop bp' for i in exits):
+        return dict(shape='PUSH BP; MOV BP,SP ... POP BP without LEAVE',
+                    hint='every admitted MSC 7.00 C function with this prologue exits through LEAVE; '
+                         'this exit is a MASM PROC shape: the original is probably assembly (ask the supervisor for a GAME_ASM review)')
+    return None
+
+
 def direct_data_bindings(card,symbols,image):
     names={}
     for symbol in symbols['segments'][9]['symbols']:

@@ -59,7 +59,7 @@ def packet(symbol, brief=False, history=False):
     from codegen_diff import blocks, instructions
     from recovery_context import compact_packet
     from reconstruction_rules import relevant_rules
-    from topology_context import direct_data_bindings
+    from topology_context import codegen_shape, direct_data_bindings
     all_cards = cards(); targets = recipes()
     card = next((c for c in all_cards if c['symbol'] == symbol), None)
     if card is None:
@@ -83,6 +83,9 @@ def packet(symbol, brief=False, history=False):
     matching.sort(key=lambda c: abs((c['extent']['size'] or 65536) - (card['extent']['size'] or 65536)))
     result['similar_matched_functions'] = [dict(symbol=c['symbol'], source=c['source'], size=c['extent']['size'], basis='Same code group and nearest size; similarity is not semantic proof') for c in matching[:5]]
     result['direct_data_bindings'] = direct_data_bindings(card, symbols, image)
+    shape = codegen_shape(card)
+    if shape:
+        result['codegen_shape'] = shape
     # Rule triggers include named far-data bindings, so evaluate only after
     # those semantic bindings have been attached.
     result['reconstruction_rules'] = relevant_rules(card, result)
@@ -103,7 +106,7 @@ def packet(symbol, brief=False, history=False):
     write_json(path, result)
     if brief:
         result = dict(size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
-                                         'direct_data_bindings', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs')})
+                                         'direct_data_bindings', 'codegen_shape', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs')})
     result['packet'] = relative(path)
     return result
 

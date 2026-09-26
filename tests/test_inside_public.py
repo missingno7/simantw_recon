@@ -21,5 +21,22 @@ class InsidePublic(unittest.TestCase):
         self.assertIsNone(topology_context.inside_public(0x100, self.starts, self.names))
 
 
+def rows(*texts):
+    return [dict(mnemonic=t.split(' ')[0], operands=t.partition(' ')[2]) for t in texts]
+
+
+class CodegenShape(unittest.TestCase):
+    def test_pop_bp_exit_is_flagged(self):
+        card = dict(disassembly=rows('push bp', 'mov bp, sp', 'push di', 'pop di', 'pop bp', 'retf'))
+        self.assertIn('LEAVE', topology_context.codegen_shape(card)['shape'])
+
+    def test_leave_exit_is_msc(self):
+        card = dict(disassembly=rows('push bp', 'mov bp, sp', 'push si', 'pop si', 'leave', 'retf'))
+        self.assertIsNone(topology_context.codegen_shape(card))
+
+    def test_enter_prologue_not_judged(self):
+        self.assertIsNone(topology_context.codegen_shape(dict(disassembly=rows('enter 2, 0', 'pop bp', 'retf'))))
+
+
 if __name__ == '__main__':
     unittest.main()
