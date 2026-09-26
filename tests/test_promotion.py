@@ -170,8 +170,10 @@ class PublicationTests(TemporaryRoot):
 
 
 class PromotionTests(TemporaryRoot):
-    def run_admit(self, comparison_error=None, recipes=None, verify_only=False):
+    def run_admit(self, comparison_error=None, recipes=None, verify_only=False, conflicts=(0, 0)):
         recipes = recipes or {}
+        images = [dict(status='HYBRID_EXACT', owned=dict(C=1), debt_total=0, claim_conflicts=dict(bytes=n), problems=[]) for n in conflicts]
+        images.append(images[-1])
         self.put('build/recovered/obj.obj', 'OMF')
         for name in promote.PROOF_TOOLS: self.put(name, 'tool')
         documents = {'src/recovery.json': dict(targets=dict(recipes)), 'build/recovered/manifest.json': dict(game_objects=[], runtime_objects=[]),
@@ -183,7 +185,7 @@ class PromotionTests(TemporaryRoot):
              patch.object(promote, 'compile_source', return_value=(self.root / 'build/recovered/obj.obj', dict(exit_code=0))), patch.object(promote, 'validate_receipt'), \
              patch.object(promote.omf, 'parse', return_value=module), patch.object(promote, 'fixture', return_value=b''), patch.object(promote.ne, 'parse'), \
              patch.object(promote.mapsym, 'parse'), patch.object(promote, 'import_symbols'), patch.object(promote, 'admission_targets', return_value={'_a': dict(size=1)}), \
-             check, patch.object(publication, 'commit') as commit,              patch('image.build', return_value=dict(status='HYBRID_EXACT', owned=dict(C=1), debt_total=0, claim_conflicts=dict(bytes=0), problems=[])):
+             check, patch.object(publication, 'commit') as commit,              patch('image.build', side_effect=images):
             try:
                 return promote.admit('a', ['_a'], b'/* a */ int a;', FLAGS, dict(name='baseline'), 'a', verify_only), commit, verify
             except FormatError as exc:
@@ -203,6 +205,11 @@ class PromotionTests(TemporaryRoot):
         result, commit, _ = self.run_admit(verify_only=True)
         self.assertEqual(result['admission'], 'PASSED'); commit.assert_not_called()
         self.assertFalse((self.root / 'src/recovered').exists())
+    def test_admission_that_adds_double_claimed_bytes_is_refused(self):
+        result, commit, _ = self.run_admit(conflicts=(0, 1533))
+        self.assertIsInstance(result, FormatError); self.assertIn('adds double-claimed bytes', str(result)); commit.assert_not_called()
+        result, commit, _ = self.run_admit(conflicts=(7, 7))
+        self.assertEqual(result['status'], 'PROMOTED')
     def test_function_promotion_cannot_replace_an_admitted_recipe(self):
         result, commit, _ = self.run_admit(recipes={'_a': dict(source='old.c')})
         self.assertIsInstance(result, FormatError); self.assertIn('already admitted', str(result)); commit.assert_not_called()

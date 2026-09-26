@@ -11,7 +11,7 @@ extern int near win_hwnd[];
 extern int near editHeight;
 extern int near editWidth;
 extern int far MapMode;
-extern struct MapPoint __based(__segname("PACK")) MapPnt;
+extern struct MapPoint far MapPnt;
 extern void far pascal SetScrollRange(int hwnd, int bar, int minPos, int maxPos, int redraw);
 extern int far pascal SetScrollPos(int hwnd, int bar, int pos, int redraw);
 extern int far pascal GetScrollPos(int hwnd, int bar);
@@ -497,26 +497,23 @@ void far ResetEditScrollRange(void)
 
 static int near ScrollEditBy(int dx, int dy)
 {
-    extern struct MapPoint __based(__segname("PACK")) MapPnt;
+    extern struct MapPoint __based(__segname("SIMANT_DATA_GROUP")) MapPnt;
     int yStep;
     int xStep;
     register int i;
     unsigned long fraction;
     unsigned long error;
 
-    if (dx == 0) {
-        if (dy == 0)
-            return 0;
-    }
+    if (dx == 0 && dy == 0) return 0;
 
-    xStep = 1;
     yStep = 1;
+    xStep = 1;
     if (dx < 0) {
-        xStep = -1;
+        yStep = -1;
         dx = -dx;
     }
     if (dy < 0) {
-        yStep = -1;
+        xStep = -1;
         dy = -dy;
     }
 
@@ -526,10 +523,10 @@ static int near ScrollEditBy(int dx, int dy)
         if (dy > 0) {
             i = dy;
             do {
-                MapPnt.y += yStep;
+                MapPnt.y += xStep;
                 error += fraction;
                 if ((error >> 16) & 1UL) {
-                    MapPnt.x += xStep;
+                    MapPnt.x += yStep;
                     error ^= 0x10000UL;
                 }
             } while (--i);
@@ -539,10 +536,10 @@ static int near ScrollEditBy(int dx, int dy)
         if (dx > 0) {
             i = dx;
             do {
-                MapPnt.x += xStep;
+                MapPnt.x += yStep;
                 error += fraction;
                 if ((error >> 16) & 1UL) {
-                    MapPnt.y += yStep;
+                    MapPnt.y += xStep;
                     error ^= 0x10000UL;
                 }
             } while (--i);

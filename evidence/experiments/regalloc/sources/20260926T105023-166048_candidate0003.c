@@ -1,0 +1,1 @@
+int far RallocFindMem(int p){ volatile int before=p+1; volatile long before2=(long)p+2; volatile int row,col; int i; before+=1; before2+=1L; for(i=0;i<2;i++){ row=i+1; col=i+2; before+=row; before2+=col; } return before+(int)before2+i; }

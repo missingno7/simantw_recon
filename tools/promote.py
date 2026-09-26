@@ -235,6 +235,14 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             if rework == 'reduce_conflicts' and whole['claim_conflicts']['bytes'] >= before['claim_conflicts']['bytes']:
                 raise FormatError('already admitted; a replacement must strictly reduce double-claimed bytes (%d -> %d)'
                                   % (before['claim_conflicts']['bytes'], whole['claim_conflicts']['bytes']))
+            if not data and whole['claim_conflicts']['bytes'] > before['claim_conflicts']['bytes']:
+                # Two separately linked objects can never prove the same bytes:
+                # an admission may not add double-claimed bytes (e.g. a unit that
+                # supersedes only part of an older unit, or a function whose
+                # private data an admitted object already claims). Merge into one
+                # unit or rework the other side first.
+                raise FormatError('admission adds double-claimed bytes (%d -> %d); merge the overlapping objects into one unit or rework the other side first'
+                                  % (before['claim_conflicts']['bytes'], whole['claim_conflicts']['bytes']))
             if data and (whole['claim_conflicts']['bytes'] > before['claim_conflicts']['bytes'] or
                          (not rework and whole['claim_conflicts']['bytes'] != before['claim_conflicts']['bytes'])):
                 # Data modules may only take unowned bytes: private data of an
