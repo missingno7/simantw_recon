@@ -1,0 +1,22 @@
+{
+  "description": "Reviewed functions whose original C source used MSC 7.00 inline `_asm` blocks. promote.py admits an `_asm` block only in a function listed here, only when the recorded signature instruction occurs in the original disassembly, never as byte emission, and only after the usual strict proof of the complete member or unit. A signature is a hand-written idiom that MSC 7.00 does not generate from C.",
+  "functions": {
+    "_SRand1": {
+      "signature": "mov dx, 0",
+      "evidence": "Compiler frame (enter 2,0; result local stored and reloaded before leave) around a hand-written LFSR step: `mov dx, 0` sets up `div bx` (seed modulo range) and the polynomial branch is taken on the SHL carry (jae) with no comparison. Strict whole-unit proof: simone_1506_SetSRandSeed_15_reviewed, 336/336 bytes, 29/29 fixups, private seed at DGROUP 0xCBF2.",
+      "reviewed": "2026-09-26 supervisor, approved by the project owner"
+    },
+    "_SRand2": {
+      "signature": "mov dx, 0",
+      "evidence": "Copy of the _SRand1 template: the `mov dx, 0` divide setup survives although nothing reads DX, and the result is masked with `and ax, 1`. C sources (volatile result, overflow comparisons, high-bit tests) never produced the carry branch or kept the seed in AX. Same unit proof as _SRand1.",
+      "reviewed": "2026-09-26 supervisor, approved by the project owner"
+    },
+    "_SRand4": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 3`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"},
+    "_SRand8": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 7`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"},
+    "_SRand16": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 0xf`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"},
+    "_SRand32": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 0x1f`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"},
+    "_SRand64": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 0x3f`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"},
+    "_SRand128": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 0x7f`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"},
+    "_SRand256": {"signature": "mov dx, 0", "evidence": "Same template as _SRand2 with `and ax, 0xff`. Same unit proof as _SRand1.", "reviewed": "2026-09-26 supervisor, approved by the project owner"}
+  }
+}

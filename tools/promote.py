@@ -83,6 +83,59 @@ def pack_index_bindings(code):
     return [m.group(0) for m in PACK_INDEX.finditer(code) if int(m.group(1), 0) > 0]
 
 
+INLINE_ASM_REVIEW = ROOT / 'layout/inline-asm-review.json'
+
+
+def function_spans(code):
+    """(name, start, end) of each top-level function body in comment-free C."""
+    spans, depth, name, start = [], 0, None, None
+    for i, ch in enumerate(code):
+        if ch == '{':
+            if depth == 0:
+                header = re.findall(r'([A-Za-z_]\w*)\s*\([^()]*\)\s*$', code[:i])
+                name, start = (header[-1] if header else None), i
+            depth += 1
+        elif ch == '}':
+            depth -= 1
+            if depth == 0 and name:
+                spans.append((name, start, i))
+                name = None
+    return spans
+
+
+def reviewed_inline_asm(code):
+    """Blank the `_asm` blocks a review evidences; anything unreviewed stays and is refused.
+
+    MSC 7.00 compiles `_asm { ... }` inside a C function, and some originals did
+    this (hand-written idioms such as a dead `mov dx, 0` inside a compiler frame).
+    A block is admissible only in a function listed in layout/inline-asm-review.json
+    whose recorded signature instruction occurs in the original's disassembly, and
+    never as byte emission. Strict proof of the complete member is still required.
+    """
+    if not re.search(r'\b_asm\b', code) or not INLINE_ASM_REVIEW.is_file():
+        return code
+    review = read_json(INLINE_ASM_REVIEW)['functions']
+    by_symbol = {c['symbol']: c for c in cards()}
+    out, last = [], 0
+    for name, start, end in function_spans(code):
+        body = code[start:end + 1]
+        if not re.search(r'\b_asm\b', body):
+            continue
+        entry = review.get('_' + name) or review.get(name)
+        card = by_symbol.get('_' + name) or by_symbol.get(name)
+        if not entry or not card:
+            continue
+        rows = ['%s %s' % (r['mnemonic'], r['operands']) for r in card['disassembly']]
+        if entry['signature'] not in rows:
+            raise FormatError('inline asm review for %s names signature %r, absent from the original' % (name, entry['signature']))
+        blocks = re.findall(r'\b_asm\s*\{[^{}]*\}', body)
+        if any(re.search(r'\b(?:_emit|__emit|db|dw|dd)\b', block, re.I) for block in blocks):
+            raise FormatError('inline asm in %s emits bytes; only instructions are admissible' % name)
+        out.append(code[last:start] + re.sub(r'\b_asm\s*\{[^{}]*\}', ';', body))
+        last = end + 1
+    return ''.join(out) + code[last:]
+
+
 def check_source(source, flags, unit=None):
     """Ordinary self-contained C under a catalogued profile; fail closed on anything else."""
     code = re.sub(r'/\*.*?\*/|//[^\n]*', '', source, flags=re.S)
@@ -100,6 +153,7 @@ def check_source(source, flags, unit=None):
         stripped = re.sub(r'#\s*pragma\s+alloc_text\s*\(\s*(?:POOLSTUB_TEXT|RUN\d+_TEXT)\s*,[^()]*\)', '', stripped)
     if reviewed_intrinsic_source(unit, source):
         stripped = re.sub(r'(?m)^[ \t]*#\s*pragma\s+intrinsic\s*\(\s*strlen\s*\)[ \t]*$', '', stripped)
+    stripped = reviewed_inline_asm(stripped)
     if re.search(r'\b(?:__asm|_asm|asm|_emit|__emit|incbin)\b|#\s*(?:include|pragma)', stripped, re.I):
         raise FormatError('recovered source must be self-contained ordinary C, without assembly or compiler pragmas')
     if re.search(r'\([^)]*\*[^)]*\)\s*(?:0x[0-9a-f]+|[1-9][0-9]*)', code, re.I):
