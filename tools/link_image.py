@@ -697,6 +697,20 @@ def package():
     exports = {x["ordinal"]: x for x in model["exports"]}
     public_by_segment = {s["number"]: s["symbols"] for s in model["symbols"]["segments"]}
     existing_publics = set(model["known_publics"])
+    # CRT0MSG is pulled from CRT.LIB for __acrtmsg.  Avoid making a second
+    # __adbgmsg public in RAWDEBT when the pinned library member already owns
+    # that public; its bytes remain represented by the placeholder payload.
+    runtime_library_publics = set()
+    library_path = ROOT / runtime_claim["library"]
+    for candidate in omf.library_modules(library_path.read_bytes()):
+        try:
+            parsed = omf.parse(candidate)
+        except FormatError:
+            continue
+        if parsed["name"].lower() == runtime_claim["member"].lower():
+            runtime_library_publics.update(p["name"] for p in parsed["publics"])
+            break
+    existing_publics.update(runtime_library_publics)
     object_dir = WORK / "objects"
     object_dir.mkdir(parents=True, exist_ok=True)
     spans_by_seg = model["spans"]
@@ -836,6 +850,7 @@ def package():
         "objects": packaged, "object_count": len(packaged), "raw_ne_relocation_sites": len(raw_fixup_sites),
         "expected_raw_ne_relocation_sites": len(expected_sites), "missing_sites": missing,
         "runtime_library_members": [runtime_claim],
+        "runtime_library_publics_not_redeclared_in_rawdebt": sorted(runtime_library_publics),
         "def_imports": sorted(def_imports),
         "limitations": ["Every copied byte remains explicit raw debt", "Raw section names are inferred from mapped neighbors; hidden original logical-segment names are not recoverable from MAPSYM"]}
     write_json(WORK / "rawdebt-package.json", receipt)
@@ -924,6 +939,45 @@ def _order_link_inputs(rows):
     return ordered, facts
 
 
+def _write_link_order_evidence(rows, constraints, package_receipt):
+    """Persist per-SEGDEF contribution order plus the global LINK order limits."""
+    groups = defaultdict(list)
+    global_order = []
+    for position, row in enumerate(rows):
+        source = row.get("source_object") or row.get("layout", {}).get("object") or row["object"]
+        module = row.get("scaffold_module") or row.get("runtime_member")
+        global_order.append({"position": position, "kind": row["kind"], "source_object": source,
+                             "module": module, "sha256": row["identity"]["sha256"]})
+        for c in row.get("layout", {}).get("contributions", []):
+            key = (c.get("ne_segment", 99), c.get("logical_segment", c.get("segment", "?")), c.get("class", "?"))
+            groups[key].append({"kind": row["kind"], "source_object": source, "module": module,
+                "global_input_position": position, "start": c["start"], "end": c["end"],
+                "length": c["end"] - c["start"],
+                "rawdebt_scaffolding": row["kind"] == "RAWDEBT"})
+    logical_orders = []
+    for (ne_segment, logical_segment, seg_class), contributions in sorted(groups.items()):
+        contributions.sort(key=lambda x: (x["start"], x["end"], x["source_object"]))
+        violations = sum(a["global_input_position"] > b["global_input_position"]
+                         for a, b in zip(contributions, contributions[1:]))
+        logical_orders.append({"ne_segment": ne_segment, "logical_segment": logical_segment,
+            "class": seg_class, "contribution_count": len(contributions),
+            "global_order_violations": violations, "contributions": contributions})
+    evidence = {"scope": "strict image placement order constraints; RAWDEBT placeholders are scaffolding and receive zero recovery credit",
+        "oracle_sha256": _sha(fixture("SIMANTW.EXE")),
+        "derivation": "admitted OMF placement from the ledger/MAPSYM proof, sorted within each target NE segment and logical SEGDEF by original start/end; RAWDEBT gaps are explicit placeholder objects",
+        "counts": {"global_input_objects": len(rows), "logical_segment_groups": len(logical_orders),
+            "contributions": sum(x["contribution_count"] for x in logical_orders),
+            "global_order_violations": sum(x["global_order_violations"] for x in logical_orders),
+            "global_constraints": constraints["constraint_count"], "cycle_objects": constraints["cycle_count"],
+            "overlapping_contributions": constraints["overlap_count"],
+            "logical_names_reused_across_ne_segments": constraints["reused_name_count"]},
+        "global_input_order_sha256": _sha(json.dumps(global_order, sort_keys=True).encode()),
+        "logical_orders": logical_orders,
+        "library_member_claims": package_receipt.get("runtime_library_members", [])}
+    write_json(EVIDENCE_ORDER, evidence)
+    return evidence
+
+
 def link(out_path="build/workers/linkdef-2/LINKED.EXE", pack_code=True):
     model, packaged, package_receipt = package()
     out = WORK / "link"
@@ -941,14 +995,14 @@ def link(out_path="build/workers/linkdef-2/LINKED.EXE", pack_code=True):
         dest = in_dir / ("A%04d.OBJ" % len(by_digest))
         shutil.copyfile(src, dest)
         by_digest[digest] = dest
-        rows.append({"kind": "ADMITTED_" + layout["group"], "object": dest.name, "layout": layout,
+        rows.append({"kind": "ADMITTED_" + layout["group"], "object": dest.name, "source_object": layout["object"], "layout": layout,
                      "path": dest, "identity": identity(dest)})
     for member in model.get("runtime_library_claims", []):
         src = ROOT / member["object"]
         dest = in_dir / ("R%04d.OBJ" % len([x for x in rows if x["kind"] == "RUNTIME_MEMBER"]))
         shutil.copyfile(src, dest)
         anchor = next(c["start"] for c in member["claims"] if c["segment"] == "_DATA")
-        rows.append({"kind": "RUNTIME_MEMBER", "object": dest.name, "ne_segment": 10,
+        rows.append({"kind": "RUNTIME_MEMBER", "object": dest.name, "source_object": member["object"], "scaffold_module": member["member"], "ne_segment": 10,
                      "start": anchor, "path": dest, "identity": identity(dest),
                      "layout": {"contributions": [{"logical_segment": c["segment"],
                          "class": c["class"], "ne_segment": 10,
@@ -959,7 +1013,7 @@ def link(out_path="build/workers/linkdef-2/LINKED.EXE", pack_code=True):
         src = ROOT / item["object"]
         dest = in_dir / ("P%04d.OBJ" % len([x for x in rows if x["kind"] == "RAWDEBT"]))
         shutil.copyfile(src, dest)
-        rows.append({"kind": "RAWDEBT", "object": dest.name, "ne_segment": item["ne_segment"],
+        rows.append({"kind": "RAWDEBT", "object": dest.name, "source_object": item["object"], "scaffold_module": item["module"], "ne_segment": item["ne_segment"],
                      "start": item["start"], "path": dest, "identity": identity(dest),
                      "layout": {"contributions": [{"logical_segment": item["logical_segment"],
                          "class": item["class"], "ne_segment": item["ne_segment"],
@@ -967,6 +1021,7 @@ def link(out_path="build/workers/linkdef-2/LINKED.EXE", pack_code=True):
                          "length": item["end"] - item["start"]}]}})
     rows, input_order_constraints = _order_link_inputs(rows)
     write_json(WORK / "link-order-constraints.json", input_order_constraints)
+    _write_link_order_evidence(rows, input_order_constraints, package_receipt)
     object_names = [x["object"] for x in rows]
     lib_sources = {
         "CRT.LIB": "toolchain/sdk300/CLIB/LLIBCW.LIB",
@@ -1012,7 +1067,9 @@ def link(out_path="build/workers/linkdef-2/LINKED.EXE", pack_code=True):
         shutil.copyfile(exe, out_target)
         report["output"] = identity(exe)
         report["delivered_candidate"] = out_target.relative_to(ROOT).as_posix()
-        report["comparison"] = compare_outputs(model["raw"], exe.read_bytes())
+        candidate_map = out / "SIMANTW.MAP"
+        report["comparison"] = compare_outputs(model["raw"], exe.read_bytes(),
+            candidate_map.read_text(encoding="latin1", errors="replace") if candidate_map.exists() else None)
         write_json(WORK / ("comparison-" + Path(output_name).stem + ".json"), report["comparison"])
         write_json(WORK / "comparison.json", report["comparison"])
     write_json(WORK / ("link-receipt-" + Path(output_name).stem + ".json"), report)
@@ -1040,7 +1097,21 @@ def _byte_region_facts(expected_region, actual_region):
     }
 
 
-def compare_outputs(oracle_bytes, candidate_bytes):
+def _map_segment_labels(map_text):
+    """Return LINK map names/classes grouped by physical segment number."""
+    grouped = defaultdict(list)
+    pattern = re.compile(r"^\s*([0-9A-F]{4}):([0-9A-F]{4,8})\s+([0-9A-F]{5,8})H\s+(\S+)\s+(\S+)\s*$", re.I)
+    for line in map_text.splitlines():
+        match = pattern.match(line)
+        if not match:
+            continue
+        number, offset, length, name, klass = match.groups()
+        grouped[int(number, 16)].append({"offset": int(offset, 16), "length": int(length, 16),
+                                         "name": name, "class": klass})
+    return {number: rows for number, rows in sorted(grouped.items())}
+
+
+def compare_outputs(oracle_bytes, candidate_bytes, candidate_map=None):
     """Compare the NE container structurally and by raw region bytes."""
     expected = ne.parse(oracle_bytes)
     actual = ne.parse(candidate_bytes)
@@ -1120,6 +1191,16 @@ def compare_outputs(oracle_bytes, candidate_bytes):
                     out += site.to_bytes(2, "little") + data[site:site + 2]
             return bytes(out)
         add(name + "_CHAIN_WORDS", chains(es, e_data), chains(ac, a_data))
+    # LINK may create extra NE segments; report their data and fixup records
+    # instead of silently ignoring them after pairing expected segments.
+    for index, ac in enumerate(actual["segments"][len(expected["segments"]):], len(expected["segments"]) + 1):
+        label = "ACTUAL_ONLY_SEGMENT_%02d" % index
+        a_data = candidate_bytes[ac["file_offset"]:ac["file_offset"] + ac["logical_size"]] if ac["file_offset"] is not None else b""
+        add(label + "_DATA", b"", a_data, "LINK-created segment has no oracle segment at this ordinal.")
+        ar_size = 2 + 8 * len(ac["relocations"]) if ac.get("relocation_table_offset") is not None else 0
+        ar_data = candidate_bytes[ac["relocation_table_offset"]:ac["relocation_table_offset"] + ar_size] if ar_size else b""
+        add(label + "_RELOCATION_TABLE", b"", ar_data, "LINK-created segment has no oracle relocation table.")
+        add(label + "_CHAIN_WORDS", b"", chains(ac, a_data), "LINK-created segment has no oracle relocation chains.")
     def padding(data, image):
         chunks = []
         for region in image["file_regions"]:
@@ -1134,7 +1215,9 @@ def compare_outputs(oracle_bytes, candidate_bytes):
               "target_os", "other_flags", "return_thunk_offset", "segment_reference_offset", "expected_windows_version")
     field_diff = {k:{"expected":expected["header"][k],"actual":actual["header"][k]} for k in fields if expected["header"][k]!=actual["header"][k]}
     active = [x for x in rows if not x.get("excluded_lane")]
+    labels = _map_segment_labels(candidate_map) if candidate_map else {}
     return {"expected_size":len(oracle_bytes),"actual_size":len(candidate_bytes),"ne_header_field_differences":field_diff,
+            "candidate_segment_labels":labels,
             "resource_lane": {"expected_resource_count":len(expected["resources"]),"actual_resource_count":len(actual["resources"]),
                               "expected_payload_bytes":e_resource_payload,"actual_payload_bytes":a_resource_payload},
             "regions":rows,"compared_region_count":len(active),
@@ -1168,7 +1251,12 @@ def main():
         raise SystemExit(link(args.out, pack_code=not args.no_packcode))
     else:
         model = _oracle_model()
-        result = compare_outputs(model[0], Path(args.candidate).read_bytes())
+        candidate = Path(args.candidate)
+        candidate_map = candidate.parent / "SIMANTW.MAP"
+        if not candidate_map.exists():
+            candidate_map = candidate.parent / "link" / "SIMANTW.MAP"
+        result = compare_outputs(model[0], candidate.read_bytes(),
+            candidate_map.read_text(encoding="latin1", errors="replace") if candidate_map.exists() else None)
         WORK.mkdir(parents=True, exist_ok=True)
         write_json(WORK / "comparison.json", result)
         print(json.dumps({"comparison": str(WORK / "comparison.json"),

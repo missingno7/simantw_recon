@@ -1,0 +1,83 @@
+{
+  "pair": [
+    "_StopSimulation",
+    "_RestartSimulation"
+  ],
+  "original_members": [
+    {
+      "symbol": "_StopSimulation",
+      "recipe": "src/recovered/StopSimulation.c",
+      "promotion_evidence": "evidence/recovery/batch102/results.json",
+      "source_static": "static int simulationStops = 0;",
+      "target_segment": "SIMANT_MODULE",
+      "target_offset": "0x0000",
+      "target_size": 52
+    },
+    {
+      "symbol": "_RestartSimulation",
+      "recipe": "src/recovered/RestartSimulation.c",
+      "promotion_evidence": "evidence/recovery/batch112/results.json",
+      "source_static": "static void (far *near lpTimerFunc)(void) = 0; static int simulationStops = 0;",
+      "target_segment": "SIMANT_MODULE",
+      "target_offset": "0x0034",
+      "target_size": 28
+    }
+  ],
+  "shared_private_data": {
+    "segment": "DGROUP/_DATA",
+    "offset": "0x0044",
+    "length": 2,
+    "bytes": "00 00",
+    "identity": "simulationStops"
+  },
+  "target_instructions": [
+    {
+      "symbol": "_StopSimulation",
+      "address": "SIMANT_MODULE:0x0004",
+      "bytes": "83 3E 44 00 00",
+      "instruction": "cmp word ptr [0x0044], 0"
+    },
+    {
+      "symbol": "_StopSimulation",
+      "address": "SIMANT_MODULE:0x002E",
+      "bytes": "FF 06 44 00",
+      "instruction": "inc word ptr [0x0044]"
+    },
+    {
+      "symbol": "_RestartSimulation",
+      "address": "SIMANT_MODULE:0x0034",
+      "bytes": "FF 0E 44 00",
+      "instruction": "dec word ptr [0x0044]"
+    }
+  ],
+  "current_topology": {
+    "candidate_unit_range": "simant:0000-45E4",
+    "components": [
+      {
+        "id": "simant:0000",
+        "publics": [
+          "_StopSimulation"
+        ],
+        "data_words": [
+          68
+        ]
+      },
+      {
+        "id": "simant:0034",
+        "publics": [
+          "_RestartSimulation"
+        ],
+        "data_words": [
+          64
+        ]
+      }
+    ],
+    "internal_soft_boundary": "_StopSimulation|_RestartSimulation",
+    "interpretation": "Both code members address the same initialized DGROUP word; the split is inconsistent with independent object ownership."
+  },
+  "context_packets": [
+    "build/context/StopSimulation.json",
+    "build/context/RestartSimulation.json"
+  ],
+  "interpretation": "The same private counter is read/written by both adjacent members. This is strong same-TU evidence; it does not establish the historical filename or the full source-file boundary."
+}

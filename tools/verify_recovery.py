@@ -39,7 +39,7 @@ def verify(manifest=None,recipes=None,publish=True):
     if len(manifest['runtime_objects'])!=len(ledger['members']):raise FormatError('incomplete runtime build')
     for row,member in zip(manifest['runtime_objects'],ledger['members']):
         if identity(ROOT/row['object'])!=row['identity'] or row['identity']['sha256']!=member['member_sha256']:raise FormatError('changed runtime member')
-        result=compare_member(omf.parse((ROOT/row['object']).read_bytes()),raw,n,s,imports)
+        result=compare_member(omf.parse((ROOT/row['object']).read_bytes()),raw,n,s,imports,allow_data=True)
         if not result or result['result'] not in good:raise FormatError('runtime mismatch '+row['member'])
         runtime.append(dict(member=row['member'],object=row['object'],identity=row['identity'],comparison=result))
     if set(row['symbol'] for row in game)!=set(recipes):raise FormatError('incomplete game build')

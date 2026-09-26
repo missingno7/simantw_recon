@@ -38,6 +38,19 @@ class LinkImageTests(unittest.TestCase):
         self.assertFalse(fixup['self_relative'])
         self.assertEqual(fixup['displacement'], 0)
 
+    def test_rawdebt_segments_use_byte_alignment(self):
+        module = omf.parse(link_image.build_omf(
+            'RAWDEBT_ALIGN', 'SIMANT_MODULE', 'CODE', b'\x01\x02\x03'))
+        self.assertEqual(module['segments'][0]['alignment'], 1)
+
+    def test_link_map_labels_preserve_physical_segment_and_class(self):
+        labels = link_image._map_segment_labels(
+            ' 0001:0000 05C04H     SIMANT_MODULE          CODE\n'
+            ' 000B:C67A 00082H     MSG                    MSG\n')
+        self.assertEqual(labels[1][0], {
+            'offset': 0, 'length': 0x5C04, 'name': 'SIMANT_MODULE', 'class': 'CODE'})
+        self.assertEqual(labels[11][0]['name'], 'MSG')
+
     def test_segment_relative_frame_uses_the_internal_target_segdef(self):
         target = {'frame_method': 0, 'frame_index': None, 'target_index': 2}
         self.assertIs(link_image._pair_segment_frame(target), target)

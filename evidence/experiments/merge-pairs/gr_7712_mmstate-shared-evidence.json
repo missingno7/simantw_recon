@@ -1,0 +1,69 @@
+{
+  "pair": [
+    "_ExtractWord",
+    "_myServiceSong"
+  ],
+  "ledger_overlap": {
+    "segment": "SIMANT_DATA_GROUP",
+    "start": "0x8D08",
+    "end_inclusive": "0x8D1D",
+    "length": 22,
+    "bytes": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+  },
+  "unit_side": {
+    "promotion_evidence": "evidence/recovery/promotions/tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.json",
+    "recipe": "src/recovered/wf_tu_gr_7712_IsMMMidiAvail_14_reviewed-9f2a039d59.c",
+    "contribution": {
+      "segment": "SIMANT_DATA_GROUP",
+      "offset": "0x8D08",
+      "length": 22
+    },
+    "members_that_reference_mmState": [
+      "_IsMMMidiAvail",
+      "_IsMMWaveAvail",
+      "_CheckMMWave",
+      "_snd_IsSongDone",
+      "_vocMciClose",
+      "_MultiMediaSong"
+    ],
+    "source_declaration": "static struct MultimediaState __based(__segname(\"SIMANT_DATA_GROUP\")) mmState = {0};"
+  },
+  "isolated_side": {
+    "promotion_evidence": "evidence/recovery/promotions/myServiceSong-c32f1a63c2.json",
+    "recipe": "src/recovered/myServiceSong-c32f1a63c2.c",
+    "contribution": {
+      "segment": "SIMANT_DATA_GROUP",
+      "offset": "0x8D08",
+      "length": 22
+    },
+    "source_declaration": "static struct MultimediaState __based(__segname(\"SIMANT_DATA_GROUP\")) mmState = {0};",
+    "target_instructions": [
+      {
+        "address": "GR_MODULE:0xA221",
+        "instruction": "load selector from CONST slot 0xBF78"
+      },
+      {
+        "address": "GR_MODULE:0xA225",
+        "instruction": "cmp word ptr es:[0x8D08], 0"
+      },
+      {
+        "address": "GR_MODULE:0xA22D",
+        "instruction": "cmp word ptr es:[0x8D0A], 0"
+      },
+      {
+        "address": "GR_MODULE:0xA235",
+        "instruction": "cmp word ptr es:[0x8D0C], 0"
+      },
+      {
+        "address": "GR_MODULE:0xA23D",
+        "instruction": "cmp word ptr es:[0x8D0E], 0"
+      }
+    ]
+  },
+  "topology": {
+    "context_component": "gr:7712",
+    "context_publics_include_myServiceSong": true,
+    "interpretation": "The existing gr:7712 topology component already includes _myServiceSong; the isolated recipe and the 14-member unit currently duplicate one based state block."
+  },
+  "classification": "Case (a): the multimedia unit and _myServiceSong use the same 22-byte based mmState block through selector slot BF78. The object members sharing the state include _IsMMMidiAvail and others; _ExtractWord is the unit member used as the ledger label."
+}

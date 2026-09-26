@@ -4,6 +4,7 @@
     python tools/promote.py --unit UNIT_ID --reason TEXT [--verify-only]
     python tools/promote.py --data DATA.c [--summary TEXT] [--verify-only]
     python tools/promote.py --recover
+    python tools/promote.py --retire-data SRC.c --reason TEXT [--verify-only]
 
 The source is frozen into src/recovered/, freshly compiled under the symbol's
 catalogued object profile and admitted only when the complete original scope,
@@ -16,6 +17,7 @@ import json
 import re
 import shutil
 import sys
+from pathlib import Path
 from common import ROOT, FormatError, cards, fixture, identity, ownership, ownership_review, read_json, recipes, relative, sha256, write_json
 from compiler import compile_source, validate_receipt
 import assembler
@@ -53,6 +55,25 @@ def reviewed_intrinsic_source(unit, source):
         return False
     # Path.read_text normalizes CRLF on Windows, as the variant loader does.
     return source == unit_source.read_text()
+
+
+RUNTIME_LIBRARIES = ('toolchain/sdk300/CLIB/LLIBCW.LIB', 'toolchain/sdk300/CLIB/LLIBFPW.LIB', 'toolchain/sdk300/WLIB/LIBW.LIB', 'toolchain/msc700/LIB/LIBH.LIB')
+_RUNTIME_PUBLICS = None
+
+
+def runtime_library_publics():
+    """Publics defined by any member of the pinned runtime libraries the game links."""
+    global _RUNTIME_PUBLICS
+    if _RUNTIME_PUBLICS is None:
+        names = set()
+        for lib in RUNTIME_LIBRARIES:
+            for data in omf.library_modules((ROOT / lib).read_bytes()):
+                try:
+                    names.update(p['name'] for p in omf.parse(data)['publics'])
+                except FormatError:
+                    continue
+        _RUNTIME_PUBLICS = names
+    return _RUNTIME_PUBLICS
 
 
 PACK_INDEX = re.compile(r'\bmatch_position\s*\[\s*(0[xX][0-9A-Fa-f]+|\d+)\s*\]')
@@ -157,6 +178,9 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             if data:
                 if any(inventory.get(name, {}).get('kind') != 'DATA_SYMBOL' for name in names):
                     raise FormatError('data lane admits only original data symbols')
+                crt = sorted(set(names) & runtime_library_publics())
+                if crt:
+                    raise FormatError('runtime-library data belongs to its library member, not a game data module: ' + ', '.join(crt))
             elif language == 'asm':
                 review = ownership_review()
                 if any(review.get(name, {}).get('class') != 'GAME_ASM' for name in names):
@@ -208,6 +232,9 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             whole = build_image(manifest=manifest, write=False)
             if whole['status'] != 'HYBRID_EXACT':
                 raise FormatError('whole-image check failed: ' + '; '.join(whole['problems'][:5]))
+            if rework == 'reduce_conflicts' and whole['claim_conflicts']['bytes'] >= before['claim_conflicts']['bytes']:
+                raise FormatError('already admitted; a replacement must strictly reduce double-claimed bytes (%d -> %d)'
+                                  % (before['claim_conflicts']['bytes'], whole['claim_conflicts']['bytes']))
             if data and (whole['claim_conflicts']['bytes'] > before['claim_conflicts']['bytes'] or
                          (not rework and whole['claim_conflicts']['bytes'] != before['claim_conflicts']['bytes'])):
                 # Data modules may only take unowned bytes: private data of an
@@ -293,9 +320,9 @@ def promote_function(symbol, path, summary=None, verify_only=False, assembler_ve
     if existing and not verify_only:
         if existing.get('unit') or existing.get('language') == 'asm':
             raise FormatError('already admitted; unit members are reworked through promote.py --unit')
-        if not pack_index_bindings((ROOT / existing['source']).read_text(encoding='latin1')):
-            raise FormatError('already admitted with a compliant source: ' + symbol)
-        rework = True
+        # Either the admitted source fails a later source rule, or the new
+        # admission must strictly reduce double-claimed bytes (checked in admit).
+        rework = True if pack_index_bindings((ROOT / existing['source']).read_text(encoding='latin1')) else 'reduce_conflicts'
     return admit(symbol.lstrip('_'), [symbol], source_bytes, flags, profile, semantic_summary(text, summary), verify_only, rework=rework)
 
 
@@ -356,6 +383,52 @@ def promote_data(path, summary=None, verify_only=False, rework=False):
     return admit('data_' + re.sub(r'[^A-Za-z0-9_]+', '_', path.stem), None, path.read_bytes(), flags, profile, semantic_summary(text, summary), verify_only, data=True, rework=rework)
 
 
+def retire_data(source, reason, verify_only=False):
+    """Remove one whole data module whose bytes another owner (e.g. a library member) now proves.
+
+    Fail closed: the module must be data-only, the image must stay HYBRID_EXACT,
+    raw debt may not grow (every retired byte stays owned) and double-claimed
+    bytes must strictly fall. A retirement proof records what was removed.
+    """
+    if not reason.strip():
+        raise FormatError('reviewed reason required')
+    from image import build as build_image
+    with publication.publication_lock():
+        publication.recover()
+        current = read_json(ROOT / 'src/recovery.json')
+        manifest = read_json(ROOT / 'build/recovered/manifest.json')
+        names = sorted(k for k, v in current['targets'].items() if v['source'] == source)
+        if not names:
+            raise FormatError('no admitted recipe uses ' + source)
+        if any(current['targets'][k].get('kind') != 'DATA' for k in names):
+            raise FormatError('only data modules can be retired')
+        retired = {k: current['targets'].pop(k) for k in names}
+        staged = dict(manifest, game_objects=[g for g in manifest['game_objects'] if g['symbol'] not in retired])
+        verified = verify(staged, current['targets'], publish=False)
+        before = build_image(write=False)
+        whole = build_image(manifest=staged, write=False)
+        if whole['status'] != 'HYBRID_EXACT':
+            raise FormatError('whole-image check failed after retirement')
+        if whole['debt_total'] > before['debt_total']:
+            raise FormatError('retirement would turn owned bytes back into raw debt (%d -> %d)' % (before['debt_total'], whole['debt_total']))
+        if whole['claim_conflicts']['bytes'] >= before['claim_conflicts']['bytes']:
+            raise FormatError('retirement must strictly reduce double-claimed bytes')
+        ident = 'retire_' + re.sub(r'[^A-Za-z0-9_]+', '_', Path(source).stem) + '-' + sha256(source.encode())[:10]
+        proof = dict(id=ident, retired=retired, source=source, reason=reason, created=publication.timestamp(),
+                     image_before=dict(debt_total=before['debt_total'], claim_conflicts=before['claim_conflicts']['bytes']),
+                     image_after=dict(debt_total=whole['debt_total'], claim_conflicts=whole['claim_conflicts']['bytes']),
+                     scope='Removed a data module whose bytes another admitted owner proves; the retired source stays in src/recovered for history')
+        if verify_only:
+            return dict(id=ident, retirement='PASSED', promotion='NONE (--verify-only)', retired=names)
+        proof_path = ROOT / 'evidence/recovery/promotions' / (ident + '.json')
+        write_json(proof_path, proof)
+        progress = {k: v for k, v in verified.items() if k not in ('game', 'runtime')}
+        publication.commit(dict(zip(publication.CORE, [current, staged, verified, progress])), ident)
+        build_image()
+        return dict(id=ident, status='RETIRED', retired=names, evidence=relative(proof_path),
+                    claim_conflicts=whole['claim_conflicts']['bytes'], debt_total=whole['debt_total'])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('symbol', nargs='?')
@@ -370,8 +443,11 @@ def main():
     ap.add_argument('--assembler', default='masm600', help='authentic MASM version for .asm candidates')
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     ap.add_argument('--recover', action='store_true')
+    ap.add_argument('--retire-data', help='remove the whole data module with this recipe source (bytes must stay owned by someone else)')
     args = ap.parse_args()
-    if args.recover:
+    if args.retire_data:
+        result = retire_data(args.retire_data, args.reason, args.verify_only)
+    elif args.recover:
         with publication.publication_lock():
             result = publication.recover()
     elif args.data:
