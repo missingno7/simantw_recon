@@ -935,6 +935,72 @@
       "source": "evidence/topology/build-topology.json",
       "basis": "Same-object component (shared selector pool / private data / contiguity)",
       "recorded": "2026-09-26T17:30:36.424071+00:00"
+    },
+    "gr:7712": {
+      "publics": [
+        "_IsMMMidiAvail",
+        "_IsMMWaveAvail",
+        "_CheckMMWave",
+        "_IsDLLAvail",
+        "_snd_Install",
+        "_snd_Deinstall",
+        "_snd_IsSongDone",
+        "_musSoundBlasterClose",
+        "_vocSoundBlasterClose",
+        "_vocMciClose",
+        "_SoundBlasterMessage",
+        "_MciMessage",
+        "_MusicInit",
+        "_SysBeep",
+        "_myBeginSoundList",
+        "_StopSong",
+        "_ExtractDWord",
+        "_ExtractWord",
+        "_ExtractVariableLen",
+        "_Extract24BitVal",
+        "_myBeginSong",
+        "_MciOutWave",
+        "_myBeginSound",
+        "_mySoundIsDone",
+        "_myBeginSoundReverse",
+        "_mySongIsDone",
+        "_MultiMediaSong",
+        "_myServiceSong"
+      ],
+      "segment": "GR_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-26T21:17:55.800816+00:00"
+    },
+    "gr:0000": {
+      "publics": [
+        "_SetHelpCursor",
+        "_DetectDisplay",
+        "_InitGraphics",
+        "_IBMInitStuff"
+      ],
+      "segment": "GR_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-26T21:17:56.595917+00:00"
+    },
+    "antedit:90DC": {
+      "publics": [
+        "_ChangeDirectory"
+      ],
+      "segment": "ANTEDIT_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-26T21:17:56.813529+00:00"
+    },
+    "gr:2BB2": {
+      "publics": [
+        "_CopyMonoBitmap"
+      ],
+      "segment": "GR_MODULE",
+      "source": "evidence/topology/build-topology.json",
+      "basis": "Same-object component (shared selector pool / private data / contiguity)",
+      "recorded": "2026-09-26T21:17:57.030761+00:00"
     }
   },
   "assignments": [
@@ -1522,6 +1588,56 @@
       ],
       "reason": "The window-framework object keeps its /GA evidence (asg-simtwo-c32e-ga) and adds /Oi: _win_LoadAllWindows and _win_ObjFormatPrint carry REPNE SCASB / REP MOVSW intrinsic fingerprints and improve from 128/228 and 135/226 opcodes under ga to 158/228 and 178/226 under /Oi (oi minimal over baseline; og adds nothing). Supersedes asg-simtwo-c32e-ga; the admitted sources of simtwo:C806 and simtwo:C32E, including INDIRECTDLGPROC, compile to identical CODE under ga and oi-ga (supervisor invariance check 2026-09-26).",
       "reviewed": "2026-09-26T21:14:00.257135+00:00"
+    },
+    {
+      "id": "asg-gr-7712-oi",
+      "context": "gr:7712",
+      "profile": "oi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/myBeginSong.json",
+        "evidence/experiments/optimizer-profile/probes/snd_Install.json",
+        "evidence/experiments/optimizer-profile/probes/IsDLLAvail.json"
+      ],
+      "reason": "The far _fmemcmp MIDI-header candidate improves _myBeginSong from 104/1653 to 143/1653 opcodes, while natural strlen probes improve _snd_Install from 227/291 to 241/291 and _IsDLLAvail from 103/122 to 120/122; /Oi alone emits the fingerprints, so oi is the minimal profile. Admitted sources of the context compile identically under oi (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:17:55.801320+00:00"
+    },
+    {
+      "id": "asg-gr-0000-oi",
+      "context": "gr:0000",
+      "profile": "oi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/SetHelpCursor.json"
+      ],
+      "reason": "The natural strlen and two strcat calls for _SetHelpCursor reproduce REPNE SCASB and REP MOVS under /Oi and improve opcode matches from 25/91 to 72/91, with oi and ogi tied. Admitted sources of the context compile identically under oi (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:17:56.595917+00:00"
+    },
+    {
+      "id": "asg-antedit-90dc-oi",
+      "context": "antedit:90DC",
+      "profile": "oi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/ChangeDirectory.json"
+      ],
+      "reason": "The natural strcat of the local path and far segment 8:94A0 string reproduces the target scan/copy fingerprint and improves _ChangeDirectory from 102/147 to 118/147 opcodes under oi and ogi equally. Admitted sources of the context compile identically under oi (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:17:56.814033+00:00"
+    },
+    {
+      "id": "asg-gr-2bb2-oi",
+      "context": "gr:2BB2",
+      "profile": "oi",
+      "symbols": [],
+      "strength": "DIAGNOSTIC",
+      "evidence": [
+        "evidence/experiments/optimizer-profile/probes/CopyMonoBitmap.json"
+      ],
+      "reason": "The row-copy _fmemcpy candidate reproduces REP MOVSW/ADC/REP MOVSB and improves _CopyMonoBitmap from 36/316 to 49/316 opcodes under oi and ogi equally. Admitted sources of the context compile identically under oi (supervisor check 2026-09-26).",
+      "reviewed": "2026-09-26T21:17:57.030761+00:00"
     }
   ],
   "refutations": [
