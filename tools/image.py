@@ -9,6 +9,10 @@ Owners:
   NE_CHAIN       NE relocation-chain words at loader sites (linker metadata, lane LINK)
   RAW:<lane>     explicit reconstruction debt copied from the oracle, classified by lane
 
+Scaffold stand-ins in admitted unit sources (`SCAFFOLD, not recovered source:
+... (DGROUP LO-HI)`) keep a unit's data layout for unclaimed members; their
+bytes are strictly compared by the unit gate but stay RAW debt here.
+
 Object bytes are produced by a small binder: the object's initialized data, the
 LINK far-call translation, and every fixup resolved to its independently
 grounded target (the same rules the strict matcher validates). Chain words come
@@ -16,6 +20,7 @@ from the NE relocation metadata, never from an object. The hybrid image is
 HYBRID_EXACT only when it equals the oracle byte for byte; raw debt is explicit
 and is never recovery credit.
 """
+import re
 import argparse
 import json
 import sys
@@ -80,6 +85,34 @@ def regenerate(module, raw, image, symbols, imports):
     return comparison, placed
 
 
+SCAFFOLD_MARK = re.compile(r'/\*\s*SCAFFOLD, not recovered source:(.*?)\*/', re.S)
+SCAFFOLD_RANGE = re.compile(r'DGROUP ([0-9A-F]{4})-([0-9A-F]{4})')
+
+
+def scaffold_ranges(manifest):
+    """Object path -> DGROUP ranges its admitted source marks as scaffold
+    stand-ins (`SCAFFOLD, not recovered source: ... (DGROUP LO-HI ...)`).
+    Those bytes keep the unit's layout but earn no ownership; a marker whose
+    range cannot be read fails closed."""
+    recipes = read_json(ROOT / 'src/recovery.json')['targets']
+    result = {}
+    for row in manifest['game_objects']:
+        source = recipes.get(row['symbol'], {}).get('source')
+        if not source or row['object'] in result:
+            continue
+        path = ROOT / source
+        text = path.read_text(encoding='latin1') if path.exists() else ''
+        ranges = []
+        for mark in SCAFFOLD_MARK.finditer(text):
+            found = SCAFFOLD_RANGE.search(mark.group(1))
+            if found:
+                ranges.append((int(found.group(1), 16), int(found.group(2), 16)))
+            elif 'bytes' in mark.group(1) and 'data' in mark.group(1):
+                raise FormatError('scaffold data marker without a DGROUP range in ' + source)
+        result[row['object']] = tuple(ranges)
+    return result
+
+
 def build(debt=False, manifest=None, write=True):
     raw = fixture('SIMANTW.EXE'); image = ne.parse(raw); symbols = mapsym.parse(fixture('SIMANTW.SYM'))
     imports = import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB')
@@ -117,6 +150,7 @@ def build(debt=False, manifest=None, write=True):
     symbols_of = defaultdict(list)
     for row in manifest['game_objects']:
         symbols_of[row['object']].append(row['symbol'])
+    scaffold_data = scaffold_ranges(manifest)
     seen = {}
     objects = [(row['object'], 'C', row['symbol']) for row in manifest['game_objects']] + \
               [(row['object'], 'RUNTIME', row['member']) for row in manifest['runtime_objects']]
@@ -133,7 +167,12 @@ def build(debt=False, manifest=None, write=True):
             _, placed = regenerate(module, raw, image, symbols, imports)
         except FormatError as exc:
             problems.append('%s %s: %s' % (kind, owners[o]['label'], exc)); continue
+        stand_in = scaffold_data.get(path, ())
         for (segment, offset), (byte, is_chain) in placed.items():
+            if segment == 10 and any(lo <= offset < hi for lo, hi in stand_in):
+                # Layout stand-in for unclaimed members' data (a scaffold filler
+                # copied from the image): compared by the unit gate, never owned.
+                continue
             at = image['segments'][segment - 1]['file_offset'] + offset
             if is_chain:
                 if owner[at] != chain:

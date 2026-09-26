@@ -307,7 +307,34 @@
   },
   "reviewed_by": "supervisor",
   "notes": [
-    "The even-start neighbours inside the pack/unpack run (_PackReadByte, _UnpackInit, _Unpack, _UnpackSetBuf, _UnpackFileOpen) are probable members of the same assembly module but carry no direct signature; they stay GAME_C until evidence.",
-    "_NetBIOSPost (pusha/push ds/push es/mov bp,sp/.../iret) matches the MSC 7.00 _interrupt function shape and stays GAME_C; _ProcessPost follows it at an odd offset, so either _ProcessPost is assembly or both are."
-  ]
+    "_NetBIOSPost (pusha/push ds/push es/mov bp,sp/.../iret) matches the MSC 7.00 _interrupt function shape and stays GAME_C; _ProcessPost follows it at an odd offset, so either _ProcessPost is assembly or both are.",
+    "The even-start pack/unpack neighbours were proved assembly by exact MASM matches (proved_by_exact_assembly) and reclassified on 2026-09-26."
+  ],
+  "proved_by_exact_assembly": {
+    "_PackReadByte": {
+      "strict_result": "STRONGLY_SUPPORTED_MEMBER 55/55 literals, 13/13 fixups",
+      "module": "asmmod_LZSS_Codec (src/recovered/asmmod_LZSS_Codec-02a4c19f5b.asm)",
+      "basis": "strict compare_member match of the MASM module source (build/workers/asm-3/REPORT.md, \"Even-start neighbor evidence\"); even start offset, no C-exclusive signature, but every other routine of the contiguous module is proven assembly"
+    },
+    "_UnpackInit": {
+      "strict_result": "CONFIRMED_MEMBER 48/48, 7/7",
+      "module": "asmmod_LZSS_Codec (src/recovered/asmmod_LZSS_Codec-02a4c19f5b.asm)",
+      "basis": "strict compare_member match of the MASM module source (build/workers/asm-3/REPORT.md, \"Even-start neighbor evidence\"); even start offset, no C-exclusive signature, but every other routine of the contiguous module is proven assembly"
+    },
+    "_Unpack": {
+      "strict_result": "CONFIRMED_MEMBER 248/248, 29/29",
+      "module": "asmmod_LZSS_Codec (src/recovered/asmmod_LZSS_Codec-02a4c19f5b.asm)",
+      "basis": "strict compare_member match of the MASM module source (build/workers/asm-3/REPORT.md, \"Even-start neighbor evidence\"); even start offset, no C-exclusive signature, but every other routine of the contiguous module is proven assembly"
+    },
+    "_UnpackSetBuf": {
+      "strict_result": "CONFIRMED_MEMBER 16/16, 3/3",
+      "module": "asmmod_LZSS_Codec (src/recovered/asmmod_LZSS_Codec-02a4c19f5b.asm)",
+      "basis": "strict compare_member match of the MASM module source (build/workers/asm-3/REPORT.md, \"Even-start neighbor evidence\"); even start offset, no C-exclusive signature, but every other routine of the contiguous module is proven assembly"
+    },
+    "_UnpackFileOpen": {
+      "strict_result": "CONFIRMED_MEMBER 45/45, 5/5",
+      "module": "asmmod_LZSS_Codec (src/recovered/asmmod_LZSS_Codec-02a4c19f5b.asm)",
+      "basis": "strict compare_member match of the MASM module source (build/workers/asm-3/REPORT.md, \"Even-start neighbor evidence\"); even start offset, no C-exclusive signature, but every other routine of the contiguous module is proven assembly"
+    }
+  }
 }

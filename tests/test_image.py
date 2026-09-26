@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from common import FormatError
+from common import FormatError, ROOT
 import image
 
 
@@ -118,3 +118,28 @@ class DataGateTests(unittest.TestCase):
             self.gate.data_targets(self.module([('_P', 0)], length=4), b'', image, symbols, ['_P'])
         with self.assertRaisesRegex(FormatError, 'BSS region'):
             self.gate.data_targets(self.module([('_Z', 0)], length=4), b'', image, symbols, ['_Z'])
+
+
+class ScaffoldAccountingTests(unittest.TestCase):
+    def run_ranges(self, text):
+        import image, tempfile
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory(dir=ROOT / 'build') as tmp:
+            src = Path(tmp) / 'u.c'
+            src.write_text(text, encoding='latin1')
+            rel = src.relative_to(ROOT).as_posix()
+            manifest = dict(game_objects=[dict(symbol='_a', object='o.obj')])
+            with patch.object(image, 'read_json', return_value=dict(targets={'_a': dict(source=rel)})):
+                return image.scaffold_ranges(manifest)
+
+    def test_marked_filler_range_is_parsed(self):
+        text = '/* SCAFFOLD, not recovered source: the 158 bytes of private data between _a and _b (DGROUP BD3C-BDDA, unclaimed members), copied from the image. */\nstatic unsigned char pool_data_fill_BD3C[158] = {0};\n'
+        self.assertEqual(self.run_ranges(text), {'o.obj': ((0xBD3C, 0xBDDA),)})
+
+    def test_code_stub_marker_has_no_data_range(self):
+        self.assertEqual(self.run_ranges('/* SCAFFOLD, not recovered source: pool stand-in for _x. */\nvoid far pool_stub_x(void) { }\n'), {'o.obj': ()})
+
+    def test_data_marker_without_range_fails_closed(self):
+        from common import FormatError
+        with self.assertRaises(FormatError):
+            self.run_ranges('/* SCAFFOLD, not recovered source: 12 bytes of private data between _a and _b. */\n')

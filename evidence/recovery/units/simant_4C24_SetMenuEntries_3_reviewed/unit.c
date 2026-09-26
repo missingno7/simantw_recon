@@ -126,4 +126,3 @@ void far SetPause(int mode)
     effectsOnFlag = OptionStates[2];
 }
 
-
