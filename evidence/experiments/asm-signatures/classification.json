@@ -1,0 +1,170 @@
+{
+  "scope": "Instruction signatures MSC C/C++ 7.00 never emits in this build; routines carrying them are hand-written assembly (GAME_ASM), not C.",
+  "control": {
+    "population": "all 608 admitted GAME C functions (evidence/disassembly/cards.jsonl + src/recovery.json)",
+    "counts": {
+      "push si before push di": 0,
+      "mov ds, word ptr [imm]": 0,
+      "lea reg, [absolute]": 0,
+      "xchg ah, al": 0,
+      "odd start offset": 0
+    },
+    "register_save_order": "push di before push si in 208/208 admitted C functions that save both"
+  },
+  "extra": [
+    "text-ctx: no catalogued profile, /Os,/Ot,/Oi,/G0,/Gr,/Zp or MSC 6.00A produced xchg ah,al for _FlipWord (evidence/experiments/text-ctx/README.md)",
+    "lzss-1b: /NDPACK, __loadds, named/dynamic __based and __segment locals do not reproduce the DS load from [0xB8DE] (evidence/experiments/lzss-nd/README.md)"
+  ],
+  "routines": {
+    "_InitTree": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA858",
+      "size": 28,
+      "signatures": [
+        "lea-absolute",
+        "no frame"
+      ],
+      "prologue": [
+        "push di",
+        "mov es, word ptr [0xb8de]",
+        "mov ax, 0x1000",
+        "mov cx, 0x100",
+        "lea di, [0x501a]",
+        "rep stosw word ptr es:[di], ax",
+        "lea di, [0x521a]",
+        "mov cx, 0x1000"
+      ]
+    },
+    "_InsertNode": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA874",
+      "size": 282,
+      "signatures": [
+        "ds-from-mem"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "sub sp, 2",
+        "push di",
+        "push si",
+        "push ds",
+        "mov ds, word ptr [0xb8de]",
+        "mov word ptr [bp - 2], 1"
+      ]
+    },
+    "_DeleteNode": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA98E",
+      "size": 189,
+      "signatures": [
+        "si-first",
+        "ds-from-mem"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "sub sp, 2",
+        "push si",
+        "push di",
+        "push ds",
+        "mov ds, word ptr [0xb8de]",
+        "mov bx, word ptr [bp + 6]"
+      ]
+    },
+    "_DrawChar": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xB033",
+      "size": 188,
+      "signatures": [
+        "si-first",
+        "ds-from-mem",
+        "xchg-ahal",
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "add bp, 6",
+        "push es",
+        "push ds",
+        "push si",
+        "push di",
+        "mov ax, 0xffff"
+      ]
+    },
+    "_ClearBuffer": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xB0EF",
+      "size": 32,
+      "signatures": [
+        "si-first",
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "add bp, 6",
+        "push es",
+        "push ds",
+        "push si",
+        "push di",
+        "les di, ptr [bp]"
+      ]
+    },
+    "_ConvertMonoToTandy": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xF7CF",
+      "size": 119,
+      "signatures": [
+        "si-first",
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "push si",
+        "push di",
+        "push ds",
+        "les di, ptr [bp + 6]",
+        "lds si, ptr [bp + 0xa]",
+        "mov dx, word ptr [bp + 0xe]"
+      ]
+    },
+    "_FlipWord": {
+      "segment": "_TEXT",
+      "offset": "0x7356",
+      "size": 10,
+      "signatures": [
+        "xchg-ahal"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "mov ax, word ptr [bp + 6]",
+        "xchg ah, al",
+        "pop bp",
+        "retf "
+      ]
+    },
+    "_FlipLong": {
+      "segment": "_TEXT",
+      "offset": "0x7360",
+      "size": 15,
+      "signatures": [
+        "xchg-ahal"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "mov ax, word ptr [bp + 8]",
+        "xchg ah, al",
+        "mov dx, word ptr [bp + 6]",
+        "xchg dh, dl",
+        "pop bp",
+        "retf "
+      ]
+    }
+  },
+  "reviewed_by": "supervisor"
+}

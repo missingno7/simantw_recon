@@ -1,3 +1,4 @@
+Whole-member issues: inconsistent public placements for SIMTWO_MODULE
 Target | Candidate | Difference
 0000 enter 4, 0 | 0000 enter 4, 0 | 
 0004 push di | 0004 push di | 
@@ -5,18 +6,18 @@ Target | Candidate | Difference
 0006 push word ptr [bp + 0xa] | 0006 push word ptr [bp + 0xa] | 
 0009 push word ptr [bp + 8] | 0009 push word ptr [bp + 8] | 
 000c push word ptr [bp + 6] | 000c push word ptr [bp + 6] | 
-000f nop  | 000f nop  | 
-0010 push cs | 0010 push cs | 
-0011 call 0xfffffab4 | 0011 call 0xfffffab4 | 
+000f nop  | 000f lcall 0, 0 | instruction_shape
+0010 push cs |  | instruction_shape
+0011 call 0xfffffab4 |  | instruction_shape
 0014 add sp, 6 | 0014 add sp, 6 | 
 0017 or ax, ax | 0017 or ax, ax | 
 0019 je 0x6c | 0019 je 0x6c | 
 001b push word ptr [bp + 0xa] | 001b push word ptr [bp + 0xa] | 
-001e lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | 001e lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21902}] | 
+001e lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 001e lcall 0, 0 | immediate_or_binding,immediate_or_binding
 0023 add sp, 2 | 0023 add sp, 2 | 
 0026 mov si, ax | 0026 mov si, ax | 
 0028 mov es, dx | 0028 mov es, dx | 
-002a mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 46484}] | 002a mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 46484}] | 
+002a mov bx, word ptr [0xb594] | 002a mov bx, word ptr [0x14] | memory_operand
 002e shl bx, 2 | 002e shl bx, 2 | 
 0031 mov word ptr es:[bx + si + 4], 0xffff | 0031 mov word ptr es:[bx + si + 4], 0xffff | 
 0037 mov ax, dx | 0037 mov ax, dx | 
@@ -27,13 +28,13 @@ Target | Candidate | Difference
 0042 add bx, si | 0042 add bx, si | 
 0044 adc cx, ax | 0044 adc cx, ax | 
 0046 mov es, cx | 0046 mov es, cx | 
-0048 mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 46484}] | 0048 mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 46484}] | 
+0048 mov di, word ptr [0xb594] | 0048 mov di, word ptr [0x14] | memory_operand
 004c shl di, 1 | 004c shl di, 1 | 
 004e mov word ptr es:[bx + di], 0 | 004e mov word ptr es:[bx + di], 0 | 
 0053 mov es, ax | 0053 mov es, ax | 
 0055 dec word ptr es:[si + 2] | 0055 dec word ptr es:[si + 2] | 
 0059 push word ptr [bp + 0xa] | 0059 push word ptr [bp + 0xa] | 
-005c lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21916}] | 005c lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 21916}] | 
+005c lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 005c lcall 0, 0 | immediate_or_binding,immediate_or_binding
 0061 add sp, 2 | 0061 add sp, 2 | 
 0064 mov ax, 1 | 0064 mov ax, 1 | 
 0067 pop si | 0067 pop si | 

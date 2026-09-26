@@ -8,6 +8,10 @@ extern int near editHeight;
 extern int near MapPlane;
 extern struct MapPoint far MapPnt;
 static int near ScrollEditBy(int dx, int dy);
+void far CenterEditPoolScaffold(void);
+
+#pragma alloc_text(POOLSTUB_TEXT, CenterEditPoolScaffold)
+void far CenterEditPoolScaffold(void) { }
 
 int far CenterEdit(int x, int y)
 {
@@ -89,3 +93,4 @@ static int near ScrollEditBy(int dx, int dy)
     }
     return 1;
 }
+

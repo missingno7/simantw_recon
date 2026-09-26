@@ -1,0 +1,94 @@
+Whole-member issues: conflicting private placement constraints _DATA; _TEXT unresolved/mismatched fixup at 0xbd; _TEXT unresolved/mismatched fixup at 0x9e; _TEXT unresolved/mismatched fixup at 0x8c; _TEXT unresolved/mismatched fixup at 0x69; _TEXT literal bytes differ; unplaced contribution _DATA
+  _TEXT+0xbd: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  _TEXT+0x9e: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  _TEXT+0x8c: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+  _TEXT+0x69: candidate {'kind': 'segment', 'name': '_DATA'}; original loader []
+Target | Candidate | Difference
+0000 enter 0x42, 0 | 0000 enter 0x42, 0 | 
+0004 push di | 0004 push di | 
+0005 push si | 0005 push si | 
+0006 xor ax, ax | 0006 xor ax, ax | 
+0008 mov cx, 0x40 | 0008 mov cx, 0x40 | 
+000b lea di, [bp - 0x42] | 000b lea di, [bp - 0x42] | 
+000e push ss | 000e push ss | 
+000f pop es | 000f pop es | 
+0010 rep stosb byte ptr es:[di], al | 0010 rep stosb byte ptr es:[di], al | 
+0012 mov byte ptr [bp - 0x42], 0x30 | 0012 mov byte ptr [bp - 0x42], 0x30 | 
+0016 mov ax, 0x20 | 0016 mov ax, 0x20 | 
+0019 mov cx, 0x10 | 0019 mov cx, 0x10 | 
+001c lea di, [bp - 0x28] | 001c lea di, [bp - 0x28] | 
+001f rep stosb byte ptr es:[di], al | 001f rep stosb byte ptr es:[di], al | 
+0021 les di, ptr [bp + 6] | 0021 les di, ptr [bp + 6] | 
+0024 mov cx, 0xffff | 0024 mov cx, 0xffff | 
+0027 xor ax, ax | 0027 xor ax, ax | 
+0029 repne scasb al, byte ptr es:[di] | 0029 repne scasb al, byte ptr es:[di] | 
+002b not cx | 002b not cx | 
+002d dec cx | 002d dec cx | 
+002e mov word ptr [bp - 2], cx | 002e mov word ptr [bp - 2], cx | 
+0031 cmp cx, 0x10 | 0031 cmp cx, 0x10 | 
+0034 jle 0x3b | 0034 jle 0x3b | 
+0036 mov word ptr [bp - 2], 0x10 | 0036 mov word ptr [bp - 2], 0x10 | 
+003b mov ax, word ptr [bp + 6] | 003b mov ax, word ptr [bp + 6] | 
+003e mov dx, es | 003e mov dx, es | 
+0040 mov cx, word ptr [bp - 2] | 0040 mov cx, word ptr [bp - 2] | 
+0043 push ds | 0043 push ds | 
+0044 lea di, [bp - 0x28] | 0044 lea di, [bp - 0x28] | 
+0047 mov si, ax | 0047 mov si, ax | 
+0049 push ss | 0049 push ss | 
+004a pop es | 004a pop es | 
+004b mov ds, dx | 004b mov ds, dx | 
+004d shr cx, 1 | 004d shr cx, 1 | 
+004f rep movsw word ptr es:[di], word ptr [si] | 004f rep movsw word ptr es:[di], word ptr [si] | 
+0051 adc cx, cx | 0051 adc cx, cx | 
+0053 rep movsb byte ptr es:[di], byte ptr [si] | 0053 rep movsb byte ptr es:[di], byte ptr [si] | 
+0055 pop ds | 0055 pop ds | 
+0056 mov byte ptr [bp - 0x19], 0 | 0056 mov byte ptr [bp - 0x19], 0 | 
+005a lea ax, [bp - 0x42] | 005a lea ax, [bp - 0x42] | 
+005d push ss | 005d push ss | 
+005e push ax | 005e push ax | 
+005f nop  | 005f nop  | 
+0060 push cs | 0060 push cs | 
+0061 call 0xdd0 | 0061 call 0xdd0 | 
+0064 add sp, 4 | 0064 add sp, 4 | 
+0067 push ds | 0067 push ds | 
+0068 push 0x1f32 | 0068 push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+006b lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25378}] | 006b lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25378}] | 
+0070 add sp, 4 | 0070 add sp, 4 | 
+0073 cmp byte ptr [bp - 0x11], 0x50 | 0073 cmp byte ptr [bp - 0x11], 0x50 | 
+0077 jae 0x90 | 0077 jae 0x90 | 
+0079 mov al, byte ptr [bp - 0x11] | 0079 mov al, byte ptr [bp - 0x11] | 
+007c sub ah, ah | 007c sub ah, ah | 
+007e imul cx, ax, 0x3c | 007e imul cx, ax, 0x3c | 
+0081 add <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 42992}] | 0081 add <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 42992}] | 
+0085 push <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | 0085 push <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | 
+0088 push cx | 0088 push cx | 
+0089 push ax | 0089 push ax | 
+008a push ds | 008a push ds | 
+008b push 0x1e50 | 008b push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+008e jmp 0xbf | 008e jmp 0xbf | 
+0090 cmp byte ptr [bp - 0x11], 0xf0 | 0090 cmp byte ptr [bp - 0x11], 0xf0 | 
+0094 jae 0xaa | 0094 jae 0xaa | 
+0096 mov al, byte ptr [bp - 0x11] | 0096 mov al, byte ptr [bp - 0x11] | 
+0099 sub ah, ah | 0099 sub ah, ah | 
+009b push ax | 009b push ax | 
+009c push ds | 009c push ds | 
+009d push 0x1e70 | 009d push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+00a0 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25378}] | 00a0 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25378}] | 
+00a5 add sp, 6 | 00a5 add sp, 6 | 
+00a8 jmp 0xc7 | 00a8 jmp 0xc7 | 
+00aa mov al, byte ptr [bp - 0x11] | 00aa mov al, byte ptr [bp - 0x11] | 
+00ad sub ah, ah | 00ad sub ah, ah | 
+00af imul cx, ax, 0x3c | 00af imul cx, ax, 0x3c | 
+00b2 add <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 98928}] | 00b2 add <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 98928}] | 
+00b6 push <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | 00b6 push <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] | 
+00b9 push cx | 00b9 push cx | 
+00ba push ax | 00ba push ax | 
+00bb push ds | 00bb push ds | 
+00bc push 0x1ea2 | 00bc push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] | immediate_or_binding
+00bf lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25378}] | 00bf lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 25378}] | 
+00c4 add sp, 0xa | 00c4 add sp, 0xa | 
+00c7 mov al, byte ptr [bp - 0x3f] | 00c7 mov al, byte ptr [bp - 0x3f] | 
+00ca pop si | 00ca pop si | 
+00cb pop di | 00cb pop di | 
+00cc leave  | 00cc leave  | 
+00cd retf  | 00cd retf  | 

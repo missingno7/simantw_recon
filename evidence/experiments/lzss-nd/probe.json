@@ -1,0 +1,3817 @@
+{
+  "experiment": "MSC 7.00 /ND PACK probe for SIMTWO LZSS data-segment hypothesis",
+  "compiler": "msc700",
+  "flags": {
+    "baseline": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMTWO_MODULE"
+    ],
+    "nd_joined": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMTWO_MODULE",
+      "/NDPACK"
+    ],
+    "nd_separated": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NTSIMTWO_MODULE",
+      "/ND",
+      "PACK"
+    ],
+    "catalog_normalized_candidate": [
+      "/AL",
+      "/G2",
+      "/Gs",
+      "/Oelw",
+      "/NDPACK",
+      "/NTSIMTWO_MODULE"
+    ]
+  },
+  "compile_method": "tools/compiler.py compile_batch with compiler=msc700 and SIMANT_COMPILER_REFERENCE=1; one fixed flag set per batch; no catalog edits.",
+  "sources": [
+    {
+      "path": "build/workers/lzss-1/nd_uninit.c",
+      "sha256": "9a1c913b76fc14eba6c57815b6ef04a8373af521e54a34a221fed5ef1166f489",
+      "source": "int match_position; int match_length; unsigned char text_buf[4113]; int lson[4097]; int rson[4353]; int dad[4097]; int far TreeProbe(int r){int p=r;p=r;lson[p]=4096;rson[p]=4096;dad[p]=4096;match_position=match_length;return text_buf[p];}\n"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_zero.c",
+      "sha256": "f53083ac5ff6aedd7264e8ac06ad3fa62c413bbd3f02797e295d15c05ba78622",
+      "source": "int match_position=0; int match_length=0; unsigned char text_buf[4113]={0}; int lson[4097]={0}; int rson[4353]={0}; int dad[4097]={0}; int far TreeProbe(int r){int p=r;p=r;lson[p]=4096;rson[p]=4096;dad[p]=4096;match_position=match_length;return text_buf[p];}\n"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_nonzero.c",
+      "sha256": "0b932017d89570e1e2515710a149d82b6c7e94b0a2e4499f9547f50710b85099",
+      "source": "int match_position=1; int match_length=2; unsigned char text_buf[4113]={3}; int lson[4097]={4}; int rson[4353]={5}; int dad[4097]={6}; int far TreeProbe(int r){int p=r;p=r;lson[p]=4096;rson[p]=4096;dad[p]=4096;match_position=match_length;return text_buf[p];}\n"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_static_uninit.c",
+      "sha256": "e45fd42c33254c0ac24991210dd33ed1aa39b2ab470a29efbc95d593bbd51d48",
+      "source": "int match_position=0; int match_length=0; static unsigned char text_buf[4113]; static int lson[4097]; static int rson[4353]; static int dad[4097]; int far TreeProbe(int r){int p=r;lson[p]=4096;rson[p]=4096;dad[p]=4096;match_position=match_length;return text_buf[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_static_zero.c",
+      "sha256": "a4eab68fea92dc51995334185629cc75ae3bcdd7399961f7efe8c04304f94230",
+      "source": "int match_position=0; int match_length=0; static unsigned char text_buf[4113]={0}; static int lson[4097]={0}; static int rson[4353]={0}; static int dad[4097]={0}; int far TreeProbe(int r){int p=r;lson[p]=4096;rson[p]=4096;dad[p]=4096;match_position=match_length;return text_buf[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_static_nonzero.c",
+      "sha256": "8c84805d0b29f197b8e6ef242d7b96688de310a4956318e931dfded6cc0ea6dc",
+      "source": "int match_position=1; int match_length=2; static unsigned char text_buf[4113]={3}; static int lson[4097]={4}; static int rson[4353]={5}; static int dad[4097]={6}; int far TreeProbe(int r){int p=r;lson[p]=4096;rson[p]=4096;dad[p]=4096;match_position=match_length;return text_buf[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_loadds.c",
+      "sha256": "f0ba1d6613af4620be2c1002f57919b6bdf75862308f2d94dcbbba36fbaed581",
+      "source": "static int lson[4097]; int far __loadds TreeProbe(int p){lson[p]=4096;return lson[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_loadds_single.c",
+      "sha256": "62f6c6702780a0915f7fb9f75107f7e4b426a09bfe2888413ff1ac01f59d639d",
+      "source": "static int lson[4097]; int far _loadds TreeProbe(int p){lson[p]=4096;return lson[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/based_named_array.c",
+      "sha256": "360563b2b31cc99e8ed5a97456b140abdf27b74083b146e6d17289097342939d",
+      "source": "extern int __based(__segname(\"PACK\")) lson[]; int far TreeProbe(int p){lson[p]=4096;return lson[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/based_named_pointer.c",
+      "sha256": "af1d152284d0fa10d0a1d14a113472438afc9ebb9abc5f3f2cadf8ac190992bf",
+      "source": "extern int __based(__segname(\"PACK\")) *lson; int far TreeProbe(int p){lson[p]=4096;return lson[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/based_dynamic_array.c",
+      "sha256": "442084e840f605b3b3ca5fc77a991d809eff97c2c9b17108855b65eaab2db203",
+      "source": "extern void far * near unpackHandle; extern int __based((__segment)unpackHandle) lson[]; int far TreeProbe(int p){lson[p]=4096;return lson[p];}"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_noglobal.c",
+      "sha256": "08b1fc7ae966a1d1374605635541c2096eb69768127c320dce16b51c2d8ed814",
+      "source": "int far TreeProbe(int p){return p+1;}"
+    },
+    {
+      "path": "build/workers/lzss-1/nd_far_array.c",
+      "sha256": "de3cfa3094c8cb90cc3220c2a4cbc354ae175add6e2a01ba1fafc146a7db8fc1",
+      "source": "extern int far farArray[]; int far TreeProbe(int p){return farArray[p];}"
+    }
+  ],
+  "objects": [
+    {
+      "role": "plain uninitialized external globals, baseline",
+      "object": "build/Qv94hqe_6/B0000/J0000.OBJ",
+      "source": "build/workers/lzss-1/nd_uninit.c",
+      "source_sha256": "9a1c913b76fc14eba6c57815b6ef04a8373af521e54a34a221fed5ef1166f489",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\n",
+      "object_identity": {
+        "size": 491,
+        "sha256": "647bb7e44bc26a4a14833d92bf141b736659ee217b9eea420a84131d9ba0f1ed"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 72,
+            "data_prefix_hex": "558bec568b7606b800108e0600008bded1e626898400008e06020026898400008e06040026898400"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 12,
+            "data_prefix_hex": "000000000000000000000000"
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_match_position",
+          "_match_length",
+          "_text_buf",
+          "_lson",
+          "_rson",
+          "_dad"
+        ],
+        "code_hex": "558bec568b7606b800108e0600008bded1e626898400008e06020026898400008e06040026898400008e06060026a100008e06080026a300008e060a00268a8700002ae45ec9cb90",
+        "code_fixups": [
+          {
+            "offset": 64,
+            "target": {
+              "kind": "external",
+              "name": "_text_buf"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 59,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 55,
+            "target": {
+              "kind": "external",
+              "name": "_match_position"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 51,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 47,
+            "target": {
+              "kind": "external",
+              "name": "_match_length"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 43,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 39,
+            "target": {
+              "kind": "external",
+              "name": "_dad"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 34,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "external",
+              "name": "_rson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 25,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 21,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 12,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "plain uninitialized external globals, /NDPACK",
+      "object": "build/Qv94hqe_6/B0000/J0001.OBJ",
+      "source": "build/workers/lzss-1/nd_uninit.c",
+      "source_sha256": "9a1c913b76fc14eba6c57815b6ef04a8373af521e54a34a221fed5ef1166f489",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\n",
+      "object_identity": {
+        "size": 486,
+        "sha256": "0bb9556ac7cf03e53edc556e46a5e129979f40d2672c26a7a2f141c4945b6904"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 84,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b80010b900008ec18bded1e62689840000ba00008ec22689840000"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_match_position",
+          "_match_length",
+          "_text_buf",
+          "_lson",
+          "_rson",
+          "_dad"
+        ],
+        "code_hex": "558bec561eb800008ed88b7606b80010b900008ec18bded1e62689840000ba00008ec22689840000ba00008ec22689840000b800008ec026a10000ba00008ec226a30000b800008ec0268a8700002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 76,
+            "target": {
+              "kind": "external",
+              "name": "_text_buf"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 69,
+            "target": {
+              "kind": "external",
+              "name": "_text_buf"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 66,
+            "target": {
+              "kind": "external",
+              "name": "_match_position"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 60,
+            "target": {
+              "kind": "external",
+              "name": "_match_position"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 57,
+            "target": {
+              "kind": "external",
+              "name": "_match_length"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 51,
+            "target": {
+              "kind": "external",
+              "name": "_match_length"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 48,
+            "target": {
+              "kind": "external",
+              "name": "_dad"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 41,
+            "target": {
+              "kind": "external",
+              "name": "_dad"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 38,
+            "target": {
+              "kind": "external",
+              "name": "_rson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 31,
+            "target": {
+              "kind": "external",
+              "name": "_rson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 28,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 17,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "plain uninitialized external globals, separated /ND PACK",
+      "object": "build/Qv94hqe_6/B0000/J0002.OBJ",
+      "source": "build/workers/lzss-1/nd_uninit.c",
+      "source_sha256": "9a1c913b76fc14eba6c57815b6ef04a8373af521e54a34a221fed5ef1166f489",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/ND",
+        "PACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0002.c\n",
+      "object_identity": {
+        "size": 486,
+        "sha256": "0109698656f8c01e4f718835c4d6d0480e17398ee178e95876b884080a2f7ed5"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 84,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b80010b900008ec18bded1e62689840000ba00008ec22689840000"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_match_position",
+          "_match_length",
+          "_text_buf",
+          "_lson",
+          "_rson",
+          "_dad"
+        ],
+        "code_hex": "558bec561eb800008ed88b7606b80010b900008ec18bded1e62689840000ba00008ec22689840000ba00008ec22689840000b800008ec026a10000ba00008ec226a30000b800008ec0268a8700002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 76,
+            "target": {
+              "kind": "external",
+              "name": "_text_buf"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 69,
+            "target": {
+              "kind": "external",
+              "name": "_text_buf"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 66,
+            "target": {
+              "kind": "external",
+              "name": "_match_position"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 60,
+            "target": {
+              "kind": "external",
+              "name": "_match_position"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 57,
+            "target": {
+              "kind": "external",
+              "name": "_match_length"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 51,
+            "target": {
+              "kind": "external",
+              "name": "_match_length"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 48,
+            "target": {
+              "kind": "external",
+              "name": "_dad"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 41,
+            "target": {
+              "kind": "external",
+              "name": "_dad"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 38,
+            "target": {
+              "kind": "external",
+              "name": "_rson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 31,
+            "target": {
+              "kind": "external",
+              "name": "_rson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 28,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 17,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "zero-initialized near globals, baseline",
+      "object": "build/Qv94hqe_6/B0000/J0003.OBJ",
+      "source": "build/workers/lzss-1/nd_zero.c",
+      "source_sha256": "f53083ac5ff6aedd7264e8ac06ad3fa62c413bbd3f02797e295d15c05ba78622",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0003.c\n",
+      "object_identity": {
+        "size": 473,
+        "sha256": "95fd30ca45f37a858d651cfaf2a3939980bbb51feb6c1ac13bdb8321db6db6c2"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 42,
+            "data_prefix_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 29212,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_text_buf",
+            "offset": 4,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_lson",
+            "offset": 4118,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_rson",
+            "offset": 12312,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_dad",
+            "offset": 21018,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9cb90",
+        "code_fixups": [
+          {
+            "offset": 34,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 27,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 24,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 20,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 16,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "zero-initialized near globals, /NDPACK",
+      "object": "build/Qv94hqe_6/B0000/J0004.OBJ",
+      "source": "build/workers/lzss-1/nd_zero.c",
+      "source_sha256": "f53083ac5ff6aedd7264e8ac06ad3fa62c413bbd3f02797e295d15c05ba78622",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0004.c\n",
+      "object_identity": {
+        "size": 503,
+        "sha256": "afb578bf39424414ccb10c97a11f2676fa2633638fa8313457fc38416b180e15"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 29212,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_text_buf",
+            "offset": 4,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_lson",
+            "offset": 4118,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_rson",
+            "offset": 12312,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_dad",
+            "offset": 21018,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "zero-initialized near globals, separated /ND PACK",
+      "object": "build/Qv94hqe_6/B0000/J0005.OBJ",
+      "source": "build/workers/lzss-1/nd_zero.c",
+      "source_sha256": "f53083ac5ff6aedd7264e8ac06ad3fa62c413bbd3f02797e295d15c05ba78622",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/ND",
+        "PACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0005.c\n",
+      "object_identity": {
+        "size": 503,
+        "sha256": "708b79f35aef7abc8ba9b44d590d6eaa87640e8ba7041b8971d8c199638c4c73"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 29212,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_text_buf",
+            "offset": 4,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_lson",
+            "offset": 4118,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_rson",
+            "offset": 12312,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_dad",
+            "offset": 21018,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "nonzero-initialized near globals, baseline",
+      "object": "build/Qv94hqe_6/B0000/J0006.OBJ",
+      "source": "build/workers/lzss-1/nd_nonzero.c",
+      "source_sha256": "0b932017d89570e1e2515710a149d82b6c7e94b0a2e4499f9547f50710b85099",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0006.c\n",
+      "object_identity": {
+        "size": 473,
+        "sha256": "242a5fb0ac6e49de5ee3acfb340ba5f3dfd99f1f0dd426af03c32b2600350832"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 42,
+            "data_prefix_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 29212,
+            "data_prefix_hex": "01000200030000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_text_buf",
+            "offset": 4,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_lson",
+            "offset": 4118,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_rson",
+            "offset": 12312,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_dad",
+            "offset": 21018,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9cb90",
+        "code_fixups": [
+          {
+            "offset": 34,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 27,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 24,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 20,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 16,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "nonzero-initialized near globals, /NDPACK",
+      "object": "build/Qv94hqe_6/B0000/J0007.OBJ",
+      "source": "build/workers/lzss-1/nd_nonzero.c",
+      "source_sha256": "0b932017d89570e1e2515710a149d82b6c7e94b0a2e4499f9547f50710b85099",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0007.c\n",
+      "object_identity": {
+        "size": 503,
+        "sha256": "5be521850b0a246d4a68da205b84a633678f4c5a01cbd445ed37ab230b9166f7"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 29212,
+            "data_prefix_hex": "01000200030000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_text_buf",
+            "offset": 4,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_lson",
+            "offset": 4118,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_rson",
+            "offset": 12312,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_dad",
+            "offset": 21018,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "nonzero-initialized near globals, separated /ND PACK",
+      "object": "build/Qv94hqe_6/B0000/J0008.OBJ",
+      "source": "build/workers/lzss-1/nd_nonzero.c",
+      "source_sha256": "0b932017d89570e1e2515710a149d82b6c7e94b0a2e4499f9547f50710b85099",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/ND",
+        "PACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0008.c\n",
+      "object_identity": {
+        "size": 503,
+        "sha256": "b5f2f1814e3688c99187692ce2eb8e84bb0b6aa96ae8568e83273a83c44fc40e"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 29212,
+            "data_prefix_hex": "01000200030000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_text_buf",
+            "offset": 4,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_lson",
+            "offset": 4118,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_rson",
+            "offset": 12312,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_dad",
+            "offset": 21018,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "initialized public match words and static uninitialized arrays, baseline",
+      "object": "build/Qirbqn30j/B0000/J0000.OBJ",
+      "source": "build/workers/lzss-1/nd_static_uninit.c",
+      "source_sha256": "e45fd42c33254c0ac24991210dd33ed1aa39b2ab470a29efbc95d593bbd51d48",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\n",
+      "object_identity": {
+        "size": 350,
+        "sha256": "48862e8bfcad94b98090a756609a221924f9d120e8013f6999345d9bd827f716"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 42,
+            "data_prefix_hex": "558bec568b7606b800108bded1e6898412108984143089841652a10200a300008a8700002ae45ec9"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 4,
+            "data_prefix_hex": "00000000"
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 29208,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec568b7606b800108bded1e6898412108984143089841652a10200a300008a8700002ae45ec9cb90",
+        "code_fixups": [
+          {
+            "offset": 34,
+            "target": {
+              "kind": "segment",
+              "name": "_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 27,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 24,
+            "target": {
+              "kind": "segment",
+              "name": "_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 20,
+            "target": {
+              "kind": "segment",
+              "name": "_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 16,
+            "target": {
+              "kind": "segment",
+              "name": "_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "initialized public match words and static uninitialized arrays, /NDPACK",
+      "object": "build/Qirbqn30j/B0000/J0001.OBJ",
+      "source": "build/workers/lzss-1/nd_static_uninit.c",
+      "source_sha256": "e45fd42c33254c0ac24991210dd33ed1aa39b2ab470a29efbc95d593bbd51d48",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\n",
+      "object_identity": {
+        "size": 380,
+        "sha256": "076c270470f7660f50178bf5ae5d6321778526eccffa836349bd2a91246b3678"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898412108984143089841652a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 4,
+            "data_prefix_hex": "00000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 29208,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898412108984143089841652a10200a300008a8700002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "static zero-initialized arrays, baseline",
+      "object": "build/Qirbqn30j/B0000/J0002.OBJ",
+      "source": "build/workers/lzss-1/nd_static_zero.c",
+      "source_sha256": "a4eab68fea92dc51995334185629cc75ae3bcdd7399961f7efe8c04304f94230",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0002.c\n",
+      "object_identity": {
+        "size": 434,
+        "sha256": "2612297a2ffd044279b3b1c80e66499865e636b5d92303f1726a2ba1314a20e7"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 42,
+            "data_prefix_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 29212,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9cb90",
+        "code_fixups": [
+          {
+            "offset": 34,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 27,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 24,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 20,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 16,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "static zero-initialized arrays, /NDPACK",
+      "object": "build/Qirbqn30j/B0000/J0003.OBJ",
+      "source": "build/workers/lzss-1/nd_static_zero.c",
+      "source_sha256": "a4eab68fea92dc51995334185629cc75ae3bcdd7399961f7efe8c04304f94230",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0003.c\n",
+      "object_identity": {
+        "size": 464,
+        "sha256": "c07ce69314a5af41d8fca64d9b665bd4602d3f22a1d02cf92e6a9efaa8873a33"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 29212,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "static nonzero-initialized arrays, baseline",
+      "object": "build/Qirbqn30j/B0000/J0004.OBJ",
+      "source": "build/workers/lzss-1/nd_static_nonzero.c",
+      "source_sha256": "8c84805d0b29f197b8e6ef242d7b96688de310a4956318e931dfded6cc0ea6dc",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0004.c\n",
+      "object_identity": {
+        "size": 434,
+        "sha256": "a8e1093ebc534a72740032708e28e23c12fe99e1c33f6859a0c3e233dd822004"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 42,
+            "data_prefix_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 29212,
+            "data_prefix_hex": "01000200030000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec568b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae45ec9cb90",
+        "code_fixups": [
+          {
+            "offset": 34,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 27,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 24,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 20,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 16,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "static nonzero-initialized arrays, /NDPACK",
+      "object": "build/Qirbqn30j/B0000/J0005.OBJ",
+      "source": "build/workers/lzss-1/nd_static_nonzero.c",
+      "source_sha256": "8c84805d0b29f197b8e6ef242d7b96688de310a4956318e931dfded6cc0ea6dc",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0005.c\n",
+      "object_identity": {
+        "size": 464,
+        "sha256": "5b3e45ac22340b22845058dd351db11bac5915798bf1e1432280dae7f71b15c3"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 48,
+            "data_prefix_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a87"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 29212,
+            "data_prefix_hex": "01000200030000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_match_position",
+            "offset": 0,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_match_length",
+            "offset": 2,
+            "segment": 2,
+            "group": 1
+          },
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec561eb800008ed88b7606b800108bded1e6898416108984183089841a52a10200a300008a8704002ae41f5ec9cb",
+        "code_fixups": [
+          {
+            "offset": 40,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 36,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 33,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 30,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 26,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 6,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "__loadds with /NDPACK",
+      "object": "build/Qzu2dif_x/B0000/J0000.OBJ",
+      "source": "build/workers/lzss-1/nd_loadds.c",
+      "source_sha256": "f0ba1d6613af4620be2c1002f57919b6bdf75862308f2d94dcbbba36fbaed581",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\n",
+      "object_identity": {
+        "size": 288,
+        "sha256": "73143d39b9012f04e7e78c79282010bd42a040e64f3fff5468ede72f252d7337"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 24,
+            "data_prefix_hex": "558bec1eb800008ed8b800108b5e06d1e3898700001fc9cb"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 8194,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec1eb800008ed8b800108b5e06d1e3898700001fc9cb",
+        "code_fixups": [
+          {
+            "offset": 19,
+            "target": {
+              "kind": "segment",
+              "name": "PACK_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 5,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "_loadds with baseline",
+      "object": "build/Qzu2dif_x/B0000/J0001.OBJ",
+      "source": "build/workers/lzss-1/nd_loadds_single.c",
+      "source_sha256": "62f6c6702780a0915f7fb9f75107f7e4b426a09bfe2888413ff1ac01f59d639d",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\n",
+      "object_identity": {
+        "size": 267,
+        "sha256": "05cccb894cc8b9918ea21a832a26483d79bd4e2f483fe4f2cad63125e210b866"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 24,
+            "data_prefix_hex": "558bec1eb800008ed8b800108b5e06d1e3898700001fc9cb"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 8194,
+            "data_prefix_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec1eb800008ed8b800108b5e06d1e3898700001fc9cb",
+        "code_fixups": [
+          {
+            "offset": 19,
+            "target": {
+              "kind": "segment",
+              "name": "_BSS"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 5,
+            "target": {
+              "kind": "segment",
+              "name": "_DATA"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "named-segment based array with baseline",
+      "object": "build/Qzu2dif_x/B0000/J0002.OBJ",
+      "source": "build/workers/lzss-1/based_named_array.c",
+      "source_sha256": "360563b2b31cc99e8ed5a97456b140abdf27b74083b146e6d17289097342939d",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0002.c\n",
+      "object_identity": {
+        "size": 318,
+        "sha256": "ab204edc11e122b798f7034b9d14018697ef097c3e0361f706c04c896c9c40d3"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 22,
+            "data_prefix_hex": "558becb800108e0600008b5e06d1e32689870000c9cb"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 2,
+            "data_prefix_hex": "0000"
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 5,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_lson"
+        ],
+        "code_hex": "558becb800108e0600008b5e06d1e32689870000c9cb",
+        "code_fixups": [
+          {
+            "offset": 18,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 8,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "named-segment based pointer with baseline",
+      "object": "build/Qzu2dif_x/B0000/J0003.OBJ",
+      "source": "build/workers/lzss-1/based_named_pointer.c",
+      "source_sha256": "af1d152284d0fa10d0a1d14a113472438afc9ebb9abc5f3f2cadf8ac190992bf",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0003.c\n",
+      "object_identity": {
+        "size": 335,
+        "sha256": "ce8a475496b6aa8c4dca5afed5ec01b5517b7c40c819c518a4b8026084745df9"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 30,
+            "data_prefix_hex": "558becb800108e0600008b5e06d1e326031e00008e060200268907c9cb90"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 4,
+            "data_prefix_hex": "00000000"
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 5,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_lson"
+        ],
+        "code_hex": "558becb800108e0600008b5e06d1e326031e00008e060200268907c9cb90",
+        "code_fixups": [
+          {
+            "offset": 22,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          },
+          {
+            "offset": 18,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 8,
+            "target": {
+              "kind": "segment",
+              "name": "CONST"
+            },
+            "displacement": 0,
+            "frame_method": 1
+          }
+        ]
+      }
+    },
+    {
+      "role": "named-segment based array with /NDPACK (compile failure control)",
+      "object": "build/Qvhsce828/B0000/J0000.OBJ",
+      "source": "build/workers/lzss-1/based_named_array.c",
+      "source_sha256": "360563b2b31cc99e8ed5a97456b140abdf27b74083b146e6d17289097342939d",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 1,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\nfatal error C1127: 'PACK' : segment redefinition\n",
+      "object_identity": null
+    },
+    {
+      "role": "named-segment based pointer with /NDPACK (compile failure control)",
+      "object": "build/Qvhsce828/B0000/J0001.OBJ",
+      "source": "build/workers/lzss-1/based_named_pointer.c",
+      "source_sha256": "af1d152284d0fa10d0a1d14a113472438afc9ebb9abc5f3f2cadf8ac190992bf",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 1,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\nfatal error C1127: 'PACK' : segment redefinition\n",
+      "object_identity": null
+    },
+    {
+      "role": "unpackHandle dynamic-based array with baseline",
+      "object": "build/Qvhsce828/B0000/J0002.OBJ",
+      "source": "build/workers/lzss-1/based_dynamic_array.c",
+      "source_sha256": "442084e840f605b3b3ca5fc77a991d809eff97c2c9b17108855b65eaab2db203",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0002.c\n",
+      "object_identity": {
+        "size": 293,
+        "sha256": "06a76d3e1d7fa566393e7992848100671577836c71530b4c84034ee84fc6ab17"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 22,
+            "data_prefix_hex": "558becb800108e0602008b5e06d1e32689870000c9cb"
+          },
+          {
+            "index": 2,
+            "name": "_DATA",
+            "class": "DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "CONST",
+            "class": "CONST",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "_BSS",
+            "class": "BSS",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "DGROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_unpackHandle",
+          "_lson"
+        ],
+        "code_hex": "558becb800108e0602008b5e06d1e32689870000c9cb",
+        "code_fixups": [
+          {
+            "offset": 18,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 8,
+            "target": {
+              "kind": "external",
+              "name": "_unpackHandle"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "unpackHandle dynamic-based array with /NDPACK",
+      "object": "build/Qvhsce828/B0000/J0003.OBJ",
+      "source": "build/workers/lzss-1/based_dynamic_array.c",
+      "source_sha256": "442084e840f605b3b3ca5fc77a991d809eff97c2c9b17108855b65eaab2db203",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0003.c\n",
+      "object_identity": {
+        "size": 325,
+        "sha256": "fcdcd491f292c7621bc74b34941676cdd09ab0599171ed0c4fc4daf3fb39ff5d"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 30,
+            "data_prefix_hex": "558bec1eb800008ed8b800108e0602008b5e06d1e326898700001fc9cb90"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_unpackHandle",
+          "_lson"
+        ],
+        "code_hex": "558bec1eb800008ed8b800108e0602008b5e06d1e326898700001fc9cb90",
+        "code_fixups": [
+          {
+            "offset": 24,
+            "target": {
+              "kind": "external",
+              "name": "_lson"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 14,
+            "target": {
+              "kind": "external",
+              "name": "_unpackHandle"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 5,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "no-global control with /NDPACK",
+      "object": "build/Qh7fyoifg/B0000/J0000.OBJ",
+      "source": "build/workers/lzss-1/nd_noglobal.c",
+      "source_sha256": "08b1fc7ae966a1d1374605635541c2096eb69768127c320dce16b51c2d8ed814",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\n",
+      "object_identity": {
+        "size": 277,
+        "sha256": "e17027fffccf3779baa8e193390c4228790c6437ef607cd059c65d7a6339b26b"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 16,
+            "data_prefix_hex": "558bec1eb800008ed88b4606401fc9cb"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [],
+        "code_hex": "558bec1eb800008ed88b4606401fc9cb",
+        "code_fixups": [
+          {
+            "offset": 5,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    },
+    {
+      "role": "far-array control with /NDPACK",
+      "object": "build/Qh7fyoifg/B0000/J0001.OBJ",
+      "source": "build/workers/lzss-1/nd_far_array.c",
+      "source_sha256": "de3cfa3094c8cb90cc3220c2a4cbc354ae175add6e2a01ba1fafc146a7db8fc1",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "compiler_stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\n",
+      "object_identity": {
+        "size": 312,
+        "sha256": "dbab9ee9057e9c0f5b758d209f8e270a1b58a27d8ef8f84aa183a7e7e0d86de3"
+      },
+      "omf": {
+        "segments": [
+          {
+            "index": 1,
+            "name": "SIMTWO_MODULE",
+            "class": "CODE",
+            "length": 28,
+            "data_prefix_hex": "558bec1eb800008ed8b800008ec08b5e06d1e3268b8700001fc9cb90"
+          },
+          {
+            "index": 2,
+            "name": "PACK",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 3,
+            "name": "PACK_CONST",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          },
+          {
+            "index": 4,
+            "name": "PACK_BSS",
+            "class": "FAR_DATA",
+            "length": 0,
+            "data_prefix_hex": ""
+          }
+        ],
+        "groups": [
+          {
+            "index": 1,
+            "name": "PACK_GROUP",
+            "segments": [
+              3,
+              4,
+              2
+            ]
+          }
+        ],
+        "publics": [
+          {
+            "name": "_TreeProbe",
+            "offset": 0,
+            "segment": 1,
+            "group": 0
+          }
+        ],
+        "externals": [
+          "_farArray"
+        ],
+        "code_hex": "558bec1eb800008ed8b800008ec08b5e06d1e3268b8700001fc9cb90",
+        "code_fixups": [
+          {
+            "offset": 22,
+            "target": {
+              "kind": "external",
+              "name": "_farArray"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 10,
+            "target": {
+              "kind": "external",
+              "name": "_farArray"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          },
+          {
+            "offset": 5,
+            "target": {
+              "kind": "segment",
+              "name": "PACK"
+            },
+            "displacement": 0,
+            "frame_method": 5
+          }
+        ]
+      }
+    }
+  ],
+  "target_tree_members": {
+    "_InitTree": {
+      "address": 43096,
+      "extent": 28,
+      "target_bytes_hex": "578e06deb8b80010b900018d3e1a50f3ab8d3e1a52b90010f3ab5fcb",
+      "prologue_instructions": [
+        {
+          "offset": 0,
+          "bytes": "57",
+          "mnemonic": "push",
+          "operands": "di"
+        },
+        {
+          "offset": 1,
+          "bytes": "8e 06 de b8",
+          "mnemonic": "mov",
+          "operands": "es, word ptr [0xb8de]"
+        },
+        {
+          "offset": 5,
+          "bytes": "b8 00 10",
+          "mnemonic": "mov",
+          "operands": "ax, 0x1000"
+        },
+        {
+          "offset": 8,
+          "bytes": "b9 00 01",
+          "mnemonic": "mov",
+          "operands": "cx, 0x100"
+        },
+        {
+          "offset": 11,
+          "bytes": "8d 3e 1a 50",
+          "mnemonic": "lea",
+          "operands": "di, [0x501a]"
+        },
+        {
+          "offset": 15,
+          "bytes": "f3 ab",
+          "mnemonic": "rep stosw",
+          "operands": "word ptr es:[di], ax"
+        },
+        {
+          "offset": 17,
+          "bytes": "8d 3e 1a 52",
+          "mnemonic": "lea",
+          "operands": "di, [0x521a]"
+        },
+        {
+          "offset": 21,
+          "bytes": "b9 00 10",
+          "mnemonic": "mov",
+          "operands": "cx, 0x1000"
+        },
+        {
+          "offset": 24,
+          "bytes": "f3 ab",
+          "mnemonic": "rep stosw",
+          "operands": "word ptr es:[di], ax"
+        },
+        {
+          "offset": 26,
+          "bytes": "5f",
+          "mnemonic": "pop",
+          "operands": "di"
+        }
+      ]
+    },
+    "_InsertNode": {
+      "address": 43124,
+      "extent": 282,
+      "target_bytes_hex": "558bec83ec0257561e8e1edeb8c746fe0100bf00008b560603fa8a8d040032ed81c101108bdad1e3c78718300010c78716100010c706020000008bd9d1e3837efe007c2181bf18300010740a8b8f18308bd9d1e3eb30899718308bdad1e3898f1a52e9ae0081bf16100010740a8b8f16108bd9d1e3eb0f899716108bdad1e3898f1a52e98d00bb0100be000003f132f68a91040032e48a8004002bd075064383fb127cea8956fe3b1e02007e0d890e0000891e020083fb127d068b5606e97aff8bd9d1e38b76068bd603f68b871a5289841a528b871610898416108b871830898418308bb7161003f689941a528bb7183003f689941a528bb71a5203f63b8c1830750689941830eb0489941610c7871a5200101f5e5f8be55dcb",
+      "prologue_instructions": [
+        {
+          "offset": 0,
+          "bytes": "55",
+          "mnemonic": "push",
+          "operands": "bp"
+        },
+        {
+          "offset": 1,
+          "bytes": "8b ec",
+          "mnemonic": "mov",
+          "operands": "bp, sp"
+        },
+        {
+          "offset": 3,
+          "bytes": "83 ec 02",
+          "mnemonic": "sub",
+          "operands": "sp, 2"
+        },
+        {
+          "offset": 6,
+          "bytes": "57",
+          "mnemonic": "push",
+          "operands": "di"
+        },
+        {
+          "offset": 7,
+          "bytes": "56",
+          "mnemonic": "push",
+          "operands": "si"
+        },
+        {
+          "offset": 8,
+          "bytes": "1e",
+          "mnemonic": "push",
+          "operands": "ds"
+        },
+        {
+          "offset": 9,
+          "bytes": "8e 1e de b8",
+          "mnemonic": "mov",
+          "operands": "ds, word ptr [0xb8de]"
+        },
+        {
+          "offset": 13,
+          "bytes": "c7 46 fe 01 00",
+          "mnemonic": "mov",
+          "operands": "word ptr [bp - 2], 1"
+        },
+        {
+          "offset": 18,
+          "bytes": "bf 00 00",
+          "mnemonic": "mov",
+          "operands": "di, 0"
+        },
+        {
+          "offset": 21,
+          "bytes": "8b 56 06",
+          "mnemonic": "mov",
+          "operands": "dx, word ptr [bp + 6]"
+        }
+      ]
+    },
+    "_DeleteNode": {
+      "address": 43406,
+      "extent": 189,
+      "target_bytes_hex": "558bec83ec0256571e8e1edeb88b5e06d1e3b8001039871a527503e9980039871830750a8b8f16108bf103f6eb6639871610750a8b8f18308bf103f6eb568b8f16108bf1d1e681bc1830001074388bb4183003f681bc1830001075f28b9416108bbc1a528bcfd1e7899518308bfad1e7898d1a528bbf161089bc16108bced1e9d1e7898d1a528bbf183089bc183003ff898d1a528bbf1a5289bc1a5203ff8bd3d1ea399518307506898d1830eb04898d161089871a521f5f5e8be55dcb",
+      "prologue_instructions": [
+        {
+          "offset": 0,
+          "bytes": "55",
+          "mnemonic": "push",
+          "operands": "bp"
+        },
+        {
+          "offset": 1,
+          "bytes": "8b ec",
+          "mnemonic": "mov",
+          "operands": "bp, sp"
+        },
+        {
+          "offset": 3,
+          "bytes": "83 ec 02",
+          "mnemonic": "sub",
+          "operands": "sp, 2"
+        },
+        {
+          "offset": 6,
+          "bytes": "56",
+          "mnemonic": "push",
+          "operands": "si"
+        },
+        {
+          "offset": 7,
+          "bytes": "57",
+          "mnemonic": "push",
+          "operands": "di"
+        },
+        {
+          "offset": 8,
+          "bytes": "1e",
+          "mnemonic": "push",
+          "operands": "ds"
+        },
+        {
+          "offset": 9,
+          "bytes": "8e 1e de b8",
+          "mnemonic": "mov",
+          "operands": "ds, word ptr [0xb8de]"
+        },
+        {
+          "offset": 13,
+          "bytes": "8b 5e 06",
+          "mnemonic": "mov",
+          "operands": "bx, word ptr [bp + 6]"
+        },
+        {
+          "offset": 16,
+          "bytes": "d1 e3",
+          "mnemonic": "shl",
+          "operands": "bx, 1"
+        },
+        {
+          "offset": 18,
+          "bytes": "b8 00 10",
+          "mnemonic": "mov",
+          "operands": "ax, 0x1000"
+        }
+      ]
+    }
+  },
+  "best_preserved_drafts_under_ndpack": [
+    {
+      "symbol": "_UnpackInit",
+      "source": "evidence/recovery/drafts/UnpackInit/bd3988d1022c.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0000.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0000.c\n",
+      "candidate_bytes": 70,
+      "target_bytes": 62,
+      "opcode_matches": 15,
+      "opcode_total": 28,
+      "register_only_differences": 3,
+      "code_prefix_hex": "558bec571eb800008ed8b820208e060000b9f707"
+    },
+    {
+      "symbol": "_Unpack",
+      "source": "evidence/recovery/drafts/Unpack/032aca171ce1.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0001.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0001.c\n",
+      "candidate_bytes": 372,
+      "target_bytes": 306,
+      "opcode_matches": 16,
+      "opcode_total": 137,
+      "register_only_differences": 2,
+      "code_prefix_hex": "c808000057561eb800008ed8c746fa0000a00800"
+    },
+    {
+      "symbol": "_UnpackSetBuf",
+      "source": "evidence/recovery/drafts/UnpackSetBuf/c9165561778e.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0002.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0002.c\n",
+      "candidate_bytes": 32,
+      "target_bytes": 22,
+      "opcode_matches": 8,
+      "opcode_total": 15,
+      "register_only_differences": 0,
+      "code_prefix_hex": "558bec1eb800008ed88b46068b5608a3fcff8916"
+    },
+    {
+      "symbol": "_UnpackFileOpen",
+      "source": "evidence/recovery/drafts/UnpackFileOpen/b8844c989075.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0003.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0003.c\n",
+      "candidate_bytes": 62,
+      "target_bytes": 57,
+      "opcode_matches": 12,
+      "opcode_total": 27,
+      "register_only_differences": 1,
+      "code_prefix_hex": "558bec1eb800008ed8680080ff7608ff76069a00"
+    },
+    {
+      "symbol": "_UnpackFileRead",
+      "source": "evidence/recovery/drafts/UnpackFileRead/7fa0c7d57f91.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0004.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0004.c\n",
+      "candidate_bytes": 96,
+      "target_bytes": 99,
+      "opcode_matches": 26,
+      "opcode_total": 42,
+      "register_only_differences": 3,
+      "code_prefix_hex": "558bec57561eb800008ed833f6393600007f2aff"
+    },
+    {
+      "symbol": "_UnpackFileClose",
+      "source": "evidence/recovery/drafts/UnpackFileClose/d5501a4f4902.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0005.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0005.c\n",
+      "candidate_bytes": 18,
+      "target_bytes": 11,
+      "opcode_matches": 4,
+      "opcode_total": 8,
+      "register_only_differences": 0,
+      "code_prefix_hex": "1eb800008ed8ff3600009a000000001fcb90"
+    },
+    {
+      "symbol": "_InitTree",
+      "source": "evidence/recovery/drafts/InitTree/832271c8536c.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0006.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0006.c\n",
+      "candidate_bytes": 38,
+      "target_bytes": 28,
+      "opcode_matches": 8,
+      "opcode_total": 18,
+      "register_only_differences": 0,
+      "code_prefix_hex": "571eb800008ed8b80010b900008ec1b90001bf00"
+    },
+    {
+      "symbol": "_InsertNode",
+      "source": "evidence/recovery/drafts/InsertNode/30a09954614a.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0007.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0007.c\n",
+      "candidate_bytes": 436,
+      "target_bytes": 282,
+      "opcode_matches": 59,
+      "opcode_total": 189,
+      "register_only_differences": 14,
+      "code_prefix_hex": "c812000057561eb800008ed88b7606b901008bc6"
+    },
+    {
+      "symbol": "_DeleteNode",
+      "source": "evidence/recovery/drafts/DeleteNode/80b71866d2f5.c",
+      "flags": [
+        "/AL",
+        "/G2",
+        "/Gs",
+        "/Oelw",
+        "/NTSIMTWO_MODULE",
+        "/NDPACK"
+      ],
+      "exit_code": 0,
+      "object": "build/Q7pb_hstm/B0000/J0008.OBJ",
+      "stdout_tail": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\nj0008.c\n",
+      "candidate_bytes": 242,
+      "target_bytes": 189,
+      "opcode_matches": 48,
+      "opcode_total": 85,
+      "register_only_differences": 28,
+      "code_prefix_hex": "c80a000057561eb800008ed8b800008ed88b4e06"
+    }
+  ],
+  "expected_pack_offsets_hex": {
+    "match_position": "0000",
+    "match_length": "0002",
+    "text_buf": "0004",
+    "alignment_byte": "1015",
+    "lson": "1016",
+    "rson": "3018",
+    "dad": "521A"
+  },
+  "conclusion": {
+    "hypothesis": "REFUTED_AS_MODULE_WIDE_COMPILER_CONTEXT",
+    "details": "/NDPACK places initialized data in PACK and static uninitialized data in PACK_BSS, and emits DS-based indexed references for near globals. It emits an unconditional prologue loading DS through a segment relocation to PACK (even for the no-global far control); target _InsertNode instead loads DS from DGROUP [B8DE], while target _InitTree has no DS save/load and begins with ES=[B8DE]. __loadds produces the same direct segment-relocation pattern; named-segment based arrays use ES and conflict with /NDPACK (C1127), and dynamic unpackHandle-based arrays use ES. No tested spelling reproduces the target selector load."
+  }
+}

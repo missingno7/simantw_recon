@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "id": "gr_bitmap_unpack_shared_strings",
+  "executable_fixture": {
+    "name": "SIMANTW.EXE",
+    "sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+    "dgroup_segment": 10,
+    "dgroup_name": "DGROUP",
+    "dgroup_file_offset": 131072,
+    "dgroup_logical_size": 53078
+  },
+  "candidate_groups": [
+    9
+  ],
+  "private_data": [
+    {
+      "offset": "0xBAC4",
+      "bytes_hex": "64 73 74 00",
+      "nul_terminated": true,
+      "decoded": "dst"
+    },
+    {
+      "offset": "0xBAC8",
+      "bytes_hex": "47 55 6e 70 61 63 6b 50 69 63 28 25 75 29 28 25 75 29 0a 00",
+      "nul_terminated": true,
+      "decoded": "GUnpackPic(%u)(%u)\n"
+    }
+  ],
+  "nearest_mapsym_publics": [
+    {
+      "address": "0xBAC4",
+      "nearest_public_below": {
+        "name": "_smallFontH",
+        "offset": "0xBA32",
+        "confirmed_extent_bytes": 2,
+        "confirmed_extent_end_exclusive": "0xBA34",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_font_flags-fa2f9ccc29.c"
+      },
+      "next_public_above": {
+        "name": "_winObjStr",
+        "offset": "0xBB1C"
+      }
+    },
+    {
+      "address": "0xBAC8",
+      "nearest_public_below": {
+        "name": "_smallFontH",
+        "offset": "0xBA32",
+        "confirmed_extent_bytes": 2,
+        "confirmed_extent_end_exclusive": "0xBA34",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_font_flags-fa2f9ccc29.c"
+      },
+      "next_public_above": {
+        "name": "_winObjStr",
+        "offset": "0xBB1C"
+      }
+    }
+  ],
+  "instruction_evidence": [
+    {
+      "symbol": "_GUnpackPic",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x40E1",
+      "bytes": "68c4ba",
+      "mnemonic": "push",
+      "operands": "0xbac4",
+      "reference_kind": "push_immediate",
+      "argument_role": "Far name string retained as an argument to the subsequent _mem_Alloc call; the intervening _mem_Lock consumes only the handle and is followed by add sp, 2."
+    },
+    {
+      "symbol": "_GUnpackPic",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x4168",
+      "bytes": "68c8ba",
+      "mnemonic": "push",
+      "operands": "0xbac8",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0x416D",
+        "bytes": "e84c21",
+        "mnemonic": "call",
+        "operands": "0x62bc",
+        "references": [
+          {
+            "kind": "near_call",
+            "names": [
+              "_WinPrintf"
+            ],
+            "offset": 25276,
+            "segment": 2
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "_DrawBitMapToBuffer",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x41D5",
+      "bytes": "68c4ba",
+      "mnemonic": "push",
+      "operands": "0xbac4",
+      "reference_kind": "push_immediate",
+      "argument_role": "Far name string retained as an argument to the subsequent _mem_Alloc call; the intervening _mem_Lock consumes only the handle and is followed by add sp, 2."
+    },
+    {
+      "symbol": "_DrawBitMapToBuffer",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x4237",
+      "bytes": "68c8ba",
+      "mnemonic": "push",
+      "operands": "0xbac8",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0x423C",
+        "bytes": "e87d20",
+        "mnemonic": "call",
+        "operands": "0x62bc",
+        "references": [
+          {
+            "kind": "near_call",
+            "names": [
+              "_WinPrintf"
+            ],
+            "offset": 25276,
+            "segment": 2
+          }
+        ]
+      }
+    }
+  ],
+  "reasoning": [
+    "Both routines push the same private allocation-name string at 0xBAC4 as mem_Alloc third/far-name argument, and the same NUL-terminated format string at 0xBAC8 to WinPrintf. The allocator argument bundle and exact call/cleanup sequences are recorded below.",
+    "The previous public _smallFontH is a confirmed two-byte object ending at 0xBA34, so these strings are past its extent.",
+    "The next MAPSYM public is _winObjStr at 0xBB1C; neither string lies in a named public."
+  ],
+  "allocator_argument_evidence": [
+    {
+      "caller": "_GUnpackPic",
+      "code_segment": "GR_MODULE",
+      "name_argument": {
+        "address": "0x40E0",
+        "bytes": "1e",
+        "instruction": "push ds",
+        "next": {
+          "address": "0x40E1",
+          "bytes": "68 c4 ba",
+          "instruction": "push 0xBAC4"
+        }
+      },
+      "kind_argument": {
+        "address": "0x40E4",
+        "bytes": "6a 01",
+        "instruction": "push 1"
+      },
+      "intervening_lock": {
+        "address": "0x40E9",
+        "bytes": "e8 a2 14",
+        "target": "_mem_Lock"
+      },
+      "lock_cleanup": {
+        "address": "0x40EC",
+        "bytes": "83 c4 02",
+        "instruction": "add sp, 2"
+      },
+      "size_arguments": [
+        {
+          "address": "0x40F3",
+          "bytes": "6a 00",
+          "instruction": "push 0 (long size high word)"
+        },
+        {
+          "address": "0x40F5",
+          "bytes": "26 ff 77 02",
+          "instruction": "push word ptr es:[bx + 2] (long size low word)"
+        }
+      ],
+      "allocator_call": {
+        "address": "0x4101",
+        "bytes": "e8 d6 13",
+        "target": "_mem_Alloc"
+      },
+      "cleanup": {
+        "address": "0x4104",
+        "bytes": "83 c4 0a",
+        "instruction": "add sp, 0x0A"
+      }
+    },
+    {
+      "caller": "_DrawBitMapToBuffer",
+      "code_segment": "GR_MODULE",
+      "name_argument": {
+        "address": "0x41D4",
+        "bytes": "1e",
+        "instruction": "push ds",
+        "next": {
+          "address": "0x41D5",
+          "bytes": "68 c4 ba",
+          "instruction": "push 0xBAC4"
+        }
+      },
+      "kind_argument": {
+        "address": "0x41D8",
+        "bytes": "6a 01",
+        "instruction": "push 1"
+      },
+      "size_arguments": [
+        {
+          "address": "0x41DA",
+          "bytes": "6a 00",
+          "instruction": "push 0 (long size high word)"
+        },
+        {
+          "address": "0x41DC",
+          "bytes": "56",
+          "instruction": "push si (long size low word)"
+        }
+      ],
+      "allocator_call": {
+        "address": "0x41E7",
+        "bytes": "e8 f0 12",
+        "target": "_mem_Alloc"
+      },
+      "cleanup": {
+        "address": "0x41EA",
+        "bytes": "83 c4 0a",
+        "instruction": "add sp, 0x0A"
+      }
+    },
+    {
+      "callee": "_mem_Alloc",
+      "code_segment": "GR_MODULE",
+      "signature_evidence": "Existing exact-source declaration: src/recovered/wf_ConvertMonoMaskToTandy-4e3e71229c.c declares mem_Alloc(unsigned long bytes, int kind, char far *name).",
+      "target_instructions": [
+        {
+          "address": "0x54E0",
+          "bytes": "8b 46 0a",
+          "instruction": "mov ax, word ptr [bp + 0x0a] (kind)"
+        },
+        {
+          "address": "0x5500",
+          "bytes": "ff 76 08",
+          "instruction": "push word ptr [bp + 8] (size high)"
+        },
+        {
+          "address": "0x5503",
+          "bytes": "ff 76 06",
+          "instruction": "push word ptr [bp + 6] (size low)"
+        }
+      ]
+    }
+  ],
+  "reviewed_by": "supervisor (proposed by merge-scout)"
+}

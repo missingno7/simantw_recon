@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "id": "simtwo_window_draw_shared_string",
+  "executable_fixture": {
+    "name": "SIMANTW.EXE",
+    "sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+    "dgroup_segment": 10,
+    "dgroup_name": "DGROUP",
+    "dgroup_file_offset": 131072,
+    "dgroup_logical_size": 53078
+  },
+  "candidate_groups": [
+    51
+  ],
+  "private_data": [
+    {
+      "offset": "0xBC2B",
+      "bytes_hex": "4a 75 6e 6b 52 6f 75 74 69 6e 65 3a 20 77 69 6e 5f 44 72 61 77 42 75 74 74 6f 6e 42 6f 72 64 65 72 0a 00",
+      "nul_terminated": true,
+      "decoded": "JunkRoutine: win_DrawButtonBorder\n"
+    }
+  ],
+  "nearest_mapsym_publics": [
+    {
+      "address": "0xBC2B",
+      "nearest_public_below": {
+        "name": "_winObjStr",
+        "offset": "0xBB1C",
+        "confirmed_extent_bytes": 271,
+        "confirmed_extent_end_exclusive": "0xBC2B",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_window_object_strings-b664f67a9c.c"
+      },
+      "next_public_above": {
+        "name": "_win_hwnd",
+        "offset": "0xBCA6"
+      }
+    }
+  ],
+  "instruction_evidence": [
+    {
+      "symbol": "_win_DrawButtonBorder",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0xB703",
+      "bytes": "682bbc",
+      "mnemonic": "push",
+      "operands": "0xbc2b",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0xB706",
+        "bytes": "9abc62feb6",
+        "mnemonic": "lcall",
+        "operands": "0xb6fe, 0x62bc",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_WinPrintf"
+            ],
+            "offset": 25276,
+            "segment": 2
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "_win_DrawObjectI",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0xB821",
+      "bytes": "682bbc",
+      "mnemonic": "push",
+      "operands": "0xbc2b",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0xB824",
+        "bytes": "9abc627db8",
+        "mnemonic": "lcall",
+        "operands": "0xb87d, 0x62bc",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_WinPrintf"
+            ],
+            "offset": 25276,
+            "segment": 2
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "_win_DrawObjectI",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0xB94D",
+      "bytes": "682bbc",
+      "mnemonic": "push",
+      "operands": "0xbc2b",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0xB950",
+        "bytes": "9abc62acb9",
+        "mnemonic": "lcall",
+        "operands": "0xb9ac, 0x62bc",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_WinPrintf"
+            ],
+            "offset": 25276,
+            "segment": 2
+          }
+        ]
+      }
+    }
+  ],
+  "reasoning": [
+    "Both functions pass the address as a string to WinPrintf; the bytes decode to \"JunkRoutine: win_DrawButtonBorder\\n\" followed by NUL.",
+    "_winObjStr is an admitted 271-byte public at 0xBB1C, with exclusive end 0xBC2B. The candidate string starts at that exclusive end and is before the next public _win_hwnd."
+  ],
+  "reviewed_by": "supervisor (proposed by merge-scout)"
+}

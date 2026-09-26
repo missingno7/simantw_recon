@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "id": "gr_debug_printf_shared_flag",
+  "executable_fixture": {
+    "name": "SIMANTW.EXE",
+    "sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+    "dgroup_segment": 10,
+    "dgroup_name": "DGROUP",
+    "dgroup_file_offset": 131072,
+    "dgroup_logical_size": 53078
+  },
+  "candidate_groups": [
+    43
+  ],
+  "private_data": [
+    {
+      "dgroup_offset": "0x08F2",
+      "length_bytes": 2,
+      "bytes_hex": "00 00",
+      "little_endian_words": {
+        "0x08F2": 0
+      },
+      "interpretation": "Shared debug-print enable flag; target initializes to zero."
+    }
+  ],
+  "nearest_mapsym_publics": [
+    {
+      "address": "0x08F2",
+      "nearest_public_below": {
+        "name": "_paletteH",
+        "offset": "0x085A",
+        "confirmed_extent_bytes": 2,
+        "confirmed_extent_end_exclusive": "0x085C",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_data_palette_handle-ed38473e29.c"
+      },
+      "next_public_above": {
+        "name": "_wSoundBlasterMsg",
+        "offset": "0x0AF4"
+      }
+    }
+  ],
+  "instruction_evidence": [
+    {
+      "symbol": "_WinPrintf",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x62C1",
+      "bytes": "833ef20800",
+      "mnemonic": "cmp",
+      "operands": "word ptr [0x8f2], 0",
+      "reference_kind": "memory_operand"
+    },
+    {
+      "symbol": "_DebugWinPrintf",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x6327",
+      "bytes": "833ef20800",
+      "mnemonic": "cmp",
+      "operands": "word ptr [0x8f2], 0",
+      "reference_kind": "memory_operand"
+    },
+    {
+      "symbol": "_SetDebugFlag",
+      "code_segment": "GR_MODULE",
+      "instruction_address": "0x63B4",
+      "bytes": "c706f2080000",
+      "mnemonic": "mov",
+      "operands": "word ptr [0x8f2], 0",
+      "reference_kind": "memory_operand"
+    }
+  ],
+  "reasoning": [
+    "WinPrintf and DebugWinPrintf both test [0x08F2], and SetDebugFlag stores zero to [0x08F2].",
+    "_paletteH is an admitted two-byte public at 0x085A, ending at 0x085C; 0x08F2 is past its actual extent and unnamed."
+  ],
+  "reviewed_by": "supervisor (proposed by merge-scout)"
+}

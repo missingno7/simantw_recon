@@ -44,14 +44,23 @@ def identify_profile(flags, cat=None):
     raise FormatError('flags do not match any catalog compiler profile: ' + ' '.join(flags))
 
 
+_COMPONENTS = {}
+
+
 def components():
     if not TOPOLOGY.exists():
         return {}
+    stat = TOPOLOGY.stat()
+    key = (stat.st_mtime_ns, stat.st_size)
+    if key in _COMPONENTS:
+        return _COMPONENTS[key]
     result = {}
     for unit in read_json(TOPOLOGY)['units']:
         for component in unit['components']:
             for public in component['publics']:
                 result[public] = dict(id=component['id'], publics=component['publics'], segment=unit['segment'], range=unit['candidate_unit'])
+    _COMPONENTS.clear()
+    _COMPONENTS[key] = result
     return result
 
 
@@ -137,6 +146,21 @@ def validate(cat=None):
             resolve(symbol, cat)
         except FormatError as exc:
             problems.append(str(exc))
+    # One object is compiled once: every public of a build-topology component
+    # must resolve to the same profile (a joint-compile merge can join
+    # components that carried different assignments).
+    topology = ROOT / 'evidence/topology/build-topology.json'
+    if topology.exists():
+        for unit in read_json(topology)['units']:
+            for comp in unit['components']:
+                names = set()
+                for public in comp['publics']:
+                    try:
+                        names.add(resolve(public, cat)['name'])
+                    except FormatError:
+                        pass
+                if len(names) > 1:
+                    problems.append('component %s resolves to several profiles %s' % (comp['id'], sorted(names)))
     if problems:
         raise FormatError('compiler profile catalog invalid: ' + '; '.join(problems))
     return dict(profiles=sorted(cat['profiles']), assignments=len(cat['assignments']), contexts=len(cat['contexts']), refutations=len(cat['refutations']))

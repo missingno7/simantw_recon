@@ -1280,6 +1280,117 @@
    ],
    "evidence": "evidence/experiments/merge-pairs/cache-module-shared-data-evidence.json",
    "reason": "The ch_* functions share unnamed private DGROUP words (0xB594, 0xB618/0xB623, 0xB655) inside the one private _DATA region after _cacheHook/_releaseHook; one translation unit from _ch_CreateTable through _ch_SetCacheHooks that also defines those data publics. Reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "simtwo_window_module_shared_string",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_win_ObjAddr",
+    "_win_WinObjAddr",
+    "_win_SetObjFormatStr",
+    "_win_SetObjBitmap"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/window-module-shared-string-evidence.json",
+   "reason": "_win_ObjAddr, _win_WinObjAddr, _win_SetObjFormatStr and _win_SetObjBitmap push the same unnamed private DGROUP string 0xBD12, and the window-module literals follow in code order; one translation unit from simtwo:C32E through the win_* run. Reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "text_line_clip_shared_state",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_os_ClipLine",
+    "_PlotLine",
+    "_PlotMonoLine"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/text_line_clip_shared_state-evidence.json",
+   "reason": "The line routines directly read/write the same unnamed DGROUP words 0x1D78-0x1D8A. The nearest public is the 16-byte _left_wedge mask at 0x1D0E (confirmed by the adjacent 16-byte mask family and its exact target bytes); all shared state is beyond its end, and no MAPSYM public intervenes before _commandStr at 0x201A. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "simtwo_database_punt_shared_data",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_OpenDB",
+    "_GetFreeHandle",
+    "_DosPunt"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/simtwo_database_punt_shared_data-evidence.json",
+   "reason": "OpenDB and GetFreeHandle both test/set the same unnamed DGROUP word at 0xB4E2. OpenDB and DosPunt both pass the exact NUL-terminated private strings at 0xB4E4 and 0xB56A to Punt/format handling. All lie beyond the confirmed two-byte _db_cacheTable public and before _cacheHook, with no intervening MAPSYM public. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "gr_bitmap_unpack_shared_strings",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_GUnpackPic",
+    "_DrawBitMapToBuffer"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/gr_bitmap_unpack_shared_strings-evidence.json",
+   "reason": "Both graphics routines pass the same private allocation-name string at 0xBAC4 to mem_Alloc and the same private NUL-terminated format string at 0xBAC8 to WinPrintf. The nearest public _smallFontH has confirmed size two and ends at 0xBA34; no public intervenes before _winObjStr at 0xBB1C. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "simtwo_lzss_unpack_shared_state",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_UnpackInit",
+    "_Unpack",
+    "_UnpackFileRead",
+    "_UnpackSetBuf",
+    "_UnpackFileOpen"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/simtwo_lzss_unpack_shared_state-evidence.json",
+   "reason": "UnpackInit, Unpack and UnpackFileRead share the unnamed DGROUP state words 0xB7C4-0xB7D4; UnpackSetBuf, UnpackFileOpen and UnpackFileRead share the unnamed words 0xB8D6-0xB8DA. These connected references join all five components. Every address is past the confirmed two-byte _pack_threshold at 0xB7C2 and before _unpackHandle at 0xB8DC. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "simant_dialog_delay_shared_word",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_myDelay",
+    "_DialogAbort",
+    "_DialogAbortAll",
+    "_DialogAbortOrCont",
+    "_DialogClearWait",
+    "_DialogClearWaitInit",
+    "_DialogDone",
+    "_DialogWait",
+    "_DialogWaitInit"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/simant_dialog_delay_shared_word-evidence.json",
+   "reason": "The dialog cluster mutates the unnamed word at 0x150A, and _myDelay reads that same word as a table index. The nearest public _scrollBarFlag is a confirmed two-byte object ending at 0x1458; the next public is _casteColors at 0x1596. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "gr_debug_printf_shared_flag",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_WinPrintf",
+    "_DebugWinPrintf",
+    "_SetDebugFlag"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/gr_debug_printf_shared_flag-evidence.json",
+   "reason": "WinPrintf and DebugWinPrintf compare the same unnamed DGROUP word that SetDebugFlag clears at 0x08F2. The nearest public _paletteH is confirmed as a two-byte object ending at 0x085C; no public intervenes before _wSoundBlasterMsg at 0x0AF4. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "simtwo_window_draw_shared_string",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_win_DrawButtonBorder",
+    "_win_DrawObjectI"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/simtwo_window_draw_shared_string-evidence.json",
+   "reason": "Both drawing functions push the same private NUL-terminated diagnostic string at 0xBC2B to WinPrintf. The confirmed _winObjStr public is 271 bytes from 0xBB1C and ends exactly at 0xBC2B, so the string begins immediately after its real extent; no public intervenes before _win_hwnd at 0xBCA6. Proposed by merge-scout from build/supervisor/shared_private_scan.py candidates; reviewed by supervisor; no historical filename claimed."
   }
  ]
 }

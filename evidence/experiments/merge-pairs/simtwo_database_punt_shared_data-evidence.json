@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "id": "simtwo_database_punt_shared_data",
+  "executable_fixture": {
+    "name": "SIMANTW.EXE",
+    "sha256": "538fed3f0fd60a6528a5e5b20990361ac4d274c58266a81e71c24f751612589d",
+    "dgroup_segment": 10,
+    "dgroup_name": "DGROUP",
+    "dgroup_file_offset": 131072,
+    "dgroup_logical_size": 53078
+  },
+  "candidate_groups": [
+    13,
+    47
+  ],
+  "private_data": [
+    {
+      "dgroup_offset": "0xB4E2",
+      "length_bytes": 2,
+      "bytes_hex": "00 00",
+      "little_endian_words": {
+        "0xB4E2": 0
+      },
+      "interpretation": "Shared database initialization flag; both OpenDB and GetFreeHandle compare and set it."
+    },
+    {
+      "offset": "0xB4E4",
+      "bytes_hex": "54 6f 6f 20 6d 61 6e 79 20 66 69 6c 65 73 20 6f 70 65 6e 2e 20 20 59 6f 75 20 6e 65 65 64 20 61 20 73 74 61 74 65 6d 65 6e 74 20 27 46 49 4c 45 53 3d 31 32 27 20 69 6e 0a 79 6f 75 72 20 63 6f 6e 66 69 67 2e 73 79 73 20 66 69 6c 65 2e 20 20 50 6c 65 61 73 65 20 72 65 66 65 72 20 74 6f 20 79 6f 75 72 20 64 6f 73 20 6d 61 6e 75 61 6c 0a 66 6f 72 20 6d 6f 72 65 20 69 6e 66 6f 72 6d 61 74 69 6f 6e 2e 00",
+      "nul_terminated": true,
+      "decoded": "Too many files open.  You need a statement 'FILES=12' in\nyour config.sys file.  Please refer to your dos manual\nfor more information."
+    },
+    {
+      "offset": "0xB56A",
+      "bytes_hex": "25 73 0a 44 6f 73 20 65 72 72 6f 72 3a 20 25 64 3a 20 25 73 00",
+      "nul_terminated": true,
+      "decoded": "%s\nDos error: %d: %s"
+    }
+  ],
+  "nearest_mapsym_publics": [
+    {
+      "address": "0xB4E2",
+      "nearest_public_below": {
+        "name": "_db_cacheTable",
+        "offset": "0xB1E8",
+        "confirmed_extent_bytes": 2,
+        "confirmed_extent_end_exclusive": "0xB1EA",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_data_db_cache_table-7bd0c685ef.c"
+      },
+      "next_public_above": {
+        "name": "_cacheHook",
+        "offset": "0xB580"
+      }
+    },
+    {
+      "address": "0xB4E4",
+      "nearest_public_below": {
+        "name": "_db_cacheTable",
+        "offset": "0xB1E8",
+        "confirmed_extent_bytes": 2,
+        "confirmed_extent_end_exclusive": "0xB1EA",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_data_db_cache_table-7bd0c685ef.c"
+      },
+      "next_public_above": {
+        "name": "_cacheHook",
+        "offset": "0xB580"
+      }
+    },
+    {
+      "address": "0xB56A",
+      "nearest_public_below": {
+        "name": "_db_cacheTable",
+        "offset": "0xB1E8",
+        "confirmed_extent_bytes": 2,
+        "confirmed_extent_end_exclusive": "0xB1EA",
+        "extent_evidence": "MAPSYM anchor, span to the next public of the object, fully initialized and compared",
+        "source": "src/recovered/data_data_db_cache_table-7bd0c685ef.c"
+      },
+      "next_public_above": {
+        "name": "_cacheHook",
+        "offset": "0xB580"
+      }
+    }
+  ],
+  "instruction_evidence": [
+    {
+      "symbol": "_OpenDB",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8BF6",
+      "bytes": "833ee2b400",
+      "mnemonic": "cmp",
+      "operands": "word ptr [0xb4e2], 0",
+      "reference_kind": "memory_operand"
+    },
+    {
+      "symbol": "_OpenDB",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8BFD",
+      "bytes": "c706e2b40100",
+      "mnemonic": "mov",
+      "operands": "word ptr [0xb4e2], 1",
+      "reference_kind": "memory_operand"
+    },
+    {
+      "symbol": "_OpenDB",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8D23",
+      "bytes": "68e4b4",
+      "mnemonic": "push",
+      "operands": "0xb4e4",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0x8D26",
+        "bytes": "9abe184c8d",
+        "mnemonic": "lcall",
+        "operands": "0x8d4c, 0x18be",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_Punt"
+            ],
+            "offset": 6334,
+            "segment": 2
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "_OpenDB",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8D46",
+      "bytes": "686ab5",
+      "mnemonic": "push",
+      "operands": "0xb56a",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0x8D49",
+        "bytes": "9abe184e89",
+        "mnemonic": "lcall",
+        "operands": "0x894e, 0x18be",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_Punt"
+            ],
+            "offset": 6334,
+            "segment": 2
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "_GetFreeHandle",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8EC4",
+      "bytes": "833ee2b400",
+      "mnemonic": "cmp",
+      "operands": "word ptr [0xb4e2], 0",
+      "reference_kind": "memory_operand"
+    },
+    {
+      "symbol": "_GetFreeHandle",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8ECB",
+      "bytes": "c706e2b40100",
+      "mnemonic": "mov",
+      "operands": "word ptr [0xb4e2], 1",
+      "reference_kind": "memory_operand"
+    },
+    {
+      "symbol": "_DosPunt",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8F17",
+      "bytes": "68e4b4",
+      "mnemonic": "push",
+      "operands": "0xb4e4",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0x8F1A",
+        "bytes": "9abe18418f",
+        "mnemonic": "lcall",
+        "operands": "0x8f41, 0x18be",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_Punt"
+            ],
+            "offset": 6334,
+            "segment": 2
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "_DosPunt",
+      "code_segment": "SIMTWO_MODULE",
+      "instruction_address": "0x8F3B",
+      "bytes": "686ab5",
+      "mnemonic": "push",
+      "operands": "0xb56a",
+      "reference_kind": "push_immediate",
+      "following_call": {
+        "instruction_address": "0x8F3E",
+        "bytes": "9abe18418c",
+        "mnemonic": "lcall",
+        "operands": "0x8c41, 0x18be",
+        "references": [
+          {
+            "kind": "internal",
+            "names": [
+              "_Punt"
+            ],
+            "offset": 6334,
+            "segment": 2
+          }
+        ]
+      }
+    }
+  ],
+  "reasoning": [
+    "_db_cacheTable is an admitted two-byte public at 0xB1E8, so its real extent ends at 0xB1EA; 0xB4E2, 0xB4E4 and 0xB56A are beyond it.",
+    "No MAPSYM public appears between _db_cacheTable and _cacheHook at 0xB580.",
+    "The strings decode as \"Too many files open. You need a statement 'FILES=12' in your config.sys file...\" and \"%s\\nDos error: %d: %s\"; both are NUL-terminated and are passed as strings/formats."
+  ],
+  "reviewed_by": "supervisor (proposed by merge-scout)"
+}
