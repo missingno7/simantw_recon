@@ -14,9 +14,10 @@
  * the trail scent of the ant's colour is jammed at the new cell
  * (JamScentRT for red, JamScentBT for black).
  */
+extern unsigned char far AlistT[];
 extern unsigned char far Dx8;
-extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;
-#define AT(off) (((unsigned char far *)&pool_segment_ref_SIMANT_DATA_GROUP)[off])
+#define ANT(off) AlistT[(off) - 0x2f62]
+#define DIR(off) ((&Dx8)[off])
 extern signed char far Dy8[];
 extern char far TurnTab[8][8];
 extern int far Barrier;
@@ -41,9 +42,9 @@ void near DoReturnFoodAnt(int index)
     int ndir;
     int nx, ny;
 
-    x = AT(index + 0x23a4) & 0xff;
-    y = AT(index + 0x278e);
-    attribute = AT(index + 0x2f62);
+    x = ANT(index + 0x23a4) & 0xff;
+    y = ANT(index + 0x278e);
+    attribute = ANT(index + 0x2f62);
 
     if (!IsValidA(x, y)) {
         hole = 0;
@@ -69,26 +70,26 @@ void near DoReturnFoodAnt(int index)
 
     flags = attribute & 0xf8;
     ndir = GetNestDir(x, y, attribute & 7, attribute);
-    nx = x + (signed char)AT(ndir);
+    nx = x + (signed char)DIR(ndir);
     ny = y + Dy8[ndir];
 
     if (MapA[(nx << 6) + ny] > Barrier) {
-        AT(index + 0x2f62) = TurnTab[attribute & 7][SRand8()] | flags;
-        LifeA[(x << 6) + y] = AT(index + 0x2f62);
+        ANT(index + 0x2f62) = TurnTab[attribute & 7][SRand8()] | flags;
+        LifeA[(x << 6) + y] = ANT(index + 0x2f62);
         return;
     }
 
     LifeA[(nx << 6) + ny] = ndir | flags;
-    AT(index + 0x2f62) = ndir | flags;
+    ANT(index + 0x2f62) = ndir | flags;
     LifeA[(x << 6) + y] = 0;
-    AT(index + 0x23a4) = nx;
-    AT(index + 0x278e) = ny;
+    ANT(index + 0x23a4) = nx;
+    ANT(index + 0x278e) = ny;
 
-    if (AT(index + 0x334c) != 0) {
-        AT(index + 0x334c)--;
+    if (ANT(index + 0x334c) != 0) {
+        ANT(index + 0x334c)--;
         if (attribute & 0x80)
-            JamScentRT(nx, ny, AT(index + 0x334c));
+            JamScentRT(nx, ny, ANT(index + 0x334c));
         else
-            JamScentBT(nx, ny, AT(index + 0x334c));
+            JamScentBT(nx, ny, ANT(index + 0x334c));
     }
 }

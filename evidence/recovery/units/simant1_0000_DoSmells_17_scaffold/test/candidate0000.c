@@ -51,7 +51,8 @@ extern int far SRand32(void);
 extern int far SRand16(void);
 extern void far InvalQueenStorageDisp(void);
 extern unsigned char far Dx8[];
-extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;
+#define ANT(off) AlistT[(off) - 0x2f62]
+#define DIR(off) ((&Dx8)[off])
 extern char far TurnTab[8][8];
 extern int far Barrier;
 extern unsigned int far TERRAINset;
@@ -73,6 +74,7 @@ extern void far DigTileB(int x, int y);
 extern void far DigTileR(int x, int y);
 extern int near GetWinner(int defender, int attacker);
 extern void near AlarmHere2(int x, int y, int level);
+#define AT(off) ((&Dx8)[off])
 extern int far Invincible;
 extern long far RAntsKilled;
 extern int far BlackLost;
@@ -89,7 +91,6 @@ extern int far Dx9;  /* scaffold reference for pool word C30A (segment 8, SEGMEN
 extern int far ListIndexA;  /* scaffold reference for pool word C314 (segment 9, MAPSYM_SITE_NAME) */
 extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;  /* scaffold reference for pool word C318 (based segment) */
 extern int far pack_buf;  /* scaffold reference for pool word C31A (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int __based(__segname("SIMANT_DATA_GROUP")) pool_segment_ref_SIMANT_DATA_GROUP;  /* scaffold reference for pool word C31E (based segment) */
 extern int far Scycle;  /* scaffold reference for pool word C324 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far EditColumns;  /* scaffold reference for pool word C326 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far MiscStrs;  /* scaffold reference for pool word C330 (segment 9, SEGMENT_REPRESENTATIVE) */
@@ -239,7 +240,7 @@ void far pool_stub_DoAntSimA(void)
     t = pool_segment_ref_SIMANT_DATA_GROUP;
     t = pack_buf;
     t = Dy8[0];
-    t = pool_segment_ref_SIMANT_DATA_GROUP;
+    t = Dx8[0];
     t = (int)TERRAINset;
     t = OptionStates[0];
     t = Scycle;
@@ -361,8 +362,6 @@ void far pool_stub_DoRandAntA(void)
     t = MiscStrs;
 }
 
-#undef AT
-#define AT(off) (((unsigned char far *)&pool_segment_ref_SIMANT_DATA_GROUP)[off])
 #define Dx8 ((Dx8)[0])  /* shape view of the unit declaration for this member only */
 #define LifeA ((unsigned char near *)LifeA)  /* shape view of the unit declaration for this member only */
 void near DoReturnFoodAnt(int index)
@@ -375,9 +374,9 @@ void near DoReturnFoodAnt(int index)
     int ndir;
     int nx, ny;
 
-    x = AT(index + 0x23a4) & 0xff;
-    y = AT(index + 0x278e);
-    attribute = AT(index + 0x2f62);
+    x = ANT(index + 0x23a4) & 0xff;
+    y = ANT(index + 0x278e);
+    attribute = ANT(index + 0x2f62);
 
     if (!IsValidA(x, y)) {
         hole = 0;
@@ -403,32 +402,31 @@ void near DoReturnFoodAnt(int index)
 
     flags = attribute & 0xf8;
     ndir = GetNestDir(x, y, attribute & 7, attribute);
-    nx = x + (signed char)AT(ndir);
+    nx = x + (signed char)DIR(ndir);
     ny = y + Dy8[ndir];
 
     if (MapA[(nx << 6) + ny] > Barrier) {
-        AT(index + 0x2f62) = TurnTab[attribute & 7][SRand8()] | flags;
-        LifeA[(x << 6) + y] = AT(index + 0x2f62);
+        ANT(index + 0x2f62) = TurnTab[attribute & 7][SRand8()] | flags;
+        LifeA[(x << 6) + y] = ANT(index + 0x2f62);
         return;
     }
 
     LifeA[(nx << 6) + ny] = ndir | flags;
-    AT(index + 0x2f62) = ndir | flags;
+    ANT(index + 0x2f62) = ndir | flags;
     LifeA[(x << 6) + y] = 0;
-    AT(index + 0x23a4) = nx;
-    AT(index + 0x278e) = ny;
+    ANT(index + 0x23a4) = nx;
+    ANT(index + 0x278e) = ny;
 
-    if (AT(index + 0x334c) != 0) {
-        AT(index + 0x334c)--;
+    if (ANT(index + 0x334c) != 0) {
+        ANT(index + 0x334c)--;
         if (attribute & 0x80)
-            JamScentRT(nx, ny, AT(index + 0x334c));
+            JamScentRT(nx, ny, ANT(index + 0x334c));
         else
-            JamScentBT(nx, ny, AT(index + 0x334c));
+            JamScentBT(nx, ny, ANT(index + 0x334c));
     }
 }
 #undef Dx8
 #undef LifeA
-#undef AT
 
 #define LifeA ((unsigned char near *)LifeA)  /* shape view of the unit declaration for this member only */
 void near GoInNest(int colour, int life, int index)
@@ -455,8 +453,6 @@ void near GoInNest(int colour, int life, int index)
 }
 #undef LifeA
 
-#undef AT
-#define AT(off) ((&Dx8)[off])
 #define LifeA ((unsigned char near *)LifeA)  /* shape view of the unit declaration for this member only */
 #define Dx8 ((Dx8)[0])  /* shape view of the unit declaration for this member only */
 void near StartFightA(int ant, int x, int y, int nx, int ny)
@@ -480,7 +476,6 @@ void near StartFightA(int ant, int x, int y, int nx, int ny)
 }
 #undef LifeA
 #undef Dx8
-#undef AT
 
 static unsigned char near combatLevel[16] = {
     0, 0, 0, 0, 2, 0, 1, 1, 2, 1, 0, 0, 3, 3, 0, 0
