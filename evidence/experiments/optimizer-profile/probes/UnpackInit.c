@@ -1,22 +1,17 @@
-/*
- * Reset the unpacker for a new far source.  The configured output buffer is
- * filled with spaces, counters are cleared, and a negative requested limit
- * is replaced by the historical maximum positive word value.
- */
-extern unsigned char far unpackBuffer[];
+/* Reset the saved unpack state and fill the configured far output buffer. */
+extern unsigned char far *near unpackBuffer;
 extern unsigned int near unpackSize;
 extern unsigned int near unpackUsed;
 extern unsigned int near unpackState;
 extern void far *near unpackSource;
 extern int near unpackLimit;
+extern void far *_fmemset(void far *destination, int value,
+                          unsigned int count);
 
 void UnpackInit(void far *source, int limit)
 {
-    int i;
-
-    for (i = 0; i < 0xfee; ++i)
-        unpackBuffer[i] = 0x20;
-    unpackSize = 0xfee;
+    (void)_fmemset(unpackBuffer, 0x20, 0x0fee);
+    unpackSize = 0x0fee;
     unpackUsed = 0;
     unpackState = 0;
     unpackSource = source;

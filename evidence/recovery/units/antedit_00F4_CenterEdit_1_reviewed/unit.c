@@ -47,7 +47,7 @@ static int near ScrollEditBy(int dx, int dy)
     unsigned long fraction;
     unsigned long error;
 
-    if (dx == 0 && dy == 0)
+    if (dx == 0 && dy == dx)
         return 0;
 
     xStep = 1;

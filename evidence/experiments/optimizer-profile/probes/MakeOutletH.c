@@ -1,3 +1,4 @@
+extern void *memset(void *, int, unsigned);
 /*
  * MakeOutletH(row, column): stamps a horizontal wall outlet fixture. Fills
  * the 13-row by 9-column rectangle anchored at (row, column) with the
@@ -33,8 +34,7 @@ void MakeOutletH(int row, int column)
     width = column + 9 - column;
     height = row + 13 - row;
     for (r = row; r <= row + 12; r++) {
-        for (c = column; c < column + width; c++)
-            MapA[(r << 6) + c] = 0x63;
+        memset(MapA + (r << 6) + column, 0x63, width);
     }
 
     TileFrame1(row, row + 0xc, column, column + 8);

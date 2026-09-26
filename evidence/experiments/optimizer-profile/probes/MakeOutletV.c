@@ -1,3 +1,4 @@
+extern void *memset(void *, int, unsigned);
 /*
  * MakeOutletV(row, column): vertical twin of MakeOutletH. Fills the 9-row
  * by 13-column rectangle anchored at (row, column) with the background
@@ -28,8 +29,7 @@ void MakeOutletV(int row, int column)
     int inner;
 
     for (r = row; r <= row + 8; r++) {
-        for (c = column; c < column + 13; c++)
-            MapA[(r << 6) + c] = 0x63;
+        memset(MapA + (r << 6) + column, 0x63, 13);
     }
 
     TileFrame1(row, row + 8, column, column + 0xc);

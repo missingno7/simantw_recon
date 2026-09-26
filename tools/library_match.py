@@ -30,8 +30,16 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
  for seg in s['segments']:
   for p in seg['symbols']:names[p['name']].add((seg['number'],p['offset']))
  placements={};anchors=defaultdict(list);issues=[];derived=[]
+ # Module-local symbols: a local external binds only to the unique local
+ # public of the same name in this module; anything else stays unresolved.
+ local_externals=[e['name'] for e in m['externals'] if e.get('local')]
+ local_defs=defaultdict(list)
+ for q in m['publics']:
+  if q.get('local') and q['segment']:local_defs[q['name']].append(q)
+ local_publics={k:v[0] for k,v in local_defs.items() if len(v)==1 and local_externals.count(k)==1 and
+                sum(e['name']==k for e in m['externals'])==1 and not any(q['name']==k and not q.get('local') for q in m['publics'])}
  for p in m['publics']:
-  if not p['segment'] or len(names[p['name']])!=1:continue
+  if not p['segment'] or p.get('local') or len(names[p['name']])!=1:continue
   sg,off=next(iter(names[p['name']]))
   anchors[p['segment']].append((sg,off-p['offset'],p['name']))
  for si,aa in anchors.items():
@@ -101,7 +109,13 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
    add=f['displacement']+int.from_bytes(candidate[p:p+min(w,2)],'little')
    if f['target_method']==2:
     name=f['target']['name']
-    if len(names[name])==1:
+    if name in local_publics:
+     # LEXTDEF resolved by LINK to the LPUBDEF of the same module (a static
+     # function called before its definition); its bytes are this candidate's own.
+     lp=local_publics[name]
+     if lp['segment'] in placements:
+      ts,to=placements[lp['segment']];target={'kind':'internal','segment':ts,'offset':to+lp['offset']+add}
+    elif len(names[name])==1:
      ts,to=next(iter(names[name]));target={'kind':'internal','segment':ts,'offset':to+add}
     elif name in imports and add==0:target=imports[name]
     elif name in absolute:target={'kind':'absolute','offset':absolute[name]+add}

@@ -264,3 +264,11 @@ previously unnamed calls across 31 functions to existing MAPSYM publics,
 including `_OpenMiniMapWin` calls to `_CenterEdit` and `_UpdateEdit`. This is
 call binding evidence only; private selector/data and TU membership still need
 independent proof. [Controlled evidence](../evidence/experiments/near-call-ip-wrap/README.md).
+
+## Residue mechanisms (2026-09-26)
+
+Classify the residue before writing variants; several long-stuck near misses fell once the controlling property was named.
+
+- **Frame larger than the candidate's `ENTER`.** MSC 7.00 does not overlap block-scoped locals with function-scope ones. Declaring loop-local variables inside the loop block (`for (...) { int x, y; ... }`) grew `_MakePillFood`'s frame from 0x08 to the target 0x0e without moving its pointer spills (promoted `MakePillFood-32ea71162b`).
+- **`rep stosb` where the candidate emits `rep stosw`, or inline `rep movsw; adc cx,cx; rep movsb`.** These are intrinsic `memset`/`memcpy`/`_fmemcpy` expansions under `/Oi`. The NetBIOS wrappers are recorded as an `ogi` context (`asg-text-7cfe-ogi`, [evidence](../evidence/experiments/text-ctx/README.md)): write the library call, not a byte loop, and let the context resolve the flags. A catalogued profile applies only through a reviewed context assignment, never per function.
+- **Byte-sequence residue that persists across every source family.** Suspect the compiler context: check `python tools/compiler_profiles.py show SYMBOL` and the topology component, and record the observation with `search.py --note` for a context review instead of guessing more source shapes.

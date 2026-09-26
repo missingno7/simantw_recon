@@ -43,7 +43,7 @@ A small binder regenerates object bytes: initialized data, the LINK far-call tra
 
 **Data modules** are data-only C files: `__based(__segname("SIMANT_DATA_GROUP"))` or `__based(__segname("PACK"))` for the far data segments, ordinary near data for DGROUP. Each public spans to the next public of the object (or the contribution end), and no other original public may lie inside that span. Every byte must be initialized, placed and compared, fixups and loader sites included. Code, BSS, the DGROUP selector pools (`BE6E`-`C6DF`, owned by code objects) and the linker BSS region `[_edata,_end)` are refused, as is any overlap with bytes an admitted object already owns. Zero-filled arrays need explicit initializers (`= {0}`) to become initialized contributions. Whether the originals were initialized or communal remains an open LINK-lane question. Data recipes are counted separately (`game_data_symbols`, `game_data_bytes`).
 
-**Assembly modules** are real MASM source for the 32 routines reviewed as GAME_ASM: instructions and ordinary directives only, and data directives in code segments only for label/offset dispatch tables. Byte dumps and INCBIN are refused. Seven pinned MASM versions (5.00–6.14) are locked in `layout/toolchain.json` (provenance `evidence/toolchain/masm-provenance.json`). They all reproduce the first admitted routine (`_exchange`) identically, so the historical assembler version is not yet identified (`evidence/experiments/assembler/identification.json`). The recipe records the version that was used. Admission uses the same complete-member and whole-image gates as C.
+**Assembly modules** are real MASM source for the 32 routines reviewed as GAME_ASM: instructions and ordinary directives only, and data directives in code segments only for label/offset dispatch tables. Byte dumps and INCBIN are refused. Seven pinned MASM versions (5.00â€“6.14) are locked in `layout/toolchain.json` (provenance `evidence/toolchain/masm-provenance.json`). They all reproduce the first admitted routine (`_exchange`) identically, so the historical assembler version is not yet identified (`evidence/experiments/assembler/identification.json`). The recipe records the version that was used. Admission uses the same complete-member and whole-image gates as C.
 
 ## Worker prompt
 
@@ -55,7 +55,8 @@ docs/factory.md and docs/grinder-lessons.md. Targets: <SYMBOLS> (or choose from
 `python tools/context.py --list --open`). Use only build/workers/<NAME>/ for scratch files.
 Per target: `context.py SYMBOL`, write readable C with a semantic block comment, then run
 `search.py SYMBOL files...` for as many rounds as are useful, reading the aligned diff and
-adapting each time. There is no attempt limit. On a strict match run `promote.py SYMBOL file`. If the
+adapting each time. Write sources as plain ASCII without a UTF-8 BOM (MSC 7.00 rejects
+`0xEF 0xBB 0xBF`; PowerShell Set-Content/Out-File add one). There is no attempt limit. On a strict match run `promote.py SYMBOL file`. If the
 body is exact but only private data/selector placement fails, say so (unit lane). Stop at a
 match, a concrete missing dependency, or when no useful next investigation remains; then
 record the finding with `search.py SYMBOL best.c --note "..."`. Do not hand-edit tools/,
