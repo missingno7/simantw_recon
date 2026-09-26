@@ -149,9 +149,10 @@ class ComposerScaffoldTests(unittest.TestCase):
     def test_mixed_dog_data_gap_is_not_emitted_as_a_literal(self):
         pieces = [dict(segment='_DATA', offset=0x188e, length=2, member='_DrawDog'),
                   dict(segment='_DATA', offset=0x18d8, length=8, member='_DrawDog')]
-        plan = tu.data_fillers(pieces, {'data_words': []}, {'_DrawDog': {'offset': 0}})
-        self.assertEqual(plan['literals'], [])
-        self.assertIn('pool_data_fill_1890', plan['fillers']['_DrawDog'][0])
+        # The gap 1890-18D8 holds the MAPSYM publics _patchRgn/_patchRgn2:
+        # named data must be declared by name, never covered by a filler.
+        with self.assertRaisesRegex(tu.FormatError, 'MAPSYM public'):
+            tu.data_fillers(pieces, {'data_words': []}, {'_DrawDog': {'offset': 0}})
 
     def test_all_zero_private_word_is_not_inferred_as_a_literal(self):
         self.assertFalse(tu.private_data_is_literal(b'\x00\x00'))

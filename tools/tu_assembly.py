@@ -1096,6 +1096,17 @@ def check_reviewed_zero_gaps(module, scaffold):
             raise FormatError('reviewed zero gap contains an OMF fixup')
 
 
+def refuse_named_filler(lo, hi):
+    """A scaffold filler stands in for unclaimed members' private data only.
+    A MAPSYM public inside the range is named data: the unit must declare or
+    define it by name (one definition per LINK), never cover it with bytes."""
+    import mapsym
+    from common import fixture
+    names = [p['name'] for p in mapsym.parse(fixture('SIMANTW.SYM'))['segments'][9]['symbols'] if lo <= p['offset'] < hi]
+    if names:
+        raise FormatError('DGROUP %04X-%04X contains MAPSYM public(s) %s; declare them by name, no data filler' % (lo, hi, ', '.join(names)))
+
+
 def data_fillers(pieces, comp, functions, mode='definitions'):
     """Fillers that reproduce the private DATA/BSS layout between the claimed
     members' pieces: each gap between consecutive pieces of one class is the
@@ -1141,6 +1152,7 @@ def data_fillers(pieces, comp, functions, mode='definitions'):
             if gap_hi == gap_lo:
                 continue
             name = 'pool_%s_fill_%04X' % ('data' if cls == '_DATA' else 'bss', gap_lo)
+            refuse_named_filler(gap_lo, gap_hi)
             if cls == '_DATA':
                 if any(gap_lo <= s < gap_hi for s in relocated):
                     raise FormatError('DGROUP %04X-%04X carries loader obligations; no data filler' % (gap_lo, gap_hi))
@@ -1179,6 +1191,7 @@ def split_layout(kept, data, relocated, functions, excluded):
     order with string stand-ins for the unclaimed members' literals between
     them."""
     def filler_static(lo, hi, note):
+        refuse_named_filler(lo, hi)
         if any(lo <= s < hi for s in relocated):
             raise FormatError('DGROUP %04X-%04X carries loader obligations; no data filler' % (lo, hi))
         if lo % 2:
@@ -1186,6 +1199,7 @@ def split_layout(kept, data, relocated, functions, excluded):
         chunk = data[lo:hi]
         return '/* SCAFFOLD, not recovered source: %s (DGROUP %04X-%04X), copied from the image so the claimed pieces keep their layout. */\n' % (note, lo, hi) + 'static unsigned char pool_data_fill_%04X[%d] = {%s};' % (lo, len(chunk), ', '.join('0x%02X' % x for x in chunk))
     def filler_literal(lo, hi, note, before):
+        refuse_named_filler(lo, hi)
         if any(lo <= s < hi for s in relocated):
             raise FormatError('DGROUP %04X-%04X carries loader obligations; no data filler' % (lo, hi))
         chunk = data[lo:hi]

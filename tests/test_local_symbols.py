@@ -64,3 +64,12 @@ class LocalSymbolTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class NamedFillerTests(unittest.TestCase):
+    def test_filler_may_not_cover_a_mapsym_public(self):
+        import tu_assembly
+        from common import FormatError
+        with self.assertRaises(FormatError):
+            tu_assembly.refuse_named_filler(0xBE05, 0xBE12)   # contains _lastProxObj
+        tu_assembly.refuse_named_filler(0xBD3C, 0xBDDA)       # unnamed window literals

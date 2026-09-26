@@ -1,7 +1,10 @@
-/* Candidate translation unit text_7370: composed from preserved exact-body sources
- * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _NbFinalStatus, _NbImmediateStatus, _CopyName, _NbCall, _NbAddName, _NbReset, _NbSend, _NbListen, _NbPostListen, _NbDeleteName, _NbReceive, _NbPostReceiveAny, _NbHangUp, _NbCheck */
-
+/* Reviewed single-object source in MAPSYM code order. */
+static const char nbFinalFormatLow[] = "NetBIOS Final RetCode(%#x): %s\n";
+static const char nbFinalAdapter[] = "NetBIOS Final RetCode(%#x): Adapter malfunction.\n";
+static const char nbFinalFormatHigh[] = "NetBIOS Final RetCode(%#x): %s\n";
+static const char nbImmediateFormatLow[] = "NetBIOS RetCode(%#x): %s\n";
+static const char nbImmediateAdapter[] = "NetBIOS RetCode(%#x): Adapter malfunction.\n";
+static const char nbImmediateFormatHigh[] = "NetBIOS RetCode(%#x): %s\n";
 extern char __based(__segname("SIMANT_DATA_GROUP")) NB_RETCODE[128][60];
 struct NetbiosControlBlock {
     unsigned char command;
@@ -9,27 +12,6 @@ struct NetbiosControlBlock {
     unsigned char reserved[0x2f];
     unsigned char final_status;
 };
-
-/* Shared status strings occupy the verified private slots. */
-static const char nbFinalFormatLow[] = "NetBIOS Final RetCode(%#x): %s\n";
-static const char nbFinalAdapter[] = "NetBIOS Final RetCode(%#x): Adapter malfunction.\n";
-static const char nbFinalFormatHigh[] = "NetBIOS Final RetCode(%#x): %s\n";
-static const char nbImmediateFormatLow[] = "NetBIOS RetCode(%#x): %s\n";
-static const char nbImmediateAdapter[] = "NetBIOS RetCode(%#x): Adapter malfunction.\n";
-static const char nbImmediateFormatHigh[] = "NetBIOS RetCode(%#x): %s\n";
-/* Wrapper messages follow their public members in code order. */
-static const char nbActionCall[] = "NetBIOS: Call.\n";
-static const char nbActionAddName[] = "NetBIOS: AddName.\n";
-static const char nbActionReset[] = "NetBIOS: Reset.\n";
-static const char nbActionSend[] = "NetBIOS: Send.\n";
-static const char nbActionListen[] = "NetBIOS: Listen(%s).\n";
-static const char nbActionPostListen[] = "NetBIOS: PostListen(%s).\n";
-static const char nbActionDeleteName[] = "NetBIOS: Delete Name.\n";
-static const char nbActionReceive[] = "NetBIOS: Receive.\n";
-static const char nbActionPostReceiveAny[] = "NetBIOS: PostReceiveAny.\n";
-static const char nbActionHangUp[] = "NetBIOS: HangUp.\n";
-static const char nbActionCheck[] = "NetBIOS not loaded (No response from Int5C).\n";
-
 void far NbFinalStatus(struct NetbiosControlBlock far *ncb)
 {
     union StatusSlot { unsigned short whole; unsigned char value; } statusSlot;
@@ -98,7 +80,7 @@ unsigned char far NbCall(char far *local_name, char far *remote_name,
     ncb[0x2a] = session;
     ncb[0x2b] = number;
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionCall);
+    DebugWinPrintf("NetBIOS: Call.\n");
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31]]);
@@ -128,7 +110,7 @@ unsigned char far NbAddName(char far *name)
     ncb[0x29] = 0;
 
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionAddName);
+    DebugWinPrintf("NetBIOS: AddName.\n");
 
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
@@ -136,7 +118,7 @@ unsigned char far NbAddName(char far *name)
     else if (ncb[0x31] < 0xf0)
         DebugWinPrintf((char far *)nbFinalAdapter, ncb[0x31]);
     else
-        DebugWinPrintf((char far *)nbFinalFormatHigh, ncb[0x31],
+        DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31] - 0xa0]);
 
     return ncb[3];
@@ -148,7 +130,7 @@ unsigned int far NbReset(void)
     memset(ncb, 0, 64);
     ncb[0] = 0x32;
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionReset);
+    DebugWinPrintf("NetBIOS: Reset.\n");
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31]]);
@@ -169,7 +151,7 @@ void far NbSend(unsigned char far *buffer, unsigned int length,
     *(unsigned char far **)&ncb[4] = buffer;
     *(unsigned int far *)&ncb[8] = length;
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionSend);
+    DebugWinPrintf("NetBIOS: Send.\n");
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31]]);
@@ -206,7 +188,7 @@ unsigned char far NbListen(char far *name, char far *call_name,
     ncb[0x2a] = session;
     ncb[0x2b] = number;
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionListen, (char far *)(ncb + 0x0a));
+    DebugWinPrintf("NetBIOS: Listen(%s).\n", (char far *)(ncb + 0x0a));
 
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
@@ -214,7 +196,7 @@ unsigned char far NbListen(char far *name, char far *call_name,
     else if (ncb[0x31] < 0xf0)
         DebugWinPrintf((char far *)nbFinalAdapter, ncb[0x31]);
     else
-        DebugWinPrintf((char far *)nbFinalFormatHigh, ncb[0x31],
+        DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31] - 0xa0]);
     if (call_name[0] == '*')
         strcpy(call_name, (char far *)(ncb + 0x0a));
@@ -251,7 +233,7 @@ unsigned int far NbPostListen(char far *name, char far *call_name,
     edata[0x13d] = number;
     *(void far * far *)(edata + 0x13e) = buffer;
     NetBios((void far *)(edata + 0x112));
-    DebugWinPrintf((char far *)nbActionPostListen,
+    DebugWinPrintf("NetBIOS: PostListen(%s).\n",
                    (char far *)(edata + 0x11c));
 
     if (edata[0x113] < 0x50)
@@ -281,7 +263,7 @@ void far NbDeleteName(char far *name)
     ncb[0x29] = 0;
 
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionDeleteName);
+    DebugWinPrintf("NetBIOS: Delete Name.\n");
 
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
@@ -289,7 +271,7 @@ void far NbDeleteName(char far *name)
     else if (ncb[0x31] < 0xf0)
         DebugWinPrintf((char far *)nbFinalAdapter, ncb[0x31]);
     else
-        DebugWinPrintf((char far *)nbFinalFormatHigh, ncb[0x31],
+        DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31] - 0xa0]);
 
 }
@@ -317,7 +299,7 @@ unsigned int far NbReceive(unsigned char session,
     ncb[0].buffer = buffer;
     ncb[0].length = *length;
     NetBios(&ncb[0]);
-    DebugWinPrintf((char far *)nbActionReceive);
+    DebugWinPrintf("NetBIOS: Receive.\n");
 
     if (ncb[0].final_status < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0].final_status,
@@ -325,7 +307,7 @@ unsigned int far NbReceive(unsigned char session,
     else if (ncb[0].final_status < 0xf0)
         DebugWinPrintf((char far *)nbFinalAdapter, ncb[0].final_status);
     else
-        DebugWinPrintf((char far *)nbFinalFormatHigh, ncb[0].final_status,
+        DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0].final_status,
                        (char far *)NB_RETCODE[ncb[0].final_status - 0xa0]);
 
     *length = ncb[0].length;
@@ -346,7 +328,7 @@ unsigned int far NbPostReceiveAny(unsigned char session,
     *(unsigned int far *)&postReceiveNcb[8] = length;
     *(unsigned long far *)&postReceiveNcb[0x2c] = timeout;
     NetBios(postReceiveNcb);
-    DebugWinPrintf((char far *)nbActionPostReceiveAny);
+    DebugWinPrintf("NetBIOS: PostReceiveAny.\n");
 
     if (postReceiveNcb[1] < 0x50)
         DebugWinPrintf((char far *)nbImmediateFormatLow, postReceiveNcb[1],
@@ -367,7 +349,7 @@ void far NbHangUp(unsigned char session)
     ncb[0] = 0x12;
     ncb[2] = session;
     NetBios(ncb);
-    DebugWinPrintf((char far *)nbActionHangUp);
+    DebugWinPrintf("NetBIOS: HangUp.\n");
     if (ncb[0x31] < 0x50)
         DebugWinPrintf((char far *)nbFinalFormatLow, ncb[0x31],
                        (char far *)NB_RETCODE[ncb[0x31]]);
@@ -385,7 +367,7 @@ int NbCheck(void)
     ncb[0] = 0x7f;
     NetBios((unsigned char far *)ncb);
     if (ncb[0x31] != 3) {
-        DebugWinPrintf((char far *)nbActionCheck);
+        DebugWinPrintf("NetBIOS not loaded (No response from Int5C).\n");
         return 0;
     }
     return 1;

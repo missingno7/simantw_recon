@@ -11,7 +11,7 @@ extern int near win_hwnd[];
 extern int near editHeight;
 extern int near editWidth;
 extern int far MapMode;
-extern struct MapPoint far MapPnt;
+extern struct MapPoint __based(__segname("PACK")) MapPnt;
 extern void far pascal SetScrollRange(int hwnd, int bar, int minPos, int maxPos, int redraw);
 extern int far pascal SetScrollPos(int hwnd, int bar, int pos, int redraw);
 extern int far pascal GetScrollPos(int hwnd, int bar);
@@ -497,6 +497,7 @@ void far ResetEditScrollRange(void)
 
 static int near ScrollEditBy(int dx, int dy)
 {
+    extern struct MapPoint __based(__segname("PACK")) MapPnt;
     int yStep;
     int xStep;
     register int i;
