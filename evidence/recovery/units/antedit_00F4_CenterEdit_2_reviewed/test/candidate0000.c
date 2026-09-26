@@ -497,6 +497,7 @@ void far ResetEditScrollRange(void)
 
 static int near ScrollEditBy(int dx, int dy)
 {
+    int unused[3];
     int yStep;
     int xStep;
     register int i;
@@ -514,6 +515,7 @@ static int near ScrollEditBy(int dx, int dy)
     yStep = 1;
     xStep = 1;
     yDistance = dy;
+    error = 0UL;
     if (xDistance < 0) {
         xDistance = -xDistance;
         yStep = -1;
@@ -523,7 +525,7 @@ static int near ScrollEditBy(int dx, int dy)
         xStep = -1;
     }
 
-    error = 0UL;
+
     if (yDistance >= xDistance) {
         fraction = ((unsigned long)xDistance << 16) / (unsigned long)yDistance;
         if (yDistance > 0) {

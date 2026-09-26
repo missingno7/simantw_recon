@@ -7,9 +7,12 @@
       "mov ds, word ptr [imm]": 0,
       "lea reg, [absolute]": 0,
       "xchg ah, al": 0,
-      "odd start offset": 0
+      "odd start offset": 0,
+      "pop reg as call cleanup (add sp,N used instead)": 0
     },
-    "register_save_order": "push di before push si in 208/208 admitted C functions that save both"
+    "register_save_order": "push di before push si in 208/208 admitted C functions that save both",
+    "function_alignment": "MSC 7.00 aligns every function to an even offset: in all 307 admitted C functions with odd size, exactly one pad byte follows (0 exceptions); 608/608 admitted C functions start at even offsets",
+    "call_cleanup": "1128 call sites in admitted C clean the stack with add sp,N; none with pop"
   },
   "extra": [
     "text-ctx: no catalogued profile, /Os,/Ot,/Oi,/G0,/Gr,/Zp or MSC 6.00A produced xchg ah,al for _FlipWord (evidence/experiments/text-ctx/README.md)",
@@ -164,7 +167,147 @@
         "pop bp",
         "retf "
       ]
+    },
+    "_PackWriteByte": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA201",
+      "size": 64,
+      "signatures": [
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "mov al, byte ptr [bp + 6]",
+        "les bx, ptr [0xcc4a]",
+        "mov byte ptr es:[bx], al",
+        "inc word ptr [0xcc4a]",
+        "mov ax, word ptr [0xcc30]",
+        "inc word ptr [0xcc44]"
+      ]
+    },
+    "_PackFileToFile": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA325",
+      "size": 87,
+      "signatures": [
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "mov ax, 0x400",
+        "push ax",
+        "sub ax, ax",
+        "push ax",
+        "push ax",
+        "push ax"
+      ]
+    },
+    "_PackMemoryToMemory": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA3BD",
+      "size": 78,
+      "signatures": [
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "push word ptr [bp + 0xe]",
+        "push word ptr [bp + 0xc]",
+        "push word ptr [bp + 0xa]",
+        "push word ptr [bp + 8]",
+        "push word ptr [bp + 6]",
+        "push cs"
+      ]
+    },
+    "_Encode": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA40B",
+      "size": 542,
+      "signatures": [
+        "odd-offset",
+        "pop-cleanup"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "sub sp, 0x2a",
+        "push di",
+        "push si",
+        "nop ",
+        "push cs",
+        "call 0xa858"
+      ]
+    },
+    "_UnpackFileRead": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA7E9",
+      "size": 99,
+      "signatures": [
+        "odd-offset"
+      ],
+      "prologue": [
+        "push bp",
+        "mov bp, sp",
+        "sub sp, 2",
+        "xor ax, ax",
+        "mov word ptr [bp - 2], ax",
+        "cmp word ptr [0xb7c8], ax",
+        "jg 0xa81f",
+        "push word ptr [0xb8d6]"
+      ]
+    },
+    "_UnpackFileClose": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xA84C",
+      "size": 11,
+      "signatures": [
+        "pop-cleanup",
+        "no frame"
+      ],
+      "prologue": [
+        "push word ptr [0xb8dc]",
+        "lcall 0xa813, 0x3b80",
+        "pop ax",
+        "retf "
+      ]
+    },
+    "_ProcessPost": {
+      "segment": "SIMANT_MODULE",
+      "offset": "0x1DBF",
+      "size": 672,
+      "signatures": [
+        "odd-offset"
+      ],
+      "prologue": [
+        "enter 0x48, 0",
+        "push si",
+        "lea ax, [bp - 0x48]",
+        "mov word ptr [bp - 8], ax",
+        "mov word ptr [bp - 6], ss",
+        "xor si, si",
+        "mov word ptr [bp - 4], si",
+        "push 0x40"
+      ]
+    },
+    "_DoInt3": {
+      "segment": "SIMTWO_MODULE",
+      "offset": "0xF85B",
+      "size": null,
+      "signatures": [
+        "odd-offset",
+        "single int3"
+      ],
+      "prologue": [
+        "int3 "
+      ]
     }
   },
-  "reviewed_by": "supervisor"
+  "reviewed_by": "supervisor",
+  "notes": [
+    "The even-start neighbours inside the pack/unpack run (_PackReadByte, _UnpackInit, _Unpack, _UnpackSetBuf, _UnpackFileOpen) are probable members of the same assembly module but carry no direct signature; they stay GAME_C until evidence.",
+    "_NetBIOSPost (pusha/push ds/push es/mov bp,sp/.../iret) matches the MSC 7.00 _interrupt function shape and stays GAME_C; _ProcessPost follows it at an odd offset, so either _ProcessPost is assembly or both are."
+  ]
 }

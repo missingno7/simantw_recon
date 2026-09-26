@@ -345,7 +345,7 @@ void far pool_data_fill_BE05(void)
 }
 
 /* SCAFFOLD, not recovered source: the 13 bytes of private data between _win_SetObjBitmap and INDIRECTDLGPROC (DGROUP BE05-BE12, unclaimed members), copied from the image so the claimed pieces keep their layout (word-aligned tail). */
-unsigned int near lastProxObj = -1;
+static unsigned char pool_data_fill_BE05_tail[2] = {0xFF, 0xFF};
 static int near dlgObject;
 struct WinProxRect {
     int left;
@@ -360,6 +360,7 @@ struct WinProxBucket {
 };
 
 extern int near win_hwnd[];
+extern unsigned int near lastProxObj;
 
 extern void far clip_Push(void);
 extern void far clip_Pop(void);

@@ -194,6 +194,13 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
      why='same-segment relative offset'
     else:
      valid_frame=(f['frame_method']==1 and m['groups'][f['frame_index']-1]['name']=='DGROUP' and target['segment']==10) or (f['frame_method']==0 and f['frame_index'] in placements and placements[f['frame_index']][0]==target['segment']) or (frame_ok and f['target_method'] in (0,2))
+     if not valid_frame and f['frame_method']==0 and f['target_method']==2 and not m['segments'][f['frame_index']-1]['length']:
+      # An empty named SEGDEF frame (an assembly module's `X SEGMENT ... EXTRN
+      # sym ... X ENDS` block) stands for the unique MAPSYM segment of that
+      # name, as for empty target segments above: valid only when the
+      # external target lies in exactly that segment.
+      frames=[seg['number'] for seg in s['segments'] if seg['name']==m['segments'][f['frame_index']-1]['name']]
+      valid_frame=len(frames)==1 and frames[0]==target['segment']
      ok=valid_frame and int.from_bytes(ref[p:p+2],'little')==target['offset']&65535;why='resolved offset and frame'
     ok=ok and not any(p<=q<p+2 for q in rel)
    if ok:mask.update(range(p,p+w));fixequal+=1

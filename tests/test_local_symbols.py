@@ -73,3 +73,39 @@ class NamedFillerTests(unittest.TestCase):
         with self.assertRaises(FormatError):
             tu_assembly.refuse_named_filler(0xBE05, 0xBE12)   # contains _lastProxObj
         tu_assembly.refuse_named_filler(0xBD3C, 0xBDDA)       # unnamed window literals
+
+
+class EmptySegdefFrameTests(unittest.TestCase):
+    """An assembly module's `PACKX SEGMENT ... EXTRN _buf ... ENDS` block is an
+    empty SEGDEF; used as an F0 frame it stands for the MAPSYM segment of that
+    name, and only for targets inside that segment."""
+    def setUp(self):
+        self.raw = bytes(BASE) + bytes.fromhex('a11000cb') + bytes(16)
+        self.image = dict(segments=[dict(number=1, file_offset=0, logical_size=len(self.raw), relocations=[], kind='CODE'),
+                                    dict(number=2, file_offset=0, logical_size=0x100, relocations=[], kind='DATA')])
+        self.symbols = dict(segments=[dict(number=1, name='CODE_TEXT', symbols=[dict(name='_Caller', offset=BASE)]),
+                                      dict(number=2, name='PACKX', symbols=[dict(name='_buf', offset=0x10)])],
+                            absolute_symbols=[])
+
+    def module(self, frame_name='PACKX', frame_length=0, target='_buf'):
+        code = bytes.fromhex('a10000cb')
+        return dict(
+            segments=[dict(name='CODE_TEXT', length=len(code), data_hex=code.hex(), initialized_ranges=[[0, len(code)]], index=1, **{'class': 'CODE'}),
+                      dict(name=frame_name, length=frame_length, data_hex='', initialized_ranges=[], index=2, **{'class': 'FAR_DATA'})],
+            groups=[], names=[], comments=[], commons=[], backpatches=[], aliases=[],
+            externals=[dict(name=target, type_index=0, local=False)],
+            publics=[dict(name='_Caller', offset=0, segment=1, group=None, frame=None, type_index=0, local=False)],
+            fixups=[dict(segment=1, offset=1, width=2, location_type=1, self_relative=False, target_method=2, target_index=1,
+                         target=dict(kind='external', name=target), frame_method=0, frame_index=2, displacement=0)])
+
+    def check(self, m):
+        return compare_member(m, self.raw, self.image, self.symbols, {})['result']
+
+    def test_empty_named_frame_resolves_target_in_that_segment(self):
+        self.assertIn(self.check(self.module()), ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'))
+
+    def test_frame_of_another_segment_rejects(self):
+        self.assertEqual(self.check(self.module(frame_name='OTHER')), 'NO_COMPLETE_MATCH')
+
+    def test_non_empty_frame_segment_is_not_a_name_standin(self):
+        self.assertEqual(self.check(self.module(frame_length=2)), 'NO_COMPLETE_MATCH')
