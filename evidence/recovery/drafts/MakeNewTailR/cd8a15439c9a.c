@@ -1,0 +1,2 @@
+/* direct_x/seq/named */
+extern unsigned char far RlistT[];extern unsigned char far RlistX[];extern unsigned char far RlistY[];extern signed char far Dx8[];extern signed char far Dy8[];extern void far AddAntToRList(int,int,int,int,int);void far MakeNewTailR(int index){unsigned char type; unsigned char direction; int life; int column;life=RlistX[index]+(signed char)Dx8[direction]; type=RlistT[index];direction=(unsigned char)type;direction &= 7;direction ^= 4;AddAntToRList(life,RlistY[index]+(signed char)Dy8[direction],type+8,9,0);}

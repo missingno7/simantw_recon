@@ -1235,6 +1235,51 @@
    ],
    "evidence": "evidence/experiments/merge-pairs/db-exists-setdatabase-shared-data-evidence.json",
    "reason": "_db_Exists's literal (0xB1EC) lies between _db_SetDataBase's private flag (0xB1EA) and its literals (0xB1F3); one object's _DATA is contiguous. Reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "text_netbios_shared_strings",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_NbFinalStatus",
+    "_NbImmediateStatus",
+    "_CopyName",
+    "_NbCall",
+    "_NbAddName",
+    "_NbReset",
+    "_NbSend",
+    "_NbListen",
+    "_NbPostListen",
+    "_NbDeleteName",
+    "_NbReceive",
+    "_NbPostReceiveAny",
+    "_NbHangUp",
+    "_NbCheck"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/netbios-shared-strings-evidence.json",
+   "reason": "The NetBIOS wrappers reference the unnamed private status strings of _NbFinalStatus (0x1E50/0x1E70/0x1EA2) or _NbImmediateStatus (0x1EC2/0x1EDC/0x1F08), and their own literals follow in code order; one translation unit from _NbFinalStatus through _NbCheck. Reviewed by supervisor; no historical filename claimed."
+  },
+  {
+   "id": "simtwo_cache_module_shared_data",
+   "status": "STRONGLY_SUPPORTED_TU",
+   "source": null,
+   "historical_filename": null,
+   "publics": [
+    "_ch_CreateTable",
+    "_ch_RemoveEntry",
+    "_ch_PurgeCache",
+    "_ch_LookUpHandle",
+    "_ch_LookUpId",
+    "_ch_AddEntry",
+    "_ch_DeleteEntry",
+    "_ch_CleanupTable",
+    "_ch_DumpOldest",
+    "_ch_GetPrime",
+    "_ch_SetCacheHooks"
+   ],
+   "evidence": "evidence/experiments/merge-pairs/cache-module-shared-data-evidence.json",
+   "reason": "The ch_* functions share unnamed private DGROUP words (0xB594, 0xB618/0xB623, 0xB655) inside the one private _DATA region after _cacheHook/_releaseHook; one translation unit from _ch_CreateTable through _ch_SetCacheHooks that also defines those data publics. Reviewed by supervisor; no historical filename claimed."
   }
  ]
 }

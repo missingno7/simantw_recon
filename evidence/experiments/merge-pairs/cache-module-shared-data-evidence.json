@@ -1,0 +1,77 @@
+{
+  "publics": [
+    "_ch_CreateTable",
+    "_ch_RemoveEntry",
+    "_ch_PurgeCache",
+    "_ch_LookUpHandle",
+    "_ch_LookUpId",
+    "_ch_AddEntry",
+    "_ch_DeleteEntry",
+    "_ch_CleanupTable",
+    "_ch_DumpOldest",
+    "_ch_GetPrime",
+    "_ch_SetCacheHooks"
+  ],
+  "code_range": "SIMTWO_MODULE 0x8F46-0x9A66+",
+  "data_publics": {
+    "0xb580": "_cacheHook",
+    "0xb584": "_releaseHook",
+    "0xb7c2": "_pack_threshold (next public, outside)"
+  },
+  "dgroup_references": {
+    "_ch_CreateTable": [
+      "0xb588",
+      "0xb655"
+    ],
+    "_ch_RemoveEntry": [
+      "0xb594"
+    ],
+    "_ch_PurgeCache": [],
+    "_ch_LookUpHandle": [],
+    "_ch_LookUpId": [
+      "0xb580",
+      "0xb582",
+      "0xb594",
+      "0xb596-0xb5a4",
+      "0xb618",
+      "0xb623"
+    ],
+    "_ch_AddEntry": [
+      "0xb594",
+      "0xb5a6",
+      "0xb5a8",
+      "0xb5c7",
+      "0xb5e7",
+      "0xb618",
+      "0xb623"
+    ],
+    "_ch_DeleteEntry": [
+      "0xb594"
+    ],
+    "_ch_CleanupTable": [
+      "0xb618",
+      "0xb623"
+    ],
+    "_ch_DumpOldest": [
+      "0xb625",
+      "0xb63e"
+    ],
+    "_ch_GetPrime": [
+      "0xb655"
+    ],
+    "_ch_SetCacheHooks": [
+      "0xb580",
+      "0xb582",
+      "0xb584",
+      "0xb586"
+    ]
+  },
+  "reasoning": [
+    "Between _releaseHook (0xB584) and _pack_threshold (0xB7C2) there is no MAPSYM public: 0xB588..0xB7C1 is private data of one object.",
+    "Unnamed private words are shared: 0xB594 by _ch_RemoveEntry/_ch_LookUpId/_ch_AddEntry/_ch_DeleteEntry, 0xB618/0xB623 by _ch_LookUpId/_ch_AddEntry/_ch_CleanupTable, 0xB655 by _ch_CreateTable/_ch_GetPrime; only one object can reference another object's unnamed private data.",
+    "_ch_SetCacheHooks stores the _cacheHook/_releaseHook publics, which lie at the start of the same contiguous _DATA contribution: the cache module defines them.",
+    "Consequence: the admitted data module data_cache_release_hook (a 574-byte struct from 0xB584) models this module's private statics and function literals as one data object; the cache unit is the proper owner. The 2-byte claim conflict at 0xB594 with _ch_DeleteEntry's chFoundIndex is the first symptom."
+  ],
+  "source": "target disassembly (evidence/disassembly/cards.jsonl) and SIMANTW.SYM",
+  "reviewed_by": "supervisor"
+}

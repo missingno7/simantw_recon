@@ -1,0 +1,104 @@
+{
+  "publics": [
+    "_NbFinalStatus",
+    "_NbImmediateStatus",
+    "_CopyName",
+    "_NbCall",
+    "_NbAddName",
+    "_NbReset",
+    "_NbSend",
+    "_NbListen",
+    "_NbPostListen",
+    "_NbDeleteName",
+    "_NbReceive",
+    "_NbPostReceiveAny",
+    "_NbHangUp",
+    "_NbCheck"
+  ],
+  "code_range": "_TEXT 0x7370-0x7D3E",
+  "dgroup_references": {
+    "_NbFinalStatus": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2"
+    ],
+    "_NbImmediateStatus": [
+      "0x1ec2",
+      "0x1edc",
+      "0x1f08"
+    ],
+    "_CopyName": [],
+    "_NbCall": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1f22"
+    ],
+    "_NbAddName": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1f32"
+    ],
+    "_NbReset": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1f45"
+    ],
+    "_NbSend": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1f56"
+    ],
+    "_NbListen": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1f66"
+    ],
+    "_NbPostListen": [
+      "0x1ec2",
+      "0x1edc",
+      "0x1f08",
+      "0x1f7c"
+    ],
+    "_NbDeleteName": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1f96"
+    ],
+    "_NbReceive": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1fad"
+    ],
+    "_NbPostReceiveAny": [
+      "0x1ec2",
+      "0x1edc",
+      "0x1f08",
+      "0x1fc0"
+    ],
+    "_NbHangUp": [
+      "0x1e50",
+      "0x1e70",
+      "0x1ea2",
+      "0x1fda"
+    ],
+    "_NbCheck": [
+      "0x1fec"
+    ]
+  },
+  "mapsym_publics_in_0x1E00_0x2000": [],
+  "reasoning": [
+    "No MAPSYM public lies in DGROUP 0x1E00-0x2000, so every referenced word is unnamed private data of some object.",
+    "Nine wrappers push the same three private words 0x1E50/0x1E70/0x1EA2 that _NbFinalStatus uses, and two (_NbPostListen, _NbPostReceiveAny) push _NbImmediateStatus's 0x1EC2/0x1EDC/0x1F08; only one object can reference another's unnamed private data.",
+    "Each wrapper's own literal follows in strictly increasing DGROUP order matching code order (0x1F22 _NbCall ... 0x1FEC _NbCheck), as MSC 7.00 emits one translation unit's literals.",
+    "All members resolve to the ogi context (asg-text-7cfe-ogi); units-nb found each singleton unit blocked by exactly these shared private strings (build/workers/units-nb/REPORT.md)."
+  ],
+  "source": "target disassembly (evidence/disassembly/cards.jsonl) and SIMANTW.SYM",
+  "reviewed_by": "supervisor"
+}

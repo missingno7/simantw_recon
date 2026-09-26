@@ -20,15 +20,15 @@ unsigned int far NbPostReceiveAny(unsigned char session,
     *(unsigned int far *)&postReceiveNcb[8] = length;
     *(unsigned long far *)&postReceiveNcb[0x2c] = timeout;
     NetBios(postReceiveNcb);
-    DebugWinPrintf("NetBIOS post receive any");
+    DebugWinPrintf("NetBIOS: PostReceiveAny.\n");
 
     if (postReceiveNcb[1] < 0x50)
-        DebugWinPrintf("NetBIOS post-receive status %u: %s", postReceiveNcb[1],
+        DebugWinPrintf("NetBIOS RetCode(%#x): %s\n", postReceiveNcb[1],
                        (char far *)NB_RETCODE[postReceiveNcb[1]]);
     else if (postReceiveNcb[1] < 0xf0)
-        DebugWinPrintf("NetBIOS post-receive status %u", postReceiveNcb[1]);
+        DebugWinPrintf("NetBIOS RetCode(%#x): Adapter malfunction.\n", postReceiveNcb[1]);
     else
-        DebugWinPrintf("NetBIOS post-receive status %u: %s", postReceiveNcb[1],
+        DebugWinPrintf("NetBIOS RetCode(%#x): %s\n", postReceiveNcb[1],
                        (char far *)NB_RETCODE[postReceiveNcb[1] - 0xa0]);
 
     return postReceiveNcb[1];

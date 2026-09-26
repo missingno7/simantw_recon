@@ -1,0 +1,2 @@
+/* direct_x/seq/named */
+extern unsigned char far BlistT[];extern unsigned char far BlistX[];extern unsigned char far BlistY[];extern signed char far Dx8[];extern signed char far Dy8[];extern void far AddAntToBList(int,int,int,int,int);void far MakeNewTailB(int index){unsigned char type; unsigned char direction; int life; int column;life=BlistX[index]+(signed char)Dx8[direction]; type=BlistT[index];direction=(unsigned char)type;direction &= 7;direction ^= 4;AddAntToBList(life,BlistY[index]+(signed char)Dy8[direction],type+8,9,0);}
