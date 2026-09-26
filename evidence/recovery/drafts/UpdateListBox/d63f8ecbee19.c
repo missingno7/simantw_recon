@@ -1,3 +1,4 @@
+/* Round 3, variant 1: far_strcpy_strcat. */
 /* Round 1, variant 2: strlib hypothesis. */
 /* Test whether the target's two inline copy sequences arise from simple
  * far-string copy loops under C7 optimization rather than library calls. */
@@ -24,6 +25,7 @@ void far UpdateListBox(int dialog, unsigned int fileType)
     int last;
     int i;
     int end;
+    unsigned int length;
     SendDlgItemMessage(dialog, 0x194, 0x000b, 0, 0L);
     source = Dx8 + 0x94a0;
     strcpy(buffer, source);

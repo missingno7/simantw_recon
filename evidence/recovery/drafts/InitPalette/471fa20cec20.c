@@ -1,0 +1,98 @@
+/* Hypothesis: a palette-capable display gets a color-count-sized palette after reserving the 20 system colors; other displays use the fixed CGA table. */
+struct PaletteEntry16 {
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+    unsigned char flags;
+};
+struct LogicalPalette16 {
+    unsigned int version;
+    unsigned long count;
+    struct PaletteEntry16 entries[17];
+};
+extern int near paletteH;
+extern char far Dx8[];
+extern int far pascal GetDesktopWindow(void);
+extern int far pascal GetDC(int window);
+extern int far pascal GetDeviceCaps(int dc, int index);
+extern int far pascal ReleaseDC(int window, int dc);
+extern unsigned int far pascal CreatePalette(struct LogicalPalette16 far *palette);
+extern void far * far calloc(unsigned int count, unsigned int size);
+extern void far free(void far *block);
+void far InitPalette(void)
+{
+    int window;
+    int dc;
+    int bits;
+    int planes;
+    int raster;
+    long depth;
+    int i;
+    unsigned long colorCount;
+    unsigned long count;
+    struct LogicalPalette16 far *palette;
+
+    if (paletteH != 0) return;
+    window = GetDesktopWindow();
+    dc = GetDC(window);
+    bits = GetDeviceCaps(dc, 12);
+    planes = GetDeviceCaps(dc, 14);
+    depth = (long)bits * planes;
+    colorCount = 1L;
+    for (i = 0; i < depth; ++i)
+        colorCount *= 2L;
+    if (colorCount > 20L) {
+        raster = GetDeviceCaps(dc, 0x26);
+        if ((raster & 0x0100) != 0) {
+            count = (unsigned int)(colorCount - 20L);
+            palette = (struct LogicalPalette16 far *)calloc((count + 2U) * 4U, 1);
+            if (palette != 0) {
+                palette->version = 0x0300;
+                palette->count = (unsigned int)count;
+                for (i = 0; i < count; ++i) {
+                    unsigned int color;
+                    color = (unsigned int)(i % 15) * 4;
+                    palette->entries[i].red = (unsigned char)Dx8[0x8c40 + color];
+                    palette->entries[i].green = (unsigned char)Dx8[0x8c41 + color];
+                    palette->entries[i].blue = (unsigned char)Dx8[0x8c42 + color];
+                    palette->entries[i].flags = 4;
+                }
+                for (i = 0; i < 16; ++i) {
+                    unsigned int color;
+                    color = (unsigned int)(15 - i) * 4;
+                    palette->entries[count - 1 - i].red = Dx8[0x8c40 + color];
+                    palette->entries[count - 1 - i].green = Dx8[0x8c41 + color];
+                    palette->entries[count - 1 - i].blue = Dx8[0x8c42 + color];
+                    palette->entries[count - 1 - i].flags = 4;
+                }
+                if (colorCount > 51L) {
+                    for (i = 0; i < 16; ++i) {
+                        unsigned int color;
+                        color = (unsigned int)(15 - i) * 4;
+                        palette->entries[count - 17 - i].red = Dx8[0x8c00 + color];
+                        palette->entries[count - 17 - i].green = Dx8[0x8c01 + color];
+                        palette->entries[count - 17 - i].blue = Dx8[0x8c02 + color];
+                        palette->entries[count - 17 - i].flags = 4;
+                    }
+                }
+                paletteH = CreatePalette(palette);
+                free(palette);
+            }
+        } else {
+            palette = (struct LogicalPalette16 far *)calloc(0x48, 1);
+            if (palette != 0) {
+                palette->version = 0x0300;
+                palette->count = 16;
+                for (i = 0; i < 16; ++i) {
+                    palette->entries[i].red = (unsigned char)Dx8[0x8c40 + i * 4];
+                    palette->entries[i].green = (unsigned char)Dx8[0x8c41 + i * 4];
+                    palette->entries[i].blue = (unsigned char)Dx8[0x8c42 + i * 4];
+                    palette->entries[i].flags = 4;
+                }
+                paletteH = CreatePalette(palette);
+                free(palette);
+            }
+        }
+    }
+    ReleaseDC(window, dc);
+}

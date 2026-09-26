@@ -1,3 +1,4 @@
+/* Round 5: append_offset_cache */
 /* Round 1, variant 2: strlib hypothesis. */
 /* Test whether the target's two inline copy sequences arise from simple
  * far-string copy loops under C7 optimization rather than library calls. */
@@ -5,6 +6,7 @@ extern char far Dx8[];
 extern char far *far strcpy(char far *destination, char far *source);
 extern char far *far strcat(char far *destination, char far *source);
 
+extern unsigned int far strlen(char far *text);
 extern void far *_fmemcpy(void far *destination, const void far *source, unsigned int count);
 extern char far *strchr(char far *text, int ch);
 extern char far *strstr(char far *text, char near *needle);
@@ -18,17 +20,18 @@ extern int far pascal SetDlgItemText(int dialog, int item, char far *text);
 void far UpdateListBox(int dialog, unsigned int fileType)
 {
     char buffer[256];
-    char near parentMarker[3] = { '.', '.', 0 };
     char far *source;
     int count;
     int last;
     int i;
     int end;
+    unsigned int length;
     SendDlgItemMessage(dialog, 0x194, 0x000b, 0, 0L);
     source = Dx8 + 0x94a0;
     strcpy(buffer, source);
     if (fileType != 0xc010) {
-        source = Dx8 + 0x9f10; strcat(buffer, source);
+        source = Dx8 + 0x9f10; length = strlen(buffer);
+        strcat(buffer + length, source);
     }
     DlgDirList(dialog, buffer, 0x194, 0x193, fileType);
     source = Dx8 + 0x94a0;
@@ -48,6 +51,6 @@ void far UpdateListBox(int dialog, unsigned int fileType)
     }
     SendDlgItemMessage(dialog, 0x194, 0x000b, 1, 0L);
     InvalidateRect(GetDlgItem(dialog, 0x194), 0, 1);
-    if (strstr(buffer, parentMarker) != 0) *source = 0;
+    if (strstr(buffer, "..") != 0) *source = 0;
     SetDlgItemText(dialog, 0x191, Dx8 + 0x9f10);
 }

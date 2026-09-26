@@ -1,3 +1,4 @@
+/* Round 5: literal_parent_strlib */
 /* Round 1, variant 2: strlib hypothesis. */
 /* Test whether the target's two inline copy sequences arise from simple
  * far-string copy loops under C7 optimization rather than library calls. */
@@ -18,7 +19,6 @@ extern int far pascal SetDlgItemText(int dialog, int item, char far *text);
 void far UpdateListBox(int dialog, unsigned int fileType)
 {
     char buffer[256];
-    char near parentMarker[3] = { '.', '.', 0 };
     char far *source;
     int count;
     int last;
@@ -48,6 +48,6 @@ void far UpdateListBox(int dialog, unsigned int fileType)
     }
     SendDlgItemMessage(dialog, 0x194, 0x000b, 1, 0L);
     InvalidateRect(GetDlgItem(dialog, 0x194), 0, 1);
-    if (strstr(buffer, parentMarker) != 0) *source = 0;
+    if (strstr(buffer, "..") != 0) *source = 0;
     SetDlgItemText(dialog, 0x191, Dx8 + 0x9f10);
 }

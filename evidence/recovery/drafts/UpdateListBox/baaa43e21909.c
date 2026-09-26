@@ -1,3 +1,4 @@
+/* Round 3, variant 2: explicit_append_fmemcpy. */
 /* Round 1, variant 2: strlib hypothesis. */
 /* Test whether the target's two inline copy sequences arise from simple
  * far-string copy loops under C7 optimization rather than library calls. */
@@ -5,6 +6,7 @@ extern char far Dx8[];
 extern char far *far strcpy(char far *destination, char far *source);
 extern char far *far strcat(char far *destination, char far *source);
 
+extern unsigned int far strlen(char far *text);
 extern void far *_fmemcpy(void far *destination, const void far *source, unsigned int count);
 extern char far *strchr(char far *text, int ch);
 extern char far *strstr(char far *text, char near *needle);
@@ -24,11 +26,13 @@ void far UpdateListBox(int dialog, unsigned int fileType)
     int last;
     int i;
     int end;
+    unsigned int length;
     SendDlgItemMessage(dialog, 0x194, 0x000b, 0, 0L);
     source = Dx8 + 0x94a0;
     strcpy(buffer, source);
     if (fileType != 0xc010) {
-        source = Dx8 + 0x9f10; strcat(buffer, source);
+        source = Dx8 + 0x9f10; length = strlen(source);
+        _fmemcpy(buffer + strlen(buffer), source, length + 1);
     }
     DlgDirList(dialog, buffer, 0x194, 0x193, fileType);
     source = Dx8 + 0x94a0;
