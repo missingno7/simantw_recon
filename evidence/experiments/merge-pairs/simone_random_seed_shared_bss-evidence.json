@@ -1,0 +1,33 @@
+{
+  "publics": [
+    "_SetSRandSeed",
+    "_GetSRandSeed",
+    "_SeedSRand",
+    "_SeedRRand",
+    "_SRand1",
+    "_SRand2",
+    "_SRand4",
+    "_SRand8",
+    "_SRand16",
+    "_SRand32",
+    "_SRand64",
+    "_SRand128",
+    "_SRand256"
+  ],
+  "code_range": "SIMONE_MODULE 0x1506-0x16AD",
+  "shared_private_word": "DGROUP 0xCBF2 (BSS, above _edata; no MAPSYM public in 0xCBE0-0xCC00)",
+  "instructions": {
+    "_SetSRandSeed": "mov word ptr [0xcbf2], ax",
+    "_GetSRandSeed": "mov ax, word ptr [0xcbf2]",
+    "_SeedSRand": "mov word ptr [0xcbf2], ax",
+    "_SeedRRand": "mov word ptr [0xcbf2], ax",
+    "_SRand1.._SRand256": "mov ax, word ptr [0xcbf2] ... mov word ptr [0xcbf2], ax"
+  },
+  "reasoning": [
+    "All thirteen contiguous functions read or write the same unnamed uninitialised word 0xCBF2 (the random seed).",
+    "An uninitialised global shared across objects would be a communal (COMDEF) and named in the map; no MAPSYM public exists there, so it is a file-scope static of one object.",
+    "build_topology excludes _BSS words from its automatic joins, so this is recorded as reviewed joint-compile evidence."
+  ],
+  "source": "target disassembly (evidence/disassembly/cards.jsonl) and SIMANTW.SYM",
+  "reviewed_by": "supervisor"
+}
