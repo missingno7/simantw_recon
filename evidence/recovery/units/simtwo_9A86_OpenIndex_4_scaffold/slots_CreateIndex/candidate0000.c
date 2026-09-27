@@ -3,11 +3,20 @@
  * Members: _DeleteCurrentIndex, _DeleteIndex
  * SCAFFOLDED: unclaimed members _OpenIndex are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
+struct IndexHeader {
+    int recordCount;
+    int field2;
+    long stat1;
+    long stat2;
+    long stat3;
+    int field8;
+    int field9;
+};
+
 struct OpenDB {
     char name[0x50];
     void far *indexTable;
-    int recordCount;
-    int headerWords[9];
+    struct IndexHeader header;
     unsigned char pad1[4];
     int count;
     long freeBytes;
@@ -81,7 +90,7 @@ void far CreateIndex(char far *name, int idx)
 {
     char buf[100];
     int handle;
-    int far *header;
+    struct IndexHeader far *header;
     unsigned size;
 
     sprintf(buf, "%s.ndx", name);
@@ -89,20 +98,17 @@ void far CreateIndex(char far *name, int idx)
     if (handle <= 0)
         DosPunt("Can't create index file", buf, errno);
 
-    openDBData[idx].recordCount = 0;
-    openDBData[idx].headerWords[0] = 0;
-    openDBData[idx].headerWords[2] = 0;
-    openDBData[idx].headerWords[1] = 0;
-    openDBData[idx].headerWords[4] = 0;
-    openDBData[idx].headerWords[3] = 0;
-    openDBData[idx].headerWords[6] = 0;
-    openDBData[idx].headerWords[5] = 0;
-    openDBData[idx].headerWords[7] = 0;
-    openDBData[idx].headerWords[8] = 0;
+    openDBData[idx].header.recordCount = 0;
+    openDBData[idx].header.field2 = 0;
+    openDBData[idx].header.stat1 = 0;
+    openDBData[idx].header.stat2 = 0;
+    openDBData[idx].header.stat3 = 0;
+    openDBData[idx].header.field8 = 0;
+    openDBData[idx].header.field9 = 0;
 
-    header = &openDBData[idx].recordCount;
+    header = &openDBData[idx].header;
     _lwrite(handle, header, 0x14);
-    size = (unsigned)(openDBData[idx].recordCount * 8);
+    size = (unsigned)(openDBData[idx].header.recordCount * 8);
     if (size != 0) {
         openDBData[idx].indexTable = mem_malloc(size, "index");
     } else {

@@ -33,3 +33,13 @@ class EffectiveOutput(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TemplateInputs(unittest.TestCase):
+    def test_template_axis_dict_inputs_are_labelled(self):
+        # search.py --template rows carry the axis choice dict as their input (2026-09-27 TypeError).
+        from search import effective_output
+        a = {'object': 'x', 'input': {'order': 'a + b'}, 'opcodes': '3/4'}
+        b = {'object': 'x', 'input': {'order': 'b + a'}, 'opcodes': '3/4'}
+        result = effective_output([(None, a), (None, b)], {}, [])
+        self.assertIn('{"order": "b + a"}', result['same_output_as'])

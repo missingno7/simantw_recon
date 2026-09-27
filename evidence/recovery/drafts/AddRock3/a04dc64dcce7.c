@@ -1,0 +1,31 @@
+extern unsigned char near MapA[128][64];
+extern unsigned char far Dx8[];
+#define AT(off) (*((&Dx8[(off)]) + 0x87a0))
+void far AddRock3(int x, int y, int id)
+{
+    int r3;
+    int ypos;
+    int row;
+    r3=id*3;
+    row=0;
+    ypos=x*64;
+    for (; row<3; row++) {
+        int col1;
+        for (col1=0; col1<3; col1++) {
+            if (AT(r3*3+row+col1*3)!=0) {
+                if (MapA[0][y+ypos+col1]>0x10) return;
+            }
+        }
+        ypos+=0x40;
+    }
+    row=0;
+    ypos=x*64;
+    for (; row<3; row++) {
+        int col2;
+        for (col2=0; col2<3; col2++) {
+            int v=AT(r3*3+row+col2*3);
+            if (v!=0) MapA[0][y+ypos+col2]=v;
+        }
+        ypos+=0x40;
+    }
+}

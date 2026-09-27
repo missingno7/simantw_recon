@@ -81,15 +81,21 @@ def output_history(symbol):
     return seen, bests
 
 
+def input_label(value):
+    """A hashable, readable label for a candidate input (a path, or a template axis choice dict)."""
+    return value if isinstance(value, str) else json.dumps(value, sort_keys=True)
+
+
 def effective_output(rows, seen, bests):
     """Group candidates by produced object: edits that do not reach the compiler's output are visible at once."""
-    first, repeated = dict(seen), {}
+    first, repeated = {k: input_label(v) for k, v in seen.items()}, {}
     for _, s in rows:
+        label = input_label(s['input'])
         if s.get('object') and s['object'] in first:
             earlier = first[s['object']]
-            repeated[s['input']] = 'an earlier run of this file' if earlier == s['input'] else earlier
+            repeated[label] = 'an earlier run of this file' if earlier == label else earlier
         elif s.get('object'):
-            first[s['object']] = s['input']
+            first[s['object']] = label
     scores = []
     for _, s in rows:
         try:

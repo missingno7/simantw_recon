@@ -1,3 +1,6 @@
+static char unpauseText[] = "Un&pause\tShift+0";
+static char pauseText[] = "&Pause\tShift+0";
+
 /*
  * SetMenuEntries: refresh the game menu.  Speed items 0x43..0x46 show
  * the one matching GameSpeed checked (state 0x10, others 0x20); the
@@ -24,7 +27,7 @@ void far SetMenuEntries(void)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? "Un&pause\tShift+0" : "&Pause\tShift+0");
+    SetMenuOptionText(0x41, GamePaused ? unpauseText : pauseText);
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();

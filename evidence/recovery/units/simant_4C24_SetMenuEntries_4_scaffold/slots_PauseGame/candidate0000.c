@@ -1,4 +1,4 @@
-/* PauseGame: set the pause state.  Unpausing (mode==0) first closes any
+/* SetPause: set the pause state.  Unpausing (mode==0) first closes any
  * open tool mode (life-transfer or target mode via CurGameTool 0xa/0xb),
  * then stores GamePaused=mode.  When pausing (mode!=0) it posts a
  * CurGameTool-specific prompt (the yard prompt for -1, tool-ten prompt
@@ -36,6 +36,7 @@ extern void far SetMenuItemState(int item, int state);
 extern void far SetMenuOptionText(int item, char far *text);
 extern void far UpdateUserButtons(void);
 
+
 void far PauseGame(int mode)
 {
     int item;
@@ -66,7 +67,7 @@ void far PauseGame(int mode)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? "Un&pause\tShift+0" : "&Pause\tShift+0");
+    SetMenuOptionText(0x41, GamePaused ? unpauseText : pauseText);
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();

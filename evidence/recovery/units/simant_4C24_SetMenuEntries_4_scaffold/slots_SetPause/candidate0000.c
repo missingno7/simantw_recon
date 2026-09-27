@@ -36,6 +36,7 @@ extern void far SetMenuItemState(int item, int state);
 extern void far SetMenuOptionText(int item, char far *text);
 extern void far UpdateUserButtons(void);
 
+
 void far SetPause(int mode)
 {
     int item;
@@ -66,7 +67,7 @@ void far SetPause(int mode)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? "Un&pause\tShift+0" : "&Pause\tShift+0");
+    SetMenuOptionText(0x41, GamePaused ? unpauseText : pauseText);
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
