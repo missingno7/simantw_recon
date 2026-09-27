@@ -257,6 +257,11 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Evidence: `evidence/codegen-facts/MSC7-X1/` (probe reports), build/workers/f-slotsteer/REPORT.md.
 - Validated 2026-09-27.
 
+**MSC7-X2: a named temporary for a subexpression in ONE branch (`value = mapX << 5; return T[value + mapY];` beside a sibling arm that indexes inline) can change the register schedule of the whole function, and it survives into code, unlike X1 constructs. SUPPORTED (one admission).**
+- Found by tools/permuter.py on `_GetSmellT` (`baseline /NTSIMANT1_MODULE`). It took the draft from 45/46 to body-exact; admitted as EXACT_STEERED in `simant1_9612_scaffold` (2026-09-27).
+- Contrast E18: in straight-line code a temporary disappears. Here it sits in one arm of a branch whose other arm computes the same subexpression inline.
+- Consequence: allocation residues respond to the placement of temporaries and subexpressions, which the permuter's introduce/inline-temporary mutations explore.
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.
