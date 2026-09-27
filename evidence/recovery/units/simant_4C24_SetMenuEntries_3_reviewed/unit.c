@@ -30,7 +30,7 @@ extern char far helpFile[];
 extern int far pascal WinHelp(int window, char far *file,
                               unsigned int command, unsigned long data);
 struct MenuText { char unpause[17]; char pause[15]; };
-static struct MenuText near menuText = { "Un&pause\tShift+0", "&Pause\tShift+0" };
+static struct MenuText __based(__segname("SIMANT_DATA_GROUP")) menuText = { "Un&pause\tShift+0", "&Pause\tShift+0" };
 
 
 

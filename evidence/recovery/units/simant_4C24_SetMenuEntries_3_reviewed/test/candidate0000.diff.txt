@@ -1,4 +1,4 @@
-Whole-member issues: inconsistent public placements for SIMANT_MODULE
+Whole-member issues: inconsistent public placements for SIMANT_MODULE: _SetPause implies base 1:4C14, _PauseGame implies base 1:4C1A, _SetMenuEntries implies base 1:4C24; either a member before them in this segment compiles to a different size than the original (only exact bodies may share a run) or code that lies between them in the original is missing (split the run or add the members in between)
 Target | Candidate | Difference
  | 0000 enter 2, 0 | instruction_shape
 0000 push di | 0004 push di | 
@@ -25,39 +25,39 @@ Target | Candidate | Difference
 0039 mov ax, 0x900 | 003d mov ax, 0 | immediate_or_binding
 003c jmp 0x41 | 0040 jmp 0x45 | branch_target
 003e mov ax, 0x911 | 0042 mov ax, 0x11 | immediate_or_binding
- | 0045 mov word ptr [bp - 2], ax | instruction_shape
-0041 push ds | 0048 push ds | 
-0042 push ax | 0049 push ax | 
-0043 push 0x41 | 004a push 0x41 | 
-0045 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 004c lcall 0, 0 | immediate_or_binding,immediate_or_binding
-004a add sp, 6 | 0051 add sp, 6 | 
-004d mov di, 0x31 | 0054 mov di, 0x31 | 
-0050 mov si, 0x85f2 | 0057 mov si, 0 | immediate_or_binding
-0053 mov es, word ptr [0xbece] | 005a mov es, word ptr [4] | memory_operand
-0057 cmp word ptr es:[si], 1 | 005e cmp word ptr es:[si], 1 | 
-005b sbb ax, ax | 0062 sbb ax, ax | 
-005d and ax, 0x10 | 0064 and ax, 0x10 | 
-0060 add ax, 0x10 | 0067 add ax, 0x10 | 
-0063 push ax | 006a push ax | 
-0064 push di | 006b push di | 
-0065 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 006c lcall 0, 0 | immediate_or_binding,immediate_or_binding
-006a add sp, 4 | 0071 add sp, 4 | 
-006d add si, 2 | 0074 add si, 2 | 
-0070 inc di | 0077 inc di | 
-0071 cmp di, 0x36 | 0078 cmp di, 0x36 | 
-0074 jle 0x53 | 007b jle 0x5a | branch_target
-0076 nop  | 007d lcall 0, 0 | instruction_shape
+0041 push ds | 0045 mov word ptr [bp - 2], ax | instruction_shape
+ | 0048 push 0 | instruction_shape
+0042 push ax | 004b push ax | 
+0043 push 0x41 | 004c push 0x41 | 
+0045 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 004e lcall 0, 0 | immediate_or_binding,immediate_or_binding
+004a add sp, 6 | 0053 add sp, 6 | 
+004d mov di, 0x31 | 0056 mov di, 0x31 | 
+0050 mov si, 0x85f2 | 0059 mov si, 0 | immediate_or_binding
+0053 mov es, word ptr [0xbece] | 005c mov es, word ptr [4] | memory_operand
+0057 cmp word ptr es:[si], 1 | 0060 cmp word ptr es:[si], 1 | 
+005b sbb ax, ax | 0064 sbb ax, ax | 
+005d and ax, 0x10 | 0066 and ax, 0x10 | 
+0060 add ax, 0x10 | 0069 add ax, 0x10 | 
+0063 push ax | 006c push ax | 
+0064 push di | 006d push di | 
+0065 lcall <resolved fixup> [{'kind': 'internal', 'segment': 2, 'offset': 0}] | 006e lcall 0, 0 | immediate_or_binding,immediate_or_binding
+006a add sp, 4 | 0073 add sp, 4 | 
+006d add si, 2 | 0076 add si, 2 | 
+0070 inc di | 0079 inc di | 
+0071 cmp di, 0x36 | 007a cmp di, 0x36 | 
+0074 jle 0x53 | 007d jle 0x5c | branch_target
+0076 nop  | 007f lcall 0, 0 | instruction_shape
 0077 push cs |  | instruction_shape
 0078 call 0xffffb616 |  | instruction_shape
-007b mov es, word ptr [0xbece] | 0082 mov es, word ptr [4] | memory_operand
-007f mov ax, word ptr es:[0x85f4] | 0086 mov ax, word ptr es:[2] | memory_operand
-0083 mov es, word ptr [0xbed0] | 008a mov es, word ptr [6] | memory_operand
-0087 mov word ptr es:[0xaf6], ax | 008e mov word ptr es:[0], ax | memory_operand
-008b mov es, word ptr [0xbece] | 0092 mov es, word ptr [4] | memory_operand
-008f mov ax, word ptr es:[0x85f6] | 0096 mov ax, word ptr es:[4] | memory_operand
-0093 mov es, word ptr [0xbed2] | 009a mov es, word ptr [8] | memory_operand
-0097 mov word ptr es:[0xaf8], ax | 009e mov word ptr es:[0], ax | memory_operand
-009b pop si | 00a2 pop si | 
-009c pop di | 00a3 pop di | 
- | 00a4 leave  | instruction_shape
-009d retf  | 00a5 retf  | 
+007b mov es, word ptr [0xbece] | 0084 mov es, word ptr [4] | memory_operand
+007f mov ax, word ptr es:[0x85f4] | 0088 mov ax, word ptr es:[2] | memory_operand
+0083 mov es, word ptr [0xbed0] | 008c mov es, word ptr [6] | memory_operand
+0087 mov word ptr es:[0xaf6], ax | 0090 mov word ptr es:[0], ax | memory_operand
+008b mov es, word ptr [0xbece] | 0094 mov es, word ptr [4] | memory_operand
+008f mov ax, word ptr es:[0x85f6] | 0098 mov ax, word ptr es:[4] | memory_operand
+0093 mov es, word ptr [0xbed2] | 009c mov es, word ptr [8] | memory_operand
+0097 mov word ptr es:[0xaf8], ax | 00a0 mov word ptr es:[0], ax | memory_operand
+009b pop si | 00a4 pop si | 
+009c pop di | 00a5 pop di | 
+ | 00a6 leave  | instruction_shape
+009d retf  | 00a7 retf  | 
