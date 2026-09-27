@@ -10637,6 +10637,11 @@
         "text": "Meta-analysis extension f-n2-17: symbolic lift+refine authored 11 bounded frame/temp/order/condition variants; its best stayed 41/68 opcodes and 147/208 bytes with two output classes. It did not improve the preserved 66/68 best or explain the BX:ES far-pointer home. No reviewed exact body was created.",
         "origin": "build/search/DoRepoExit/20260927T150849-112356",
         "recorded": "2026-09-27T15:08:50.138511+00:00"
+      },
+      {
+        "text": "Applied the local aggregate-pointer-field form to FlyAwayR: 55/68 versus the preserved 66/68; pointer-object volatile was 55/71. The first target gap is its BP-4/BP-2 pointer home before CMP ES:[BX] and PUSH ES:[BX]; C7 still chooses a direct/global register form. No admission.",
+        "origin": "build/search/DoRepoExit/20260927T170140-140920",
+        "recorded": "2026-09-27T17:01:41.205361+00:00"
       }
     ]
   },
@@ -21554,6 +21559,11 @@
         "text": "Second-pass meta-analysis: target stores SI/ES as a far pointer at BP-0x10/BP-0x0e on entry, then reloads it with LES at +0x100 for the list index and +0x13d for the guarded increment. The best C pointer local is initialized identically but MSC folds those two later reads to the known LionIndex global; frame is ENTER 0x0c versus target 0x12, pointer home BP-4 versus BP-0x10, and random-pair temp BP-0x0c versus target BP-0x12. Direct volatile-pointer object, volatile-pointee, volatile-global, pointer-record holder and selected volatile-index-expression probes either reproduce prior failed outputs or fall to 105-121/123 (selected expression 114/124); no branch-destination mismatch remains. The unresolved construct is the historical pointer local's lifetime/home that inhibits address folding without adding a cached index register or extra volatile accesses. Stop this pass here; no strict admission or TU attempt is justified until that source form is distinguished.",
         "origin": "build/search/InitAntLions/20260927T153846-66832",
         "recorded": "2026-09-27T15:38:47.202455+00:00"
+      },
+      {
+        "text": "Local aggregate-pointer-field reissue scored 116/123 and 352/347 bytes versus the preserved 121/123 and 353/347. It shifts the frame and does not recover the target's two LES reloads; no admission.",
+        "origin": "build/search/InitAntLions/20260927T170140-24816",
+        "recorded": "2026-09-27T17:01:40.752404+00:00"
       }
     ]
   },
@@ -32536,6 +32546,11 @@
         "text": "Second pass: best remains 62/66 opcodes, 162/165 bytes, ENTER 4 vs target ENTER 8. Target frame requires homes BP-6/BP-8 (alongside BP-2/BP-4); candidate has only nx/ny homes and p in BX. Branch-scoped based cells and far-pointer/two-home/shared-tail variants failed; 2D YMapPop R/B compiled identically to the prior draft. Selector-pool/fixup noise is set aside per measured supervisor finding. Remaining body mismatch is pointer-home/lifetime shape; no strict match/admission.",
         "origin": "build/search/Reproduce/20260927T155442-87284",
         "recorded": "2026-09-27T15:54:43.238168+00:00"
+      },
+      {
+        "text": "Changing the based map cursor to a far-pointer local scored 56/68 versus the preserved 62/66 and left ENTER 8 versus 4 unresolved. Keep the current body; this pointer-type family did not explain the two target homes.",
+        "origin": "build/search/Reproduce/20260927T170140-24592",
+        "recorded": "2026-09-27T17:01:40.844165+00:00"
       }
     ]
   },
@@ -34201,6 +34216,11 @@
         "text": "Additional f-n2-13 source-family check: assigning the incoming far pointer parameter to itself in the guard leaves the frame exact but reproduces the 76/80 direct-parameter object (same output hash as palette_a3). It still emits MOV SI,[bp+0xc] and MOV AX,[bp+0xe], then reloads DS in the loop body; this does not recover the target early LDS or its DS lifetime.",
         "origin": "build/search/SetDevicePalette/20260927T145304-102912",
         "recorded": "2026-09-27T14:53:04.425924+00:00"
+      },
+      {
+        "text": "Best source already emits target LDS SI,[BP+0xC] after p=colors. Removing the local alias to use colors directly drops to 76/80 versus 80/82, although it removes the four-byte frame excess. Early LDS is source-shape evidence; no exact candidate or admission.",
+        "origin": "build/search/SetDevicePalette/20260927T170140-68700",
+        "recorded": "2026-09-27T17:01:41.027077+00:00"
       }
     ]
   },
@@ -42183,6 +42203,11 @@
         "text": "Second-pass probes: a register far-pointer alias, combined font-and-first-glyph guard, long null constant, and reversed pointer/null operands did not improve the preserved 41/44, 127/123 draft; the combined guard falls to 41/47. The decisive body gap remains target LES SI,[BP+6]; MOV AX,ES; OR AX,SI, which keeps ES:SI for glyph fields, versus separate MOV loads of offset/selector and a later ES reload. The final mem_free calls also bind to segment 2 offset 21706 rather than target offset 0; treat that as a separate helper identity/fixup issue until the body is exact. No tested null syntax or pointer qualifier explains the LES load; next useful source family must naturally keep the far-parameter load live across its null branch.",
         "origin": "build/search/font_DumpFont/20260927T155013-54764",
         "recorded": "2026-09-27T15:50:13.351414+00:00"
+      },
+      {
+        "text": "The baseline probe's p=parameter; null-check; dereference form emits LES, but applying it under this object's /Og profile adds a four-byte home and scores 40/45 versus the preserved 41/44. Long-cast and register-parameter variants reproduce the best. Target LES load remains unexplained; no admission.",
+        "origin": "build/search/font_DumpFont/20260927T170140-176804",
+        "recorded": "2026-09-27T17:01:40.948799+00:00"
       }
     ]
   },
@@ -42918,6 +42943,11 @@
         "text": "Chained size->x = (size->y = 1) fixes the failure frame to ENTER 18 and emits the target AX store order at offsets +2 then +0. The remaining opcode gap is LES BX,[BP+6] versus MOV BX,[BP+6] plus MOV ES,[BP+8]; direct stores, array/word views, address aliases, aggregate initializers, qualifiers and lifted variants did not change it. Correct far mem_Lock and mem_Unlock declarations are required for LINK-lowered calls. compiler_profiles show remains baseline; topology component gr:465C contains only this function. Record this persistent code-shape residue for context review.",
         "origin": "build/search/gr_BitMapSize/20260927T155757-64168",
         "recorded": "2026-09-27T15:57:57.365594+00:00"
+      },
+      {
+        "text": "Moving the local far output-pointer alias before db_LoadObject and reusing it for both branches scored 65/75 versus the preserved 70/75; ENTER remains 22 versus target 18. The direct chained-store candidate remains best; LES parameter sequence is unresolved.",
+        "origin": "build/search/gr_BitMapSize/20260927T170140-6368",
+        "recorded": "2026-09-27T17:01:41.103368+00:00"
       }
     ]
   },
@@ -45592,6 +45622,11 @@
         "text": "Caste second-pass meta-analysis: ENTER 16 and all frame homes are exact; first and only opcode/body-size divergence remains target +0x18 PUSH word ptr ES:[BX] through the saved PACK pointer, while the best C draft emits a 5-byte direct _casteAnimHandle push and shifts the tail by +2 bytes (151 vs 149). Admitted _win_YardClosed proves the same saved far-pointer idiom and repeated indirect loads, but Caste has only one handle argument load before clearing it. Struct field, byte/void aliases, reassignment, dead use, and call-site-only volatile lvalue cast all compile to the same object; prior 25 alias/pointer/qualifier/control-flow variants and profile/based probes are in history. No evidence-backed source construct remains to change this operand while preserving the exact frame and surrounding bytes; need original declaration/alias provenance or a compiler-specific source example before another useful round.",
         "origin": "build/search/win_CasteControlClosed/20260927T151740-82016",
         "recorded": "2026-09-27T15:17:40.568680+00:00"
+      },
+      {
+        "text": "The controlled immediate-use probe confirms the local pointer field alone does not preserve PUSH ES:[BX]; without an intervening call MSC7 folds to the direct far-global push. Target remains 53/53, 151/149; no new source family found.",
+        "origin": "build/search/win_CasteControlClosed/20260927T170140-111440",
+        "recorded": "2026-09-27T17:01:40.664870+00:00"
       }
     ]
   },
@@ -48766,6 +48801,11 @@
         "text": "Frame-exact full replay remains 53/53 aligned opcodes, 151/149 bytes. First body operand mismatch is +0x18: target pushes the handle through saved ES:BX, while C7 folds it to a direct PACK absolute-memory push; branch and stack alignment otherwise agree. Prior notes document 25 alias/wrapper/qualifier/control-flow variants and all-profile replays; the attempted external-volatile global is unsupported and repeats a prior volatile-pointee output. This is not selector placement debt, and no distinct isolated C source family remains without new alias/CSE or translation-unit evidence.",
         "origin": "build/search/win_ModeControlClosed/20260927T144619-80716",
         "recorded": "2026-09-27T14:46:20.194344+00:00"
+      },
+      {
+        "text": "Baseline slotprobe shows h.p=&handle; if(*h.p) Remove(*h.p) still folds the push to the direct far global. Only an intervening far call before the second read forces BP-4/-2 homes, LES and PUSH ES:[BX]. Target has no such call; 53/53 aligned opcodes but 151/149 bytes remains open.",
+        "origin": "build/search/win_ModeControlClosed/20260927T170140-24300",
+        "recorded": "2026-09-27T17:01:40.549137+00:00"
       }
     ]
   },
