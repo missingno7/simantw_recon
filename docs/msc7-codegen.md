@@ -27,13 +27,35 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 
 ## 1. Frame and locals
 
-**MSC7-F1: named locals are homed in first-use order, not declaration or name order. SUPPORTED.**
-- Evidence:
-  - `evidence/experiments/frame-model/` (415-function /Zi CodeView corpus; held-out exact order 42/73 for declaration order, pairwise 68.5% for loop-weighted use).
-  - MSC7-L1 control: reordering first uses changes homes, while names and declarations do not.
-- Scope: address-taken and plain memory locals under `baseline`. Frame-model rules for mixed frames remain uncertain.
-- Counterexamples: none recorded.
-- Validated 2026-09-27.
+**MSC7-F1: home assignment for named locals. SUPPORTED, refined by F1A–F1G.**
+- The frame-model corpus (`evidence/experiments/frame-model/`) and f-study-forder (2026-09-27, `baseline` `/Oelw /NT_TEXT` toys, assigned-profile admitted controls) show the following.
+- Names and declaration order do not decide homes for plain or address-taken locals (L1, F1G); volatile locals are the exception (F1D).
+
+**MSC7-F1A: for same-width address-taken locals, static reference count ranks the homes (nearest BP first), and equal counts follow the first lexical reference. A later store order does not override it. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F1A/`.
+- Controls: `_AnimYellowFight` and `_win_ClearGroupAreas` declaration permutations compile identically.
+
+**MSC7-F1B: F1A holds when the first references sit inside a branch or a loop body; loop weight is not needed to explain the order. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F1B/`.
+
+**MSC7-F1C: size classes in one small `baseline` frame put char at BP-1, word at BP-4, and long/far pointers in 4-byte homes (BP-8, BP-12). Equal-width 4-byte locals swap when their first-reference order swaps. SUPPORTED, one frame only.**
+- `evidence/codegen-facts/MSC7-F1C/`.
+
+**MSC7-F1D: volatile word locals follow declaration identity (the first declared is deeper: a at BP-4, b at BP-2); store order does not move them. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F1D/`.
+- A distinct allocation class from address-taken locals.
+
+**MSC7-F1E: two volatile word locals in disjoint sibling blocks do not share a home. SUPPORTED, narrow.**
+- `evidence/codegen-facts/MSC7-F1E/`.
+- The admitted `_MakePillFood` keeps block-local x,y in its exact frame.
+
+**MSC7-F1F: static-use weight outranks first use. Extra static references move a local nearer BP even when its first reference is later. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F1F/`.
+- This is the lever for WRONG_STACK_SLOT residues: an extra or missing use of one local, or a different allocation class (volatile, address-taken), swaps homes.
+
+**MSC7-F1G: reordering declarations alone leaves an admitted function identical. SUPPORTED.**
+- `_MakePillFood` (`og`, 219/219, 560 bytes).
+- `evidence/codegen-facts/MSC7-F1G/`.
 
 **MSC7-L1: local homes do not follow the identifier hash (stunts L1). FALSIFIED.**
 - Hypothesis from MSC 5.10: bucket = sum of the name's bytes & 15, walked newest-first.
