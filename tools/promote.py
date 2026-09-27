@@ -635,7 +635,11 @@ def main():
     ap.add_argument('--retire-data', help='remove the whole data module with this recipe source (bytes must stay owned by someone else)')
     ap.add_argument('--resources', action='store_true', help='freshly compile and admit exact resource payloads with pinned RC 3.00')
     ap.add_argument('--link', action='store_true', help='freshly run LINK 5.30 and admit the five exact complete NE regions')
+    ap.add_argument('--steered', metavar='TEXT', help='source provenance EXACT_STEERED: name every construct that exists to steer MSC 7.00 '
+                    '(no runtime effect) and why; the binary proof is unchanged (docs/factory.md, "Source provenance")')
     args = ap.parse_args()
+    if args.steered is not None and not args.steered.strip():
+        ap.error('--steered needs a description of the steering constructs')
     if args.link:
         result = promote_link(args.verify_only)
     elif args.resources:
@@ -658,7 +662,28 @@ def main():
         result = promote_function(args.symbol, Path(args.source), args.summary, args.verify_only, args.assembler, args.asm_flag)
     else:
         ap.error('give SYMBOL SOURCE, --unit UNIT or --recover')
+    if isinstance(result, dict) and result.get('status') == 'PROMOTED' and result.get('symbols'):
+        result['provenance'] = record_provenance(result['symbols'], result['id'], args.steered)
     print(json.dumps(result, indent=2))
+
+
+PROVENANCE = ROOT / 'evidence/recovery/provenance.json'
+
+
+def record_provenance(symbols, admission, steered=None):
+    """Source provenance of an exact admission. Both classes are binary matched; EXACT_STEERED only says
+    that some source constructs exist to steer MSC 7.00 and the historical spelling is uncertain.
+    A later natural admission of the same symbol clears the steered entry."""
+    with publication.publication_lock():
+        data = read_json(PROVENANCE) if PROVENANCE.exists() else dict(version=1, entries={})
+        for name in symbols:
+            if steered:
+                data['entries'][name] = dict(provenance='EXACT_STEERED', steering=steered.strip(), admission=admission,
+                                             recorded=publication.timestamp())
+            else:
+                data['entries'].pop(name, None)
+        write_json(PROVENANCE, data)
+    return 'EXACT_STEERED' if steered else 'EXACT_NATURAL'
 
 
 if __name__ == '__main__':

@@ -135,6 +135,16 @@ python tools/worker_validate.py --workers 4
 
 When many workers run under `cx`, start the service from the supervisor's own session (`python tools/compiler_service.py serve --workers 4 --idle-seconds 86400`). Otherwise the first worker's compile request starts it as that worker's descendant, and `cx` stops it, and with it everyone's compiles, when that worker exits. `layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. After changing the worker or wait helper, rerun single-worker validation before parallel validation, then `validate.py`. Do not edit recorded fingerprints to bypass them.
 
+## Source provenance: EXACT_NATURAL and EXACT_STEERED
+
+Binary proof and source provenance are recorded separately. Every admission passes the same strict gate. `evidence/recovery/provenance.json` lists the admissions whose source contains steering constructs (`EXACT_STEERED`, written by `promote.py --steered TEXT`); every other admission is `EXACT_NATURAL`. A steering construct is plain C that has no runtime effect but changes an MSC 7.00 decision:
+- a dead compile-time guard;
+- a redundant alias or temporary;
+- an equivalent but differently shaped CFG;
+- a statement the optimiser removes.
+
+The TEXT names each construct and the decision it steers, e.g. "`register int upper` alias keeps `first` in DI across the loop test". Steering is the last step after natural hypotheses from docs/msc7-codegen.md have been tried. It is preferred over any toolchain change: one locked compiler model, never per-function flags. A later natural source replaces the steered record automatically.
+
 ## Search diagnostics versus proof
 
 `tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. The diagnostic view accounts for LINK transformations only when the strict matcher has independently validated them. It never modifies an object, and it never participates in admission.

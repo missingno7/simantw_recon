@@ -1,5 +1,7 @@
 # Recovery lessons
 
+> Compiler-behaviour facts (VERIFIED/SUPPORTED/FALSIFIED/OPEN, with reproducers) now live in [msc7-codegen.md](msc7-codegen.md); this file keeps workflow lessons. Probes: `tools/probe.py`.
+
 Read this before the first search of a new target. These are established hints from earlier work, not gates: they never stop an investigation or change the proof rules. Links into `evidence/recovery/workflow/jobs/` point to the pre-simplification job tree, available in tag `checkpoint/pre-simplification-20260925` and locally under `build/archive/evidence-recovery/workflow/` (see MIGRATION.md).
 
 ## Source conventions and idiom checklist
