@@ -246,6 +246,17 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - `_SetPause`/`_PauseGame`: the target's two menu strings sit 17 bytes apart (0x900/0x911). Named arrays gave offsets 0/18; struct and single-array forms keep the spacing but change the code (build/workers/f-pauseunit/REPORT.md).
 - Open question: how three functions share one copy.
 
+## 6b. Steering
+
+**MSC7-X1: code-free constructs the optimiser deletes steer home order or register choice. FALSIFIED.**
+- Tried: a self-read `(void)x;`, a self-comparison, a discarded `&x`, and a compile-time or loop-invariant dead guard.
+- Result: across `_AnimYellowFight`, `_CarpetFloorR`, `_win_ClearGroupAreas`, `_win_DrawGroupObjects`, `_DoToAlarm`, `_DoRandAntAA`, `_DoDigOutAntA`, `_YellowFight`, `_DoNestingR`, `_DrawCastePopUp` (f-slotsteer) and `_MowerFall` (f-study-e16), every such construct compiled to the IDENTICAL object, each with its assigned profile.
+- MSC 7.00 allocates homes and registers after these constructs are gone.
+- A construct that survives into the code, such as address-taking or `volatile`, changes the allocation but also the bytes, and in every case tried it lowered the match.
+- Consequence: for allocation-only residues, EXACT_STEERED needs a construct that changes the compiler's intermediate state without surviving in code, and none of the tested kinds does. The allocation is decided by which live values exist and how they are used (F2, F3, F1F, R1–R3).
+- Evidence: `evidence/codegen-facts/MSC7-X1/` (probe reports), build/workers/f-slotsteer/REPORT.md.
+- Validated 2026-09-27.
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.

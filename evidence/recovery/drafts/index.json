@@ -3600,6 +3600,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 80/83 opcodes; target ENTER 112 vs candidate 110. candidate local count (4 bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local buf (4 bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-100 (address) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov si, word ptr [bp + 6] / C mov di, word ptr [bp + 6] (register_allocation). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/CloseIndex/20260927T181228-82632",
         "recorded": "2026-09-27T18:12:28.817828+00:00"
+      },
+      {
+        "text": "F2/L7 application: name[102] raises ENTER to 112 but moves the target local-buffer base from bp-100 to candidate bp-106, so it is not an L7 explanation; name[100] matches the target buffer address. A recordIndex copy also leaves ENTER at 110. Earliest remaining body mismatch is SI versus DI; target has unmatched homes bp-110/-112.",
+        "origin": "build/search/CloseIndex/20260927T184741-124280",
+        "recorded": "2026-09-27T18:47:42.127539+00:00"
       }
     ]
   },
@@ -6642,6 +6647,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 182/196 opcodes; target ENTER 14 vs candidate 12. target slot bp-6 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-10 (2) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov bx, di / C mov ax, di (register_allocation). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/DigTileB/20260927T181232-149948",
         "recorded": "2026-09-27T18:12:32.897856+00:00"
+      },
+      {
+        "text": "F2 application: separate B/R count locals still overlap the same home and leave ENTER 12. Separate nonvolatile cellB/cellR locals give ENTER 14 but fall to 155/196; they do not explain the full target local map. Best remains 182/196; earliest mismatch is target mov bx,di versus candidate mov ax,di.",
+        "origin": "build/search/DigTileB/20260927T184742-141640",
+        "recorded": "2026-09-27T18:47:43.249945+00:00"
       }
     ]
   },
@@ -16130,6 +16140,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 37/38 opcodes; target ENTER 8 vs candidate 6. candidate local width (2 bytes) at bp-6 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-4/2, bp-2/2). first post-ENTER aligned row: T mov di, word ptr [bp + 8] / C mov bx, word ptr [bp + 8] (register_allocation). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/FillMap/20260927T181226-24592",
         "recorded": "2026-09-27T18:12:27.165831+00:00"
+      },
+      {
+        "text": "F2 application: an explicit rightEdge copy with inline byte-count calculation did not map the target live bp-8 slot; candidate width remains at bp-6 and ENTER stays 6 (35/38 opcodes). A variant with both rightEdge and width enlarged to ENTER 10. Earliest body difference remains parameter/register choice (target DI, candidate BX). No natural local mapping found.",
+        "origin": "build/search/FillMap/20260927T184742-181544",
+        "recorded": "2026-09-27T18:47:42.916786+00:00"
       }
     ]
   },
@@ -25945,6 +25960,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 42/48 opcodes; target ENTER 6 vs candidate 4. frame size differs: target ENTER 6, candidate ENTER 4 (candidate named homes: bp-4/2, bp-2/2). first post-ENTER aligned row: T cmp bx, dx / C cmp dx, bx (register_allocation, alignment_uncertain). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/MakeLint2/20260927T181236-89280",
         "recorded": "2026-09-27T18:12:37.264730+00:00"
+      },
+      {
+        "text": "L8 application: a used local LintState with an unused first member gives ENTER 6 and maps rowBase/rowCount to target bp-2/-4 while bp-6 stays untouched. The equivalent state[3] array compiles to the same object. Both score 32/48 versus the scalar draft 42/48; earliest difference after ENTER is the register/condition sequence (target jg, candidate jl). Frame explanation supported; no exact candidate.",
+        "origin": "build/search/MakeLint2/20260927T184741-145924",
+        "recorded": "2026-09-27T18:47:42.051119+00:00"
       }
     ]
   },
@@ -26308,6 +26328,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 97/101 opcodes; target ENTER 8 vs candidate 6. target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-4/2, bp-2/2). first post-ENTER aligned row: T jl 0x5f / C jl 0x5c (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/MakeOutletH/20260927T181229-169344",
         "recorded": "2026-09-27T18:12:29.617301+00:00"
+      },
+      {
+        "text": "F2 application: a bottom-endpoint local made ENTER 8 but put row+12 in bp-8; target stores width there. The hypothesis is rejected despite the matching frame size; its opcode score fell to 88/101 from 97/101. Current target bp-8 remains an unmatched live value; earliest code divergence is target mov dx,di versus candidate LEA.",
+        "origin": "build/search/MakeOutletH/20260927T184741-84020",
+        "recorded": "2026-09-27T18:47:42.334945+00:00"
       }
     ]
   },
@@ -26404,6 +26429,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 97/101 opcodes; target ENTER 8 vs candidate 6. target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-4/2, bp-2/2). first post-ENTER aligned row: T jl 0x5f / C jl 0x5c (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/MakeOutletV/20260927T181230-187184",
         "recorded": "2026-09-27T18:12:30.433455+00:00"
+      },
+      {
+        "text": "F2 application: a bottom-endpoint local made ENTER 8 but put row+8 in bp-8; target stores width there. The hypothesis is rejected despite the matching frame size; its opcode score fell to 88/101 from 97/101. Current target bp-8 remains an unmatched live value; earliest code divergence is target mov dx,di versus candidate LEA.",
+        "origin": "build/search/MakeOutletV/20260927T184741-100860",
+        "recorded": "2026-09-27T18:47:42.443898+00:00"
       }
     ]
   },
@@ -32751,6 +32781,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 62/66 opcodes; target ENTER 8 vs candidate 4. target slot bp-6 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 4 (candidate named homes: bp-4/2, bp-2/2). first post-ENTER aligned row: T jle 0x32 / C jle 0x72 (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/Reproduce/20260927T181231-84176",
         "recorded": "2026-09-27T18:12:32.055448+00:00"
+      },
+      {
+        "text": "F2 application: splitting the conditional far pointer into pB/pR leaves both in BX and ENTER 4; target needs ENTER 8 with unmatched bp-6/-8. Best remains 62/66 and first causal residue is the loop branch destination; far-pointer source shape is not resolved here.",
+        "origin": "build/search/Reproduce/20260927T184743-161620",
+        "recorded": "2026-09-27T18:47:43.319084+00:00"
       }
     ]
   },
@@ -47255,6 +47290,11 @@
         "text": "F-HOLE study 2026-09-27: best remains 72/80 opcodes; target ENTER 20 vs candidate 18. candidate local indirect (? bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local bucket (? bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-2 (2) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov word ptr [bp - 0xe], ax / C mov word ptr [bp - 0xc], ax (memory_operand, stack_local_layout). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
         "origin": "build/search/win_DrawTitle/20260927T181234-170508",
         "recorded": "2026-09-27T18:12:34.615259+00:00"
+      },
+      {
+        "text": "F2 application: replacing pointer advancement with a live child-array index gives ENTER 20, but local homes do not match target and the score falls from 72/80 to 70/78. Earliest mismatch is a stack store at target bp-14 versus candidate bp-12; the source hypothesis is not retained.",
+        "origin": "build/search/win_DrawTitle/20260927T184742-14704",
+        "recorded": "2026-09-27T18:47:43.018806+00:00"
       }
     ]
   },
