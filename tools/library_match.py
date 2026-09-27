@@ -43,7 +43,13 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
   sg,off=next(iter(names[p['name']]))
   anchors[p['segment']].append((sg,off-p['offset'],p['name']))
  for si,aa in anchors.items():
-  if len({x[:2] for x in aa})!=1:issues.append('inconsistent public placements for '+m['segments'][si-1]['name'])
+  if len({x[:2] for x in aa})!=1:
+   # Name the disagreeing publics: usually code that lies between them in the
+   # original is missing from this candidate segment (split the run into
+   # separate RUNk_TEXT segments or add the members/stand-ins in between).
+   by=sorted(aa,key=lambda x:x[1])
+   issues.append('inconsistent public placements for %s: %s; either a member before them in this segment compiles to a different size than the original (only exact bodies may share a run) or code that lies between them in the original is missing (split the run or add the members in between)'
+                 %(m['segments'][si-1]['name'],', '.join('%s implies base %d:%04X'%(nm,sg,off&0xFFFF) for sg,off,nm in by)))
   else:placements[si]=aa[0][:2]
  if issues:return {'result':'RULED_OUT_MEMBER','issues':issues,'anchors':dict(anchors)}
  if not placements:return None
