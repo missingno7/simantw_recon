@@ -112,11 +112,11 @@ Target | Candidate | Difference
 0094 cmp di, 0x3f | 0093 cmp cx, 0x3f | register_allocation
 0097 jle 0x9c | 0096 jle 0x9b | branch_target
 0099 jmp 0x27c | 0098 jmp 0x2b9 | branch_target
-009c cmp di, 1 | 009b cmp cx, 1 | register_allocation
+009c cmp di, 1 | 009b cmp cx, 1 | register_allocation,alignment_uncertain
 009f jge 0xb0 | 009e jge 0xae | 
 00a1 push word ptr [bp + 6] |  | instruction_shape
 00a4 nop  |  | instruction_shape
-00a5 push cs | 00a0 push di | register_allocation
+00a5 push cs | 00a0 push di | call_frame_or_segment_register,alignment_uncertain
 00a6 call 0x82e | 00a1 lcall <resolved fixup> [{'kind': 'internal', 'segment': 6, 'offset': 29882}] | instruction_shape
 00a9 add sp, 2 | 00a6 add sp, 2 | 
 00ac pop si | 00a9 pop si | 
@@ -125,10 +125,10 @@ Target | Candidate | Difference
 00af retf  | 00ac retf  | 
  | 00ad nop  | instruction_shape
  | 00ae mov word ptr [bp - 2], cx | instruction_shape
-00b0 mov si, word ptr [bp - 4] | 00b1 mov bx, word ptr [bp - 4] | register_allocation
+00b0 mov si, word ptr [bp - 4] | 00b1 mov bx, word ptr [bp - 4] | register_allocation,alignment_uncertain
 00b3 mov bx, si |  | instruction_shape
 00b5 shl bx, 6 | 00b4 shl bx, 6 | 
-00b8 add bx, di | 00b7 add bx, cx | register_allocation
+00b8 add bx, di | 00b7 add bx, cx | register_allocation,alignment_uncertain
 00ba mov word ptr [bp - 0x12], bx | 00b9 mov word ptr [bp - 0x14], bx | memory_operand,stack_local_layout
 00bd cmp byte ptr [bx + 0x58e8], 0x30 | 00bc cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 22760}] | memory_operand,immediate_or_binding
 00c2 jb 0xc7 | 00c1 jb 0xc6 | 
@@ -137,7 +137,7 @@ Target | Candidate | Difference
 00ca shl bx, 6 | 00c8 shl bx, 6 | 
 00cd add bx, word ptr [bp + 8] |  | instruction_shape
 00d0 mov byte ptr [bx - 0x6718], 0 | 00cb mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 39144}] | memory_operand,immediate_or_binding
-00d5 mov bx, word ptr [bp - 0x12] | 00d0 mov ax, word ptr [bp - 0x14] | memory_operand,stack_local_layout
+00d5 mov bx, word ptr [bp - 0x12] | 00d0 mov ax, word ptr [bp - 0x14] | register_role,memory_operand,stack_local_layout
  | 00d3 mov word ptr [bp - 6], ax | instruction_shape
  | 00d6 mov word ptr [bp - 0xc], 0 | instruction_shape
  | 00db mov bx, ax | instruction_shape

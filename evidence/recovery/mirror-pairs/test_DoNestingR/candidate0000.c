@@ -1,5 +1,5 @@
 /* Derived mechanically from the mirrored colony function _DoNestingB (tools/mirror_pairs.py):
- * colony-specific MAPSYM identifiers swapped BlistM->RlistM, BlistS->RlistS, BpopT->RpopT, DecEatB->DecEatR, DoNestingB->DoNestingR, EatCountB->EatCountR, FindInBList->FindInRList, FoodB->FoodR, GetEnterDirB->GetEnterDirR, GetExitDirB->GetExitDirR, GetNewModeB->GetNewModeR, HealthB->HealthR, LifeB->LifeR, MapB->MapR, PlaceEggB->PlaceEggR, TryMoveDirB->TryMoveDirR; constants and structure unchanged.
+ * colony-specific MAPSYM identifiers swapped BlistM->RlistM, BlistS->RlistS, BpopT->RpopT, CastePopB->CastePopR, DecEatB->DecEatR, DoNestingB->DoNestingR, EatCountB->EatCountR, FindInBList->FindInRList, FoodB->FoodR, GetEnterDirB->GetEnterDirR, GetExitDirB->GetExitDirR, GetNewModeB->GetNewModeR, HealthB->HealthR, LifeB->LifeR, MapB->MapR, PlaceEggB->PlaceEggR, TryMoveDirB->TryMoveDirR; constants and structure unchanged.
  * Verified only by the strict matcher; where the pair is not a pure mirror the
  * diagnostic names the asymmetry. */
 /*
@@ -60,7 +60,7 @@ extern unsigned char near LifeR[];
 extern unsigned char near MapR[];
 extern int near HealthR;
 extern int near RpopT;
-extern int near BdigT;
+extern int near CastePopR[6];
 extern int far FoodR;
 extern int far EatCountR;
 
@@ -75,7 +75,9 @@ extern int far FindInRList(int x, int y, int ant);
 extern int far TryMoveDirR(int x, int y, int dir);
 
 void far DoNestingR(int x, int y, int modeArg, int attr)
-{
+{    int attrCopy = attr;
+    int xCopy = x;
+
     int m7;
     int stam7;
     int stamHi3;
@@ -84,24 +86,27 @@ void far DoNestingR(int x, int y, int modeArg, int attr)
     unsigned char raw;
     int dir;
     int ant;
+    int mapTile;
 
     m7 = modeArg & 7;
-    raw = Dx8[Tindex + 0x3f0e];
+    dir = m7;
+    raw = Dx8[Tindex + 0x48DC];
     stam7 = raw & 7;
-    idx = (x << 6) + y;
+    idx = (xCopy << 6) + y;
     cellByte = LifeR[idx];
     stamHi3 = raw >> 3;
 
-    if (attr == 1) {
+    if (attrCopy == 1) {
         if (SRand1(100) > HealthR) {
-            if (MapR[idx] >= 0x10 && MapR[idx] <= 0x13) {
-                if (MapR[idx] == 0x10)
+            mapTile = MapR[idx];
+            if (mapTile >= 0x10 && mapTile <= 0x13) {
+                if (mapTile == 0x10)
                     MapR[idx] = (unsigned char)SRand8();
                 else
                     MapR[idx]--;
                 if (FoodR > 0) {
                     FoodR--;
-                    if (((RpopT + BdigT) >> 4) < (EatCountR += 5)) {
+                    if (((CastePopR[2] + RpopT) >> 4) < (EatCountR += 5)) {
                         EatCountR = 0;
                         if (HealthR < 100)
                             HealthR++;
@@ -110,27 +115,26 @@ void far DoNestingR(int x, int y, int modeArg, int attr)
             }
         }
         if (SRand8() == 0) {
-            Dx8[Tindex + 0x3b22] = (unsigned char)GetNewModeR(attr);
+            Dx8[Tindex + 0x44F0] = (unsigned char)GetNewModeR(attrCopy);
             return;
         }
-        dir = m7;
         goto move_tail;
     }
 
-    if (attr == 2) {
+    if (attrCopy == 2) {
         if (stamHi3 == 0) {
-            dir = GetEnterDirR(x, y, m7);
+            dir = GetEnterDirR(xCopy, y, m7);
             if (dir < 0)
-                Dx8[Tindex + 0x3f0e] = (unsigned char)(stam7 | 8);
+                Dx8[Tindex + 0x48DC] = (unsigned char)(stam7 | 8);
             goto move_tail;
         }
         if (cellByte == 0 || cellByte > 8) {
-            Dx8[Tindex + 0x3d18] += 8;
-            PlaceEggR(x, y, stam7);
-            LifeR[idx] = Dx8[Tindex + 0x3d18];
-            Dx8[Tindex + 0x3f0e] = 8;
-            Dx8[Tindex + 0x3b22] = (unsigned char)GetNewModeR(attr);
-            dir = GetExitDirR(x, y, m7);
+            Dx8[Tindex + 0x46E6] += 8;
+            PlaceEggR(xCopy, y, stam7);
+            LifeR[idx] = Dx8[Tindex + 0x46E6];
+            Dx8[Tindex + 0x48DC] = 8;
+            Dx8[Tindex + 0x44F0] = (unsigned char)GetNewModeR(attrCopy);
+            dir = GetExitDirR(xCopy, y, m7);
             if (dir == 0)
                 dir = SRand8();
             else
@@ -142,8 +146,8 @@ void far DoNestingR(int x, int y, int modeArg, int attr)
 
     if (stamHi3 != 0) {
         if (SRand8() == 0)
-            Dx8[Tindex + 0x3f0e] = 0;
-        dir = GetExitDirR(x, y, m7);
+            Dx8[Tindex + 0x48DC] = 0;
+        dir = GetExitDirR(xCopy, y, m7);
         if (dir == 0)
             dir = SRand8();
         else
@@ -156,14 +160,15 @@ void far DoNestingR(int x, int y, int modeArg, int attr)
     }
 
     if (SRand1(100) > HealthR) {
-        if (MapR[idx] >= 0x10 && MapR[idx] <= 0x13) {
-            if (MapR[idx] == 0x10)
+        mapTile = MapR[idx];
+            if (mapTile >= 0x10 && mapTile <= 0x13) {
+            if (mapTile == 0x10)
                 MapR[idx] = (unsigned char)SRand8();
             else
                 MapR[idx]--;
             if (FoodR > 0) {
                 FoodR--;
-                if (((RpopT + BdigT) >> 4) < (EatCountR += 5)) {
+                if (((CastePopR[2] + RpopT) >> 4) < (EatCountR += 5)) {
                     EatCountR = 0;
                     if (HealthR < 100)
                         HealthR++;
@@ -171,24 +176,23 @@ void far DoNestingR(int x, int y, int modeArg, int attr)
             }
         }
     } else if (SRand16() == 0) {
-        Dx8[Tindex + 0x3b22] = (unsigned char)GetNewModeR(attr);
+        Dx8[Tindex + 0x44F0] = (unsigned char)GetNewModeR(attrCopy);
     }
     dir = m7;
     goto move_tail;
 
 list_lookup:
-    ant = FindInRList(x, y, cellByte);
+    ant = FindInRList(xCopy, y, cellByte);
     if (ant < 0) {
-        dir = m7;
         goto move_tail;
     }
-    Dx8[ant + 0x3d18] = 0;
-    Dx8[Tindex + 0x3d18] -= 8;
-    Dx8[Tindex + 0x3f0e] = (unsigned char)cellByte;
+    Dx8[ant + 0x46E6] = 0;
+    Dx8[Tindex + 0x46E6] -= 8;
+    Dx8[Tindex + 0x48DC] = (unsigned char)cellByte;
     return;
 
 move_tail:
-    if (TryMoveDirR(x, y, dir) != 0)
+    if (TryMoveDirR(xCopy, y, dir) != 0)
         return;
-    TryMoveDirR(x, y, SRand8());
+    TryMoveDirR(xCopy, y, SRand8());
 }

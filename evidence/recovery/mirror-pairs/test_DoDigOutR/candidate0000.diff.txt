@@ -93,7 +93,7 @@ Target | Candidate | Difference
 0040 mov bx, di |  | instruction_shape
 0042 shl bx, 6 |  | instruction_shape
 0045 add bx, word ptr [bp + 8] |  | instruction_shape
-0048 mov word ptr [bp - 0x10], bx | 0044 mov word ptr [bp - 0x10], ax | register_allocation
+0048 mov word ptr [bp - 0x10], bx | 0044 mov word ptr [bp - 0x10], ax | register_allocation,alignment_uncertain
 004b mov byte ptr [bx - 0x6718], al | 0047 mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 39144}] | memory_operand
 004f mov bx, 0x9b6a | 004b mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 39786}] | immediate_or_binding
 0052 mov es, word ptr [0xc384] | 004e mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
@@ -115,7 +115,7 @@ Target | Candidate | Difference
 0086 cmp word ptr [bp - 6], 0 | 0083 cmp word ptr [bp - 8], 0 | memory_operand,stack_local_layout
 008a jge 0x8f | 0087 jge 0x8c | branch_target
 008c jmp 0x28c | 0089 jmp 0x2b8 | branch_target
-008f mov word ptr [bp - 0xe], si | 008c mov word ptr [bp - 0xe], di | register_allocation
+008f mov word ptr [bp - 0xe], si | 008c mov word ptr [bp - 0xe], di | register_allocation,alignment_uncertain
  | 008f mov word ptr [bp - 0xc], si | instruction_shape
 0092 cmp word ptr [bp - 6], 0x3f | 0092 cmp word ptr [bp - 8], 0x3f | memory_operand,stack_local_layout
 0096 jle 0x9b | 0096 jle 0x9b | 
@@ -148,7 +148,7 @@ Target | Candidate | Difference
  | 00d2 sub ch, ch | instruction_shape
  | 00d4 cmp cx, 0x30 | instruction_shape
  | 00d7 jl 0x13a | instruction_shape
-00b6 mov si, word ptr [bp + 8] | 00d9 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
+00b6 mov si, word ptr [bp + 8] | 00d9 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | call_frame_or_segment_register,memory_operand,alignment_uncertain
 00b9 mov bx, word ptr [bp - 6] | 00dd mov bx, word ptr [bp + 6] | memory_operand,stack_local_layout
 00bc shl bx, 6 | 00e0 shl bx, 6 | 
 00bf add bx, cx | 00e3 add bx, word ptr [bp + 8] | instruction_shape

@@ -46,13 +46,13 @@ Target | Candidate | Difference
 0047 push 3 | 0044 push 3 | 
 0049 lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 0}] | 0046 lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 5514}] | immediate_or_binding,immediate_or_binding
 004e add sp, 2 | 004b add sp, 2 | 
-0051 mov cx, si | 004e mov si, ax | register_allocation
+0051 mov cx, si | 004e mov si, ax | register_allocation,alignment_uncertain
 0053 add al, cl | 0050 add si, word ptr [bp + 0xa] | instruction_shape
 0055 dec al | 0053 dec si | instruction_shape
-0057 and ax, 7 | 0054 and si, 7 | register_allocation
+0057 and ax, 7 | 0054 and si, 7 | register_allocation,alignment_uncertain
  | 0057 mov al, byte ptr [bp + 0xa] | instruction_shape
-005a and cx, 0xf8 | 005a and ax, 0xf8 | register_allocation
-005e or ax, cx | 005d or si, ax | register_allocation
+005a and cx, 0xf8 | 005a and ax, 0xf8 | register_allocation,alignment_uncertain
+005e or ax, cx | 005d or si, ax | register_allocation,alignment_uncertain
 0060 mov si, ax | 005f mov ax, si | register_allocation
 0062 mov es, word ptr [0xc384] | 0061 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] | memory_operand
 0066 mov bx, word ptr es:[0x9b6a] | 0065 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 39786}] | memory_operand

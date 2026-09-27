@@ -41,7 +41,7 @@ extern long far RAntsExpired;
 extern long far RAntsExpired;
 extern long far TotalEggsDiedB;
 extern int far FlyAwayR;
-extern int far BalloonModeFlag;
+extern int far OptionStates[];
 
 extern int far SRand256(void);
 extern int far SRand32(void);
@@ -66,16 +66,16 @@ extern void far SimQueenR(int x, int y, int mode0, int attr);
 extern void far DoNestFightR(int x, int y);
 extern void far RaidInR(int x, int y, int attr);
 
-#define RlistM(i) Dx8[(i) + 0x3b22]
-#define RlistT(i) Dx8[(i) + 0x3d18]
-#define RlistS(i) Dx8[(i) + 0x3f0e]
-#define RlistX(i) Dx8[(i) + 0x3736]
-#define RlistY(i) Dx8[(i) + 0x392c]
+#define RlistM(i) Dx8[(i) + 0x44F0]
+#define RlistT(i) Dx8[(i) + 0x46E6]
+#define RlistS(i) Dx8[(i) + 0x48DC]
+#define RlistX(i) Dx8[(i) + 0x4104]
+#define RlistY(i) Dx8[(i) + 0x42FA]
 
 void far DoNestAntR(int x, int y, int attr)
 {
     int mode0;
-    int far *tindexPtr;
+    int far * volatile tindexPtr;
     int mode;
     int ant;
     int cellIndex;
@@ -85,8 +85,14 @@ void far DoNestAntR(int x, int y, int attr)
 
     mode0 = (attr & 0x78) >> 3;
 
-    if ((unsigned char)attr & 0x80)
-        goto HighHalf;
+    if (((unsigned char)attr & 0x80) == 0) {
+        attr = attr;
+        goto LowHalf;
+    }
+    goto HighHalf;
+
+LowHalf:
+    attr = attr;
 
     /* ---- low half (own colony) ---- */
     tindexPtr = &Tindex;
@@ -209,7 +215,7 @@ void far DoNestAntR(int x, int y, int attr)
             RlistM(*tindexPtr) = GetNewMode((RlistT(*tindexPtr) & 0x78) >> 3, RlistT(*tindexPtr));
             return;
         }
-        if (BalloonModeFlag == 1)
+        if (OptionStates[5] == 1)
             RestBalloons(x, y, 2);
         return;
 

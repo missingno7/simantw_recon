@@ -12,9 +12,9 @@
   ],
   "result": "NO_COMPLETE_MATCH",
   "exact_body": false,
-  "opcode_matches": 240,
+  "opcode_matches": 329,
   "opcode_total": 684,
-  "candidate_bytes": 1721,
+  "candidate_bytes": 1697,
   "target_bytes": 1925,
   "asymmetries": [
     {
@@ -26,26 +26,33 @@
       ]
     },
     {
-      "offset": 17,
-      "target": "mov word ptr [bp - 2], ax",
-      "candidate": "mov word ptr [bp - 8], ax",
+      "offset": 6,
+      "target": "mov di, word ptr [bp + 0xa]",
+      "candidate": "mov cx, word ptr [bp + 0xa]",
       "differences": [
-        "memory_operand",
-        "stack_local_layout"
+        "register_allocation"
+      ]
+    },
+    {
+      "offset": 9,
+      "target": "mov ax, di",
+      "candidate": "mov ax, cx",
+      "differences": [
+        "register_allocation"
       ]
     },
     {
       "offset": 20,
       "target": "test di, 0x80",
-      "candidate": "mov ax, di",
+      "candidate": "test cl, 0x80",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "test al, 0x80",
+      "offset": 24,
+      "target": "jne 0x1d",
+      "candidate": "je 0x1c",
       "differences": [
         "instruction_shape"
       ]
@@ -53,7 +60,7 @@
     {
       "offset": 26,
       "target": "jmp 0x57c",
-      "candidate": "jmp 0x1fa",
+      "candidate": "jmp 0x4c6",
       "differences": [
         "branch_target"
       ]
@@ -69,7 +76,7 @@
     {
       "offset": null,
       "target": "",
-      "candidate": "mov cx, bx",
+      "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 39786}]",
       "differences": [
         "instruction_shape"
       ]
@@ -77,239 +84,206 @@
     {
       "offset": null,
       "target": "",
-      "candidate": "mov word ptr [bp - 2], es",
+      "candidate": "les bx, ptr [bp - 6]",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
+      "offset": 29,
+      "target": "mov es, word ptr [0xc384]",
       "candidate": "mov bx, word ptr es:[bx]",
       "differences": [
+        "call_frame_or_segment_register",
+        "memory_operand",
+        "alignment_uncertain"
+      ]
+    },
+    {
+      "offset": 33,
+      "target": "mov bx, word ptr es:[0x9b6a]",
+      "candidate": "mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}]",
+      "differences": [
+        "call_frame_or_segment_register",
+        "memory_operand",
+        "alignment_uncertain"
+      ]
+    },
+    {
+      "offset": 38,
+      "target": "mov es, word ptr [0xc386]",
+      "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 17648}]",
+      "differences": [
+        "call_frame_or_segment_register",
+        "memory_operand",
+        "alignment_uncertain"
+      ]
+    },
+    {
+      "offset": 42,
+      "target": "mov al, byte ptr es:[bx + 0x44f0]",
+      "candidate": "and si, 0xff",
+      "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
+      "offset": 47,
+      "target": "sub ah, ah",
       "candidate": "mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}]",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 15138}]",
+      "offset": 49,
+      "target": "mov si, ax",
+      "candidate": "",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "sub ah, ah",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "mov si, ax",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}]",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
+      "offset": 51,
+      "target": "mov bx, ax",
       "candidate": "mov bx, si",
       "differences": [
-        "instruction_shape"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "shl bx, 1",
+      "offset": 55,
+      "target": "mov es, word ptr [0xc388]",
+      "candidate": "",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 31716}]",
+      "offset": 64,
+      "target": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 0}]",
+      "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 5774}]",
+      "differences": [
+        "immediate_or_binding",
+        "immediate_or_binding"
+      ]
+    },
+    {
+      "offset": 71,
+      "target": "jne 0x8e",
+      "candidate": "jne 0x90",
+      "differences": [
+        "branch_target"
+      ]
+    },
+    {
+      "offset": 76,
+      "target": "je 0x8e",
+      "candidate": "je 0x90",
+      "differences": [
+        "branch_target"
+      ]
+    },
+    {
+      "offset": 78,
+      "target": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 0}]",
+      "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 5678}]",
+      "differences": [
+        "immediate_or_binding",
+        "immediate_or_binding"
+      ]
+    },
+    {
+      "offset": 87,
+      "target": "jle 0x8e",
+      "candidate": "jle 0x90",
+      "differences": [
+        "branch_target"
+      ]
+    },
+    {
+      "offset": 89,
+      "target": "xor al, al",
+      "candidate": "les bx, ptr [bp - 6]",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "inc ax",
+      "offset": 91,
+      "target": "mov es, word ptr [0xc384]",
+      "candidate": "mov bx, word ptr es:[bx]",
+      "differences": [
+        "call_frame_or_segment_register",
+        "memory_operand",
+        "alignment_uncertain"
+      ]
+    },
+    {
+      "offset": 95,
+      "target": "mov bx, word ptr es:[0x9b6a]",
+      "candidate": "mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}]",
+      "differences": [
+        "call_frame_or_segment_register",
+        "memory_operand",
+        "alignment_uncertain"
+      ]
+    },
+    {
+      "offset": 100,
+      "target": "mov es, word ptr [0xc386]",
+      "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 18150}]",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 31716}]",
+      "offset": 104,
+      "target": "mov byte ptr es:[bx + 0x46e6], al",
+      "candidate": "",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "cmp di, 0xef",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "jle 0x64",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "push word ptr [bp + 8]",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "push word ptr [bp + 6]",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 6, 'offset': 24690}]",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "add sp, 4",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "jmp 0x6b5",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "nop ",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "mov word ptr [bp - 0xa], si",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "mov bx, word ptr [bp + 6]",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "shl bx, 6",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "add bx, word ptr [bp + 8]",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "mov word ptr [bp - 6], bx",
-      "differences": [
-        "instruction_shape"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
+      "offset": 118,
+      "target": "mov byte ptr [bx + si - 0x6718], al",
       "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 39144}]",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "and di, 0xff",
+      "offset": 126,
+      "target": "add word ptr es:[0x9fc6], 1",
+      "candidate": "add <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40902}]",
       "differences": [
-        "instruction_shape"
+        "memory_operand",
+        "immediate_or_binding"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "push di",
+      "offset": 132,
+      "target": "adc word ptr es:[0x9fc8], 0",
+      "candidate": "adc <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40904}]",
       "differences": [
-        "instruction_shape"
+        "memory_operand",
+        "immediate_or_binding"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 22304}]",
+      "offset": 138,
+      "target": "jmp 0x781",
+      "candidate": "jmp 0x69d",
       "differences": [
-        "instruction_shape"
+        "branch_target"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "add sp, 2",
+      "offset": 141,
+      "target": "nop ",
+      "candidate": "",
       "differences": [
         "instruction_shape"
       ]
@@ -323,30 +297,70 @@
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "jne 0xa0",
+      "offset": 144,
+      "target": "cmp ax, 0x11",
+      "candidate": "cmp ax, 0x10",
+      "differences": [
+        "immediate_or_binding"
+      ]
+    },
+    {
+      "offset": 157,
+      "target": "nop ",
+      "candidate": "",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": null,
-      "target": "",
-      "candidate": "cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 52888}]",
+      "offset": 158,
+      "target": "dw offset 0x1a4",
+      "candidate": "",
       "differences": [
         "instruction_shape"
+      ]
+    },
+    {
+      "offset": 160,
+      "target": "dw offset 0x220",
+      "candidate": "dw offset 0x126",
+      "differences": [
+        "branch_target"
+      ]
+    },
+    {
+      "offset": 162,
+      "target": "dw offset 0x4be",
+      "candidate": "dw offset 0x4b4",
+      "differences": [
+        "branch_target"
+      ]
+    },
+    {
+      "offset": 164,
+      "target": "dw offset 0x236",
+      "candidate": "dw offset 0x13e",
+      "differences": [
+        "branch_target"
+      ]
+    },
+    {
+      "offset": 166,
+      "target": "dw offset 0x246",
+      "candidate": "dw offset 0x150",
+      "differences": [
+        "branch_target"
       ]
     }
   ],
   "issues": [
     "conflicting private placement constraints CONST",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x3af",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x39a",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x385",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x371",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x3ab",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x387",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x379",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x36d",
     "SIMANT1_MODULE unresolved/mismatched fixup at 0x365"
   ],
-  "checked": "2026-09-22T05:04:41.901723+00:00",
+  "checked": "2026-09-27T07:42:41.898271+00:00",
   "registered": null
 }
