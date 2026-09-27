@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * DoRandB: one random-walk turn of a B-colony ant at LifeB cell (x, y),
  * given the combined attacker/direction word attr and a mode hint
@@ -42,7 +52,7 @@ void far DoRandB(int x, int y, int attr, int modeArg)
     int winner;
 
     if (SRand32() == 0)
-        Dx8[Tindex + 0x3b22] = (unsigned char)GetNewModeB(modeArg);
+        BlistX.m[Tindex] = (unsigned char)GetNewModeB(modeArg);
 
     ant = LifeB[(x << 6) + y];
     if (IsYellowAnt(ant) == 1 && MeColor != 0) {
@@ -50,10 +60,10 @@ void far DoRandB(int x, int y, int attr, int modeArg)
         handled = 1;
     } else if (ant > 0x87 && ant < 0xe8 && (index = FindInBList(x, y, ant)) >= 0) {
         winner = GetWinner(ant, attr);
-        Dx8[index + 0x3f0e] = winner;
-        Dx8[index + 0x3d18] = (winner & 0x80) + 0x70;
+        BlistX.s[index] = winner;
+        BlistX.t[index] = (winner & 0x80) + 0x70;
         LifeB[(x << 6) + y] = (winner & 0x80) + 0x70;
-        Dx8[index + 0x3b22] = 0xa;
+        BlistX.m[index] = 0xa;
         handled = 1;
     } else {
         handled = 0;

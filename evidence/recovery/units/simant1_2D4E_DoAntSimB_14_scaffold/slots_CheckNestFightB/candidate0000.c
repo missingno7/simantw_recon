@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * CheckNestFightB: resolve an attack on the B-colony nest cell (x, y) by
  * an attacker of the given type.  The LifeB cell's ant byte is read; a
@@ -15,7 +25,7 @@ extern unsigned char near LifeB[];
 extern int near MeColor;
 extern int far Tindex;
 extern unsigned char far Dx8;
-#define AT(off) ((&Dx8)[off])
+#define AT(off) (((unsigned char far *)&BlistX)[(off) - 0x3736])
 
 extern int far IsYellowAnt(int ant);
 extern void far YellowFight(int kind, int index);

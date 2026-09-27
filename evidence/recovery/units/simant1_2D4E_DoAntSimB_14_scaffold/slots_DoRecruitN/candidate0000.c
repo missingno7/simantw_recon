@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * DoRecruitN: one turn of a recruited nest ant at LifeB cell (x, y) with
  * the attacker/direction word attacker.  Off the nest plane (MePlane != 2)
@@ -55,10 +65,10 @@ void far DoRecruitN(int x, int y, int attacker)
         handled = 1;
     } else if (ant > 0x87 && ant < 0xe8 && (index = FindInBList(x, y, ant)) >= 0) {
         winner = GetWinner(ant, attacker);
-        Dx8[index + 0x3f0e] = winner;
-        Dx8[index + 0x3d18] = (winner & 0x80) + 0x70;
+        BlistX.s[index] = winner;
+        BlistX.t[index] = (winner & 0x80) + 0x70;
         LifeB[(x << 6) + y] = (winner & 0x80) + 0x70;
-        Dx8[index + 0x3b22] = 0xa;
+        BlistX.m[index] = 0xa;
         handled = 1;
     } else {
         handled = 0;

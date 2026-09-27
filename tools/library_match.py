@@ -5,12 +5,302 @@ consistent set of relocations to a private contribution, whose data is checked.
 Constraint-derived private placement lowers proof strength. BSS is not bytes.
 """
 from collections import Counter,defaultdict
-from common import ROOT,fixture,write_json,identity,FormatError,Reader
+from common import ROOT,fixture,write_json,identity,FormatError,Reader,read_json,sha256
 import omf,ne,mapsym
 SCAFFOLD_SEGMENT='POOLSTUB_TEXT'  # reserved code segment for pool-order stand-ins; never compared, never credited
 
 LIBS=['sdk300/CLIB/LLIBCW.LIB','sdk300/CLIB/MLIBCW.LIB','sdk310/LIB/LLIBCW.LIB','sdk310/LIB/MLIBCW.LIB',
       'sdk300/CLIB/LLIBFPW.LIB','sdk310/LIB/LLIBFPW.LIB','msc6ax/LIB/LLIBCE.LIB','msc700/LIB/LLIBCW.LIB']
+
+# LINK input order from the pinned runtime lane.  It matters for private
+# contributions in one logical segment, which have no public to anchor them.
+RUNTIME_LINK_LIBRARIES=(
+ 'toolchain/sdk300/CLIB/LLIBCW.LIB',
+ 'toolchain/sdk300/CLIB/LLIBFPW.LIB',
+ 'toolchain/sdk300/WLIB/LIBW.LIB',
+ 'toolchain/msc700/LIB/LIBH.LIB',
+)
+_RUNTIME_LAYOUT_MODULES=None
+_VERIFIED_RUNTIME_LAYOUT=None
+
+def _runtime_layout_modules():
+ global _RUNTIME_LAYOUT_MODULES
+ if _RUNTIME_LAYOUT_MODULES is None:
+  rows=[]
+  for lib_order,rel in enumerate(RUNTIME_LINK_LIBRARIES):
+   path=ROOT/rel
+   if not path.is_file():continue
+   for ordinal,data in enumerate(omf.library_modules(path.read_bytes())):
+    try:m=omf.parse(data)
+    except FormatError:continue
+    rows.append({'library':rel,'library_order':lib_order,'ordinal':ordinal,'module':m})
+  _RUNTIME_LAYOUT_MODULES=rows
+ return _RUNTIME_LAYOUT_MODULES
+
+def _dgroup_segments(m):
+ return {si for g in m['groups'] if g['name']=='DGROUP' for si in g['segments']}
+
+def _mapped_bases(m,names):
+ """Return bases derived only from MAPSYM publics, never from bytes."""
+ bases=defaultdict(set);ambiguous=[]
+ for p in m['publics']:
+  if not p['segment'] or p.get('local'):continue
+  locs=names.get(p['name'],set())
+  if len(locs)==1:
+   sg,off=next(iter(locs));bases[p['segment']].add((sg,off-p['offset']))
+  elif len(locs)>1:ambiguous.append(p['name'])
+ return bases,sorted(set(ambiguous))
+
+def _runtime_member_metadata(m):
+ if not isinstance(m,dict) or not m.get('sha256') or not m.get('name'):return []
+ return [r for r in _runtime_layout_modules()
+         if r['module']['sha256']==m['sha256'] and r['module']['name'].lower()==m['name'].lower()]
+
+def _runtime_member_is_mapped(row,names):
+ return any(not p.get('local') and p['name'] in names for p in row['module']['publics'])
+
+def _runtime_code_base(row,names):
+ m=row['module'];bases,_=_mapped_bases(m,names);options=[]
+ for ss in m['segments']:
+  if ss['class']=='CODE' and ss['name']=='_TEXT' and ss['length']:
+   options.extend((sg,off,ss['index']) for sg,off in bases.get(ss['index'],set()))
+ if not options:return None
+ if len(set(options))!=1:return 'AMBIGUOUS'
+ return options[0]
+
+def _order_runtime_rows(rows,names):
+ """Derive a unique member order from same-library order and MAPSYM code order."""
+ ordered=list(rows);edges={i:set() for i in range(len(ordered))};indegree=[0]*len(ordered)
+ code=[]
+ for row in ordered:
+  base=_runtime_code_base(row,names)
+  if base=='AMBIGUOUS':return None,'ambiguous MAPSYM code anchors for '+row['module']['name']
+  code.append(base)
+ def add_edge(a,b):
+  if b not in edges[a]:edges[a].add(b);indegree[b]+=1
+ # LINK preserves member order within each archive. Cross-archive order is
+ # recovered from mapped code contributions, since LINK's archive search
+ # order need not be the final order of extracted contributions.
+ for i,left in enumerate(ordered):
+  for j,right in enumerate(ordered):
+   if left['library']==right['library'] and left['ordinal']<right['ordinal']:
+    add_edge(i,j)
+ for i in range(len(ordered)):
+  if code[i] is None:continue
+  for j in range(i+1,len(ordered)):
+   if code[j] is None or code[i][0]!=code[j][0]:continue
+   if code[i][1]==code[j][1]:return None,'ambiguous MAPSYM code order for %s and %s'%(ordered[i]['module']['name'],ordered[j]['module']['name'])
+   if code[i][1]<code[j][1]:add_edge(i,j)
+   else:add_edge(j,i)
+ result=[];remaining=set(range(len(ordered)))
+ while remaining:
+  ready=[i for i in remaining if indegree[i]==0]
+  if len(ready)!=1:return None,'ambiguous or conflicting LINK order for DGROUP message members'
+  i=ready[0];remaining.remove(i);result.append(ordered[i])
+  for j in edges[i]:indegree[j]-=1
+ return result,None
+
+def _runtime_message_layout(m,names,s):
+ """Place DGROUP MSG/PAD/EPAD from MAPSYM names and LINK5.30 order.
+
+    The structural LINK 5.30 map puts HDR, MSG, PAD, and EPAD in that class order.
+    __caption anchors HDR; linked message members are ordered by their pinned
+    library/member sequence; _edata bounds the initialized group after LINK's
+    paragraph alignment.  No raw-byte scan is used to choose a placement.
+    """
+ candidate_rows=_runtime_member_metadata(m)
+ if len(candidate_rows)!=1:return {},[],[]
+ candidate_row=candidate_rows[0];cm=candidate_row['module'];dgroup=_dgroup_segments(cm)
+ targets=[ss for ss in cm['segments'] if ss['length'] and ss['class']=='MSG' and
+          ss['name'] in ('HDR','MSG','PAD','EPAD') and ss['index'] in dgroup]
+ if not targets:return {},[],[]
+ contributing=[]
+ for row in _runtime_layout_modules():
+  rm=row['module'];dg=_dgroup_segments(rm)
+  parts=[ss for ss in rm['segments'] if ss['length'] and ss['class']=='MSG' and
+         ss['name'] in ('HDR','MSG','PAD','EPAD') and ss['index'] in dg]
+  if not parts:continue
+  linked=(rm['sha256']==cm['sha256'] and rm['name'].lower()==cm['name'].lower()) or _runtime_member_is_mapped(row,names)
+  if linked:contributing.append(dict(row,parts=parts))
+ if not any(row['module']['sha256']==cm['sha256'] for row in contributing):
+  contributing.append(dict(candidate_row,parts=targets))
+ for row in contributing:
+  for ss in row['parts']:
+   if ss['name'] not in ('HDR','MSG','PAD','EPAD'):
+    return {},[],['unreviewed DGROUP message segment name']
+   if ss['name'] in ('HDR','MSG') and ss['combine']!=2:
+    return {},[],['unexpected combine mode for DGROUP '+ss['name']]
+   if ss['name'] in ('PAD','EPAD') and ss['combine']!=6:
+    return {},[],['unexpected combine mode for DGROUP '+ss['name']]
+ ordered,order_issue=_order_runtime_rows(contributing,names)
+ if order_issue:return {},[],[order_issue]
+ hdr=[];msg=[];pads=[];epads=[]
+ for row in ordered:
+  for ss in sorted(row['parts'],key=lambda x:x['index']):
+   {'HDR':hdr,'MSG':msg,'PAD':pads,'EPAD':epads}[ss['name']].append(dict(row,segment=ss))
+ if not hdr or not msg:return {},[],['incomplete DGROUP HDR/MSG class inventory']
+ hdr_prefix=0;hdr_starts={};anchor_bases=[]
+ for row in hdr:
+  rm=row['module'];ss=row['segment'];bases,ambiguous=_mapped_bases(rm,names)
+  if ambiguous:return {},[],['ambiguous HDR MAPSYM public: '+', '.join(ambiguous)]
+  hdr_starts[(rm['sha256'],ss['index'])]=hdr_prefix
+  for sg,off in bases.get(ss['index'],set()):
+   if sg!=10:return {},[],['HDR public is outside DGROUP']
+   anchor_bases.append(off-hdr_prefix)
+  hdr_prefix+=ss['length']
+ if not anchor_bases or len(set(anchor_bases))!=1:
+  return {},[],['HDR contribution has no unique __caption MAPSYM anchor']
+ hdr_base=anchor_bases[0]
+ caption=names.get('__caption',set())
+ if len(caption)!=1 or next(iter(caption))[0]!=10:
+  return {},[],['__caption MAPSYM anchor is missing or ambiguous']
+ caption_publics=[(row,ss,p) for row in hdr for p in row['module']['publics']
+                  for ss in [row['segment']] if p['name']=='__caption' and p['segment']==ss['index'] and not p.get('local')]
+ if len(caption_publics)!=1:
+  return {},[],['__caption OMF definition is missing or ambiguous in DGROUP HDR']
+ caption_row,caption_segment,caption_public=caption_publics[0]
+ if next(iter(caption))[1]!=hdr_base+hdr_starts[(caption_row['module']['sha256'],caption_segment['index'])]+caption_public['offset']:
+  return {},[],['__caption OMF definition disagrees with MAPSYM HDR anchor']
+ for row in hdr:
+  rm=row['module'];ss=row['segment'];bases,_=_mapped_bases(rm,names)
+  expected=(10,hdr_base+hdr_starts[(rm['sha256'],ss['index'])])
+  if any(base!=expected for base in bases.get(ss['index'],set())):
+   return {},[],['inconsistent HDR MAPSYM placement']
+ msg_base=hdr_base+hdr_prefix;msg_starts={};cursor=msg_base
+ for row in msg:
+  ss=row['segment'];key=(row['module']['sha256'],ss['index'])
+  if key in msg_starts:return {},[],['duplicate DGROUP MSG member contribution']
+  msg_starts[key]=cursor;cursor+=ss['length']
+ pad_base=cursor
+ pad_length=max([row['segment']['length'] for row in pads] or [0])
+ epad_base=pad_base+pad_length
+ epad_length=max([row['segment']['length'] for row in epads] or [0])
+ edata=names.get('_edata',set())
+ if len(edata)!=1 or next(iter(edata))[0]!=10:
+  return {},[],['_edata MAPSYM anchor is missing or ambiguous for DGROUP message layout']
+ # LINK 5.30 aligns the following BSS class to a paragraph (see LIBNOPACK.MAP).
+ aligned_end=(epad_base+epad_length+15)&~15
+ if next(iter(edata))[1]!=aligned_end:
+  return {},[],['DGROUP message class order does not reach MAPSYM _edata']
+ inferred={};evidence=[]
+ for ss in targets:
+  key=(cm['sha256'],ss['index'])
+  if ss['name']=='HDR':base=hdr_base+hdr_starts.get(key,0)
+  elif ss['name']=='MSG':
+   if key not in msg_starts:return {},[],['target MSG contribution is absent from LINK order']
+   base=msg_starts[key]
+  elif ss['name']=='PAD':base=pad_base
+  else:base=epad_base
+  inferred[ss['index']]=(10,base)
+  evidence.append(dict(segment=ss['name'],segment_index=ss['index'],original_segment=10,original_offset=base,
+   basis=['DGROUP class order HDR, MSG, PAD, EPAD (build/PARTLINK/PARTIAL.MAP, LINK 5.30)',
+          'linked member order from pinned library sequence and MAPSYM public anchors',
+          '__caption MAPSYM anchors HDR; _edata bounds paragraph-aligned initialized DGROUP']))
+ return inferred,evidence,[]
+
+def _verified_runtime_contribution(member_name,segment_name):
+ """Read one current admitted runtime proof and verify its object identity."""
+ global _VERIFIED_RUNTIME_LAYOUT
+ if _VERIFIED_RUNTIME_LAYOUT is None:
+  try:
+   manifest=read_json(ROOT/'build/recovered/manifest.json')
+   verified=read_json(ROOT/'build/recovery/verified-objects.json')
+   ownership=read_json(ROOT/'layout/runtime-ownership.json')
+  except (FileNotFoundError,FormatError):
+   _VERIFIED_RUNTIME_LAYOUT=False
+  else:
+   verified_by_object={r.get('object'):r for r in verified.get('runtime',[])}
+   manifest_by_object={r.get('object'):r for r in manifest.get('runtime_objects',[])}
+   owner_rows=[r for r in ownership.get('members',[]) if r.get('member','').lower()==member_name.lower()]
+   matching=[r for r in manifest.get('runtime_objects',[]) if r.get('member','').lower()==member_name.lower()]
+   if (len(owner_rows)!=1 or len(matching)!=1 or len(verified_by_object)!=len(verified.get('runtime',[])) or
+       set(verified_by_object)-set(manifest_by_object)):
+    _VERIFIED_RUNTIME_LAYOUT=False
+   else:
+    row=matching[0];proof=verified_by_object.get(row.get('object'))
+    valid=(proof is not None and proof.get('identity')==row.get('identity') and
+           identity(ROOT/row['object'])==row.get('identity') and
+           owner_rows[0].get('member_sha256')==row.get('member_sha256') and
+           proof.get('comparison',{}).get('result') in ('CONFIRMED_MEMBER','STRONGLY_SUPPORTED_MEMBER'))
+    _VERIFIED_RUNTIME_LAYOUT=(manifest,verified,ownership,verified_by_object) if valid else False
+ if not _VERIFIED_RUNTIME_LAYOUT:return None
+ manifest,verified,ownership,verified_by_object=_VERIFIED_RUNTIME_LAYOUT
+ rows=[r for r in manifest['runtime_objects'] if r.get('member','').lower()==member_name.lower()]
+ if len(rows)!=1:return None
+ proof=verified_by_object.get(rows[0].get('object'))
+ if not proof or proof.get('member','').lower()!=member_name.lower():return None
+ contributions=[c for c in proof.get('comparison',{}).get('contributions',[])
+                if c.get('segment')==segment_name and c.get('original_segment')==10]
+ return contributions[0] if len(contributions)==1 else None
+
+def _runtime_private_data_layout(m,names,placements,raw,n,s,imports):
+ """Place strgtod _DATA only in its MAPSYM/link-order-bounded gap."""
+ candidate_rows=_runtime_member_metadata(m)
+ if len(candidate_rows)!=1 or m['name'].lower()!='\\mrt6\\common\\strgtod.asm':return {},[],[]
+ row=candidate_rows[0];cm=row['module'];dgroup=_dgroup_segments(cm)
+ targets=[ss for ss in cm['segments'] if ss['length'] and ss['name']=='_DATA' and
+          ss['class']=='DATA' and ss['index'] in dgroup]
+ if len(targets)!=1:return {},[],['strgtod private _DATA shape is ambiguous']
+ target=targets[0]
+ previous=_verified_runtime_contribution('\\mrt6\\common\\x8fout.ASM','_DATA')
+ if not previous:return {},[],['missing fresh admitted x8fout _DATA placement evidence']
+ previous_rows=[r for r in _runtime_layout_modules()
+                if r['module']['name'].lower()=='\\mrt6\\common\\x8fout.asm' and _runtime_member_is_mapped(r,names)]
+ if len(previous_rows)!=1:return {},[],['x8fout MAPSYM code anchor is missing or ambiguous']
+ prev_bases,_=_mapped_bases(previous_rows[0]['module'],names)
+ prev_text=[]
+ for ss in previous_rows[0]['module']['segments']:
+  if ss['name']=='_TEXT' and ss['class']=='CODE':
+   prev_text.extend(prev_bases.get(ss['index'],set()))
+ target_text=[]
+ for ss in cm['segments']:
+  if ss['name']=='_TEXT' and ss['class']=='CODE' and ss['index'] in placements:
+   sg,off=placements[ss['index']]
+   if sg==4:target_text.append(off)
+ if len(prev_text)!=1 or len(target_text)!=1 or prev_text[0][0]!=4 or target_text[0]<=prev_text[0][1]:
+  return {},[],['strgtod and x8fout LINK code order is missing or ambiguous']
+ end_before=previous['original_offset']+previous['length']
+ public=names.get('__lastiob',set())
+ if len(public)!=1 or next(iter(public))[0]!=10:return {},[],['__lastiob MAPSYM boundary is missing or ambiguous']
+ upper=next(iter(public))[1]
+ alignment={1:1,2:2,3:16,4:256,5:4}.get(target['alignment'])
+ if alignment is None:return {},[],['unsupported strgtod _DATA alignment']
+ start=((end_before+alignment-1)//alignment)*alignment
+ if start+target['length']!=upper:
+  return {},[],['strgtod _DATA does not uniquely tile the x8fout/__lastiob DGROUP gap']
+ # Existing verified contributions and MAPSYM public names may not overlap or
+ # split this gap. New, unverified private members are screened below by their
+ # independently mapped code positions and DGROUP _DATA declarations.
+ if _VERIFIED_RUNTIME_LAYOUT:
+  for section in ('game','runtime'):
+   for objrow in _VERIFIED_RUNTIME_LAYOUT[1].get(section,[]):
+    for c in objrow.get('comparison',{}).get('contributions',[]):
+     if c.get('original_segment')==10:
+      a=c.get('original_offset',0);b=a+c.get('length',0)
+      if max(a,start)<min(b,upper):return {},[],['admitted contribution intersects inferred strgtod _DATA gap']
+ for other in _runtime_layout_modules():
+  om=other['module']
+  if om['sha256']==cm['sha256'] or not _runtime_member_is_mapped(other,names):continue
+  for ss in om['segments']:
+   if ss['length'] and ss['name']=='_DATA' and ss['class']=='DATA' and ss['index'] in _dgroup_segments(om):
+    cb=_runtime_code_base(other,names)
+    if cb=='AMBIGUOUS':return {},[],['ambiguous code placement for intervening DGROUP _DATA member']
+    if cb and cb[0]==4 and prev_text[0][1]<cb[1]<target_text[0]:
+     return {},[],['another linked DGROUP _DATA member lies between x8fout and strgtod']
+ if any(start<=off<upper for sg,off in names.get('_DATA',set())):
+  return {},[],['MAPSYM public lies inside inferred strgtod _DATA gap']
+ return {target['index']:(10,start)},[dict(segment='_DATA',segment_index=target['index'],original_segment=10,original_offset=start,
+   basis=['admitted x8fout _DATA contribution is reference-derived and ends at %04X'%(end_before&0xffff),
+          '__lastiob MAPSYM public anchors the next initialized _DATA contribution at %04X'%(upper&0xffff),
+          'strgtod code follows x8fout in MAPSYM _TEXT order; WORD alignment and ten-byte contribution uniquely fill the gap'])],[]
+
+def _link_order_placements(m,names,placements,raw,n,s,imports):
+ inferred={};evidence=[];issues=[]
+ rows,proof,problems=_runtime_message_layout(m,names,s)
+ inferred.update(rows);evidence.extend(proof);issues.extend(problems)
+ rows,proof,problems=_runtime_private_data_layout(m,names,placements,raw,n,s,imports)
+ inferred.update(rows);evidence.extend(proof);issues.extend(problems)
+ return inferred,evidence,issues
 
 def import_symbols(path):
  out={}
@@ -76,6 +366,14 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
  for si,poss in pending.items():
   if len(poss)==1:placements[si]=next(iter(poss));derived.append(si)
   else:issues.append('conflicting private placement constraints '+m['segments'][si-1]['name'])
+ link_placements,link_evidence,link_issues=_link_order_placements(m,names,placements,raw,n,s,imports)
+ for si,position in link_placements.items():
+  if si in placements:
+   if placements[si]!=position:
+    issues.append('link-order placement conflicts with independent anchor for '+m['segments'][si-1]['name'])
+  else:
+   placements[si]=position
+ issues.extend(link_issues)
  # A BSS contribution carries no bytes, so its derived placement is only
  # meaningful inside the original BSS region: LINK places class BSS after every
  # DATA/CONST class, between the runtime's _edata and _end. A candidate static
@@ -239,8 +537,8 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
  if any(not r['equal'] for name,si,fixrows,far_offsets,mask in pending_far_offsets for r in fixrows):
   # Recount after the pairing pass: unpaired offsets lose their masked bytes.
   fixequal=sum(r['equal'] for name,si,fixrows,far_offsets,mask in pending_far_offsets for r in fixrows)
- return {'result':'STRONGLY_SUPPORTED_MEMBER' if not issues and derived else 'CONFIRMED_MEMBER' if not issues else 'NO_COMPLETE_MATCH',
-  'issues':issues,'placements':{str(k):list(v) for k,v in placements.items()},'private_constraint_placements':derived,'anchors':dict(anchors),'contributions':details,
+ return {'result':'STRONGLY_SUPPORTED_MEMBER' if not issues and (derived or link_evidence) else 'CONFIRMED_MEMBER' if not issues else 'NO_COMPLETE_MATCH',
+  'issues':issues,'placements':{str(k):list(v) for k,v in placements.items()},'private_constraint_placements':derived,'link_order_placements':link_evidence,'anchors':dict(anchors),'contributions':details,
   'literal_compared':total,'literal_equal':equal,'fixups_equal':fixequal,'fixups_total':len(m['fixups']),
   'publics':[p['name'] for p in m['publics']],'scaffold_segments':scaffold}
 

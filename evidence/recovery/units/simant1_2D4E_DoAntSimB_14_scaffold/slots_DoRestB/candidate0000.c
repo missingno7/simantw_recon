@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * DoRestB: one turn of a resting B-colony ant at LifeB cell (x, y) with
  * the attacker/direction word attacker.  The cell's ant byte is read: a
@@ -8,7 +18,7 @@
  * 0x3f0e, BlistT 0x3d18 and the LifeB cell take the winner's colour bit
  * plus 0x70, BlistM 0x3b22 becomes 0xa).  Either resolution sets handled
  * and ends the turn.  Otherwise the cell is refreshed from the current
- * record's type byte BlistT[Tindex]; on a 1-in-20 SRand1(20) roll the
+ * record's type byte BlistX.t[Tindex]; on a 1-in-20 SRand1(20) roll the
  * record's mode BlistM[Tindex] is recomputed by GetNewMode(caste, type)
  * with caste = bits 3-6 of the type byte; otherwise, when the rest
  * balloon option OptionStates[5] equals 1, RestBalloons(x, y, 2) shows a
@@ -53,10 +63,10 @@ void far DoRestB(int x, int y, int attacker)
         handled = 1;
     } else if (ant > 0x87 && ant < 0xe8 && (index = FindInBList(x, y, ant)) >= 0) {
         winner = GetWinner(ant, attacker);
-        Dx8[index + 0x3f0e] = winner;
-        Dx8[index + 0x3d18] = (winner & 0x80) + 0x70;
+        BlistX.s[index] = winner;
+        BlistX.t[index] = (winner & 0x80) + 0x70;
         LifeB[(x << 6) + y] = (winner & 0x80) + 0x70;
-        Dx8[index + 0x3b22] = 0xa;
+        BlistX.m[index] = 0xa;
         handled = 1;
     } else {
         handled = 0;
@@ -64,11 +74,11 @@ void far DoRestB(int x, int y, int attacker)
     if (handled == 1)
         return;
 
-    LifeB[(x << 6) + y] = Dx8[Tindex + 0x3d18];
+    LifeB[(x << 6) + y] = BlistX.t[Tindex];
     if (SRand1(20) == 0) {
-        type = Dx8[Tindex + 0x3d18];
+        type = BlistX.t[Tindex];
         caste = (type & 0x78) >> 3;
-        Dx8[Tindex + 0x3b22] = (unsigned char)GetNewMode(caste, type);
+        BlistX.m[Tindex] = (unsigned char)GetNewMode(caste, type);
         return;
     }
     if (OptionStates[5] == 1)

@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * Hypothesis: ListIndexB is the exclusive bound of the pending B-list.
  * Tindex is a shared cursor.  Each pass consumes one record from the
@@ -21,9 +31,9 @@ void far DoAntSimB(void)
     Tindex = ListIndexB;
     while (Tindex > 0) {
         --Tindex;
-        life = Dx8[Tindex + 0x3736];
-        column = Dx8[Tindex + 0x392c] & 0xff;
-        attribute = Dx8[Tindex + 0x3d18];
+        life = BlistX.x[Tindex];
+        column = BlistX.y[Tindex] & 0xff;
+        attribute = BlistX.t[Tindex];
         if (attribute != 0)
             DoNestAntB(life, column, attribute);
     }

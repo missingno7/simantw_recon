@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * LeaveNestB: the current black ant (Tindex) tries to leave the nest at
  * surface cell (x, y).  Its list type byte is saved and cleared; if the
@@ -11,10 +21,10 @@
  */
 extern unsigned char near LifeB[128][64];
 extern unsigned char far Dx8;
-#define AT(off) ((&Dx8)[off])
-#define BlistT(i) AT((i) + 0x3d18)
-#define BlistS(i) AT((i) + 0x3f0e)
-#define BlistM(i) AT((i) + 0x3b22)
+#define AT(off) (((unsigned char far *)&BlistX)[(off) - 0x3736])
+#define BlistT(i) BlistX.t[(i)]
+#define BlistS(i) BlistX.s[(i)]
+#define BlistM(i) BlistX.m[(i)]
 extern unsigned char far HoleMapB[];
 extern int far Tindex;
 

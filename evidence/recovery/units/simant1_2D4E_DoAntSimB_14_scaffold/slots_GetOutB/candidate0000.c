@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /* Derived mechanically from the mirrored colony function _GetOutR (tools/mirror_pairs.py):
  * colony-specific MAPSYM identifiers swapped DigTileThemR->DigTileThemB, ExitMapR->ExitMapB, GetOutR->GetOutB, HoleMapR->HoleMapB, LifeR->LifeB, MakeNewHoleR->MakeNewHoleB, MapR->MapB, RlistM->BlistM, RlistS->BlistS, RlistT->BlistT, TryMoveDirR->TryMoveDirB; constants and structure unchanged.
  * Verified only by the strict matcher; where the pair is not a pure mirror the
@@ -48,17 +58,17 @@ int far GetOutB(int x)
     int raw;
 
     if (MapB[x << 6] == 0x18) {
-        raw = BlistT[Tindex];
-        BlistT[Tindex] = 0;
+        raw = BlistX.t[Tindex];
+        BlistX.t[Tindex] = 0;
         if (HoleMapB[x] == 0)
             MakeNewHoleB(x);
         if (ExitHole(HoleMapB[x], x, SRand8() + (raw & 0xf8),
-                      Dx8[Tindex + 0x3B22], Dx8[Tindex + 0x3F0E]) != 0) {
+                      BlistX.m[Tindex], BlistX.s[Tindex]) != 0) {
             LifeB[(x << 6) + 1] = 0;
             return 1;
         }
-        BlistT[Tindex] = raw;
-        Dx8[Tindex + 0x3B22] = 0;
+        BlistX.t[Tindex] = raw;
+        BlistX.m[Tindex] = 0;
         return 0;
     }
 

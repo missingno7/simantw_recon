@@ -1,3 +1,13 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
 /*
  * RaidInB: a B-colony ant at map cell (x, y) looks for food to bring back,
  * given a direction hint dirHint.  If MapB[(x<<6)+y] is a food-pile tile
@@ -42,9 +52,9 @@ void far RaidInB(int x, int y, int dirHint)
             MapB[(x << 6) + y]--;
         if (FoodB > 0)
             FoodB--;
-        Dx8[Tindex + 0x3b22] = 3;
-        Dx8[Tindex + 0x3d18] |= 8;
-        LifeB[(x << 6) + y] = Dx8[Tindex + 0x3d18];
+        BlistX.m[Tindex] = 3;
+        BlistX.t[Tindex] |= 8;
+        LifeB[(x << 6) + y] = BlistX.t[Tindex];
         return;
     }
 
@@ -58,6 +68,6 @@ void far RaidInB(int x, int y, int dirHint)
     if (TryMoveDirB(x, y, dir) != 0)
         return;
 
-    Dx8[Tindex + 0x3b22] = 1;
-    LifeB[(x << 6) + y] = Dx8[Tindex + 0x3d18];
+    BlistX.m[Tindex] = 1;
+    LifeB[(x << 6) + y] = BlistX.t[Tindex];
 }

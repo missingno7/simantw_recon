@@ -1,0 +1,468 @@
+/* _myBeginSound: packed resource decode and multimedia output paths. */
+struct MultimediaState {
+    unsigned int activeFlag;
+    int moduleHandle;
+    int soundInstalled;
+    int waveInstalled;
+    int midiHandle;
+    void far *midiEntry;
+    int waveHandle;
+    void far *waveEntry;
+    int refCount;
+    unsigned int songState;
+    unsigned int state16;
+    unsigned int state18;
+    unsigned int state1a;
+    unsigned int state1c;
+    unsigned int state1e;
+    unsigned int soundMode;
+};
+static struct MultimediaState __based(__segname("SIMANT_DATA_GROUP")) soundState = {0};
+static const __segment near mmSelector = __segname("SIMANT_DATA_GROUP");
+#define stateViaSelector (*(struct MultimediaState __based(mmSelector) *)&soundState)
+struct WaveHeader {
+    void far *data;
+    unsigned long bufferLength;
+    unsigned long bytesRecorded;
+    unsigned long user;
+    unsigned long flags;
+    unsigned long loops;
+    void far *next;
+    unsigned long reserved;
+};
+struct WaveOpenRecord {
+    unsigned int tag;
+    unsigned int channels;
+    unsigned long samplesPerSecond;
+    unsigned long averageBytesPerSecond;
+    unsigned int blockAlign;
+    unsigned int bitsPerSample;
+};
+struct MultimediaTime {
+    unsigned int type;
+    unsigned long milliseconds;
+};
+struct RiffWave {
+    char riff[4];
+    unsigned long riffBytes;
+    char wave[4];
+    char fmt[4];
+    unsigned long fmtBytes;
+    unsigned int formatTag;
+    unsigned int channels;
+    unsigned long samplesPerSecond;
+    unsigned long averageBytesPerSecond;
+    unsigned int blockAlign;
+    unsigned int bitsPerSample;
+    char data[4];
+    unsigned long dataBytes;
+    unsigned char samples[1];
+};
+struct SoundMessage {
+    unsigned int hwnd;
+    unsigned int message;
+    unsigned int wParam;
+    unsigned long lParam;
+    unsigned long time;
+    int x;
+    int y;
+};
+typedef int (far *MMProc)(void);
+typedef int (far pascal *MMOneWordProc)(unsigned int);
+typedef int (far *LegacySoundProc)(unsigned int, unsigned int,
+                                   unsigned int, unsigned int);
+typedef int (far pascal *WaveHeaderProc)(unsigned int,
+                                          struct WaveHeader far *,
+                                          unsigned int);
+typedef int (far pascal *MciProc)(unsigned int, unsigned int,
+                                  unsigned int, void far *);
+typedef int (far pascal *WaveOpenProc)(unsigned int far *, unsigned int,
+                                       void far *, unsigned int,
+                                       unsigned int, unsigned int,
+                                       unsigned int, unsigned int,
+                                       unsigned int, unsigned int,
+                                       unsigned int);
+typedef int (far pascal *SndPlayProc)(const char far *, unsigned int);
+extern int near effectsOnFlag;
+extern int near rootWnd;
+static int near vocBufLocked1 = 0;
+static int near vocBufLocked2 = 0;
+static unsigned long near soundDeadline = 0;
+extern unsigned int far db_LoadObject(unsigned int, unsigned int, unsigned int);
+extern unsigned long far db_GetObjectSize(unsigned int, unsigned int, unsigned int);
+extern void far db_ReleaseHandle(unsigned int);
+extern void far * far mem_Lock(unsigned int);
+extern int far mem_Unlock(unsigned int);
+extern void far WinPrintf(const char far *, ...);
+extern MMProc far pascal GetProcAddress(unsigned int, const char far *);
+extern unsigned int far pascal GlobalAlloc(unsigned int, unsigned long);
+extern void far * far pascal GlobalLock(unsigned int);
+extern int far pascal GlobalUnlock(unsigned int);
+extern int far pascal GlobalPageLock(unsigned int);
+extern int far pascal GlobalPageUnlock(unsigned int);
+extern int far pascal GlobalWire(unsigned int);
+extern int far pascal GlobalUnWire(unsigned int);
+extern unsigned int far pascal GlobalFree(unsigned int);
+extern unsigned int far pascal LocalAlloc(unsigned int, unsigned int);
+extern void far * far pascal LocalLock(unsigned int);
+extern int far pascal LocalUnlock(unsigned int);
+extern unsigned int far pascal LocalFree(unsigned int);
+extern unsigned long far pascal GetTickCount(void);
+extern unsigned int far pascal LoadCursor(unsigned int, unsigned int);
+extern unsigned int far pascal SetCursor(unsigned int);
+extern int far pascal PeekMessage(struct SoundMessage far *, int,
+                                  unsigned int, unsigned int, int);
+extern int far pascal TranslateMessage(struct SoundMessage far *);
+extern int far pascal DispatchMessage(struct SoundMessage far *);
+extern int far pascal CloseSound(void);
+extern void far MciOutWave(unsigned int);
+
+void far myBeginSound(unsigned int soundId, unsigned int device,
+                      unsigned int reserved)
+{
+    unsigned int kind;
+    unsigned int object;
+    unsigned int buffer;
+    unsigned int localBlock;
+    unsigned int cursor;
+    unsigned int i;
+    unsigned int count;
+    unsigned int result;
+    unsigned int waveDevice;
+    unsigned long bytes;
+    unsigned long objectSize;
+    unsigned long beganAt;
+    unsigned long now;
+    unsigned char sample;
+    unsigned char packed;
+    unsigned char delta[16];
+    unsigned char delta2[16];
+    unsigned char far *source;
+    unsigned char far *output;
+    struct WaveHeader far *header;
+    struct RiffWave far *riff;
+    struct WaveOpenRecord far *format;
+    struct SoundMessage message;
+    MMProc getState;
+    MMProc closeState;
+    MMProc finishState;
+    MMProc resetWave;
+    MMProc getDevice;
+    MMProc playSoundAddress;
+    SndPlayProc sndPlay;
+    WaveHeaderProc getPosition;
+    WaveHeaderProc prepare;
+    WaveHeaderProc writeWave;
+    WaveHeaderProc unprepare;
+    WaveOpenProc openWave;
+    MciProc sendMci;
+
+    if (stateViaSelector.activeFlag == 0)
+        goto done;
+    if (effectsOnFlag == 0)
+        goto done;
+
+    kind = stateViaSelector.soundMode < 1 ? 0x105 : 0x33;
+    object = db_LoadObject(soundId, kind, 1);
+    if (object == 0)
+        goto object_missing;
+    WinPrintf("Sound loaded: SUCCESS(%d)\n", soundId);
+
+    /* Stop the prior MCI wave and discard its page-locked buffers. */
+    if (stateViaSelector.moduleHandle != 0) {
+    if (stateViaSelector.soundInstalled == 0) {
+    getState = GetProcAddress(stateViaSelector.moduleHandle,
+                              "vocOpenDevice");
+    if (stateViaSelector.state1a != 0) {
+        closeState = GetProcAddress(stateViaSelector.moduleHandle,
+                                    "vocStopVoice");
+        if (closeState != 0) {
+            result = ((MMOneWordProc)closeState)(stateViaSelector.moduleHandle);
+            if (result != 0)
+                WinPrintf("SBPro Error(vocStopVoice)(%u)\n", result);
+        }
+        finishState = GetProcAddress(stateViaSelector.moduleHandle,
+                                     "vocCloseDevice");
+        if (finishState != 0)
+            ((MMOneWordProc)finishState)(0);
+        if (stateViaSelector.state1e != 0) {
+            GlobalPageUnlock(stateViaSelector.state1e);
+            GlobalUnWire(stateViaSelector.state1e);
+            GlobalFree(stateViaSelector.state1e);
+            stateViaSelector.state1e = 0;
+        }
+        if (stateViaSelector.state1c != 0) {
+            GlobalPageUnlock(stateViaSelector.state1c);
+            GlobalUnWire(stateViaSelector.state1c);
+            GlobalFree(stateViaSelector.state1c);
+            stateViaSelector.state1c = 0;
+        }
+        stateViaSelector.state1e = 0;
+        stateViaSelector.state1c = 0;
+    }
+    if (getState != 0) {
+        result = ((MMOneWordProc)getState)(rootWnd);
+        if (result != 0) {
+            WinPrintf("SBPro Error(vocOpenDevice)(%u)\n", result);
+            goto finish_object;
+        }
+    }
+
+    sendMci = (MciProc)GetProcAddress(stateViaSelector.moduleHandle,
+                                      "vocPlayMemUnFormat");
+
+    /* Decode the packed four bit deltas into a page-locked sample buffer. */
+    source = (unsigned char far *)mem_Lock(object);
+    objectSize = db_GetObjectSize(soundId, 5, 2);
+    bytes = (objectSize - 0x10L) * 2L;
+    buffer = GlobalAlloc(0, bytes);
+    stateViaSelector.state1e = buffer;
+    output = (unsigned char far *)GlobalLock(buffer);
+    GlobalWire(buffer);
+    for (i = 0; i < 16; ++i)
+        delta[i] = source[i];
+    sample = 0x80;
+    count = (unsigned int)(bytes >> 1);
+    for (i = 0; i < count; ++i) {
+        packed = source[0x10 + i];
+        sample += delta[packed >> 4];
+        output[i * 2] = sample;
+        sample += delta[packed & 15];
+        output[i * 2 + 1] = sample;
+    }
+    GlobalPageLock(buffer);
+    WinPrintf("vocPlayMemUnFormat(start)(%ld)\n", bytes);
+
+    /* The sound DLL accepts the decoded object as an unformatted wave block. */
+    result = sendMci(stateViaSelector.waveHandle, 0, 0x1000,
+                     (void far *)output);
+    if (result == 0) {
+        mem_Unlock(object);
+        WinPrintf("vocPlayMemUnFormat(done)\n");
+        goto finish_object;
+    }
+    WinPrintf("SBPro Error(vocPlayMemUnFormat)(%u)\n", result);
+    finishState = GetProcAddress(stateViaSelector.moduleHandle,
+                                 "vocCloseDevice");
+    if (finishState != 0)
+        ((MMOneWordProc)finishState)(0);
+    GlobalPageUnlock(buffer);
+    GlobalUnWire(buffer);
+    GlobalFree(buffer);
+    stateViaSelector.state1e = 0;
+    mem_Unlock(object);
+    WinPrintf("vocPlayMemUnFormat(done)\n");
+    goto finish_object;
+    }
+
+event_pump:
+    if (PeekMessage(&message, rootWnd, 0, 0x3bd, 1)) {
+        do {
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+        } while (PeekMessage(&message, rootWnd, 0, 0x3bd, 1));
+    }
+
+    /* Only reclaim the old device after both buffers pass their deadline. */
+    if (stateViaSelector.waveHandle != 0 &&
+        vocBufLocked1 != 0 && vocBufLocked2 != 0) {
+        WinPrintf("Wave device still in use.\n");
+        now = GetTickCount();
+        if (now <= soundDeadline)
+            goto done;
+
+    /* Reclaim the current wave header and close the idle device. */
+    if (vocBufLocked1 != 0) {
+        header = (struct WaveHeader far *)GlobalLock(vocBufLocked1);
+        prepare = (WaveHeaderProc)GetProcAddress(
+            stateViaSelector.moduleHandle, "waveOutPrepareHeader");
+        writeWave = (WaveHeaderProc)GetProcAddress(
+            stateViaSelector.moduleHandle, "waveOutWrite");
+        if (prepare != 0 && header != 0 &&
+            prepare(stateViaSelector.waveHandle, header, 0x20) == 0 &&
+            writeWave != 0)
+            writeWave(stateViaSelector.waveHandle, header, 0x20);
+        GlobalUnlock(vocBufLocked1);
+        GlobalUnWire(vocBufLocked1);
+        GlobalPageUnlock(vocBufLocked1);
+        GlobalFree(vocBufLocked1);
+        vocBufLocked1 = 0;
+    }
+    if (vocBufLocked2 != 0) {
+        GlobalUnlock(vocBufLocked2);
+        GlobalFree(vocBufLocked2);
+        vocBufLocked2 = 0;
+    }
+    if (--stateViaSelector.refCount == 0) {
+        closeState = GetProcAddress(stateViaSelector.moduleHandle,
+                                    "waveOutClose");
+        if (closeState != 0) {
+            ((MMOneWordProc)closeState)(stateViaSelector.waveHandle);
+            stateViaSelector.waveHandle = 0;
+        }
+    }
+    if (stateViaSelector.state1e != 0) {
+        resetWave = GetProcAddress(stateViaSelector.moduleHandle,
+                                   "waveOutReset");
+        if (resetWave != 0)
+            ((MMOneWordProc)resetWave)(stateViaSelector.state1e);
+    }
+    }
+
+    /* Open waveOut, then use sndPlaySound when waveOut cannot start. */
+    localBlock = LocalAlloc(2, 0x10);
+    format = (struct WaveOpenRecord far *)LocalLock(localBlock);
+    format->tag = 1;
+    format->channels = 1;
+    format->samplesPerSecond = 0x1000L;
+    format->averageBytesPerSecond = 0x1000L;
+    format->blockAlign = 1;
+    format->bitsPerSample = 8;
+    openWave = (WaveOpenProc)GetProcAddress(stateViaSelector.moduleHandle,
+                                             "waveOutOpen");
+    waveDevice = stateViaSelector.waveHandle;
+    result = openWave(&waveDevice, 0, format, rootWnd, 0, 1, 0, 0, 0, 0, 0);
+    if (result == 0) {
+        MciOutWave(object);
+        LocalUnlock(localBlock);
+        LocalFree(localBlock);
+        goto wave_position;
+    }
+
+    playSoundAddress = GetProcAddress(stateViaSelector.moduleHandle,
+                                      "sndPlaySound");
+    WinPrintf("myBeginSound: Unable to open wave device(%u).\n", result);
+    if (playSoundAddress == 0) {
+        LocalUnlock(localBlock);
+        LocalFree(localBlock);
+        goto wave_position;
+    }
+    sndPlay = (SndPlayProc)playSoundAddress;
+    stateViaSelector.waveHandle = waveDevice;
+    source = (unsigned char far *)mem_Lock(object);
+    objectSize = db_GetObjectSize(soundId, 5, 0x2002);
+    bytes = (objectSize - 0x10L) * 2L;
+    buffer = GlobalAlloc(0, bytes + 0x2cL);
+    vocBufLocked2 = buffer;
+    riff = (struct RiffWave far *)GlobalLock(buffer);
+    riff->riff[0] = 'R'; riff->riff[1] = 'I';
+    riff->riff[2] = 'F'; riff->riff[3] = 'F';
+    riff->riffBytes = bytes + 8L;
+    riff->wave[0] = 'W'; riff->wave[1] = 'A';
+    riff->wave[2] = 'V'; riff->wave[3] = 'E';
+    riff->fmt[0] = 'f'; riff->fmt[1] = 'm';
+    riff->fmt[2] = 't'; riff->fmt[3] = ' ';
+    riff->fmtBytes = 0x10L;
+    riff->formatTag = 1;
+    riff->channels = 1;
+    riff->samplesPerSecond = 0x1000L;
+    riff->averageBytesPerSecond = 0x1000L;
+    riff->blockAlign = 1;
+    riff->bitsPerSample = 8;
+    riff->data[0] = 'd'; riff->data[1] = 'a';
+    riff->data[2] = 't'; riff->data[3] = 'a';
+    riff->dataBytes = bytes;
+    for (i = 0; i < 16; ++i)
+        delta2[i] = source[i];
+    sample = 0x80;
+    count = (unsigned int)(bytes >> 1);
+    for (i = 0; i < count; ++i) {
+        packed = source[0x10 + i];
+        sample += delta2[packed >> 4];
+        riff->samples[i * 2] = sample;
+        sample += delta2[packed & 15];
+        riff->samples[i * 2 + 1] = sample;
+    }
+    result = sndPlay((const char far *)riff, 0x14);
+    if (result != 0)
+        WinPrintf("Play Sound(success)\n");
+    else
+        WinPrintf("Play Sound(failure)\n");
+    GlobalUnlock(vocBufLocked2);
+    GlobalFree(vocBufLocked2);
+    vocBufLocked2 = 0;
+    mem_Unlock(object);
+    LocalUnlock(localBlock);
+    LocalFree(localBlock);
+
+wave_position:
+    if (stateViaSelector.waveHandle != 0) {
+        struct MultimediaTime timeRecord;
+        getPosition = (WaveHeaderProc)GetProcAddress(
+            stateViaSelector.moduleHandle, "waveOutGetPosition");
+        timeRecord.type = 1;
+        getPosition(stateViaSelector.waveHandle,
+                    (struct WaveHeader far *)&timeRecord, 8);
+        soundDeadline = GetTickCount() + timeRecord.milliseconds;
+    }
+    goto finish_object;
+    }
+
+old_sound:
+    if (stateViaSelector.soundMode == 0)
+        goto finish_object;
+    playSoundAddress = GetProcAddress(stateViaSelector.moduleHandle,
+                                      "PlaySound");
+    if (playSoundAddress == 0)
+        goto finish_object;
+    sndPlay = (SndPlayProc)playSoundAddress;
+    cursor = LoadCursor(0, 0x7f02);
+    cursor = SetCursor(cursor);
+    if (stateViaSelector.moduleHandle != 0 &&
+        stateViaSelector.waveInstalled == 0) {
+        if (stateViaSelector.soundInstalled == 0) {
+            sendMci = (MciProc)GetProcAddress(stateViaSelector.moduleHandle,
+                                              "mciSendCommand");
+            WinPrintf("Midi: Close Device\n");
+            if (sendMci != 0) {
+                sendMci(stateViaSelector.waveHandle, 0x804, 0,
+                        (void far *)&message);
+                stateViaSelector.waveHandle = 0;
+                goto close_sound;
+            }
+        }
+        finishState = GetProcAddress(stateViaSelector.moduleHandle,
+                                     "musStopMusic");
+        if (finishState != 0) {
+            result = ((MMOneWordProc)finishState)(0);
+            if (result != 0)
+                WinPrintf("SBPro Error(musStopMusic)(%u)\n", result);
+        }
+        getDevice = GetProcAddress(stateViaSelector.moduleHandle,
+                                   "musCloseDevice");
+        if (getDevice != 0)
+            ((MMOneWordProc)getDevice)(0);
+        if (stateViaSelector.state18 != 0)
+            GlobalPageUnlock(stateViaSelector.state18);
+        if (stateViaSelector.songState != 0) {
+            GlobalUnWire(stateViaSelector.songState);
+            GlobalFree(stateViaSelector.songState);
+            stateViaSelector.songState = 0;
+        }
+        stateViaSelector.state18 = 0;
+        stateViaSelector.state16 = 0;
+    }
+close_sound:
+    CloseSound();
+    source = (unsigned char far *)mem_Lock(object);
+    GlobalPageLock(object);
+    objectSize = db_GetObjectSize(soundId, 0x33, 4);
+    ((LegacySoundProc)sndPlay)(4, 0x32, 0, device);
+    GlobalPageUnlock(object);
+    mem_Unlock(object);
+    goto finish_object;
+
+finish_object:
+    if (object != 0) {
+        SetCursor(cursor);
+        db_ReleaseHandle(object);
+    }
+    goto done;
+
+object_missing:
+    WinPrintf("Sound loaded: FAILURE(%d)\n", soundId);
+    goto done;
+
+done:
+    return;
+}
