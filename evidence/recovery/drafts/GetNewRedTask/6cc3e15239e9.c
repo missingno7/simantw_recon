@@ -1,0 +1,63 @@
+/*
+ * GetNewRedTask: choose the red colony's next initiator task.
+ *
+ * Always calls UnRecruitRed() first. When MePlane==1 and a randomized
+ * threshold (SRand1(32)+64) stays below MeLocX, and a second random
+ * draw (SRand1(10)) stays below the far "recruit gate" count, RedTask
+ * is set to 2 (aggressive recruit) and RecruitRed(gate) is called with
+ * that same count, then returns.
+ *
+ * Otherwise (either MePlane!=1 or either random gate failed): mirror
+ * _LastFoodDrop and write the named PACK values _RedDestY/_RedDestX.
+ * The X threshold either reduces X by five or nudges Y into [20,40].
+ * The recruit count is the sum of _CastePopR[1] and [2], divided by four
+ * below twenty or eight otherwise; _RedTask becomes one.
+ */
+extern int near MePlane;
+extern int near MeLocX;
+extern int far RedTask;
+extern int far LastFoodDrop[2];
+extern int far RedDestX;
+extern int far RedDestY;
+extern int far ModePopB[];
+extern int near CastePopR[];
+
+extern void far UnRecruitRed(void);
+extern int far SRand1(int range);
+extern void far RecruitRed(int count);
+
+void far GetNewRedTask(void)
+{
+    UnRecruitRed();
+
+    if (MePlane == 1) {
+        if (SRand1(32) + 0x40 < MeLocX) {
+            if (SRand1(10) < ModePopB[5]) {
+                RedTask = 2;
+                RecruitRed(ModePopB[5]);
+                return;
+            }
+        }
+    }
+
+    RedDestY = LastFoodDrop[1];
+    RedDestX = LastFoodDrop[0];
+    if (RedDestX > 0x1e) {
+        RedDestX -= 5;
+    } else {
+        if (RedDestY < 0x14)
+            RedDestY += 5;
+        else if (RedDestY > 0x28)
+            RedDestY -= 5;
+    }
+
+    {
+        int redPopulation;
+        redPopulation = CastePopR[1] + CastePopR[2];
+        if (redPopulation < 0x14)
+            RecruitRed(redPopulation >> 2);
+        else
+            RecruitRed(redPopulation >> 3);
+    }
+    RedTask = 1;
+}

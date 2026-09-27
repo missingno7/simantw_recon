@@ -6,16 +6,16 @@
  * DoDigInR: R-colony twin of DoDigInB (same simant1:2D4E unit), one
  * dig-in turn for an R worker ant at LifeR cell (x, y).  If mode is
  * not 2 or 6 it just transitions state via GetNewModeR(mode), stores
- * it into RlistM[Tindex] and returns.  Otherwise GetEnterDirR(x,y,
+ * it into RlistX.m[Tindex] and returns.  Otherwise GetEnterDirR(x,y,
  * dirArg&7) picks a direction, SRand8() as a fallback when negative;
  * the combined byte attr=(dirArg&0xf8)|dir is stored into both
- * LifeR[x][y] and RlistT[Tindex].  y==63 retries the mode transition.
+ * LifeR[x][y] and RlistX.t[Tindex].  y==63 retries the mode transition.
  * (nx,ny) come from the Dx8/Dy8 compass tables; boundary failures
  * return with no explicit value, ny<1 returns GetOutR(x).  A MapR
  * tile >=0x30 returns directly.  A dirt tile that fails to dig
  * (DigTileThemR==0) does NOT retry GetNewModeR here (unlike the B
- * twin): it just zeroes RlistM[Tindex] and returns.  On a successful
- * dig: RlistT[Tindex]+=0x18, RlistM[Tindex]=5, myBeginSound(0x12,0,0)
+ * twin): it just zeroes RlistX.m[Tindex] and returns.  On a successful
+ * dig: RlistX.t[Tindex]+=0x18, RlistX.m[Tindex]=5, myBeginSound(0x12,0,0)
  * (R's own sound id), the old cell is cleared in LifeR, and the new
  * cell's byte (cached once, LifeR[nx][ny]) decides the outcome: an
  * ant coded 8..0x67 is looked up with FindInRList/GetWinner(cell,
@@ -28,7 +28,7 @@
  * bookkeeping (RpopT + CastePopR[2] in place of B's BpopT+CastePopB[2]),
  * and SRand4()==0 calls FixExitMapR(nx,ny).  R has one more step B
  * does not: if the worn tile is now 0x14, the ant abandons its own
- * R-list record (RlistT[Tindex]=0, LifeR[nx][ny]=0) and spawns a new
+ * R-list record (RlistX.t[Tindex]=0, LifeR[nx][ny]=0) and spawns a new
  * neutral entry via AddAntToBList(nx, ny, code, 3, 0) -- code being
  * SRand8()+0x90 or +0x0b0 depending on (attr&0x7f)>=0x30 -- with the
  * resulting code also stored directly into LifeB[nx][ny].
@@ -39,6 +39,14 @@
  * (life, column, attribute, state, direction) and its internal
  * LifeB store are reused verbatim from wf_AddAntToBList-e7a166edf6.c.
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far BlistX;
 extern unsigned char near LifeB[];
 extern unsigned char near MapB[64][64];
 extern unsigned char near LifeB[];
@@ -51,11 +59,11 @@ extern int far EatCountB;
 extern int far FoodB;
 extern char far Dx8[];
 extern char far Dy8[];
-extern unsigned char far BlistM[];
-extern unsigned char far BlistT[];
-extern unsigned char far BlistS[];
-extern unsigned char far BlistX[];
-extern unsigned char far BlistY[];
+
+
+
+
+
 extern int far GetNewModeB(int mode);
 extern int far GetEnterDirB(int x, int y, int dir);
 extern int far SRand8(void);
@@ -86,7 +94,7 @@ int far DoDigInB(int x, int y, int dirArg, int mode)
     volatile int dir;
 
     if (mode != 2 && mode != 6) {
-        BlistM[Tindex] = GetNewModeB(mode);
+        BlistX.m[Tindex] = GetNewModeB(mode);
         return;
     }
 
@@ -97,10 +105,10 @@ int far DoDigInB(int x, int y, int dirArg, int mode)
 
     attr = (dirArg & 0xf8) | dir;
     LifeB[(x << 6) + yy] = attr;
-    BlistT[Tindex] = attr;
+    BlistX.t[Tindex] = attr;
 
     if (yy == 0x3f) {
-        BlistM[Tindex] = GetNewModeB(mode);
+        BlistX.m[Tindex] = GetNewModeB(mode);
         return;
     }
 
@@ -121,13 +129,13 @@ int far DoDigInB(int x, int y, int dirArg, int mode)
 
     if (IsItDirt(tile) != 0) {
         if (DigTileThemB(nx, ny) == 0) {
-            BlistM[Tindex] = 0;
+            BlistX.m[Tindex] = 0;
             return;
         }
     }
 
-    BlistT[Tindex] += 0x18;
-    BlistM[Tindex] = 5;
+    BlistX.t[Tindex] += 0x18;
+    BlistX.m[Tindex] = 5;
     myBeginSound(0x12, 0, 0);
 
     LifeB[(x << 6) + yy] = 0;
@@ -137,10 +145,10 @@ int far DoDigInB(int x, int y, int dirArg, int mode)
         index = FindInBList(nx, ny, cell);
         if (index >= 0) {
             winner = GetWinner(cell, attr);
-            BlistS[index] = winner;
-            BlistT[index] = (winner & 0x80) + 0x70;
+            BlistX.s[index] = winner;
+            BlistX.t[index] = (winner & 0x80) + 0x70;
             LifeB[(nx << 6) + ny] = (winner & 0x80) + 0x70;
-            BlistM[index] = 0xa;
+            BlistX.m[index] = 0xa;
             fought = 1;
         } else {
             fought = 0;
@@ -155,10 +163,10 @@ int far DoDigInB(int x, int y, int dirArg, int mode)
     if (fought)
         return;
 
-    BlistT[Tindex] = (BlistT[Tindex] & 0xf8) | dir;
-    LifeB[(nx << 6) + ny] = BlistT[Tindex];
-    BlistX[Tindex] = nx;
-    BlistY[Tindex] = ny;
+    BlistX.t[Tindex] = (BlistX.t[Tindex] & 0xf8) | dir;
+    LifeB[(nx << 6) + ny] = BlistX.t[Tindex];
+    BlistX.x[Tindex] = nx;
+    BlistX.y[Tindex] = ny;
 
     if (SRand64() > HealthB) {
         tile = MapB[nx][ny];
@@ -184,12 +192,12 @@ int far DoDigInB(int x, int y, int dirArg, int mode)
         FixExitMapB(nx, ny);
 
     if (MapB[nx][ny] == 0x14) {
-        BlistT[Tindex] = 0;
+        BlistX.t[Tindex] = 0;
         LifeB[(nx << 6) + ny] = 0;
-        if ((attr & 0x7f) >= 0x30)
-            code = SRand8() + 0xb0;
-        else
+        if ((attr & 0x7f) < 0x30)
             code = SRand8() + 0x90;
+        else
+            code = SRand8() + 0xb0;
         AddAntToBList(nx, ny, code, 3, 0);
         LifeB[(nx << 6) + ny] = code;
     }

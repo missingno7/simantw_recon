@@ -76,18 +76,18 @@ extern void far DoNestFightB(int x, int y);
 extern void far RaidInB(int x, int y, int attr);
 extern void far StayInR(int x, int y, int attr);
 
-#define BlistM(i) Dx8[(i) + 0x44f0]
-#define BlistT(i) Dx8[(i) + 0x46e6]
-#define BlistS(i) Dx8[(i) + 0x48dc]
-#define BlistX(i) Dx8[(i) + 0x4104]
-#define BlistY(i) Dx8[(i) + 0x42fa]
+#define BlistM(i) Dx8[(i) + 0x3B22]
+#define BlistT(i) Dx8[(i) + 0x3D18]
+#define BlistS(i) Dx8[(i) + 0x3F0E]
+#define BlistX(i) Dx8[(i) + 0x3736]
+#define BlistY(i) Dx8[(i) + 0x392C]
 
 void far DoNestAntB(int x, int y, int attr)
 {
     int mode0;
     int mode;
-    int ant;
-    int cellIndex;
+    volatile int ant;
+    volatile int cellIndex;
     int index;
     int winner;
     int dir;
@@ -107,8 +107,31 @@ void far DoNestAntB(int x, int y, int attr)
             }
 
             switch (mode) {
-            case 0:
             default:
+                if (!SRand32())
+                    BlistM(Tindex) = GetNewModeB(mode0);
+                cellIndex = (x << 6) + y;
+                ant = LifeB[cellIndex];
+                if (ant > 7 && ant < 0x68) {
+                    index = FindInBList(x, y, ant);
+                    if (index >= 0) {
+                        winner = GetWinner(ant, attr);
+                        BlistS(index) = winner;
+                        BlistT(index) = (winner & 0x80) + 0x70;
+                        LifeB[cellIndex] = (winner & 0x80) + 0x70;
+                        BlistM(index) = 0xa;
+                        return;
+                    }
+                } else if (IsYellowAnt(ant) != 0 && MeColor == 0) {
+                    YellowFight(3, Tindex);
+                    return;
+                }
+                if (TryMoveDirB(x, y, attr & 7))
+                    return;
+                TryMoveDirB(x, y, SRand8());
+                return;
+
+            case 0:
                 if (!SRand32())
                     BlistM(Tindex) = GetNewModeB(mode0);
                 cellIndex = (x << 6) + y;
@@ -238,6 +261,7 @@ void far DoNestAntB(int x, int y, int attr)
                         BAntsExpired++;
                 }
                 return;
+
             }
 
     }

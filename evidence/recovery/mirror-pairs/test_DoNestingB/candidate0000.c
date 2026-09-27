@@ -1,5 +1,5 @@
 /* Derived mechanically from the mirrored colony function _DoNestingR (tools/mirror_pairs.py):
- * colony-specific MAPSYM identifiers swapped DoNestingR->DoNestingB, EatCountR->EatCountB, FindInRList->FindInBList, FoodR->FoodB, GetEnterDirR->GetEnterDirB, GetNewModeR->GetNewModeB, HealthR->HealthB, LifeR->LifeB, MapR->MapB, PlaceEggR->PlaceEggB, RlistM->BlistM, RlistS->BlistS, RlistT->BlistT, RpopT->BpopT, TryMoveDirR->TryMoveDirB; constants and structure unchanged.
+ * colony-specific MAPSYM identifiers swapped DoNestingR->DoNestingB, EatCountR->EatCountB, FindInRList->FindInBList, FoodR->FoodB, GetEnterDirR->GetEnterDirB, GetNewModeR->GetNewModeB, HealthR->HealthB, LifeR->LifeB, MapR->MapB, PlaceEggR->PlaceEggB, RlistX->BlistX, RpopT->BpopT, TryMoveDirR->TryMoveDirB; constants and structure unchanged.
  * Verified only by the strict matcher; where the pair is not a pure mirror the
  * diagnostic names the asymmetry. */
 /*
@@ -13,9 +13,9 @@
  * direction m7.
  *
  * attr==1: a SRand4()==0 roll and MapR[idx]<0x10 (idx=(x<<6)+y) lays an
- * egg (RlistT[Tindex]+=8, LifeR[idx]=RlistT[Tindex], PlaceEggR(x,y,130)
- * -- literal attribute 130, not stam7 -- RlistS[Tindex]=0,
- * RlistM[Tindex]=GetNewModeR(attr)) and returns through its own
+ * egg (RlistX.t[Tindex]+=8, LifeR[idx]=RlistX.t[Tindex], PlaceEggR(x,y,130)
+ * -- literal attribute 130, not stam7 -- RlistX.s[Tindex]=0,
+ * RlistX.m[Tindex]=GetNewModeR(attr)) and returns through its own
  * epilogue.  Otherwise (roll failed or tile too advanced) a second
  * SRand4()==0 roll picks a fresh SRand8() direction; on a miss
  * GetEnterDirR(x,y,m7) supplies one (falling back to SRand8() if
@@ -27,11 +27,11 @@
  * Otherwise (cell empty/high or lookup failed) a SRand1(100)-vs-HealthR
  * roll gates the same MapR tile-aging/FoodR/EatCountR/HealthR regen
  * block as DoNestingB's, or on the other side of that roll refreshes
- * RlistM[Tindex] via GetNewModeR(attr).  Every one of those inner exits
+ * RlistX.m[Tindex] via GetNewModeR(attr).  Every one of those inner exits
  * funnels into one more SRand4() roll (dir=SRand8() on 0, else dir=m7)
  * before the shared movement tail.
  *
- * attr==else: RlistM[Tindex] = GetNewModeR(attr) unconditionally, dir
+ * attr==else: RlistX.m[Tindex] = GetNewModeR(attr) unconditionally, dir
  * stays m7, shared movement tail.
  *
  * Shared movement tail: TryMoveDirR(x,y,dir); on failure retries once
@@ -43,6 +43,14 @@
  *
  * Requires the og profile (/Oeglw).
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far BlistX;
 extern int far Tindex;
 extern unsigned char far Dx8[];
 extern unsigned char near MapB[];
@@ -64,7 +72,7 @@ extern int far TryMoveDirB(int x, int y, int dir);
 
 void far DoNestingB(int x, int y, int modeArg, int attr)
 {
-    int m7;
+    volatile int m7;
     int idx;
     int dir;
     int cellByte;
@@ -77,20 +85,20 @@ void far DoNestingB(int x, int y, int modeArg, int attr)
         if (SRand4() == 0) {
             idx = (x << 6) + y;
             if (MapB[idx] < 0x10) {
-                Dx8[Tindex + 0x46e6] += 8;
-                LifeB[idx] = Dx8[Tindex + 0x46e6];
+                BlistX.t[Tindex] += 8;
+                LifeB[idx] = BlistX.t[Tindex];
                 PlaceEggB(x, y, 130);
-                Dx8[Tindex + 0x48dc] = 0;
-                Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeB(attr);
+                BlistX.s[Tindex] = 0;
+                BlistX.m[Tindex] = (unsigned char)GetNewModeB(attr);
                 return;
             }
         }
-        if (SRand4() == 0) {
-            dir = SRand8();
-        } else {
+        if (SRand4() != 0) {
             dir = GetEnterDirB(x, y, m7);
             if (dir < 0)
                 dir = SRand8();
+        } else {
+            dir = SRand8();
         }
         goto move_tail;
     }
@@ -102,8 +110,8 @@ void far DoNestingB(int x, int y, int modeArg, int attr)
             if (cellByte != 0 && (cellByte & 0x7f) < 8) {
                 ant = FindInBList(x, y, cellByte);
                 if (ant >= 0) {
-                    Dx8[ant + 0x46e6] = 0;
-                    Dx8[Tindex + 0x46e6] -= 8;
+                    BlistX.t[ant] = 0;
+                    BlistX.t[Tindex] -= 8;
                     return;
                 }
             } else {
@@ -123,7 +131,7 @@ void far DoNestingB(int x, int y, int modeArg, int attr)
                         }
                     }
                 } else {
-                    Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeB(attr);
+                    BlistX.m[Tindex] = (unsigned char)GetNewModeB(attr);
                 }
             }
         }
@@ -134,7 +142,7 @@ void far DoNestingB(int x, int y, int modeArg, int attr)
         goto move_tail;
     }
 
-    Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeB(attr);
+    BlistX.m[Tindex] = (unsigned char)GetNewModeB(attr);
 
 move_tail:
     if (TryMoveDirB(x, y, dir) != 0)

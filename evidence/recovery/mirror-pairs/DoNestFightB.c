@@ -43,7 +43,7 @@ extern int far Tindex;
 extern unsigned char far Dx8[];
 extern char far Dy8[];
 extern unsigned char near LifeB[];
-extern int far FightFlag;
+extern int far OptionStates[];
 extern unsigned char near CasteModeTab[];
 
 extern void far AddAntToBList(int life, int column, int attribute,
@@ -52,35 +52,19 @@ extern void far FightBalloons(int x, int y, int kind);
 extern int far SRand1(int limit);
 extern int far SRand16(void);
 
-void far DoNestFightB(int x, int y)
-{
-    int dir;
+void far DoNestFightB(int x, int y) {
     unsigned char raw;
-
-    Dx8[Tindex + 0x46e6] = (unsigned char)((Dx8[Tindex + 0x46e6] & 0xf8) + SRand1(7));
-    LifeB[(x << 6) + y] = Dx8[Tindex + 0x46e6];
-
+    int cellIndex;
+    cellIndex = (x << 6) + y;
+    raw = (Dx8[Tindex + 0x3D18] & 0xf8) + SRand1(7);
+    Dx8[Tindex + 0x3D18] = raw;
+    LifeB[cellIndex] = raw;
     if (SRand16() == 0) {
-        LifeB[(x << 6) + y] = Dx8[Tindex + 0x48dc];
-        Dx8[Tindex + 0x46e6] = Dx8[Tindex + 0x48dc];
-
-        if ((Dx8[Tindex + 0x46e6] & 0x78) == 0x60) {
-            raw = Dx8[Tindex + 0x46e6];
-            dir = 4 ^ (raw & 7);
-            AddAntToBList((signed char)Dx8[dir] + Dx8[Tindex + 0x4104],
-                          Dy8[dir] + Dx8[Tindex + 0x42fa],
-                          raw + 8, 9, 0);
-        }
-
-        if (Dx8[Tindex + 0x46e6] & 0x80) {
-            Dx8[Tindex + 0x44f0] = 7;
-            return;
-        }
-
-        Dx8[Tindex + 0x44f0] = CasteModeTab[(Dx8[Tindex + 0x46e6] & 0x78) >> 3];
+        LifeB[(x << 6) + y] = Dx8[Tindex + 0x3F0E]; Dx8[Tindex + 0x3D18] = Dx8[Tindex + 0x3F0E];
+        if (((((volatile unsigned char far *)Dx8)[Tindex + 0x3D18] & 0x78) == 0x60)) AddAntToBList((signed char)Dx8[(4 ^ (Dx8[Tindex + 0x3D18] & 7))] + Dx8[Tindex + 0x3736], Dy8[(4 ^ (Dx8[Tindex + 0x3D18] & 7))] + Dx8[Tindex + 0x392C], Dx8[Tindex + 0x3D18] + 8, 9, 0);
+        if (Dx8[Tindex + 0x3D18] & 0x80) Dx8[Tindex + 0x3B22] = 7;
+        else Dx8[Tindex + 0x3B22] = CasteModeTab[(Dx8[Tindex + 0x3D18] & 0x78) >> 3];
         return;
     }
-
-    if (FightFlag != 0)
-        FightBalloons(x, y, 3);
+    if (OptionStates[5] != 0) FightBalloons(x, y, 3);
 }

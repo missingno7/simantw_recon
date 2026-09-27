@@ -12,9 +12,9 @@
   ],
   "result": "NO_COMPLETE_MATCH",
   "exact_body": false,
-  "opcode_matches": 61,
+  "opcode_matches": 64,
   "opcode_total": 95,
-  "candidate_bytes": 195,
+  "candidate_bytes": 190,
   "target_bytes": 266,
   "asymmetries": [
     {
@@ -38,13 +38,14 @@
       "target": "add di, word ptr [bp + 8]",
       "candidate": "add ax, word ptr [bp + 8]",
       "differences": [
-        "register_allocation"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": null,
       "target": "",
-      "candidate": "mov word ptr [bp - 2], ax",
+      "candidate": "mov word ptr [bp - 4], ax",
       "differences": [
         "instruction_shape"
       ]
@@ -52,7 +53,7 @@
     {
       "offset": null,
       "target": "",
-      "candidate": "mov di, ax",
+      "candidate": "mov cx, ax",
       "differences": [
         "instruction_shape"
       ]
@@ -60,55 +61,59 @@
     {
       "offset": 45,
       "target": "add ax, word ptr [bp + 6]",
-      "candidate": "add di, word ptr [bp + 6]",
+      "candidate": "add cx, word ptr [bp + 6]",
       "differences": [
-        "register_allocation"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": 48,
       "target": "cmp ax, 0x3f",
-      "candidate": "cmp di, 0x3f",
+      "candidate": "cmp cx, 0x3f",
       "differences": [
-        "register_allocation"
-      ]
-    },
-    {
-      "offset": null,
-      "target": "",
-      "candidate": "mov si, di",
-      "differences": [
-        "instruction_shape"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": 53,
       "target": "or ax, ax",
-      "candidate": "or si, si",
+      "candidate": "or cx, cx",
       "differences": [
-        "register_allocation"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": null,
       "target": "",
-      "candidate": "mov di, word ptr [bp - 2]",
+      "candidate": "mov si, word ptr [bp - 4]",
       "differences": [
         "instruction_shape"
       ]
     },
     {
-      "offset": 65,
-      "target": "jge 0x52",
-      "candidate": "jge 0x5a",
+      "offset": 57,
+      "target": "cmp di, 0x3f",
+      "candidate": "cmp si, 0x3f",
       "differences": [
-        "branch_target"
+        "register_allocation",
+        "alignment_uncertain"
+      ]
+    },
+    {
+      "offset": 62,
+      "target": "cmp di, 1",
+      "candidate": "cmp si, 1",
+      "differences": [
+        "register_allocation"
       ]
     },
     {
       "offset": 70,
       "target": "nop ",
-      "candidate": "lcall <resolved fixup> [{'kind': 'internal', 'segment': 6, 'offset': 21002}]",
+      "candidate": "",
       "differences": [
         "instruction_shape"
       ]
@@ -124,17 +129,17 @@
     {
       "offset": 72,
       "target": "call 0xe6c",
-      "candidate": "",
+      "candidate": "call <resolved fixup> [{'kind': 'internal', 'segment': 6, 'offset': 21002}]",
       "differences": [
-        "instruction_shape"
+        "immediate_or_binding"
       ]
     },
     {
       "offset": 82,
       "target": "mov si, ax",
-      "candidate": "mov cx, si",
+      "candidate": "",
       "differences": [
-        "register_allocation"
+        "instruction_shape"
       ]
     },
     {
@@ -150,32 +155,43 @@
       "target": "shl bx, 6",
       "candidate": "shl cx, 6",
       "differences": [
-        "register_allocation"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": 89,
       "target": "add bx, di",
-      "candidate": "add cx, di",
+      "candidate": "add cx, si",
       "differences": [
-        "register_allocation"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": 91,
       "target": "mov word ptr [bp - 4], bx",
-      "candidate": "mov bx, cx",
+      "candidate": "mov word ptr [bp - 2], cx",
       "differences": [
-        "instruction_shape"
+        "memory_operand",
+        "stack_local_layout",
+        "register_role"
       ]
     },
     {
       "offset": 94,
       "target": "cmp byte ptr [bx + 0x48e8], 0x1c",
-      "candidate": "cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+      "candidate": "",
       "differences": [
-        "memory_operand",
-        "immediate_or_binding"
+        "instruction_shape"
+      ]
+    },
+    {
+      "offset": 99,
+      "target": "jae 0xd",
+      "candidate": "",
+      "differences": [
+        "instruction_shape"
       ]
     },
     {
@@ -237,25 +253,28 @@
     {
       "offset": 129,
       "target": "mov es, word ptr [0xc352]",
-      "candidate": "",
+      "candidate": "mov bx, word ptr [bp - 2]",
       "differences": [
-        "instruction_shape"
+        "call_frame_or_segment_register",
+        "memory_operand",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": 133,
       "target": "cmp byte ptr es:[bx + 0x3736], 0x80",
-      "candidate": "",
+      "candidate": "cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
       "differences": [
-        "instruction_shape"
+        "memory_operand",
+        "immediate_or_binding"
       ]
     },
     {
       "offset": 139,
       "target": "jae 0xb5",
-      "candidate": "",
+      "candidate": "jae 0xd",
       "differences": [
-        "instruction_shape"
+        "branch_target"
       ]
     },
     {
@@ -329,24 +348,16 @@
       "differences": [
         "instruction_shape"
       ]
-    },
-    {
-      "offset": 170,
-      "target": "push word ptr [bp + 6]",
-      "candidate": "",
-      "differences": [
-        "instruction_shape"
-      ]
     }
   ],
   "issues": [
     "conflicting private placement constraints CONST",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0xba",
     "SIMANT1_MODULE unresolved/mismatched fixup at 0xb5",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0xb1",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0xaa",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0xa6"
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0xb0",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0xa9",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0xa2",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x9d"
   ],
-  "checked": "2026-09-22T05:06:05.327234+00:00",
+  "checked": "2026-09-27T07:16:37.293111+00:00",
   "registered": null
 }

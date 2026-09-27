@@ -20,11 +20,12 @@
  * Requires the og profile (/Oeglw).
  */
 extern int far Tindex;
-extern unsigned char far Dx8[];
+extern char far Dx8[];
+extern unsigned char far BlistT[];
 extern char far Dy8[];
 extern unsigned char near LifeB[];
-extern int far HealthB;
-extern int far BpopT;
+extern int near HealthB;
+extern int near BpopT;
 extern int far EatCountB;
 extern int far BlkQueens;
 extern int far FightFlag;
@@ -45,15 +46,14 @@ void far SimQueenB(int x, int y, int msg, int modeArg)
 {
     int raw;
     int dir;
-    int targetX;
+    struct { int expected_value; int x_value; } check_values;
     int targetY;
-    int expected;
     int blocked;
 
     if (msg == 0xc) {
         if (SRand64() == 0) {
             if (HealthB == 0) {
-                Dx8[Tindex + 0x46e6] = 0;
+                BlistT[Tindex] = 0;
                 LifeB[(x << 6) + y] = 0;
                 PictStrnDialog(0, 0x2720, 1);
                 return;
@@ -61,15 +61,15 @@ void far SimQueenB(int x, int y, int msg, int modeArg)
             if (QueenMoveB(x, y, modeArg) != 0)
                 return;
         }
-        raw = Dx8[Tindex + 0x46e6] & 0xff;
+        raw = *(int far *)((char far *)BlistT + Tindex) & 0xff;
         dir = 4 ^ (raw & 7);
         targetY = Dy8[dir] + y;
-        expected = raw + 8;
-        targetX = Dx8[dir] + x;
-        blocked = (LifeB[targetX * 64 + targetY] == expected) ? 0
-                  : (FindInBList(targetX, targetY, expected) >= 0) ? 0 : 1;
+        check_values.expected_value = raw + 8;
+        check_values.x_value = Dx8[dir] + x;
+        blocked = (LifeB[check_values.x_value * 64 + targetY] == check_values.expected_value) ? 0
+                  : (FindInBList(check_values.x_value, targetY, check_values.expected_value) >= 0) ? 0 : 1;
         if (blocked != 0) {
-            Dx8[Tindex + 0x46e6] = 0;
+            BlistT[Tindex] = 0;
             BlkQueens--;
             raw = 0;
         }
@@ -80,18 +80,18 @@ void far SimQueenB(int x, int y, int msg, int modeArg)
     }
 
     if (msg == 0xd) {
-        raw = Dx8[Tindex + 0x46e6] & 0xff;
+        raw = *(int far *)((char far *)BlistT + Tindex) & 0xff;
         LifeB[(x << 6) + y] = (unsigned char)raw;
         if (BlkQueens > 0) {
             dir = raw & 7;
             targetY = Dy8[dir] + y;
-            expected = raw - 8;
-            targetX = Dx8[dir] + x;
-            blocked = (LifeB[targetX * 64 + targetY] == expected) ? 0
-                      : (FindInBList(targetX, targetY, expected) >= 0) ? 0 : 1;
+            check_values.expected_value = raw - 8;
+            check_values.x_value = Dx8[dir] + x;
+            blocked = (LifeB[check_values.x_value * 64 + targetY] == check_values.expected_value) ? 0
+                      : (FindInBList(check_values.x_value, targetY, check_values.expected_value) >= 0) ? 0 : 1;
             if (blocked != 0) {
                 BlkQueens--;
-                Dx8[Tindex + 0x46e6] = 0;
+                BlistT[Tindex] = 0;
                 LifeB[(x << 6) + y] = 0;
                 return;
             }
@@ -102,13 +102,13 @@ void far SimQueenB(int x, int y, int msg, int modeArg)
 
     dir = 4 ^ (modeArg & 7);
     targetY = Dy8[dir] + y;
-    targetX = Dx8[dir] + x;
-    if (InNestBounds(targetX, targetY) == 0)
+    check_values.x_value = Dx8[dir] + x;
+    if (InNestBounds(check_values.x_value, targetY) == 0)
         return;
-    LastBlackEgg = targetX;
+    LastBlackEgg = check_values.x_value;
     LastRedEggY = targetY;
     if ((Cycle & 0xf) == 0 && SRand128() <= HealthB) {
-        PlaceEggB(targetX, targetY, 0x81);
+        PlaceEggB(check_values.x_value, targetY, 0x81);
         if (--EatCountB < 0)
             EatCountB = BpopT >> 5;
         if (HealthB > 0)

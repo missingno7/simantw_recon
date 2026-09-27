@@ -58,7 +58,7 @@ int far DoDigOutB(int x, int y, int dirArg)
     int dir;
     int attr;
     int nx, ny;
-    int oldIdx, newIdx;
+
     int tile;
     int cx;
     int index;
@@ -73,8 +73,7 @@ int far DoDigOutB(int x, int y, int dirArg)
         dir = RandTurn(dirArg & 7);
 
     attr = (dirArg & 0xf8) | dir;
-    oldIdx = (x << 6) + y;
-    LifeB[oldIdx] = attr;
+    LifeB[(x << 6) + y] = attr;
     BlistT[Tindex] = attr;
 
     nx = x + Dx8[dir];
@@ -105,37 +104,34 @@ int far DoDigOutB(int x, int y, int dirArg)
         return;
     }
 
-    newIdx = (nx << 6) + ny;
     if (IsItDirt(tile) != 0)
         return;
 
-    LifeB[oldIdx] = 0;
+    LifeB[(x << 6) + y] = 0;
 
-    cell = LifeB[newIdx];
+    cell = LifeB[(nx << 6) + ny];
     if (cell > 7 && cell < 0x68) {
         index = FindInBList(nx, ny, cell);
         if (index >= 0) {
             winner = GetWinner(cell, attr);
             BlistS[index] = winner;
             BlistT[index] = (winner & 0x80) + 0x70;
-            LifeB[newIdx] = (winner & 0x80) + 0x70;
+            LifeB[(nx << 6) + ny] = (winner & 0x80) + 0x70;
             BlistM[index] = 0xa;
             fought = 1;
         } else {
-            fought = 0;
+            goto move_ant;
         }
+        return;
     } else if (IsYellowAnt(cell) != 0 && MeColor == 0) {
         YellowFight(3, Tindex);
-        fought = 1;
-    } else {
-        fought = 0;
+        return;
     }
 
-    if (fought)
-        return;
+move_ant:
 
     BlistT[Tindex] = (BlistT[Tindex] & 0xf8) | dir;
-    LifeB[newIdx] = BlistT[Tindex];
+    LifeB[(nx << 6) + ny] = BlistT[Tindex];
     BlistX[Tindex] = nx;
     BlistY[Tindex] = ny;
 

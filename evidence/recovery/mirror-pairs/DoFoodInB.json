@@ -12,19 +12,11 @@
   ],
   "result": "NO_COMPLETE_MATCH",
   "exact_body": false,
-  "opcode_matches": 180,
+  "opcode_matches": 181,
   "opcode_total": 237,
-  "candidate_bytes": 671,
+  "candidate_bytes": 645,
   "target_bytes": 678,
   "asymmetries": [
-    {
-      "offset": 0,
-      "target": "enter 0x1c, 0",
-      "candidate": "enter 0x1e, 0",
-      "differences": [
-        "immediate_or_binding"
-      ]
-    },
     {
       "offset": 6,
       "target": "mov di, word ptr [bp + 8]",
@@ -47,7 +39,8 @@
       "target": "push di",
       "candidate": "push si",
       "differences": [
-        "register_allocation"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
@@ -70,7 +63,7 @@
     {
       "offset": 29,
       "target": "mov word ptr [bp - 8], ax",
-      "candidate": "mov word ptr [bp - 6], ax",
+      "candidate": "mov word ptr [bp - 0xc], ax",
       "differences": [
         "memory_operand",
         "stack_local_layout"
@@ -87,7 +80,7 @@
     {
       "offset": 36,
       "target": "jmp 0x1c6",
-      "candidate": "jmp 0x1b4",
+      "candidate": "jmp 0x192",
       "differences": [
         "branch_target"
       ]
@@ -112,7 +105,7 @@
     {
       "offset": 48,
       "target": "jmp 0x1c6",
-      "candidate": "jmp 0x1b4",
+      "candidate": "jmp 0x192",
       "differences": [
         "branch_target"
       ]
@@ -136,7 +129,7 @@
     {
       "offset": 62,
       "target": "or ax, word ptr [bp - 8]",
-      "candidate": "or ax, word ptr [bp - 6]",
+      "candidate": "or ax, word ptr [bp - 0xc]",
       "differences": [
         "memory_operand",
         "stack_local_layout"
@@ -172,31 +165,14 @@
       "target": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 35048}]",
       "candidate": "mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 35048}]",
       "differences": [
-        "register_allocation"
-      ]
-    },
-    {
-      "offset": 79,
-      "target": "mov word ptr [bp - 0x10], bx",
-      "candidate": "mov word ptr [bp - 0x12], bx",
-      "differences": [
-        "memory_operand",
-        "stack_local_layout"
-      ]
-    },
-    {
-      "offset": 82,
-      "target": "mov word ptr [bp - 0xe], es",
-      "candidate": "mov word ptr [bp - 0x10], es",
-      "differences": [
-        "memory_operand",
-        "stack_local_layout"
+        "register_allocation",
+        "alignment_uncertain"
       ]
     },
     {
       "offset": 101,
       "target": "mov bx, word ptr [bp - 8]",
-      "candidate": "mov bx, word ptr [bp - 6]",
+      "candidate": "mov bx, word ptr [bp - 0xc]",
       "differences": [
         "memory_operand",
         "stack_local_layout"
@@ -213,24 +189,16 @@
     {
       "offset": 112,
       "target": "mov word ptr [bp - 4], ax",
-      "candidate": "mov word ptr [bp - 2], ax",
+      "candidate": "mov word ptr [bp - 6], ax",
       "differences": [
         "memory_operand",
         "stack_local_layout"
       ]
     },
     {
-      "offset": 125,
-      "target": "mov cx, ax",
-      "candidate": "mov di, ax",
-      "differences": [
-        "register_allocation"
-      ]
-    },
-    {
       "offset": 127,
       "target": "add cx, di",
-      "candidate": "add di, si",
+      "candidate": "add cx, si",
       "differences": [
         "register_allocation"
       ]
@@ -238,7 +206,7 @@
     {
       "offset": 129,
       "target": "cmp word ptr [bp - 4], 0x3f",
-      "candidate": "cmp word ptr [bp - 2], 0x3f",
+      "candidate": "cmp word ptr [bp - 6], 0x3f",
       "differences": [
         "memory_operand",
         "stack_local_layout"
@@ -255,7 +223,7 @@
     {
       "offset": 135,
       "target": "jmp 0x2a2",
-      "candidate": "jmp 0x29b",
+      "candidate": "jmp 0x281",
       "differences": [
         "branch_target"
       ]
@@ -263,7 +231,7 @@
     {
       "offset": 138,
       "target": "cmp word ptr [bp - 4], 0",
-      "candidate": "cmp word ptr [bp - 2], 0",
+      "candidate": "cmp word ptr [bp - 6], 0",
       "differences": [
         "memory_operand",
         "stack_local_layout"
@@ -280,17 +248,9 @@
     {
       "offset": 144,
       "target": "jmp 0x2a2",
-      "candidate": "jmp 0x29b",
+      "candidate": "jmp 0x281",
       "differences": [
         "branch_target"
-      ]
-    },
-    {
-      "offset": 147,
-      "target": "cmp cx, 0x3f",
-      "candidate": "cmp di, 0x3f",
-      "differences": [
-        "register_allocation"
       ]
     },
     {
@@ -304,17 +264,9 @@
     {
       "offset": 152,
       "target": "jmp 0x2a2",
-      "candidate": "jmp 0x29b",
+      "candidate": "jmp 0x281",
       "differences": [
         "branch_target"
-      ]
-    },
-    {
-      "offset": 155,
-      "target": "cmp cx, 1",
-      "candidate": "cmp di, 1",
-      "differences": [
-        "register_allocation"
       ]
     },
     {
@@ -348,16 +300,66 @@
       "differences": [
         "instruction_shape"
       ]
+    },
+    {
+      "offset": 163,
+      "target": "call 0x8e0",
+      "candidate": "",
+      "differences": [
+        "instruction_shape"
+      ]
+    },
+    {
+      "offset": 173,
+      "target": "nop ",
+      "candidate": "mov si, cx",
+      "differences": [
+        "instruction_shape"
+      ]
+    },
+    {
+      "offset": 174,
+      "target": "mov word ptr [bp - 2], cx",
+      "candidate": "",
+      "differences": [
+        "instruction_shape"
+      ]
+    },
+    {
+      "offset": 177,
+      "target": "mov di, word ptr [bp - 4]",
+      "candidate": "mov di, word ptr [bp - 6]",
+      "differences": [
+        "memory_operand",
+        "stack_local_layout"
+      ]
+    },
+    {
+      "offset": 188,
+      "target": "add bx, cx",
+      "candidate": "add bx, si",
+      "differences": [
+        "register_allocation"
+      ]
+    },
+    {
+      "offset": 193,
+      "target": "cmp byte ptr [bx + 0x48e8], 0x30",
+      "candidate": "cmp <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 18664}]",
+      "differences": [
+        "memory_operand",
+        "immediate_or_binding"
+      ]
     }
   ],
   "issues": [
     "conflicting private placement constraints CONST",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x297",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x292",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x288",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x283",
-    "SIMANT1_MODULE unresolved/mismatched fixup at 0x274"
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x27d",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x278",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x26e",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x269",
+    "SIMANT1_MODULE unresolved/mismatched fixup at 0x25a"
   ],
-  "checked": "2026-09-22T05:04:38.879806+00:00",
+  "checked": "2026-09-27T07:16:32.700772+00:00",
   "registered": null
 }
