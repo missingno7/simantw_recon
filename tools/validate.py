@@ -45,6 +45,14 @@ def main():
             raise FormatError(resource_output or 'resource admission is invalid')
         report['resources'] = replay_admission(resource_proof)
 
+    from link_lane import load_admission as load_link_admission, replay_admission as replay_link_admission
+    link_record = read_json(ROOT / 'src/recovery.json').get('link')
+    if link_record:
+        link_proof, link_output = load_link_admission(link_record, require_artifacts=False)
+        if link_proof is None:
+            raise FormatError(link_output or 'LINK admission is invalid')
+        report['link'] = replay_link_admission(link_proof)
+
     from image import build as build_image
     whole = build_image()
     if whole['status'] != 'HYBRID_EXACT':
@@ -73,7 +81,7 @@ def main():
     report['passed'] = True
     write_json(output / 'report.json', report)
     print(json.dumps(dict(passed=True, tests=report['tests']['count'], recovery=report['recovery'],
-                          resources=report.get('resources'), image=report['image'],
+                          resources=report.get('resources'), link=report.get('link'), image=report['image'],
                           cache_replay=report['cache_replay']['result']), indent=2))
 
 

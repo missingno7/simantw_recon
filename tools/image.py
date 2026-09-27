@@ -7,6 +7,7 @@ Owners:
   C              bytes regenerated from admitted game objects (build/recovered/*.obj)
   RUNTIME        bytes regenerated from complete historical library members
   RESOURCES      payload ranges reproduced by the pinned Microsoft RC 3.00
+  LINK           complete NE file regions reproduced by the pinned LINK 5.30
   NE_CHAIN       NE relocation-chain words at loader sites (linker metadata, lane LINK)
   RAW:<lane>     explicit reconstruction debt copied from the oracle, classified by lane
 
@@ -33,6 +34,7 @@ import mapsym
 import ne
 import omf
 import resources as resource_lane
+import link_lane
 
 LANES = {
     'GAME_CODE': 'unrecovered game function (search/promote)',
@@ -129,6 +131,10 @@ def build(debt=False, manifest=None, write=True, recovery=None):
     if isinstance(resource_output, str):
         problems.append(resource_output)
         resource_output = None
+    link_proof, link_output = link_lane.load_admission(recovery.get('link'))
+    if isinstance(link_output, str):
+        problems.append(link_output)
+        link_output = None
     resource_rows = {}
     if resource_proof is not None:
         try:
@@ -149,6 +155,20 @@ def build(debt=False, manifest=None, write=True, recovery=None):
             resource_rows = {}
             resource_proof = None
             resource_output = None
+    link_rows = {}
+    if link_proof is not None:
+        try:
+            for row in link_proof['regions']:
+                target = row['oracle_range']
+                key = (target['start'], target['end'])
+                if key in link_rows:
+                    raise FormatError('duplicate oracle region in LINK admission')
+                link_rows[key] = row
+        except (FormatError, KeyError, TypeError) as exc:
+            problems.append('LINK admission mapping invalid: ' + str(exc))
+            link_rows = {}
+            link_proof = None
+            link_output = None
 
     def add_owner(kind, label, lane=None):
         owners.append(dict(kind=kind, label=label, lane=lane)); return len(owners) - 1
@@ -184,6 +204,32 @@ def build(debt=False, manifest=None, write=True, recovery=None):
             o = add_owner('RESOURCES', label, 'RESOURCES')
             for offset, byte in enumerate(payload):
                 at = oracle_row['offset'] + offset
+                owner[at] = o; hybrid[at] = byte
+            continue
+        mapping = link_rows.get((region['start'], region['end']))
+        if mapping is not None and link_proof is not None:
+            source_range = mapping.get('output_range', {})
+            start, end = source_range.get('start'), source_range.get('end')
+            region_size = region['end'] - region['start']
+            if (mapping.get('kind') != region['kind'] or not isinstance(start, int) or
+                    not isinstance(end, int) or end - start != region_size or start < 0 or
+                    end > len(link_output)):
+                problems.append('LINK output range is invalid for oracle region %s' % region['kind'])
+                o = add_owner('RAW', region['kind'], 'LINK')
+                for i in range(region['start'], region['end']):
+                    owner[i] = o; hybrid[i] = raw[i]
+                continue
+            payload = link_output[start:end]
+            oracle_payload = raw[region['start']:region['end']]
+            if sha256(payload) != mapping.get('sha256') or payload != oracle_payload:
+                problems.append('stored LINK bytes differ from the oracle for region %s' % region['kind'])
+                o = add_owner('RAW', region['kind'], 'LINK')
+                for i in range(region['start'], region['end']):
+                    owner[i] = o; hybrid[i] = raw[i]
+                continue
+            o = add_owner('LINK', region['kind'], 'LINK')
+            for offset, byte in enumerate(payload):
+                at = region['start'] + offset
                 owner[at] = o; hybrid[at] = byte
             continue
         lane = 'RESOURCES' if region['kind'].startswith('RESOURCE') else 'LINK'
@@ -306,8 +352,8 @@ def build(debt=False, manifest=None, write=True, recovery=None):
             start = i
     code_bytes = sum(s['logical_size'] for s in image['segments'] if s['kind'] == 'CODE')
     report = dict(status='HYBRID_EXACT' if not mismatches and not problems else 'NOT_EXACT', image_sha256=sha256(bytes(hybrid)), oracle_sha256=sha256(raw),
-                  file_bytes=size, owned=dict(C=totals['C'], RUNTIME=totals['RUNTIME'], RESOURCES=totals['RESOURCES']), debt=dict(sorted(lanes.items())),
-                  debt_total=size - totals['C'] - totals['RUNTIME'] - totals['RESOURCES'], code_segment_bytes=code_bytes,
+                  file_bytes=size, owned=dict(C=totals['C'], RUNTIME=totals['RUNTIME'], RESOURCES=totals['RESOURCES'], LINK=totals['LINK']), debt=dict(sorted(lanes.items())),
+                  debt_total=size - totals['C'] - totals['RUNTIME'] - totals['RESOURCES'] - totals['LINK'], code_segment_bytes=code_bytes,
                   objects=len(seen), problems=problems[:50], problem_count=len(problems), mismatched_bytes=len(mismatches),
                   claim_conflicts=dict(bytes=sum(conflicts.values()), pairs=len(conflicts),
                                        top=[dict(objects=list(k), bytes=v) for k, v in sorted(conflicts.items(), key=lambda kv: -kv[1])[:5]],

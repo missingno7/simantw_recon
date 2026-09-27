@@ -1,7 +1,7 @@
 /*
  * LionDialog: shows the antlion-trap warning dialog (window 0x1a00,
- * simant:6A38) with an animated bitmap, but only when SIMANT_DATA_GROUP
- * OptionStates[3] (offset 0x85f8) is set (a trap actually triggered); returns
+ * simant:6A38) with an animated bitmap, but only when a private far flag
+ * (SIMANT_DATA_GROUP 0x85f8) is set (a trap actually triggered); returns
  * immediately when it is zero. Opens the window, captures the mouse on
  * win_hwnd[26] (0xbcda), starts sound 0x26 and busy-waits for
  * mySoundIsDone() to go true before entering the animation loop
@@ -14,7 +14,7 @@
  * and closes the window, restores or releases the prior mouse capture,
  * and refreshes all windows.
  */
-extern int far OptionStates[];
+extern int far LionDialogDone;
 extern int near win_hwnd[];
 extern unsigned char near monoPat;
 extern unsigned char near displayType;
@@ -52,7 +52,7 @@ void far LionDialog(void)
     int frame;
     long t1, t2;
 
-    if (OptionStates[3] == 0)
+    if (LionDialogDone == 0)
         return;
 
     win_LockWin(0x1a00);

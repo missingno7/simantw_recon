@@ -29,6 +29,7 @@ import mapsym
 import ne
 import omf
 import publication
+import link_lane
 
 GOOD = ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')
 PROOF_TOOLS = ['tools/matcher.py', 'tools/library_match.py', 'tools/recovery_gate.py', 'tools/verify_recovery.py', 'tools/compiler.py', 'tools/assembler.py',
@@ -551,6 +552,64 @@ def promote_resources(verify_only=False):
                                      debt_total=rebuilt['debt_total']))
 
 
+def promote_link(verify_only=False):
+    """Freshly run pinned LINK 5.30 and admit only the five complete regions."""
+    from image import build as build_image
+
+    with publication.publication_lock():
+        publication.recover()
+        current = read_json(ROOT / 'src/recovery.json')
+        manifest = read_json(ROOT / 'build/recovered/manifest.json')
+        verified = read_json(ROOT / 'build/recovery/verified-objects.json')
+        progress = read_json(ROOT / 'docs/progress.json')
+        before = build_image(write=False, recovery=current)
+
+        proof = link_lane.compile_admission(store=not verify_only)
+        proof['created'] = publication.timestamp()
+        if verify_only:
+            proof_path = ROOT / 'build/link/verify-only' / (proof['id'] + '.json')
+        else:
+            proof_path = ROOT / 'evidence/recovery/promotions' / (proof['id'] + '.json')
+        proof_path.parent.mkdir(parents=True, exist_ok=True)
+        if proof_path.exists() and not verify_only:
+            old = read_json(proof_path)
+            stable = ('id', 'scope', 'sources', 'toolchain', 'output', 'regions', 'uncredited_region_kinds')
+            if any(old.get(key) != proof.get(key) for key in stable):
+                raise FormatError('LINK promotion proof already exists with different evidence')
+            proof = old
+        else:
+            write_json(proof_path, proof)
+
+        staged = dict(current)
+        staged['link'] = {
+            'id': proof['id'],
+            'promotion_evidence': relative(proof_path),
+            'proof_identity': identity(proof_path),
+            'source_identity': proof['sources'],
+            'toolchain_identity': proof['toolchain'],
+        }
+        whole = build_image(write=False, recovery=staged)
+        region_bytes = sum(row['oracle_range']['size'] for row in proof['regions'])
+        if whole['status'] != 'HYBRID_EXACT':
+            raise FormatError('whole-image check failed after LINK admission: ' + '; '.join(whole['problems'][:5]))
+        if region_bytes != 1195 or whole['owned'].get('LINK', 0) < region_bytes:
+            raise FormatError('LINK admission did not prove exactly the five reviewed complete regions')
+
+        if verify_only:
+            return dict(id=proof['id'], admission='PASSED', promotion='NONE (--verify-only)',
+                        evidence=relative(proof_path), regions=len(proof['regions']), bytes=region_bytes,
+                        image=dict(status=whole['status'], owned=whole['owned'], debt=whole['debt'],
+                                   debt_total=whole['debt_total']))
+
+        publication.commit(dict(zip(publication.CORE, [staged, manifest, verified, progress])), proof['id'])
+        rebuilt = build_image()
+        return dict(id=proof['id'], status='PROMOTED', evidence=relative(proof_path),
+                    regions=len(proof['regions']), bytes=region_bytes,
+                    image_before=dict(owned=before['owned'], debt=before['debt'], debt_total=before['debt_total']),
+                    image_after=dict(status=rebuilt['status'], owned=rebuilt['owned'], debt=rebuilt['debt'],
+                                     debt_total=rebuilt['debt_total']))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('symbol', nargs='?')
@@ -567,8 +626,11 @@ def main():
     ap.add_argument('--recover', action='store_true')
     ap.add_argument('--retire-data', help='remove the whole data module with this recipe source (bytes must stay owned by someone else)')
     ap.add_argument('--resources', action='store_true', help='freshly compile and admit exact resource payloads with pinned RC 3.00')
+    ap.add_argument('--link', action='store_true', help='freshly run LINK 5.30 and admit the five exact complete NE regions')
     args = ap.parse_args()
-    if args.resources:
+    if args.link:
+        result = promote_link(args.verify_only)
+    elif args.resources:
         result = promote_resources(args.verify_only)
     elif args.retire_data:
         result = retire_data(args.retire_data, args.reason, args.verify_only)

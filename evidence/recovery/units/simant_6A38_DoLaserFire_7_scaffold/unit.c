@@ -51,7 +51,7 @@ extern int far MePrevDis;
 extern int far MeDis;
 extern int far MeSteps;
 extern int far MeCrazyCnt;
-extern int far OptionStates[];
+extern int far LionDialogDone;
 extern unsigned char near monoPat;
 struct LionPnt { int y; int x; };
 extern int far LionTrapPnts[];
@@ -289,7 +289,7 @@ void far pool_stub_YellowBirth(void)
 {
     volatile int t;
 
-    t = OptionStates[0];
+    t = (int)LionDialogDone;
     t = Dx9;
 }
 
@@ -340,7 +340,7 @@ void far LionDialog(void)
     int frame;
     long t1, t2;
 
-    if (OptionStates[3] == 0)
+    if (LionDialogDone == 0)
         return;
 
     win_LockWin(0x1a00);
