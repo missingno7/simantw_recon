@@ -13655,6 +13655,11 @@
         "text": "Target compare MeHealth<=10 branches directly to the return epilogue before the shared surplus tail. An early-return and flattened surplus rewrite was tested, but produced 138/156 vs the preserved 142/158 prefix, so it was discarded. The branch polarity at NeverHungry is equivalent (target JNE to 100; candidate JE around the alternative). The health-tail source shape is still open.",
         "origin": "build/search/EatMyFood/20260927T104551-124088",
         "recorded": "2026-09-27T10:45:51.861739+00:00"
+      },
+      {
+        "text": "Best is now 148/156 opcodes (target 443 bytes, candidate 435), but the fixedHealth temporary adds ENTER 2 while target has no frame. Tail rewrite nests final MeHealth/MeWantFood stores inside surplus>10, fixing target jle-to-epilogue destination; adjusted separate from surplus yields target LEA CX,[BX-10] and keeps raw BX. First remaining opcode shape is target sub ax,ax; add ax,100; store MeHealth versus candidate mov ax,100; the local attempt also adds a frame. A register hint did not remove it. No exact body.",
+        "origin": "build/search/EatMyFood/20260927T121105-50000",
+        "recorded": "2026-09-27T12:11:05.707037+00:00"
       }
     ]
   },
@@ -22149,6 +22154,11 @@
         "text": "The only branch_destinations finding is predicate polarity, not different program flow: target JG(level>1) jumps to return 0, while draft JLE(level<=1) jumps into the distance-check body; the fallthrough path is the complementary case in each. Target and draft both use a signed comparison here; no semantic correction indicated. Best 84/93, frame exact.",
         "origin": "build/search/IsItYellow/20260927T104358-106512",
         "recorded": "2026-09-27T10:43:58.922230+00:00"
+      },
+      {
+        "text": "84/93 opcodes, ENTER 2 exact. A register-parameter hint, positive level<=1 arm, and shared zero-return label all compile to the same output. First true opcode/control-flow residue: target cmp cx,1; jg shared zero-return at 0x26, candidate cmp si,1; jle distance path at 0x3d. Both encode the level threshold but use opposite successors; the target reuses an inline zero return. Prior work already tried early-return/result booleans, signedness, switch/if, parameter/register variants, and near/far GetDis. Next useful hypothesis must change the shared return layout and level lifetime together; no strict body.",
+        "origin": "build/search/IsItYellow/20260927T121105-105812",
+        "recorded": "2026-09-27T12:11:05.529374+00:00"
       }
     ]
   },
@@ -38977,6 +38987,11 @@
         "text": "A tested source restructuring moved AnimYellowFight outside the winner!=MeType guard. The target JE at code+195 skips GotoMyAnt on the winner path and continues into the animation call; the variant removed the branch-destination finding but did not extend the opcode prefix (146/161 remains) and the frame is still 20 vs 24, so it was discarded.",
         "origin": "build/search/YellowFight/20260927T104143-155024",
         "recorded": "2026-09-27T10:41:43.989208+00:00"
+      },
+      {
+        "text": "149/161 opcodes, ENTER 24 exact, no branch-destination findings. Moving AnimYellowFight outside the winner!=MeType guard matches the target JE path (skip GotoMyAnt, continue to animation). Materialized colCell/lifeCell far pointers raised 146 to 149, but first residue at 0x62 is target mov [bp-4],cx vs candidate mov [bp-8],cx, followed by pointer-home and register-lifetime shifts; delayed cell loads and in-place pointer variants fell to 144/131 and 132 respectively. Body not exact or unit-eligible; useful next work is derive the target's pointer-home lifetime from same-object admitted code.",
+        "origin": "build/search/YellowFight/20260927T121105-119496",
+        "recorded": "2026-09-27T12:11:05.605703+00:00"
       }
     ]
   },
@@ -45322,6 +45337,11 @@
         "text": "Frame review is first: target ENTER 10, candidate 16; target has only the measured -2/-4/-6/-8/-10 slots while the draft keeps two far buffer homes and an extra long bytes local. The +116/+168 conditional destinations map to distinct pointer-home paths amid that frame mismatch, and the +350 MapPlane branch aligns to the 0x40/0x80 limit arms differently. Prior shared tileHeight pointer-slot probes did not close the frame; no branch-only edit is justified until homes align.",
         "origin": "build/search/win_EditChanged/20260927T105101-80704",
         "recorded": "2026-09-27T10:51:01.421344+00:00"
+      },
+      {
+        "text": "Best 141/150 opcodes, ENTER 10 and all analyzed BP slots exact. memset(tileMask,-1,editHeight*editWidth*2) matches target mov ax,0xffff; rep stosb. Target then stores 0x40 at bp-2 and branches via signed MapPlane checks to choose CX=0x40/0x80; candidate's positive ternary keeps frame exact but still starts with a comparison/branch sequence that reaches a different instruction. Nested-if and initialized-limit forms regressed (137 and 138). Selector/fixup placement is excluded; opcode body remains nonexact.",
+        "origin": "build/search/win_EditChanged/20260927T121105-71564",
+        "recorded": "2026-09-27T12:11:05.812997+00:00"
       }
     ]
   },
