@@ -137,6 +137,17 @@ def reviewed_inline_asm(code):
     return ''.join(out) + code[last:]
 
 
+def promotion_names(module, stubs, symbols, data=False):
+    """Publics a compiled object promotes. MSC records a `static` function as a
+    local PUBDEF; an unnamed static helper (no MAPSYM entry) is not a promotion
+    target: its bytes lie in the anchored code contribution and are compared there."""
+    if data:
+        return {p['name'] for p in module['publics'] if p['segment']}
+    mapsym_names = {s['name'] for seg in symbols['segments'] for s in seg.get('symbols', [])}
+    return {p['name'] for p in module['publics'] if p['segment'] and module['segments'][p['segment'] - 1]['class'] == 'CODE' and p['segment'] not in stubs
+            and not (p.get('local') and p['name'] not in mapsym_names)}
+
+
 def check_source(source, flags, unit=None):
     """Ordinary self-contained C under a catalogued profile; fail closed on anything else."""
     code = re.sub(r'/\*.*?\*/|//[^\n]*', '', source, flags=re.S)
@@ -203,10 +214,7 @@ def admit(label, publics, source_bytes, flags, profile, summary, verify_only, un
             imports = import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB')
             # Pool scaffolding (stand-ins in the reserved segment) is never part of the promotion scope.
             stubs = [s['index'] for s in module['segments'] if s['name'] == SCAFFOLD_SEGMENT and s['class'] == 'CODE']
-            if data:
-                names = {p['name'] for p in module['publics'] if p['segment']}
-            else:
-                names = {p['name'] for p in module['publics'] if p['segment'] and module['segments'][p['segment'] - 1]['class'] == 'CODE' and p['segment'] not in stubs}
+            names = promotion_names(module, stubs, symbols, data)
             if publics is None:
                 # Data and assembly modules: the scope is the compiled object's publics.
                 publics = sorted(names)

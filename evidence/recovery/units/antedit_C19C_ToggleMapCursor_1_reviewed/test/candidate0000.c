@@ -28,12 +28,12 @@ extern void far clip_SetWin(int window);
 extern void far clip_Pop(void);
 extern void far GRectInvOutline(struct Rect far *rect, int color);
 
-extern int far match_position;  /* scaffold reference for pool word C1E0 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern unsigned int far lastMapMapBuf;  /* selector C1E0 from the admitted C19C pool ledger */
 extern int far match_length;  /* scaffold reference for pool word C1E6 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far pack_buf;  /* scaffold reference for pool word C1E8 (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far Scycle;  /* scaffold reference for pool word C1EA (segment 9, SEGMENT_REPRESENTATIVE) */
 extern int far EditColumns;  /* scaffold reference for pool word C1EC (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far Dx8;  /* scaffold reference for pool word C1EE (segment 8, SEGMENT_REPRESENTATIVE) */
+extern int far MapMode;  /* selector C1EE from C854 binding */
 
 void far pool_stub_KeepMiniMapRefreshLow(void);
 void far pool_stub_InitMapFunctions(void);
@@ -55,7 +55,7 @@ void far pool_stub_InitMapFunctions(void)
 {
     volatile int t;
 
-    t = match_position;
+    t = (int)lastMapMapBuf;
     t = (int)mapYsize;
     t = (int)mapXsize;
     t = match_length;
@@ -82,7 +82,7 @@ void far pool_stub_ProcMapRibbonEvent(void)
 {
     volatile int t;
 
-    t = Dx8;
+    t = MapMode;
 }
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DrawMapCursor.
@@ -136,7 +136,7 @@ extern unsigned int far lastMapMapBuf;
 extern int near showTrails;
 extern unsigned char near displayType;
 extern int near mapMem;
-extern int near mapModeCache;
+extern int near lastMapGenMode;
 extern void far win_MapChanged(void);
 extern void far * far mem_Lock(unsigned int handle);
 extern int far mem_Unlock(unsigned int handle);
@@ -151,9 +151,9 @@ static void near MiniMapHelperA(void)
     struct MapCopy far *destination;
 
     frame.trails = showTrails;
-    if (MapMode != mapModeCache) {
+    if (MapMode != lastMapGenMode) {
         win_MapChanged();
-        mapModeCache = MapMode;
+        lastMapGenMode = MapMode;
         frame.trails = 0;
     }
     destination = (struct MapCopy far *)mem_Lock(mapMapBuf);

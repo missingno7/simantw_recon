@@ -88,6 +88,16 @@
         "text": "Inside the natural-data unit candidate is 98/1742 opcodes and 422/4953 bytes; target ENTER is 484 and the current draft leaves most message-dispatch branches and frame slots absent.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:37.363591+00:00"
+      },
+      {
+        "text": "2026-09-27 in-unit/outside recheck after the ordered shared-data block: best remains 103/1742 opcodes, 424/4953 bytes, and no candidate frame against target ENTER 484. Target starts mov ax,ss; enter 01E4; push di/si/ds; mov ds,ax; candidate has no matching frame and most message dispatch is absent. In-unit candidate is RULED_OUT_MEMBER on inconsistent public placements. Pool map resolves BE70 OptionStates, BE86 hHelpCursor, BE8C CurGameType, BEAE CurExpTool, BEB0 sound message, BEB4/BEB6 sound flags, BEB8 versionStr, BEBA popUpMenuId, BEBE lastSubState, BEC0 lastProxObj; BEB2/B EBC remain unresolved dynamic DGROUP accesses.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:42:32.385482+00:00"
+      },
+      {
+        "text": "Correction to the 2026-09-27 selector note: unresolved dynamic DGROUP pool words are BEB2 and BEBC. All other listed MAINWNDPROC selectors are mapped by evidence/experiments/pool-maps/simant_01B6.json; the target frame/code gap remains unchanged.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:50:33.776795+00:00"
       }
     ],
     "best": {
@@ -198,6 +208,11 @@
         "text": "Inside the natural-data unit candidate is 104/317 opcodes and 527/973 bytes; target ENTER 42 versus candidate 40, with timer/network flow and target local slots still missing.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:37.180917+00:00"
+      },
+      {
+        "text": "2026-09-27 inside/outside frame recheck: same candidate object in both contexts, 104/317 opcodes and 527/973 bytes; target ENTER 42 versus candidate 40. Target address homes at bp-10 and bp-28 and word homes through bp-42 are not represented; timer/network/status paths are largely absent. Pool map resolves BE6E _GamePaused, BE78 _GameSpeed, BE9C/9E/ A0/ A2/ A4/ A6/ A8/AA/AC to game-over, win, cycle and network state, with no private data placement solution yet.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:42:19.630493+00:00"
       }
     ],
     "best": {
@@ -380,6 +395,11 @@
         "text": "Inside the natural-data unit candidate is 313/581 opcodes and 1165/1546 bytes; target ENTER 98 versus candidate 102, with missing stack homes and many immediate/memory differences remaining.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:37.550689+00:00"
+      },
+      {
+        "text": "2026-09-27 data-block follow-up: removing the redundant startupShow local and using the show parameter produces an outside frame exact at ENTER 98 (303/581 opcodes, 1178/1546 bytes); target homes bp-16/-34/-66/-98 now align with client/message/two buffers, but code score does not improve. In-unit shared-block variant remains RULED_OUT_MEMBER at 311/581, 1157/1546, ENTER 100; aliasing winMainClassName, winMainPropertyIndex, option/app fields, notInstalledMessage, acceleratorResource and releasingCaptureMessage changes literal bindings but leaves branch/call setup and button-profile/profile-persistence paths incomplete. BE7A remains shared/unresolved; BE98/9A are _UDcntr/_UDMapFlip and BEC2/C4 are songsOnFlag/effectsOnFlag.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:43:35.618511+00:00"
       }
     ],
     "best": {
@@ -2279,6 +2299,11 @@
         "text": "The readable local helper at 3:616C now uses a three-word zeroResult array on the both-deltas-zero path; static_probe reports 96/96 instructions and 227/227 bytes, with all non-fixup instructions, frame (ENTER 0x12), registers, stack refs, and branches identical. In a same-file static ScrollEditBy plus CenterEdit search, the public caller remains 66/67 opcodes and 180/180 bytes due target mov cx,0x40 vs source reload [bp-2] at +0x4E; unit placement also remains unresolved. A register-width/default variant regressed to 62/67 and 174/180 bytes.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T05:53:29.813046+00:00"
+      },
+      {
+        "text": "616C ScrollEditBy is static in the candidate TU; TU test proves ResetEditScrollRange plus helper as 458/458 ANTEDIT_MODULE bytes with zero divergences/failed fixups. promote.py --unit --verify-only rejects the local OMF public ScrollEditBy as outside the MAPSYM scope, so no compliant admission route exists without promotion support for anonymous local helpers.",
+        "origin": "build/search/CenterEdit/20260927T064632-64504",
+        "recorded": "2026-09-27T06:46:32.714538+00:00"
       }
     ]
   },
@@ -6614,6 +6639,11 @@
         "text": "BE7A is a SIMANT_DATA_GROUP selector shared by _DoBookMark, _ClearBookmarks, _DoEvent, _DoMenuEntry, and WINMAIN; its uses reach multiple publics including _bookMark and _userButtonHelpId. Current natural-data inside candidate is 150/183 opcodes, 489/513 bytes.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:35.525193+00:00"
+      },
+      {
+        "text": "2026-09-27 recheck against the shared DATA context: standalone best and unit_DoBookMark_structfinal remain 150/183 opcodes, 489/513 bytes, ENTER 8/8. The first branch still targets +0xCC versus +0xD2 at local +0x12, followed by base/index and store-order differences through the bookmark copy. BE7A remains unresolved among DGROUP publics; BE7C is _MapPnt and BE7E is _MapMode. The unit candidate still has private CONST/_DATA conflicts and unresolved fixups, so body is not exact.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:41:29.344668+00:00"
       }
     ]
   },
@@ -7838,6 +7868,11 @@
         "text": "With the natural shared DATA struct, candidate is 141/514 opcodes and 995/1385 bytes; frame is target ENTER 64 versus candidate 30, with target slots bp-8 and bp-16 onward absent.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:35.880251+00:00"
+      },
+      {
+        "text": "2026-09-27 inside/outside frame recheck: best body remains 141/514 opcodes, 997/1385 bytes, target ENTER 64 versus candidate 30 with many target homes absent and event/selection/cheat branches under-modeled. In-unit candidate is RULED_OUT_MEMBER: _DoUserButtonUpdate anchors at SIMANT_MODULE:01B6 while _DoKeyDown and _HelpKeyDown imply 0D62, so the run cannot be compared until exact intervening members are restored. The pool-correct _lastProxObj access is at DGROUP 0xCD78.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:42:07.141018+00:00"
       }
     ]
   },
@@ -8078,6 +8113,11 @@
         "text": "BE7A is a segment-8 selector shared across several users, not a unique object binding. The current 172/183-opcode candidate still misses save/action-record and cleanup-tail behavior.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:36.247573+00:00"
+      },
+      {
+        "text": "2026-09-27 follow-up after the ordered private block: best standalone draft remains 172/183 opcodes, 505/503 bytes with ENTER 16 exact. Declaring all six mapped same-object helper calls near (ProcMenuHelp, ProcMenu, SetMapPlane, SetYardMode, YardToMap, CleanUp) regressed to 162/183, 493/503 and the first structural difference moved to target +0x16. BE8A is _editForce and BE8C _CurGameType; BE7A remains the shared unresolved DGROUP selector. The candidate still lacks the action-record path and cleanup tail, so code is not exact.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:43:48.148991+00:00"
       }
     ]
   },
@@ -8211,6 +8251,11 @@
         "text": "With the natural shared DATA struct and common object view, candidate is 262/394 opcodes and 993/1077 bytes; frame is target ENTER 52 versus candidate 34, and the 16-byte event record field semantics remain open.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:36.061097+00:00"
+      },
+      {
+        "text": "2026-09-27 inside/outside frame recheck: both align 262/394 opcodes and 993/1077 bytes; outside is UNSUPPORTED_COMPARISON because candidate contribution falls outside the reviewed extent, while the old in-unit candidate has private CONST/_DATA and fixup failures. Target ENTER 52 versus candidate 34; target uses mixed byte/word homes through bp-52 plus address homes at bp-10 and bp-26 absent from the candidate. BE88 resolves to _lastProxObj (DGROUP 0xCD78); event/message field semantics and the remaining mouse branches are still missing.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:43:23.071090+00:00"
       }
     ]
   },
@@ -24004,6 +24049,11 @@
         "text": "CA66 based pointer candidate remains 81/85 instructions at 250/250 bytes. A register-held far-pointer attempt produced 83/88 instructions at 254/250 bytes; making mapModeCache volatile moved its load to the target's earlier slot but still yielded 84/87 at 254/250 with register/branch differences. These spellings are weaker than mapB_round08.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T05:57:08.212906+00:00"
+      },
+      {
+        "text": "C854 MiniMapRefreshLow now has an exact anchored TU proof: ToggleMapCursor plus helper is 496/496 ANTEDIT_MODULE bytes with zero divergences/failed fixups; selectors C1E0/C1EE were rebound to lastMapMapBuf/MapMode and the cached mode is MAPSYM lastMapGenMode. promote.py --unit --verify-only rejects the helper's local OMF public MiniMapHelperA outside MAPSYM scope; no compliant admission route without local-helper promotion support.",
+        "origin": "build/search/Mini_DrawMapI/20260927T064633-115364",
+        "recorded": "2026-09-27T06:46:34.167425+00:00"
       }
     ]
   },
@@ -24987,6 +25037,11 @@
         "text": "On the final natural struct DATA block, the interrupt body is 27/27 instructions and 77/77 bytes; its sole remaining fixup is @data target offset 0 in the original versus 0x14A in the composed contribution, causing the two bytes at +7..+8 to differ.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:38:12.215633+00:00"
+      },
+      {
+        "text": "2026-09-27 after matcher change and merge: outside standalone remains 27/28 opcodes, 78/77 bytes, with the +0x07 DGROUP selector-frame fixup unresolved. Inside the promoted simant_01B6_DoUserButtonUpdate_14_reviewed unit it is STRONGLY_SUPPORTED_MEMBER at 27/27, 77/77, and the complete 14-member unit is exact at 3550/3550. The private block now has one owner after _InitApplication's 42 bytes were merged; no claim conflict remains.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:50:01.401476+00:00"
       }
     ],
     "best": {
@@ -35035,6 +35090,11 @@
         "text": "Inside the natural-data unit candidate is 136/169 opcodes and 554/540 bytes with ENTER 8/8; GameSpeed selector materialization and target local/store ordering remain different.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:39:36.985485+00:00"
+      },
+      {
+        "text": "2026-09-27 inside/outside frame recheck: both candidates compile to the same object at 136/169 opcodes and 554/540 bytes; ENTER 8 equals target and frame slots have no findings. First code divergence is target +0x0B, followed by 25 branch, 60 immediate and 33 memory differences. BE78 is _GameSpeed, BE80/82/84 are _mapMessageRemoveTime/_editMessage/_mapMessage and BE98/9A are _UDcntr/_UDMapFlip. Private CONST/_DATA placement and RUN fixups still fail; candidate flow/store ordering is incomplete.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T06:41:41.958832+00:00"
       }
     ]
   },
