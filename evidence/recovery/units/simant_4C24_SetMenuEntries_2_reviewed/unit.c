@@ -1,10 +1,6 @@
-/* Shared private text block: admitted _SetMenuEntries strings also serve _PauseGame. */
-struct PauseMenuTextBlock { char unpause[17]; char pause[15]; };
-static struct PauseMenuTextBlock pauseMenuText = {
-    "Un&pause\tShift+0", "&Pause\tShift+0"
-};
-#define unpauseText (pauseMenuText.unpause)
-#define pauseText (pauseMenuText.pause)
+/* Shared private strings in address order. */
+static char unpauseText[17] = "Un&pause\tShift+0";
+static char pauseText[15] = "&Pause\tShift+0";
 
 /*
  * SetMenuEntries: refresh the game menu.  Speed items 0x43..0x46 show

@@ -24,10 +24,10 @@
  */
 extern int far TileMassXB;
 extern int far TileMassYB;
-extern char far Dx8[];
 extern char far Dy8[];
+extern char far Dx8[];
 extern unsigned char near LifeB[];
-extern int near GetBestDir(int kind, int x, int y, int targetX, int targetY);
+extern int far GetBestDir(int kind, int x, int y, int targetX, int targetY);
 extern int far SRand8(void);
 extern int far TryMoveDirB(int x, int y, int dir);
 extern int far FindInBList(int x, int y, int ant);
@@ -35,32 +35,38 @@ extern int far FindInBList(int x, int y, int ant);
 int far QueenMoveB(int x, int y, int dirHint)
 {
     int dir;
-    int opp;
-    int newCol;
     int newRow;
+    int newCol;
+    int opp;
     int index;
 
     dir = GetBestDir(3, x, y, TileMassXB, TileMassYB);
-    if (dir != -1) {
-        if (dir < 0)
-            dir = SRand8();
-        if (y >= 3 || (dir >= 3 && dir <= 5)) {
-            if (TryMoveDirB(x, y, dir) != 0) {
+    if (dir < 0) {
+        dir++;
+        if (dir == 0)
+            return 0;
+        dir = SRand8();
+    }
+    if (y < 3) {
+        if (dir > 5)
+            return 0;
+        if (dir < 3)
+            return 0;
+    }
+    if (TryMoveDirB(x, y, dir) != 0) {
                 opp = (dirHint ^ 0xfc) & 7;
-                newRow = y + Dy8[opp + 8];
                 newCol = x + Dx8[opp];
+                newRow = y + Dy8[opp];
                 LifeB[newCol * 64 + newRow] = 0;
 
                 index = FindInBList(newCol, newRow, (dirHint & 7) + 0xe8);
-                if (index >= 0 && Dx8[index + 0x46e6] != 0) {
-                    Dx8[index + 0x4104] = (char)x;
-                    Dx8[index + 0x42fa] = (char)y;
-                    Dx8[index + 0x46e6] = (char)(dir - 0x18);
+                if (index >= 0 && Dx8[index + 0x3D18] != 0) {
+                    Dx8[index + 0x3736] = (char)x;
+                    Dx8[index + 0x392C] = (char)y;
+                    Dx8[index + 0x3D18] = (char)(dir - 0x18);
                     LifeB[x * 64 + y] = (unsigned char)(dir - 0x18);
                 }
-                return 1;
-            }
-        }
+        return 1;
     }
     return 0;
 }

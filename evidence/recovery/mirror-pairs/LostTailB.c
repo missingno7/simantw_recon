@@ -2,31 +2,37 @@
  * colony-specific MAPSYM identifiers swapped FindInRList->FindInBList, LifeR->LifeB, LostTailR->LostTailB; constants and structure unchanged.
  * Verified only by the strict matcher; where the pair is not a pure mirror the
  * diagnostic names the asymmetry. */
-/*
- * Hypothesis: derive the R-tail direction from the low byte of life,
- * offset the coordinate by the shared Dy8/Dx8 direction tables, and test
- * the LifeR cell against life+8.  A matching cell is retained only after
- * the repeated FindInRList(row,column,life) search has exhausted duplicates.
- */
-extern signed char far Dy8[];
-extern signed char far Dx8[];
-extern unsigned char near LifeB[];
-extern int far FindInBList(int row, int column, int life);
+/* LostTailR: same shape as LostTailB (see LostTailB.c), against
+ * LifeR/FindInRList. Shares the Dx8/Dy8 delta tables with the black
+ * colony. */
 
-int far LostTailB(int x, int y, int life)
+extern unsigned char far Dx8[];
+extern unsigned char far Dy8[];
+extern unsigned char near LifeB[128][64];
+extern int far FindInBList(int x, int y, int ant);
+
+#define LifeB ((unsigned char near *)LifeB)
+int far LostTailB(int x, int y, int attr)
 {
-    int index;
-    int column;
-    int row;
+    int dir;
+    int newY;
+    int tailMarker;
+    int newX;
+    unsigned char cell;
 
-    index = life ^ 0xfc;
-    index &= 7;
-    column = Dy8[index + 8] + y;
-    life += 8;
-    row = Dx8[index] + x;
-    if (LifeB[(row << 6) + column] != life)
+    dir = (attr ^ 0xfc) & 7;
+    newY = (signed char)Dy8[dir];
+    newX = x + (signed char)Dx8[dir];
+    newY += y;
+    tailMarker = attr + 8;
+    cell = LifeB[(newX << 6) + newY];
+    if (cell == tailMarker)
         return 0;
-    while (FindInBList(row, column, life) >= 0) {
-    }
+    if (FindInBList(newX, newY, tailMarker) >= 0)
+        return 0;
     return 1;
 }
+#undef LifeB
+
+
+

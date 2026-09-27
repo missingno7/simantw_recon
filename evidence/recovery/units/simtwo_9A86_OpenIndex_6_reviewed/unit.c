@@ -28,7 +28,7 @@ extern long far pascal _lwrite(int handle, void far *buffer, unsigned count);
 extern int far pascal _lclose(int handle);
 extern long far pascal _llseek(int handle, long offset, int origin);
 extern int near errno;
-extern void near DosPunt(char far *message, ...);
+extern void far DosPunt(char far *message, ...);
 extern void far Punt(char far *message, ...);
 extern void far *mem_malloc(unsigned int size, char far *tag);
 extern void far mem_free(void far *block);

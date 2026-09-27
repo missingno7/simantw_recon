@@ -35,12 +35,12 @@ void far AddRedAnts(int count)
                 case 1:
                 case 2:
                 case 3:
-                    base = 0x10;
-                    kind = 4;
-                    break;
-                default:
                     base = 0x30;
                     kind = 2;
+                    break;
+                default:
+                    base = 0x10;
+                    kind = 4;
                     break;
                 }
                 type = SRand8() + base;

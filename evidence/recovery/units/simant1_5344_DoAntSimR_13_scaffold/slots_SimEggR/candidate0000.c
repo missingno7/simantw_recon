@@ -22,6 +22,14 @@
  * two-byte smaller frame).  The 0x85fc word of segment 8 is OptionStates[5].
  * Requires the og profile (/Oeglw).
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern int far Tindex;
 extern unsigned char far Dx8[];
 extern unsigned char near LifeR[];
@@ -40,7 +48,7 @@ void far SimEggR(int x, int y)
     int mode;
     int mask;
 
-    attr = Dx8[Tindex + 0x46e6];
+    attr = RlistX.t[Tindex];
     mode = -1;
 
     if (RpopT == 1)
@@ -52,7 +60,7 @@ void far SimEggR(int x, int y)
         if ((attr & 0xf) == 8) {
             mode = CasteTabC[((StrategicModeR % 7) << 3) + SRand8()];
             attr = (mode << 3) + 0x82;
-            Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeR(mode);
+            RlistX.m[Tindex] = (unsigned char)GetNewModeR(mode);
         }
     }
 
@@ -60,6 +68,6 @@ void far SimEggR(int x, int y)
         EggBalloons(x, y, 3);
 
     LifeR[(x << 6) + y] = (unsigned char)attr;
-    Dx8[Tindex + 0x46e6] = (unsigned char)attr;
-    Dx8[Tindex + 0x48dc] = 0;
+    RlistX.t[Tindex] = (unsigned char)attr;
+    RlistX.s[Tindex] = 0;
 }

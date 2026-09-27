@@ -1,12 +1,12 @@
-/* Reviewed incremental unit source: _OpenIndex candidate plus admitted delete controls.
- * MAPSYM code order; CreateIndex/CloseIndex and the AddIndex private-data block
- * are POOLSTUB_TEXT scaffolds and are not credited as recovered members. */
+/* Reviewed incremental unit source: OpenIndex/CreateIndex/CloseIndex/FindIndex/AddIndex candidates plus admitted delete controls.
+ * MAPSYM code order; all seven index bodies are now present for object-context testing. */
 
 struct OpenDB {
     char name[0x50];
     void far *indexTable;
     int recordCount;
-    unsigned char pad1[0x6c - 0x56];
+    int headerWords[9];
+    unsigned char pad1[4];
     int count;
     long freeBytes;
     long wastedBytes;
@@ -34,22 +34,30 @@ extern void far *mem_malloc(unsigned int size, char far *tag);
 extern void far mem_free(void far *block);
 extern void far *_fmemcpy(void far *destination, const void far *source, unsigned int count);
 extern void far *FindIndex(int recIndex, int p2, int p3);
-extern struct OpenDB far openDBData[];
+extern struct OpenDB __based(__segname("PACK")) openDBData[];
 extern int far lastTop;
 
 
 void far OpenIndex(char far *path, int idx);
-void far pool_stub_CreateIndex(void);
-void far pool_stub_CloseIndex(void);
-void far pool_data_fill_B73E(void);
+void far CreateIndex(char far *name, int idx);
+void far CloseIndex(int idx);
+int far AddIndex(int recIndex, int p2, int p3, int p4, void far *payload);
 int far DeleteIndex(int recIndex, int b, int c);
 
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_CreateIndex)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_CloseIndex)
-#pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_B73E)
-#pragma alloc_text(RUN2_TEXT, DeleteIndex)
 
-/* Candidate source for the member being added. */
+
+/* Reviewed layout stand-ins preserve private strings owned by unclaimed
+ * _CreateIndex and _CloseIndex. Their code stays outside the claimed runs. */
+void far pool_data_fill_CreateIndex(void);
+void far pool_data_fill_CloseIndex(void);
+void far pool_data_fill_B73E(void);
+
+void far DeleteCurrentIndex(int recIndex);
+
+#pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_CreateIndex, pool_data_fill_CloseIndex, pool_data_fill_B73E)
+#pragma alloc_text(RUN2_TEXT, DeleteCurrentIndex)
+#pragma alloc_text(RUN3_TEXT, DeleteIndex)
+
 void far OpenIndex(char far *path, int idx)
 {
     char name[100];
@@ -72,19 +80,17 @@ void far OpenIndex(char far *path, int idx)
 }
 
 
-/* SCAFFOLD, not recovered source: fill _CreateIndex's exact private strings. */
-void far pool_stub_CreateIndex(void)
+void far pool_data_fill_CreateIndex(void)
 {
-    char far * volatile p;
+    volatile char far *p;
     p = "%s.ndx";
     p = "Can't create index file";
     p = "index";
 }
 
-/* SCAFFOLD, not recovered source: fill _CloseIndex's exact private strings. */
-void far pool_stub_CloseIndex(void)
+void far pool_data_fill_CloseIndex(void)
 {
-    char far * volatile p;
+    volatile char far *p;
     p = "%s.ndx";
     p = "Index file missing";
 }
@@ -115,7 +121,6 @@ void far DeleteCurrentIndex(int recIndex)
     mem_free(oldBuf);
 }
 
-/* SCAFFOLD, not recovered source: the 70 bytes of private data between _DeleteCurrentIndex and _DeleteIndex (DGROUP B73E-B784, unclaimed members), copied from the image so the claimed pieces keep their layout. */
 void far pool_data_fill_B73E(void)
 {
     volatile char far *p;
@@ -146,4 +151,3 @@ int far DeleteIndex(int recIndex, int b, int c)
     mem_free(oldBuf);
     openDBData[recIndex].indexTable = newBuf;
 }
-

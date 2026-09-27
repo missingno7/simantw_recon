@@ -22,6 +22,14 @@
  * use).  Requires the og profile (/Oeglw); the baseline recomputes the
  * subscript and enregisters differently.
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern unsigned char near MapR[];
 extern unsigned char near LifeR[];
 extern int far Tindex;
@@ -43,14 +51,14 @@ void far StayInR(int x, int y, int dirHint)
             MapR[(x << 6) + y]--;
         if (FoodR > 0)
             FoodR--;
-        Dx8[Tindex + 0x44f0] = 3;
-        Dx8[Tindex + 0x46e6] |= 8;
-        LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+        RlistX.m[Tindex] = 3;
+        RlistX.t[Tindex] |= 8;
+        LifeR[(x << 6) + y] = RlistX.t[Tindex];
         return;
     }
 
     dir = (SRand1(3) + dirHint - 2) & 7;
-    Dx8[Tindex + 0x46e6] = (Dx8[Tindex + 0x46e6] & 0xf8) | dir;
+    RlistX.t[Tindex] = (RlistX.t[Tindex] & 0xf8) | dir;
     if (TryMoveDirR(x, y, dir) != 0)
         return;
 
@@ -60,5 +68,5 @@ void far StayInR(int x, int y, int dirHint)
     if (TryMoveDirR(x, y, dir) != 0)
         return;
 
-    LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+    LifeR[(x << 6) + y] = RlistX.t[Tindex];
 }

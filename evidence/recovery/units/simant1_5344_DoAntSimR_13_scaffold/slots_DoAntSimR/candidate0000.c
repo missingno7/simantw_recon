@@ -6,6 +6,14 @@
  * and explicit DS restoration show that the list segment is separate from
  * DGROUP while the indexed Tindex state remains live across the call.
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern int far ListIndexR;
 extern int far Tindex;
 extern unsigned char far Dx8[];
@@ -20,9 +28,9 @@ void far DoAntSimR(void)
     Tindex = ListIndexR;
     while (Tindex > 0) {
         --Tindex;
-        life = Dx8[Tindex + 0x4104];
-        column = Dx8[Tindex + 0x42fa] & 0xff;
-        attribute = Dx8[Tindex + 0x46e6];
+        life = RlistX.x[Tindex];
+        column = RlistX.y[Tindex] & 0xff;
+        attribute = RlistX.t[Tindex];
         if (attribute != 0)
             DoNestAntR(life, column, attribute);
     }

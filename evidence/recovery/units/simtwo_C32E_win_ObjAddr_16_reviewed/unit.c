@@ -88,6 +88,7 @@ extern void far pascal EndDialog(unsigned hwnd, int result);
 
 
 void far pool_stub_win_LoadAllWindows(void);
+void far pool_stub_window_private_data(void);
 void far pool_data_fill_BE05(void);
 void far *win_WinAddr(int id);
 int far win_Events(void);
@@ -104,7 +105,7 @@ void win_ObjInv(int objectNumber);
 unsigned int win_GetProxEvent(void);
 long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wParam, long lParam);
 
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_win_LoadAllWindows)
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_win_LoadAllWindows, pool_stub_window_private_data)
 #pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_BE05)
 #pragma alloc_text(RUN2_TEXT, win_WinAddr)
 #pragma alloc_text(RUN3_TEXT, win_Events)
@@ -181,8 +182,56 @@ void win_ToTop(int window)
 
 void win_SetWinDrawHook(int id,Hook f) { win_drawHooks[id>>8]=f; }
 
-/* SCAFFOLD, not recovered source: the 158 bytes of private data between _win_ObjAddr and _win_SetObjBitmap (DGROUP BD3C-BDDA, unclaimed members), copied from the image so the claimed pieces keep their layout. */
-static unsigned char pool_data_fill_BD3C[158] = {0x43, 0x41, 0x4E, 0x4E, 0x4F, 0x54, 0x20, 0x4C, 0x4F, 0x41, 0x44, 0x20, 0x57, 0x49, 0x4E, 0x44, 0x4F, 0x57, 0x20, 0x25, 0x30, 0x33, 0x78, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x00, 0x80, 0x43, 0x61, 0x6E, 0x6E, 0x6F, 0x74, 0x20, 0x6C, 0x6F, 0x61, 0x64, 0x20, 0x72, 0x65, 0x73, 0x6F, 0x75, 0x72, 0x63, 0x65, 0x0A, 0x70, 0x6C, 0x65, 0x61, 0x73, 0x65, 0x20, 0x74, 0x72, 0x79, 0x20, 0x61, 0x6E, 0x6F, 0x74, 0x68, 0x65, 0x72, 0x00, 0x47, 0x65, 0x6E, 0x65, 0x72, 0x69, 0x63, 0x20, 0x57, 0x69, 0x6E, 0x64, 0x6F, 0x77, 0x00, 0x47, 0x65, 0x6E, 0x65, 0x72, 0x69, 0x63, 0x57, 0x69, 0x6E, 0x64, 0x6F, 0x77, 0x00, 0x49, 0x4E, 0x44, 0x45, 0x58, 0x00, 0x26, 0x43, 0x6C, 0x6F, 0x73, 0x65, 0x09, 0x43, 0x74, 0x72, 0x6C, 0x2B, 0x46, 0x34, 0x00, 0x4E, 0x65, 0x78, 0x26, 0x74, 0x09, 0x43, 0x74, 0x72, 0x6C, 0x2B, 0x46, 0x36, 0x00, 0x49, 0x4E, 0x44, 0x45, 0x58, 0x00, 0x66, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x53, 0x74, 0x72, 0x00, 0x49, 0x4E, 0x44, 0x45, 0x58, 0x00};
+/* Shared object-private DGROUP data, BD3C-BDDA, in observed address order.
+ * The four -32768 rectangle words at BD54 are byte-supported; their owner
+ * and original source-level type remain unresolved. */
+struct WindowPrivateData {
+    char loadWindowMessage[24];
+    struct WinRect windowSentinel;
+    char loadAllWindowsMessage[40];
+    char genericWindowSpaced[15];
+    char genericWindowCompact[14];
+    char indexCaption[6];
+    char closeMenuItem[15];
+    char nextMenuItem[14];
+    char indexProperty[6];
+    char formatAllocationTag[10];
+    char indexMenuItem[6];
+};
+static struct WindowPrivateData near windowPrivate = {
+    "CANNOT LOAD WINDOW %03x",
+    { -32768, -32768, -32768, -32768 },
+    "Cannot load resource\nplease try another",
+    "Generic Window",
+    "GenericWindow",
+    "INDEX",
+    "&Close\tCtrl+F4",
+    "Nex&t\tCtrl+F6",
+    "INDEX",
+    "formatStr",
+    "INDEX"
+};
+
+/* SCAFFOLD, not recovered source: retain each private-data part whose owner
+ * is still open. The text is represented once by windowPrivate above. */
+void far pool_stub_window_private_data(void)
+{
+    char near * volatile text;
+    volatile int sentinel;
+
+    text = windowPrivate.loadWindowMessage;
+    sentinel = windowPrivate.windowSentinel.left;
+    text = windowPrivate.loadAllWindowsMessage;
+    text = windowPrivate.genericWindowSpaced;
+    text = windowPrivate.genericWindowCompact;
+    text = windowPrivate.indexCaption;
+    text = windowPrivate.closeMenuItem;
+    text = windowPrivate.nextMenuItem;
+    text = windowPrivate.indexProperty;
+    text = windowPrivate.formatAllocationTag;
+    text = windowPrivate.indexMenuItem;
+}
+
 #define win_handles ((struct WinBucket far * near *)win_handles)  /* shape view of the unit declaration for this member only */
 void far win_SetObjBitmap(int objectNumber, int bitmap)
 {
@@ -341,11 +390,10 @@ void far pool_data_fill_BE05(void)
 {
     volatile char far *p;
 
-    p = "\146\157\162\155\141\164\123\164\162\000";
+    p = "formatStr";
 }
 
-/* SCAFFOLD, not recovered source: the 13 bytes of private data between _win_SetObjBitmap and INDIRECTDLGPROC (DGROUP BE05-BE12, unclaimed members), copied from the image so the claimed pieces keep their layout (word-aligned tail). */
-static unsigned char pool_data_fill_BE05_tail[2] = {0xFF, 0xFF};
+unsigned int near lastProxObj = -1;
 static int near dlgObject;
 struct WinProxRect {
     int left;

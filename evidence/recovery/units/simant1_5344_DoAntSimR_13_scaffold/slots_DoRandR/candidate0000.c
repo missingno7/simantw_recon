@@ -24,6 +24,14 @@
  * handled = 0) would move handled into SI.  The final test is a plain
  * nonzero test (cmp [bp-4],0; jne).  Requires the og profile (/Oeglw).
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern unsigned char near LifeR[];
 extern int near MeColor;
 extern int far Tindex;
@@ -45,7 +53,7 @@ void far DoRandR(int x, int y, int attr, int modeArg)
     int winner;
 
     if (SRand32() == 0)
-        Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeR(modeArg);
+        RlistX.m[Tindex] = (unsigned char)GetNewModeR(modeArg);
 
     ant = LifeR[(x << 6) + y];
     do {
@@ -53,10 +61,10 @@ void far DoRandR(int x, int y, int attr, int modeArg)
             index = FindInRList(x, y, ant);
             if (index >= 0) {
                 winner = GetWinner(ant, attr);
-                Dx8[index + 0x48dc] = winner;
-                Dx8[index + 0x46e6] = (winner & 0x80) + 0x70;
+                RlistX.s[index] = winner;
+                RlistX.t[index] = (winner & 0x80) + 0x70;
                 LifeR[(x << 6) + y] = (winner & 0x80) + 0x70;
-                Dx8[index + 0x44f0] = 0xa;
+                RlistX.m[index] = 0xa;
                 handled = 1;
                 break;
             }

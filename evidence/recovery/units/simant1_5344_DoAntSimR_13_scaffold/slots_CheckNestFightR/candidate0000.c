@@ -11,11 +11,18 @@
  * slot, so the segment object is a single far byte addressed by offset;
  * Tindex is declared first so its selector slot precedes the list's.
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern unsigned char near LifeR[];
 extern int near MeColor;
 extern int far Tindex;
 extern unsigned char far Dx8;
-#define AT(off) ((&Dx8)[off])
 
 extern int far FindInRList(int x, int y, int ant);
 extern int near GetWinner(int defender, int attacker);
@@ -33,10 +40,10 @@ int far CheckNestFightR(int x, int y, int attacker)
         index = FindInRList(x, y, ant);
         if (index >= 0) {
             winner = GetWinner(ant, (int)attacker);
-            AT(index + 0x48dc) = winner;
-            AT(index + 0x46e6) = (winner & 0x80) + 0x70;
+            RlistX.s[index] = winner;
+            RlistX.t[index] = (winner & 0x80) + 0x70;
             LifeR[(x << 6) + y] = (winner & 0x80) + 0x70;
-            AT(index + 0x44f0) = 0xa;
+            RlistX.m[index] = 0xa;
             return 1;
         }
     } else if (IsYellowAnt(ant) && MeColor == 0) {

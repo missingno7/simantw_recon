@@ -10,11 +10,11 @@
  * are 0x58a9 (x-1 side) and 0x5929 (x+1 side).
  *
  * See GetOutB.c for the full semantic account: sealed-hole path reads
- * and clears RlistT[Tindex], creates a hole entry via MakeNewHoleR(x)
+ * and clears RlistX.t[Tindex], creates a hole entry via MakeNewHoleR(x)
  * when HoleMapR[x]==0, tries ExitHole(HoleMapR[x], x,
- * SRand8()+(raw&0xf8), RlistM[Tindex], RlistS[Tindex]) -- success
- * clears the tile and returns 1, failure restores RlistT[Tindex],
- * zeroes RlistM[Tindex] and returns 0; otherwise the per-row counter is
+ * SRand8()+(raw&0xf8), RlistX.m[Tindex], RlistX.s[Tindex]) -- success
+ * clears the tile and returns 1, failure restores RlistX.t[Tindex],
+ * zeroes RlistX.m[Tindex] and returns 0; otherwise the per-row counter is
  * decremented if nonzero, a SRand2() roll and IsItDirt gate a
  * DigTileThemR(x +/- 1, 1) call, and a TryMoveDirR(x, 1, SRand8())
  * attempt always ends the turn with a 0 return.
@@ -22,11 +22,16 @@
  * Requires the og profile (/Oeglw); only idx survives as a stack local
  * (enter 2, 0).
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern int far Tindex;
 extern unsigned char far Dx8[];
-#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))
-#define RlistM ((unsigned char far *)((unsigned char far *)Dx8 + 0x44F0))
-#define RlistS ((unsigned char far *)((unsigned char far *)Dx8 + 0x48DC))
 extern unsigned char near MapR[];
 extern unsigned char far HoleMapR[];
 extern unsigned char near LifeR[];
@@ -46,17 +51,17 @@ int far GetOutR(int x)
     int raw;
 
     if (MapR[x << 6] == 0x18) {
-        raw = RlistT[Tindex];
-        RlistT[Tindex] = 0;
+        raw = RlistX.t[Tindex];
+        RlistX.t[Tindex] = 0;
         if (HoleMapR[x] == 0)
             MakeNewHoleR(x);
         if (ExitHole(HoleMapR[x], x, SRand8() + (raw & 0xf8),
-                      RlistM[Tindex], RlistS[Tindex]) != 0) {
+                      RlistX.m[Tindex], RlistX.s[Tindex]) != 0) {
             LifeR[(x << 6) + 1] = 0;
             return 1;
         }
-        RlistT[Tindex] = raw;
-        RlistM[Tindex] = 0;
+        RlistX.t[Tindex] = raw;
+        RlistX.m[Tindex] = 0;
         return 0;
     }
 

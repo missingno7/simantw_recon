@@ -26,6 +26,14 @@
  * GetNewMode call.  The 0x85fc word of segment 8 is OptionStates[5].
  * Requires the og profile (/Oeglw).
  */
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern unsigned char near LifeR[];
 extern int near MeColor;
 extern int far Tindex;
@@ -54,10 +62,10 @@ void far DoRestR(int x, int y, int attacker)
             index = FindInRList(x, y, ant);
             if (index >= 0) {
                 winner = GetWinner(ant, attacker);
-                Dx8[index + 0x48dc] = winner;
-                Dx8[index + 0x46e6] = (winner & 0x80) + 0x70;
+                RlistX.s[index] = winner;
+                RlistX.t[index] = (winner & 0x80) + 0x70;
                 LifeR[(x << 6) + y] = (winner & 0x80) + 0x70;
-                Dx8[index + 0x44f0] = 0xa;
+                RlistX.m[index] = 0xa;
                 handled = 1;
                 break;
             }
@@ -71,11 +79,11 @@ void far DoRestR(int x, int y, int attacker)
     if (handled)
         return;
 
-    LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+    LifeR[(x << 6) + y] = RlistX.t[Tindex];
     if (SRand1(20) == 0) {
-        type = Dx8[Tindex + 0x46e6];
+        type = RlistX.t[Tindex];
         caste = (type & 0x78) >> 3;
-        Dx8[Tindex + 0x44f0] = (unsigned char)GetNewMode(caste, type);
+        RlistX.m[Tindex] = (unsigned char)GetNewMode(caste, type);
         return;
     }
     if (OptionStates[5] != 0)

@@ -1,35 +1,50 @@
 /* Derived mechanically from the mirrored colony function _LostTailB (tools/mirror_pairs.py):
- * colony-specific MAPSYM identifiers swapped FindInBList->FindInRList, LifeB->LifeR, LostTailB->LostTailR; constants and structure unchanged.
+ * colony-specific MAPSYM identifiers swapped FindInBList->FindInRList, LifeB->LifeR, LostHeadB->LostHeadR, LostTailB->LostTailR; constants and structure unchanged.
  * Verified only by the strict matcher; where the pair is not a pure mirror the
  * diagnostic names the asymmetry. */
-/*
- * Hypothesis: for a B-list life at (x,y), derive its eight-way direction
- * index from the low byte of life, offset the coordinate by Dy8/Dx8, and
- * test the LifeB cell against life+8.  A matching cell is repeatedly
- * searched in the B list until FindInBList returns a negative result; this
- * drains duplicate list entries before reporting success.
- */
-extern signed char far Dy8[];
-extern signed char far Dx8[];
-extern unsigned char near LifeR[];
-extern int far FindInRList(int life, int column, int row);
+/* LostTailB(x, y, attr) is LostHeadB's tail-side twin: it looks one step
+ * in the OPPOSITE direction from attr's low 3 bits (dir = (attr^0xfc)&7,
+ * the classic 8-direction reversal: flips only bit2, i.e. dir=(attr&7)^4)
+ * through the same shared Dx8[dir]/Dy8[dir] delta tables (Dy8=Dx8+8, first
+ * referenced so it gets the first ES slot, matching LostHeadB), and
+ * expects tailMarker = attr + 8 (not attr-8) in the neighbour cell.
+ * Returns 0 if LifeB[newX][newY]==tailMarker or
+ * FindInBList(newX,newY,tailMarker)>=0, else 1.
+ *
+ * LostTailR is the identical shape against LifeR/FindInRList. Both reuse
+ * the LostHeadB/R evidence for the shared delta tables, selector order and
+ * FindIn*List calling shape; both are expected to hit the same
+ * REGISTER_ALLOCATION residues (headMarker/tailMarker hoisted to the
+ * front, and the final (newX<<6)+newY combine shifting the first-computed
+ * delta instead of the second/spilled one) that blocked LostHeadB/R. */
 
-int far LostTailR(int x, int y, int life)
+extern unsigned char far Dx8[];
+extern unsigned char far Dy8[];
+extern unsigned char near LifeR[128][64];
+extern int far FindInRList(int x, int y, int ant);
+
+#define LifeR ((unsigned char near *)LifeR)
+int far LostTailR(int x, int y, int attr)
 {
-    int index;
-    int column;
-    int row;
-    int found;
+    int dir;
+    int newY;
+    int tailMarker;
+    int newX;
+    unsigned char cell;
 
-    index = life ^ 0xfc;
-    index &= 7;
-    column = Dy8[index + 8] + y;
-    life += 8;
-    row = Dx8[index] + x;
-    if (LifeR[(row << 6) + column] != life)
+    dir = (attr ^ 0xfc) & 7;
+    newY = (signed char)Dy8[dir];
+    newX = x + (signed char)Dx8[dir];
+    newY += y;
+    tailMarker = attr + 8;
+    cell = LifeR[(newX << 6) + newY];
+    if (cell == tailMarker)
         return 0;
-    do {
-        found = FindInRList(row, column, life);
-    } while (found >= 0);
+    if (FindInRList(newX, newY, tailMarker) >= 0)
+        return 0;
     return 1;
 }
+#undef LifeR
+
+
+
