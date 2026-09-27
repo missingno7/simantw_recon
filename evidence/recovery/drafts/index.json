@@ -920,6 +920,11 @@
         "text": "Union overlay of the initial and post-allocation oldBuf values did not share the target frame cleanly: ENTER grew to 0x20, local offsets shifted, and the first body prefix did not improve. The distinct-lifetime experiment had moved oldBuf/newBuf to BP-8/BP-4 but also grew ENTER; next viable path needs a source idiom that reproduces that reuse without added frame pressure.",
         "origin": "build/search/AddIndex/20260927T154033-21032",
         "recorded": "2026-09-27T15:40:33.297601+00:00"
+      },
+      {
+        "text": "Still open at 136/146 with ENTER 0x18 after correcting FindIndex to return void far *. Target homes are source oldBuf BP-8/-6 and allocated newBuf BP-4/-2; the ordinary candidate maps these values oppositely. Splitting the source-buffer lifetime can put values in the target homes but grows ENTER to 0x1e and introduces copy-tail spill code. A role-swapped source with volatility on the source value restores ENTER 0x18 and the named homes, but puts the allocated destination in BP-8/-6, so the values remain reversed. Once homes are aligned, the first true opcode divergence is in the insertion-copy register sequence (target mov di,bx; candidate segment-register moves), indicating pointer/segment lifetime pressure. Ignore selector and private-placement noise until the opcode body is exact.",
+        "origin": "build/search/AddIndex/20260927T162221-104392",
+        "recorded": "2026-09-27T16:22:21.911936+00:00"
       }
     ]
   },
@@ -1747,6 +1752,11 @@
         "text": "f-nr-10 deep pass: target loads x into DI at +0x3c, keeps it live across front/tick calls, then stores DI at BP-0xe; the best draft stores x early and shifts later homes. Moving origX assignment after count setup makes y store align but reloads x into AX and stores at BP-0xa; opcode prefix remains 151/158. register-qualified x compiled to that same object. Frame map is NOT_APPLICABLE because /Zi changes code. String push 0x22f6 versus _DATA relocation is placement, not this opcode gap. Best remains 151/158; next experiment must change the real x live range/source order, not more declaration aliases.",
         "origin": "build/search/AnimYellowInsane/20260927T124136-78628",
         "recorded": "2026-09-27T12:41:37.859918+00:00"
+      },
+      {
+        "text": "Second-pass live-range replay: best is 152/160 opcodes at 466/454 bytes, still not body exact. Moving origX after count reloads x after setup; early register origX matches the baseline output. A volatile live copy loads x at target +0x3c but spills immediately and adds a frame word. Volatile interval shifts x to BP-0xe and interval to BP-0xa but drops to 146/160; registering origX adds no improvement. Target loads x into DI at +0x3c, keeps it across front/tick calls, then stores it at BP-0xe. No unit admission because opcodes remain non-exact; defer literal/pool placement per supervisor guidance.",
+        "origin": "build/search/AnimYellowInsane/20260927T161552-140228",
+        "recorded": "2026-09-27T16:15:53.085867+00:00"
       }
     ]
   },
@@ -7857,6 +7867,11 @@
         "text": "Frame/liveness probe: on the base-first candidate that aligned x/y and bounce homes but spilled attribute at bp-10, use the equivalent saved flags high bit for the late team tests. Prediction: attribute dies after dirbase computation and the extra home disappears; falsifier: same frame/home map or no opcode-prefix gain.",
         "origin": "build/search/DoDigOutAntA/20260927T155947-125756",
         "recorded": "2026-09-27T15:59:48.758251+00:00"
+      },
+      {
+        "text": "Second pass by f-n2-37: latest strict candidate remains the 160/172, 520/502-byte draft. Frame size matches at 18, but target homes are x/y bp-4/-6, bdir/nx bp-8, dirbase bp-16 and dirindex bp-14; best homes are x/y -6/-8, bdir/nx -4, dirbase -14 and dirindex -16. First opcode gap at +0x46 is the target spilling dirbase to bp-10 before the TurnTab read; best keeps it live in a register and reverses the later base/index stores. A 512-variant local-order/register-hint class collapsed to one object. Base-first gave the target x/y and bounce homes but spilled attribute, enlarged ENTER to 20 and fell to 149/166; a register hint did nothing. 2D TurnTab, structured shared-tail, reversed Barrier guard, occupied-label, and flags-liveness probes all regressed. No selector or CONST placement work was attempted; no body-exact candidate or promotion.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T16:00:56.753324+00:00"
       }
     ]
   },
@@ -10296,6 +10311,11 @@
         "text": "The explicit 20-byte local struct did not model MSC scalar homes: it put the aggregate at BP-22, grew ENTER to 24, and forced x/y to stack stores before the IsValidA call (first divergence moved to the prologue, 120/215). The compiler treats aggregate members as memory rather than the target's SI/DI live values; discard this family.",
         "origin": "build/search/DoRandAntAA/20260927T154754-59044",
         "recorded": "2026-09-27T15:47:54.590273+00:00"
+      },
+      {
+        "text": "Best prefix lead remains the plain attribute variant at 203/217, ENTER 0x14: it matches the target attribute home BP-4 and extends the aligned prefix beyond the earlier attribute-home mismatch. The first remaining local mismatch is flags at target BP-0xc versus candidate BP-0xa; newdir, nx, ny and oldlife homes also diverge. Single volatile probes on flags/newdir/oldlife did not preserve the prefix. Rewriting the yellow/non-yellow collision turn into one goto tail from this base regressed the first structural alignment to offset 0xd and 118/215. Remaining blocker is local lifetime/home allocation before the late shared-turn path; ignore selector placement.",
+        "origin": "build/search/DoRandAntAA/20260927T162221-56588",
+        "recorded": "2026-09-27T16:22:21.991135+00:00"
       }
     ]
   },
@@ -12474,6 +12494,11 @@
         "text": "D7A0 DrawMapWorker probe: initial readable source is 42/194 opcodes, 544/1149 bytes with a 0x14 frame vs target 0x40; its entry uses lastMapGenMode where D7A0 reads a saved far pointer to MapMode. Switching mode reads to MapMode improves only to 44/199 and frame 0x18. Target allocates additional far-pointer homes at BP-30/-2e through BP-40/-3e and contains local near calls to C854, CA66 and C93E; continue with target-driven local homes and switch structure.",
         "origin": "build/search/DrawMap/20260927T155701-123060",
         "recorded": "2026-09-27T15:57:01.923256+00:00"
+      },
+      {
+        "text": "D7A0 target-driven work: best C candidate reaches 83/233 opcodes, 685/1149 bytes, frame 0x20 vs target 0x40. Corrected MapMode source, allocation guard, conditional 1/4 plane count, BitmapImageSize(int,int,int) and mem_Alloc(bytes,kind,name) from admitted AllocateMapBuffer, plus mapOutBuf/mapMapBuf allocation and the C854/CA66/C93E dispatch. Remaining first-frame/local homes and post-switch buffer/rectangle flow are substantial. C93E best is 97/106 after signed row counters; target outer loop uses JL, while the 0x12 candidate frame, saved destination index and DS setup remain mismatched.",
+        "origin": "build/search/DrawMap/20260927T161314-25468",
+        "recorded": "2026-09-27T16:13:14.766458+00:00"
       }
     ]
   },
@@ -18330,6 +18355,11 @@
         "text": "Frame-first replay: ENTER 8 matches, but target x/y half homes are BP-8/BP-6 while candidate uses BP-6/BP-8; candidate also has an extra byte local at BP-1. Target loop starts by zeroing SI, copying SI to DI and saving DI at BP-4; candidate uses CX/SI. The remaining DS:[BX+0x52D2] map read has no MAPSYM owner; neighboring GetSM/SetSM code supports the indexed-address idiom but does not establish an object identity. No data or selector placement claim is made; the next useful dependency is source-backed identity/declaration evidence for that unnamed field.",
         "origin": "build/search/GetAlarmDir/20260927T124115-90832",
         "recorded": "2026-09-27T12:41:15.500280+00:00"
+      },
+      {
+        "text": "Second-pass frame/opcode replay: register byte value and inline row/column expressions compile to the preserved 117/122 object. Register int value removes the frame finding but falls to 113/121 and spills the best score at BP-2. Based Dx8 split/all forms preserve 117/122 or fall to 115/121. Remaining source-level differences start with SI/DI/CX initialization, an extra DI half-coordinate load, reversed xh/yh homes, and score register roles. No unit admission because opcodes remain non-exact; defer selector placement per supervisor guidance.",
+        "origin": "build/search/GetAlarmDir/20260927T161552-48048",
+        "recorded": "2026-09-27T16:15:52.967008+00:00"
       }
     ]
   },
@@ -39328,6 +39358,16 @@
         "text": "Fresh full replay: 26/26 opcodes, 82/82 bytes, no frame findings; only residue is the near call at +0x47. The target is a fixup-free call to private ANTEDIT_MODULE:0x16D4, while the candidate binds public _DrawEdit at 0x14EE (46/48 literal bytes, 13/14 fixups). Prior TU build correctly refused because the actual 694-byte static helper is unrecovered and itself calls private 0x6250 (430 bytes). This is executable dependency debt, not selector/data placement; no safe strict admission path exists until those bodies are recovered.",
         "origin": "build/search/UpdateEditIfBufInvalid/20260927T143557-82316",
         "recorded": "2026-09-27T14:35:58.058388+00:00"
+      },
+      {
+        "text": "6250 is a distinct 430-byte static called by 16D4; its body needs 63FE as well: the target near call at 3:6250+0x1AE resolves to a separate unnamed helper at 3:63FE (probe extent 863 bytes). The readable 6250 draft is still 102/147 opcodes; no caller/unit admission is possible until the private chain is recovered.",
+        "origin": "build/search/UpdateEditIfBufInvalid/20260927T163021-162052",
+        "recorded": "2026-09-27T16:30:22.404372+00:00"
+      },
+      {
+        "text": "f-statics2 replay: the 16D4 readable hypothesis remains 195/242 opcodes and 702/694 bytes, with ENTER 0x12 versus target 0x0A and first structural divergence at +0x6E in PACK handle access; 6250 is still 102/147 and 407/430 bytes. The 6250 near call at its +0x1AE target resolves to a second private routine 3:63FE, distinct from its 430-byte CFG extent; empty probe closes that dependency at 863 bytes through 0x675D. These private bodies are still needed before this exact 26/26 caller can be admitted.",
+        "origin": "build/search/UpdateEditIfBufInvalid/20260927T163751-56504",
+        "recorded": "2026-09-27T16:37:51.831538+00:00"
       }
     ]
   },
@@ -47159,6 +47199,31 @@
         "text": "The 14A0/14AD DGROUP strings are editdisptile and editdisplife. Unit placement also required the intervening packet bytes at 14BA-14F7: PutLifeAndTile error text, four 0xFFFF words, and editbuf/SimAnt strings; with those scaffold bytes the latest antedit unit places one exact 94-byte _DATA contribution at 14A0 and every claimed code contribution is exact.",
         "origin": "build/search/win_EditChanged/20260927T155511-130884",
         "recorded": "2026-09-27T15:55:11.752206+00:00"
+      },
+      {
+        "text": "Expressed the two verified allocation tags as adjacent 13-byte near arrays so the private data block can be ordered separately from SetEditWinTitle selector allocation.",
+        "origin": "build/search/win_EditChanged/20260927T161310-5280",
+        "recorded": "2026-09-27T16:13:11.271936+00:00"
+      },
+      {
+        "text": "Source-order experiment: represent the two packet-verified 13-byte tags as adjacent near arrays and pass their names to mem_Alloc, decoupling private data placement from the SetEditWinTitle literal.",
+        "origin": "build/search/win_EditChanged/20260927T161350-56540",
+        "recorded": "2026-09-27T16:13:50.838079+00:00"
+      },
+      {
+        "text": "Source-order experiment: represent the two packet-verified 13-byte tags as adjacent near arrays and pass their names to mem_Alloc, decoupling private data placement from the SetEditWinTitle literal.",
+        "origin": "build/search/win_EditChanged/20260927T161415-83088",
+        "recorded": "2026-09-27T16:14:16.295449+00:00"
+      },
+      {
+        "text": "Represented the adjacent editdisptile/editdisplife private data as two char arrays in one near struct so the compiler keeps their packet-observed 13-byte spacing while the function passes named arrays.",
+        "origin": "build/search/win_EditChanged/20260927T162128-73004",
+        "recorded": "2026-09-27T16:21:28.940286+00:00"
+      },
+      {
+        "text": "Isolated candidate reaches 150/150 opcodes and the exact 10-byte frame; its remaining fixup/placement gap disappeared in antedit unit 22. When merging the separately admitted SetEditWinTitle, reserve BF9C for EditDragPnt in pool_stub_DrawEditGraphs so SetEditWinTitle retains its distinct MiscStrs selector word at BF9E; unit 22 then has exact CONST length 262 and exact 94-byte _DATA at DGROUP 14A0.",
+        "origin": "build/search/win_EditChanged/20260927T163634-9132",
+        "recorded": "2026-09-27T16:36:35.261066+00:00"
       }
     ]
   },
