@@ -1,32 +1,21 @@
-/* One based record backs both info-window member views. */
-typedef struct InfoWindowState {
-    unsigned modeAtA434;
-    unsigned reservedWords[15];
-    unsigned stateAtA454;
-    unsigned drawInfoCard;
-} InfoWindowState;
-static InfoWindowState __based(__segname("SIMANT_DATA_GROUP")) infoWindowState = { 0x80, {0}, 0, 0x80 };
+/* The shared info state uses one far-segment selector. Target ES accesses place drawInfoCard at A456, infoMode at A434, and infoState at A454 inside the measured _yardMsgHandle public span. */
+static unsigned __based(__segname("SIMANT_DATA_GROUP")) drawInfoCard = 0x80;
+static unsigned __based(__segname("SIMANT_DATA_GROUP")) infoMode = 0;
+static unsigned __based(__segname("SIMANT_DATA_GROUP")) infoState = 0;
 extern void far DisplayCard(unsigned);
-extern int far win_IsWinOpen(int window);
-extern void far win_Open(int flags);
-void win_DrawInfoWindow(unsigned char flags);
-void OpenInfoWindow(void);
-void far InfoWindowGapPoolStub(void);
-#pragma alloc_text(RUN0_TEXT, win_DrawInfoWindow)
-#pragma alloc_text(POOLSTUB_TEXT, InfoWindowGapPoolStub)
-#pragma alloc_text(RUN1_TEXT, OpenInfoWindow)
+extern int far win_IsWinOpen(int);
+extern void far win_Open(int);
 void win_DrawInfoWindow(unsigned char flags)
 {
     if (flags & 2)
-        DisplayCard(infoWindowState.drawInfoCard);
+        DisplayCard(drawInfoCard);
 }
 void OpenInfoWindow(void)
 {
     if (!win_IsWinOpen(0x500)) {
-        infoWindowState.drawInfoCard = 0x80;
-        infoWindowState.modeAtA434 = 0x80;
-        infoWindowState.stateAtA454 = 0;
+        drawInfoCard = 0x80;
+        infoMode = 0x80;
+        infoState = 0;
     }
     win_Open(0x500);
 }
-void far InfoWindowGapPoolStub(void) { }
