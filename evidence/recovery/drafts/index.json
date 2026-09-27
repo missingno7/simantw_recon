@@ -1117,6 +1117,11 @@
         "text": "Best remains 74/76 after moving row initialization ahead of the first coordinate setup and using a word temporary. Frame-first findings: target ENTER 10 uses homes BP-8 r3, BP-4 xbase, BP-10 r9, BP-6 row; this source ENTER 12 uses BP-10 r3, BP-6 ypos, BP-8 row, BP-2 col plus compiler temp BP-12. Struct-local and explicit id9 variants moved code to 54/76 and 64/76 respectively; volatile id9 is 58/76. First structural gap after frame is target add bx,0x87a0 / add di,0x87a0, while Dx8 indexing folds into symbol relocations; selector/fixup placement is secondary. New useful family should address both frame lifetime and a split runtime base offset, not repeat indexwalk or local-type-only variants.",
         "origin": "build/search/AddRock3/20260927T135639-21276",
         "recorded": "2026-09-27T13:56:39.624131+00:00"
+      },
+      {
+        "text": "The scoped separate inner counters are the strongest prefix candidate at 74/76 with ENTER 10: target and candidate now match the setup through target +0x30 (all parameter moves, r3/xbase stores, and hidden r9 stack store at BP-8/-4/-10, plus row BP-6). This corrects the earlier ENTER-12 homes. First divergence is target add bx,0x87a0, missing because AT(r9+row+col*3+0x87a0) folds the base into Dx8's resolved data operand; target then steps BX by 3. Explicit id9 or row-local cell walking regresses earlier, so preserve shared r9 hoisting and change only the Dx8 base-pointer representation next.",
+        "origin": "build/search/AddRock3/20260927T142035-83700",
+        "recorded": "2026-09-27T14:20:36.253665+00:00"
       }
     ]
   },
@@ -29543,6 +29548,11 @@
         "text": "Three map-index and signed-half arithmetic variants did not improve the 52/58 body. Target ENTER 4 has BP-2/BP-4 homes while best ENTER 2 has one home; pool map confirms C2EC=RyTab and C2EE=RxTab. Candidate relocations for MapA/Dx8 still differ from target direct DGROUP/segment displacements; next needs source-backed unit placement.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:17:13.214301+00:00"
+      },
+      {
+        "text": "Best remains 54/58 in the typed-local draft (frame ENTER 4 exact); base-plus-index and register-map aliases compile to the identical object. First divergence is target BX vs candidate AX in MapA address calculation; target then stores the pointer at BP-2, while candidate moves AX to BX and omits the store. A volatile lvalue write forces the BP-2 store but adds a BP-2 reload and keeps the address in AX (55/59), so it does not grow the opcode prefix. Next useful hypothesis needs to hold the MapA address in BX while preserving the local home, then match the signed half-index sequence sar x, mov bx,x, shl bx,5, sar y, add bx,y, store BP-4; selector/data fixups remain placement noise.",
+        "origin": "build/search/PlaceDrop/20260927T140950-79340",
+        "recorded": "2026-09-27T14:09:50.544623+00:00"
       }
     ]
   },
@@ -30178,19 +30188,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/ProcHistoryEvent/3e6a4a5efab7.c",
-      "sha256": "3e6a4a5efab7e3b8b774f2b4464e12504bc1b5060c365e0b97c30b22e8e03832",
+      "source": "evidence/recovery/drafts/ProcHistoryEvent/da31525b2d48.c",
+      "sha256": "da31525b2d4892d3d4f0476d3b2a6628d0b1449a5bbd18923d02e2cf6f54ae1f",
       "key": [
         false,
         false,
-        88,
-        -4
+        90,
+        -10
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 88,
+      "opcode_matches": 90,
       "opcode_total": 96,
-      "candidate_bytes": 249,
+      "candidate_bytes": 235,
       "target_bytes": 245,
       "flags": [
         "/AL",
@@ -30199,8 +30209,8 @@
         "/Oelw",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/ProcHistoryEvent/20260927T134651-134208/results.json",
-      "recorded": "2026-09-27T13:46:52.198833+00:00"
+      "origin": "build/search/ProcHistoryEvent/20260927T141130-148316/results.json",
+      "recorded": "2026-09-27T14:11:31.369199+00:00"
     },
     "notes": [
       {
@@ -30232,6 +30242,11 @@
         "text": "Best is 88/96 with exact target homes and SI/DI allocation. First executable differences are two eliminated nonvolatile automatic stores at BP-4/BP-6; making stores volatile preserves them, but changes target push AX into push [BP-home]. Assignment-in-condition, volatile field, and volatile lvalue cast all yield the same code. The remaining region requires target store plus AX live through compare and drawHistGraph call; placement/fixup noise is not causal. After 9 rounds without prefix growth, change the local-lifetime/register-pressure hypothesis.",
         "origin": "build/search/ProcHistoryEvent/20260927T135045-84480",
         "recorded": "2026-09-27T13:50:46.285737+00:00"
+      },
+      {
+        "text": "Changing drawHistGraph to near raises the isolated opcode score to 90/96 and moves the first diff to the two missing BP-4/BP-6 sample stores. This is not a publishable source conclusion: context.linker_lowered_far_calls explicitly records _drawHistGraph in segment 1 at the two call sites, so the target NOP/PUSH CS/CALL shape is LINK lowering of a far call. Keep the production declaration far for eventual unit assembly. Register-pointer sample alias compiled identically to the nonvolatile struct fields; volatile stores preserve homes but push memory instead of AX.",
+        "origin": "build/search/ProcHistoryEvent/20260927T141419-120936",
+        "recorded": "2026-09-27T14:14:19.539460+00:00"
       }
     ]
   },
