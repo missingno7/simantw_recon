@@ -55,7 +55,7 @@ Target | Candidate | Difference
 002d leave  |  | instruction_shape
 002e retf  |  | instruction_shape
 002f nop  |  | instruction_shape
-0030 cmp si, 2 | 002c cmp di, 2 | register_allocation
+0030 cmp si, 2 | 002c cmp di, 2 | register_allocation,alignment_uncertain
 0033 jle 0x4d | 002f jle 0x4c | branch_target
 0035 mov bx, di | 0031 mov bx, si | register_allocation
 0037 shl bx, 6 | 0033 shl bx, 6 | 
@@ -69,18 +69,18 @@ Target | Candidate | Difference
 0049 or ax, ax | 0045 or ax, ax | 
 004b je 0x29 | 0047 jne 0x4c | instruction_shape
  | 0049 jmp 0x140 | instruction_shape
-004d or di, di | 004c or si, si | register_allocation
+004d or di, di | 004c or si, si | register_allocation,alignment_uncertain
 004f je 0x29 | 004e jne 0x53 | instruction_shape
  | 0050 jmp 0x140 | instruction_shape
-0051 cmp di, 0x3e | 0053 cmp si, 0x3e | register_allocation
+0051 cmp di, 0x3e | 0053 cmp si, 0x3e | register_allocation,alignment_uncertain
 0054 jg 0x29 | 0056 jle 0x5b | instruction_shape
  | 0058 jmp 0x140 | instruction_shape
-0056 or si, si | 005b or di, di | register_allocation
+0056 or si, si | 005b or di, di | register_allocation,alignment_uncertain
 0058 jne 0x70 | 005d jne 0x74 | branch_target
 005a mov bx, di | 005f mov bx, si | register_allocation
 005c shl bx, 6 | 0061 shl bx, 6 | 
 005f mov byte ptr [bx + si + 0x58e8], 0x18 | 0064 mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 22760}] | memory_operand,immediate_or_binding
-0064 push di | 0069 push si | register_allocation
+0064 push di | 0069 push si | register_allocation,alignment_uncertain
 0065 nop  | 006a lcall <resolved fixup> [{'kind': 'internal', 'segment': 5, 'offset': 7426}] | instruction_shape
 0066 push cs |  | instruction_shape
 0067 call 0xfffff8e6 |  | instruction_shape
@@ -90,7 +90,7 @@ Target | Candidate | Difference
 0070 nop  |  | instruction_shape
 0071 push cs |  | instruction_shape
 0072 call 0xfffff1d2 |  | instruction_shape
-0075 mov bx, di | 0079 mov bx, si | register_allocation
+0075 mov bx, di | 0079 mov bx, si | register_allocation,alignment_uncertain
 0077 shl bx, 6 | 007b shl bx, 6 | 
 007a mov byte ptr [bx + si + 0x58e8], al | 007e mov <resolved fixup> [{'kind': 'internal', 'segment': 10, 'offset': 22760}] | memory_operand
 007e mov ax, di | 0082 mov ax, si | register_allocation
@@ -130,5 +130,5 @@ Target | Candidate | Difference
 00f5 mov word ptr es:[0x9fd2], ax | 00f6 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40914}] | memory_operand
 00f9 lea ax, [si - 1] | 00fa lea ax, [di - 1] | register_allocation
 00fc push ax | 00fd push ax | 
-00fd push di | 00fe push si | register_allocation
+00fd push di | 00fe push si | register_allocation,alignment_uncertain
 ... see structured diagnostic for remaining instructions

@@ -112,22 +112,32 @@
         "text": "2026-09-27 full baseline replay: 103/1742 opcodes, 424/4953 bytes, no matching target prologue (target mov ax,ss; ENTER 0x1e4; saves DI/SI/DS; candidate has no frame), 38 branch differences. Dispatch map from the 0x0000-0x0125 entry: WM_MOVE/WM_SIZE/WM_PAINT/WM_CLOSE/WM_QUERYENDSESSION, 0x1C, 0x20-0x24, 0x86; dense 0x100-0x115 table routes keydown 0x100, command 0x111, syscommand 0x112, timer 0x113, scroll 0x114/115; mouse 0x200-0x205; custom 0x30F/310/311/3BB and sound message 0xA4. Imports are packet-resolved; main frame/body remains to author. BEB2 and BEBC are still unresolved DGROUP selector accesses, and three local 128-byte buffers plus paint/rect locals explain most of the frame.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:09:26.434872+00:00"
+      },
+      {
+        "text": "Authoring pass: filled the WM_COMMAND FD/A0-AC table using decoded USER imports, added top-window and scroll-key paths, and corrected DoEditScroll's 32-bit lParam. Candidate MAINWNDPROC_06 reached 517/1742 opcodes but ENTER 486; using topWindow as the GetWindow traversal temporary in MAINWNDPROC_11 keeps 517/1742 and restores exact ENTER 484. The shared-mouse consolidation removed a 16-byte local and regressed to 390/1742 and ENTER 468, so retain the table version. MAINWNDPROC is still incomplete and BEB2/BEBC plus private selector constraints remain open.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:53:43.794562+00:00"
+      },
+      {
+        "text": "2026-09-27 activation path authored: WM_ACTIVATEAPP now covers activate/deactivate, OptionStates and songs/effects synchronization, MakeProcInstance/EnumChildWindows, capture, timers, cursor, and WinPrintf records. Best MAINWNDPROC_17_ActivateNearPalette reaches 669/1742 opcodes and 2882/4953 bytes; framed run shows candidate ENTER 486 vs target 484, with 182 branch, 18 register, 33 stack, 160 immediate, and 129 memory differences. Using near SetUpPalette gained 2 opcodes; direct ReleaseCapture alone and no-argument invalid-buffer helper changes did not improve. Next large body is the distinct WM_MOVE/WM_SIZE path; BEB2 and private DGROUP field placement remain unresolved.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:15:08.835022+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/MAINWNDPROC/305e1fb238e9.c",
-      "sha256": "305e1fb238e9c74b9d6301377a10359b63c220cd623333434584043b7a78e0c4",
+      "source": "evidence/recovery/drafts/MAINWNDPROC/b6b250b1b80f.c",
+      "sha256": "b6b250b1b80fecc7765974cc2662a3bd063246aa6d40b47e49644e6727d08c47",
       "key": [
         false,
         false,
-        517,
-        -2604
+        669,
+        -2071
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 517,
+      "opcode_matches": 669,
       "opcode_total": 1742,
-      "candidate_bytes": 2349,
+      "candidate_bytes": 2882,
       "target_bytes": 4953,
       "flags": [
         "/AL",
@@ -137,8 +147,8 @@
         "/GA",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/MAINWNDPROC/20260927T094318-177824/results.json",
-      "recorded": "2026-09-27T09:43:20.321405+00:00"
+      "origin": "build/search/MAINWNDPROC/20260927T101121-169720/results.json",
+      "recorded": "2026-09-27T10:11:25.406391+00:00"
     }
   },
   "MYENUMFUNC": {
@@ -1952,6 +1962,11 @@
         "text": "f-grind-13 fresh call-packet check: target _IsYellowAnt is a near_call (segment 5:22304), while the best draft declared it far. Changing only the prototype to \near improves 57/64 at 168 bytes to 58/64 at 166 bytes; first structural difference is the target-only selector/ES setup at offset 20. A local far Dx8 base, with or without \register and with the corrected near prototype, adds a frame and falls to 46/64; discard that family. Scratch best: build/workers/f-grind-13/candidates/BuildAntListA_near_yellow.c.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:50:50.694809+00:00"
+      },
+      {
+        "text": "Fresh --pool replay of near_yellow remains 58/64 at 166/162 with matching frame and target-only segment-8 selector setup beginning at target +0x14; pool prefix C424 was applied for the candidate's segment-8 reference. Context maps LifeA exactly to DGROUP:_LifeA (offset 0x68e8) and ListIndexA to PACK, so LifeA must stay near. Replacing the large Dx8+constant writes with named far AlistX/AlistY arrays (publics at segment 8 offsets 0x23a4/0x278e) drops to 41/64 and ENTER 8. This identifies the remaining blocker as target's segment-8 selector/array addressing and live ES reuse across IsYellowAnt, not LifeA placement; isolated source must reproduce one selector setup without adding a far-pointer frame. A whole-unit change is not justified until the body is exact.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:08:27.504247+00:00"
       }
     ]
   },
@@ -2102,6 +2117,16 @@
         "text": "Complete function draft now covers all eight outputs and the GameTime scaled return. Best is 288/416 instructions, 1010/1127 bytes (10.4% short), NO_COMPLETE_MATCH. Full context maps the history arrays, colony/egg counters and _pack_buf population scan. Widened score 1/4/5/6/7 ratios to long based on target helper sequence; exact body still differs in frame/register schedule and selector/data fixups. DGROUP byte reads at 0x948 fall inside _paletteH's public span (+0xee), but its 2-byte handle declaration does not establish the coefficient table's semantic owner; this is an unresolved private-data identification.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:42:13.471360+00:00"
+      },
+      {
+        "text": "Best remains 288/416 opcodes, 1010/1127 bytes, no exact. Frame is ENTER 0x12 vs target 0x18; target has word slots BP-18, -20, -22, -24 with no named candidate homes. Splitting the two population loops into separate row/column scopes changed emitted output but kept ENTER 0x12 and 288 opcodes. First structural difference is candidate offset 6; inspect target prologue and missing stack homes before arithmetic tuning.",
+        "origin": "build/search/CalcScore/20260927T095020-180880",
+        "recorded": "2026-09-27T09:50:21.079189+00:00"
+      },
+      {
+        "text": "Best remains 288/416 opcodes, 1010/1127 bytes, ENTER 0x12 versus 0x18. A far output-pointer clear loop compiled to the identical object as score[i]=0, so the prologue ordering and frame mismatch remain unresolved; target loads SI/ES before REP STOSW.",
+        "origin": "build/search/CalcScore/20260927T100603-175536",
+        "recorded": "2026-09-27T10:06:03.813612+00:00"
       }
     ],
     "best": {
@@ -2450,6 +2475,11 @@
         "text": "After admission of the static 616C ScrollEditBy helper, the best same-file _CenterEdit source remains 66/67 instructions and 180/180 bytes. Its only ordinary instruction mismatch is at +0x4E: target loads CX=0x40 while the candidate reloads the width home. Switch-default, width-initialization, and direct relational forms changed branch layout and scored worse; no exact CenterEdit body or unit proof yet.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:26:43.388602+00:00"
+      },
+      {
+        "text": "f-near-a replay remains 66/67 opcodes, 180/180 bytes. A fresh direct plane if/else width hypothesis regressed to 56/67 and 170 bytes. Best residue remains MOV CX,0x40 vs reload [BP-2] at +0x4E; same-object helper 616C is admitted. Prior report documents the tested width families.",
+        "origin": "build/search/CenterEdit/20260927T101025-58140",
+        "recorded": "2026-09-27T10:10:26.019251+00:00"
       }
     ]
   },
@@ -4095,6 +4125,11 @@
         "text": "Best remains 240/360 opcodes and 882/703 bytes after prior address, stride, and loop families; current frame is ENTER 74 versus target ENTER 50, with 0/13 fixups. The candidate uses many extra row, plane, pixel, and stride locals, while the target interleaves nested plane/pixel arithmetic. Twenty-eight rounds since opcode improvement and no new isolated C lead; needs an original row/address expression or compiler-lowering clue.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:48:43.628486+00:00"
+      },
+      {
+        "text": "Round finding: replacing the explicit width-negative branch with width/8 + 1 improves from 240/360 to 246/361; the two stride arms now align through their quotient-and-correction instructions. The full candidate is still 884/703 bytes and ENTER 74/50. Reversed row expression (height-y-1)*sourceStride reduces code to 815 bytes and frame to 58, but falls to 234/333; volatile height also shortens the frame but lowers opcode alignment. Next residue is the outer row index/home and address schedule.",
+        "origin": "build/search/ConvertMaskBitmap/20260927T095108-93808",
+        "recorded": "2026-09-27T09:51:08.902840+00:00"
       }
     ]
   },
@@ -4151,6 +4186,11 @@
         "text": "Register copies of destination/source width preserve the target's initial DI/BX loads through offset +0x09 without harming the 196-opcode, 1,314-byte full draft. Removing address temporaries reduced the ENTER home size but shrank the body to 1,196 bytes and lost 46 aligned instructions; the wider active-path gathers remain the better milestone hypothesis. Continue from ConvertMaskBitmap2.c if revisited, using target +0x206/+0x304/+0x3f8 as the case trace.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:26:04.585898+00:00"
+      },
+      {
+        "text": "Audit of the handoff signature: the prior worker's 196/546 source has ENTER 0x62 vs target 0x4e; the current durable draft is 221/546, 1370/1385 bytes, ENTER 100 vs 78. Direct parameter widths and pitch-statement reordering did not improve the opcode prefix; removing p1-p3 address temporaries shortened ENTER to 82 but lost 30 opcodes; volatile shiftRight lost 41. Remaining core mismatch is the clipping/case-address computation, not selector placement.",
+        "origin": "build/search/ConvertMaskBitmap2/20260927T095126-139024",
+        "recorded": "2026-09-27T09:51:26.967960+00:00"
       }
     ]
   },
@@ -4871,19 +4911,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/CreateNewHole/775bea969273.c",
-      "sha256": "775bea9692733205b3576f54c5bc3d665fc5fb4365ffa1ecfbadeadc20f82073",
+      "source": "evidence/recovery/drafts/CreateNewHole/800d8b9b20d2.c",
+      "sha256": "800d8b9b20d213f11245d17e3eb6da11bb80c07c5dc12956f8109ac65ee1003d",
       "key": [
         false,
         false,
-        159,
-        -11
+        160,
+        -6
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 159,
+      "opcode_matches": 160,
       "opcode_total": 182,
-      "candidate_bytes": 495,
+      "candidate_bytes": 500,
       "target_bytes": 506,
       "flags": [
         "/AL",
@@ -4892,8 +4932,8 @@
         "/Oelw",
         "/NTSIMONE_MODULE"
       ],
-      "origin": "build/search/CreateNewHole/20260927T092524-127676/results.json",
-      "recorded": "2026-09-27T09:25:25.471631+00:00"
+      "origin": "build/search/CreateNewHole/20260927T101421-125332/results.json",
+      "recorded": "2026-09-27T10:14:22.055958+00:00"
     },
     "notes": [
       {
@@ -4920,6 +4960,11 @@
         "text": "Fresh rerun of the volatile near scanCell draft scores 159/182 at 495/506 bytes with ENTER 10 and scanCell/cell/cnt homes at BP-2/-4/-6. It improves frame and code shape over the 158/182 mixed-call baseline. Target's first remaining structural gap at offset 190 is mov bx,si for row*64+column; the candidate scales DI and adds SI, so row/column register assignment still differs. Pointer volatility variants converge to one object; next investigate local-live-range/frame shape rather than pointer spelling.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:39:09.029554+00:00"
+      },
+      {
+        "text": "Follow-up batches tested volatile row/column coordinates, reversed declarations and semantic variable-role mapping, register hints, and explicit linear/row-pointer forms for MapA indexing. All stay at 159/182 (495/506); most collapse to the 159-opcode pointer-volatility object, while an offset-local form makes a distinct object without score gain. The first gap remains target +190 mov bx,si before row*64+column, candidate computes the effective address in DI. Volatile coordinate homes hurt (154-155/182; both 118/182). These C spelling/allocation hints do not steer MSC's row/column allocation; next useful work should derive exact loop/control/data source shape from admitted neighboring routines or change targets.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:51:07.369606+00:00"
       }
     ]
   },
@@ -5491,6 +5536,11 @@
         "text": "f-near-3 replay: 69/70, 173/172 bytes, ENTER 6. Sole body residue at +0x70 is target MOV ES,DX from Lock result versus candidate MOV ES,[bp-4] (extra unused far-destination home at bp-6). Pointer walk/lifetime, widths, order, branches and return-pointer signedness were tried; decodedHandle BSS and decode literal placement remain unit blockers.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:40.606432+00:00"
+      },
+      {
+        "text": "f-near-a baseline/frame replay remains 69/70 opcodes, 173/172 bytes, ENTER 6 on both sides. Sole body mismatch is target MOV ES,DX vs candidate MOV ES,[BP-4] at +0x70; pointer lifetime, walks, widths, branches and return prototype variants are exhausted. Private decodedHandle BSS/literal placement remains separate.",
+        "origin": "build/search/DecodeString/20260927T101024-12964",
+        "recorded": "2026-09-27T10:10:25.203203+00:00"
       }
     ]
   },
@@ -6494,22 +6544,27 @@
         "text": "Complete readable state-machine draft in build/workers/f-author-grp1/DoAntLions_full.c. Strict search: 506/626 opcodes, 1723/1758 code bytes, target outline covered (initial spawn; M=0 food/ant handling; M=1 ring check/timer; M=2 countdown/replenish). Diff shows main residual is 46-byte target frame versus 26-byte direct-index draft plus object selector/private _DATA placement; a pointer-alias variant grew to 1791 bytes and fell to 497/626, so retained the direct-index draft. No exact body yet.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:10:20.494918+00:00"
+      },
+      {
+        "text": "Best 520/626, 1735/1758. Switching the M state and adding five per-entry LionList pointers improved 506 to 520 and the frame from 26 to 34 bytes against target 46. LionIndex/eaten-count pointer aliases regressed; next focus is the spilled loop index near target offset 0x154 and residual frame slots.",
+        "origin": "build/search/DoAntLions/20260927T100814-18808",
+        "recorded": "2026-09-27T10:08:15.417640+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoAntLions/e9f53a4776c9.c",
-      "sha256": "e9f53a4776c94c5c2ca141309cc644e4c914e41490f49585c45e0b0ccb50f8c7",
+      "source": "evidence/recovery/drafts/DoAntLions/48dc878969d5.c",
+      "sha256": "48dc878969d5d9c77bd6f07024d7c5ca4ca46ba4b81349c5398a966892207d10",
       "key": [
         false,
         false,
-        506,
-        -25
+        520,
+        -23
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 506,
+      "opcode_matches": 520,
       "opcode_total": 626,
-      "candidate_bytes": 1733,
+      "candidate_bytes": 1735,
       "target_bytes": 1758,
       "flags": [
         "/AL",
@@ -6518,8 +6573,8 @@
         "/Oeglw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/DoAntLions/20260927T094519-75200/results.json",
-      "recorded": "2026-09-27T09:45:21.986769+00:00"
+      "origin": "build/search/DoAntLions/20260927T100302-41836/results.json",
+      "recorded": "2026-09-27T10:03:04.443424+00:00"
     }
   },
   "_DoAntMoveY": {
@@ -8478,6 +8533,11 @@
         "text": "Do not change segment-5 helper declarations to near based only on the target's near_call records: context.linker_lowered_far_calls explicitly lists GetDis/AddAnt/GetAntIndex/SetAntIndex/SetLife as far calls lowered to push cs; near call by the linker, and admitted GetAntIndex ends in retf. A near-prototype standalone hypothesis scores 778 opcodes/3019 bytes/2 fixups but has the wrong callee return ABI; keep far prototypes in readable C.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:50:15.673122+00:00"
+      },
+      {
+        "text": "Frame-first tuning: an address-taken two-byte output temporary on the active-transfer GetAntIndex site raises ENTER from 0x22 to target 0x24; entry Life lookup routed through tailLife, normalized with life==0 then copied back, reaches 759/1258 opcodes and 3099/3379 bytes (2/239 fixups), frame 36/36. Explicit zero-to-minus-one normalization aligns the target's post-map test sequence. Remaining code gaps begin in bounds register/home selection and the normalized value is stored at candidate bp-2 versus target bp-10; target GetAntIndex output homes are bp-28..bp-36 while candidate call homes differ. Selector/CONST placement ignored per supervisor finding; body remains non-exact.",
+        "origin": "build/search/DoLifeExchange/20260927T095138-46716",
+        "recorded": "2026-09-27T09:51:39.515092+00:00"
       }
     ],
     "best": {
@@ -8651,6 +8711,21 @@
         "text": "2026-09-27 follow-up: new readable candidate build/workers/f-mainwnd/DoMenuEntry_21_EarlyReturnDefaultExit.c has ENTER 16, exact 503-byte extent, 179/183 opcodes, 0 branch, 0 stack and 0 register differences. Raw target proves CenterEdit nonzero guards the redraw/update block while bookmark reset is unconditional; NewGame(0) follows LoadGame failure, not success. fileWaitFlag==0 returns before timer rearm; unsupported wait states clear the flag without rearming. NewGame/MenuQuit/CleanUp far forms align best; cases 5/6 target SaveGame(1)/SaveGame(0). Remaining body mismatch is 4 opcode rows around shared SaveGame argument materialization (target pushes immediates; source keeps mode in SI) plus CONST/private selector binding conflicts. Direct duplicate SaveGame calls reached 181/183 but added 3 branch differences; SaveGame(fileWaitFlag==5) regressed to 175/183. Not exact, no promotion or unit build.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:09:26.718689+00:00"
+      },
+      {
+        "text": "Save dispatch experiments: best shared saveMode source stays 179/183 with exact branch targets; direct SaveGame(1/0) reaches 181/183 but has three branch-target differences. Reversing case order compiles to the same object as the direct-call source (effective_output.same_output_as); an if chain falls to 145/183. The source-level common-argument idiom remains unresolved; no body-exact member.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:53:43.865964+00:00"
+      },
+      {
+        "text": "f-near-a recheck remains 181/183 opcodes and 503/503 bytes. A new adjacent case-5/6 fallthrough with SaveGame(fileWaitFlag == 5) regressed to 157/183; retained the direct-call best. Current branch targets, four memory operands and instruction shape remain; private CONST/fixups are not the opcode gap.",
+        "origin": "build/search/DoMenuEntry/20260927T101023-183820",
+        "recorded": "2026-09-27T10:10:23.577665+00:00"
+      },
+      {
+        "text": "2026-09-27 follow-up: grouped SaveGame(fileWaitFlag==5) case 5/6 fell to 157/183, while direct case calls plus a common tail reproduced the earlier 181/183 branch-mismatch object. The reversed cases remain identical output; best body remains 179/183 with exact branch targets. SaveGame shared-call argument and branch layout still block strict match.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:15:13.954360+00:00"
       }
     ]
   },
@@ -9779,6 +9854,11 @@
         "text": "2026-09-27 f-near-1 --frame --full rerun: 66/68 opcodes, 208/208 bytes, 19/30 fixups. First exact aligned residuals: T+101 mov es, word ptr [0xc318] -> C+101 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}]; T+113 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 32888}] -> C+113 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 32888}]; T+116 mov es, word ptr [0xc324] -> C+116 mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}]. Frame map: target ENTER 4, candidate ENTER 4. No fresh C variant in this pass; prior target notes already document the attempted codegen families and the remaining object/data dependency. Earlier worker notes (4 entries) record the source families/dependency already tried; latest note: After 28 variants in 7 four-candidate rounds, no strict or body-exact match. Best is 66/68 aligned opcodes, 208/208 bytes, 136/168 ordinary bytes, 19/30 fixups; original best was 66/75, 226/208 bytes, 95/204 ordinary bytes, 11/29 fixups. Initial --frame findings: candidate local p (4 bytes) starts at bp-6 but the target never accesses bp-6; nearest target slot bp-4: a local in between is missing or extra; frame size ",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:14:31.404647+00:00"
+      },
+      {
+        "text": "Qualified only the pointer object p as volatile to test the target stores of a far pointer into bp-4/bp-2 at the first opcode divergence; current source keeps only a register copy.",
+        "origin": "build/search/DoRepoExit/20260927T101242-121712",
+        "recorded": "2026-09-27T10:12:43.489829+00:00"
       }
     ]
   },
@@ -10928,6 +11008,11 @@
         "text": "Full readable popup draft now measures 278/293 aligned instructions, 795/814 bytes (2.3% short), NO_COMPLETE_MATCH. It includes pause restore, conditional placement, six-row population bars, text formatting, clipping, and held-button/window loop. The packet maps the placement condition to win_handles words 68/69 and far pointer words 46/47; the source views that public array as words and assembles the far pointer in a union. Candidate frame is 0x5c vs target 0x5a. Remaining obligations include _DATA/private placement, function fixups, and 16 register/18 branch/48 stack differences.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:54:51.633486+00:00"
+      },
+      {
+        "text": "Best remains 278/293 opcodes, 795/814 bytes, no exact; frame ENTER 0x5c vs target 0x5a. Frame map identified an extra windowRect pointer at BP-32; removing it and inlining population operands changed homes but left ENTER/opcode score unchanged. A byte-offset max-pop loop (i=2; i<12; i+=2) reproduced the target BX+=2 loop outline but scored 277/293. First target divergence remains at offset 31 after pause handling.",
+        "origin": "build/search/DrawCastePopUp/20260927T095020-151780",
+        "recorded": "2026-09-27T09:50:21.185946+00:00"
       }
     ]
   },
@@ -11134,6 +11219,11 @@
         "text": "Coordinate-home probe: volatile x/y improved full-body alignment to 677/800 but assigned x=-4,y=-2, opposite target x=-2,y=-4; declaration reorder normalized. A semantics-preserving value swap candidate is saved as DrawCurBalloons_xy_swapped.c; first compile attempt timed out in the shared compiler service, so no score is recorded.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:01:02.307590+00:00"
+      },
+      {
+        "text": "Removing the cached count local and re-reading CurBalloonCnt at queue capacity/index/increment produces the target LES/pointer test and increment shape in the fight queue; x-volatile variant improves to 697/828 and ENTER 42. Next align coordinate homes (target x BP-2, y BP-4, message BP-8/-6); xy-volatile variant is ENTER 44 and reverses x/y slots.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:51:20.806040+00:00"
       }
     ],
     "best": {
@@ -11259,6 +11349,11 @@
         "text": "Full readable draft now uses the admitted editBufInvalidFlag far-int array for the three object ids and the three far int value pointers, whose observed DGROUP targets are MeHealth, HealthB, HealthR. It covers displayType 9/10 skips, value and rectangle scaling, foreground/background fills, odd-display outline, MeWarnHealth color marker, BlkWarnHealth inverted marker, and the 3-entry loop. Best: 128/143 aligned opcodes, 396/379 bytes (+4.5%), ENTER 0x14 exact; register differences 0. Long-value local spelling compiled to identical output. Remaining strict issues are private CONST pool identity/placement, branch and arithmetic shape, and selector/data fixups.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:20:00.455838+00:00"
+      },
+      {
+        "text": "Best 128/143, 396/379 with the exact 20-byte frame. Based-data and parallel-cursor variants did not grow the opcode prefix; next hypothesis should change the arithmetic or table-loop source form. Keep selector-pool placement out of the opcode diagnosis.",
+        "origin": "build/search/DrawEditGraphs/20260927T100814-120908",
+        "recorded": "2026-09-27T10:08:14.984030+00:00"
       }
     ]
   },
@@ -12195,6 +12290,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 158/161 opcodes, 515/507 bytes, 15/68 fixups; ENTER target/candidate 16/20; candidate local dy (1 bytes) at bp-5 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local refs (? bytes) at bp-20 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it). Exact residual: 0x00: T enter 0x10, 0 / C enter 0x14, 0 (immediate_or_binding); 0x1C: T mov al, byte ptr [bx + 0x18d4] / C mov <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] (memory_operand); 0x24: T mov al, byte ptr [bx + 0x18e0] / C mov <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] (memory_operand). Previously tested families: private table declarations, local/register and far-pointer layouts, volatile pointer forms, and delayed address materialization. Current blocker: target uses the antedit:A998 pointer/data lifetime and private table offsets; isolated statics emit _DATA bindings instead of the target's indexed near accesses.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:25.569097+00:00"
+      },
+      {
+        "text": "f-near-a full frame replay remains 158/161 opcodes, 515/507 bytes; ENTER 0x14 vs target 0x10. Target A998 pointer/table lifetime differs, candidate has extra homes and isolated _DATA/CONST placements. Prior variants cover table declarations, pointer and register layouts, volatility and delayed materialization.",
+        "origin": "build/search/DrawSimKid/20260927T101029-121080",
+        "recorded": "2026-09-27T10:10:30.236008+00:00"
       }
     ]
   },
@@ -12856,6 +12956,16 @@
         "text": "Complete readable two-pass draft covers the eight-neighbor scan, three distinct first-pass bounds gates, food-stack increment/fallback-to-0x10 behavior, origin fallback with repeated validation, and final surface/underground update paths. Best current source: 304/445 aligned opcodes, 1001/1093 bytes (within 10%), exact ENTER 0x10 and CodeView local homes; all nine observed calls are present in order. Strict result remains NO_COMPLETE_MATCH; isolated search reports conflicting CONST placement and private/DGROUP fixups, to be resolved only in the latest simone:5AD2 unit context. First visible instruction residue is the GetDir branch/join and early bounds branch schedule; do not re-add an initial IsClearTile call (target has exactly two total).",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:20:03.106780+00:00"
+      },
+      {
+        "text": "Round finding: volatile startDir raises alignment to 309/445 at ENTER 0x10; current top residue is the GetDir result branch and its store/join schedule. A volatile found variant has the same opcode count and does not fix that first branch. Selector and CONST differences are deferred until the body is exact.",
+        "origin": "build/search/DropMyFood/20260927T095042-122760",
+        "recorded": "2026-09-27T09:50:42.396981+00:00"
+      },
+      {
+        "text": "Controlled branch-result test: reuse direction as the raw GetDir result, then assign the adjusted/fallback value to startDir. MSC emitted the same object as the original draft (304/445), so variable-role separation alone does not force the target's two branch-local stores. The volatile-startDir hypothesis remains the better 309/445 candidate.",
+        "origin": "build/search/DropMyFood/20260927T095354-95440",
+        "recorded": "2026-09-27T09:53:54.584471+00:00"
       }
     ]
   },
@@ -12940,6 +13050,16 @@
         "text": "Complete readable two-phase draft now covers the eight-neighbor scan, repeated plane/bounds/map validation, origin fallback, and full GetDir/IsClearTile/IsItFood/IsItHole/DropPebble/GetAsyncKeyState/myBeginSound sequence. Best body: 355/545 aligned opcodes, 1239/1334 bytes (within 10%); NO_COMPLETE_MATCH. The volatile found-flag variant is the closest-size draft and models the target's repeated stack-resident flag use, though --frame still shows ENTER 0x0e versus 0x10 and mismatched local homes. Remaining residue starts in the bounds/register schedule around +0x92 and unresolved isolated CONST/near-data placement; finish with latest unit context if body becomes exact.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:14:19.831089+00:00"
+      },
+      {
+        "text": "Round finding: volatile life moves the frame to exact ENTER 0x10 and improves to 370/545, 1301/1334 bytes. The next opcode divergence is the plane-specific early bounds gate (combined and split guard spellings both compile to the same candidate object). A startDir-volatile variant regressed to 365/545. Continue with a new bounds/control-flow family if revisited.",
+        "origin": "build/search/DropMyRock/20260927T095057-185508",
+        "recorded": "2026-09-27T09:50:57.572279+00:00"
+      },
+      {
+        "text": "Controlled branch-result test: reuse direction as the raw GetDir value and assign the adjusted/fallback result to startDir. MSC emitted the same object as the 370/545 volatile-life best; this variable-role change does not fix the first bounds branch. The frame remains exact ENTER 0x10.",
+        "origin": "build/search/DropMyRock/20260927T095400-44916",
+        "recorded": "2026-09-27T09:54:01.381192+00:00"
       }
     ]
   },
@@ -17787,6 +17907,11 @@
         "text": "f-near-3 replay: 91/93, 227/225 bytes, ENTER 4. First target DS reads at 0x25d4/0x25d8 are candidate _DATA fixups; first coordinate is target SI versus candidate DI, second target DI versus candidate SI, with an extra add. Twenty variants plus register/declaration probes collapsed; exact near-data owner and CONST pool context are missing.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:36.846239+00:00"
+      },
+      {
+        "text": "Swapped only the formal parameter order to x,y after target aligned code adds the first delta to [bp+6] and the candidate used [bp+8]; check the target ABI coordinate order before treating the source comment as evidence.",
+        "origin": "build/search/GetMowDir/20260927T100919-180596",
+        "recorded": "2026-09-27T10:09:20.557432+00:00"
       }
     ]
   },
@@ -17931,19 +18056,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/GetMyDir/2a26ef057fd0.c",
-      "sha256": "2a26ef057fd055861ff78e71b9a20b55535b9fa87c5fbaf4c119e5b1c59c3c68",
+      "source": "evidence/recovery/drafts/GetMyDir/08149145a570.c",
+      "sha256": "08149145a570c4a6da70a7456da09be6dbd8ec11315c5c77676c0fb7841258bb",
       "key": [
         false,
         false,
-        108,
-        -209
+        124,
+        -27
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 108,
+      "opcode_matches": 124,
       "opcode_total": 296,
-      "candidate_bytes": 579,
+      "candidate_bytes": 761,
       "target_bytes": 788,
       "flags": [
         "/AL",
@@ -17952,8 +18077,8 @@
         "/Oelw",
         "/NTSIMANT1_MODULE"
       ],
-      "origin": "build/search/GetMyDir/20260926T174835-95604/results.json",
-      "recorded": "2026-09-26T17:48:45.571312+00:00"
+      "origin": "build/search/GetMyDir/20260927T095319-136672/results.json",
+      "recorded": "2026-09-27T09:53:20.257323+00:00"
     },
     "notes": [
       {
@@ -17975,6 +18100,11 @@
         "text": "Authored a complete readable route draft in build/workers/f-author-grp2/GetMyDir_r01.c: surface/direct targets, matching underground plane, blue/red last-hole/exit selection, armed CheckMyBestDirs split, best/random paths, and the -2 reseed path. Full disassembly established that CheckMyBestDirs/GetMyBestDirs/GetMyRandDirs receive plane,x,y,targetX,targetY (goalPlane selects the branch but is not passed). Latest search: 82/296 aligned opcodes; 673/788 body bytes; ENTER 0x0c; 0 register, 7 branch, 18 stack, 11 immediate, and 24 memory differences. All four checker call sites, four best, four random, and two GetDir sites are represented. Not strict: private CONST/selector placement and multiple unresolved external/global fixups in isolated-member mode; body remains 115 bytes short of the 90% size milestone. Preserve this worker source as the complete draft pending further tuning.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:32:25.106401+00:00"
+      },
+      {
+        "text": "Complete worker draft GetMyDir_r07.c reaches the authoring milestone: 761/788 bytes (96.6%), exact ENTER 0x0C frame, and 124/296 aligned opcodes. It contains the surface/direct, same-plane, blue/red hole/exit, armed/calm, and -2 reseed routes, with all observed call multiplicities (4 CheckMyBestDirs, 4 GetMyBestDirs, 4 GetMyRandDirs, 2 GetDir). Expanding the repeated landmark armed result paths after the earlier direct-return expansion raised the size from 695 to 761 and aligned the initial branch/frame. Remaining strict differences include private selector/DGROUP placement, isolated-call lowering versus target same-group sequences, and control-flow/local/register layout; no body-exact claim.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:54:21.816533+00:00"
       }
     ]
   },
@@ -18965,6 +19095,11 @@
         "text": "f-near-3 replay: 45/46, 108/106 bytes. Target converts Dy8[index+8] to DI and Dx8[index] to SI; candidate assigns the reverse, which also reverses later bounds and red/blue map indexing. Thirty-four variants/probes covered widths, order/scope, recompute, pointer/index, guards/loops and register/volatile forms; segment-8 selector/data unit ownership remains.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:41.013375+00:00"
+      },
+      {
+        "text": "Changed only the operand order of the first coordinate sum so the parameter is the left operand; the target assigns the Dy8 result to DI while the current best assigns it to SI.",
+        "origin": "build/search/GetSmellT/20260927T101213-47880",
+        "recorded": "2026-09-27T10:12:14.444683+00:00"
       }
     ]
   },
@@ -19272,6 +19407,11 @@
         "text": "f-near-3 replay: 67/69, 205 bytes, candidate ENTER 4 vs target 6. Target homes x/y at bp-6/-4 and SI at bp-2 before the merge call; candidate homes x/y at bp-4/-2 and omits SI. Declaration/scope/type/copy, arrays/structs, branch/goto tails and register forms already failed to create the SI home; this is a source liveness blocker.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:36.209757+00:00"
+      },
+      {
+        "text": "Made only plane volatile to force a stack home for the target local slot; baseline candidate keeps plane in SI and has a 2-byte smaller ENTER than the target.",
+        "origin": "build/search/GotoBQueen/20260927T101441-108996",
+        "recorded": "2026-09-27T10:14:42.062981+00:00"
       }
     ]
   },
@@ -19945,6 +20085,11 @@
         "text": "2026-09-27 f-near-1 --frame --full rerun: 36/37 opcodes, 88/86 bytes, 8/8 fixups. First exact aligned residuals: T+0 enter 2, 0 -> C+0 enter 8, 0; T+6 xor di, di -> C+6 xor si, si; T+12 mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 8}] -> C+12 mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 8}]. Frame map: candidate local dx (4 bytes) at bp-8 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local dy (4 bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); frame size differs: target ENTER 2, candidate ENTER 8 (candidate named homes: bp-8/4, bp-4/4). No additional distinct variant this pass; previous worker notes enumerate the tried codegen families and remaining context dependency. Earlier worker notes (7 entries) record the already-tried families and next dependency; latest note: Correction to the preceding object-context note: the supplied HoleBorder_direct.c compiled to 33/39 opcodes, 92/86 bytes, and 1/9 fixups. The separate preserved best remains 36/37 opcodes, 88/86 bytes, and 8/8 selector fixups. Both remain NO_COMPLETE_MATCH; the direct-array form did not improve the body or resolve private placement.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:14:59.105209+00:00"
+      },
+      {
+        "text": "Removed only the local far-pointer aliases and indexed Dx8/Dy8 directly to match target ENTER 2; current best homes both far pointers and has ENTER 8.",
+        "origin": "build/search/HoleBorder/20260927T101501-110188",
+        "recorded": "2026-09-27T10:15:02.011660+00:00"
       }
     ]
   },
@@ -20200,6 +20345,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 121/123 opcodes, 353/347 bytes, 14/44 fixups; ENTER target/candidate 18/12; candidate local x (2 bytes) at bp-6 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-14 (2) has no named candidate local (a missing local, or a compiler temporary). Exact residual: 0x00: T enter 0x12, 0 / C enter 0xc, 0 (immediate_or_binding); 0x0E: T mov es, word ptr [0xc582] / C mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] (memory_operand); 0x12: T mov word ptr [bp - 0x10], si / C mov word ptr [bp - 4], si (memory_operand,stack_local_layout). Previously tested families: far-pointer volatility/register allocation and loop/control-flow forms; source-level selector and private-data context remain unresolved. Current blocker: target far pointer homes at BP-0x10/-0x0E and pool access C582/C584 are not produced; the isolated declaration emits CONST references and a shorter frame.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:26.423898+00:00"
+      },
+      {
+        "text": "f-near-a full frame replay remains 121/123 opcodes, 353/347 bytes; target ENTER 0x12 vs candidate 0x0c, target far-pointer home at BP-0x10/-0x0e and pool C582/C584 are not produced. Pointer volatility/register and control-flow families were tried; next useful evidence is a source-backed lifetime for the missing pointer/local homes.",
+        "origin": "build/search/InitAntLions/20260927T101026-25808",
+        "recorded": "2026-09-27T10:10:26.851473+00:00"
       }
     ]
   },
@@ -20528,19 +20678,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/InitPillar/78e30daa2702.c",
-      "sha256": "78e30daa2702294ce3f57a4ee8b3fcddcd37dceb6d6a346593ea24bc23c83f9a",
+      "source": "evidence/recovery/drafts/InitPillar/55e60e6f068c.c",
+      "sha256": "55e60e6f068c1edac6e8d34ce7458789d917cbcf064b40e3f2b900b35b52b885",
       "key": [
-        false,
-        false,
-        81,
-        -2
+        true,
+        true,
+        82,
+        0
       ],
-      "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 81,
+      "basis": "EXACT_BODY_CANDIDATE",
+      "result": "STRONGLY_SUPPORTED_MEMBER",
+      "opcode_matches": 82,
       "opcode_total": 82,
-      "candidate_bytes": 226,
+      "candidate_bytes": 228,
       "target_bytes": 228,
       "flags": [
         "/AL",
@@ -20549,8 +20699,8 @@
         "/Oeglw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/InitPillar/20260926T085345-47432/results.json",
-      "recorded": "2026-09-26T08:53:52.075029+00:00"
+      "origin": "build/search/InitPillar/20260927T101341-62248/results.json",
+      "recorded": "2026-09-27T10:13:41.705454+00:00"
     },
     "notes": [
       {
@@ -20592,6 +20742,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 81/82 opcodes, 226/228 bytes, 21/35 fixups; ENTER target/candidate 4/4. Exact residual: 0x08: T mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] / C mov <resolved fixup> [{'kind': 'external', 'name': '_sowReset0'}] (immediate_or_binding); 0x0D: T mov word ptr es:[0x8a8a], ax / C mov <resolved fixup> [{'kind': 'external', 'name': '_sowReset0'}] (memory_operand); 0x11: T mov <resolved fixup> [{'kind': 'internal', 'segment': 8, 'offset': 0}] / C mov <resolved fixup> [{'kind': 'external', 'name': '_sowReset1'}] (immediate_or_binding). Previously tested families: reset scalar versus named state bindings, loop conditions and loop decomposition; do-loop form compiled to the prior profile-sweep object. Current blocker: target's tail has OR SI,SI before JE (candidate omits it); private reset selector words also differ from the speculative extern scalar bindings. New do-loop decomposition produced the same output as build/workers/profile-sweep/candidates/InitPillar.c.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:26.631102+00:00"
+      },
+      {
+        "text": "f-near-a replay using access-backed MAPSYM names PillarState/PillarX/PillarY/PillarSeg/PillDir/PillarMap/TERRAINset: 81/82 opcodes, 226/228 bytes, 35/35 fixups. Sole body residue remains target OR SI,SI before JE at the loop tail. Extensive loop/polarity/decomposition variants already collapse to prior outputs; do not chase selector placement.",
+        "origin": "build/search/InitPillar/20260927T101024-8780",
+        "recorded": "2026-09-27T10:10:24.390873+00:00"
       }
     ]
   },
@@ -20642,19 +20797,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/InitSow/f22321eb17ba.c",
-      "sha256": "f22321eb17ba43f3dffd66c21c3134a802c81462794f4611c30cd5b03bdf608a",
+      "source": "evidence/recovery/drafts/InitSow/4aa5868647f7.c",
+      "sha256": "4aa5868647f745f69b28b0e95794a16cba844db3907a209d187c68980977ba92",
       "key": [
-        false,
-        false,
-        47,
-        -2
+        true,
+        true,
+        48,
+        0
       ],
-      "basis": "BEST_CANDIDATE_NOT_EXACT",
-      "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 47,
+      "basis": "EXACT_BODY_CANDIDATE",
+      "result": "STRONGLY_SUPPORTED_MEMBER",
+      "opcode_matches": 48,
       "opcode_total": 48,
-      "candidate_bytes": 144,
+      "candidate_bytes": 146,
       "target_bytes": 146,
       "flags": [
         "/AL",
@@ -20663,8 +20818,8 @@
         "/Oeglw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/InitSow/20260926T085345-55068/results.json",
-      "recorded": "2026-09-26T08:53:48.197639+00:00"
+      "origin": "build/search/InitSow/20260927T101216-157928/results.json",
+      "recorded": "2026-09-27T10:12:16.979219+00:00"
     },
     "notes": [
       {
@@ -20706,6 +20861,26 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 47/48 opcodes, 144/146 bytes, 21/21 fixups; ENTER target/candidate 4/4. Exact residual: 0x87: T or si, si / C  (instruction_shape). Previously tested families: for-loop and do-loop statement decompositions; the new do-loop kept the same 47/48 code residue. Current blocker: target's tail has OR SI,SI after SUB SI,2 before JE; the do-loop rewrite retained the same 47/48 output and private literal bytes still differ. New explicit do-loop/tail-decrement decomposition also stayed 47/48 with the same OR SI,SI tail instruction absent.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:26.865525+00:00"
+      },
+      {
+        "text": "Changed only the loop termination comparison from positive to nonzero to test whether an explicit equality test retains OR SI,SI after the scaled-index decrement.",
+        "origin": "build/search/InitSow/20260927T100106-161300",
+        "recorded": "2026-09-27T10:01:06.608612+00:00"
+      },
+      {
+        "text": "Changed only loop induction representation from logical slots 2,1 to byte offsets 4,2 with halved array index; target keeps a scaled SI offset and ends SUB SI,2 / OR SI,SI / JE.",
+        "origin": "build/search/InitSow/20260927T100405-112916",
+        "recorded": "2026-09-27T10:04:05.449565+00:00"
+      },
+      {
+        "text": "Retested the scaled-slot induction representation with macro definitions intact; loop variable represents byte offset 4,2 and global array accesses use the halved slot index.",
+        "origin": "build/search/InitSow/20260927T100416-158900",
+        "recorded": "2026-09-27T10:04:17.094327+00:00"
+      },
+      {
+        "text": "Changed only the do-loop tail predicate from positive to nonzero to test for the explicit OR SI,SI seen after target SUB SI,2; the equivalent for-loop nonzero test previously folded away.",
+        "origin": "build/search/InitSow/20260927T101325-61456",
+        "recorded": "2026-09-27T10:13:26.050571+00:00"
       }
     ]
   },
@@ -22821,6 +22996,11 @@
         "text": "2026-09-27 f-near-1 lifetime probe: block-scoped `firstCount=0x18` plus a separate inner-scope count for the second copy stayed 106/108, 275/278 bytes, 4/14 fixups and exactly repeated `build/workers/w5-near-7/LoadMonoPats-r3-4.c`. `--frame` confirms target ENTER 0x0e vs candidate 0x0c; target stores 0x18 at [bp-8] (+0x4d), candidate omits it, and copy pointer homes/DS:DI vs ES:SI remain. This is a duplicate effective object, so no further count spelling is useful; prior notes cover pointer/count/declaration/profile variants and the exact next dependency is original second-copy pointer lifetime.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:20:06.530719+00:00"
+      },
+      {
+        "text": "f-near-a baseline remains 106/108 opcodes, 275/278 bytes, ENTER 0x0c vs target 0x0e. Removing block-scoped copySource/copyDestination aliases and reusing the function pointers regressed to 103/109. Target extra [BP-8]=0x18 and the second-copy DS:DI to ES:SI lifetime schedule remain.",
+        "origin": "build/search/LoadMonoPats/20260927T101029-177356",
+        "recorded": "2026-09-27T10:10:29.385456+00:00"
       }
     ]
   },
@@ -22897,6 +23077,11 @@
         "text": "f-near-3 replay: 93/94, 231/231 bytes, ENTER 0x14 vs target 0x16. Target homes handle/remaining/parser values at bp-0xe, -0x12/-0x10/-0x14 and other slots; candidate homes are displaced and lacks bp-0x12 dataflow. Fifty-four declaration/scope, width, accumulator, pointer/index, volatility/register and loop/branch variants already ran; next dependency is original parser local lifetime/context.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:39.933199+00:00"
+      },
+      {
+        "text": "f-near-a full baseline/frame replay: best remains 93/94 opcodes, 231/231 bytes; target ENTER 0x16 vs candidate 0x14, with displaced parser/handle homes. Prior history records 54 variants across scope, width, loop, cursor and accumulator families; no opcode improvement. Next useful work requires a source-backed parser local-lifetime explanation.",
+        "origin": "build/search/LoadStringAnt/20260927T101022-65300",
+        "recorded": "2026-09-27T10:10:22.734427+00:00"
       }
     ]
   },
@@ -23888,20 +24073,35 @@
         "text": "Complete readable body now covers font validation, length-preserving copy, escaped-newline line table, repeated width measurement, height/width allocation, mask clear, all border/tail glyph calls, per-line image compositing, mask-height adjustments, row exchange, and display conversions. The 11 glyphs plus diagnostic and balloon tag are a natural 207-byte initialized record matching DGROUP 0x1c6e..0x1d3c. Declaring the named curFontPtr far pointer improved the draft from 257/438 and 1076 bytes to 267/438 and 1098/1100 bytes; row exchange now resolves to the admitted _exchange symbol. Remaining strict issues are private _DATA placement and internal fixups; no exact match.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:53:37.760120+00:00"
+      },
+      {
+        "text": "Best this turn 280/438 opcodes, 1096/1100 bytes, still no exact. Replacing separate strlen + _fmemcpy with far strcpy grew prefix to 275; zero-based line counting without a separate breakCount, then indexing through lines[0], reached 280. Next divergence is at target offset 144: target adds SI,BX, candidate reloads LES BX from BP-58 and spills it; continue investigating line-pointer traversal/register lifetime. Frame remains a separate gap.",
+        "origin": "build/search/MakeBalloon/20260927T095020-109208",
+        "recorded": "2026-09-27T09:50:21.005232+00:00"
+      },
+      {
+        "text": "Making the local far scan pointer a \register variable did not help; it remained 278/438 opcodes, 1106/1100 bytes, with the first extra instruction at candidate offset 102. Preserve linescan.c as best at 280/438, 1096/1100; its next divergence is target offset 144, add SI,BX versus a reload of LES BX.",
+        "origin": "build/search/MakeBalloon/20260927T095452-158884",
+        "recorded": "2026-09-27T09:54:53.213286+00:00"
+      },
+      {
+        "text": "Best is now 287/438 opcodes, 1096/1100 bytes. Guarding the empty string and ordering the split body as lineCount++, i++, then incremented lineSlot assignment grew the aligned stream over prior lineSlot variants. Target split body zeros only the backslash and retains a base pointer plus BX index; far scan-pointer variant fell to 280/438.",
+        "origin": "build/search/MakeBalloon/20260927T100603-83392",
+        "recorded": "2026-09-27T10:06:03.879734+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/MakeBalloon/ea7b921f804a.c",
-      "sha256": "ea7b921f804a8a2a657ed25e7d12ca8fb8c72aa062fc1215d66f239781097483",
+      "source": "evidence/recovery/drafts/MakeBalloon/3abb64abffaf.c",
+      "sha256": "3abb64abffaf927a064d308f4c8e89c2ad62ded3e9ad500b91930a389ff5c00e",
       "key": [
         false,
         false,
-        280,
+        287,
         -4
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 280,
+      "opcode_matches": 287,
       "opcode_total": 438,
       "candidate_bytes": 1096,
       "target_bytes": 1100,
@@ -23912,8 +24112,8 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/MakeBalloon/20260927T094458-187428/results.json",
-      "recorded": "2026-09-27T09:44:59.706758+00:00"
+      "origin": "build/search/MakeBalloon/20260927T100031-120608/results.json",
+      "recorded": "2026-09-27T10:00:32.846734+00:00"
     }
   },
   "_MakeBark": {
@@ -25719,6 +25919,56 @@
         "text": "Frame-guided StargLife probe: target disassembly accesses StargLife directly through its selector, while Starg itself has a far-pointer home. Removing targetLifePtr in full69 is more source-faithful and shrinks size to 3200, but drops overlap to 674. Best aligned body remains full70/full71 at 683; target ENTER 0x32 vs candidate 0x10 and cfg_shape_match remain open.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:42:04.005540+00:00"
+      },
+      {
+        "text": "Target call inventory distinguishes same-SIMONE_MODULE near calls from cross-segment far calls. Full73 changes SFoundAnt, SpiderScan, GetDis, GetDir, SRand1/2/4/256, DropFoodA, MoveMyLife and IsValidA to near prototypes; GetBestDir, GotoMyAnt, YellowDeath, PictStrnDialog, myBeginSound and DeadAntHere remain far. This correct call ABI raises overlap 683->714/1077 and shrinks candidate to 3196/3165 bytes (31 bytes over), while preserving the 44 calls.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:50:28.760811+00:00"
+      },
+      {
+        "text": "Full75 combines the same near-call prototypes with full71's coordinate/branch variant: it ties 714 at 3198 bytes and improves register/branch metrics slightly, but loses ordinary-byte, fixup and memory alignment to full73. Keep full73 as the durable best for now.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:50:29.178419+00:00"
+      },
+      {
+        "text": "Combined direct-StargLife probes: full74 (near calls + full72 direct access) reaches 705/1077 at 3132 bytes; full76 (near calls + full75 direct access) reaches 707 at 3134 bytes. Both are smaller and match the observed direct StargLife binding more literally, but do not beat full73's instruction overlap. Frame remains ENTER 0x14 or 0x10 versus target 0x32.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:50:29.606536+00:00"
+      },
+      {
+        "text": "Full77 marks only mapCell's near pointer volatile on top of the corrected near-call profile. It creates BP-0x0c home and expands ENTER 0x10->0x12, but overlap falls 714->695, fixups and stack alignment worsen; target BP-0x32 spill is not reproduced.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:54:19.622896+00:00"
+      },
+      {
+        "text": "Full78 marks only the SMode far-pointer variable volatile under the near-call profile. Its home moves to BP-8 and ENTER grows to 0x14, but overlap falls to 684 with 42 stack differences and 19/435 fixups. Reject volatility; retain full73.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:54:20.007957+00:00"
+      },
+      {
+        "text": "Full79 splits the player chase direction result from state movementDirection on the near-call baseline. It compiles to full73's exact 714/1077, 3196-byte object and retains the same ENTER 0x10 frame and first structural difference at 0x1c; the register-lifetime prediction is falsified.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:57:28.619287+00:00"
+      },
+      {
+        "text": "Full77 mapCell-volatile probe falls to 695/1077 and ENTER 0x12; full78 spiderMode-volatile falls to 684 and ENTER 0x14. These homes do not approach the target ENTER 0x32. Keep full73 and stop using volatile qualifiers for these locals.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:57:28.999938+00:00"
+      },
+      {
+        "text": "ABI correction from context packet: every same-SIMONE_MODULE helper changed to near in full73 is explicitly listed under linker_lowered_far_calls (SFoundAnt, SpiderScan, GetDis, GetDir, SRand1/2/4/256, DropFoodA, MoveMyLife, IsValidA). Their source prototypes must remain far; LINK lowers these same-segment far calls to push CS + near CALL in the final target. Full73's 714 opcode overlap is a call-form diagnostic, not an admissible source ABI. Use full70/far prototypes (683) as source-faithful codegen baseline and compare whole-unit lowering only after the body is exact.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:03:07.210548+00:00"
+      },
+      {
+        "text": "Disassembly correction in state 1: target's reverse one-tile branch subtracts 2 from Scycle, forward adds 2, then both join at the 0x3ff mask. Full80 replaces the earlier incorrect -1/+1 update with (Scycle +/- 2)&0x3ff. Score remains 683/1077, size 3268, fixups 4/472; retain full80 as the semantically corrected far-call baseline.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:08:06.778880+00:00"
+      },
+      {
+        "text": "Correction to full80 state mapping: offsets 0x800/0x83a are the five-tile retreat (state4), which already uses Scycle +/-2 in full70. State1 is the one-tile move at offsets 0x500/0x524: target dec ax / inc ax, so full70's -1/+1 updates were correct. Full80's proposed state1 +/-2 mask was a misassignment and should not be used; it kept 683 opcodes but worsened literal/size alignment. Retain full70 as the semantically correct far-call baseline.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:09:36.153918+00:00"
       }
     ],
     "best": {
@@ -25823,6 +26073,11 @@
         "text": "f-near-3 replay: 53/54, 166 bytes. At +0x54 target XOR AL,AL then stores AL to LifeA and Dx8; candidate stores BH then copies BH to AL. Width/sign, chained/separate/reversed stores, zero forms, arrays, loops, locals and declaration order already tried; LifeA near relocation and simtwo:1378 contribution also differ.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:37.050702+00:00"
+      },
+      {
+        "text": "f-near-a baseline remains 53/54 opcodes, 166/166 bytes. Reversing the chained store association (LifeA[cell] = Dx8[type] = 0) regressed to 51/56 and 168 bytes; retained best uses 25/26 fixups. Target XOR AL,AL before the LifeA store remains the only body opcode residue; further zero/store spellings have been extensively tried.",
+        "origin": "build/search/MowerFall/20260927T101028-153272",
+        "recorded": "2026-09-27T10:10:28.559341+00:00"
       }
     ]
   },
@@ -27764,6 +28019,21 @@
         "text": "Recovered the semantic data identities: MapB is the 64x64 DGROUP public at 0x48e8 and FoodB is the PACK word at 0x9ea4. The complete readable candidate uses MapB[x][y], SRand8(), and FoodB; it never indexes match_position. Best full draft is 101 bytes vs 98 target (3% over), with ENTER 4 aligned, correct tile guards/update and counter path. Strict proof remains NO_COMPLETE_MATCH (24/41 aligned opcodes); current MSC output uses different register/flag flow, and isolated MapB/FoodB fixups do not reproduce the target's raw DS displacement/private selector-pool base. v4 register-variable spelling and v5 DGROUP-based spelling compiled to the same output as v3.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:27:24.399289+00:00"
+      },
+      {
+        "text": "Best this turn is 26/41 opcodes, 96 bytes, ENTER 2 (flag.c); no exact. Target opens with push DI/SI, computes MapB offset in BX from SI*64+DI, saves it at BP-4, loads tile in CX, then writes SRand8 through BX; valid 0x11..0x13 path uses dec byte ptr [BX]. \register parameters and &MapB[index] compiled to the same old object. Frame-exact baseline (24/41) still diverges at parameter register/home selection.",
+        "origin": "build/search/PickupFoodB/20260927T095020-31216",
+        "recorded": "2026-09-27T09:50:20.768780+00:00"
+      },
+      {
+        "text": "New direct-lvalue family (*cell used in each condition instead of a cached \u000balue) regressed to 19/41 opcodes and 98 bytes; target still needs the cached tile in CX. Current best remains flag.c at 26/41. The first prologue divergence is unchanged: candidate omits target DI/SI saves and computes through AX/DX.",
+        "origin": "build/search/PickupFoodB/20260927T095452-54284",
+        "recorded": "2026-09-27T09:54:53.011327+00:00"
+      },
+      {
+        "text": "Best remains 26/41 opcodes, 96/98 bytes, ENTER 2 versus target ENTER 4. Volatile changed flag and declaration-order variants are lower at 25/41 and compile identically; target saves DI/SI, keeps the cell offset at BP-4, compares one cached word value, and decrements byte [BX] directly.",
+        "origin": "build/search/PickupFoodB/20260927T100603-149108",
+        "recorded": "2026-09-27T10:06:03.624944+00:00"
       }
     ]
   },
@@ -27819,6 +28089,16 @@
         "text": "Recovered the semantic data identities: MapR is the 64x64 DGROUP public at 0x58e8 and FoodR is the PACK word at 0x72de. The complete readable candidate uses MapR[x][y], SRand8(), and FoodR; it never indexes match_position. Best full draft is 101 bytes vs 98 target (3% over), with ENTER 4 aligned, correct tile guards/update and counter path. Strict proof remains NO_COMPLETE_MATCH (24/41 aligned opcodes); current MSC output uses different register/flag flow, and isolated MapR/FoodR fixups do not reproduce the target's raw DS displacement/private selector-pool base. v4 register-variable spelling and v5 DGROUP-based spelling compiled to the same output as v3.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T09:27:24.454365+00:00"
+      },
+      {
+        "text": "Pair still has no exact member, so no mirror_pairs.py run yet. This side's best trial remains 24/41 opcodes, 101/98 bytes with ENTER 4 exact. First divergence is target push DI/SI and coordinates in DI/SI; target stores the MapR cell at BP-4, loads its byte through BX, decrements memory directly for 0x11..0x13, then checks FoodR. Baseline frame matches; target body/register schedule does not.",
+        "origin": "build/search/PickupFoodR/20260927T095128-181352",
+        "recorded": "2026-09-27T09:51:28.500151+00:00"
+      },
+      {
+        "text": "Best remains 24/41 opcodes, 101/98 bytes, ENTER 4 exact. The mirror pair is not admitted because neither side is exact; do not mirror yet.",
+        "origin": "build/search/PickupFoodR/20260927T100603-64844",
+        "recorded": "2026-09-27T10:06:03.734457+00:00"
       }
     ]
   },
@@ -29103,6 +29383,11 @@
         "text": "Complete readable dispatch in build/workers/f-author-grp1/ProcMenu_full.c reconstructs the 1..70 jump table, application/file-wait actions, yard/map-plane transitions, option toggles, prompt-aware pause handling and speed changes. Best compile: 311/444 opcodes, 1175/1186 code bytes, exact 2-byte frame. Tested volatile id local; it retained the frame but fell to 305 opcodes, so kept the nonvolatile union byte/word view. Read admitted SetMenuEntries and ProcMenuHelp bodies; SetDefaultWindPrompt and WindPromptTable evidence clarified the pause prompts. Remaining strict failures include CONST/_DATA placement and unresolved selector fixups; code still has immediate, memory and branch-target residue.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:59:54.813270+00:00"
+      },
+      {
+        "text": "Best 311/444, 1175/1186 with the exact 2-byte frame. Byte-id local and payload-pointer variants either reproduced the same object or scored 305; MSC keeps a word read plus mask. Needs a new switch or event-layout hypothesis.",
+        "origin": "build/search/ProcMenu/20260927T100814-100920",
+        "recorded": "2026-09-27T10:08:15.258548+00:00"
       }
     ],
     "best": {
@@ -29941,6 +30226,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 114/117 opcodes, 329/329 bytes, 18/35 fixups; frame map not applicable or unavailable. Exact residual: 0x03: T cmp word ptr [0x87e], 0 / C cmp <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] (memory_operand,immediate_or_binding); 0x1F: T mov word ptr [0x87e], ax / C mov <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] (memory_operand); 0x22: T cmp word ptr [0x87c], 0 / C cmp <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] (memory_operand,immediate_or_binding). Previously tested families: flag snapshot/register allocation, switch and condition forms, direct globals and profile controls. Current blocker: target references near DGROUP words 0x087C/0x087E/0x0880 and tests the low-memory flag in DX; the draft emits _DATA fixups and a direct memory test.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:27.487257+00:00"
+      },
+      {
+        "text": "Rebound reserveHandle/softHandle/lowMemoryReported to the packet-resolved words paletteH[17..19]: direct_data_bindings place target 0x87c/0x87e/0x880 inside the admitted public paletteH at offsets 34/36/38.",
+        "origin": "build/search/RallocFindMem/20260927T100457-21080",
+        "recorded": "2026-09-27T10:04:58.098476+00:00"
       }
     ]
   },
@@ -30936,6 +31226,11 @@
         "text": "Latest return/assignment/goto batch reproduced two existing object outputs (same_output_as: prior 21/30 local assignment and colony-b2 14/22 branch returns); no post-compare tail improvement. Best candidate still matches frame DI/SI and both LINK-lowered calls through cmp, but target has jle + mov ax,si + single epilogue while candidate adds DX round-trip and duplicate epilogues. Further work needs a source construct that retains ENTER 2 and the same accumulator without creating a second epilogue.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:38:15.047917+00:00"
+      },
+      {
+        "text": "The best remains 21/30 at 50/39 bytes with both far-call translations, ENTER 2, DI seed and SI first sample matching. Conditional-return forms and assignment/ternary reversals either repeat the same output (extra DX round-trip and split epilogues) or remove ENTER 2 and leave unresolved far-call fixups. Concrete blocker: identify a C return/control construct that keeps the original frame and lowered call sites but emits CMP AX,SI; JLE shared epilogue; MOV AX,SI; one epilogue. No strict match or promotion.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:52:07.228048+00:00"
       }
     ]
   },
@@ -31571,6 +31866,16 @@
         "text": "f-near-3 replay: 45/46, 111/113 bytes, ENTER 10. At +0x23 target loads row sum from bp-6 to AX, adds DX, then copies AX to DI; candidate computes directly in DI, shifting following branches by two bytes. Named temps, declaration/scope, widths, loops, pointers, register/volatile and parameter copies were tried; LifeA near binding still needs unit context.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:39.107060+00:00"
+      },
+      {
+        "text": "Split only the row-coordinate assignment into copy then compound-add; the target first divergence loads BP-6 to AX, adds DX and copies AX to DI, while the current draft computes directly in DI.",
+        "origin": "build/search/ScanForAnts/20260927T100954-141528",
+        "recorded": "2026-09-27T10:09:55.577262+00:00"
+      },
+      {
+        "text": "Added register only to x to test the first target difference and whether the target keeps the row-coordinate result in DI after an AX addition; the prior best had x in an extra BP-2 home.",
+        "origin": "build/search/ScanForAnts/20260927T101047-161880",
+        "recorded": "2026-09-27T10:10:47.653347+00:00"
       }
     ]
   },
@@ -32174,6 +32479,11 @@
         "text": "2026-09-27 f-near-1 --frame --full rerun: 80/82 opcodes, 191/185 bytes, 1/2 fixups. First exact aligned residuals: T+0 enter 0x48, 0 -> C+0 enter 0x4c, 0; T+6 mov word ptr [bp - 2], 4 -> C+6 mov word ptr [bp - 6], 4; T+18 lea ax, [bp - 2] -> C+18 lea ax, [bp - 6]. Frame map: candidate local n (2 bytes) at bp-6 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local ok (2 bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local p (? bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-2 (2/address) has no named candidate local (a missing local, or a compiler temporary); target slot bp-66 (address) has no named candidate local (a missing local, or a compiler temporary); target slot bp-67 (1) has no named candidate local (a missing local, or a compiler temporary); target slot bp-68 (1/address) has no named candidate local (a missing local, or a compiler temporary); target slot bp-70 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 72, candidate ENTER 76 (candidate named homes: bp-72/2, bp-6/2, bp-4/2). No fresh distinct C hypothesis this pass; prior worker notes describe the tried families and the concrete remaining dependency. Earlier worker notes (7 entries) record tried families and next dependency; latest note: Target size 185; direct-parameter test is NO_COMPLETE_MATCH at 76/80 opcodes, 187/185 bytes, 1/2 fixups and repeats simant-a2/palette_a3.c. Target uses LDS SI,[BP+0xC] at +0x27; candidate splits offset/selector loads. Making the parameter object volatile worsens it to 65/86, 207/185 bytes, ENTER 0x4e versus target 0x48. The LDS lowering trigger remains unresolved.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:15:33.417369+00:00"
+      },
+      {
+        "text": "Removed only the unused ok local to test the frame map; the target ENTER is 0x48, candidate best is 0x4c with n at bp-6 and extras at bp-4.",
+        "origin": "build/search/SetDevicePalette/20260927T100633-123356",
+        "recorded": "2026-09-27T10:06:38.885911+00:00"
       }
     ]
   },
@@ -33098,6 +33408,11 @@
         "text": "f-near-3 replay: 83/85, 227/221 bytes, ENTER 0x0a exact. First operands reverse target output/level stack words at +6/+9; output pointer direct form fixed the frame, while fraction widths/recompute, declaration order, arithmetic and pointer lifetimes have many prior rounds. Helper calls and CONST selector placement also differ; next dependency is source-backed B324 pool/order context, not more spelling variants.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:34.726082+00:00"
+      },
+      {
+        "text": "Added register to only the output far-pointer parameter to test whether MSC chooses DI for the point destination and SI for the triangle level, as in the first aligned target pair.",
+        "origin": "build/search/SetTriLatPoint/20260927T100535-175552",
+        "recorded": "2026-09-27T10:05:36.568467+00:00"
       }
     ]
   },
@@ -33239,22 +33554,27 @@
         "text": "Authored complete SetYardMode_full.c: 238/364 opcodes and 1008/1009 bytes, covering mode 4, the modes 0/1 bypass, mode 2/3 bitmap branches, common window updates, invalidation, selection and title redraw. A register-parameter hypothesis scored 235/364 and was dropped. The final two selector-indexed button tables at DS+0x1586/+0x158e remain unnamed with values unresolved; current readable selection arithmetic is provisional. Target frame 36 vs candidate 34 and the existing CONST/far-selector constraints remain.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:21:27.308155+00:00"
+      },
+      {
+        "text": "Best 242/364, 1000/1009. Declaring SetMapPlane, win_YardClosed and SetMapTitle near improved the prefix; direct-parameter and inline-height variants scored 235 and 238. Frame remains 34 versus target 36; prologue still spills the parameter from AX instead of retaining it in SI.",
+        "origin": "build/search/SetYardMode/20260927T100814-2356",
+        "recorded": "2026-09-27T10:08:15.331103+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/SetYardMode/957b8c68641f.c",
-      "sha256": "957b8c68641f2ff18bf5adf15b726152d5876baba175e79021fb4fffbd594f37",
+      "source": "evidence/recovery/drafts/SetYardMode/c1f6b08ef73b.c",
+      "sha256": "c1f6b08ef73b2048796e0e50eedf9359499ad341209bdd3024b493f34edf7348",
       "key": [
         false,
         false,
-        241,
-        -7
+        242,
+        -9
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 241,
+      "opcode_matches": 242,
       "opcode_total": 364,
-      "candidate_bytes": 1002,
+      "candidate_bytes": 1000,
       "target_bytes": 1009,
       "flags": [
         "/AL",
@@ -33263,8 +33583,8 @@
         "/Oelw",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/SetYardMode/20260927T094519-146416/results.json",
-      "recorded": "2026-09-27T09:45:21.569849+00:00"
+      "origin": "build/search/SetYardMode/20260927T095204-121540/results.json",
+      "recorded": "2026-09-27T09:52:05.200476+00:00"
     }
   },
   "_ShowIntro": {
@@ -33818,6 +34138,16 @@
         "text": "Frame-first tuning checkpoint: target ENTER=34 (BP-34 deepest); complete dual-view candidate ENTER=38 (BP-38), with candidate-only BP-36/BP-38 saved segment/offset homes first used in the foot update. Tested local x/y reuse, no-found-flag goto scan, combined mowing guard, prior valid-flag scan, DGROUP table placement, far MowX/MowY declarations, and volatile BoyPx/BoyPy or FootY; none reaches a longer opcode prefix or reduces ENTER. Best current complete body remains 553/705 at 2256/2240 bytes; the prior higher-count alternate is 560/716 at 2276/2240. Earliest structural divergence remains candidate offset 62: target reads BoyPx/BoyPy directly through ES displacements, while the candidate materializes far addresses and saves pointer homes. No strict match; next useful family is to reconstruct the scan and foot-update source lifetimes from target stack slots and member context rather than rewording this guard.",
         "origin": "build/search/SimKidOutside/20260927T093341-108836",
         "recorded": "2026-09-27T09:33:42.025112+00:00"
+      },
+      {
+        "text": "Frame trace from the 553/705 baseline identifies the extra BP-38/BP-36 pair as the saved FootX far address: candidate materializes the segment/offset before the foot update, then reloads it for adjustment and FootFall; target loads segment 9 into DS and uses displacement 0x7A4E directly. Controlled access-form negatives: based BoyPx+BoyPy shrank ENTER 38 to 30 but reduced opcode alignment to 537/692; based FootX+FootY regressed to 501/692 and kept ENTER 38; based FootX alone was 553/706 with ENTER 38; zero-offset struct fields, constant-index arrays, struct-array fields, CurYardPnt struct spelling, and FootX[0] did not grow the aligned prefix. Best complete draft remains 553/705 opcodes and 2256/2240 bytes. Switching from far-global access-form probes to the scan-index lifetime mismatch (target BP-4, candidate DI).",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:04:35.362209+00:00"
+      },
+      {
+        "text": "Scan-loop follow-up: rewriting the baseline for-loop as direction=3; do { ... } while (--direction >= 0); produced the identical compiler object as the for form (553/705, 2256 bytes; effective_output cites the prior anchor-map draft). Making direction volatile changed codegen: 554/710, 2272 bytes, frame still ENTER 38 vs target 34; it homes direction at BP-8 while the target loop reads BP-4 and ends with dec [bp-4]; jns. Moving the volatile local first in declaration order did not change the object. Volatile+do-while reached 554/710 but remained at BP-8 and added code. This scan family is not retained; inspect the next state-dispatch region for an independent source-shape experiment.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:10:03.447510+00:00"
       }
     ],
     "best": {
@@ -34923,6 +35253,11 @@
         "text": "2026-09-27 f-near-1 --frame --full rerun: 44/45 opcodes, 118/121 bytes, 3/9 fixups. First exact aligned residuals: T+30 mov word ptr [bp - 4], bx -> C+None ; T+33 mov word ptr [bp - 2], es -> C+30 mov word ptr [bp - 4], bx; T+54 mov word ptr [0x9cee], ax -> C+51 mov <resolved fixup> [{'kind': 'internal', 'segment': 9, 'offset': 40174}]. Frame map: target ENTER 4, candidate ENTER 4. New pass hypothesis 39/45 opcodes, 121/121 bytes, fixups 6/13; exact body=False; effective-output duplicate=True. Earlier worker notes (7 entries) record tried families and next dependency; latest note: 3DF2 singleton unit test: 29/112 literals, 3/9 fixups, six fixups unresolved/mismatched plus uncovered NE relocations. Candidate frame does not store target selector and offset in separate BP-4/BP-2 homes.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:15:35.311356+00:00"
+      },
+      {
+        "text": "Qualified only the pointer object in the local wrapper as volatile to force the missing target store of the selector word to bp-2; target stores the far pointer at bp-4/bp-2 before the first write.",
+        "origin": "build/search/StartMigrate/20260927T100737-185188",
+        "recorded": "2026-09-27T10:07:37.860718+00:00"
       }
     ]
   },
@@ -35263,6 +35598,11 @@
         "text": "f-near-3 replay: 31/32, 79/77 bytes. At +0x0a target computes BX=DI+SI+0x28e8 and stores bp-4; named MapA emits a DGROUP fixup through AX and bp-2 then reloads BX. Twenty-six rounds covered widths, declaration/scope, association, array/pointer/row loops, guards and result locals. Target's unrelocated map base and call/pool ownership need the simant:9D04 unit source.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:05:36.426588+00:00"
+      },
+      {
+        "text": "Removed only volatility from the near cell pointer to test the target BX address path without the candidate BP-2 pointer home; the target frame has only its BP-4 slot.",
+        "origin": "build/search/SubtractFood/20260927T101405-112340",
+        "recorded": "2026-09-27T10:14:05.370868+00:00"
       }
     ]
   },
@@ -35990,6 +36330,16 @@
         "text": "2026-09-27 f-queenb: _TryMoveDirR remains OPEN, so the requested mirror condition is unmet. Best B source remains 80/99 opcodes, 275/266 bytes. Frame map: target ENTER 6 uses only BP-4; best candidate ENTER 8 spills dy at BP-2, dx at BP-4, cell at BP-6. Plain-int local form reached 79/95 and ENTER 6 but reproduced an earlier output; direct recomputation reached 74/117. No exact body yet; this blocks promoting QueenMoveB as a real same-unit helper pair.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:59:57.348709+00:00"
+      },
+      {
+        "text": "2026-09-27 f-queenb: At target+0x1E the target transfers signed Dy8[dir] from AX into DI, then adds y in DI. Adding register to the dy local compiled to the identical prior object; swapping to y + Dy8[dir] also compiled identically. Neither hypothesis changes the first opcode divergence. Next hypothesis should change how the computed destination coordinate is represented, not operand spelling or register keyword.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:54:34.514329+00:00"
+      },
+      {
+        "text": "2026-09-27 f-queenb: A two-field destination struct (dest.x/dest.y) worsened both frame maps: B ENTER 8 vs target 6 and R ENTER 6 vs target 4; it also moved the direction parameter from SI to DI/CX at entry. The target still has the first difference at the Dy8 expression. Discard this representation hypothesis.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:02:39.352872+00:00"
       }
     ]
   },
@@ -36046,6 +36396,16 @@
         "text": "Best corrected pool-view candidate remains 62/73 opcodes, 186/186 bytes, and 1/21 fixups; the red/black mirror scored 63/99. Target keeps the Y coordinate in DI and the composite destination at BP-4, while C spills Y at BP-2 and computes through CX/BX. Target has a same-segment near GetOutR call and private Rlist/Map selector bindings; isolated C still cannot reproduce the unit call/data layout. Register/local spelling families have repeated, so next dependency is source-backed unit lifetime and selector evidence.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:48:59.057580+00:00"
+      },
+      {
+        "text": "2026-09-27 f-queenb: At target+0x1E the target transfers signed Dy8[dir] from AX into DI, then adds y in DI. Adding register to the dy local compiled to the identical prior object; swapping to y + Dy8[dir] also compiled identically. Neither hypothesis changes the first opcode divergence. Next hypothesis should change how the computed destination coordinate is represented, not operand spelling or register keyword.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:54:47.149037+00:00"
+      },
+      {
+        "text": "2026-09-27 f-queenb: A two-field destination struct (dest.x/dest.y) worsened both frame maps: B ENTER 8 vs target 6 and R ENTER 6 vs target 4; it also moved the direction parameter from SI to DI/CX at entry. The target still has the first difference at the Dy8 expression. Discard this representation hypothesis.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:02:52.134445+00:00"
       }
     ]
   },
@@ -36800,6 +37160,11 @@
         "text": "16D4 UpdateEditBuffers remains 195/242 instructions and 702/694 bytes. The target calls the 430-byte unnamed tile helper at 3:6250; that helper remains an unresolved dependency and no exact 16D4 unit proof exists.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T08:26:44.068899+00:00"
+      },
+      {
+        "text": "f-near-a recheck remains 231/235 opcodes and 694/694 bytes. Target ANTEDIT_MODULE helper call at 3:6250 remains unrecovered; frame and memory operands also differ. Existing editor-object report documents the 16D4 and 6250 helper dependencies, so no unit claim is ready.",
+        "origin": "build/search/UpdateEdit/20260927T101027-18184",
+        "recorded": "2026-09-27T10:10:27.740217+00:00"
       }
     ]
   },
@@ -37788,6 +38153,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 221/227 opcodes, 625/625 bytes, 25/75 fixups; ENTER target/candidate 14/16; target slot bp-2 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-4 (2) has no named candidate local (a missing local, or a compiler temporary). Exact residual: 0x00: T enter 0xe, 0 / C enter 0x10, 0 (immediate_or_binding); 0x04: T mov es, word ptr [0xbf0c] / C mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] (memory_operand); 0x17: T mov es, word ptr [0xbf58] / C mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] (memory_operand). Previously tested families: cached MeMode reads, volatile/nonvolatile state and frame-home variants; the latter regress; selector/unit profile controls already recorded. Current blocker: target frame is 0x0E versus candidate 0x10; unnamed slots and unresolved private CONST selectors remain, and cached-mode variants regress.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:28.688593+00:00"
+      },
+      {
+        "text": "Removed only the unused volatile mode home because the best draft ENTER is 0x10 while the target is 0x0e; the candidate frame map places mode at bp-6.",
+        "origin": "build/search/YellowCommand/20260927T101257-2608",
+        "recorded": "2026-09-27T10:12:58.560128+00:00"
       }
     ]
   },
@@ -38867,6 +39237,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 68/70 opcodes, 167/163 bytes, 1/3 fixups; ENTER target/candidate 16/16. Exact residual: 0x40: T mov es, ax / C mov cx, dx (call_frame_or_segment_register,register_role,alignment_uncertain); 0x42: T mov cx, dx / C  (instruction_shape); 0x49: T mov ax, word ptr [bp + 6] / C mov es, word ptr [bp - 6] (call_frame_or_segment_register,memory_operand,stack_local_layout,alignment_uncertain). Previously tested families: far-pointer/register forms, key address as long scalar, entry/index loops, local scopes and operand order. Current blocker: target keeps the computed selector in AX through the count test; the candidate spills it to BP-6 and later moves DX into CX.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:29.749628+00:00"
+      },
+      {
+        "text": "Added register to only the table pointer local to test whether MSC keeps mem_Lock selector and offset in registers instead of the candidate BP-6 far-pointer spill.",
+        "origin": "build/search/ch_LookUpHandle/20260927T100535-25100",
+        "recorded": "2026-09-27T10:05:36.473354+00:00"
       }
     ]
   },
@@ -39008,6 +39383,11 @@
         "text": "f-near-2 2026-09-27 frame/full replay: 47/48 opcodes, 128/128 bytes, 4/4 fixups; ENTER target/candidate 18/14; candidate local table (? bytes) at bp-14 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local slot (? bytes) at bp-8 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it). Exact residual: 0x00: T enter 0x12, 0 / C enter 0xe, 0 (immediate_or_binding); 0x1F: T mov word ptr [bp - 4], cx / C mov word ptr [bp - 8], cx (memory_operand,stack_local_layout); 0x22: T mov word ptr [bp - 2], es / C mov word ptr [bp - 6], es (memory_operand,stack_local_layout). Previously tested families: counter copies and widths, address calculation order, early/goto tails, loop forms, pointer/index forms and scopes. Current blocker: target ENTER is 0x12 versus candidate 0x0E; target slot offset/selector homes are BP-4/-2 and loop count is saved later at BP-0xA.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:09:29.956164+00:00"
+      },
+      {
+        "text": "f-near-a full frame replay remains 47/48 opcodes, 128/128 bytes, ENTER 0x0e vs target 0x12. Target slot far pointer homes BP-4/-2 and delayed count home BP-0x0a are missing; candidate homes slot at BP-8/-6. Prior count timing, width, pointer and scope variants did not improve the output.",
+        "origin": "build/search/ch_PurgeCache/20260927T101030-84028",
+        "recorded": "2026-09-27T10:10:31.040330+00:00"
       }
     ]
   },
@@ -41865,22 +42245,52 @@
         "text": "Target track-0 entry and exit each compare high remaining word then low word; test explicit C branches and labels while keeping remaining as unsigned long for ExtractVariableLen.",
         "origin": "build/search/myBeginSong/20260927T094614-153464",
         "recorded": "2026-09-27T09:46:16.697339+00:00"
+      },
+      {
+        "text": "Target keeps the initial mciSendCommand pointer at BP-8 while a second lookup/call uses BP-C; preserve mciProc and route the second close call through the separate soundProc local.",
+        "origin": "build/search/myBeginSong/20260927T094949-185676",
+        "recorded": "2026-09-27T09:49:51.967425+00:00"
+      },
+      {
+        "text": "Target's MCI pointer slot is near BP-4 while the candidate's long-lived mciProc slot is BP-44; scope the callback inside its returning route and scope a mapperProc inside mapper cleanup to test lifetime-based reuse.",
+        "origin": "build/search/myBeginSong/20260927T095124-2128",
+        "recorded": "2026-09-27T09:51:25.083199+00:00"
+      },
+      {
+        "text": "Target's MCI pointer slot is near BP-4 while the candidate's long-lived mciProc is BP-44; scope the callback in the returning MIDI route and use branch-local pointers in each cleanup block to test lifetime-based reuse.",
+        "origin": "build/search/myBeginSong/20260927T095155-177324",
+        "recorded": "2026-09-27T09:51:57.747881+00:00"
+      },
+      {
+        "text": "Target track-1 event loop checks the remaining high word first and the low word against 1 second at entry/exit; test equivalent explicit C branches with named loop/done labels.",
+        "origin": "build/search/myBeginSong/20260927T095430-93992",
+        "recorded": "2026-09-27T09:54:32.231202+00:00"
+      },
+      {
+        "text": "Target note-off and note-on duration blocks compare delta's high word and then low word for zero; test the equivalent explicit high/low short-circuit condition in both handlers.",
+        "origin": "build/search/myBeginSong/20260927T095609-91252",
+        "recorded": "2026-09-27T09:56:11.023353+00:00"
+      },
+      {
+        "text": "Target note-duration call pushes delta words first, then division*4 as a zero-extended 16-bit product before __aFuldiv; current C hypothesis is (division * 4) / delta. The opposite operand order scores 1004 opcodes but produces the opposite runtime-helper argument order. Current full-source hypothesis: build/workers/f-author-mybeginsong/myBeginSong-57-reversed-duration-base.c (3730/4110 bytes, 953/1574 opcodes, frame 0x150).",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T10:06:27.915953+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/myBeginSong/3323ce2f922d.c",
-      "sha256": "3323ce2f922de56abe8ad965b2601cfa4c1f780f1ef97df5e8a894aa3461d564",
+      "source": "evidence/recovery/drafts/myBeginSong/f56605e5140d.c",
+      "sha256": "f56605e5140d6ad7c78aca9aea7961597bd36f768bc2eb997395286d515c91ce",
       "key": [
         false,
         false,
-        994,
-        -376
+        1004,
+        -380
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 994,
+      "opcode_matches": 1004,
       "opcode_total": 1574,
-      "candidate_bytes": 3734,
+      "candidate_bytes": 3730,
       "target_bytes": 4110,
       "flags": [
         "/AL",
@@ -41889,8 +42299,8 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/myBeginSong/20260927T094614-153464/results.json",
-      "recorded": "2026-09-27T09:46:16.634891+00:00"
+      "origin": "build/search/myBeginSong/20260927T095915-98428/results.json",
+      "recorded": "2026-09-27T09:59:17.619120+00:00"
     }
   },
   "_myBeginSound": {
@@ -45941,6 +46351,11 @@
         "text": "Round 4: best was round 3 at 207/487 opcodes, 35/1016 candidate literal bytes, 0/53 fixups; candidate body is 1015/1385 bytes. Four rounds tried bucket/record layout, stack lifetime, control pointer at +0x24, object table at +0x2c, and window/menu/message flow. First structural residue is prologue instruction 0x06; the aligned body later shows target loads the bucket offset and selector separately while the candidate far-pointer access emits LES, and strict bindings remain unresolved for the possible win_handles/ribbonBarHeight members. Next establish exact object/TU bindings and recover the child-item scan/position flags; do not tune declaration spelling until those identities are grounded.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T06:38:56.387094+00:00"
+      },
+      {
+        "text": "Tuning: a separate MSG local gives ENTER 0x34; using the style slot as PeekMessage's final buffer reduces it to 0x22 (ENTER 0x20 with 16-bit style). The 16-bit style hypothesis loses the initial opcode prefix. Target initializes four words before win_LockHigh and later stores 0xc8 to [bp-0x10], ORs 0x34/0x80 there; draft style masks currently target the low word. Next probe: high-word style masks with 32-bit style.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T09:56:56.985739+00:00"
       }
     ],
     "best": {

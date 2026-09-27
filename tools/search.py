@@ -269,6 +269,7 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
                   best=dict(best_summary, compiler_log=best['receipt']['stdout'][-1500:] if best['comparison'].get('result') == 'COMPILE_FAILED' else None,
                             unresolved_member_obligations=diagnostic.get('unresolved_member_obligations'),
                             categories=diagnostic.get('categories'),
+                            branch_destinations=diagnostic.get('branch_destinations'),
                             aligned_asm=diagnostic.get('aligned_asm', []) if full else focused_alignment(diagnostic.get('aligned_asm', []))),
                   exact=exact, effective_output=effective_output(rows, seen, bests), draft_ledger='improved' if improved else 'unchanged',
                   report=relative(out / 'results.json'), seconds=round(time.perf_counter() - began, 2))

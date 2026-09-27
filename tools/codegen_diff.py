@@ -1,4 +1,5 @@
 """Instruction diagnostics for search. Never used as an acceptance oracle."""
+import re
 from collections import Counter
 from difflib import SequenceMatcher
 from analysis import decoder,cs
@@ -113,8 +114,10 @@ def compare_code(target,candidate,target_bindings=None,candidate_bindings=None,c
     if counters['memory_operand_differences']:categories.append('MEMORY_OPERAND')
     if counters['immediate_differences']:categories.append('IMMEDIATE_OR_BINDING')
     if counters['branch_target_differences']:categories.append('BRANCH_TARGET')
+    destinations=branch_destinations(display)
+    if destinations:categories.append('BRANCH_DESTINATION')
     total=max(len(left),len(right),1);equal=sum(not r['differences'] for r in display)
-    return dict(target_bytes=len(target),candidate_bytes=len(candidate),instruction_layout_match=[(r['offset'],r['size']) for r in left]==[(r['offset'],r['size']) for r in right],cfg_shape_match=graph_match,opcode_total=max(len(left),len(right)),**counters,first_structural_difference=first,categories=categories,score=round((equal+.5*(counters['opcode_matches']-equal))/total,6),aligned_asm=display,target_blocks=lb,candidate_blocks=rb,scope='SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score')
+    return dict(target_bytes=len(target),candidate_bytes=len(candidate),instruction_layout_match=[(r['offset'],r['size']) for r in left]==[(r['offset'],r['size']) for r in right],cfg_shape_match=graph_match,opcode_total=max(len(left),len(right)),**counters,first_structural_difference=first,categories=categories,score=round((equal+.5*(counters['opcode_matches']-equal))/total,6),branch_destinations=destinations,aligned_asm=display,target_blocks=lb,candidate_blocks=rb,scope='SEARCH_DIAGNOSTIC_ONLY; semantic equivalence and recovery acceptance are not inferred from this score')
 
 
 def unresolved_member_obligations(comparison, image):
@@ -143,6 +146,35 @@ def unresolved_member_obligations(comparison, image):
                 contributions=failures,
                 scope='Whole-member obligations; instruction alignment does not discharge private data or selector failures')
 
+
+_JUMP=re.compile(r'^(j[a-z]+|loop[a-z]*)\s+(0x[0-9a-f]+|\d+)$')
+
+
+def branch_destinations(display):
+    """Branches whose target and candidate jumps land on DIFFERENT aligned instructions.
+
+    A plain branch_target difference is usually an offset shift from an earlier size
+    difference. When the target's jump lands on aligned row N and the candidate's on row
+    M != N, and both rows are aligned pairs, the draft's control flow differs: e.g. an
+    `if` failure that skips a loop decrement (a retry loop) versus one that falls into it
+    (_InitSow/_InitPillar, 2026-09-27)."""
+    def dest(text):
+        m=_JUMP.match((text or '').strip())
+        return int(m.group(2),0) if m else None
+    t_at={r['target_offset']:i for i,r in enumerate(display) if r.get('target_offset') is not None}
+    c_at={r['candidate_offset']:i for i,r in enumerate(display) if r.get('candidate_offset') is not None}
+    out=[]
+    for i,r in enumerate(display):
+        td,cd=dest(r.get('target')),dest(r.get('candidate'))
+        if td is None or cd is None:continue
+        ti,ci=t_at.get(td),c_at.get(cd)
+        if ti is None or ci is None or ti==ci:continue
+        if not (display[ti].get('candidate') and display[ci].get('target')):continue
+        out.append(dict(target_offset=r.get('target_offset'),candidate_offset=r.get('candidate_offset'),target=r['target'],candidate=r['candidate'],
+                        target_lands_on=dict(offset=td,instruction=display[ti].get('target')),
+                        candidate_lands_on=dict(offset=cd,instruction=display[ci].get('candidate'),target_equivalent=display[ci].get('target')),
+                        finding="the branch reaches a different instruction than in the target: the draft's control flow differs here (check which statements this path skips or runs)"))
+    return out
 
 def diagnose(module,raw,image,symbols,symbol,comparison):
     segment,start=unique_symbol(symbols,symbol);ns=image['segments'][segment-1];data=raw[ns['file_offset']:ns['file_offset']+ns['logical_size']]
