@@ -9,6 +9,8 @@ import os
 import shutil
 import subprocess
 import tempfile
+import re
+from collections import Counter
 from pathlib import Path
 
 from common import ROOT, FormatError, fixture, identity, read_json, sha256, write_json
@@ -24,6 +26,20 @@ RC_CANDIDATES = {
 }
 DEFAULT_TEST_EXE = 'build/PARTLINK/PARTIAL.EXE'
 DEFAULT_EXTRACT = 'build/resources/extracted/final'
+RESOURCE_SOURCE = ROOT / 'src/resources'
+RESOURCE_ADMISSION_ROOT = ROOT / 'build/resources/admissions'
+RESOURCE_RC_VERSION = 'sdk300'
+RESOURCE_RC_TOOL_DIR = RC_CANDIDATES[RESOURCE_RC_VERSION]
+RESOURCE_RC_PINS = {
+    'RC.EXE': {'size': 57805, 'sha256': '2eee20462c1c26b8f24a2472e8ec7a68b6e4d173b555b6168cb3b868d45eaf5e'},
+    'RCPP.EXE': {'size': 129907, 'sha256': 'f7fba2e6f2fa885975b01061403895a262cee1c70b33e4d1af0e1f57281fd4b5'},
+    'RCPP.ERR': {'size': 14393, 'sha256': '53c4d172d684080c45c1b94f5eeaa7c514ce0147aa2fd2d52cadc29a04671217'},
+}
+RESOURCE_RC_RUNNER = 'toolchain/dosbox-x/bin/x64/Release/dosbox-x.exe'
+RESOURCE_NAMETABLE_TYPE = ('id', 15)
+NAMED_RC_TYPES = {'CURSOR': 12, 'ICON': 14, 'DIALOG': 5, 'ACCELERATORS': 9}
+NAMED_RC_DECLARATION = re.compile(
+    r'^\s*"([A-Za-z_][A-Za-z0-9_]*)"\s+(CURSOR|ICON|DIALOG|ACCELERATORS)\b', re.I | re.M)
 MEMORY_BITS = {'MOVEABLE': 0x0010, 'PURE': 0x0020, 'PRELOAD': 0x0040, 'DISCARDABLE': 0x1000}
 KNOWN_TYPES = {1: 'CURSOR', 2: 'BITMAP', 3: 'ICON', 4: 'MENU', 5: 'DIALOG',
                6: 'STRING', 7: 'FONTDIR', 8: 'FONT', 9: 'ACCELERATOR', 10: 'RCDATA',
@@ -571,6 +587,231 @@ def _tool_files(tool_dir):
     return {name: identity(source) for name, source in sources.items()}, sources
 
 
+def source_identity(source_root=None):
+    """Identity of every tracked RC input, including unreferenced files."""
+    root = Path(source_root) if source_root is not None else RESOURCE_SOURCE
+    root = root.resolve()
+    try:
+        root.relative_to(ROOT.resolve())
+    except ValueError:
+        raise FormatError('resource source paths must stay inside the repository')
+    if not root.is_dir():
+        raise FormatError('resource source directory is missing: ' + str(root))
+    files = {}
+    for path in sorted(root.rglob('*')):
+        if path.is_symlink():
+            raise FormatError('resource source may not contain symlinks: ' + path.relative_to(ROOT).as_posix())
+        if path.is_file():
+            files[path.relative_to(ROOT).as_posix()] = identity(path)
+    if 'src/resources/SIMANTW.RC' not in files:
+        raise FormatError('resource source is missing src/resources/SIMANTW.RC')
+    if not any(name.startswith('src/resources/payloads/') for name in files):
+        raise FormatError('resource source has no payload assets')
+    encoded = json.dumps(files, sort_keys=True, separators=(',', ':')).encode('utf-8')
+    return {'root': root.relative_to(ROOT).as_posix(), 'files': files, 'tree_sha256': sha256(encoded)}
+
+
+def require_source_identity(expected, current=None):
+    current = current or source_identity()
+    if expected != current:
+        raise FormatError('resource source identity changed since admission')
+    return current
+
+
+def rc_toolchain_identity():
+    """Return the pinned RC 3.00 tool identities and verify the locked runner."""
+    from compiler import verify_lock
+    lock_path = ROOT / 'layout/toolchain.json'
+    lock = read_json(lock_path)
+    verify_lock(lock)
+    tools, _ = _tool_files(RESOURCE_RC_TOOL_DIR)
+    if tools != RESOURCE_RC_PINS:
+        raise FormatError('local RC 3.00 tools differ from the pinned resource compiler')
+    runner = ROOT / RESOURCE_RC_RUNNER
+    return {
+        'version': 'Microsoft Windows Resource Compiler 3.00',
+        'candidate': RESOURCE_RC_VERSION,
+        'tool_directory': RESOURCE_RC_TOOL_DIR,
+        'tools': tools,
+        'runner': {'path': RESOURCE_RC_RUNNER, 'identity': identity(runner)},
+        'toolchain_lock': identity(lock_path),
+    }
+
+
+def require_rc_toolchain_identity(expected, current=None):
+    current = current or rc_toolchain_identity()
+    if expected != current:
+        raise FormatError('resource RC toolchain identity changed since admission')
+    return current
+
+
+def _identity_key(value):
+    if 'id' in value:
+        return ('id', value['id'])
+    if 'name' in value:
+        return ('name', value['name'])
+    raise FormatError('resource has no identity')
+
+
+def _type_key(resource):
+    value = resource['type']
+    return ('id', value['id']) if 'id' in value else ('name', value['name'])
+
+
+def _named_source_bindings(script):
+    text = script.decode('latin1') if isinstance(script, bytes) else str(script)
+    result = {resource_type: [] for resource_type in NAMED_RC_TYPES.values()}
+    for name, token in NAMED_RC_DECLARATION.findall(text):
+        result[NAMED_RC_TYPES[token.upper()]].append(name)
+    return result
+
+
+def _resource_payload(raw, row, label):
+    start = row.get('offset')
+    size = row.get('size')
+    if not isinstance(start, int) or not isinstance(size, int) or start < 0 or size < 0 or start + size > len(raw):
+        raise FormatError('%s resource range is outside its file' % label)
+    return raw[start:start + size]
+
+
+def _check_nonoverlapping_resources(resources, label):
+    spans = sorted((row['offset'], row['offset'] + row['size'], index)
+                   for index, row in enumerate(resources))
+    for left, right in zip(spans, spans[1:]):
+        if right[0] < left[1]:
+            raise FormatError('ambiguous overlapping %s resource ranges %d and %d' % (label, left[2], right[2]))
+
+
+def map_payloads(oracle_raw, oracle, candidate_raw, candidate, script):
+    """Map every RC-produced resource to one oracle row and prove its full payload.
+
+    RC 3.00 creates one RT_NAMETABLE entry for named source IDs. That generated
+    entry is explicitly left uncredited; all other extra or missing resources
+    fail the mapping.
+    """
+    expected = oracle.get('resources', [])
+    compiled = candidate.get('resources', [])
+    if not expected:
+        raise FormatError('oracle has no resources')
+    named_source = _named_source_bindings(script)
+    _check_nonoverlapping_resources(expected, 'oracle')
+    _check_nonoverlapping_resources(compiled, 'compiled')
+
+    named_expected = {kind: [row['identity']['name'] for row in expected
+                             if _type_key(row) == ('id', kind) and 'name' in row['identity']]
+                      for kind in NAMED_RC_TYPES.values()}
+    for kind, names in named_expected.items():
+        if names != named_source[kind]:
+            raise FormatError('resource source identities do not match oracle type %d occurrence order' % kind)
+
+    allowed_tables = [index for index, row in enumerate(compiled)
+                      if _type_key(row) == RESOURCE_NAMETABLE_TYPE]
+    if len(allowed_tables) != 1:
+        raise FormatError('expected exactly one RC-generated RT_NAMETABLE resource')
+    table_index = allowed_tables[0]
+    generated_table = compiled[table_index]
+    if (_identity_key(generated_table['identity']) != ('id', 1) or generated_table['size'] != 512 or
+            generated_table['flags'] != 0x1C30):
+        raise FormatError('RC-generated RT_NAMETABLE identity, size or flags are ambiguous')
+    mapped_compiled = [(i, row) for i, row in enumerate(compiled) if i != table_index]
+
+    expected_types = [_type_key(row) for row in expected]
+    actual_types = [_type_key(row) for _, row in mapped_compiled]
+    if actual_types != expected_types:
+        expected_counts = Counter(expected_types)
+        actual_counts = Counter(actual_types)
+        missing = expected_counts - actual_counts
+        extra = actual_counts - expected_counts
+        if missing:
+            raise FormatError('compiled RC output is missing resources: ' + repr(dict(missing)))
+        if extra:
+            raise FormatError('compiled RC output has extra resources: ' + repr(dict(extra)))
+        raise FormatError('compiled resources are ambiguous or reordered by type')
+
+    # Duplicate compiled identities of one type cannot be distinguished by the
+    # NE table or source statement order, so fail instead of guessing.
+    seen_identities = set()
+    for _, row in mapped_compiled:
+        key = (_type_key(row), _identity_key(row['identity']))
+        if key in seen_identities:
+            raise FormatError('ambiguous duplicate compiled resource identity: ' + repr(key))
+        seen_identities.add(key)
+
+    by_type_rank = Counter()
+    mappings = []
+    relative_oracle = []
+    relative_compiled = []
+    for oracle_index, (left, (candidate_index, right)) in enumerate(zip(expected, mapped_compiled)):
+        typ = _type_key(left)
+        rank = by_type_rank[typ]
+        by_type_rank[typ] += 1
+        left_identity = left['identity']
+        right_identity = right['identity']
+        if 'name' in left_identity:
+            source_name = named_source.get(typ[1], [])[rank] if typ[0] == 'id' and typ[1] in named_source else None
+            if source_name != left_identity['name']:
+                raise FormatError('source name cannot be bound to oracle resource occurrence %d of %r' % (rank + 1, typ))
+            if _identity_key(right_identity) != ('id', rank + 1):
+                raise FormatError('RC-generated ordinal identity is ambiguous for named resource %r occurrence %d' % (typ, rank + 1))
+            identity_basis = 'named RC source identity plus type occurrence order'
+            source_identity = source_name
+        else:
+            if _identity_key(right_identity) != _identity_key(left_identity):
+                raise FormatError('numeric resource identity differs for type %r occurrence %d' % (typ, rank + 1))
+            identity_basis = 'exact numeric identity plus type occurrence order'
+            source_identity = right_identity.get('id')
+
+        oracle_payload = _resource_payload(oracle_raw, left, 'oracle')
+        compiled_payload = _resource_payload(candidate_raw, right, 'compiled')
+        if len(oracle_payload) != len(compiled_payload):
+            raise FormatError('resource size differs for oracle row %d and compiled row %d' % (oracle_index, candidate_index))
+        if oracle_payload != compiled_payload:
+            raise FormatError('resource payload differs for oracle row %d and compiled row %d' % (oracle_index, candidate_index))
+        relative_oracle.append((left['offset'], left['size']))
+        relative_compiled.append((right['offset'], right['size']))
+        mappings.append({
+            'oracle_index': oracle_index,
+            'compiled_index': candidate_index,
+            'type': list(typ),
+            'oracle_identity': left_identity,
+            'compiled_identity': right_identity,
+            'source_identity': source_identity,
+            'identity_basis': identity_basis,
+            'oracle_range': {'start': left['offset'], 'end': left['offset'] + left['size'], 'size': left['size']},
+            'compiled_range': {'start': right['offset'], 'end': right['offset'] + right['size'], 'size': right['size']},
+            'sha256': sha256(compiled_payload),
+        })
+
+    if len(mapped_compiled) != len(expected):
+        raise FormatError('compiled RC resource count differs from the oracle')
+    if oracle['resource_alignment_shift'] != candidate['resource_alignment_shift']:
+        raise FormatError('resource alignment shift differs from the oracle')
+    oracle_base = min(row[0] for row in relative_oracle)
+    compiled_base = min(row[0] for row in relative_compiled)
+    if [(start - oracle_base, size) for start, size in relative_oracle] != \
+            [(start - compiled_base, size) for start, size in relative_compiled]:
+        raise FormatError('relative resource payload layout differs from the oracle')
+
+    table = compiled[table_index]
+    table_payload = _resource_payload(candidate_raw, table, 'compiled table')
+    return {
+        'resource_count': len(expected),
+        'compiled_resource_count': len(compiled),
+        'resource_alignment_shift': candidate['resource_alignment_shift'],
+        'relative_data_layout_exact': True,
+        'table_credit': False,
+        'uncredited': [{
+            'compiled_index': table_index,
+            'type': list(_type_key(table)),
+            'identity': table['identity'],
+            'range': {'start': table['offset'], 'end': table['offset'] + table['size'], 'size': table['size']},
+            'sha256': sha256(table_payload),
+            'reason': 'RC 3.00 generated RT_NAMETABLE; resource table is not byte exact',
+        }],
+        'resources': mappings,
+    }
+
+
 def _run_version(version, tool_dir, script, test_exe, work_root):
     tool_identities, tool_sources = _tool_files(tool_dir)
     run_dir = work_root / version
@@ -608,8 +849,194 @@ def _run_version(version, tool_dir, script, test_exe, work_root):
               'runner_stderr': process.stderr.decode('latin1'),
               'script': identity(script), 'test_input': identity(test_exe)}
     output = run_dir / 'TEST.EXE'
+    res_output = run_dir / 'SIMANT.RES'
     if succeeded and output.is_file(): result['output'] = identity(output)
+    if succeeded and res_output.is_file(): result['rc_output'] = identity(res_output)
     return result, output if succeeded and output.is_file() else None
+
+
+def _repo_file(value, label):
+    path = Path(value)
+    if not path.is_absolute():
+        path = ROOT / path
+    path = path.resolve()
+    try:
+        path.relative_to(ROOT.resolve())
+    except ValueError:
+        raise FormatError(label + ' must stay inside the repository')
+    if not path.is_file():
+        raise FormatError(label + ' is missing: ' + str(path))
+    return path
+
+
+def _repo_artifact(value, label):
+    path = Path(value)
+    if not path.is_absolute():
+        path = ROOT / path
+    path = path.resolve()
+    try:
+        path.relative_to(ROOT.resolve())
+    except ValueError:
+        raise FormatError(label + ' must stay inside the repository')
+    return path
+
+
+def _copy_immutable(source, destination):
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        if identity(destination) != identity(source):
+            raise FormatError('resource admission artifact exists with different bytes: ' + str(destination))
+    else:
+        shutil.copyfile(source, destination)
+        if identity(destination) != identity(source):
+            raise FormatError('resource admission artifact copy did not verify: ' + str(destination))
+
+
+def compile_payload_admission(test_exe=None, work_root=None, store=True):
+    """Freshly run pinned RC 3.00 and return a payload-only admission record."""
+    source = source_identity()
+    tools = rc_toolchain_identity()
+    script = RESOURCE_SOURCE / 'SIMANTW.RC'
+    executable = _repo_file(test_exe or DEFAULT_TEST_EXE, 'resource test executable')
+    input_identity = identity(executable)
+    oracle_raw = fixture(ORACLE)
+    oracle = ne.parse(oracle_raw)
+    if target_identity_matches_oracle(input_identity, identity(ROOT / 'assets' / ORACLE)):
+        raise FormatError('refusing to compile resources into the oracle executable')
+    if ne.parse(executable.read_bytes())['resources']:
+        raise FormatError('resource test executable already contains resources')
+
+    base = Path(work_root) if work_root is not None else ROOT / 'build/resources/admission-runs'
+    base = _repo_path(base, 'build/resources/admission-runs')
+    base.mkdir(parents=True, exist_ok=True)
+    run_root = Path(tempfile.mkdtemp(prefix='fresh-', dir=base))
+    run, compiled_path = _run_version(RESOURCE_RC_VERSION, RESOURCE_RC_TOOL_DIR, script, executable, run_root)
+    if compiled_path is None or 'rc_output' not in run:
+        detail = run.get('logs', {}).get('COMPILE.LOG', '') + run.get('logs', {}).get('BIND.LOG', '')
+        raise FormatError('fresh pinned RC 3.00 run failed: ' + (detail.strip() or str(run.get('runner_stderr', ''))[-500:]))
+
+    compiled_raw = compiled_path.read_bytes()
+    compiled_image = ne.parse(compiled_raw)
+    mapping = map_payloads(oracle_raw, oracle, compiled_raw, compiled_image, script.read_bytes())
+    rc_output_path = run_root / RESOURCE_RC_VERSION / 'SIMANT.RES'
+    if not rc_output_path.is_file() or identity(rc_output_path) != run['rc_output']:
+        raise FormatError('fresh RC output is missing or changed after compilation')
+
+    token = json.dumps({'source': source['tree_sha256'], 'tools': tools,
+                        'test_input': input_identity, 'rc_output': run['rc_output'],
+                        'placement_output': identity(compiled_path)}, sort_keys=True, separators=(',', ':')).encode()
+    admission_id = 'resources-' + sha256(token)[:16]
+    artifact_root = RESOURCE_ADMISSION_ROOT / admission_id
+    if store:
+        _copy_immutable(compiled_path, artifact_root / 'SIMANTW.EXE')
+        _copy_immutable(rc_output_path, artifact_root / 'SIMANT.RES')
+        _copy_immutable(executable, artifact_root / 'TEST-INPUT.EXE')
+        placement = artifact_root / 'SIMANTW.EXE'
+        rc_output = artifact_root / 'SIMANT.RES'
+        test_input = artifact_root / 'TEST-INPUT.EXE'
+    else:
+        placement = compiled_path
+        rc_output = rc_output_path
+        test_input = executable
+
+    return {
+        'id': admission_id,
+        'scope': 'RC 3.00 payload ranges only; no resource-table or RT_NAMETABLE credit',
+        'source': source,
+        'source_script': 'src/resources/SIMANTW.RC',
+        'rc_toolchain': tools,
+        'rc_output': {'path': rc_output.relative_to(ROOT).as_posix(),
+                      'identity': identity(rc_output)},
+        'placement_output': {'path': placement.relative_to(ROOT).as_posix(), 'identity': identity(placement)},
+        'test_input': {'path': test_input.relative_to(ROOT).as_posix(), 'identity': identity(test_input)},
+        'resource_count': mapping['resource_count'],
+        'compiled_resource_count': mapping['compiled_resource_count'],
+        'resource_alignment_shift': mapping['resource_alignment_shift'],
+        'relative_data_layout_exact': mapping['relative_data_layout_exact'],
+        'table_credit': False,
+        'uncredited': mapping['uncredited'],
+        'resources': mapping['resources'],
+        'fresh_run': {'version': run['version'], 'tools': run['tools'],
+                      'test_input': run['test_input'], 'rc_output': run['rc_output'],
+                      'placement_output': run['output']},
+    }
+
+
+def replay_admission(proof):
+    """Recompile and rebind the admitted source through the pinned RC lane."""
+    if proof.get('table_credit') is not False:
+        raise FormatError('resource proof attempts to credit the table')
+    require_source_identity(proof.get('source'))
+    require_rc_toolchain_identity(proof.get('rc_toolchain'))
+    test_input = _repo_artifact(proof.get('test_input', {}).get('path', ''), 'resource replay input')
+    if test_input.is_file():
+        if identity(test_input) != proof['test_input'].get('identity'):
+            raise FormatError('resource replay input identity changed since admission')
+    else:
+        # The ignored build tree may have been cleaned. Reuse a freshly built
+        # structural input only when it has the exact identity in the proof.
+        test_input = _repo_file(DEFAULT_TEST_EXE, 'resource replay input')
+        if identity(test_input) != proof['test_input'].get('identity'):
+            raise FormatError('resource replay input is missing and the current empty NE input differs')
+
+    replay = compile_payload_admission(test_input, store=False)
+    if replay['rc_output']['identity'] != proof.get('rc_output', {}).get('identity'):
+        raise FormatError('fresh RC replay output identity differs from admission')
+    if replay['placement_output']['identity'] != proof.get('placement_output', {}).get('identity'):
+        raise FormatError('fresh RC replay placement output differs from admission')
+    for key in ('resource_count', 'compiled_resource_count', 'resource_alignment_shift',
+                'relative_data_layout_exact', 'table_credit', 'uncredited', 'resources'):
+        if replay.get(key) != proof.get(key):
+            raise FormatError('fresh RC replay %s differs from admission' % key)
+    placement_path = _repo_artifact(proof['placement_output']['path'], 'resource placement output')
+    rc_output_path = _repo_artifact(proof['rc_output']['path'], 'resource RC output')
+    test_snapshot_path = _repo_artifact(proof['test_input']['path'], 'resource replay input')
+    fresh_placement_path = _repo_file(replay['placement_output']['path'], 'fresh resource placement output')
+    fresh_rc_output_path = _repo_file(replay['rc_output']['path'], 'fresh resource RC output')
+    _copy_immutable(fresh_placement_path, placement_path)
+    _copy_immutable(fresh_rc_output_path, rc_output_path)
+    _copy_immutable(test_input, test_snapshot_path)
+    return {'result': 'REPLAYED_EXACT', 'id': proof['id'], 'resources': replay['resource_count'],
+            'rc_output': replay['rc_output']['identity'], 'placement_output': replay['placement_output']['identity']}
+
+
+def load_admission(record, require_artifacts=True):
+    """Load only a ledger-referenced, identity-current resource admission."""
+    if not record:
+        return None, None
+    try:
+        proof_path = _repo_file(record.get('promotion_evidence', ''), 'resource promotion proof')
+        if identity(proof_path) != record.get('proof_identity'):
+            raise FormatError('resource promotion proof identity differs from the recovery ledger')
+        proof = read_json(proof_path)
+        if proof.get('id') != record.get('id') or proof.get('table_credit') is not False:
+            raise FormatError('resource promotion proof is malformed or claims table credit')
+        require_source_identity(proof.get('source'))
+        require_rc_toolchain_identity(proof.get('rc_toolchain'))
+        if proof.get('resource_count') != 41 or len(proof.get('resources', [])) != 41:
+            raise FormatError('resource promotion proof does not cover all 41 oracle resources')
+        for row in proof['resources']:
+            if row.get('type') == ['id', 15] or row.get('type') == ('id', 15):
+                raise FormatError('resource promotion proof includes RT_NAMETABLE')
+        artifacts = [
+            ('placement_output', 'resource placement output'),
+            ('rc_output', 'resource RC output'),
+            ('test_input', 'resource replay input'),
+        ]
+        placement = None
+        for field, label in artifacts:
+            path = _repo_artifact(proof.get(field, {}).get('path', ''), label)
+            if not path.is_file():
+                if require_artifacts:
+                    raise FormatError(label + ' is missing: ' + str(path))
+                continue
+            if identity(path) != proof[field].get('identity'):
+                raise FormatError(label + ' identity changed since admission')
+            if field == 'placement_output':
+                placement = path.read_bytes()
+        return proof, placement
+    except (FormatError, OSError, KeyError, TypeError) as exc:
+        return None, 'resource admission invalid: ' + str(exc)
 
 
 def _normalized_table(raw, image):
@@ -623,11 +1050,6 @@ def _normalized_table(raw, image):
         if pos < 0 or pos + 2 > len(table): raise FormatError('resource record outside resource table')
         table[pos:pos + 2] = b'\0\0'  # Absolute sector varies with the linked test image.
     return bytes(table)
-
-
-def _type_key(resource):
-    value = resource['type']
-    return ('id', value['id']) if 'id' in value else ('name', value['name'])
 
 
 def compare_resources(oracle_raw, oracle, candidate_raw, candidate):

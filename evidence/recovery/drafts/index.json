@@ -2249,6 +2249,11 @@
         "text": "Admission pass 2026-09-27: body remains 66/67 opcodes, 180/180 bytes, 18/19 fixups; target uses MOV CX,0x40 where the candidate reloads width from BP-2. An initialized/default width hypothesis worsens to 176 bytes and 45/166 literal-byte equality. The call is a raw near call to unrecovered same-object helper 616C (1,522 bytes), while isolated ScrollEditBy is an external fixup. Both the one-opcode source shape and helper placement block admission.",
         "origin": "build/search/CenterEdit/20260927T035428-181244",
         "recorded": "2026-09-27T03:54:29.204867+00:00"
+      },
+      {
+        "text": "Private helper 3:616C is called with two integer deltas by _CenterEdit. A readable Bresenham line-step candidate matches all 96 instructions and all 227 diagnostic bytes except ENTER 0x12 target versus ENTER 0x0c candidate; remaining memory/call differences are original relocation versus OMF external bindings. Static probe CFG closes at 624F (227 bytes) although the topology private span is 1,522 bytes, so adjacent anonymous code still needs unit accounting.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T05:03:21.391891+00:00"
       }
     ]
   },
@@ -7209,6 +7214,11 @@
         "text": "Admission pass 2026-09-27: best remains 101/109 opcodes at 320/322 bytes (29/53 fixups), with unresolved selector/private data placement. Substituting tileHeight[1]/[3] into the color-scroll call arguments compiled to 54/109 at 312 bytes; it is a false alias for these helpers. The direct and local-temp spellings were ineffective or duplicate outputs; retain the static _tileDsp/_tileMask bindings here.",
         "origin": "build/search/DoEditScrollLine/20260927T035426-160948",
         "recorded": "2026-09-27T03:54:26.387633+00:00"
+      },
+      {
+        "text": "Private near helper 3:16D4 is called with no arguments. Context and editor unit report show it owns draw-delta and mask buffer setup, allocation strings, and editor redraw calls. Its closed CFG extent is 694 bytes (16D4-198A); reconstruction remains open.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T05:03:21.013175+00:00"
       }
     ]
   },
@@ -10584,6 +10594,11 @@
         "text": "Further decoded the three same-object callees needed by the D7A0 helper. Their boundary intervals and original-image disassemblies are C854-C93D (234 bytes), C93E-CA65 (296 bytes), and CA66-CB3F (218 bytes), preserved in build/workers/w28-yardmap-obj/static-c854.dis.txt, static-c93e.dis.txt, and static-ca66.dis.txt. Each has its own prologue and near RET; this narrows helper reconstruction but is not recovered C. The user-requested static binding remains unresolved until readable bodies are recovered.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T04:45:53.492321+00:00"
+      },
+      {
+        "text": "Private helper 3:D7A0 receives the caller's pushed 0x100 word after PUSH CS/CALL, and the target returns far. The 1,149-byte body has a 9-entry MapMode switch table; a full CFG-assisted disassembly is saved in build/workers/w29-statics/drawmap_full_linear.txt. It dispatches to private C854, C93E, and CA66 routines and performs map buffer creation, rendering, clipping, and cleanup. No C hypothesis yet.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T05:03:21.578684+00:00"
       }
     ]
   },
@@ -23779,6 +23794,11 @@
         "text": "Final selector/type audit: C20E's dynamic word store binds miniJust; C216's dynamic word load binds miniYSize. Both declarations, plus mapMapBuf and miniXSize, now match admitted antedit declarations as int far. The corrected 24-variant sweep stays NO_COMPLETE_MATCH; best is 226/287 opcodes, target/candidate bytes 811/885. ENTER remains 0x2a/0x28. Target homes the far pointer to global miniMapRect (offset 0x7ef6, PACK selector) at BP-16/-14 before win_GetObjRect; the candidate folds that home. A local-struct probe and volatile-pointer probe did not improve. Near call bodies at C854 and CA66 remain concrete dependencies; next recover those call bodies and the target pointer-home idiom.",
         "origin": "search.py --note",
         "recorded": "2026-09-26T18:32:55.717666+00:00"
+      },
+      {
+        "text": "C854 MiniMapRefreshLow source matches 74/74 instructions and all 234 bytes including frame; only original-relocation versus OMF-external fixup representations differ. CA66 MiniMapRefreshHigh best candidate remains 81/85 instructions at 250/250 bytes; MapMode pointer stack slots and four instruction-shape differences remain. Both are compiled static in a caller probe.",
+        "origin": "build/search/Mini_DrawMapI/20260927T050216-44476",
+        "recorded": "2026-09-27T05:02:17.803546+00:00"
       }
     ]
   },
@@ -34305,6 +34325,16 @@
         "text": "Admission pass 2026-09-27: --frame --full batch of bc676a2aac9c, 1588066f889d, and 1b56a931b5e7 produced no exact member; best remains 231/235 opcodes at 694/694 bytes (61/97 fixups). The live cache sample still occupies BP-2 rather than target BP-14; candidate private _DATA/CONST placement conflicts, and target near calls require the 16D4 private helper. Three distinct outputs in this batch, so source variants were not collapsed.",
         "origin": "build/search/UpdateEdit/20260927T035424-151888",
         "recorded": "2026-09-27T03:54:24.972145+00:00"
+      },
+      {
+        "text": "Private near helper 3:16D4 is called with no arguments by _UpdateEdit, _DoEditScrollLine, and _UpdateEditIfBufInvalid. Its closed CFG extent is 694 bytes (16D4-198A); it allocates/locks the editor buffers and proceeds through editor drawing. Source reconstruction not yet started in this worker.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T05:03:20.827597+00:00"
+      },
+      {
+        "text": "Readable 16D4 hypothesis now has the exact geometry sequence when h/w are carried as locals: 195/242 opcodes, 702/694 bytes, first structural difference at the buffer-handle setup. It models the rectangle dimensions, frees/reallocates delta/mask buffers, fills the mask, clamps MapPnt, allocates the edit image, and redraws. The near call at 16D4+0x252 reaches an additional unnamed routine at 3:6250; exact unit proof needs that adjacent dependency too.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T05:19:29.590207+00:00"
       }
     ]
   },
@@ -34380,6 +34410,11 @@
         "text": "Admission pass 2026-09-27: function code extent matches (82/82), 46/48 literal bytes and 13/14 fixups; changing the public DrawEdit call to plausible private-helper names preserves the body but leaves the target call at ANTEDIT_MODULE 16D4 unresolved. tu_assembly build antedit:00F4 --members _UpdateEditIfBufInvalid --scaffold --harmonize explicitly rejected the claim because it calls unrecovered static helper 16D4 (694 bytes). Recover that helper before this member can be claimed.",
         "origin": "build/search/UpdateEditIfBufInvalid/20260927T035428-152072",
         "recorded": "2026-09-27T03:54:28.474064+00:00"
+      },
+      {
+        "text": "Private near helper 3:16D4 is called with no arguments; it is the exact missing dependency preventing this caller's body claim. The helper CFG spans 694 bytes (16D4-198A) and handles buffer allocation/update before redraw.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T05:03:21.202347+00:00"
       }
     ]
   },

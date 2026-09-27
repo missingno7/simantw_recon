@@ -492,6 +492,65 @@ def retire_data(source, reason, verify_only=False):
                     claim_conflicts=whole['claim_conflicts']['bytes'], debt_total=whole['debt_total'])
 
 
+def promote_resources(verify_only=False):
+    """Freshly compile the tracked RC source and admit only exact payload ranges."""
+    import resources
+    from image import build as build_image
+
+    with publication.publication_lock():
+        publication.recover()
+        current = read_json(ROOT / 'src/recovery.json')
+        manifest = read_json(ROOT / 'build/recovered/manifest.json')
+        verified = read_json(ROOT / 'build/recovery/verified-objects.json')
+        progress = read_json(ROOT / 'docs/progress.json')
+        before = build_image(write=False, recovery=current)
+
+        proof = resources.compile_payload_admission(store=not verify_only)
+        proof['created'] = publication.timestamp()
+        if verify_only:
+            proof_path = ROOT / 'build/resources/verify-only' / (proof['id'] + '.json')
+        else:
+            proof_path = ROOT / 'evidence/recovery/promotions' / (proof['id'] + '.json')
+        proof_path.parent.mkdir(parents=True, exist_ok=True)
+        if proof_path.exists() and not verify_only:
+            old = read_json(proof_path)
+            old_core = {k: v for k, v in old.items() if k != 'created'}
+            new_core = {k: v for k, v in proof.items() if k != 'created'}
+            if old_core != new_core:
+                raise FormatError('resource promotion proof already exists with different evidence')
+            proof = old
+        else:
+            write_json(proof_path, proof)
+
+        staged = dict(current)
+        staged['resources'] = {
+            'id': proof['id'],
+            'promotion_evidence': relative(proof_path),
+            'proof_identity': identity(proof_path),
+            'source_identity': proof['source'],
+            'rc_toolchain_identity': proof['rc_toolchain'],
+        }
+        whole = build_image(write=False, recovery=staged)
+        if whole['status'] != 'HYBRID_EXACT':
+            raise FormatError('whole-image check failed after resource admission: ' + '; '.join(whole['problems'][:5]))
+        if proof.get('table_credit') is not False or whole['owned'].get('RESOURCES', 0) == 0:
+            raise FormatError('resource admission did not prove payload bytes without table credit')
+
+        if verify_only:
+            return dict(id=proof['id'], admission='PASSED', promotion='NONE (--verify-only)',
+                        evidence=relative(proof_path), resources=proof['resource_count'],
+                        image=dict(status=whole['status'], owned=whole['owned'], debt=whole['debt'],
+                                   debt_total=whole['debt_total']))
+
+        publication.commit(dict(zip(publication.CORE, [staged, manifest, verified, progress])), proof['id'])
+        rebuilt = build_image()
+        return dict(id=proof['id'], status='PROMOTED', evidence=relative(proof_path),
+                    resources=proof['resource_count'], table_credit=False,
+                    image_before=dict(owned=before['owned'], debt=before['debt'], debt_total=before['debt_total']),
+                    image_after=dict(status=rebuilt['status'], owned=rebuilt['owned'], debt=rebuilt['debt'],
+                                     debt_total=rebuilt['debt_total']))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('symbol', nargs='?')
@@ -507,8 +566,11 @@ def main():
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     ap.add_argument('--recover', action='store_true')
     ap.add_argument('--retire-data', help='remove the whole data module with this recipe source (bytes must stay owned by someone else)')
+    ap.add_argument('--resources', action='store_true', help='freshly compile and admit exact resource payloads with pinned RC 3.00')
     args = ap.parse_args()
-    if args.retire_data:
+    if args.resources:
+        result = promote_resources(args.verify_only)
+    elif args.retire_data:
         result = retire_data(args.retire_data, args.reason, args.verify_only)
     elif args.recover:
         with publication.publication_lock():

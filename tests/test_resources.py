@@ -2,6 +2,8 @@
 import sys
 import tempfile
 import unittest
+import copy
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -9,7 +11,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 
 import ne
 import resources
-from common import fixture
+from common import fixture, read_json
 
 
 class ResourceRoundTripTests(unittest.TestCase):
@@ -121,6 +123,110 @@ class ResourceRoundTripTests(unittest.TestCase):
         outside = ROOT.parent / (ROOT.name + '-resources-escape')
         with self.assertRaisesRegex(resources.FormatError, 'inside the repository'):
             resources.extract(str(outside))
+
+
+class ResourceAdmissionMappingTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.oracle_raw = fixture('SIMANTW.EXE')
+        cls.oracle = ne.parse(cls.oracle_raw)
+        cls.script = (ROOT / 'src/resources/SIMANTW.RC').read_bytes()
+        cls.candidate, cls.candidate_raw = cls.make_candidate()
+
+    @classmethod
+    def make_candidate(cls):
+        rows = [copy.deepcopy(row) for row in cls.oracle['resources']]
+        occurrence = {}
+        for row in rows:
+            typ = row['type'].get('id')
+            if typ in resources.NAMED_RC_TYPES.values():
+                rank = occurrence.get(typ, 0) + 1
+                occurrence[typ] = rank
+                row['identity'] = {'id': rank}
+        table_offset = len(cls.oracle_raw)
+        table = {'type': {'id': 15}, 'identity': {'id': 1}, 'offset': table_offset,
+                 'size': 512, 'flags': 0x1C30}
+        # RC 3.00 emits its generated name table before the mapped resources.
+        candidate_rows = [table] + rows
+        raw = cls.oracle_raw + bytes(512)
+        return {'resources': candidate_rows,
+                'resource_alignment_shift': cls.oracle['resource_alignment_shift']}, raw
+
+    def test_exact_payloads_map_and_table_stays_uncredited(self):
+        result = resources.map_payloads(self.oracle_raw, self.oracle, self.candidate_raw,
+                                        self.candidate, self.script)
+        self.assertEqual(result['resource_count'], 41)
+        self.assertEqual(result['compiled_resource_count'], 42)
+        self.assertEqual(len(result['resources']), 41)
+        self.assertFalse(result['table_credit'])
+        self.assertEqual(result['uncredited'][0]['type'], ['id', 15])
+
+    def test_changed_payload_byte_is_rejected(self):
+        changed = bytearray(self.candidate_raw)
+        first = self.candidate['resources'][1]
+        changed[first['offset']] ^= 1
+        with self.assertRaisesRegex(resources.FormatError, 'payload differs'):
+            resources.map_payloads(self.oracle_raw, self.oracle, bytes(changed), self.candidate, self.script)
+
+    def test_missing_resource_is_rejected(self):
+        candidate = copy.deepcopy(self.candidate)
+        candidate['resources'].pop()
+        with self.assertRaisesRegex(resources.FormatError, 'missing resources'):
+            resources.map_payloads(self.oracle_raw, self.oracle, self.candidate_raw, candidate, self.script)
+
+    def test_extra_resource_is_rejected(self):
+        candidate = copy.deepcopy(self.candidate)
+        extra = copy.deepcopy(candidate['resources'][-1])
+        extra['identity'] = {'id': 99}
+        candidate['resources'].append(extra)
+        candidate_raw = self.candidate_raw + bytes(extra['size'])
+        extra['offset'] = len(self.candidate_raw)
+        with self.assertRaisesRegex(resources.FormatError, 'extra resources'):
+            resources.map_payloads(self.oracle_raw, self.oracle, candidate_raw, candidate, self.script)
+
+    def test_ambiguous_compiled_identity_is_rejected(self):
+        candidate = copy.deepcopy(self.candidate)
+        # Two GROUP_CURSOR rows now claim the same compiled ordinal.
+        candidate['resources'][2]['identity'] = dict(candidate['resources'][1]['identity'])
+        with self.assertRaisesRegex(resources.FormatError, 'ambiguous duplicate'):
+            resources.map_payloads(self.oracle_raw, self.oracle, self.candidate_raw, candidate, self.script)
+
+    def test_changed_source_identity_is_rejected(self):
+        expected = resources.source_identity()
+        changed = copy.deepcopy(expected)
+        source = next(iter(changed['files']))
+        changed['files'][source]['sha256'] = '0' * 64
+        with self.assertRaisesRegex(resources.FormatError, 'source identity changed'):
+            resources.require_source_identity(changed)
+
+    def test_image_credits_payloads_and_keeps_table_debt(self):
+        record = read_json(ROOT / 'src/recovery.json').get('resources')
+        if not record:
+            self.skipTest('resource admission has not been published yet')
+        import image
+        report = image.build(debt=True, write=False)
+        proof, issue = resources.load_admission(record)
+        self.assertIsNotNone(proof, issue)
+        self.assertEqual(report['status'], 'HYBRID_EXACT')
+        self.assertEqual(report['owned']['RESOURCES'],
+                         sum(row['oracle_range']['size'] for row in proof['resources']))
+        self.assertEqual(report['debt']['RESOURCES'], 722)
+        self.assertFalse(proof['table_credit'])
+
+    def test_changed_recorded_payload_makes_hybrid_image_not_exact(self):
+        record = read_json(ROOT / 'src/recovery.json').get('resources')
+        if not record:
+            self.skipTest('resource admission has not been published yet')
+        proof, issue = resources.load_admission(record)
+        self.assertIsNotNone(proof, issue)
+        output = bytearray((ROOT / proof['placement_output']['path']).read_bytes())
+        first = proof['resources'][0]['compiled_range']['start']
+        output[first] ^= 1
+        import image
+        with patch.object(image.resource_lane, 'load_admission', return_value=(proof, bytes(output))):
+            report = image.build(write=False)
+        self.assertEqual(report['status'], 'NOT_EXACT')
+        self.assertTrue(any('payload bytes differ' in problem for problem in report['problems']))
 
 
 if __name__ == '__main__':

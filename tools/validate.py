@@ -36,6 +36,15 @@ def main():
         from verify_recovery import verify
         verified = verify(publish=True)
     report['recovery'] = {k: v for k, v in verified.items() if k not in ('game', 'runtime')}
+
+    from resources import load_admission, replay_admission
+    resource_record = read_json(ROOT / 'src/recovery.json').get('resources')
+    if resource_record:
+        resource_proof, resource_output = load_admission(resource_record, require_artifacts=False)
+        if resource_proof is None:
+            raise FormatError(resource_output or 'resource admission is invalid')
+        report['resources'] = replay_admission(resource_proof)
+
     from image import build as build_image
     whole = build_image()
     if whole['status'] != 'HYBRID_EXACT':
@@ -63,7 +72,9 @@ def main():
     report['compiler_service'] = dict(evidence='evidence/experiments/runner/service-stress.json', jobs=runner['jobs'])
     report['passed'] = True
     write_json(output / 'report.json', report)
-    print(json.dumps(dict(passed=True, tests=report['tests']['count'], recovery=report['recovery'], image=report['image'], cache_replay=report['cache_replay']['result']), indent=2))
+    print(json.dumps(dict(passed=True, tests=report['tests']['count'], recovery=report['recovery'],
+                          resources=report.get('resources'), image=report['image'],
+                          cache_replay=report['cache_replay']['result']), indent=2))
 
 
 if __name__ == '__main__':

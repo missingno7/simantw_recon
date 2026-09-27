@@ -6,6 +6,7 @@
 Owners:
   C              bytes regenerated from admitted game objects (build/recovered/*.obj)
   RUNTIME        bytes regenerated from complete historical library members
+  RESOURCES      payload ranges reproduced by the pinned Microsoft RC 3.00
   NE_CHAIN       NE relocation-chain words at loader sites (linker metadata, lane LINK)
   RAW:<lane>     explicit reconstruction debt copied from the oracle, classified by lane
 
@@ -31,6 +32,7 @@ from library_match import compare_member, import_symbols
 import mapsym
 import ne
 import omf
+import resources as resource_lane
 
 LANES = {
     'GAME_CODE': 'unrecovered game function (search/promote)',
@@ -38,7 +40,7 @@ LANES = {
     'RUNTIME_CODE': 'library/runtime code not yet matched to a complete historical member',
     'DATA': 'initialized data not yet owned by an admitted object',
     'LINK': 'NE header, tables, relocation tables and file padding (authentic LINK + DEF)',
-    'RESOURCES': 'resource table and resource data (authentic RC)',
+    'RESOURCES': 'resource table and resource bytes not proved by the RC payload admission',
     'MERGE': 'bytes claimed by two admitted objects; combine them in one unit (not raw, but blocks a real link)',
 }
 
@@ -113,13 +115,40 @@ def scaffold_ranges(manifest):
     return result
 
 
-def build(debt=False, manifest=None, write=True):
+def build(debt=False, manifest=None, write=True, recovery=None):
     raw = fixture('SIMANTW.EXE'); image = ne.parse(raw); symbols = mapsym.parse(fixture('SIMANTW.SYM'))
     imports = import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB')
     size = len(raw)
     hybrid = bytearray(size)
     owner = array('i', [-1]) * size
     owners = []
+    problems = []
+
+    recovery = recovery or read_json(ROOT / 'src/recovery.json')
+    resource_proof, resource_output = resource_lane.load_admission(recovery.get('resources'))
+    if isinstance(resource_output, str):
+        problems.append(resource_output)
+        resource_output = None
+    resource_rows = {}
+    if resource_proof is not None:
+        try:
+            for row in resource_proof['resources']:
+                index = row['oracle_index']
+                if index in resource_rows or not isinstance(index, int) or index < 0 or index >= len(image['resources']):
+                    raise FormatError('duplicate or out-of-range oracle resource index in admission')
+                oracle_row = image['resources'][index]
+                target = row['oracle_range']
+                if (target.get('start'), target.get('end'), target.get('size')) != \
+                        (oracle_row['offset'], oracle_row['offset'] + oracle_row['size'], oracle_row['size']):
+                    raise FormatError('admitted oracle range differs from the resource table')
+                if row.get('type') in (['id', 15], ('id', 15)):
+                    raise FormatError('admission attempts to own RT_NAMETABLE bytes')
+                resource_rows[index] = row
+        except (FormatError, KeyError, TypeError) as exc:
+            problems.append('resource admission mapping invalid: ' + str(exc))
+            resource_rows = {}
+            resource_proof = None
+            resource_output = None
 
     def add_owner(kind, label, lane=None):
         owners.append(dict(kind=kind, label=label, lane=lane)); return len(owners) - 1
@@ -127,6 +156,35 @@ def build(debt=False, manifest=None, write=True):
     # Container regions: everything outside segment data is linker/RC output.
     for region in image['file_regions']:
         if region['kind'] == 'SEGMENT':
+            continue
+        if region['kind'] == 'RESOURCE' and region.get('index') in resource_rows and resource_proof is not None:
+            mapping = resource_rows[region['index']]
+            oracle_row = image['resources'][region['index']]
+            source_range = mapping.get('compiled_range', {})
+            start, end = source_range.get('start'), source_range.get('end')
+            if (not isinstance(start, int) or not isinstance(end, int) or end - start != oracle_row['size'] or
+                    start < 0 or end > len(resource_output)):
+                problems.append('resource payload source range is invalid for oracle row %d' % region['index'])
+                o = add_owner('RAW', region['kind'], 'RESOURCES')
+                for i in range(region['start'], region['end']):
+                    owner[i] = o; hybrid[i] = raw[i]
+                continue
+            payload = resource_output[start:end]
+            oracle_payload = raw[oracle_row['offset']:oracle_row['offset'] + oracle_row['size']]
+            if sha256(payload) != mapping.get('sha256'):
+                problems.append('stored RC payload bytes differ from the admitted range for oracle row %d' % region['index'])
+            if payload != oracle_payload:
+                problems.append('stored RC payload bytes differ from the oracle for resource row %d' % region['index'])
+            if sha256(payload) != mapping.get('sha256') or payload != oracle_payload:
+                o = add_owner('RAW', region['kind'], 'RESOURCES')
+                for i in range(region['start'], region['end']):
+                    owner[i] = o; hybrid[i] = raw[i]
+                continue
+            label = '%s %s' % (oracle_row['type_name'], oracle_row['identity'].get('name', oracle_row['identity'].get('id')))
+            o = add_owner('RESOURCES', label, 'RESOURCES')
+            for offset, byte in enumerate(payload):
+                at = oracle_row['offset'] + offset
+                owner[at] = o; hybrid[at] = byte
             continue
         lane = 'RESOURCES' if region['kind'].startswith('RESOURCE') else 'LINK'
         o = add_owner('RAW', region['kind'], lane)
@@ -154,7 +212,6 @@ def build(debt=False, manifest=None, write=True):
     seen = {}
     objects = [(row['object'], 'C', row['symbol']) for row in manifest['game_objects']] + \
               [(row['object'], 'RUNTIME', row['member']) for row in manifest['runtime_objects']]
-    problems = []
     conflicts = Counter()
     for path, kind, label in objects:
         digest = identity(ROOT / path)['sha256']
@@ -249,8 +306,8 @@ def build(debt=False, manifest=None, write=True):
             start = i
     code_bytes = sum(s['logical_size'] for s in image['segments'] if s['kind'] == 'CODE')
     report = dict(status='HYBRID_EXACT' if not mismatches and not problems else 'NOT_EXACT', image_sha256=sha256(bytes(hybrid)), oracle_sha256=sha256(raw),
-                  file_bytes=size, owned=dict(C=totals['C'], RUNTIME=totals['RUNTIME']), debt=dict(sorted(lanes.items())),
-                  debt_total=size - totals['C'] - totals['RUNTIME'], code_segment_bytes=code_bytes,
+                  file_bytes=size, owned=dict(C=totals['C'], RUNTIME=totals['RUNTIME'], RESOURCES=totals['RESOURCES']), debt=dict(sorted(lanes.items())),
+                  debt_total=size - totals['C'] - totals['RUNTIME'] - totals['RESOURCES'], code_segment_bytes=code_bytes,
                   objects=len(seen), problems=problems[:50], problem_count=len(problems), mismatched_bytes=len(mismatches),
                   claim_conflicts=dict(bytes=sum(conflicts.values()), pairs=len(conflicts),
                                        top=[dict(objects=list(k), bytes=v) for k, v in sorted(conflicts.items(), key=lambda kv: -kv[1])[:5]],
