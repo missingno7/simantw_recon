@@ -13,8 +13,6 @@ extern int far OptionStates[];
 extern int far songsOnFlag;
 extern int far effectsOnFlag;
 
-static char near pauseMenuText[] = "Un&pause\tShift+0\0&Pause\tShift+0";
-
 extern void far SetMenuItemState(int item, int state);
 extern void far SetMenuOptionText(int item, char far *text);
 extern void far UpdateUserButtons(void);
@@ -26,7 +24,7 @@ void far SetMenuEntries(void)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? pauseMenuText : pauseMenuText + 17);
+    SetMenuOptionText(0x41, GamePaused ? "Un&pause\tShift+0" : "&Pause\tShift+0");
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
