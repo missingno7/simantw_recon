@@ -2717,6 +2717,11 @@
         "text": "Best readable switch draft is 372/436 opcodes, 1132/1155 code bytes, with zero register and stack-only differences. The signed-char Dx8/Dy8 declarations restore CWDE in both egg placement loops. Remaining first body alignment divergence begins at case 13 (target 0x1e8); based private toggle words at SIMANT_DATA_GROUP +0x5a/+0x5c/+0x5e still compile to different tests and unresolved private segment placement, and the final DDE/NetBIOS path still differs in local/data layout. Next try an evidence-backed declaration-order/static-data reissue for the measured private DATA strings and flag scalars, then isolate the network callback's 16-byte argument layout.",
         "origin": "build/search/CheatKeys/20260926T064305-121720",
         "recorded": "2026-09-26T06:43:06.036911+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 372/436 opcodes; target ENTER 6 vs candidate 4. candidate local i (2 bytes) at bp-2 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-6 (2/4) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 6, candidate ENTER 4 (candidate named homes: bp-4/4, bp-2/2). first post-ENTER aligned row: T push 0x1d8e / C push <resolved fixup> [{'kind': 'segment', 'name': '_DATA'}] (immediate_or_binding). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/CheatKeys/20260927T181238-58348",
+        "recorded": "2026-09-27T18:12:39.060650+00:00"
       }
     ],
     "best": {
@@ -3570,6 +3575,11 @@
         "text": "Second-pass conclusion: best is 80/83 opcodes, 223/222 bytes (chained handle assignment); no strict match. The chained PAD2/handle expression aligns result-store order and improves by one opcode. New scalar/block/volatile count/base, cleanup-buffer scope, narrowed-long, register-handle and far-DosPunt interactions either repeat/regress or leave the same output. First remaining source residue is target SI index/DI handle versus candidate DI index/SI handle; frame ENTER 0x70 vs 0x6e (target name at BP-0x64,row base -0x66; candidate name -0x68,row base -0x6a); target 16-bit count home vs candidate long CDQ/dword; target far-call-lowered DosPunt shape vs candidate near call. Selector/CONST/fixup placement ignored pending exact body. No further useful source family evidenced this pass.",
         "origin": "build/search/CloseIndex/20260927T154043-10804",
         "recorded": "2026-09-27T15:40:44.012050+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 80/83 opcodes; target ENTER 112 vs candidate 110. candidate local count (4 bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local buf (4 bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-100 (address) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov si, word ptr [bp + 6] / C mov di, word ptr [bp + 6] (register_allocation). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/CloseIndex/20260927T181228-82632",
+        "recorded": "2026-09-27T18:12:28.817828+00:00"
       }
     ]
   },
@@ -6602,6 +6612,11 @@
         "text": "New frame hypothesis from MSC7 block-local allocation lesson: keep the B count function-scoped and declare the R count only inside the nested red-dirt block, so its lifetime does not share the B count home.",
         "origin": "build/search/DigTileB/20260927T124355-44060",
         "recorded": "2026-09-27T12:43:56.088444+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 182/196 opcodes; target ENTER 14 vs candidate 12. target slot bp-6 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-10 (2) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov bx, di / C mov ax, di (register_allocation). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/DigTileB/20260927T181232-149948",
+        "recorded": "2026-09-27T18:12:32.897856+00:00"
       }
     ]
   },
@@ -11109,6 +11124,11 @@
         "text": "Same-unit _InitSow uses far structs with indexed v[] fields for SowX/Y/Dir/Save and SowTab. Testing that data shape with the Y-first calculation grew the aligned opcode prefix through target 0x79 and scored 91/103 (319/315 bytes), but frame remains 12 vs 16: target homes Y at BP-6/-4 while this draft homes it at BP-A/-8; target X is at BP-A/-8. Swapping pointer declaration order or alias variable roles compiled identically. Retain the struct/Y-first source as the current opcode-prefix frontier; next change must fix the pointer-home ordering and target's X-direction register lifetime.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T14:02:28.625681+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 91/103 opcodes; target ENTER 16 vs candidate 12. target slot bp-12 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-14 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-16 (2/4) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T jmp 0x12c / C jmp 0x130 (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/DoSow/20260927T181236-162344",
+        "recorded": "2026-09-27T18:12:36.401575+00:00"
       }
     ]
   },
@@ -12654,6 +12674,11 @@
         "text": "Best remains 146/170 opcodes and 506/484 bytes; candidate repeats w20-pool-5 output. Target ENTER is 0x1E, outH/outW homes are BP-6/-4, and y/x remain in SI/DI across DrawBitMapToBuffer; private lastMapMapBuf tail/binding is not resolved.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:15:37.604632+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 146/170 opcodes; target ENTER 30 vs candidate 28. target slot bp-18 (2/address) has no named candidate local (a missing local, or a compiler temporary); target slot bp-20 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-26 (2/address) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov word ptr [bp - 6], ax / C mov word ptr [bp - 4], ax (memory_operand, stack_local_layout). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/DrawMapFoot/20260927T181237-122528",
+        "recorded": "2026-09-27T18:12:38.137421+00:00"
       }
     ]
   },
@@ -16005,6 +16030,11 @@
         "text": "Second-pass meta-analysis after 10 rounds without opcode gain: best remains FillMap_lower_snapshot.c at 37/38 opcodes, 85/85 bytes, 1/1 fixup. Its explicit lower=last register copy fixes target CX and the signed jg, but arg2 is BX (target DI), row induction is SI (target BX), and frame is ENTER 6 (target 8). Combining the lower snapshot with width aggregate keeps 37/38 and ENTER 8, but stack identities remain reversed for start/height (candidate -4/-2; target -2/-4). Swapping aggregate declaration order or making height unsigned reproduced the same object; 2D row-index form regressed to 30/38. No strict body; no unit or promotion attempt. Remaining useful hypothesis is the source lifetime/allocation that simultaneously assigns arg2 to DI and row base to BX.",
         "origin": "build/search/FillMap/20260927T154333-70020",
         "recorded": "2026-09-27T15:43:33.811115+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 37/38 opcodes; target ENTER 8 vs candidate 6. candidate local width (2 bytes) at bp-6 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-4/2, bp-2/2). first post-ENTER aligned row: T mov di, word ptr [bp + 8] / C mov bx, word ptr [bp + 8] (register_allocation). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/FillMap/20260927T181226-24592",
+        "recorded": "2026-09-27T18:12:27.165831+00:00"
       }
     ]
   },
@@ -18276,19 +18306,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/GetAlarmDir/73d0d6966ade.c",
-      "sha256": "73d0d6966ade80e2483064b50680894ac6f001df17818fd782ef8d818d66f62c",
+      "source": "evidence/recovery/drafts/GetAlarmDir/9c5ecdf81c1e.c",
+      "sha256": "9c5ecdf81c1ed93a4991f6a04ba3f6c2ec6c9e81a67f5e25cf202e57ecdf70dc",
       "key": [
         false,
         false,
-        119,
-        -6
+        121,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 119,
-      "opcode_total": 124,
-      "candidate_bytes": 292,
+      "opcode_matches": 121,
+      "opcode_total": 121,
+      "candidate_bytes": 286,
       "target_bytes": 286,
       "flags": [
         "/AL",
@@ -18297,8 +18327,8 @@
         "/Oeglw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/GetAlarmDir/20260927T151821-164116/results.json",
-      "recorded": "2026-09-27T15:18:21.904544+00:00"
+      "origin": "build/search/GetAlarmDir/20260927T180944-25020/results.json",
+      "recorded": "2026-09-27T18:09:45.185248+00:00"
     },
     "notes": [
       {
@@ -20669,6 +20699,11 @@
         "text": "Frame-first replay confirms target ENTER 6 with plane home bp-2, ex bp-6, ey bp-4; best branch-refresh candidate is 71/73 and ENTER 4, omitting mov [bp-2],SI and rereading MePlane for the call. A fresh assignment-order batch (x/y then plane in both orders) fell to 70/73 and did not create the home; all catalogued profile probes produced identical OMF to baseline. Existing history already covers snapshot, volatile, addressed, block-copy, aggregate, and branch/goto families. No source-backed C form remains for this conditional plane home; CONST/fixup placement is secondary.",
         "origin": "build/search/GotoMyAnt/20260927T145956-166420",
         "recorded": "2026-09-27T14:59:57.097483+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 71/73 opcodes; target ENTER 6 vs candidate 4. target slot bp-6 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 6, candidate ENTER 4 (candidate named homes: bp-4/2, bp-2/2). first post-ENTER aligned row: T mov es, word ptr [0xc100] / C mov <resolved fixup> [{'kind': 'segment', 'name': 'CONST'}] (memory_operand). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/GotoMyAnt/20260927T181227-67820",
+        "recorded": "2026-09-27T18:12:27.956632+00:00"
       }
     ]
   },
@@ -24301,6 +24336,11 @@
         "text": "f-n2-08 second pass: fresh --frame --full remains 106/108 opcodes, 275/278 bytes; target ENTER 0x0e vs best 0x0c. First true body gap is target +0x4d mov [bp-8],0x18; subsequent second copy needs source DS:DI, destination ES:SI, count CX, while best adds BX/ SI address preparation. A volatile second-length local emitted the missing initialization and ENTER 0x0e but flipped early SI/DI roles, omitted target [bp-4]=CX, and changed the second loop; declaration reorder and register handle duplicated that output. Near destination pointer and volatile destination pointer both regressed. Body not exact, so no TU build or promotion.",
         "origin": "build/search/LoadMonoPats/20260927T145125-128380",
         "recorded": "2026-09-27T14:51:25.658321+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 106/108 opcodes; target ENTER 14 vs candidate 12. candidate local copySource (4 bytes) starts at bp-16 but the target never accesses bp-16; nearest target slot bp-14: a local in between is missing or extra; candidate local copyDestination (4 bytes) at bp-20 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local handle (2 bytes) at bp-12 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it). first post-ENTER aligned row: T mov word ptr [bp - 0xe], si / C mov word ptr [bp - 0xc], si (memory_operand, stack_local_layout). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/LoadMonoPats/20260927T181226-54180",
+        "recorded": "2026-09-27T18:12:26.356340+00:00"
       }
     ]
   },
@@ -24402,6 +24442,11 @@
         "text": "Fresh full replay of the frame-exact L31 source is 92/94 opcodes, 231/231 bytes, 7/7 fixups, with no frame findings. The first region has the parser far-pointer homes shifted (target bp-4/-2, candidate bp-6/-4), length at target bp-6 versus candidate bp-2, and the positive-count prologue orders DI/table-segment setup before remaining/sum work; L31 does the latter first. A new grouped parser-state struct test compiled at 81/94 and grew ENTER to 30, so reject it. Prior history covers 54 variants plus branch-local/single cursors, loop/control flow, widths, scopes and accumulators. No useful next construct is justified without source-backed lifetime evidence; retain the 93/94 official draft as opcode best and L31 as frame reference; body is not ready for TU placement.",
         "origin": "build/search/LoadStringAnt/20260927T144619-61372",
         "recorded": "2026-09-27T14:46:20.262127+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 93/94 opcodes; target ENTER 22 vs candidate 20. candidate local handle (2 bytes) at bp-12 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-18 (2/4) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 22, candidate ENTER 20 (candidate named homes: bp-20/2, bp-16/2, bp-14/2, bp-12/2, bp-10/4, bp-6/4, bp-2/2). first post-ENTER aligned row: T mov word ptr [bp - 0xe], ax / C mov word ptr [bp - 0xc], ax (memory_operand, stack_local_layout). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/LoadStringAnt/20260927T181225-76520",
+        "recorded": "2026-09-27T18:12:25.547332+00:00"
       }
     ]
   },
@@ -25780,6 +25825,11 @@
         "text": "Guard polarity and address operand order normalize to the same object as the best draft. Reordering rowCount and rowBase worsens to 39/48. Best remains 42/48 and 99/105 bytes; target frame is ENTER 6 with rowBase and rowCount homes at BP-2/BP-4, candidate frame ENTER 4, and direct MapA displacement plus linked SRand1 calls remain. Next useful work needs a source family that naturally preserves the additional two-byte local and controls the row/index register assignment.",
         "origin": "build/search/MakeLint2/20260927T081720-174496",
         "recorded": "2026-09-27T08:17:20.407713+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 42/48 opcodes; target ENTER 6 vs candidate 4. frame size differs: target ENTER 6, candidate ENTER 4 (candidate named homes: bp-4/2, bp-2/2). first post-ENTER aligned row: T cmp bx, dx / C cmp dx, bx (register_allocation, alignment_uncertain). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/MakeLint2/20260927T181236-89280",
+        "recorded": "2026-09-27T18:12:37.264730+00:00"
       }
     ]
   },
@@ -26138,6 +26188,11 @@
         "text": "Second-pass frame/control analysis (2026-09-27): retained best is 97/101 opcodes, 254/257 bytes, ENTER 6. Target ENTER 8 uses column at bp-2, fill/stencil count at bp-4, a row copy at bp-6, and width at bp-8; candidate has column bp-2, width bp-4, count bp-6, with rowStart only in DX. First differing region otherwise has the same span arithmetic: target adds mov [bp-6],dx after storing height, which adds three bytes and shifts the seven branch displacements; branch destinations still land on equivalent instructions. A plain unused row copy compiled to the same object; volatile copy scored 90/101 and ENTER 10; late copy 94/101; volatile width 89/101; union/address volatile alias 94/101. Symbolic lift refinement (15 variants) topped at 18/101 because it did not model the target REP STOSB path. Remaining source question: what authentic lifetime/home makes the otherwise unread bp-6 row copy while preserving BX/SI scheduling. Ignore private selector/fixup residue until body exact, then test in latest simone:3120 unit.",
         "origin": "build/search/MakeOutletH/20260927T151756-88808",
         "recorded": "2026-09-27T15:17:56.804135+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 97/101 opcodes; target ENTER 8 vs candidate 6. target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-4/2, bp-2/2). first post-ENTER aligned row: T jl 0x5f / C jl 0x5c (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/MakeOutletH/20260927T181229-169344",
+        "recorded": "2026-09-27T18:12:29.617301+00:00"
       }
     ]
   },
@@ -26229,6 +26284,11 @@
         "text": "Correction to the preceding note: the dead/volatile row-copy, volatile-width, and alias trials were compiled for _MakeOutletH only; those source variants were not mirrored into _MakeOutletV. _MakeOutletV independently retains the same 97/101, 254/257, ENTER 6 frame residue. No V admission occurred.",
         "origin": "build/search/MakeOutletV/20260927T151843-172964",
         "recorded": "2026-09-27T15:18:43.450347+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 97/101 opcodes; target ENTER 8 vs candidate 6. target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-4/2, bp-2/2). first post-ENTER aligned row: T jl 0x5f / C jl 0x5c (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/MakeOutletV/20260927T181230-187184",
+        "recorded": "2026-09-27T18:12:30.433455+00:00"
       }
     ]
   },
@@ -31061,6 +31121,11 @@
         "text": "Corrected CUR_LEVEL to the packet's actual modeLevels public at PACK offset 0x9c74 (extern int far modeLevels[]; modeLevels[0]); this removes the cross-object match_position source warning. Body remains 277/310 with ENTER 0x18. Reject-to-cleanup and the corrected binding leave the first body residue at offset 0x12f; no unit admission because the body is not exact.",
         "origin": "build/search/ProcModeEvent/20260927T135918-85728",
         "recorded": "2026-09-27T13:59:18.591014+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 278/310 opcodes; target ENTER 24 vs candidate 22. candidate local edge2 (4 bytes) at bp-28 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-12 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-16 (2/address) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T dw offset 0x2d8 / C dw offset 0x2c8 (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/ProcModeEvent/20260927T181235-160600",
+        "recorded": "2026-09-27T18:12:35.531978+00:00"
       }
     ]
   },
@@ -32551,6 +32616,11 @@
         "text": "Changing the based map cursor to a far-pointer local scored 56/68 versus the preserved 62/66 and left ENTER 8 versus 4 unresolved. Keep the current body; this pointer-type family did not explain the two target homes.",
         "origin": "build/search/Reproduce/20260927T170140-24592",
         "recorded": "2026-09-27T17:01:40.844165+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 62/66 opcodes; target ENTER 8 vs candidate 4. target slot bp-6 (2) has no named candidate local (a missing local, or a compiler temporary); target slot bp-8 (2) has no named candidate local (a missing local, or a compiler temporary); frame size differs: target ENTER 8, candidate ENTER 4 (candidate named homes: bp-4/2, bp-2/2). first post-ENTER aligned row: T jle 0x32 / C jle 0x72 (branch_target). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/Reproduce/20260927T181231-84176",
+        "recorded": "2026-09-27T18:12:32.055448+00:00"
       }
     ]
   },
@@ -36592,6 +36662,11 @@
         "text": "Second-pass conclusion: best 79/83 opcodes, 195/187 bytes, 8/10 fixups; no strict match. Use this 64-row source, not the stale context ledger's 32-row draft. Frame target ENTER 8 vs candidate 6, but target and candidate access the same BP-2/BP-6 homes. All row bounds, signed conditions, register roles, neighbor loads, and arithmetic match. The only opcode region is the threshold output: target reuses BX=rowOffset+col through both arms; candidate recomputes BX with MOV/ADD in each arm, adding four opcodes/eight bytes. Narrow near-pointer, pointer-base, block and function cell-index, register hint, row-pointer, struct overlay, and constant-first variants regressed or compiled to the same output. Ignore fixup/selector noise until the body is exact; no useful next C source hypothesis remains in this pass.",
         "origin": "build/search/SmoothAlarm/20260927T154043-135972",
         "recorded": "2026-09-27T15:40:44.111452+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 79/83 opcodes; target ENTER 8 vs candidate 6. frame size differs: target ENTER 8, candidate ENTER 6 (candidate named homes: bp-6/2, bp-2/2). first post-ENTER aligned row: T cmp di, 0x800 / C cmp di, 0x400 (immediate_or_binding). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/SmoothAlarm/20260927T181230-163764",
+        "recorded": "2026-09-27T18:12:31.260352+00:00"
       }
     ]
   },
@@ -39278,6 +39353,11 @@
         "text": "Body remains 235/235 opcodes and 694/694 bytes; the call at 0x6F must bind to private helper 3:16D4 rather than public _UpdateEditIfBufInvalid. Current leaf 3:63FE probe is 259/315 opcodes, 833/863 bytes, frame 0x24; helper chain still blocks unit admission.",
         "origin": "build/search/UpdateEdit/20260927T175259-36404",
         "recorded": "2026-09-27T17:52:59.613702+00:00"
+      },
+      {
+        "text": "Correction to the earlier note: the target's near call to private 3:16D4 is at function offset +0x285 (raw E8 displacement 0x026C from segment offset 0x1465 to 0x16D4). The saved best C draft currently binds that call to internal 3:149C instead. No +0x6F call is involved.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T17:54:33.948038+00:00"
       }
     ]
   },
@@ -39398,6 +39478,11 @@
         "text": "Body remains 26/26 opcodes and 82/82 bytes with exact frame; the call at 0x47 must bind to private helper 3:16D4. Leaf 3:63FE currently probes at 259/315 opcodes and frame 0x24; 6250 and 16D4 remain to recover before unit admission.",
         "origin": "build/search/UpdateEditIfBufInvalid/20260927T175259-83520",
         "recorded": "2026-09-27T17:52:59.533738+00:00"
+      },
+      {
+        "text": "Verified the target's near call to private 3:16D4 at function offset +0x47: raw E8 displacement from segment offset 0x14E3 lands at 0x16D4. Preserve that private binding in the antedit unit.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T17:54:34.168554+00:00"
       }
     ]
   },
@@ -41369,6 +41454,11 @@
         "text": "f-nr-22 2026-09-27: best remains 107/118, ENTER 34 vs target 38. Admitted ch_DeleteEntry confirms CacheTable count@0, used@2, four-byte slots from +4, and age words after (count+1)*4. An evidence-backed typed-table rewrite scored 99/117 and kept ENTER 34; its first region added extra pointer materialization. Current branch diagnostics show the loop continuation lands on different instructions. Remaining useful work is exact handle/entry pointer lifetime and loop-tail shape, not guessed field offsets.",
         "origin": "build/search/ch_DumpOldest/20260927T132628-91356",
         "recorded": "2026-09-27T13:26:29.194703+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 107/118 opcodes; target ENTER 38 vs candidate 34. candidate local entry (? bytes) at bp-8 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local handles (4 bytes) starts at bp-30 but the target never accesses bp-30; nearest target slot bp-32: a local in between is missing or extra; candidate local oldEntry (? bytes) at bp-22 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it). first post-ENTER aligned row: T mov di, ax / C mov di, bx (register_allocation, alignment_uncertain). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/ch_DumpOldest/20260927T181233-47772",
+        "recorded": "2026-09-27T18:12:33.714380+00:00"
       }
     ]
   },
@@ -46960,6 +47050,11 @@
         "text": "Starting from the frame-correct 70/78 direct-count-guard draft (ENTER 20, no findings), swapping the p and n assignments emitted the identical object, so the compiler freely reordered the independent setup. Using p as the post-guard cursor raised the score to 72/80 but restored the scoped-cursor 18-byte frame with extra bucket/indirect homes and missing target slots. A byte-offset cursor cast gave 70/78 with an 18-byte frame; inlining the far indirect dereference fell to 61/78. Current best full score is not frame-clean; retain the frame-correct direct-count-guard draft as the next base.",
         "origin": "build/search/win_DrawTitle/20260927T133753-63336",
         "recorded": "2026-09-27T13:37:53.582310+00:00"
+      },
+      {
+        "text": "F-HOLE study 2026-09-27: best remains 72/80 opcodes; target ENTER 20 vs candidate 18. candidate local indirect (? bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); candidate local bucket (? bytes) at bp-4 is never accessed by the target: an extra memory local (make it a register candidate, merge it, or drop it); target slot bp-2 (2) has no named candidate local (a missing local, or a compiler temporary). first post-ENTER aligned row: T mov word ptr [bp - 0xe], ax / C mov word ptr [bp - 0xc], ax (memory_operand, stack_local_layout). Admitted aggregate controls show used arrays/structs retain declared extent, but this draft does not yet establish the target's historical aggregate spelling; no admission. See build/workers/f-study-fhole/REPORT.md.",
+        "origin": "build/search/win_DrawTitle/20260927T181234-170508",
+        "recorded": "2026-09-27T18:12:34.615259+00:00"
       }
     ]
   },

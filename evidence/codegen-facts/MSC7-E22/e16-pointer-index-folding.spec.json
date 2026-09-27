@@ -1,0 +1,16 @@
+{
+  "name": "e16-pointer-index-folding",
+  "profile": "ogi",
+  "function": "pointer_pair",
+  "text": "int pointer_pair(int *p, int i, int j, int c, int d)\n{\n    return (p[i * 8 + j] & c) ^ (({{ADDR}}) | d);\n}\n",
+  "mode": "one-at-a-time",
+  "axes": {
+    "ADDR": {
+      "index": "p[i * 8 + j]",
+      "dereference": "*(p + i * 8 + j)",
+      "commuted_pointer": "*(p + j + i * 8)",
+      "scaled_then_index": "(p + i * 8)[j]",
+      "shift_index": "p[(i << 3) + j]"
+    }
+  }
+}

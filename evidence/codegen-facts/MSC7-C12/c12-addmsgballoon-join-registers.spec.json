@@ -1,0 +1,18 @@
+{
+  "name": "c12-addmsgballoon-join-registers",
+  "symbol": "_AddMsgBalloon",
+  "function": "AddMsgBalloon",
+  "text": "/* AddMsgBalloon: append a message balloon to the current-balloon parallel\n * arrays (CurBalloonCnt/Pnts/Plane/Flags/Msgs -- confirmed via\n * assets/SIMANTW.SYM segment 9 PACK: CurBalloonCnt 0x9fd0, CurBalloonPnts\n * 0x80d6 (4-byte MapPoint stride), CurBalloonPlane 0x7d68 (word),\n * CurBalloonFlags 0x78be (word), CurBalloonMsgs 0x7c24 (4-byte far\n * pointer)). style==10 balloons carry pixel coordinates directly (x,y\n * divided by the tile size for the visibility test, stored as-is);\n * other styles carry tile coordinates (used directly for the visibility\n * test, converted to a tile-centre pixel position tileSize*coord+8 for\n * storage) -- same tileWidth/tileHeight-scaled visibility shape as\n * EggBalloons/FightBalloons/QueenBalloons/RestBalloons. Bails out once\n * 6 balloons are already queued or the point is outside the visible\n * edit-window tile rect. */\nstruct MapPoint { int x, y; };\n\nextern int far CurBalloonCnt;\nextern struct MapPoint far CurBalloonPnts[];\nextern int far CurBalloonPlane[];\nextern int far CurBalloonFlags[];\nextern char far * far CurBalloonMsgs[];\n\nextern int near tileWidth;\nextern int near tileHeight;\nextern int near MapPlane;\nextern int near editWidth;\nextern struct MapPoint far MapPnt;\nextern int near editHeight;\n\nvoid far AddMsgBalloon(int x, int y, int plane, int style, char far *msg)\n{\n    int tx, ty;\n    int visible;\n\n\n    {{ASSIGN}}\n\n    if (CurBalloonCnt >= 6)\n        return;\n\n    visible = MapPlane == plane && MapPnt.x <= tx && tx < MapPnt.x + editWidth &&\n              MapPnt.y <= ty - 3 && ty < MapPnt.y + editHeight;\n    if (!visible)\n        return;\n\n    CurBalloonPnts[CurBalloonCnt].x = (style == 10) ? x : tileWidth * x + 8;\n    CurBalloonPnts[CurBalloonCnt].y = (style == 10) ? y : tileHeight * y + 8;\n    CurBalloonPlane[CurBalloonCnt] = plane;\n    CurBalloonFlags[CurBalloonCnt] = style;\n    CurBalloonMsgs[CurBalloonCnt] = msg;\n    CurBalloonCnt++;\n}\n",
+  "axes": {
+    "ASSIGN": {
+      "canonical": "if (style == 10) {\n        tx = x / tileWidth;\n        ty = y / tileHeight;\n    } else {\n        tx = x;\n        ty = y;\n    }",
+      "then_reversed": "if (style == 10) {\n        ty = y / tileHeight;\n        tx = x / tileWidth;\n    } else {\n        tx = x;\n        ty = y;\n    }",
+      "else_reversed": "if (style == 10) {\n        tx = x / tileWidth;\n        ty = y / tileHeight;\n    } else {\n        ty = y;\n        tx = x;\n    }",
+      "both_reversed": "if (style == 10) {\n        ty = y / tileHeight;\n        tx = x / tileWidth;\n    } else {\n        ty = y;\n        tx = x;\n    }",
+      "condition_inverted": "if (style != 10) {\n        tx = x;\n        ty = y;\n    } else {\n        tx = x / tileWidth;\n        ty = y / tileHeight;\n    }",
+      "goto_raw_fallthrough": "if (style == 10)\n        goto converted_coords;\n    tx = x;\n    ty = y;\n    goto assigned;\nconverted_coords:\n    tx = x / tileWidth;\n    ty = y / tileHeight;\nassigned:",
+      "goto_converted_fallthrough": "if (style != 10)\n        goto raw_coords;\n    tx = x / tileWidth;\n    ty = y / tileHeight;\n    goto assigned;\nraw_coords:\n    tx = x;\n    ty = y;\nassigned:"
+    }
+  },
+  "mode": "one-at-a-time"
+}

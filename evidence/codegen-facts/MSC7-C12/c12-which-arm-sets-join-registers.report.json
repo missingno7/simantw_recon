@@ -1,0 +1,241 @@
+{
+  "name": "c12-which-arm-sets-join-registers",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NTANTEDIT_MODULE"
+  ],
+  "function": "f",
+  "symbol": "_AddMsgBalloon",
+  "mode": "one-at-a-time",
+  "variants": 5,
+  "distinct_outputs": 5,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "BODY": "canonical"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "di"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "6f752850a5d642b09940c8d86fd92678e823fa437a95ff26d56a1587bd7aa000",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push di",
+        "0004 cmp word ptr [bp + 6], 0",
+        "0008 je 0x16",
+        "000a mov bx, word ptr [bp + 8]",
+        "000d inc bx",
+        "000e mov di, word ptr [bp + 0xa]",
+        "0011 add di, 2",
+        "0014 jmp 0x22",
+        "0016 mov bx, word ptr [bp + 0xa]",
+        "0019 add bx, 3",
+        "001c mov di, word ptr [bp + 8]",
+        "001f add di, 4",
+        "0022 mov ax, di",
+        "0024 imul word ptr [bp + 0xc]",
+        "0027 add ax, bx",
+        "0029 pop di",
+        "002a leave ",
+        "002b retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "BODY": "then_reversed"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "di"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "ddb31cf2fd203b8c5e6a12cff991f39b0d38576780db5a60691681c68648c441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -5,6 +5,6 @@",
+          " je 0x16",
+          "+mov di, word ptr [bp + 0xa]",
+          "+add di, 2",
+          " mov bx, word ptr [bp + 8]",
+          " inc bx",
+          "-mov di, word ptr [bp + 0xa]",
+          "-add di, 2",
+          " jmp 0x22"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "BODY": "else_reversed"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "di"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "71b5bdf9e42355b0d00ef181dacd0782ddafaed864e6c5829afef1e8a807faa8",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -5,14 +5,14 @@",
+          " je 0x16",
+          "+mov di, word ptr [bp + 8]",
+          "+inc di",
+          "+mov bx, word ptr [bp + 0xa]",
+          "+add bx, 2",
+          "+jmp 0x22",
+          " mov bx, word ptr [bp + 8]",
+          "-inc bx",
+          "+add bx, 4",
+          " mov di, word ptr [bp + 0xa]",
+          "-add di, 2",
+          "-jmp 0x22",
+          "-mov bx, word ptr [bp + 0xa]",
+          "-add bx, 3",
+          "-mov di, word ptr [bp + 8]",
+          "-add di, 4",
+          "-mov ax, di",
+          "+add di, 3",
+          "+mov ax, bx",
+          " imul word ptr [bp + 0xc]",
+          "-add ax, bx",
+          "+add ax, di",
+          " pop di"
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "BODY": "both_reversed"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "di"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "ceb18dda00ae30926fcddf558164de174f28458580bd92b9e9f1769711469454",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -5,14 +5,14 @@",
+          " je 0x16",
+          "+mov bx, word ptr [bp + 0xa]",
+          "+add bx, 2",
+          "+mov di, word ptr [bp + 8]",
+          "+inc di",
+          "+jmp 0x22",
+          " mov bx, word ptr [bp + 8]",
+          "-inc bx",
+          "+add bx, 4",
+          " mov di, word ptr [bp + 0xa]",
+          "-add di, 2",
+          "-jmp 0x22",
+          "-mov bx, word ptr [bp + 0xa]",
+          "-add bx, 3",
+          "-mov di, word ptr [bp + 8]",
+          "-add di, 4",
+          "-mov ax, di",
+          "+add di, 3",
+          "+mov ax, bx",
+          " imul word ptr [bp + 0xc]",
+          "-add ax, bx",
+          "+add ax, di",
+          " pop di"
+        ]
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "BODY": "inverted"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "di"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "b621fade3678db4a34e714162cd4fc1b98f6e7630926db0bb2bdb5c56b72d361",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -4,3 +4,8 @@",
+          " cmp word ptr [bp + 6], 0",
+          "-je 0x16",
+          "+jne 0x18",
+          "+mov bx, word ptr [bp + 0xa]",
+          "+add bx, 3",
+          "+mov di, word ptr [bp + 8]",
+          "+add di, 4",
+          "+jmp 0x22",
+          " mov bx, word ptr [bp + 8]",
+          "@@ -9,7 +14,2 @@",
+          " add di, 2",
+          "-jmp 0x22",
+          "-mov bx, word ptr [bp + 0xa]",
+          "-add bx, 3",
+          "-mov di, word ptr [bp + 8]",
+          "-add di, 4",
+          " mov ax, di"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

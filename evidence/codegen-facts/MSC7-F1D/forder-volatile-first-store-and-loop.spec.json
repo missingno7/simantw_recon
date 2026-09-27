@@ -1,0 +1,23 @@
+{
+  "name": "forder-volatile-first-store-and-loop",
+  "profile": "baseline",
+  "function": "f",
+  "source": "build/workers/f-study-forder/probe_volatile_store.c",
+  "axes": {
+    "DECLS": {
+      "ab": "volatile int a, b;",
+      "ba": "volatile int b, a;"
+    },
+    "STORES": {
+      "ab": "a = x; b = y;",
+      "ba": "b = y; a = x;"
+    },
+    "FOLLOWUP": {
+      "none": "if (n) a++; else b++;",
+      "loop-ab": "while (n--) { a++; b++; }",
+      "loop-ba": "while (n--) { b++; a++; }",
+      "loop-weight-a": "while (n--) { a++; a++; b++; }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

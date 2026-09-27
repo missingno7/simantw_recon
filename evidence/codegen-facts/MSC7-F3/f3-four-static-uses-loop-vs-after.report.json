@@ -1,0 +1,341 @@
+{
+  "name": "f3-four-static-uses-loop-vs-after",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 3,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "INLOOP": "none",
+        "AFTERLOOP": "none"
+      },
+      "size": 82,
+      "frame": 2,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "36533c8bda98e8f39e1351de8587a306ca4dbe1061970bbb969f20baf4ff2f08",
+      "fixups": [
+        {
+          "offset": 46,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 2, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov si, word ptr [bp + 6]",
+        "0009 mov di, word ptr [bp + 8]",
+        "000c mov ax, word ptr [bp + 0xa]",
+        "000f mov word ptr [bp - 2], ax",
+        "0012 cmp word ptr [bp + 0xc], 0",
+        "0016 jle 0x46",
+        "0018 push si",
+        "0019 lcall 0, 0",
+        "001e add sp, 2",
+        "0021 push di",
+        "0022 lcall 0, 0",
+        "0027 add sp, 2",
+        "002a push word ptr [bp - 2]",
+        "002d lcall 0, 0",
+        "0032 add sp, 2",
+        "0035 add si, word ptr [bp + 6]",
+        "0038 add di, word ptr [bp + 8]",
+        "003b mov ax, word ptr [bp + 0xa]",
+        "003e add word ptr [bp - 2], ax",
+        "0041 dec word ptr [bp + 0xc]",
+        "0044 jne 0x18",
+        "0046 mov ax, di",
+        "0048 add ax, si",
+        "004a add ax, word ptr [bp - 2]",
+        "004d pop si",
+        "004e pop di",
+        "004f leave ",
+        "0050 retf ",
+        "0051 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "INLOOP": "four_extra",
+        "AFTERLOOP": "none"
+      },
+      "size": 118,
+      "frame": 2,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "a68df86437f7200d403b8ee3857f61e2df95636def76da8675ccda7fca9db277",
+      "fixups": [
+        {
+          "offset": 94,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 85,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 76,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 67,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 46,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 37,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -3,11 +3,8 @@",
+          " push si",
+          "-mov si, word ptr [bp + 6]",
+          "-mov di, word ptr [bp + 8]",
+          "-mov ax, word ptr [bp + 0xa]",
+          "+mov di, word ptr [bp + 6]",
+          "+mov ax, word ptr [bp + 8]",
+          " mov word ptr [bp - 2], ax",
+          "+mov si, word ptr [bp + 0xa]",
+          " cmp word ptr [bp + 0xc], 0",
+          "-jle 0x46",
+          "-push si",
+          "-lcall 0, 0",
+          "-add sp, 2",
+          "+jle 0x6a",
+          " push di",
+          "@@ -18,10 +15,25 @@",
+          " add sp, 2",
+          "-add si, word ptr [bp + 6]",
+          "-add di, word ptr [bp + 8]",
+          "-mov ax, word ptr [bp + 0xa]",
+          "+push si",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+add di, word ptr [bp + 6]",
+          "+mov ax, word ptr [bp + 8]",
+          " add word ptr [bp - 2], ax",
+          "+add si, word ptr [bp + 0xa]",
+          "+push si",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+push si",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+push si",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+push si",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          " dec word ptr [bp + 0xc]",
+          " jne 0x18",
+          "-mov ax, di",
+          "-add ax, si",
+          "+mov ax, si",
+          "+add ax, di",
+          " add ax, word ptr [bp - 2]"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "INLOOP": "none",
+        "AFTERLOOP": "four_extra"
+      },
+      "size": 124,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "1360d26d3e3d090ac9b7f685481a9312d81ccde2ff9eb7b00e00e0204762b274",
+      "fixups": [
+        {
+          "offset": 105,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 96,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 87,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 78,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 46,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "_Touch",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,2 +1,2 @@",
+          "-enter 2, 0",
+          "+enter 4, 0",
+          " push di",
+          "@@ -24,5 +24,19 @@",
+          " jne 0x18",
+          "+mov word ptr [bp - 4], di",
+          "+mov di, word ptr [bp - 2]",
+          "+push di",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+push di",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+push di",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          "+push di",
+          "+lcall 0, 0",
+          "+add sp, 2",
+          " mov ax, di",
+          " add ax, si",
+          "-add ax, word ptr [bp - 2]",
+          "+add ax, word ptr [bp - 4]",
+          " pop si"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

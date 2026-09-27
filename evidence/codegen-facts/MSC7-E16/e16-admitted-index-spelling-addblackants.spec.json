@@ -1,0 +1,15 @@
+{
+  "name": "e16-admitted-index-spelling-addblackants",
+  "symbol": "_AddBlackAnts",
+  "function": "AddBlackAnts",
+  "text": "/*\n * AddBlackAnts: scatter count black ants over the yard.  Every cell of\n * the 64 columns and rows 16..47 of the near MapA whose terrain code is\n * below 0x50 and whose LifeA cell is empty receives an ant: a roll of\n * 0..9 below 4 gives a soldier-range type (0x10 + SRand8, kind 4),\n * otherwise a worker-range type (0x30 + SRand8, kind 2); the cell and the\n * A list are updated.  Placement stops when the count runs out or the A\n * list holds 1000 entries.\n */\nextern unsigned char near MapA[];\nextern unsigned char near LifeA[];\nextern int far ListIndexA;\n\nextern int far SRand1(int range);\nextern int far SRand8(void);\nextern void far AddAntToAList(int x, int y, int type, int kind, int a);\n\nvoid far AddBlackAnts(int count)\n{\n    int x;\n    int y;\n    int base;\n    int kind;\n    int type;\n\n    for (x = 0; x < 64; x++) {\n        for (y = 16; y < 48; y++) {\n            if (MapA[{{INDEX}}] < 0x50 && LifeA[{{INDEX}}] == 0) {\n                switch (SRand1(10)) {\n                case 0:\n                case 1:\n                case 2:\n                case 3:\n                    base = 0x30;\n                    kind = 2;\n                    break;\n                default:\n                    base = 0x10;\n                    kind = 4;\n                    break;\n                }\n                type = SRand8() + base;\n                LifeA[{{INDEX}}] = type;\n                AddAntToAList(x, y, type, kind, 0);\n                if (--count <= 0)\n                    return;\n                if (ListIndexA >= 1000)\n                    return;\n            }\n        }\n    }\n}\n",
+  "mode": "one-at-a-time",
+  "axes": {
+    "INDEX": {
+      "canonical": "x * 64 + y",
+      "shift_form": "(x << 6) + y",
+      "commuted_add": "y + x * 64",
+      "nested_const": "x * (32 + 32) + y"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "e16-cast-folding",
+  "profile": "ogi",
+  "function": "cast_pair",
+  "text": "int cast_pair(int a, int b, int c, int d)\n{\n    return (({{LEFT}}) & c) ^ (({{RIGHT}}) | d);\n}\n",
+  "mode": "one-at-a-time",
+  "axes": {
+    "LEFT": {
+      "int_add": "a + b"
+    },
+    "RIGHT": {
+      "int_add": "a + b",
+      "cast_after": "(int)((long)(a + b))",
+      "widen_before_sum": "(int)((long)a + b)",
+      "widen_both_operands": "(int)((long)a + (long)b)",
+      "cast_operands_first": "(int)a + (int)b"
+    }
+  }
+}

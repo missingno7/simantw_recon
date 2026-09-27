@@ -1,0 +1,131 @@
+{
+  "name": "forder-address-home-reference-count",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "REFERENCE_COUNTS": "equal"
+      },
+      "size": 62,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "b033f6200cdb5ab9511a4a516cbcabd17c4f57206e60a4f69e94f75352470e33",
+      "fixups": [
+        {
+          "offset": 23,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 10,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 lea ax, [bp - 2]",
+        "0007 push ss",
+        "0008 push ax",
+        "0009 lcall 0, 0",
+        "000e add sp, 4",
+        "0011 lea ax, [bp - 4]",
+        "0014 push ss",
+        "0015 push ax",
+        "0016 lcall 0, 0",
+        "001b add sp, 4",
+        "001e mov ax, word ptr [bp + 6]",
+        "0021 mov word ptr [bp - 4], ax",
+        "0024 mov ax, word ptr [bp + 8]",
+        "0027 mov word ptr [bp - 2], ax",
+        "002a cmp word ptr [bp + 0xa], 0",
+        "002e je 0x36",
+        "0030 inc word ptr [bp - 4]",
+        "0033 inc word ptr [bp - 2]",
+        "0036 mov ax, word ptr [bp - 2]",
+        "0039 add ax, word ptr [bp - 4]",
+        "003c leave ",
+        "003d retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "REFERENCE_COUNTS": "more-a"
+      },
+      "size": 64,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "83302bc52f7d263d61aa82f6b60c2c9c3cf23c96555703091d050f436428c8b0",
+      "fixups": [
+        {
+          "offset": 23,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 10,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -16,4 +16,4 @@",
+          " cmp word ptr [bp + 0xa], 0",
+          "-je 0x36",
+          "-inc word ptr [bp - 4]",
+          "+je 0x37",
+          "+add word ptr [bp - 4], 3",
+          " inc word ptr [bp - 2]",
+          "@@ -23 +23,2 @@",
+          " retf ",
+          "+nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

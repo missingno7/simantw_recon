@@ -1,0 +1,15 @@
+{
+  "name": "e16-temp-vs-repeat",
+  "profile": "og",
+  "function": "pair",
+  "text": "int pair(int a, int b, int c, int d)\n{\n    {{BODY}}\n}\n",
+  "mode": "one-at-a-time",
+  "axes": {
+    "BODY": {
+      "repeat_expression": "return ((a + b) & c) ^ ((a + b) | d);",
+      "temp_then_repeat": "int t; t = a + b; return (t & c) ^ ((a + b) | d);",
+      "temp_reused": "int t; t = a + b; return (t & c) ^ (t | d);",
+      "store_then_reload": "int t; t = a + b; c = t; return (c & c) ^ ((a + b) | d);"
+    }
+  }
+}

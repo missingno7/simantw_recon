@@ -1,0 +1,18 @@
+{
+  "name": "c12-minimal-join-predecessor",
+  "symbol": "_AddMsgBalloon",
+  "function": "f",
+  "segment": "ANTEDIT_MODULE",
+  "text": "int f(int c, int x, int y) {\n    int r;\n    {{BODY}}\n}",
+  "axes": {
+    "BODY": {
+      "canonical": "if (c) { r = x + 1; } else { r = y + 2; }\n    return r + 5;",
+      "inverted": "if (!c) { r = y + 2; } else { r = x + 1; }\n    return r + 5;",
+      "goto_false_fallthrough": "if (c) { r = x + 1; goto joined; }\n    r = y + 2;\njoined:\n    return r + 5;",
+      "goto_true_fallthrough": "if (!c) { r = y + 2; goto joined; }\n    r = x + 1;\njoined:\n    return r + 5;",
+      "early_return": "if (c) return (x + 1) + 5;\n    return (y + 2) + 5;",
+      "duplicated_tails": "if (c) { r = x + 1; return r + 5; }\n    r = y + 2; return r + 5;"
+    }
+  },
+  "mode": "one-at-a-time"
+}

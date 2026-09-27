@@ -1,0 +1,127 @@
+{
+  "name": "msc7-c16-minimal-loop-entry-test",
+  "profile": "oi-ga",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeilw",
+    "/GA",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 3,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "LOOP": "top-tested while"
+      },
+      "size": 18,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "fbdd09dd8456d3ac8bce0376b0d790c27d7cd480c868ce5ba11d88f3dc689096",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 mov bx, word ptr [bp + 6]",
+        "0006 xor dx, dx",
+        "0008 or bx, bx",
+        "000a jle 0xe",
+        "000c add dx, bx",
+        "000e mov ax, dx",
+        "0010 leave ",
+        "0011 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "LOOP": "prechecked bottom-tested do (equivalent)"
+      },
+      "size": 28,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "65f9fe9e2f49e1207e80713c68a75d15ede5c9b8a7b72b324587444a5c923e3d",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -5,3 +5,8 @@",
+          " or bx, bx",
+          "-jle 0xe",
+          "+jle 0x18",
+          "+sub bx, 1",
+          "+sbb ax, ax",
+          "+not ax",
+          "+and bx, ax",
+          "+inc bx",
+          " add dx, bx"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "LOOP": "unguarded bottom-tested do (negative control)"
+      },
+      "size": 20,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "01d9d3e9f0687dd6eb444f1057cff4fb13b71b08252e03cd443f4fbf0bc9a8bb",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,7 +2,8 @@",
+          " mov bp, sp",
+          "-mov bx, word ptr [bp + 6]",
+          "-xor dx, dx",
+          "-or bx, bx",
+          "-jle 0xe",
+          "-add dx, bx",
+          "+mov dx, word ptr [bp + 6]",
+          "+sub dx, 1",
+          "+sbb ax, ax",
+          "+not ax",
+          "+and dx, ax",
+          "+inc dx",
+          " mov ax, dx"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

@@ -1,0 +1,136 @@
+{
+  "name": "f5-far-pointer-object-home",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "PTRDECL": "plain"
+      },
+      "size": 32,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "541e99a033cc4e6358c6ef5e32ef6c17c41bee96f85728e139616b64773355ed",
+      "fixups": [
+        {
+          "offset": 15,
+          "width": 4,
+          "target": "_PausePoint",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push di",
+        "0004 push si",
+        "0005 mov di, word ptr [bp + 6]",
+        "0008 mov es, word ptr [bp + 8]",
+        "000b mov si, word ptr es:[di]",
+        "000e lcall 0, 0",
+        "0013 mov ax, si",
+        "0015 mov es, word ptr [bp + 8]",
+        "0018 add ax, word ptr es:[di + 2]",
+        "001c pop si",
+        "001d pop di",
+        "001e leave ",
+        "001f retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "PTRDECL": "volatile_object"
+      },
+      "size": 40,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "4d16736f2e704d7d79f96fd535067b96967792fd9648a6507bc4a495402f596b",
+      "fixups": [
+        {
+          "offset": 24,
+          "width": 4,
+          "target": "_PausePoint",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves"
+        ],
+        "diff": [
+          "@@ -1,14 +1,14 @@",
+          "-push bp",
+          "-mov bp, sp",
+          "-push di",
+          "+enter 4, 0",
+          " push si",
+          "-mov di, word ptr [bp + 6]",
+          "-mov es, word ptr [bp + 8]",
+          "-mov si, word ptr es:[di]",
+          "+mov ax, word ptr [bp + 6]",
+          "+mov dx, word ptr [bp + 8]",
+          "+mov word ptr [bp - 4], ax",
+          "+mov word ptr [bp - 2], dx",
+          "+les bx, ptr [bp - 4]",
+          "+mov si, word ptr es:[bx]",
+          " lcall 0, 0",
+          "+les bx, ptr [bp - 4]",
+          "+add si, word ptr es:[bx + 2]",
+          " mov ax, si",
+          "-mov es, word ptr [bp + 8]",
+          "-add ax, word ptr es:[di + 2]",
+          " pop si",
+          "-pop di",
+          " leave "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

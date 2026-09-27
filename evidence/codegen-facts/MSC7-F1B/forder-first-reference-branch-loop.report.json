@@ -1,0 +1,412 @@
+{
+  "name": "forder-first-reference-branch-loop",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 6,
+  "distinct_outputs": 6,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "FIRST_REFERENCE": "straight-ab"
+      },
+      "size": 48,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "4195917fe9d9588c2540dbcfb1ba6949f70a509efbc77bc834ec43ada4482a5c",
+      "fixups": [
+        {
+          "offset": 27,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 14,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 push si",
+        "0005 mov si, word ptr [bp + 8]",
+        "0008 lea ax, [bp - 2]",
+        "000b push ss",
+        "000c push ax",
+        "000d lcall 0, 0",
+        "0012 add sp, 4",
+        "0015 lea ax, [bp - 4]",
+        "0018 push ss",
+        "0019 push ax",
+        "001a lcall 0, 0",
+        "001f add sp, 4",
+        "0022 mov word ptr [bp - 4], si",
+        "0025 mov ax, word ptr [bp + 6]",
+        "0028 mov word ptr [bp - 2], ax",
+        "002b add ax, si",
+        "002d pop si",
+        "002e leave ",
+        "002f retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "FIRST_REFERENCE": "straight-ba"
+      },
+      "size": 48,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "778c435e64959ac4b7a4801c09b89e49126738feaa9e96aefcfbbc0b563821a9",
+      "fixups": [
+        {
+          "offset": 27,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 14,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -13,5 +13,5 @@",
+          " add sp, 4",
+          "-mov word ptr [bp - 4], si",
+          "+mov word ptr [bp - 2], si",
+          " mov ax, word ptr [bp + 6]",
+          "-mov word ptr [bp - 2], ax",
+          "+mov word ptr [bp - 4], ax",
+          " add ax, si"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "FIRST_REFERENCE": "branch-ab"
+      },
+      "size": 60,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "edab12acf3f6d6ee5c9fc2ddda38b38e07e1a4696e2295a912aec24d6746ecec",
+      "fixups": [
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 18,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,3 +2,5 @@",
+          " push si",
+          "-mov si, word ptr [bp + 8]",
+          "+mov si, word ptr [bp + 0xa]",
+          "+or si, si",
+          "+je 0x19",
+          " lea ax, [bp - 2]",
+          "@@ -8,2 +10,4 @@",
+          " add sp, 4",
+          "+or si, si",
+          "+je 0x2a",
+          " lea ax, [bp - 4]",
+          "@@ -13,6 +17,7 @@",
+          " add sp, 4",
+          "-mov word ptr [bp - 4], si",
+          "-mov ax, word ptr [bp + 6]",
+          "-mov word ptr [bp - 2], ax",
+          "-add ax, si",
+          "+mov ax, word ptr [bp + 8]",
+          "+mov word ptr [bp - 4], ax",
+          "+mov cx, word ptr [bp + 6]",
+          "+mov word ptr [bp - 2], cx",
+          "+add ax, cx",
+          " pop si",
+          "@@ -20 +25,2 @@",
+          " retf ",
+          "+nop "
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "FIRST_REFERENCE": "branch-ba"
+      },
+      "size": 60,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "6480da778988c30b7643500104b47bc8c7fef0be8e0b7c4c6c7626860380fb3a",
+      "fixups": [
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 18,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,3 +2,5 @@",
+          " push si",
+          "-mov si, word ptr [bp + 8]",
+          "+mov si, word ptr [bp + 0xa]",
+          "+or si, si",
+          "+je 0x19",
+          " lea ax, [bp - 2]",
+          "@@ -8,2 +10,4 @@",
+          " add sp, 4",
+          "+or si, si",
+          "+je 0x2a",
+          " lea ax, [bp - 4]",
+          "@@ -13,6 +17,7 @@",
+          " add sp, 4",
+          "-mov word ptr [bp - 4], si",
+          "-mov ax, word ptr [bp + 6]",
+          "+mov ax, word ptr [bp + 8]",
+          " mov word ptr [bp - 2], ax",
+          "-add ax, si",
+          "+mov cx, word ptr [bp + 6]",
+          "+mov word ptr [bp - 4], cx",
+          "+add ax, cx",
+          " pop si",
+          "@@ -20 +25,2 @@",
+          " retf ",
+          "+nop "
+        ]
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "FIRST_REFERENCE": "loop-ab"
+      },
+      "size": 60,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "b4176450a9ae5a2611c1ec4120c39b8aa441ca52324dd555d164e623f6c76615",
+      "fixups": [
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 16,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,3 +2,4 @@",
+          " push si",
+          "-mov si, word ptr [bp + 8]",
+          "+mov si, word ptr [bp + 0xa]",
+          "+jmp 0x24",
+          " lea ax, [bp - 2]",
+          "@@ -13,6 +14,11 @@",
+          " add sp, 4",
+          "-mov word ptr [bp - 4], si",
+          "+mov ax, si",
+          "+dec si",
+          "+or ax, ax",
+          "+jne 0xa",
+          "+mov dx, word ptr [bp + 8]",
+          "+mov word ptr [bp - 4], dx",
+          " mov ax, word ptr [bp + 6]",
+          " mov word ptr [bp - 2], ax",
+          "-add ax, si",
+          "+add ax, dx",
+          " pop si"
+        ]
+      }
+    },
+    {
+      "variant": "v005",
+      "label": {
+        "FIRST_REFERENCE": "loop-ba"
+      },
+      "size": 60,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "73ae93c13d4d203ece20968c5e1aa151a3802afe5fe90a3e24eb21445d31a520",
+      "fixups": [
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 16,
+          "width": 4,
+          "target": "_Keep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,3 +2,4 @@",
+          " push si",
+          "-mov si, word ptr [bp + 8]",
+          "+mov si, word ptr [bp + 0xa]",
+          "+jmp 0x24",
+          " lea ax, [bp - 2]",
+          "@@ -13,6 +14,11 @@",
+          " add sp, 4",
+          "-mov word ptr [bp - 4], si",
+          "+mov ax, si",
+          "+dec si",
+          "+or ax, ax",
+          "+jne 0xa",
+          "+mov dx, word ptr [bp + 8]",
+          "+mov word ptr [bp - 2], dx",
+          " mov ax, word ptr [bp + 6]",
+          "-mov word ptr [bp - 2], ax",
+          "-add ax, si",
+          "+mov word ptr [bp - 4], ax",
+          "+add ax, dx",
+          " pop si"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

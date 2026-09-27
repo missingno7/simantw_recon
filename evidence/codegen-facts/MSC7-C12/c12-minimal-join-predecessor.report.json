@@ -1,0 +1,257 @@
+{
+  "name": "c12-minimal-join-predecessor",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NTANTEDIT_MODULE"
+  ],
+  "function": "f",
+  "symbol": "_AddMsgBalloon",
+  "mode": "one-at-a-time",
+  "variants": 6,
+  "distinct_outputs": 3,
+  "same_output": [
+    [
+      "v000",
+      "v002"
+    ],
+    [
+      "v001",
+      "v003"
+    ],
+    [
+      "v004",
+      "v005"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "BODY": "canonical"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "ec4e6bdda9f0de0461012e3b992768f7eebeff34f2249ffb7cd718bdc645bfe6",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 cmp word ptr [bp + 6], 0",
+        "0007 je 0x10",
+        "0009 mov dx, word ptr [bp + 8]",
+        "000c inc dx",
+        "000d jmp 0x16",
+        "000f nop ",
+        "0010 mov dx, word ptr [bp + 0xa]",
+        "0013 add dx, 2",
+        "0016 mov ax, dx",
+        "0018 add ax, 5",
+        "001b leave ",
+        "001c retf ",
+        "001d nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "BODY": "inverted"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "16fb4123d209b180ae09419d0a3664929b90c44ffab76a9980ae1ee31e1b4aab",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -3,9 +3,9 @@",
+          " cmp word ptr [bp + 6], 0",
+          "-je 0x10",
+          "+jne 0x12",
+          "+mov dx, word ptr [bp + 0xa]",
+          "+add dx, 2",
+          "+jmp 0x16",
+          "+nop ",
+          " mov dx, word ptr [bp + 8]",
+          " inc dx",
+          "-jmp 0x16",
+          "-nop ",
+          "-mov dx, word ptr [bp + 0xa]",
+          "-add dx, 2",
+          " mov ax, dx"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "BODY": "goto_false_fallthrough"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "ec4e6bdda9f0de0461012e3b992768f7eebeff34f2249ffb7cd718bdc645bfe6",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "BODY": "goto_true_fallthrough"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "16fb4123d209b180ae09419d0a3664929b90c44ffab76a9980ae1ee31e1b4aab",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -3,9 +3,9 @@",
+          " cmp word ptr [bp + 6], 0",
+          "-je 0x10",
+          "+jne 0x12",
+          "+mov dx, word ptr [bp + 0xa]",
+          "+add dx, 2",
+          "+jmp 0x16",
+          "+nop ",
+          " mov dx, word ptr [bp + 8]",
+          " inc dx",
+          "-jmp 0x16",
+          "-nop ",
+          "-mov dx, word ptr [bp + 0xa]",
+          "-add dx, 2",
+          " mov ax, dx"
+        ]
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "BODY": "early_return"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "bc666a5f0ef29b024a15c8bfe40664a439a9609fa068080d9c5a3e80163eadf8",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -3,11 +3,5 @@",
+          " cmp word ptr [bp + 6], 0",
+          "-je 0x10",
+          "-mov dx, word ptr [bp + 8]",
+          "-inc dx",
+          "-jmp 0x16",
+          "-nop ",
+          "-mov dx, word ptr [bp + 0xa]",
+          "-add dx, 2",
+          "-mov ax, dx",
+          "-add ax, 5",
+          "+je 0x12",
+          "+mov ax, word ptr [bp + 8]",
+          "+add ax, 6",
+          " leave ",
+          "@@ -15 +9,5 @@",
+          " nop ",
+          "+mov ax, word ptr [bp + 0xa]",
+          "+add ax, 7",
+          "+leave ",
+          "+retf "
+        ]
+      }
+    },
+    {
+      "variant": "v005",
+      "label": {
+        "BODY": "duplicated_tails"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "bc666a5f0ef29b024a15c8bfe40664a439a9609fa068080d9c5a3e80163eadf8",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -3,11 +3,5 @@",
+          " cmp word ptr [bp + 6], 0",
+          "-je 0x10",
+          "-mov dx, word ptr [bp + 8]",
+          "-inc dx",
+          "-jmp 0x16",
+          "-nop ",
+          "-mov dx, word ptr [bp + 0xa]",
+          "-add dx, 2",
+          "-mov ax, dx",
+          "-add ax, 5",
+          "+je 0x12",
+          "+mov ax, word ptr [bp + 8]",
+          "+add ax, 6",
+          " leave ",
+          "@@ -15 +9,5 @@",
+          " nop ",
+          "+mov ax, word ptr [bp + 0xa]",
+          "+add ax, 7",
+          "+leave ",
+          "+retf "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

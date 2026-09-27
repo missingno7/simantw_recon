@@ -1,0 +1,301 @@
+{
+  "name": "forder-volatile-first-store-and-loop",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 6,
+  "distinct_outputs": 6,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "DECLS": "ab",
+        "STORES": "ab",
+        "FOLLOWUP": "none"
+      },
+      "size": 42,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx"
+      ],
+      "saves": [],
+      "sha256": "475c363bfb912a2cb8712b47e543db519043dde39c236ca069e898f1b24563ff",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 mov ax, word ptr [bp + 6]",
+        "0007 mov word ptr [bp - 4], ax",
+        "000a mov ax, word ptr [bp + 8]",
+        "000d mov word ptr [bp - 2], ax",
+        "0010 cmp word ptr [bp + 0xa], 0",
+        "0014 je 0x1c",
+        "0016 inc word ptr [bp - 4]",
+        "0019 jmp 0x1f",
+        "001b nop ",
+        "001c inc word ptr [bp - 2]",
+        "001f mov ax, word ptr [bp - 2]",
+        "0022 mov cx, word ptr [bp - 4]",
+        "0025 add ax, cx",
+        "0027 leave ",
+        "0028 retf ",
+        "0029 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "DECLS": "ba",
+        "STORES": "ab",
+        "FOLLOWUP": "none"
+      },
+      "size": 42,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx"
+      ],
+      "saves": [],
+      "sha256": "ab38be922843157c3c8a4d405742a4fcf1cef92d349b87e027e297c84bc0c2f6",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -11,4 +11,4 @@",
+          " inc word ptr [bp - 2]",
+          "-mov ax, word ptr [bp - 2]",
+          "-mov cx, word ptr [bp - 4]",
+          "+mov ax, word ptr [bp - 4]",
+          "+mov cx, word ptr [bp - 2]",
+          " add ax, cx"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "DECLS": "ab",
+        "STORES": "ba",
+        "FOLLOWUP": "none"
+      },
+      "size": 42,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx"
+      ],
+      "saves": [],
+      "sha256": "84c98e2b7af34c43f7b78ceaddca87f966543a8352a804c0cd1138c7c32286e7",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -1,5 +1,5 @@",
+          " enter 4, 0",
+          "+mov ax, word ptr [bp + 8]",
+          "+mov word ptr [bp - 4], ax",
+          " mov ax, word ptr [bp + 6]",
+          "-mov word ptr [bp - 4], ax",
+          "-mov ax, word ptr [bp + 8]",
+          " mov word ptr [bp - 2], ax",
+          "@@ -7,8 +7,8 @@",
+          " je 0x1c",
+          "-inc word ptr [bp - 4]",
+          "+inc word ptr [bp - 2]",
+          " jmp 0x1f",
+          " nop ",
+          "-inc word ptr [bp - 2]",
+          "-mov ax, word ptr [bp - 2]",
+          "-mov cx, word ptr [bp - 4]",
+          "+inc word ptr [bp - 4]",
+          "+mov ax, word ptr [bp - 4]",
+          "+mov cx, word ptr [bp - 2]",
+          " add ax, cx"
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "DECLS": "ab",
+        "STORES": "ab",
+        "FOLLOWUP": "loop-ab"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "70f445646ee5c8026d7d1a8e28128ab7e7c562ebeb781884508aa85fe94298f6",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -5,8 +5,11 @@",
+          " mov word ptr [bp - 2], ax",
+          "-cmp word ptr [bp + 0xa], 0",
+          "-je 0x1c",
+          "+mov dx, word ptr [bp + 0xa]",
+          "+jmp 0x1c",
+          "+nop ",
+          " inc word ptr [bp - 4]",
+          "-jmp 0x1f",
+          "-nop ",
+          " inc word ptr [bp - 2]",
+          "+mov ax, dx",
+          "+dec dx",
+          "+or ax, ax",
+          "+jne 0x16",
+          " mov ax, word ptr [bp - 2]"
+        ]
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "DECLS": "ab",
+        "STORES": "ab",
+        "FOLLOWUP": "loop-ba"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "c014053723923bfbe3f3129a578ce48541a552d60262f46428c28a0a128e1652",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -5,8 +5,11 @@",
+          " mov word ptr [bp - 2], ax",
+          "-cmp word ptr [bp + 0xa], 0",
+          "-je 0x1c",
+          "-inc word ptr [bp - 4]",
+          "-jmp 0x1f",
+          "+mov dx, word ptr [bp + 0xa]",
+          "+jmp 0x1c",
+          " nop ",
+          " inc word ptr [bp - 2]",
+          "+inc word ptr [bp - 4]",
+          "+mov ax, dx",
+          "+dec dx",
+          "+or ax, ax",
+          "+jne 0x16",
+          " mov ax, word ptr [bp - 2]"
+        ]
+      }
+    },
+    {
+      "variant": "v005",
+      "label": {
+        "DECLS": "ab",
+        "STORES": "ab",
+        "FOLLOWUP": "loop-weight-a"
+      },
+      "size": 48,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "b226c53c43724e5383f67c0171e0e5aa1f9478e153bef4216fca9dec9a4e9bdf",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,8 +2,6 @@",
+          " mov ax, word ptr [bp + 6]",
+          "+mov word ptr [bp - 2], ax",
+          "+mov ax, word ptr [bp + 8]",
+          " mov word ptr [bp - 4], ax",
+          "-mov ax, word ptr [bp + 8]",
+          "-mov word ptr [bp - 2], ax",
+          "-cmp word ptr [bp + 0xa], 0",
+          "-je 0x1c",
+          "-inc word ptr [bp - 4]",
+          "+mov dx, word ptr [bp + 0xa]",
+          " jmp 0x1f",
+          "@@ -11,4 +9,10 @@",
+          " inc word ptr [bp - 2]",
+          "-mov ax, word ptr [bp - 2]",
+          "-mov cx, word ptr [bp - 4]",
+          "+inc word ptr [bp - 2]",
+          "+inc word ptr [bp - 4]",
+          "+mov ax, dx",
+          "+dec dx",
+          "+or ax, ax",
+          "+jne 0x16",
+          "+mov ax, word ptr [bp - 4]",
+          "+mov cx, word ptr [bp - 2]",
+          " add ax, cx",
+          "@@ -16,2 +20 @@",
+          " retf ",
+          "-nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

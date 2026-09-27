@@ -1,0 +1,16 @@
+{
+  "name": "e16-mowerfall-zero-store-sharing",
+  "symbol": "_MowerFall",
+  "function": "MowerFall",
+  "text": "/*\n * MowerFall: the lawn mower passes over the yard.  Outside the tutorial\n * game type every recorded A-list ant (type byte at Dx8 offset 0x2f62)\n * has a random chance (SRand4) of being cleared from its LifeA cell (row\n * at 0x23a4, column at 0x278e) and from the list.  A live spider may be\n * killed the same way, and the player's ant on the surface plane in a\n * normal mode (MeMode at most 1) may die with reason 6.\n */\nextern unsigned char near LifeA[];\nextern unsigned char far Dx8[];\nextern int far CurGameType;\nextern int far ListIndexA;\nextern int far SpidOn;\nextern int far MeMode;\nextern int near MePlane;\n\nextern int far SRand4(void);\nextern void far KillSpider(void);\nextern void far YellowDeath(int reason);\n\nvoid far MowerFall(void)\n{\n    int i;\n    int x;\n    int y;\n\n    if (CurGameType != 0) {\n        i = ListIndexA;\n        if (i > 0) {\n            do {\n                i--;\n                if (Dx8[i + 0x2f62] != 0 && SRand4() != 0) {\n                    y = Dx8[i + 0x278e];\n                    x = Dx8[i + 0x23a4] & 0xff;\n                    {{STORE}}\n                }\n            } while (i > 0);\n        }\n        if (SpidOn && SRand4())\n            KillSpider();\n        if (MeMode <= 1 && MePlane == 1 && SRand4())\n            YellowDeath(6);\n    }\n}\n",
+  "mode": "one-at-a-time",
+  "axes": {
+    "STORE": {
+      "chained_draft": "Dx8[i + 0x2f62] = LifeA[x * 64 + y] = 0;",
+      "separate_same_order": "LifeA[x * 64 + y] = 0; Dx8[i + 0x2f62] = 0;",
+      "chain_reversed": "LifeA[x * 64 + y] = Dx8[i + 0x2f62] = 0;",
+      "local_value": "{ unsigned char zero; zero = 0; LifeA[x * 64 + y] = zero; Dx8[i + 0x2f62] = zero; }",
+      "reuse_stored": "LifeA[x * 64 + y] = 0; Dx8[i + 0x2f62] = LifeA[x * 64 + y];"
+    }
+  }
+}

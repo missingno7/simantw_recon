@@ -1,0 +1,412 @@
+{
+  "name": "e16-decode-string-index-vs-pointer",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NTSIMANT_MODULE"
+  ],
+  "function": "DecodeString",
+  "symbol": "_DecodeString",
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 1,
+  "same_output": [
+    [
+      "v000",
+      "v001",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "DST": "index"
+      },
+      "size": 174,
+      "frame": 6,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "al",
+        "ax",
+        "bl",
+        "bx",
+        "cx",
+        "di",
+        "dl",
+        "ds",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "8a426ac77f985f65d006544c4fb232d27f735fc70e4c399fdc8117879555c7c7",
+      "fixups": [
+        {
+          "offset": 76,
+          "width": 4,
+          "target": "_mem_Lock",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 72,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 64,
+          "width": 4,
+          "target": "_mem_Alloc",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 44,
+          "width": 2,
+          "target": "_DATA",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_mem_Free",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 32,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 4,
+          "target": "_mem_Unlock",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 20,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 13,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 6, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov word ptr [bp - 2], 0",
+        "000b cmp word ptr [0], 0",
+        "0010 je 0x2a",
+        "0012 push word ptr [0]",
+        "0016 lcall 0, 0",
+        "001b add sp, 2",
+        "001e push word ptr [0]",
+        "0022 lcall 0, 0",
+        "0027 add sp, 2",
+        "002a push ds",
+        "002b push 0",
+        "002e push 1",
+        "0030 les di, ptr [bp + 6]",
+        "0033 mov cx, 0xffff",
+        "0036 xor ax, ax",
+        "0038 repne scasb al, byte ptr es:[di]",
+        "003a not cx",
+        "003c dec cx",
+        "003d push ax",
+        "003e push cx",
+        "003f lcall 0, 0",
+        "0044 add sp, 0xa",
+        "0047 mov word ptr [0], ax",
+        "004a push ax",
+        "004b lcall 0, 0",
+        "0050 add sp, 2",
+        "0053 mov word ptr [bp - 4], dx",
+        "0056 les bx, ptr [bp + 6]",
+        "0059 cmp byte ptr es:[bx], 0",
+        "005d jne 0x66",
+        "005f mov cx, ax",
+        "0061 mov si, word ptr [bp - 2]",
+        "0064 jmp 0x9c",
+        "0066 mov si, word ptr [bp - 2]",
+        "0069 mov di, bx",
+        "006b mov cx, ax",
+        "006d mov ds, word ptr [bp + 8]",
+        "0070 mov es, word ptr [bp - 4]",
+        "0073 mov bx, di",
+        "0075 mov al, byte ptr [bx + si]",
+        "0077 mov dx, ax",
+        "0079 shl al, 4",
+        "007c sar dl, 4",
+        "007f mov bx, ax",
+        "0081 xor al, dl",
+        "0083 and al, 0xf",
+        "0085 mov dx, bx",
+        "0087 xor bl, al",
+        "0089 mov ax, bx",
+        "008b mov bx, cx",
+        "008d add bx, si",
+        "008f mov byte ptr es:[bx], al",
+        "0092 mov bx, di",
+        "0094 inc si",
+        "0095 cmp byte ptr [bx + si], 0",
+        "0098 jne 0x73",
+        "009a push ss",
+        "009b pop ds",
+        "009c mov bx, cx",
+        "009e mov es, word ptr [bp - 4]",
+        "00a1 mov byte ptr es:[bx + si], 0",
+        "00a5 mov ax, cx",
+        "00a7 mov dx, es",
+        "00a9 pop si",
+        "00aa pop di",
+        "00ab leave ",
+        "00ac retf ",
+        "00ad nop "
+      ],
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "69/70",
+        "bytes": "94/155"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "DST": "pointer_deref"
+      },
+      "size": 174,
+      "frame": 6,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "al",
+        "ax",
+        "bl",
+        "bx",
+        "cx",
+        "di",
+        "dl",
+        "ds",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "8a426ac77f985f65d006544c4fb232d27f735fc70e4c399fdc8117879555c7c7",
+      "fixups": [
+        {
+          "offset": 76,
+          "width": 4,
+          "target": "_mem_Lock",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 72,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 64,
+          "width": 4,
+          "target": "_mem_Alloc",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 44,
+          "width": 2,
+          "target": "_DATA",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_mem_Free",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 32,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 4,
+          "target": "_mem_Unlock",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 20,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 13,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "69/70",
+        "bytes": "94/155"
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "DST": "offset_zero"
+      },
+      "size": 174,
+      "frame": 6,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "al",
+        "ax",
+        "bl",
+        "bx",
+        "cx",
+        "di",
+        "dl",
+        "ds",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "8a426ac77f985f65d006544c4fb232d27f735fc70e4c399fdc8117879555c7c7",
+      "fixups": [
+        {
+          "offset": 76,
+          "width": 4,
+          "target": "_mem_Lock",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 72,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 64,
+          "width": 4,
+          "target": "_mem_Alloc",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 44,
+          "width": 2,
+          "target": "_DATA",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_mem_Free",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 32,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 4,
+          "target": "_mem_Unlock",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 20,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 13,
+          "width": 2,
+          "target": "_BSS",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "69/70",
+        "bytes": "94/155"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

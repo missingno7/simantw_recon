@@ -1,0 +1,204 @@
+{
+  "name": "e16-pair-repeated-expression-folding",
+  "profile": "og",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NT_TEXT"
+  ],
+  "function": "pair",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 6,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v001",
+      "v002",
+      "v003",
+      "v004"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "LEFT": "base_tree",
+        "RIGHT": "same_tree"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "eb61da4b36ef92863d360786efbe0eeeeb258230857b1f91c2cabf0bcd2f6119",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 mov bx, word ptr [bp + 8]",
+        "0006 mov dx, word ptr [bp + 6]",
+        "0009 mov ax, bx",
+        "000b add ax, dx",
+        "000d mov cx, ax",
+        "000f or ax, word ptr [bp + 0xc]",
+        "0012 and cx, word ptr [bp + 0xa]",
+        "0015 xor ax, cx",
+        "0017 leave ",
+        "0018 retf ",
+        "0019 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "LEFT": "base_tree",
+        "RIGHT": "commuted"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "eb61da4b36ef92863d360786efbe0eeeeb258230857b1f91c2cabf0bcd2f6119",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "LEFT": "base_tree",
+        "RIGHT": "negated_fold"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "eb61da4b36ef92863d360786efbe0eeeeb258230857b1f91c2cabf0bcd2f6119",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "LEFT": "base_tree",
+        "RIGHT": "unit_fold"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "eb61da4b36ef92863d360786efbe0eeeeb258230857b1f91c2cabf0bcd2f6119",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "LEFT": "base_tree",
+        "RIGHT": "association_fold"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "eb61da4b36ef92863d360786efbe0eeeeb258230857b1f91c2cabf0bcd2f6119",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v005",
+      "label": {
+        "LEFT": "base_tree",
+        "RIGHT": "algebraic_different_tree"
+      },
+      "size": 32,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "6bc009fc1f2efb56f2ac5963280f8d2f560522db3465dc7b346a9be4224d3fc2",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -5,6 +5,9 @@",
+          " mov ax, bx",
+          "+mov cx, bx",
+          " add ax, dx",
+          "-mov cx, ax",
+          "-or ax, word ptr [bp + 0xc]",
+          "-and cx, word ptr [bp + 0xa]",
+          "+and ax, word ptr [bp + 0xa]",
+          "+or cx, dx",
+          "+and bx, dx",
+          "+add cx, bx",
+          "+or cx, word ptr [bp + 0xc]",
+          " xor ax, cx"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

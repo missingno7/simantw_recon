@@ -1,0 +1,160 @@
+{
+  "name": "msc7-c17-loop-test-forms-with-call-body",
+  "profile": "oi-ga",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeilw",
+    "/GA",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v001"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "LOOP": "top-tested while"
+      },
+      "size": 34,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "a91117ecf2e9fc55bb4020bf88894b2f8feb8f0f29e23cd6d5c3f6e73acf0f37",
+      "fixups": [
+        {
+          "offset": 16,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push di",
+        "0004 push si",
+        "0005 mov di, word ptr [bp + 6]",
+        "0008 xor si, si",
+        "000a or di, di",
+        "000c jle 0x1c",
+        "000e push si",
+        "000f lcall 0, 0",
+        "0014 add sp, 2",
+        "0017 inc si",
+        "0018 cmp si, di",
+        "001a jl 0xe",
+        "001c mov ax, si",
+        "001e pop si",
+        "001f pop di",
+        "0020 leave ",
+        "0021 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "LOOP": "prechecked bottom-tested do"
+      },
+      "size": 34,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "a91117ecf2e9fc55bb4020bf88894b2f8feb8f0f29e23cd6d5c3f6e73acf0f37",
+      "fixups": [
+        {
+          "offset": 16,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "LOOP": "unguarded bottom-tested do"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "42c469261660873f4ffb356ab0521e9bddf1796cf2012ab64ffc876c85d425bf",
+      "fixups": [
+        {
+          "offset": 12,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -4,6 +4,4 @@",
+          " push si",
+          "+xor si, si",
+          " mov di, word ptr [bp + 6]",
+          "-xor si, si",
+          "-or di, di",
+          "-jle 0x1c",
+          " push si",
+          "@@ -13,3 +11,3 @@",
+          " cmp si, di",
+          "-jl 0xe",
+          "+jl 0xa",
+          " mov ax, si"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

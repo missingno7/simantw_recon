@@ -1,0 +1,255 @@
+{
+  "name": "fextra-drawwindow-direct-current-sample",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT_MODULE"
+  ],
+  "function": "win_DrawHistoryWindow",
+  "symbol": "_win_DrawHistoryWindow",
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "READ": "indexed_and_incremented_pointer"
+      },
+      "size": 88,
+      "frame": 4,
+      "homes": {
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "88a66be8e4e6f0a4d968dc407fefe2a06ee26ef497f51a3bbdcd7e89aff4758c",
+      "fixups": [
+        {
+          "offset": 79,
+          "width": 2,
+          "target": "_Dx8",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 64,
+          "width": 2,
+          "target": "_drawHistGraph",
+          "kind": 1,
+          "self_relative": true
+        },
+        {
+          "offset": 44,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 2,
+          "target": "_Dx8",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 27,
+          "width": 4,
+          "target": "_win_FillObjRect",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 15,
+          "width": 4,
+          "target": "_ConvColor",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 test byte ptr [bp + 6], 2",
+        "000a je 0x53",
+        "000c push 0",
+        "000e lcall 0, 0",
+        "0013 add sp, 2",
+        "0016 push ax",
+        "0017 push 0x150e",
+        "001a lcall 0, 0",
+        "001f add sp, 4",
+        "0022 mov si, 0x8e54",
+        "0025 xor di, di",
+        "0027 mov word ptr [bp - 4], di",
+        "002a mov es, word ptr [0]",
+        "002e mov bx, word ptr [bp - 4]",
+        "0031 add bx, si",
+        "0033 mov ax, word ptr es:[bx]",
+        "0036 cmp ax, 0x8000",
+        "0039 je 0x45",
+        "003b push di",
+        "003c push 0",
+        "003e push ax",
+        "003f call 0x42",
+        "0042 add sp, 6",
+        "0045 add word ptr [bp - 4], 2",
+        "0049 inc di",
+        "004a add si, 2",
+        "004d cmp si, 0x8e5c",
+        "0051 jb 0x2a",
+        "0053 pop si",
+        "0054 pop di",
+        "0055 leave ",
+        "0056 retf ",
+        "0057 nop "
+      ],
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "30/35",
+        "bytes": "24/80"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "READ": "current_pointer_only"
+      },
+      "size": 82,
+      "frame": 2,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "8972d422f1564c22112e8e080a69b6f9b383c64a495259fe0a15d003bf38aaff",
+      "fixups": [
+        {
+          "offset": 74,
+          "width": 2,
+          "target": "_Dx8",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 61,
+          "width": 2,
+          "target": "_drawHistGraph",
+          "kind": 1,
+          "self_relative": true
+        },
+        {
+          "offset": 43,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 34,
+          "width": 2,
+          "target": "_Dx8",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "_win_FillObjRect",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 14,
+          "width": 4,
+          "target": "_ConvColor",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves"
+        ],
+        "diff": [
+          "@@ -1,6 +1,5 @@",
+          "-enter 4, 0",
+          "-push di",
+          "+enter 2, 0",
+          " push si",
+          " test byte ptr [bp + 6], 2",
+          "-je 0x53",
+          "+je 0x4e",
+          " push 0",
+          "@@ -13,22 +12,17 @@",
+          " mov si, 0x8e54",
+          "-xor di, di",
+          "-mov word ptr [bp - 4], di",
+          "+mov word ptr [bp - 2], 0",
+          " mov es, word ptr [0]",
+          "-mov bx, word ptr [bp - 4]",
+          "-add bx, si",
+          "-mov ax, word ptr es:[bx]",
+          "-cmp ax, 0x8000",
+          "-je 0x45",
+          "-push di",
+          "+mov cx, word ptr es:[si]",
+          "+cmp cx, 0x8000",
+          "+je 0x42",
+          "+push word ptr [bp - 2]",
+          " push 0",
+          "-push ax",
+          "-call 0x42",
+          "+push cx",
+          "+call 0x3f",
+          " add sp, 6",
+          "-add word ptr [bp - 4], 2",
+          "-inc di",
+          "+inc word ptr [bp - 2]",
+          " add si, 2",
+          " cmp si, 0x8e5c",
+          "-jb 0x2a",
+          "+jb 0x29",
+          " pop si",
+          "-pop di",
+          " leave "
+        ]
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "26/34",
+        "bytes": "14/80"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

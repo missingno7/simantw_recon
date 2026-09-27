@@ -1,0 +1,88 @@
+{
+  "name": "forder-block-local-home-reuse",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "SCOPED_LOCALS": "separate-blocks"
+      },
+      "size": 28,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "c1f9b1cbc890ef482a1bcf18a418edc163b43c3d337e7c21ab145d9d7984a547",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 mov ax, word ptr [bp + 6]",
+        "0007 mov word ptr [bp - 4], ax",
+        "000a mov dx, word ptr [bp - 4]",
+        "000d mov ax, word ptr [bp + 8]",
+        "0010 mov word ptr [bp - 2], ax",
+        "0013 mov ax, word ptr [bp - 2]",
+        "0016 add dx, ax",
+        "0018 mov ax, dx",
+        "001a leave ",
+        "001b retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "SCOPED_LOCALS": "one-block-live"
+      },
+      "size": 28,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "7359c6c4e98aaf1de261cc394c806c828bb02328dcbc3f8410b909fb34d0bbe9",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -3,6 +3,6 @@",
+          " mov word ptr [bp - 4], ax",
+          "-mov dx, word ptr [bp - 4]",
+          " mov ax, word ptr [bp + 8]",
+          " mov word ptr [bp - 2], ax",
+          "-mov ax, word ptr [bp - 2]",
+          "+mov dx, word ptr [bp - 2]",
+          "+mov ax, word ptr [bp - 4]",
+          " add dx, ax"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

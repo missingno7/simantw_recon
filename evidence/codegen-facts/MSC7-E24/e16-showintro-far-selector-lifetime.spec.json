@@ -1,0 +1,13 @@
+{
+  "name": "e16-showintro-far-selector-lifetime",
+  "symbol": "_ShowIntro",
+  "function": "ShowIntro",
+  "text": "/* ShowIntro: open dialog 0x300 with capture on its window, fill the customer-ID string from the data table, wait for dialog events, then release capture and close. */\nextern int near win_hwnd[];\nextern unsigned int far custIDStrHandle;\nextern unsigned int far mem_Alloc(unsigned long bytes, int kind, char far *name);\nextern void far *mem_Lock(unsigned int handle);\nextern int far mem_Unlock(unsigned int handle);\nextern void far win_FlushEvents(void);\nextern void far win_Open(int window);\nextern void far win_Close(int window);\nextern int far win_IsWinOpen(int window);\nextern int far win_Events(void);\nextern int far MySetCapture(int window);\nextern void far MyReleaseCapture(void);\nextern void far myBeginSong(unsigned int song, unsigned int priority);\nextern void far DialogWaitInit(int flags);\nextern int far DialogAbortOrCont(void);\nextern void far DialogDone(void);\nvoid far ShowIntro(void)\n{\n    char far *customerText;\n    int dialogState;\n    int divisor;\n    win_FlushEvents();\n    win_Open(0x300);\n    MySetCapture(win_hwnd[3]);\n    myBeginSong(0x2711, 0x7e);\n    custIDStrHandle = mem_Alloc(30L, 1, \"Malloc\");\n    customerText = (char far *)mem_Lock(custIDStrHandle);\n    dialogState = 0;\n    {\n        int i;\n        int rem8;\n        int v;\n        extern unsigned char far Dx8[];\n        for (i = 0; i < 256; ++i) {\n            rem8 = i % 8;\n            v = customerText[rem8]; {{BARRIER}}\n            divisor = 30;\n            { signed char tableByte = Dx8[0x8b3e + i % divisor];\n              v = v + tableByte; }\n            v = v + i;\n            customerText[rem8] = (char)(v % 10 + 48);\n        }\n    }\n    customerText[8] = 0;\n    mem_Unlock(custIDStrHandle);\n    DialogWaitInit(0x28);\n    if (win_IsWinOpen(0x300)) {\n        do {\n            if (dialogState)\n                break;\n            if (win_Events() || DialogAbortOrCont())\n                dialogState = 1;\n        } while (win_IsWinOpen(0x300));\n    }\n    MyReleaseCapture();\n    win_Close(0x300);\n    DialogDone();\n    win_FlushEvents();\n}\n",
+  "mode": "one-at-a-time",
+  "axes": {
+    "BARRIER": {
+      "no_intervening_call": "",
+      "call_between_far_uses": " mem_Unlock(custIDStrHandle);"
+    }
+  }
+}

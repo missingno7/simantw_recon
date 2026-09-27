@@ -1,0 +1,17 @@
+{
+  "name": "c12-minimal-two-value-join",
+  "symbol": "_AddMsgBalloon",
+  "function": "f",
+  "segment": "ANTEDIT_MODULE",
+  "text": "int f(int c, int x, int y, int z) {\n    int p, q;\n    {{BODY}}\n}",
+  "axes": {
+    "BODY": {
+      "canonical": "if (c) { p = x + 1; q = y + 2; } else { p = y + 3; q = x + 4; }\n    return p + q * z;",
+      "inverted": "if (!c) { p = y + 3; q = x + 4; } else { p = x + 1; q = y + 2; }\n    return p + q * z;",
+      "goto_false_fallthrough": "if (c) { p = x + 1; q = y + 2; goto joined; }\n    p = y + 3; q = x + 4;\njoined:\n    return p + q * z;",
+      "goto_true_fallthrough": "if (!c) { p = y + 3; q = x + 4; goto joined; }\n    p = x + 1; q = y + 2;\njoined:\n    return p + q * z;",
+      "sequential_equiv": "if (c) { p = x + 1; q = y + 2; }\n    else { q = x + 4; p = y + 3; }\n    return p + q * z;"
+    }
+  },
+  "mode": "one-at-a-time"
+}

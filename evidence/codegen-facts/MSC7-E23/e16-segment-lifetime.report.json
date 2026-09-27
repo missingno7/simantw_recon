@@ -1,0 +1,279 @@
+{
+  "name": "e16-segment-lifetime",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NT_TEXT"
+  ],
+  "function": "seglive",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 4,
+  "distinct_outputs": 3,
+  "same_output": [
+    [
+      "v001",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "BODY": "one_use"
+      },
+      "size": 24,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "807e15be8291d714cb14fdb23522d34f342c36db8e2edffca5b15fec07ab8c35",
+      "fixups": [
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "_makep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push si",
+        "0004 lcall 0, 0",
+        "0009 mov es, dx",
+        "000b mov bx, ax",
+        "000d mov si, word ptr [bp + 6]",
+        "0010 shl si, 1",
+        "0012 mov ax, word ptr es:[bx + si]",
+        "0015 pop si",
+        "0016 leave ",
+        "0017 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "BODY": "two_uses"
+      },
+      "size": 34,
+      "frame": 4,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "1961fe6d081bad2bbdc226f85b31231e6c207f62c0a1108715cf43684cd09e41",
+      "fixups": [
+        {
+          "offset": 10,
+          "width": 4,
+          "target": "_makep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "registers",
+          "saves"
+        ],
+        "diff": [
+          "@@ -1,12 +1,16 @@",
+          "-push bp",
+          "-mov bp, sp",
+          "+enter 4, 0",
+          "+push di",
+          " push si",
+          "+mov di, word ptr [bp + 6]",
+          " lcall 0, 0",
+          "+mov si, ax",
+          "+shl di, 1",
+          "+add di, si",
+          " mov es, dx",
+          "-mov bx, ax",
+          "-mov si, word ptr [bp + 6]",
+          "-shl si, 1",
+          "-mov ax, word ptr es:[bx + si]",
+          "+mov ax, word ptr es:[di + 2]",
+          "+add ax, word ptr es:[di]",
+          " pop si",
+          "+pop di",
+          " leave ",
+          " retf ",
+          "+nop "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "BODY": "two_uses_alias"
+      },
+      "size": 34,
+      "frame": 4,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "1961fe6d081bad2bbdc226f85b31231e6c207f62c0a1108715cf43684cd09e41",
+      "fixups": [
+        {
+          "offset": 10,
+          "width": 4,
+          "target": "_makep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "registers",
+          "saves"
+        ],
+        "diff": [
+          "@@ -1,12 +1,16 @@",
+          "-push bp",
+          "-mov bp, sp",
+          "+enter 4, 0",
+          "+push di",
+          " push si",
+          "+mov di, word ptr [bp + 6]",
+          " lcall 0, 0",
+          "+mov si, ax",
+          "+shl di, 1",
+          "+add di, si",
+          " mov es, dx",
+          "-mov bx, ax",
+          "-mov si, word ptr [bp + 6]",
+          "-shl si, 1",
+          "-mov ax, word ptr es:[bx + si]",
+          "+mov ax, word ptr es:[di + 2]",
+          "+add ax, word ptr es:[di]",
+          " pop si",
+          "+pop di",
+          " leave ",
+          " retf ",
+          "+nop "
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "BODY": "call_between"
+      },
+      "size": 50,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "7a486ce58e4fc79207574c7c7e163ce56ada506d8d76e6a60786b049c19ad71b",
+      "fixups": [
+        {
+          "offset": 30,
+          "width": 4,
+          "target": "_touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 10,
+          "width": 4,
+          "target": "_makep",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,4 +1,5 @@",
+          "-push bp",
+          "-mov bp, sp",
+          "+enter 4, 0",
+          "+push di",
+          " push si",
+          "+mov di, word ptr [bp + 6]",
+          " lcall 0, 0",
+          "@@ -6,6 +7,13 @@",
+          " mov bx, ax",
+          "-mov si, word ptr [bp + 6]",
+          "-shl si, 1",
+          "-mov ax, word ptr es:[bx + si]",
+          "+shl di, 1",
+          "+mov si, word ptr es:[bx + di]",
+          "+mov word ptr [bp - 4], bx",
+          "+mov word ptr [bp - 2], es",
+          "+lcall 0, 0",
+          "+mov ax, si",
+          "+add di, word ptr [bp - 4]",
+          "+mov es, word ptr [bp - 2]",
+          "+add ax, word ptr es:[di + 2]",
+          " pop si",
+          "+pop di",
+          " leave "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

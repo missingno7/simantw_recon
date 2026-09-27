@@ -94,9 +94,15 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Admissions: `_InitSow`, `_InitPillar` (commit d1d933c9). The drafts decremented unconditionally, gave 47/48 and 81/82, and became strict on the first compile after the fix.
 - Detected by `branch_destinations`.
 
-**MSC7-C12: register contents at a CFG join follow the physically preceding block (stunts C12). OPEN.**
-- Candidate residues: `_MowerFall` (target clears AL; candidate reuses a known-zero BH), `_DoNestFightR` (reload instead of keeping CL).
-- Study launched 2026-09-27 (worker f-study-c12).
+**MSC7-C12: at a common tail that consumes several live word values, their register mapping follows the assignment order in the physically emitted predecessor block. SUPPORTED.**
+- Reproducers: `evidence/codegen-facts/MSC7-C12/`:
+  - `c12-which-arm-sets-join-registers` (`ogi`, `/Oegilw /NTANTEDIT_MODULE`) and `-baseline` (`/Oelw /NTSIMONE_MODULE`);
+  - `c12-minimal-*`.
+- Evidence: `p` and `q` meet at a tail computing `p + q*z`. Reversing the two assignments of the arm emitted directly before the tail swaps them (BX/DI); reversing the other arm changes that arm's order but not the mapping. Size and frame are unchanged.
+- Admitted control `_AddMsgBalloon` (100/100): a goto form preserving the raw arm's order compiles identically. Reversing that arm's direct parameter copies changes code but keeps the register roles, so the rule applies when live values compete for roles, not to plain parameter copies.
+- An early return or a duplicated tail removes the join (different schedule, no rule).
+- Observed: no current residue depends on it. The WRONG_REGISTER cluster diverges at entry or before any join (R1 territory). `_MowerFall` (AL clear vs BH reuse) and `_DoNestFightR` (CL kept vs reload) are not join effects; they are E16 and assignment-scheduling cases.
+- Validated 2026-09-27 (f-study-c12).
 
 **MSC7-C13: loop-test placement follows the code after the loop (stunts C13). OPEN.**
 - Candidate residues: `_MakeOutletH/V` (the post-tested fill loop improved alignment).
