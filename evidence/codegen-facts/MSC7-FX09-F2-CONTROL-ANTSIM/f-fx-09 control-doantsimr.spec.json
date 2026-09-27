@@ -1,0 +1,11 @@
+{
+  "name": "f-fx-09 control-doantsimr",
+  "symbol": "_DoAntSimR",
+  "text": "/*\n * Hypothesis: ListIndexR is the exclusive bound of the pending R-list.\n * Tindex is a shared cursor.  Each pass consumes one record from the\n * selected Dx8 segment, and a nonzero record attribute is handed to the\n * far DoNestAntR worker as (life, column, attribute).  The selector loads\n * and explicit DS restoration show that the list segment is separate from\n * DGROUP while the indexed Tindex state remains live across the call.\n */\nextern int far ListIndexR;\nextern int far Tindex;\nextern unsigned char far Dx8[];\nextern void far DoNestAntR(int life, int column, int attribute);\n\nvoid far DoAntSimR(void)\n{\n    {{LIFEDECL}}\n    int column;\n    int attribute;\n\n    Tindex = ListIndexR;\n    while (Tindex > 0) {\n        --Tindex;\n        life = Dx8[Tindex + 0x4104];\n        column = Dx8[Tindex + 0x42fa] & 0xff;\n        attribute = Dx8[Tindex + 0x46e6];\n        if (attribute != 0)\n            DoNestAntR(life, column, attribute);\n    }\n}\n",
+  "axes": {
+    "LIFEDECL": {
+      "plain": "int life;",
+      "register_hint": "register int life;"
+    }
+  }
+}

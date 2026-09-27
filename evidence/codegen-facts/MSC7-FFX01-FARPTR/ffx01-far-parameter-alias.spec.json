@@ -1,0 +1,13 @@
+{
+  "name": "ffx01-far-parameter-alias",
+  "symbol": "_SetDevicePalette",
+  "function": "SetDevicePalette",
+  "source": "build/workers/f-fx-01/SetDevicePalette_farptr_probe_template.c",
+  "mode": "one-at-a-time",
+  "axes": {
+    "FORM": {
+      "local_alias": "    p = colors;\n    if (p != (struct PalEntry far *)0) {\n        table.first = first;\n        table.count = count;\n        for (n = 0; n < count; n++)\n            table.colors[n] = RGB(P_[n].red, P_[n].green, P_[n].blue);\n        Escape(dc, 4, 0x42, (char far *)&table, (char far *)0);\n    } else {\n        Escape(dc, 4, 0, (char far *)0, (char far *)0);\n    }\n",
+      "direct_parameter": "    if (colors != (struct PalEntry far *)0) {\n        table.first = first;\n        table.count = count;\n        for (n = 0; n < count; n++)\n            table.colors[n] = RGB(colors[n].red, colors[n].green, colors[n].blue);\n        Escape(dc, 4, 0x42, (char far *)&table, (char far *)0);\n    } else {\n        Escape(dc, 4, 0, (char far *)0, (char far *)0);\n    }\n"
+    }
+  }
+}

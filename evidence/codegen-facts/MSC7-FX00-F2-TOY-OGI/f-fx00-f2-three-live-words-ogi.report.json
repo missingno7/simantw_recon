@@ -1,0 +1,104 @@
+{
+  "name": "f-fx00-f2-three-live-words-ogi",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "THIRD": "two_mutable_words"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "c3a56c4276e413b84b718fd9b77bd5643e5636fd8eb8a3bd1e6c79b6ab2bae55",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 mov dx, word ptr [bp + 6]",
+        "0006 mov bx, dx",
+        "0008 inc bx",
+        "0009 cmp dx, 0x32",
+        "000c jge 0x16",
+        "000e inc dx",
+        "000f add bx, dx",
+        "0011 cmp dx, 0x32",
+        "0014 jl 0xe",
+        "0016 mov ax, bx",
+        "0018 leave ",
+        "0019 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "THIRD": "third_loop_hot_word"
+      },
+      "size": 36,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "a0682726c02f9ec0dba70002b60218170dba9caaf55b3ce010b86e3873d48001",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -3,12 +3,17 @@",
+          " mov dx, word ptr [bp + 6]",
+          "+mov cx, dx",
+          "+inc cx",
+          " mov bx, dx",
+          "-inc bx",
+          "+add bx, 2",
+          " cmp dx, 0x32",
+          "-jge 0x16",
+          "+jge 0x1d",
+          " inc dx",
+          "-add bx, dx",
+          "+add cx, dx",
+          "+add bx, cx",
+          " cmp dx, 0x32",
+          "-jl 0xe",
+          "+jl 0x13",
+          " mov ax, bx",
+          "+add ax, cx",
+          " leave ",
+          " retf ",
+          "+nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

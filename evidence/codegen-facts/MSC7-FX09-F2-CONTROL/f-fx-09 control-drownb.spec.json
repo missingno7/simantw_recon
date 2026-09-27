@@ -1,0 +1,11 @@
+{
+  "name": "f-fx-09 control-drownb",
+  "symbol": "_DrownBList",
+  "text": "/* Semantic hypothesis: do/while preserves the target's signed tail test. */\n/* Descend through matching live entries and mark validated status kinds drowned. */\nextern int far ListIndexB;\nextern unsigned char far Dx8[];\n\nvoid DrownBList(int listKind)\n{\n    {{INDEXDECL}}\n    int state;\n\n    index = ListIndexB;\n    if (index > 0) {\n        do {\n            --index;\n            if (Dx8[index + 0x392c] != listKind)\n                continue;\n            if (Dx8[index + 0x3d18] == 0)\n                continue;\n            state = Dx8[index + 0x3d18];\n            state = (state & 0x78) >> 3;\n            if (state <= 0 || state >= 0x0c)\n                continue;\n            Dx8[index + 0x3b22] = 0x11;\n        } while (index > 0);\n    }\n}\n",
+  "axes": {
+    "INDEXDECL": {
+      "plain": "int index;",
+      "register_hint": "register int index;"
+    }
+  }
+}
