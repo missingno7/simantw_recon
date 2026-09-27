@@ -1,0 +1,131 @@
+{
+  "name": "r1-looped-use-without-call-or-strength-reduction",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "R1VolatileLoop",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "LOOPED": "x_loop_y_after"
+      },
+      "size": 32,
+      "frame": 6,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "344f159dc3d3ea6b16dfa22858c87e0412b21418d94fbaa61f4983b360524005",
+      "fixups": [
+        {
+          "offset": 28,
+          "width": 2,
+          "target": "_r1Sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 21,
+          "width": 2,
+          "target": "_r1Sink",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 6, 0",
+        "0004 mov cx, word ptr [bp + 0xa]",
+        "0007 mov ax, word ptr [bp + 6]",
+        "000a mov bx, word ptr [bp + 8]",
+        "000d or cx, cx",
+        "000f jle 0x1a",
+        "0011 mov dx, cx",
+        "0013 add word ptr [0], ax",
+        "0017 dec dx",
+        "0018 jne 0x13",
+        "001a add word ptr [0], bx",
+        "001e leave ",
+        "001f retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "LOOPED": "y_loop_x_after"
+      },
+      "size": 38,
+      "frame": 6,
+      "homes": {
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "96ae87ccb11d3b9575142fd324119a2a5b4b74ab2601ee3494689e6e0439a759",
+      "fixups": [
+        {
+          "offset": 34,
+          "width": 2,
+          "target": "_r1Sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 24,
+          "width": 2,
+          "target": "_r1Sink",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "homes"
+        ],
+        "diff": [
+          "@@ -3,10 +3,12 @@",
+          " mov ax, word ptr [bp + 6]",
+          "+mov word ptr [bp - 4], ax",
+          " mov bx, word ptr [bp + 8]",
+          " or cx, cx",
+          "-jle 0x1a",
+          "+jle 0x1d",
+          " mov dx, cx",
+          "+add word ptr [0], bx",
+          "+dec dx",
+          "+jne 0x16",
+          "+mov ax, word ptr [bp - 4]",
+          " add word ptr [0], ax",
+          "-dec dx",
+          "-jne 0x13",
+          "-add word ptr [0], bx",
+          " leave "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

@@ -1147,6 +1147,11 @@
         "text": "Second-pass pointer-only trial from the 76/77 staged-index body kept ENTER 0x0A but fell to 75/82: MSC put the pointer offset in BX, colliding with the target's BX column counter; target's DI address lifetime remains unmatched. Keep the staged-index candidate (76/77) as the best.",
         "origin": "build/search/AddRock3/20260927T145150-67228",
         "recorded": "2026-09-27T14:51:50.364640+00:00"
+      },
+      {
+        "text": "R1 study tested the natural reassociation y+ypos+colN to y+colN+ypos at both map accesses; MSC 7.00 produced the identical preserved object (76/77, ENTER 0x0A), so this operand-order spelling does not move the target register assignment or improve the opcode prefix. Target still differs at +0x47/+0x49 add DI,CX/SI order and later address lifetime; continue only with a new lifetime hypothesis, not arithmetic reassociation.",
+        "origin": "build/search/AddRock3/20260927T183934-55364",
+        "recorded": "2026-09-27T18:39:34.537049+00:00"
       }
     ]
   },
@@ -1671,6 +1676,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-0x14] vs candidate [bp-0x16]; declaration permutations and direct-vs-named SRand8 temporary were identical output (185/185). The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/AnimYellowFight/20260927T181744-84332",
         "recorded": "2026-09-27T18:17:45.100089+00:00"
+      },
+      {
+        "text": "F-slotsteer: fresh full/frame remains 185/185 with target origPlane at bp-14 and candidate bp-16, frame 24/24. Controlled --target probe: self-comparisons of all five saved-state words compile identically; discarded addresses alter individual home mappings but not to the full target layout; volatile origPlane falls to 183/185. No exact natural or steered candidate.",
+        "origin": "build/search/AnimYellowFight/20260927T184323-116724",
+        "recorded": "2026-09-27T18:43:23.950476+00:00"
       }
     ]
   },
@@ -2473,6 +2483,11 @@
         "text": "Second-pass recheck: best remains 76/76 opcodes, 182/182 bytes, 15/15 fixups. The only residuals are target ENTER 2 versus candidate ENTER 4 and target [bp-2] versus candidate [bp-4] for the row spill. The existing register-word hypothesis also reproduces the same candidate object, so it does not remove the extra frame word. No strict candidate.",
         "origin": "build/search/CarpetFloorR/20260927T150758-126560",
         "recorded": "2026-09-27T15:07:58.753039+00:00"
+      },
+      {
+        "text": "F-slotsteer: fresh full/frame remains 76/76 but target ENTER 2 and bp-2 spill differ from candidate ENTER 4 and savedRow at bp-4. Controlled --target: row self-read and discarded savedRow address reproduce baseline; savedRow self-read is 67/76, row address or volatile row 62/76, ordinary savedRow 64/76. Prior notes cover the natural loop/counter/scope/type/pointer/union families. No exact result.",
+        "origin": "build/search/CarpetFloorR/20260927T184323-157456",
+        "recorded": "2026-09-27T18:43:23.753168+00:00"
       }
     ]
   },
@@ -7907,6 +7922,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-4] vs candidate [bp-6], after disregarding selector-pool operand rows. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/DoDigOutAntA/20260927T181750-41132",
         "recorded": "2026-09-27T18:17:50.985760+00:00"
+      },
+      {
+        "text": "F-slotsteer: after selector-pool rows, x/y homes are target bp-4/-6 vs candidate bp-6/-8, frame 18/18, 160/172. Self-read is identical; address-taking changes code without improving alignment; volatile x/y gives 157/176. No exact candidate.",
+        "origin": "build/search/DoDigOutAntA/20260927T184324-145852",
+        "recorded": "2026-09-27T18:43:24.911187+00:00"
       }
     ]
   },
@@ -8189,6 +8209,11 @@
         "text": "Frame and first index region now exact: ENTER 4, x loaded to DI then copied to BX, linear index stored at BP-4. Repeated LifeR[(x<<6)+y] uses caused the allocator to retain x in DI; using index[1] restores the target frame. This source is 68/72 opcodes and 210/210 bytes. Next divergence is target mov si,[bp+0xa] before SRand1(3), then mov cx,si/add al,cl/dec al/and ax,7; candidate leaves attr on stack and computes via SI. Register snapshots, ordinary operand reversal, and declaration-order changes either optimized away or lost the target x schedule. Ignore selector/fixup placement until opcode exact.",
         "origin": "build/search/DoDrownR/20260927T154310-24628",
         "recorded": "2026-09-27T15:43:10.398477+00:00"
+      },
+      {
+        "text": "R1 study added an automatic or register local dirArg copy immediately before the SRand1(3) expression; both variants canonicalized to the existing object at the assigned og profile (69/73, ENTER 4). Target first differs at x entry (DI versus candidate BX), then retains attr in SI before SRand1 while the draft leaves the argument on the stack/uses DI. Parameter-copy spelling alone does not change the current register schedule.",
+        "origin": "build/search/DoDrownR/20260927T183924-81064",
+        "recorded": "2026-09-27T18:39:24.958591+00:00"
       }
     ]
   },
@@ -9870,6 +9895,11 @@
         "text": "A register unsigned-char accumulator with separate table and LifeR stores still produced the prior 100/108 object and ENTER 4, and moves mov al,cl before the table store rather than target order. MSC 7 homes this byte at bp-1 despite register; this replays the existing raw/byte-temp family. First target row still requires table store followed by assignment-result transfer mov al,cl; no new exact-frame explanation from this spelling.",
         "origin": "build/search/DoNestFightR/20260927T140207-132372",
         "recorded": "2026-09-27T14:02:07.712116+00:00"
+      },
+      {
+        "text": "Applying F2/F4 to the frame excess: replacing the unsigned-byte raw local with a chained LifeR[cellIndex] = Dx8[...] = expression keeps the named cellIndex as the only BP-2 local and makes ENTER 2 match the target (baseline ENTER 4). Opcode score stays 100/108; earliest remaining opcode difference is target mov al, cl after the Dx8 store versus a selector re-read in the candidate. No admission.",
+        "origin": "build/search/DoNestFightR/20260927T183856-69936",
+        "recorded": "2026-09-27T18:38:56.345674+00:00"
       }
     ]
   },
@@ -10007,6 +10037,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-4] vs candidate [bp-6]; frame 6/6. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/DoNestingR/20260927T181754-101004",
         "recorded": "2026-09-27T18:17:55.091362+00:00"
+      },
+      {
+        "text": "F-slotsteer: earliest home is volatile m7, target bp-4 vs candidate bp-6, frame 6/6, 162/183. Volatile self-read is identical; discarded address gives 155/183; removing volatility gives 160/183. No exact candidate.",
+        "origin": "build/search/DoNestingR/20260927T184325-92648",
+        "recorded": "2026-09-27T18:43:25.611546+00:00"
       }
     ]
   },
@@ -10361,6 +10396,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-4] vs candidate [bp-6], after disregarding selector-pool operand rows; removing volatile attribute worsened 204/219 to 203/217. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/DoRandAntAA/20260927T181749-172976",
         "recorded": "2026-09-27T18:17:50.154833+00:00"
+      },
+      {
+        "text": "F-slotsteer: after skipping selector-pool operand noise, first home store is volatile attribute at target bp-4 vs candidate bp-6, frame 20/20, 204/219. Self-read is identical; address-taking does not improve alignment; making flags volatile gives 195/227. Prior removal of attribute volatility gives 203/219. No exact candidate.",
+        "origin": "build/search/DoRandAntAA/20260927T184324-113604",
+        "recorded": "2026-09-27T18:43:24.810494+00:00"
       }
     ]
   },
@@ -11275,6 +11315,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-4] vs candidate [bp-6], after disregarding selector-pool operand rows. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/DoToAlarm/20260927T181748-130548",
         "recorded": "2026-09-27T18:17:49.322141+00:00"
+      },
+      {
+        "text": "F-slotsteer: after skipping selector-pool operand noise, the first home store is attribute at target bp-4 vs candidate bp-6, frame 20/20, 237/250 opcodes. Self-read is identical; discarded address changes registers without improving the prefix; volatile attribute gives 237/254. No exact candidate.",
+        "origin": "build/search/DoToAlarm/20260927T184324-26744",
+        "recorded": "2026-09-27T18:43:24.699082+00:00"
       }
     ]
   },
@@ -11882,19 +11927,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DrawCastePopUp/f51866436028.c",
-      "sha256": "f518664360284d00f02b18288a00dffbf20ded754f69136b0a64b64af0e28761",
+      "source": "evidence/recovery/drafts/DrawCastePopUp/2a870b6013e1.c",
+      "sha256": "2a870b6013e122143bd461656daf91011ea46f1dca3366c82de6700ac56eda9f",
       "key": [
         false,
         false,
         279,
-        -15
+        -9
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
       "opcode_matches": 279,
       "opcode_total": 293,
-      "candidate_bytes": 799,
+      "candidate_bytes": 805,
       "target_bytes": 814,
       "flags": [
         "/AL",
@@ -11903,8 +11948,8 @@
         "/Oegilw",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/DrawCastePopUp/20260927T130311-119064/results.json",
-      "recorded": "2026-09-27T13:03:11.906093+00:00"
+      "origin": "build/search/DrawCastePopUp/20260927T183938-6836/results.json",
+      "recorded": "2026-09-27T18:39:39.026771+00:00"
     },
     "notes": [
       {
@@ -11946,6 +11991,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-2] vs candidate [bp-0x16]; 90-byte frame with several aggregate locals and a text buffer. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/DrawCastePopUp/20260927T181748-17800",
         "recorded": "2026-09-27T18:17:48.469330+00:00"
+      },
+      {
+        "text": "F-slotsteer: first home store is windowAddress.words.segment = 2, target bp-2 vs candidate bp-22, frame 90/90, 279/293. Self-comparison and discarded aggregate address are identical; volatile union storage does not improve the opcode prefix. No exact candidate.",
+        "origin": "build/search/DrawCastePopUp/20260927T184325-38420",
+        "recorded": "2026-09-27T18:43:25.745111+00:00"
       }
     ]
   },
@@ -18445,6 +18495,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-8] vs candidate [bp-6]; byte-home type trial int/uint raised opcode score but reduced ENTER 8 to 6. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/GetAlarmDir/20260927T181747-72936",
         "recorded": "2026-09-27T18:17:47.610009+00:00"
+      },
+      {
+        "text": "F-slotsteer: fresh full/frame is 121/121 opcodes, target ENTER 8 vs candidate 6. Frame is the earliest divergence, so home-order rules are not applied yet. Prior width variants did not retain the target frame; no candidate promoted.",
+        "origin": "build/search/GetAlarmDir/20260927T184324-72320",
+        "recorded": "2026-09-27T18:43:24.560974+00:00"
       }
     ]
   },
@@ -20298,6 +20353,11 @@
         "text": "Second-pass 2D array experiment: changing only the pheromone maps to typed far [64][32] arrays and using map[row][column] compiled to the exact preserved object (same output fe0479b0f6d4, 45/46 opcodes). The first target opcode divergence is still mov di,ax for Dy8 versus candidate mov si,ax; later register roles and the blue-path extra move follow from that allocation. Typed array indexing is collapsed by MSC7 and adds no leverage. Prior order, width, lifetime, guards, pointer and expression families are exhausted; no strict body.",
         "origin": "build/search/GetSmellT/20260927T143835-158300",
         "recorded": "2026-09-27T14:38:35.318832+00:00"
+      },
+      {
+        "text": "R1 study swapped the mapY/mapX assignment statement order; MSC 7.00 produced the same object as the preserved candidate (45/46, frame exact), with mapX in DI and mapY in SI. Target uses mapX in SI and mapY in DI before the bounds/map-index operations. Prior order, width, scope, guard, index, pointer and register-hint families are already exhausted; this source-order change provides no register shift.",
+        "origin": "build/search/GetSmellT/20260927T183924-60892",
+        "recorded": "2026-09-27T18:39:24.887532+00:00"
       }
     ]
   },
@@ -37082,6 +37142,11 @@
         "text": "F-ORDER 2026-09-27: the residue record cites [bp-0x16] vs [bp-6], but latest --frame --full reports ENTER 22 vs 44; repair frame before applying F1. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/SpecialXfer/20260927T181753-28328",
         "recorded": "2026-09-27T18:17:54.255627+00:00"
+      },
+      {
+        "text": "F-slotsteer: current best diverges first at frame size, target ENTER 22 vs candidate 44. Rechecked prior split-state r07: ENTER 22 but 139/175 opcodes and same output as r01. No exact candidate; resolve frame/code shape before home steering.",
+        "origin": "build/search/SpecialXfer/20260927T184325-84312",
+        "recorded": "2026-09-27T18:43:25.877185+00:00"
       }
     ]
   },
@@ -39443,6 +39508,11 @@
         "text": "Private helper chain investigation, leaf 3:63FE: straightforward frame-exact v31 was 259/315 opcodes and 831/863 bytes. Diagnostic scheduling variants showed that volatile editHeight moved the target bottom-row sequence ahead of pitch; adding volatile local pitch pinned life-buffer setup after pitch, yielding v37 262/315 and 833/863, but y landed in DI instead of target SI. The post-__aFldiv scale still folds to shl ax,2 vs target shl ax/rcl dx twice. These volatile variants are diagnostics only, not admitted-source claims. No helper admitted yet.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T18:17:58.500492+00:00"
+      },
+      {
+        "text": "Leaf 3:63FE diagnostic update: the best opcode replay is now 283/315 opcodes and 845/863 bytes at ENTER 0x24 (v61, static if/else selector chain plus scheduling probes). x scaling and the six-opcode bottom-row sequence are at target offsets; bottom-row uses DI vs target SI. The first opcode divergence is target's two 32-bit shl/rcl pairs after __aFldiv versus candidate shl ax,2; changing multiply order, unsuffixed/unsigned literal, removing the cast, nested 2L multipliers, and wide temp/split shifts did not change that lowering. Volatile scheduling variants are diagnostic only; helper remains unrecovered.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T18:37:10.261725+00:00"
       }
     ]
   },
@@ -39573,6 +39643,11 @@
         "text": "Private helper chain investigation, leaf 3:63FE: straightforward frame-exact v31 was 259/315 opcodes and 831/863 bytes. Diagnostic scheduling variants showed that volatile editHeight moved the target bottom-row sequence ahead of pitch; adding volatile local pitch pinned life-buffer setup after pitch, yielding v37 262/315 and 833/863, but y landed in DI instead of target SI. The post-__aFldiv scale still folds to shl ax/rcl dx twice into shl ax,2. These volatile variants are diagnostics only, not admitted-source claims. No helper admitted yet.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T18:18:03.610652+00:00"
+      },
+      {
+        "text": "Leaf 3:63FE diagnostic update: the best opcode replay is now 283/315 opcodes and 845/863 bytes at ENTER 0x24 (v61, static if/else selector chain plus scheduling probes). x scaling and the six-opcode bottom-row sequence are at target offsets; bottom-row uses DI vs target SI. The first opcode divergence is target's two 32-bit shl/rcl pairs after __aFldiv versus candidate shl ax,2; changing multiply order, unsuffixed/unsigned literal, removing the cast, nested 2L multipliers, and wide temp/split shifts did not change that lowering. Volatile scheduling variants are diagnostic only; helper remains unrecovered.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-27T18:37:16.059940+00:00"
       }
     ]
   },
@@ -40062,6 +40137,11 @@
         "text": "Fresh volatile-parameter probe leaves the generated object unchanged: 22/22 opcodes, 55/55 bytes, 2/2 fixups, same object hash as the preserved signed-count draft. The frame remains ENTER 4; target's only body residue is the long-add accumulator direction at +0x1A..+0x21. This new observability/liveness family does not explain the target; all tested source forms remain non-exact.",
         "origin": "build/search/WaitHundredths/20260927T143754-31328",
         "recorded": "2026-09-27T14:37:54.628496+00:00"
+      },
+      {
+        "text": "R1 study replay confirms ENTER 4 and 22/22 opcodes; the sole residue remains target ADD AX,CX / ADC DX,BX and stores AX:DX versus candidate CX:BX. The admitted _ms_Delay control uses CX:BX for GetTickCount()+delay but only with a different scalar lifetime; split update writes through the stack home. Existing WaitHundredths histories already exhaust natural expression/type/order/temporary forms, so this control does not identify a new natural source change.",
+        "origin": "build/search/WaitHundredths/20260927T183924-93232",
+        "recorded": "2026-09-27T18:39:24.785962+00:00"
       }
     ]
   },
@@ -40844,6 +40924,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-4] vs candidate [bp-8]; frame 24/24, pointer/word locals are interleaved. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/YellowFight/20260927T181752-76052",
         "recorded": "2026-09-27T18:17:52.611079+00:00"
+      },
+      {
+        "text": "F-slotsteer: earliest home store is attrPtr far-pointer word, target bp-4 vs candidate bp-8, frame 24/24, 149/161. Self-comparison is identical; address-taking the pointer or making the pointer volatile changes frame/code and gives 123/161 or 127/161. No exact candidate.",
+        "origin": "build/search/YellowFight/20260927T184325-127204",
+        "recorded": "2026-09-27T18:43:25.479047+00:00"
       }
     ]
   },
@@ -45926,6 +46011,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-6] vs candidate [bp-2]; declaration permutations identical, dropping entry volatile worsened 51/55 to 47/55. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/win_ClearGroupAreas/20260927T181751-126948",
         "recorded": "2026-09-27T18:17:51.799766+00:00"
+      },
+      {
+        "text": "F-slotsteer: earliest named home is window, target bp-6 vs candidate bp-2. No-op self-read is identical; discarded address gives 44/55; volatile window gives 39/55. Candidate entry is a volatile far pointer, so the word-only F1D rule does not explain it. No exact candidate.",
+        "origin": "build/search/win_ClearGroupAreas/20260927T184323-108000",
+        "recorded": "2026-09-27T18:43:23.645576+00:00"
       }
     ]
   },
@@ -46576,6 +46666,11 @@
         "text": "F-ORDER 2026-09-27: target [bp-6] vs candidate [bp-2]; same home-order symptom as _win_ClearGroupAreas. The measured address-taken rule is in evidence/codegen-facts/MSC7-F1A-F1G; no exact candidate from this round. Ignore pool/fixup-only operand noise and continue from the first true opcode/frame difference.",
         "origin": "build/search/win_DrawGroupObjects/20260927T181755-77560",
         "recorded": "2026-09-27T18:17:55.887134+00:00"
+      },
+      {
+        "text": "F-slotsteer: earliest named home is window, target bp-6 vs candidate bp-2. No-op self-read is identical; volatile window gives 38/55; taking the address of register window fails compilation. No exact candidate.",
+        "origin": "build/search/win_DrawGroupObjects/20260927T184323-52944",
+        "recorded": "2026-09-27T18:43:23.852644+00:00"
       }
     ]
   },

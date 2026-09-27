@@ -1,0 +1,207 @@
+{
+  "name": "r1-long-deadline-association-control",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "function": "ms_Delay",
+  "symbol": "_ms_Delay",
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "DEADLINE": "combined_left"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "f85a7f1d127e60aa4697e4350b25b29d5daaaa4e0df55a552faa4c1ac7295882",
+      "fixups": [
+        {
+          "offset": 28,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 lcall 0, 0",
+        "0009 mov cx, ax",
+        "000b mov ax, word ptr [bp + 6]",
+        "000e mov bx, dx",
+        "0010 cdq ",
+        "0011 add cx, ax",
+        "0013 adc bx, dx",
+        "0015 mov word ptr [bp - 4], cx",
+        "0018 mov word ptr [bp - 2], bx",
+        "001b lcall 0, 0",
+        "0020 cmp dx, word ptr [bp - 2]",
+        "0023 jb 0x1b",
+        "0025 ja 0x2c",
+        "0027 cmp ax, word ptr [bp - 4]",
+        "002a jb 0x1b",
+        "002c leave ",
+        "002d retf "
+      ],
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "18/18",
+        "bytes": "38/38"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "DEADLINE": "split_update"
+      },
+      "size": 44,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "b3468aa45586585bb1db97d5ee3a04885a139cffafc42d5630c352f9fe8a6835",
+      "fixups": [
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,16 +2,14 @@",
+          " lcall 0, 0",
+          "-mov cx, ax",
+          "+mov word ptr [bp - 4], ax",
+          "+mov word ptr [bp - 2], dx",
+          " mov ax, word ptr [bp + 6]",
+          "-mov bx, dx",
+          " cdq ",
+          "-add cx, ax",
+          "-adc bx, dx",
+          "-mov word ptr [bp - 4], cx",
+          "-mov word ptr [bp - 2], bx",
+          "+add word ptr [bp - 4], ax",
+          "+adc word ptr [bp - 2], dx",
+          " lcall 0, 0",
+          " cmp dx, word ptr [bp - 2]",
+          "-jb 0x1b",
+          "-ja 0x2c",
+          "+jb 0x19",
+          "+ja 0x2a",
+          " cmp ax, word ptr [bp - 4]",
+          "-jb 0x1b",
+          "+jb 0x19",
+          " leave "
+        ]
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "12/18",
+        "bytes": "5/40"
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "DEADLINE": "combined_right"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "f85a7f1d127e60aa4697e4350b25b29d5daaaa4e0df55a552faa4c1ac7295882",
+      "fixups": [
+        {
+          "offset": 28,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      },
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "18/18",
+        "bytes": "38/38"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

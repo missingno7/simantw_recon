@@ -107,12 +107,32 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 
 ## 2. Registers
 
-**MSC7-R1: SI/DI choice among two word register candidates. SUPPORTED.**
+**MSC7-R1: SI/DI choice among two word register candidates. SUPPORTED, refined by R2/R3.**
 - The parameter with more static uses gets SI. On a tie, the one used last usually gets SI (6 of 7 straight-line probes). An `M[x][y]` index use moves y into SI.
 - Probes: `build/supervisor/slotprobe.py` runs of 2026-09-27; not yet recorded with tools/probe.py.
 - Observed as residues: `_DigTileR`, `_GetMowDir`, `_GetSmellT`, `_DoNestingR`, `_FloodNestB`.
 - Counterexample: the `_DigTileR` draft stays swapped under goto, if-block and assignment-in-condition rewrites, so the weights are incomplete.
 - Validated 2026-09-27 (probes only).
+
+**MSC7-R2: refines R1. An extra static use moves a value into SI. With equal counts, final-use order sometimes decides, but not reliably. SUPPORTED, narrow.**
+- Reproducers: `evidence/codegen-facts/MSC7-R7/` (`r1-straight-tie-and-count`), `MSC7-R10/` (`r1-tie-first-held-last-swapped`); `baseline`.
+- Counterexample: R10 swaps the final two calls without changing the assignment.
+- Observed as insufficient for `_GetSmellT`, `_AddRock3`, `_IsItYellow`, `_FloodNestB`.
+- Validated 2026-09-27 (f-study-r1).
+
+**MSC7-R3: in a row-major 2-D byte map `M[x][y]` with two equal-use word locals, the scaled first subscript gets SI and the second gets DI; transposing the subscripts swaps them, and one extra use of the second overrides it. SUPPORTED, narrow.**
+- Reproducers: `evidence/codegen-facts/MSC7-R3/`, `MSC7-R2/`; `baseline`.
+- Admitted control `_PlaceEggR` (`baseline /NTSIMONE_MODULE`): row in SI, column in DI.
+- Counterexample: `_GetSmellT` stays swapped when its assignments are reordered.
+
+**MSC7-R5: for `long d = GetTickCount() + word`, MSC keeps the call result in CX:BX and adds the sign-extended word into it; operand order does not matter. A split update (`d = call(); d += w;`) adds into the home through AX:DX. SUPPORTED, this shape only.**
+- Admitted control `_ms_Delay` (`baseline /NTGR_MODULE`): both combined forms are strict (18/18).
+- `evidence/codegen-facts/MSC7-R5/`.
+- Does not solve `_WaitHundredths`: the split forms drop to 16/22, and the reversed split is identical to the combined form (`build/probes/r5-waithundredths-split`, 2026-09-27).
+
+**MSC7-R6: loop repetition alone gives a value SI over an equally used value outside the loop. OPEN.**
+- The probes could not separate loop weight from instruction constraints: `evidence/codegen-facts/MSC7-R6/`, `MSC7-R9/`.
+- F3 (loop weight among three competitors for SI/DI) is the related SUPPORTED observation.
 
 ## 3. Expressions and CSE
 

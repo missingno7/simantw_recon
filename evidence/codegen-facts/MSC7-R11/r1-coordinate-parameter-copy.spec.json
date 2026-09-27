@@ -1,0 +1,13 @@
+{
+  "name": "r1-coordinate-parameter-copy",
+  "symbol": "_PlaceEggR",
+  "function": "PlaceEggR",
+  "source": "build/workers/f-study-r1/PlaceEggR_copy_control.c",
+  "axes": {
+    "BODY": {
+      "direct_parameters": "    int valid;\n\n    if (ListIndexR >= 500)\n        return;\n    if (row < 0)\n        goto invalid;\n    if (row > 63)\n        goto invalid;\n    if (column < 1)\n        goto invalid;\n    if (column > 63)\n        goto invalid;\n    valid = 1;\n    goto checked;\ninvalid:\n    valid = 0;\nchecked:\n    if (valid) {\n        DigTileR(row, column);\n        AddAntToRList(row, column, life, 8, 0);\n        LifeR[(row << 6) + column] = (unsigned char)life;\n    }",
+      "register_local_copies": "    register int rowCopy = row;\n    register int columnCopy = column;\n    int valid;\n\n    if (ListIndexR >= 500)\n        return;\n    if (rowCopy < 0)\n        goto invalid;\n    if (rowCopy > 63)\n        goto invalid;\n    if (columnCopy < 1)\n        goto invalid;\n    if (columnCopy > 63)\n        goto invalid;\n    valid = 1;\n    goto checked;\ninvalid:\n    valid = 0;\nchecked:\n    if (valid) {\n        DigTileR(rowCopy, columnCopy);\n        AddAntToRList(rowCopy, columnCopy, life, 8, 0);\n        LifeR[(rowCopy << 6) + columnCopy] = (unsigned char)life;\n    }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

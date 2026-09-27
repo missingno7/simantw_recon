@@ -1,0 +1,199 @@
+{
+  "name": "r1-loop-vs-last-use-crossover",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "R1LoopTie",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "LOOPED": "x_loop_then_y_last"
+      },
+      "size": 78,
+      "frame": 8,
+      "homes": {
+        "-4": 2,
+        "-6": 2
+      },
+      "registers": [
+        "ax",
+        "cx",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "d3a5e6cc2cae8ab0146cee2cb9c1af7af0483f1ba1004e22f94d6fb46750f416",
+      "fixups": [
+        {
+          "offset": 66,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 52,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 34,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 8, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov di, word ptr [bp + 0xa]",
+        "0009 mov ax, word ptr [bp + 8]",
+        "000c mov word ptr [bp - 6], ax",
+        "000f mov cx, word ptr [bp + 6]",
+        "0012 mov word ptr [bp - 4], cx",
+        "0015 push cx",
+        "0016 lcall 0, 0",
+        "001b add sp, 2",
+        "001e push word ptr [bp - 6]",
+        "0021 lcall 0, 0",
+        "0026 add sp, 2",
+        "0029 or di, di",
+        "002b jle 0x3e",
+        "002d mov si, di",
+        "002f mov di, word ptr [bp - 4]",
+        "0032 push di",
+        "0033 lcall 0, 0",
+        "0038 add sp, 2",
+        "003b dec si",
+        "003c jne 0x32",
+        "003e push word ptr [bp - 6]",
+        "0041 lcall 0, 0",
+        "0046 add sp, 2",
+        "0049 pop si",
+        "004a pop di",
+        "004b leave ",
+        "004c retf ",
+        "004d nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "LOOPED": "y_loop_then_x_last"
+      },
+      "size": 68,
+      "frame": 8,
+      "homes": {
+        "-6": 2
+      },
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "8ab501b9bbf19bf594fee721f128596210f01ccdfbcb09a4fdb3f1703be6ad58",
+      "fixups": [
+        {
+          "offset": 56,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 42,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 20,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "homes",
+          "registers"
+        ],
+        "diff": [
+          "@@ -3,17 +3,14 @@",
+          " push si",
+          "-mov di, word ptr [bp + 0xa]",
+          "-mov ax, word ptr [bp + 8]",
+          "+mov si, word ptr [bp + 0xa]",
+          "+mov di, word ptr [bp + 8]",
+          "+mov ax, word ptr [bp + 6]",
+          " mov word ptr [bp - 6], ax",
+          "-mov cx, word ptr [bp + 6]",
+          "-mov word ptr [bp - 4], cx",
+          "-push cx",
+          "+push ax",
+          " lcall 0, 0",
+          " add sp, 2",
+          "-push word ptr [bp - 6]",
+          "+push di",
+          " lcall 0, 0",
+          " add sp, 2",
+          "-or di, di",
+          "-jle 0x3e",
+          "-mov si, di",
+          "-mov di, word ptr [bp - 4]",
+          "+or si, si",
+          "+jle 0x34",
+          " push di",
+          "@@ -22,3 +19,3 @@",
+          " dec si",
+          "-jne 0x32",
+          "+jne 0x28",
+          " push word ptr [bp - 6]"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}
