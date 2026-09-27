@@ -78,6 +78,7 @@ int snd_IsSongDone(void);
 void far musSoundBlasterClose(void);
 void far vocSoundBlasterClose(void);
 void far poolstub_sound_before_voc(void);
+void far poolstub_sound_after_voc(void);
 void MusicInit(void);
 void SysBeep(void);
 void myBeginSoundList(void);
@@ -110,7 +111,7 @@ void myServiceSong(void);
 #pragma alloc_text(RUN6_TEXT, Extract24BitVal)
 #pragma alloc_text(RUN7_TEXT, mySoundIsDone, myBeginSoundReverse)
 #pragma alloc_text(RUN8_TEXT, MultiMediaSong)
-#pragma alloc_text(POOLSTUB_TEXT, poolstub_sound_before_voc)
+#pragma alloc_text(POOLSTUB_TEXT, poolstub_sound_before_voc, poolstub_sound_after_voc)
 
 int IsMMMidiAvail(void)
 {
@@ -270,14 +271,11 @@ void far vocMciClose(unsigned int buffer1, unsigned int buffer2)
 
 void far SoundBlasterMessage(unsigned int wMsg, unsigned long dwParam)
 {
-    static char near callbackName[] = "sbcCallBack";
-    static char near resetName[] = "waveOutReset";
-    static char near unprepareName[] = "waveOutUnprepareHeader";
     MMProc proc;
 
     switch (wMsg) {
     case 1:
-        proc = GetProcAddress(stateViaSelector.moduleHandle, callbackName);
+        proc = GetProcAddress(stateViaSelector.moduleHandle, wSoundBlasterMsg + 0x186);
         if (proc)
             ((MMProc1)proc)(dwParam);
         return;
@@ -290,7 +288,7 @@ void far SoundBlasterMessage(unsigned int wMsg, unsigned long dwParam)
         }
         if ((unsigned int)dwParam != 0)
             return;
-        proc = GetProcAddress(stateViaSelector.moduleHandle, unprepareName);
+        proc = GetProcAddress(stateViaSelector.moduleHandle, wSoundBlasterMsg + 0x16a);
         if (proc)
             ((MMProc0)proc)();
         GlobalPageUnlock((unsigned int)((unsigned long)stateViaSelector.pageBuffer >> 16));
@@ -304,7 +302,7 @@ void far SoundBlasterMessage(unsigned int wMsg, unsigned long dwParam)
             return;
         if ((unsigned int)dwParam != 0)
             return;
-        proc = GetProcAddress(stateViaSelector.moduleHandle, resetName);
+        proc = GetProcAddress(stateViaSelector.moduleHandle, wSoundBlasterMsg + 0x15b);
         if (proc)
             ((MMProc0)proc)();
         GlobalPageUnlock((unsigned int)((unsigned long)stateViaSelector.channel0State.firstChannel.pageBuffer >> 16));
@@ -316,6 +314,15 @@ void far SoundBlasterMessage(unsigned int wMsg, unsigned long dwParam)
     default:
         return;
     }
+}
+
+/* Noncredited stand-in for the three strings after vocMciClose. */
+void far poolstub_sound_after_voc(void)
+{
+    char near * volatile p;
+    p = "sbcCallBack";
+    p = "waveOutReset";
+    p = "waveOutUnprepareHeader";
 }
 
 void MusicInit(void)
