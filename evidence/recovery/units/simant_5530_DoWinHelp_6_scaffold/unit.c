@@ -92,14 +92,12 @@ extern int far SMode;  /* scaffold reference for pool word BEF8 (segment 9, SEGM
 
 void far pool_stub_CalcScore(void);
 void far pool_stub_DrawCastePopUp(void);
-void far pool_data_fill_0959(void);
 void far SetDefaultWindPrompt(int mode);
 void far PictStrnDialog(int picture, int object, int force);
 void far win_DrawPictureWindow(int flags);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_CalcScore)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DrawCastePopUp)
-#pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_0959)
 #pragma alloc_text(RUN2_TEXT, SetDefaultWindPrompt, PictStrnDialog, win_DrawPictureWindow)
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _CalcScore.
@@ -127,14 +125,6 @@ void DoWinHelp(unsigned int context)
     WinHelp(rootWnd, helpFile, 1, (unsigned long)(context & 0xff00));
 }
 
-/* SCAFFOLD, not recovered source: the 2 bytes of private data between _win_DrawScoreWindow and _win_DrawScoreWindow (DGROUP 0959-095B, unclaimed members), copied from the image so the claimed pieces keep their layout. */
-void far pool_data_fill_0959(void)
-{
-    volatile char far *p;
-
-    p = "\045";
-}
-
 void far win_DrawScoreWindow(int flags)
 {
     int scores[8];
@@ -151,7 +141,7 @@ void far win_DrawScoreWindow(int flags)
         font_SetFont(4);
         if (CurGameType == 2) {
             for (i = 4, scorep = scores + 4; scorep < scores + 8; ++scorep, ++i)
-                win_PrintfAtObj(0x1802 + i, "%d", *scorep);
+                win_PrintfAtObj(0x1802 + i, "%d  ", *scorep);
         } else {
             for (i = 4; i < 8; ++i)
                 win_PrintfAtObj(0x1802 + i, MiscStrs[16]);

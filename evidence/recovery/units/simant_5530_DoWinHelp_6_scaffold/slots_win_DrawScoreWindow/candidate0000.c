@@ -25,7 +25,7 @@ void far win_DrawScoreWindow(int flags)
         font_SetFont(4);
         if (CurGameType == 2) {
             for (i = 4, scorep = scores + 4; scorep < scores + 8; ++scorep, ++i)
-                win_PrintfAtObj(0x1802 + i, "%d", *scorep);
+                win_PrintfAtObj(0x1802 + i, "%d  ", *scorep);
         } else {
             for (i = 4; i < 8; ++i)
                 win_PrintfAtObj(0x1802 + i, MiscStrs[16]);
