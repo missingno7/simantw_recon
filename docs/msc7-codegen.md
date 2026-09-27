@@ -86,6 +86,25 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 
 **Cluster note (F-HOLE, 17 functions, 2026-09-27):** in most of these the frame hole is not the earliest divergence. A branch destination (`_MakeOutletH/V`, `_Reproduce`, `_DoSow`, `_ProcModeEvent`), a register choice (`_FillMap`, `_CloseIndex`, `_DigTileB`, `_ch_DumpOldest`) or a home order (`_LoadStringAnt`, `_LoadMonoPats`, `_win_DrawTitle`, `_DrawMapFoot`) comes first. See build/workers/f-study-fhole/REPORT.md.
 
+**MSC7-F2: at most two competing mutable word locals get SI/DI; a third equally used one gets a 2-byte BP home. `register` is only a hint. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F2/` (`baseline` and `ogi` toys).
+- Admitted control `_FloorTiles` (`ogi`): changing `sum` to `register int` gives the identical object (80/80).
+- Consequence: a draft frame one word LARGER than the target usually has one more competing local than the original. Remove a variable (reuse a parameter, merge temporaries) rather than rearranging.
+
+**MSC7-F3: loop-weighted uses decide which of three competing locals gets SI/DI. The same number of uses after the loop does not. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F3/` (`baseline`).
+- Agrees with docs/regalloc-lessons.md.
+
+**MSC7-F4: a far call alone does not force a live scalar into a home; taking its address and passing it does. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F4/`.
+- Consistent with the admitted `_win_YardClosed` and `_DoFastMonoBitmap`.
+
+**MSC7-F5: a far pointer is one offset/segment object, not two word candidates. `T far * volatile p` forces a 4-byte home and an LES reload at every use. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F5/`.
+
+**MSC7-F6: a word local copied once from a parameter can be register-held (SI) like the parameter itself. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-F6/`.
+
 ## 2. Registers
 
 **MSC7-R1: SI/DI choice among two word register candidates. SUPPORTED.**
@@ -211,7 +230,7 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.
 - **U2 `_GtRegisterClass`**: the statement `wc.windowProc = GTCLIENTWNDPROC;` alone adds a 26-byte hidden temporary (ENTER 0x68 vs target 0x4E). Pascal prototypes, casts and a same-file definition do not remove it.
-- **U3 `_win_ModeControlClosed`**: `push es:[bx]` through a just-tested pointer, with no intervening call.
+- **U3 `_win_ModeControlClosed`**: the target is the P2 shape: the pointer is homed at the deepest slot, test and push use ES:BX, and LES happens after the call. A plain local folds to the constant address (51/54). `int far * volatile p` gives the target ENTER 0x10 but adds a reload before the push and homes p nearest to BP (49/53; `build/probes/f5-modecontrolclosed-volatile`). Open: the non-volatile form that stops constant folding.
 - **U4 `_MowerFall`**: the target clears AL before two stores; the candidate reuses a known-zero BH (C12 candidate).
 
 ## 8. Invalid evidence (do not cite)

@@ -49016,6 +49016,11 @@
         "text": "Baseline slotprobe shows h.p=&handle; if(*h.p) Remove(*h.p) still folds the push to the direct far global. Only an intervening far call before the second read forces BP-4/-2 homes, LES and PUSH ES:[BX]. Target has no such call; 53/53 aligned opcodes but 151/149 bytes remains open.",
         "origin": "build/search/win_ModeControlClosed/20260927T170140-24300",
         "recorded": "2026-09-27T17:01:40.549137+00:00"
+      },
+      {
+        "text": "Supervisor 2026-09-27 (probe build/probes/f5-modecontrolclosed-volatile): the target is the MSC7-P2 shape. The pointer is homed at the DEEPEST slot bp-0x10 right after 'mov bx,0x7ae2; mov es,[pool]'; the test and 'push es:[bx]' use ES:BX without a reload; LES from the home happens only after the call. 'int far * volatile p' gives the target ENTER 0x10 but reloads before the push (49/53) and homes p at bp-4 instead of bp-0x10. A plain local folds to the constant address (51/54). Open question: which non-volatile source form stops MSC 7.00 (ogi) folding p to &modeAnimHandle while keeping it live across hanim_RemoveAnimSet, and places it deepest (F1A: use-count rank among address-taken locals).",
+        "origin": "build/search/win_ModeControlClosed/20260927T182452-28796",
+        "recorded": "2026-09-27T18:24:53.108832+00:00"
       }
     ]
   },
