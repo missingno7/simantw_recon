@@ -47,18 +47,22 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Consequence: an untouched hole in a target frame is not explained by a merely declared local. See L7.
 - Validated 2026-09-27.
 
-**MSC7-L7: what fills untouched target-frame holes. OPEN.**
-- `build/supervisor/frame_holes.py` lists 32 open drafts whose target ENTER exceeds the candidate's and whose target never touches some frame bytes.
-- Candidates to test:
-  - array tails and unused struct members that are really accessed elsewhere;
-  - unions;
-  - aggregate temporaries (see U2, the WNDCLASS temporary);
-  - parameter copies;
-  - register-declared locals;
-  - accesses optimised away;
-  - expression temporaries;
-  - lifetime overlap.
-- The `_FillMap` "second register local gives ENTER 8" observation is INVALID evidence (section 8).
+**MSC7-L7: a used automatic array keeps its full declared extent, including elements that are never referenced. VERIFIED.**
+- Reproducer: `evidence/codegen-facts/MSC7-L7/l7-admitted-pct-array-tail`.
+- Admitted control `_SetCasteProd` (`og`, `/Oeglw /NTSIMTWO_MODULE`): `pct[5]` gives frame 26 (exact member). Changing only the bound to `[4]` or `[6]` gives frame 24 or 28, with the same 74/74 opcodes.
+- Toy (`og`): a volatile array whose elements 0..3 are used gives ENTER 10, 8 or 12 for bounds 5, 4 or 6.
+- Consequence: an untouched word at the deep end of a target frame can be the tail of a used array.
+- Validated 2026-09-27 (f-study-fhole).
+
+**MSC7-L8: a used automatic struct keeps storage for members that are never referenced. VERIFIED.**
+- Reproducer: `evidence/codegen-facts/MSC7-L8/l7-admitted-struct-unused-member`.
+- Admitted control `_ConvertMonoBitmap` (`ogi`, `/Oegilw /NTGR_MODULE`): the exact source has `struct { int spare; int value; }` and uses only `value`, giving frame 16 (exact, 124/124 bytes). Removing `spare` gives frame 14 and fails strict on that byte.
+- Toy (`ogi`): a three-word struct with only fields 2 and 3 used gives frame 6 with bp-6 untouched; two scalars give frame 4.
+- Applied to `_MakeLint2`: a three-member struct reproduces the target ENTER 6 and its homes, but the body drops from 42/48 to 32/48. It explains the footprint, not the source.
+- Together with L6 (FALSIFIED): an untouched target slot means a USED aggregate (array tail or unused member), never a merely declared local.
+- Validated 2026-09-27 (f-study-fhole).
+
+**Cluster note (F-HOLE, 17 functions, 2026-09-27):** in most of these the frame hole is not the earliest divergence. A branch destination (`_MakeOutletH/V`, `_Reproduce`, `_DoSow`, `_ProcModeEvent`), a register choice (`_FillMap`, `_CloseIndex`, `_DigTileB`, `_ch_DumpOldest`) or a home order (`_LoadStringAnt`, `_LoadMonoPats`, `_win_DrawTitle`, `_DrawMapFoot`) comes first. See build/workers/f-study-fhole/REPORT.md.
 
 ## 2. Registers
 

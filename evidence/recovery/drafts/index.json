@@ -5858,6 +5858,11 @@
         "text": "Second-pass f-n2-06: fresh frame replay remains 69/70 opcodes, 173/172 bytes, ENTER 6. Target BP slots are -2/-4; candidate far destination has a 4-byte home beginning BP-6. The sole opcode divergence at +0x70 is target mov es,dx versus candidate mov es,[bp-4]: target keeps mem_Lock selector in DX while loading source DS, then selects destination ES; candidate reloads its saved selector. Direct assignment/lvalue evaluation compiled to the identical existing object. A far-pointer union and split-register representation regressed to 60/70 or 59/71; explicit far-function mem_Lock prototype also compiled identically to the best. No exact body or admission. decodedHandle BSS and decode literal placement remain unit obligations after the opcode is exact; do not pursue those in isolation.",
         "origin": "build/search/DecodeString/20260927T144409-24900",
         "recorded": "2026-09-27T14:44:09.372805+00:00"
+      },
+      {
+        "text": "E16 probe under assigned /Oegilw: destination[i], *(destination+i), and (destination+i)[0] compile to one identical candidate object, still 69/70 opcodes. Earliest body residue remains target mov es,dx versus reload from [bp-4], so pointer/index spelling does not alter the selector lifetime choice. See build/probes/e16-decode-string-index-vs-pointer/report.json and build/workers/f-study-e16/REPORT.md.",
+        "origin": "build/search/DecodeString/20260927T181503-170588",
+        "recorded": "2026-09-27T18:15:03.676873+00:00"
       }
     ]
   },
@@ -14438,6 +14443,11 @@
         "text": "Best remains 151/156 (441/443) with no frame: mode=MeHealth; mode-=MeHealth; mode+=100 removes the extra fixedHealth home and preserves the 10 threshold compare, but emits MOV DI,100 / MOV BX,DI, omits the target MeHealth store before the countdown reset, and compares with BX rather than AX. New single-expression self-difference (MeHealth-MeHealth+100), mode self-subtract, direct global self-difference, and register-qualified mode all failed to improve; global self-difference reloads/folds and register qualifier reproduces the same body. Target region requires a runtime-unknown zeroed AX accumulator (SUB AX,AX; ADD AX,100), immediate MeHealth store before MeHealthCntDwn=0, and AX kept live through both comparisons. Need a new value-lifetime/dataflow hypothesis; ignore private placement/fixup noise until body exact.",
         "origin": "build/search/EatMyFood/20260927T155025-65956",
         "recorded": "2026-09-27T15:50:26.059647+00:00"
+      },
+      {
+        "text": "E16 accumulator rewrites tested under assigned /Oeglw: mode=MeHealth; mode-=MeHealth; mode+=100 remains 151/156, while direct subtraction and combined-expression variants converge to the same 149/156 object. No E16 improvement; first stated code residue remains sub ax,ax versus mov di,0x64. See build/search/EatMyFood/20260927T181047-87188/results.json and build/workers/f-study-e16/REPORT.md.",
+        "origin": "build/search/EatMyFood/20260927T181503-43164",
+        "recorded": "2026-09-27T18:15:03.757822+00:00"
       }
     ]
   },
@@ -19040,6 +19050,11 @@
         "text": "Second-pass frame/full: frame is exact (ENTER 4; only i at BP-4). Best remains 91/93 opcodes, 227/225 bytes. At the first aligned region after the delta-byte load, target sign-extends into SI and adds the first ABI argument at BP+6; the candidate folds the argument into AX and puts the first coordinate in DI, then assigns the second coordinate to SI. Correcting formal order to (x,y) reproduces the existing f-near-b GetMowDir_xy_parameters object; representing match_position as either [12][1] with [cx][0] or [1][12] with [0][cx] also reproduces that same object. These source index/formal changes do not alter register scheduling. Remaining opcode gap is coordinate register lifetime/order; private _DATA/CONST placement is independent and should wait for exact body.",
         "origin": "build/search/GetMowDir/20260927T144147-150556",
         "recorded": "2026-09-27T14:41:47.357330+00:00"
+      },
+      {
+        "text": "E16 control shows commuted and folded integer/address expressions canonicalize in MSC 7.00, but that does not explain this residue: the draft's earliest body mismatch is an extra add ax,[bp+8], followed by swapped CX/CY register roles. Existing search reports 28 rounds since opcode improvement at 91/93. Treat as expression evaluation/register schedule, not a fixup or pool issue. See build/workers/f-study-e16/REPORT.md.",
+        "origin": "build/search/GetMowDir/20260927T181503-76068",
+        "recorded": "2026-09-27T18:15:03.861890+00:00"
       }
     ]
   },
@@ -27533,6 +27548,11 @@
         "text": "f-n2-08 second pass: fresh --frame --full remains 53/54 opcodes, 166/166 bytes, 25/26 fixups. The sole code-shape residue is target +0x54 xor al,al before LifeA store and reuse of AL for Dx8; best uses BH for LifeA then mov al,bh. Tested a zero temporary live across coordinate loads, volatile LifeA, LifeA readback for the Dx8 value, and distinct constant-false forms; these either reproduced the same object or regressed, and no new source stream matched. LifeA near fixup/private placement is secondary until this opcode matches. Body not exact, so no TU build or promotion.",
         "origin": "build/search/MowerFall/20260927T145125-22592",
         "recorded": "2026-09-27T14:51:25.767638+00:00"
+      },
+      {
+        "text": "E16 probe under assigned /Oegilw: chained zero stores, separate stores, a scoped zero local, and read-back of LifeA after storing zero all remain below target at 53/54 opcodes (the reversed chain falls to 51/56). Chained and read-back forms compile to the same object. Earliest body residue remains target xor al,al then stores AL twice versus draft reusing BH and mov al,bh; E16 tree/store reuse does not explain it. See build/probes/e16-mowerfall-zero-store-sharing/report.json and build/workers/f-study-e16/REPORT.md.",
+        "origin": "build/search/MowerFall/20260927T181503-46320",
+        "recorded": "2026-09-27T18:15:03.578855+00:00"
       }
     ]
   },
