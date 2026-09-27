@@ -81,8 +81,36 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Do not rename globals or add or drop declarations to steer CSE.
 - Validated 2026-09-27.
 
-**MSC7-E16: CSE only between identical folded expression trees (stunts E16). OPEN.**
-- Study launched 2026-09-27 (worker f-study-e16).
+**Spellings that compile identically. Do not search among these (f-study-e16, 2026-09-27, all SUPPORTED):**
+
+**MSC7-E16: CSE reuses expressions that fold to the same tree. SUPPORTED.**
+- Admitted control `_AddBlackAnts` (`og`, `/Oeglw /NTSIMTWO_MODULE`): writing all three occurrences of `x * 64 + y` as `(x << 6) + y`, `y + x * 64` or `x * (32 + 32) + y` gives one identical object that stays an exact member.
+- Reproducer: `evidence/codegen-facts/MSC7-E16/`.
+
+**MSC7-E17: commuted addition, removal of a double negation, `*1` and cancelling `+1-1` fold before CSE; a bitwise identity stays distinct. SUPPORTED.**
+- `evidence/codegen-facts/MSC7-E17/`.
+
+**MSC7-E18: an explicit scalar temporary (`t = a+b; ... t ...`) disappears into the repeated expression. SUPPORTED.**
+- `og` toy, same 26-byte object for all three forms.
+- `evidence/codegen-facts/MSC7-E18/`.
+
+**MSC7-E21: `(a+b)`, `(int)((long)(a+b))`, `(int)((long)a+b)`, `(int)((long)a+(long)b)` and `(int)a+(int)b` compile identically for a low-word result. SUPPORTED.**
+- `ogi`.
+- `evidence/codegen-facts/MSC7-E21/`.
+
+**MSC7-E22: `p[i*8+j]`, `*(p+i*8+j)`, `*(p+j+i*8)`, `(p+i*8)[j]` and `p[(i<<3)+j]` give one address tree (one far load, one address calculation). SUPPORTED.**
+- `ogi`.
+- `evidence/codegen-facts/MSC7-E22/`.
+
+**MSC7-E23: a selector returned in DX by a far call stays in DX (`mov es,dx`) until a later far call forces the compiler to home the pointer and reload ES from its home. SUPPORTED.**
+- `ogi` toy; an alias does not change it.
+- `evidence/codegen-facts/MSC7-E23/`.
+- Relevant to `_DecodeString` (69/70: the target keeps `mov es,dx`, the draft reloads from a home), whose draft has a call or pointer lifetime the original does not.
+- Related: MSC7-P2 (far pointers).
+
+**MSC7-E20: `_MowerFall` clears AL afresh before two chained zero stores; the draft reuses a known-zero BH. OPEN.**
+- Chained, separate, scoped-zero-local and read-back forms, plus bounded steering (dead guards, alias guard, zero temporary), all stay at 53/54 or regress.
+- `evidence/codegen-facts/MSC7-E20/`, `MSC7-E26/`; `ogi`.
 
 **MSC7-S1: signed vs unsigned comparison follows the declared type of the compared variable (`jl`/`jg` vs `jb`/`ja`). VERIFIED.**
 - Admission: `_MakeKitchenWall` (2026-09-27, commit e9852013). The target `jl` on the row loop required `int rowNumber`; the draft's `unsigned` gave `jb`.

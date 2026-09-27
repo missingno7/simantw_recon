@@ -20,27 +20,30 @@
       "label": {
         "REFERENCE_COUNTS": "equal"
       },
-      "size": 62,
+      "size": 72,
       "frame": 4,
       "homes": {
         "-2": 2,
         "-4": 2
       },
       "registers": [
-        "ax"
+        "ax",
+        "si"
       ],
-      "saves": [],
-      "sha256": "b033f6200cdb5ab9511a4a516cbcabd17c4f57206e60a4f69e94f75352470e33",
+      "saves": [
+        "si"
+      ],
+      "sha256": "8cc59901fa82f6907ed632bf529b0e7647a23829eff2151d42c21997327baa8b",
       "fixups": [
         {
-          "offset": 23,
+          "offset": 27,
           "width": 4,
           "target": "_Keep",
           "kind": 3,
           "self_relative": false
         },
         {
-          "offset": 10,
+          "offset": 14,
           "width": 4,
           "target": "_Keep",
           "kind": 3,
@@ -50,28 +53,34 @@
       "baseline": true,
       "instructions": [
         "0000 enter 4, 0",
-        "0004 lea ax, [bp - 2]",
-        "0007 push ss",
-        "0008 push ax",
-        "0009 lcall 0, 0",
-        "000e add sp, 4",
-        "0011 lea ax, [bp - 4]",
-        "0014 push ss",
-        "0015 push ax",
-        "0016 lcall 0, 0",
-        "001b add sp, 4",
-        "001e mov ax, word ptr [bp + 6]",
-        "0021 mov word ptr [bp - 4], ax",
-        "0024 mov ax, word ptr [bp + 8]",
-        "0027 mov word ptr [bp - 2], ax",
-        "002a cmp word ptr [bp + 0xa], 0",
-        "002e je 0x36",
-        "0030 inc word ptr [bp - 4]",
-        "0033 inc word ptr [bp - 2]",
-        "0036 mov ax, word ptr [bp - 2]",
-        "0039 add ax, word ptr [bp - 4]",
-        "003c leave ",
-        "003d retf "
+        "0004 push si",
+        "0005 mov si, word ptr [bp + 0xa]",
+        "0008 lea ax, [bp - 2]",
+        "000b push ss",
+        "000c push ax",
+        "000d lcall 0, 0",
+        "0012 add sp, 4",
+        "0015 lea ax, [bp - 4]",
+        "0018 push ss",
+        "0019 push ax",
+        "001a lcall 0, 0",
+        "001f add sp, 4",
+        "0022 mov ax, word ptr [bp + 6]",
+        "0025 mov word ptr [bp - 4], ax",
+        "0028 mov ax, word ptr [bp + 8]",
+        "002b mov word ptr [bp - 2], ax",
+        "002e cmp si, 1",
+        "0031 jne 0x36",
+        "0033 inc word ptr [bp - 4]",
+        "0036 cmp si, 2",
+        "0039 jne 0x3e",
+        "003b inc word ptr [bp - 2]",
+        "003e mov ax, word ptr [bp - 2]",
+        "0041 add ax, word ptr [bp - 4]",
+        "0044 pop si",
+        "0045 leave ",
+        "0046 retf ",
+        "0047 nop "
       ]
     },
     {
@@ -79,27 +88,30 @@
       "label": {
         "REFERENCE_COUNTS": "more-a"
       },
-      "size": 64,
+      "size": 88,
       "frame": 4,
       "homes": {
         "-2": 2,
         "-4": 2
       },
       "registers": [
-        "ax"
+        "ax",
+        "si"
       ],
-      "saves": [],
-      "sha256": "83302bc52f7d263d61aa82f6b60c2c9c3cf23c96555703091d050f436428c8b0",
+      "saves": [
+        "si"
+      ],
+      "sha256": "69e1c2a31cb810f66f6398c957f545ac93b19bba4ba65718aa68e3e502845373",
       "fixups": [
         {
-          "offset": 23,
+          "offset": 27,
           "width": 4,
           "target": "_Keep",
           "kind": 3,
           "self_relative": false
         },
         {
-          "offset": 10,
+          "offset": 14,
           "width": 4,
           "target": "_Keep",
           "kind": 3,
@@ -113,16 +125,45 @@
           "size"
         ],
         "diff": [
-          "@@ -16,4 +16,4 @@",
-          " cmp word ptr [bp + 0xa], 0",
-          "-je 0x36",
+          "@@ -3,2 +3,7 @@",
+          " mov si, word ptr [bp + 0xa]",
+          "+lea ax, [bp - 4]",
+          "+push ss",
+          "+push ax",
+          "+lcall 0, 0",
+          "+add sp, 4",
+          " lea ax, [bp - 2]",
+          "@@ -8,14 +13,9 @@",
+          " add sp, 4",
+          "-lea ax, [bp - 4]",
+          "-push ss",
+          "-push ax",
+          "-lcall 0, 0",
+          "-add sp, 4",
+          " mov ax, word ptr [bp + 6]",
+          "+mov word ptr [bp - 2], ax",
+          "+mov ax, word ptr [bp + 8]",
+          " mov word ptr [bp - 4], ax",
+          "-mov ax, word ptr [bp + 8]",
+          "-mov word ptr [bp - 2], ax",
+          " cmp si, 1",
+          " jne 0x36",
           "-inc word ptr [bp - 4]",
-          "+je 0x37",
-          "+add word ptr [bp - 4], 3",
+          "+inc word ptr [bp - 2]",
+          " cmp si, 2",
+          "@@ -23,4 +23,10 @@",
           " inc word ptr [bp - 2]",
-          "@@ -23 +23,2 @@",
-          " retf ",
-          "+nop "
+          "-mov ax, word ptr [bp - 2]",
+          "-add ax, word ptr [bp - 4]",
+          "+cmp si, 3",
+          "+jne 0x46",
+          "+inc word ptr [bp - 2]",
+          "+cmp si, 4",
+          "+jne 0x4e",
+          "+inc word ptr [bp - 4]",
+          "+mov ax, word ptr [bp - 4]",
+          "+add ax, word ptr [bp - 2]",
+          " pop si"
         ]
       }
     }
