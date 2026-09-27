@@ -134,6 +134,14 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
     options=[seg['number'] for seg in s['segments'] if seg['name']==m['segments'][f['target_index']-1]['name']]
     if len(options)==1:target={'kind':'internal','segment':options[0],'offset':add}
    frame_ok=f['frame_method']==5 or (f['frame_method']==2 and f['frame_index']==f['target_index'] and f['target_method']==2)
+   # A selector through the DGROUP group frame (`mov ax, DGROUP`, e.g. an
+   # interrupt function's DS load) is DGROUP's selector: accepted only for a
+   # selector fixup whose SEGDEF target is a member of DGROUP placed in the
+   # original DGROUP segment.
+   group=m['groups'][f['frame_index']-1] if f['frame_method']==1 and f['frame_index'] and f['frame_index']<=len(m['groups']) else None
+   if (group and group['name']=='DGROUP' and f['location_type']==2 and f['target_method']==0 and f['target_index'] in group['segments']
+       and target and target['kind']=='internal' and target['segment']==10):
+    frame_ok=True
    if f['target_method']==2 and f['target'].get('name') in ('FIDRQQ','FIERQQ','FIWRQQ','FICRQQ','FJCRQQ'):
     # LINK5.30 calibration covers compiler frame5 and SDK runtime frame4.
     # Paired CS-prefix fixups share one NE obligation; retain both OMF checks.

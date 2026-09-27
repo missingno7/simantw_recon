@@ -7,10 +7,22 @@ extern int far GamePaused;
 extern int far OptionStates[];
 extern void far win_SetObjSelectedState(int object, int selected);
 struct WinButtonObject {
-    unsigned char reserved1[0x24];
-    unsigned char flags1;
-    unsigned char flags2;
+    unsigned char reserved1[0x1c];
+    unsigned char flagsLo;
+    unsigned char reserved1d_1f[3];
+    union {
+        unsigned int group;
+        struct {
+            unsigned char groupLow;
+            unsigned char type;
+        } bytes;
+    } groupType;
+    unsigned char reserved22_23[2];
+    unsigned char flags24;
+    unsigned char flags25;
 };
+#define flags1 flags24
+#define flags2 flags25
 extern int far showTrails;
 extern void far win_SetButtonBitmaps(int objectNumber, unsigned int bitmapUp,
                                      unsigned int bitmapDown);
@@ -98,296 +110,439 @@ extern unsigned char near CTabR[24];
 extern unsigned char near PherColorTab[16];
 
 
-/* One byte-packed representation of private DGROUP _DATA 014A..0858; strings start at 014B.
- * Entries follow the target addresses below; names are typed views into this run.
- */
-static char near privateDGROUP[0x070f] =
-    "\000" /* 014A: alignment byte before private run */
-    "Game speed now slow.\000" /* 014B: buttonSpeedSlow */
-    "Game speed now normal.\000" /* 0160: buttonSpeedNormal */
-    "Game speed now fast.\000" /* 0177: buttonSpeedFast */
-    "Game speed now ultra.\000" /* 018C: buttonSpeedUltra */
-    "Bookmark has been placed.\000" /* 01A2: bookmarkPlaced */
-    "Bookmark has not been placed.\000" /* 01BC: bookmarkNotPlaced */
-    "\000\000" /* 01DA: keyCheatPosition */
-    "\000\000" /* 01DC: keyCheatLength */
-    "INDEX\000" /* 01DE: keyPropertyIndex */
-    "DoKeyDown: Flash(start)(%d)\n\000" /* 01E4: keyFlashStart */
-    "DoKeyDown: Flash(almost done)(%d)\n\000" /* 0201: keyFlashAlmost */
-    "DoKeyDown: Flash(done)(%d)\n\000" /* 0224: keyFlashDone */
-    "INDEX\000" /* 0240: mousePropertyIndex */
-    "DoMouse: Flash(start)(%d)\n\000" /* 0246: mouseFlashStart */
-    "DoMouse: Flash(almost done)(%d)\n\000" /* 0261: mouseFlashAlmost */
-    "DoMouse: Flash(done)(%d)\n\000" /* 0282: mouseFlashDone */
-    "\377\377\377\377" /* 029C: lastTick */
-    "\000\000\000\000" /* 02A0: frames */
-    "\000\000\000\000" /* 02A4: total */
-    "Ave Length: %lu Speed: %lu\000\000" /* 02A8: debugFormat */
-    "\001\000" /* 02C4: processPostState */
-    "SERVANT\000" /* 02C6: processPostServerName */
-    "CLIEANT\000" /* 02CE: processPostClientName */
-    "CLIEANT\000" /* 02D6: networkClientName */
-    "SERVANT\000" /* 02DE: networkServerName */
-    "\000\000\000\000" /* 02E6: updateStamp */
-    "\000\000" /* 02EA: yardDrawPending */
-    "\000\000" /* 02EC: editDrawPending */
-    "\000\000" /* 02EE: timerCallCount */
-    "\000\000" /* 02F0: timerBusy */
-    "\000\000" /* 02F2: timerState02F2 */
-    "\000\000" /* 02F4: timerState02F4 */
-    "SimAnt\000" /* 02F6: timerIconNormal */
-    "SimAnt\000" /* 02FD: timerIconPaused */
-    "BlackWin\000" /* 0304: timerIconBlackWin */
-    "BlackWin\000" /* 030D: timerIconBlackWon */
-    "RedWin\000" /* 0316: timerIconRedWin */
-    "RedWin\000" /* 031D: timerIconRedLost */
-    "Ant%d\000" /* 0324: timerAntFormat */
-    "MagCursor\000" /* 032A: cursorMagResource */
-    "RockCursor\000" /* 0334: cursorRockResource */
-    "DigCursor\000" /* 033F: cursorDigResource */
-    "AntCursor\000" /* 0349: cursorAntResource */
-    "FoodCursor\000" /* 0353: cursorFoodResource */
-    "DropCursor\000" /* 035E: cursorDropResource */
-    "SprayCursor\000\000" /* 0369: cursorSprayResource */
-    "\000\000" /* 0376: mainWndState0376 */
-    "\000\000" /* 0378: mainWndState0378 */
-    "\000\000" /* 037A: mainWndState037A */
-    "\377\377\000\014\000\017\000\020\000\021\000\r\000\016\377\377" /* 037C: mainWndMessageMap */
-    "\000\000" /* 038C: mainWndState038C */
-    "SimAnt For Windows\000" /* 038E: mainWndTitle */
-    "INDEX\000" /* 03A1: mainWndPropertyIndex0 */
-    "Window %#x has the capture.\nDo capture debug?\n\000" /* 03A7: capturePrompt */
-    "SimAnt Capture\000" /* 03D6: captureTitle0 */
-    "SimAnt Capture\000" /* 03E5: captureTitle1 */
-    "No windows has the capture.\000" /* 03F4: noCaptureMessage */
-    "This is the ribbon bar.\000" /* 0410: ribbonMessage0 */
-    "This is the ribbon bar.\000" /* 0428: ribbonMessage1 */
-    "INDEX\000" /* 0440: mainWndPropertyIndex1 */
-    "INDEX\000" /* 0446: mainWndPropertyIndex2 */
-    "INDEX\000" /* 044C: mainWndPropertyIndex3 */
-    "INDEX\000" /* 0452: mainWndPropertyIndex4 */
-    "INDEX\000" /* 0458: mainWndPropertyIndex5 */
-    "WM_SIZE: newWidth(%d) newHeight(%d) editWidth(%d) editHeight(%d) rectWidth(%d) rectHeight(%d)\n\000" /* 045E: wmSizeFormat */
-    "ActivateApplication(START)\n\000" /* 04BD: activateStart */
-    "INDEX\000" /* 04D9: mainWndPropertyIndex6 */
-    "ActivateApplication(CAPTURE)(%#x)\n\000" /* 04DF: activateCapture */
-    "ActivateApplication(READY)\n\000" /* 0502: activateReady */
-    "DeActivateApplication(START)\n\000" /* 051E: deactivateStart */
-    "DeActivateApplication(RELEASECAPTURE)\n\000" /* 053C: deactivateRelease */
-    "DeActivateApplication(READY)\n\000" /* 0563: deactivateReady */
-    "WM_PALETTECHANGED(called)(%s)\n\000" /* 0581: paletteChangedCalled */
-    "WM_PALETTECHANGED(calling)(%s)\n\000" /* 05A0: paletteChangedCalling */
-    "WM_PALETTECHANGED(same window)\n\000" /* 05C0: paletteChangedSame */
-    "WM_PALETTECHANGED/WM_QUERYNEWPALETTE(Invalidate)\n\000" /* 05E0: paletteChangedInvalidate */
-    "Memory is very low.\000" /* 0612: memoryLowMessage */
-    "SimAnt\000" /* 0626: initInstanceMainClass */
-    "AntRoot\000" /* 062D: initInstanceMainTitle */
-    "INDEX\000" /* 0635: initInstancePropertyIndex */
-    "SimAnt Ribbon Bar\000" /* 063B: initInstanceRibbonTitle */
-    "RibbonWindow\000" /* 064D: initInstanceRibbonClass */
-    "SimAnt Root Window\000" /* 065A: initInstanceRootTitle */
-    "AntRoot\000" /* 066D: initInstanceRootClass */
-    "SimAnt\000" /* 0675: initApplicationIcon */
-    "AntRoot\000" /* 067C: initApplicationRootClass */
-    "GenericWindow\000" /* 0684: initApplicationGenericClass */
-    "RibbonWindow\000" /* 0692: initApplicationRibbonClass */
-    "AntRoot\000" /* 069F: winMainClassName */
-    "YYYYYYYYYY\000" /* 06A7: notInstalledPattern */
-    "Program not installed correctly.\nPlease re-install.\000" /* 06B2: notInstalledMessage */
-    "INDEX\000" /* 06E6: winMainPropertyIndex */
-    "sound\000" /* 06EC: optionSound */
-    "autotrack\000" /* 06F2: optionAutotrack */
-    "SimAnt\000" /* 06FC: appSection0 */
-    "music\000" /* 0703: optionMusic */
-    "SimAnt\000" /* 0709: appSection1 */
-    "effects\000" /* 0710: optionEffects */
-    "SimAnt\000" /* 0718: appSection2 */
-    "events\000" /* 071F: optionEvents */
-    "SimAnt\000" /* 0726: appSection3 */
-    "messages\000" /* 072D: optionMessages */
-    "SimAnt\000" /* 0736: appSection4 */
-    "silly\000" /* 073D: optionSilly */
-    "SimAnt\000" /* 0743: appSection5 */
-    "SimAnt cancelled.\000" /* 074A: cancelledMessage */
-    "mapuserbutton%d\000" /* 075C: mapButtonProfile */
-    "SimAnt\000" /* 076C: appSection6 */
-    "yarduserbutton%d\000" /* 0773: yardButtonProfile */
-    "SimAnt\000" /* 0784: appSection7 */
-    "AcceleratorTable\000" /* 078B: acceleratorResource */
-    "ReleasingCapture(quit)\n\000" /* 079C: releasingCaptureMessage */
-    "1\000" /* 07B4: profileOne0 */
-    "0\000" /* 07B6: profileZero0 */
-    "autotrack\000" /* 07B8: optionAutotrackAgain */
-    "SimAnt\000" /* 07C2: appSection8 */
-    "1\000" /* 07C9: profileOne1 */
-    "0\000" /* 07CB: profileZero1 */
-    "music\000" /* 07CD: optionMusicAgain */
-    "SimAnt\000" /* 07D3: appSection9 */
-    "1\000" /* 07DA: profileOne2 */
-    "0\000" /* 07DC: profileZero2 */
-    "effects\000" /* 07DE: optionEffectsAgain */
-    "SimAnt\000" /* 07E6: appSection10 */
-    "1\000" /* 07ED: profileOne3 */
-    "0\000" /* 07EF: profileZero3 */
-    "events\000" /* 07F1: optionEventsAgain */
-    "SimAnt\000" /* 07F8: appSection11 */
-    "1\000" /* 07FF: profileOne4 */
-    "0\000" /* 0801: profileZero4 */
-    "messages\000" /* 0803: optionMessagesAgain */
-    "SimAnt\000" /* 080C: appSection12 */
-    "1\000" /* 0813: profileOne5 */
-    "0\000" /* 0815: profileZero5 */
-    "silly\000" /* 0817: optionSillyAgain */
-    "SimAnt\000" /* 081D: appSection13 */
-    "mapuserbutton%d\000" /* 0824: mapButtonProfileAgain */
-    "%d\000" /* 0834: integerFormat0 */
-    "SimAnt\000" /* 0837: appSection14 */
-    "yarduserbutton%d\000" /* 083E: yardButtonProfileAgain */
-    "%d\000" /* 084F: integerFormat1 */
-    "SimAnt" /* 0852: appSection15 */;
-
-#define buttonSpeedSlow (privateDGROUP + 0x001)
-#define buttonSpeedNormal (privateDGROUP + 0x016)
-#define buttonSpeedFast (privateDGROUP + 0x02d)
-#define buttonSpeedUltra (privateDGROUP + 0x042)
-#define bookmarkPlaced (privateDGROUP + 0x058)
-#define bookmarkNotPlaced (privateDGROUP + 0x072)
-#define keyCheatPosition (*( unsigned int near *)(privateDGROUP + 0x090))
-#define keyCheatLength (*( unsigned int near *)(privateDGROUP + 0x092))
-#define keyPropertyIndex (privateDGROUP + 0x094)
-#define keyFlashStart (privateDGROUP + 0x09a)
-#define keyFlashAlmost (privateDGROUP + 0x0b7)
-#define keyFlashDone (privateDGROUP + 0x0da)
-#define mousePropertyIndex (privateDGROUP + 0x0f6)
-#define mouseFlashStart (privateDGROUP + 0x0fc)
-#define mouseFlashAlmost (privateDGROUP + 0x117)
-#define mouseFlashDone (privateDGROUP + 0x138)
-#define lastTick (*( long near *)(privateDGROUP + 0x152))
-#define frames (*( long near *)(privateDGROUP + 0x156))
-#define total (*( long near *)(privateDGROUP + 0x15a))
-#define debugFormat (privateDGROUP + 0x15e)
-#define processPostState (*( int near *)(privateDGROUP + 0x17a))
-#define processPostServerName (privateDGROUP + 0x17c)
-#define processPostClientName (privateDGROUP + 0x184)
-#define networkClientName (privateDGROUP + 0x18c)
-#define networkServerName (privateDGROUP + 0x194)
-#define updateStamp (*( long near *)(privateDGROUP + 0x19c))
-#define yardDrawPending (*( int near *)(privateDGROUP + 0x1a0))
-#define editDrawPending (*( int near *)(privateDGROUP + 0x1a2))
-#define timerCallCount (*( unsigned int near *)(privateDGROUP + 0x1a4))
-#define timerBusy (*( int near *)(privateDGROUP + 0x1a6))
-#define timerState02F2 (*( int near *)(privateDGROUP + 0x1a8))
-#define timerState02F4 (*( int near *)(privateDGROUP + 0x1aa))
-#define timerIconNormal (privateDGROUP + 0x1ac)
-#define timerIconPaused (privateDGROUP + 0x1b3)
-#define timerIconBlackWin (privateDGROUP + 0x1ba)
-#define timerIconBlackWon (privateDGROUP + 0x1c3)
-#define timerIconRedWin (privateDGROUP + 0x1cc)
-#define timerIconRedLost (privateDGROUP + 0x1d3)
-#define timerAntFormat (privateDGROUP + 0x1da)
-#define cursorMagResource (privateDGROUP + 0x1e0)
-#define cursorRockResource (privateDGROUP + 0x1ea)
-#define cursorDigResource (privateDGROUP + 0x1f5)
-#define cursorAntResource (privateDGROUP + 0x1ff)
-#define cursorFoodResource (privateDGROUP + 0x209)
-#define cursorDropResource (privateDGROUP + 0x214)
-#define cursorSprayResource (privateDGROUP + 0x21f)
-#define mainWndState0376 (*( int near *)(privateDGROUP + 0x22c))
-#define mainWndState0378 (*( int near *)(privateDGROUP + 0x22e))
-#define mainWndState037A (*( int near *)(privateDGROUP + 0x230))
-#define mainWndMessageMap ((int near *)(privateDGROUP + 0x232))
-#define mainWndState038C (*( int near *)(privateDGROUP + 0x242))
-#define mainWndTitle (privateDGROUP + 0x244)
-#define mainWndPropertyIndex0 (privateDGROUP + 0x257)
-#define capturePrompt (privateDGROUP + 0x25d)
-#define captureTitle0 (privateDGROUP + 0x28c)
-#define captureTitle1 (privateDGROUP + 0x29b)
-#define noCaptureMessage (privateDGROUP + 0x2aa)
-#define ribbonMessage0 (privateDGROUP + 0x2c6)
-#define ribbonMessage1 (privateDGROUP + 0x2de)
-#define mainWndPropertyIndex1 (privateDGROUP + 0x2f6)
-#define mainWndPropertyIndex2 (privateDGROUP + 0x2fc)
-#define mainWndPropertyIndex3 (privateDGROUP + 0x302)
-#define mainWndPropertyIndex4 (privateDGROUP + 0x308)
-#define mainWndPropertyIndex5 (privateDGROUP + 0x30e)
-#define wmSizeFormat (privateDGROUP + 0x314)
-#define activateStart (privateDGROUP + 0x373)
-#define mainWndPropertyIndex6 (privateDGROUP + 0x38f)
-#define activateCapture (privateDGROUP + 0x395)
-#define activateReady (privateDGROUP + 0x3b8)
-#define deactivateStart (privateDGROUP + 0x3d4)
-#define deactivateRelease (privateDGROUP + 0x3f2)
-#define deactivateReady (privateDGROUP + 0x419)
-#define paletteChangedCalled (privateDGROUP + 0x437)
-#define paletteChangedCalling (privateDGROUP + 0x456)
-#define paletteChangedSame (privateDGROUP + 0x476)
-#define paletteChangedInvalidate (privateDGROUP + 0x496)
-#define memoryLowMessage (privateDGROUP + 0x4c8)
-#define initInstanceMainClass (privateDGROUP + 0x4dc)
-#define initInstanceMainTitle (privateDGROUP + 0x4e3)
-#define initInstancePropertyIndex (privateDGROUP + 0x4eb)
-#define initInstanceRibbonTitle (privateDGROUP + 0x4f1)
-#define initInstanceRibbonClass (privateDGROUP + 0x503)
-#define initInstanceRootTitle (privateDGROUP + 0x510)
-#define initInstanceRootClass (privateDGROUP + 0x523)
-#define initApplicationIcon (privateDGROUP + 0x52b)
-#define initApplicationRootClass (privateDGROUP + 0x532)
-#define initApplicationGenericClass (privateDGROUP + 0x53a)
-#define initApplicationRibbonClass (privateDGROUP + 0x548)
-#define winMainClassName (privateDGROUP + 0x555)
-#define notInstalledPattern (privateDGROUP + 0x55d)
-#define notInstalledMessage (privateDGROUP + 0x568)
-#define winMainPropertyIndex (privateDGROUP + 0x59c)
-#define optionSound (privateDGROUP + 0x5a2)
-#define optionAutotrack (privateDGROUP + 0x5a8)
-#define appSection0 (privateDGROUP + 0x5b2)
-#define optionMusic (privateDGROUP + 0x5b9)
-#define appSection1 (privateDGROUP + 0x5bf)
-#define optionEffects (privateDGROUP + 0x5c6)
-#define appSection2 (privateDGROUP + 0x5ce)
-#define optionEvents (privateDGROUP + 0x5d5)
-#define appSection3 (privateDGROUP + 0x5dc)
-#define optionMessages (privateDGROUP + 0x5e3)
-#define appSection4 (privateDGROUP + 0x5ec)
-#define optionSilly (privateDGROUP + 0x5f3)
-#define appSection5 (privateDGROUP + 0x5f9)
-#define cancelledMessage (privateDGROUP + 0x600)
-#define mapButtonProfile (privateDGROUP + 0x612)
-#define appSection6 (privateDGROUP + 0x622)
-#define yardButtonProfile (privateDGROUP + 0x629)
-#define appSection7 (privateDGROUP + 0x63a)
-#define acceleratorResource (privateDGROUP + 0x641)
-#define releasingCaptureMessage (privateDGROUP + 0x652)
-#define profileOne0 (privateDGROUP + 0x66a)
-#define profileZero0 (privateDGROUP + 0x66c)
-#define optionAutotrackAgain (privateDGROUP + 0x66e)
-#define appSection8 (privateDGROUP + 0x678)
-#define profileOne1 (privateDGROUP + 0x67f)
-#define profileZero1 (privateDGROUP + 0x681)
-#define optionMusicAgain (privateDGROUP + 0x683)
-#define appSection9 (privateDGROUP + 0x689)
-#define profileOne2 (privateDGROUP + 0x690)
-#define profileZero2 (privateDGROUP + 0x692)
-#define optionEffectsAgain (privateDGROUP + 0x694)
-#define appSection10 (privateDGROUP + 0x69c)
-#define profileOne3 (privateDGROUP + 0x6a3)
-#define profileZero3 (privateDGROUP + 0x6a5)
-#define optionEventsAgain (privateDGROUP + 0x6a7)
-#define appSection11 (privateDGROUP + 0x6ae)
-#define profileOne4 (privateDGROUP + 0x6b5)
-#define profileZero4 (privateDGROUP + 0x6b7)
-#define optionMessagesAgain (privateDGROUP + 0x6b9)
-#define appSection12 (privateDGROUP + 0x6c2)
-#define profileOne5 (privateDGROUP + 0x6c9)
-#define profileZero5 (privateDGROUP + 0x6cb)
-#define optionSillyAgain (privateDGROUP + 0x6cd)
-#define appSection13 (privateDGROUP + 0x6d3)
-#define mapButtonProfileAgain (privateDGROUP + 0x6da)
-#define integerFormat0 (privateDGROUP + 0x6ea)
-#define appSection14 (privateDGROUP + 0x6ed)
-#define yardButtonProfileAgain (privateDGROUP + 0x6f4)
-#define integerFormat1 (privateDGROUP + 0x705)
-#define appSection15 (privateDGROUP + 0x708)
+/* Natural initialized fields in target DGROUP address order. */
+struct SimantPrivateData {
+    char privateDataPrefix[1]; /* 014A */
+    char buttonSpeedSlow[21]; /* 014B */
+    char buttonSpeedNormal[23]; /* 0160 */
+    char buttonSpeedFast[21]; /* 0177 */
+    char buttonSpeedUltra[22]; /* 018C */
+    char bookmarkPlaced[26]; /* 01A2 */
+    char bookmarkNotPlaced[30]; /* 01BC */
+    unsigned int keyCheatPosition; /* 01DA */
+    unsigned int keyCheatLength; /* 01DC */
+    char keyPropertyIndex[6]; /* 01DE */
+    char keyFlashStart[29]; /* 01E4 */
+    char keyFlashAlmost[35]; /* 0201 */
+    char keyFlashDone[28]; /* 0224 */
+    char mousePropertyIndex[6]; /* 0240 */
+    char mouseFlashStart[27]; /* 0246 */
+    char mouseFlashAlmost[33]; /* 0261 */
+    char mouseFlashDone[26]; /* 0282 */
+    long lastTick; /* 029C */
+    long frames; /* 02A0 */
+    long total; /* 02A4 */
+    char debugFormat[28]; /* 02A8 */
+    int processPostState; /* 02C4 */
+    char processPostServerName[8]; /* 02C6 */
+    char processPostClientName[8]; /* 02CE */
+    char networkClientName[8]; /* 02D6 */
+    char networkServerName[8]; /* 02DE */
+    long updateStamp; /* 02E6 */
+    int yardDrawPending; /* 02EA */
+    int editDrawPending; /* 02EC */
+    unsigned int timerCallCount; /* 02EE */
+    int timerBusy; /* 02F0 */
+    int timerState02F2; /* 02F2 */
+    int timerState02F4; /* 02F4 */
+    char timerIconNormal[7]; /* 02F6 */
+    char timerIconPaused[7]; /* 02FD */
+    char timerIconBlackWin[9]; /* 0304 */
+    char timerIconBlackWon[9]; /* 030D */
+    char timerIconRedWin[7]; /* 0316 */
+    char timerIconRedLost[7]; /* 031D */
+    char timerAntFormat[6]; /* 0324 */
+    char cursorMagResource[10]; /* 032A */
+    char cursorRockResource[11]; /* 0334 */
+    char cursorDigResource[10]; /* 033F */
+    char cursorAntResource[10]; /* 0349 */
+    char cursorFoodResource[11]; /* 0353 */
+    char cursorDropResource[11]; /* 035E */
+    char cursorSprayResource[13]; /* 0369 */
+    int mainWndState0376; /* 0376 */
+    int mainWndState0378; /* 0378 */
+    int mainWndState037A; /* 037A */
+    int mainWndMessageMap[8]; /* 037C */
+    int mainWndState038C; /* 038C */
+    char mainWndTitle[19]; /* 038E */
+    char mainWndPropertyIndex0[6]; /* 03A1 */
+    char capturePrompt[47]; /* 03A7 */
+    char captureTitle0[15]; /* 03D6 */
+    char captureTitle1[15]; /* 03E5 */
+    char noCaptureMessage[28]; /* 03F4 */
+    char ribbonMessage0[24]; /* 0410 */
+    char ribbonMessage1[24]; /* 0428 */
+    char mainWndPropertyIndex1[6]; /* 0440 */
+    char mainWndPropertyIndex2[6]; /* 0446 */
+    char mainWndPropertyIndex3[6]; /* 044C */
+    char mainWndPropertyIndex4[6]; /* 0452 */
+    char mainWndPropertyIndex5[6]; /* 0458 */
+    char wmSizeFormat[95]; /* 045E */
+    char activateStart[28]; /* 04BD */
+    char mainWndPropertyIndex6[6]; /* 04D9 */
+    char activateCapture[35]; /* 04DF */
+    char activateReady[28]; /* 0502 */
+    char deactivateStart[30]; /* 051E */
+    char deactivateRelease[39]; /* 053C */
+    char deactivateReady[30]; /* 0563 */
+    char paletteChangedCalled[31]; /* 0581 */
+    char paletteChangedCalling[32]; /* 05A0 */
+    char paletteChangedSame[32]; /* 05C0 */
+    char paletteChangedInvalidate[50]; /* 05E0 */
+    char memoryLowMessage[20]; /* 0612 */
+    char initInstanceMainClass[7]; /* 0626 */
+    char initInstanceMainTitle[8]; /* 062D */
+    char initInstancePropertyIndex[6]; /* 0635 */
+    char initInstanceRibbonTitle[18]; /* 063B */
+    char initInstanceRibbonClass[13]; /* 064D */
+    char initInstanceRootTitle[19]; /* 065A */
+    char initInstanceRootClass[8]; /* 066D */
+    char initApplicationIcon[7]; /* 0675 */
+    char initApplicationRootClass[8]; /* 067C */
+    char initApplicationGenericClass[14]; /* 0684 */
+    char initApplicationRibbonClass[13]; /* 0692 */
+    char winMainClassName[8]; /* 069F */
+    char notInstalledPattern[11]; /* 06A7 */
+    char notInstalledMessage[52]; /* 06B2 */
+    char winMainPropertyIndex[6]; /* 06E6 */
+    char optionSound[6]; /* 06EC */
+    char optionAutotrack[10]; /* 06F2 */
+    char appSection0[7]; /* 06FC */
+    char optionMusic[6]; /* 0703 */
+    char appSection1[7]; /* 0709 */
+    char optionEffects[8]; /* 0710 */
+    char appSection2[7]; /* 0718 */
+    char optionEvents[7]; /* 071F */
+    char appSection3[7]; /* 0726 */
+    char optionMessages[9]; /* 072D */
+    char appSection4[7]; /* 0736 */
+    char optionSilly[6]; /* 073D */
+    char appSection5[7]; /* 0743 */
+    char cancelledMessage[18]; /* 074A */
+    char mapButtonProfile[16]; /* 075C */
+    char appSection6[7]; /* 076C */
+    char yardButtonProfile[17]; /* 0773 */
+    char appSection7[7]; /* 0784 */
+    char acceleratorResource[17]; /* 078B */
+    char releasingCaptureMessage[24]; /* 079C */
+    char profileOne0[2]; /* 07B4 */
+    char profileZero0[2]; /* 07B6 */
+    char optionAutotrackAgain[10]; /* 07B8 */
+    char appSection8[7]; /* 07C2 */
+    char profileOne1[2]; /* 07C9 */
+    char profileZero1[2]; /* 07CB */
+    char optionMusicAgain[6]; /* 07CD */
+    char appSection9[7]; /* 07D3 */
+    char profileOne2[2]; /* 07DA */
+    char profileZero2[2]; /* 07DC */
+    char optionEffectsAgain[8]; /* 07DE */
+    char appSection10[7]; /* 07E6 */
+    char profileOne3[2]; /* 07ED */
+    char profileZero3[2]; /* 07EF */
+    char optionEventsAgain[7]; /* 07F1 */
+    char appSection11[7]; /* 07F8 */
+    char profileOne4[2]; /* 07FF */
+    char profileZero4[2]; /* 0801 */
+    char optionMessagesAgain[9]; /* 0803 */
+    char appSection12[7]; /* 080C */
+    char profileOne5[2]; /* 0813 */
+    char profileZero5[2]; /* 0815 */
+    char optionSillyAgain[6]; /* 0817 */
+    char appSection13[7]; /* 081D */
+    char mapButtonProfileAgain[16]; /* 0824 */
+    char integerFormat0[3]; /* 0834 */
+    char appSection14[7]; /* 0837 */
+    char yardButtonProfileAgain[17]; /* 083E */
+    char integerFormat1[3]; /* 084F */
+};
+static struct SimantPrivateData near privateDGROUP = {
+    "\000", /* 014A: privateDataPrefix */
+    "Game speed now slow.\000", /* 014B: buttonSpeedSlow */
+    "Game speed now normal.\000", /* 0160: buttonSpeedNormal */
+    "Game speed now fast.\000", /* 0177: buttonSpeedFast */
+    "Game speed now ultra.\000", /* 018C: buttonSpeedUltra */
+    "Bookmark has been placed.\000", /* 01A2: bookmarkPlaced */
+    "Bookmark has not been placed.\000", /* 01BC: bookmarkNotPlaced */
+    0U, /* 01DA: keyCheatPosition */
+    0U, /* 01DC: keyCheatLength */
+    "INDEX\000", /* 01DE: keyPropertyIndex */
+    "DoKeyDown: Flash(start)(%d)\n\000", /* 01E4: keyFlashStart */
+    "DoKeyDown: Flash(almost done)(%d)\n\000", /* 0201: keyFlashAlmost */
+    "DoKeyDown: Flash(done)(%d)\n\000", /* 0224: keyFlashDone */
+    "INDEX\000", /* 0240: mousePropertyIndex */
+    "DoMouse: Flash(start)(%d)\n\000", /* 0246: mouseFlashStart */
+    "DoMouse: Flash(almost done)(%d)\n\000", /* 0261: mouseFlashAlmost */
+    "DoMouse: Flash(done)(%d)\n\000", /* 0282: mouseFlashDone */
+    -1L, /* 029C: lastTick */
+    0L, /* 02A0: frames */
+    0L, /* 02A4: total */
+    "Ave Length: %lu Speed: %lu\000\000", /* 02A8: debugFormat */
+    1, /* 02C4: processPostState */
+    "SERVANT\000", /* 02C6: processPostServerName */
+    "CLIEANT\000", /* 02CE: processPostClientName */
+    "CLIEANT\000", /* 02D6: networkClientName */
+    "SERVANT\000", /* 02DE: networkServerName */
+    0L, /* 02E6: updateStamp */
+    0, /* 02EA: yardDrawPending */
+    0, /* 02EC: editDrawPending */
+    0U, /* 02EE: timerCallCount */
+    0, /* 02F0: timerBusy */
+    0, /* 02F2: timerState02F2 */
+    0, /* 02F4: timerState02F4 */
+    "SimAnt\000", /* 02F6: timerIconNormal */
+    "SimAnt\000", /* 02FD: timerIconPaused */
+    "BlackWin\000", /* 0304: timerIconBlackWin */
+    "BlackWin\000", /* 030D: timerIconBlackWon */
+    "RedWin\000", /* 0316: timerIconRedWin */
+    "RedWin\000", /* 031D: timerIconRedLost */
+    "Ant%d\000", /* 0324: timerAntFormat */
+    "MagCursor\000", /* 032A: cursorMagResource */
+    "RockCursor\000", /* 0334: cursorRockResource */
+    "DigCursor\000", /* 033F: cursorDigResource */
+    "AntCursor\000", /* 0349: cursorAntResource */
+    "FoodCursor\000", /* 0353: cursorFoodResource */
+    "DropCursor\000", /* 035E: cursorDropResource */
+    "SprayCursor\000\000", /* 0369: cursorSprayResource */
+    0, /* 0376: mainWndState0376 */
+    0, /* 0378: mainWndState0378 */
+    0, /* 037A: mainWndState037A */
+    {-1, 3072, 3840, 4096, 4352, 3328, 3584, -1}, /* 037C: mainWndMessageMap */
+    0, /* 038C: mainWndState038C */
+    "SimAnt For Windows\000", /* 038E: mainWndTitle */
+    "INDEX\000", /* 03A1: mainWndPropertyIndex0 */
+    "Window %#x has the capture.\nDo capture debug?\n\000", /* 03A7: capturePrompt */
+    "SimAnt Capture\000", /* 03D6: captureTitle0 */
+    "SimAnt Capture\000", /* 03E5: captureTitle1 */
+    "No windows has the capture.\000", /* 03F4: noCaptureMessage */
+    "This is the ribbon bar.\000", /* 0410: ribbonMessage0 */
+    "This is the ribbon bar.\000", /* 0428: ribbonMessage1 */
+    "INDEX\000", /* 0440: mainWndPropertyIndex1 */
+    "INDEX\000", /* 0446: mainWndPropertyIndex2 */
+    "INDEX\000", /* 044C: mainWndPropertyIndex3 */
+    "INDEX\000", /* 0452: mainWndPropertyIndex4 */
+    "INDEX\000", /* 0458: mainWndPropertyIndex5 */
+    "WM_SIZE: newWidth(%d) newHeight(%d) editWidth(%d) editHeight(%d) rectWidth(%d) rectHeight(%d)\n\000", /* 045E: wmSizeFormat */
+    "ActivateApplication(START)\n\000", /* 04BD: activateStart */
+    "INDEX\000", /* 04D9: mainWndPropertyIndex6 */
+    "ActivateApplication(CAPTURE)(%#x)\n\000", /* 04DF: activateCapture */
+    "ActivateApplication(READY)\n\000", /* 0502: activateReady */
+    "DeActivateApplication(START)\n\000", /* 051E: deactivateStart */
+    "DeActivateApplication(RELEASECAPTURE)\n\000", /* 053C: deactivateRelease */
+    "DeActivateApplication(READY)\n\000", /* 0563: deactivateReady */
+    "WM_PALETTECHANGED(called)(%s)\n\000", /* 0581: paletteChangedCalled */
+    "WM_PALETTECHANGED(calling)(%s)\n\000", /* 05A0: paletteChangedCalling */
+    "WM_PALETTECHANGED(same window)\n\000", /* 05C0: paletteChangedSame */
+    "WM_PALETTECHANGED/WM_QUERYNEWPALETTE(Invalidate)\n\000", /* 05E0: paletteChangedInvalidate */
+    "Memory is very low.\000", /* 0612: memoryLowMessage */
+    "SimAnt\000", /* 0626: initInstanceMainClass */
+    "AntRoot\000", /* 062D: initInstanceMainTitle */
+    "INDEX\000", /* 0635: initInstancePropertyIndex */
+    "SimAnt Ribbon Bar\000", /* 063B: initInstanceRibbonTitle */
+    "RibbonWindow\000", /* 064D: initInstanceRibbonClass */
+    "SimAnt Root Window\000", /* 065A: initInstanceRootTitle */
+    "AntRoot\000", /* 066D: initInstanceRootClass */
+    "SimAnt\000", /* 0675: initApplicationIcon */
+    "AntRoot\000", /* 067C: initApplicationRootClass */
+    "GenericWindow\000", /* 0684: initApplicationGenericClass */
+    "RibbonWindow\000", /* 0692: initApplicationRibbonClass */
+    "AntRoot\000", /* 069F: winMainClassName */
+    "YYYYYYYYYY\000", /* 06A7: notInstalledPattern */
+    "Program not installed correctly.\nPlease re-install.\000", /* 06B2: notInstalledMessage */
+    "INDEX\000", /* 06E6: winMainPropertyIndex */
+    "sound\000", /* 06EC: optionSound */
+    "autotrack\000", /* 06F2: optionAutotrack */
+    "SimAnt\000", /* 06FC: appSection0 */
+    "music\000", /* 0703: optionMusic */
+    "SimAnt\000", /* 0709: appSection1 */
+    "effects\000", /* 0710: optionEffects */
+    "SimAnt\000", /* 0718: appSection2 */
+    "events\000", /* 071F: optionEvents */
+    "SimAnt\000", /* 0726: appSection3 */
+    "messages\000", /* 072D: optionMessages */
+    "SimAnt\000", /* 0736: appSection4 */
+    "silly\000", /* 073D: optionSilly */
+    "SimAnt\000", /* 0743: appSection5 */
+    "SimAnt cancelled.\000", /* 074A: cancelledMessage */
+    "mapuserbutton%d\000", /* 075C: mapButtonProfile */
+    "SimAnt\000", /* 076C: appSection6 */
+    "yarduserbutton%d\000", /* 0773: yardButtonProfile */
+    "SimAnt\000", /* 0784: appSection7 */
+    "AcceleratorTable\000", /* 078B: acceleratorResource */
+    "ReleasingCapture(quit)\n\000", /* 079C: releasingCaptureMessage */
+    "1\000", /* 07B4: profileOne0 */
+    "0\000", /* 07B6: profileZero0 */
+    "autotrack\000", /* 07B8: optionAutotrackAgain */
+    "SimAnt\000", /* 07C2: appSection8 */
+    "1\000", /* 07C9: profileOne1 */
+    "0\000", /* 07CB: profileZero1 */
+    "music\000", /* 07CD: optionMusicAgain */
+    "SimAnt\000", /* 07D3: appSection9 */
+    "1\000", /* 07DA: profileOne2 */
+    "0\000", /* 07DC: profileZero2 */
+    "effects\000", /* 07DE: optionEffectsAgain */
+    "SimAnt\000", /* 07E6: appSection10 */
+    "1\000", /* 07ED: profileOne3 */
+    "0\000", /* 07EF: profileZero3 */
+    "events\000", /* 07F1: optionEventsAgain */
+    "SimAnt\000", /* 07F8: appSection11 */
+    "1\000", /* 07FF: profileOne4 */
+    "0\000", /* 0801: profileZero4 */
+    "messages\000", /* 0803: optionMessagesAgain */
+    "SimAnt\000", /* 080C: appSection12 */
+    "1\000", /* 0813: profileOne5 */
+    "0\000", /* 0815: profileZero5 */
+    "silly\000", /* 0817: optionSillyAgain */
+    "SimAnt\000", /* 081D: appSection13 */
+    "mapuserbutton%d\000", /* 0824: mapButtonProfileAgain */
+    "%d\000", /* 0834: integerFormat0 */
+    "SimAnt\000", /* 0837: appSection14 */
+    "yarduserbutton%d\000", /* 083E: yardButtonProfileAgain */
+    "%d\000", /* 084F: integerFormat1 */
+};
+static char near appSection15[] = "SimAnt"; /* 0852: trailing string */
+#define privateDataPrefix (privateDGROUP.privateDataPrefix)
+#define privateDataPrefix (privateDGROUP.privateDataPrefix)
+#define buttonSpeedSlow (privateDGROUP.buttonSpeedSlow)
+#define buttonSpeedNormal (privateDGROUP.buttonSpeedNormal)
+#define buttonSpeedFast (privateDGROUP.buttonSpeedFast)
+#define buttonSpeedUltra (privateDGROUP.buttonSpeedUltra)
+#define bookmarkPlaced (privateDGROUP.bookmarkPlaced)
+#define bookmarkNotPlaced (privateDGROUP.bookmarkNotPlaced)
+#define keyCheatPosition (privateDGROUP.keyCheatPosition)
+#define keyCheatLength (privateDGROUP.keyCheatLength)
+#define keyPropertyIndex (privateDGROUP.keyPropertyIndex)
+#define keyFlashStart (privateDGROUP.keyFlashStart)
+#define keyFlashAlmost (privateDGROUP.keyFlashAlmost)
+#define keyFlashDone (privateDGROUP.keyFlashDone)
+#define mousePropertyIndex (privateDGROUP.mousePropertyIndex)
+#define mouseFlashStart (privateDGROUP.mouseFlashStart)
+#define mouseFlashAlmost (privateDGROUP.mouseFlashAlmost)
+#define mouseFlashDone (privateDGROUP.mouseFlashDone)
+#define lastTick (privateDGROUP.lastTick)
+#define frames (privateDGROUP.frames)
+#define total (privateDGROUP.total)
+#define debugFormat (privateDGROUP.debugFormat)
+#define processPostState (privateDGROUP.processPostState)
+#define processPostServerName (privateDGROUP.processPostServerName)
+#define processPostClientName (privateDGROUP.processPostClientName)
+#define networkClientName (privateDGROUP.networkClientName)
+#define networkServerName (privateDGROUP.networkServerName)
+#define updateStamp (privateDGROUP.updateStamp)
+#define yardDrawPending (privateDGROUP.yardDrawPending)
+#define editDrawPending (privateDGROUP.editDrawPending)
+#define timerCallCount (privateDGROUP.timerCallCount)
+#define timerBusy (privateDGROUP.timerBusy)
+#define timerState02F2 (privateDGROUP.timerState02F2)
+#define timerState02F4 (privateDGROUP.timerState02F4)
+#define timerIconNormal (privateDGROUP.timerIconNormal)
+#define timerIconPaused (privateDGROUP.timerIconPaused)
+#define timerIconBlackWin (privateDGROUP.timerIconBlackWin)
+#define timerIconBlackWon (privateDGROUP.timerIconBlackWon)
+#define timerIconRedWin (privateDGROUP.timerIconRedWin)
+#define timerIconRedLost (privateDGROUP.timerIconRedLost)
+#define timerAntFormat (privateDGROUP.timerAntFormat)
+#define cursorMagResource (privateDGROUP.cursorMagResource)
+#define cursorRockResource (privateDGROUP.cursorRockResource)
+#define cursorDigResource (privateDGROUP.cursorDigResource)
+#define cursorAntResource (privateDGROUP.cursorAntResource)
+#define cursorFoodResource (privateDGROUP.cursorFoodResource)
+#define cursorDropResource (privateDGROUP.cursorDropResource)
+#define cursorSprayResource (privateDGROUP.cursorSprayResource)
+#define mainWndState0376 (privateDGROUP.mainWndState0376)
+#define mainWndState0378 (privateDGROUP.mainWndState0378)
+#define mainWndState037A (privateDGROUP.mainWndState037A)
+#define mainWndMessageMap (privateDGROUP.mainWndMessageMap)
+#define mainWndState038C (privateDGROUP.mainWndState038C)
+#define mainWndTitle (privateDGROUP.mainWndTitle)
+#define mainWndPropertyIndex0 (privateDGROUP.mainWndPropertyIndex0)
+#define capturePrompt (privateDGROUP.capturePrompt)
+#define captureTitle0 (privateDGROUP.captureTitle0)
+#define captureTitle1 (privateDGROUP.captureTitle1)
+#define noCaptureMessage (privateDGROUP.noCaptureMessage)
+#define ribbonMessage0 (privateDGROUP.ribbonMessage0)
+#define ribbonMessage1 (privateDGROUP.ribbonMessage1)
+#define mainWndPropertyIndex1 (privateDGROUP.mainWndPropertyIndex1)
+#define mainWndPropertyIndex2 (privateDGROUP.mainWndPropertyIndex2)
+#define mainWndPropertyIndex3 (privateDGROUP.mainWndPropertyIndex3)
+#define mainWndPropertyIndex4 (privateDGROUP.mainWndPropertyIndex4)
+#define mainWndPropertyIndex5 (privateDGROUP.mainWndPropertyIndex5)
+#define wmSizeFormat (privateDGROUP.wmSizeFormat)
+#define activateStart (privateDGROUP.activateStart)
+#define mainWndPropertyIndex6 (privateDGROUP.mainWndPropertyIndex6)
+#define activateCapture (privateDGROUP.activateCapture)
+#define activateReady (privateDGROUP.activateReady)
+#define deactivateStart (privateDGROUP.deactivateStart)
+#define deactivateRelease (privateDGROUP.deactivateRelease)
+#define deactivateReady (privateDGROUP.deactivateReady)
+#define paletteChangedCalled (privateDGROUP.paletteChangedCalled)
+#define paletteChangedCalling (privateDGROUP.paletteChangedCalling)
+#define paletteChangedSame (privateDGROUP.paletteChangedSame)
+#define paletteChangedInvalidate (privateDGROUP.paletteChangedInvalidate)
+#define memoryLowMessage (privateDGROUP.memoryLowMessage)
+#define initInstanceMainClass (privateDGROUP.initInstanceMainClass)
+#define initInstanceMainTitle (privateDGROUP.initInstanceMainTitle)
+#define initInstancePropertyIndex (privateDGROUP.initInstancePropertyIndex)
+#define initInstanceRibbonTitle (privateDGROUP.initInstanceRibbonTitle)
+#define initInstanceRibbonClass (privateDGROUP.initInstanceRibbonClass)
+#define initInstanceRootTitle (privateDGROUP.initInstanceRootTitle)
+#define initInstanceRootClass (privateDGROUP.initInstanceRootClass)
+#define initApplicationIcon (privateDGROUP.initApplicationIcon)
+#define initApplicationRootClass (privateDGROUP.initApplicationRootClass)
+#define initApplicationGenericClass (privateDGROUP.initApplicationGenericClass)
+#define initApplicationRibbonClass (privateDGROUP.initApplicationRibbonClass)
+#define winMainClassName (privateDGROUP.winMainClassName)
+#define notInstalledPattern (privateDGROUP.notInstalledPattern)
+#define notInstalledMessage (privateDGROUP.notInstalledMessage)
+#define winMainPropertyIndex (privateDGROUP.winMainPropertyIndex)
+#define optionSound (privateDGROUP.optionSound)
+#define optionAutotrack (privateDGROUP.optionAutotrack)
+#define appSection0 (privateDGROUP.appSection0)
+#define optionMusic (privateDGROUP.optionMusic)
+#define appSection1 (privateDGROUP.appSection1)
+#define optionEffects (privateDGROUP.optionEffects)
+#define appSection2 (privateDGROUP.appSection2)
+#define optionEvents (privateDGROUP.optionEvents)
+#define appSection3 (privateDGROUP.appSection3)
+#define optionMessages (privateDGROUP.optionMessages)
+#define appSection4 (privateDGROUP.appSection4)
+#define optionSilly (privateDGROUP.optionSilly)
+#define appSection5 (privateDGROUP.appSection5)
+#define cancelledMessage (privateDGROUP.cancelledMessage)
+#define mapButtonProfile (privateDGROUP.mapButtonProfile)
+#define appSection6 (privateDGROUP.appSection6)
+#define yardButtonProfile (privateDGROUP.yardButtonProfile)
+#define appSection7 (privateDGROUP.appSection7)
+#define acceleratorResource (privateDGROUP.acceleratorResource)
+#define releasingCaptureMessage (privateDGROUP.releasingCaptureMessage)
+#define profileOne0 (privateDGROUP.profileOne0)
+#define profileZero0 (privateDGROUP.profileZero0)
+#define optionAutotrackAgain (privateDGROUP.optionAutotrackAgain)
+#define appSection8 (privateDGROUP.appSection8)
+#define profileOne1 (privateDGROUP.profileOne1)
+#define profileZero1 (privateDGROUP.profileZero1)
+#define optionMusicAgain (privateDGROUP.optionMusicAgain)
+#define appSection9 (privateDGROUP.appSection9)
+#define profileOne2 (privateDGROUP.profileOne2)
+#define profileZero2 (privateDGROUP.profileZero2)
+#define optionEffectsAgain (privateDGROUP.optionEffectsAgain)
+#define appSection10 (privateDGROUP.appSection10)
+#define profileOne3 (privateDGROUP.profileOne3)
+#define profileZero3 (privateDGROUP.profileZero3)
+#define optionEventsAgain (privateDGROUP.optionEventsAgain)
+#define appSection11 (privateDGROUP.appSection11)
+#define profileOne4 (privateDGROUP.profileOne4)
+#define profileZero4 (privateDGROUP.profileZero4)
+#define optionMessagesAgain (privateDGROUP.optionMessagesAgain)
+#define appSection12 (privateDGROUP.appSection12)
+#define profileOne5 (privateDGROUP.profileOne5)
+#define profileZero5 (privateDGROUP.profileZero5)
+#define optionSillyAgain (privateDGROUP.optionSillyAgain)
+#define appSection13 (privateDGROUP.appSection13)
+#define mapButtonProfileAgain (privateDGROUP.mapButtonProfileAgain)
+#define integerFormat0 (privateDGROUP.integerFormat0)
+#define appSection14 (privateDGROUP.appSection14)
+#define yardButtonProfileAgain (privateDGROUP.yardButtonProfileAgain)
+#define integerFormat1 (privateDGROUP.integerFormat1)
 extern unsigned char near doKeyDownCheatBuffer[4];
 
 
@@ -916,6 +1071,7 @@ void far pool_data_DoUserButton(void)
     char near * volatile literal;
     volatile int wordValue;
     volatile long longValue;
+    literal = privateDataPrefix;
     literal = buttonSpeedSlow;
     literal = buttonSpeedNormal;
     literal = buttonSpeedFast;
