@@ -141,12 +141,16 @@ When many workers run under `cx`, start the service from the supervisor's own se
 
 `codegen_grinder.py --evidence PATH` includes a compact `compiler_response` in its archived report that groups candidates by raw OMF identity. `search.py` reports each candidate's object hash for the same purpose: identical objects mean the next experiment needs a different analysis level.
 
-## First-draft lifting
+## Symbolic lifting
 
 `python tools/lift.py SYMBOL --out DIR` converts the inspection packet to a
-readable C hypothesis; `--open` and `--controls` cover the open and admitted
-GAME sets, and `--refine` searches bounded operand and declaration-order
-variants. Lifted code is only an authoring aid. Compile it with `search.py` and
-use the normal complete-member proof before treating any function as recovered.
-Current implementation limits and measured control/open coverage are recorded
-in [lifter.md](lifter.md) and `build/workers/f-infra-lift/REPORT.md`.
+readable C hypothesis by keeping register values as expressions until stores,
+calls, branches, and other observable boundaries. `--open` and `--controls`
+cover the open and admitted C sets. `--refine` searches bounded operand,
+declaration-order, frame-home, temporary-order, and loop-form variants with
+the compiler and aligned instruction diff as feedback. Run
+`python tools/search.py SYMBOL candidate.c --frame` to inspect `ENTER` size and
+CodeView homes. Lifted code is an authoring aid; use the normal complete-member
+proof before treating a function as recovered. Architecture, known limits, and
+control/open measurements are recorded in [lifter.md](lifter.md) and
+`build/workers/f-infra-lift2/REPORT.md`.

@@ -47,8 +47,37 @@ def test_structurer_folds_single_entry_if_and_back_edge():
         "L_000a: ;",
     ])
     assert structured[0] == "if (!((ax) == (0))) {"
-    assert "while (!((cx) >= (4))) {" in structured
+    assert "for (; !((cx) >= (4)); dx = (dx + 1)) {" in structured
     assert not any("goto L_0006" in line for line in structured)
+
+
+def test_structurer_refines_condition_polarity_and_loop_forms():
+    branch = [
+        "if ((cx) == (0)) goto L_0004;",
+        "left = (1);",
+        "goto L_0006;",
+        "L_0004: ;",
+        "right = (2);",
+        "L_0006: ;",
+    ]
+    flipped = lift.Structurer(condition_flip=True).run(branch)
+    assert flipped[:4] == ["if ((cx) == (0)) {", "    right = (2);", "} else {", "    left = (1);"]
+    assert flipped[-1] == "}"
+
+    loop = [
+        "L_0000: ;",
+        "if ((cx) >= (4)) goto L_0006;",
+        "dx = (dx + 1);",
+        "dx++;",
+        "goto L_0000;",
+        "L_0006: ;",
+    ]
+    while_form = lift.Structurer(loop_style="while").run(loop)
+    forever_form = lift.Structurer(loop_style="forever").run(loop)
+    assert while_form[0] == "while (!((cx) >= (4))) {"
+    assert "    dx++;" in while_form
+    assert forever_form[:2] == ["for (;;) {", "    if ((cx) >= (4)) break;"]
+    assert "goto L_0000" not in forever_form
 
 
 def test_global_memory_uses_scalar_names_and_address_operands(monkeypatch):
@@ -78,20 +107,45 @@ def test_indirect_calls_lower_stack_values_to_text():
     assert rows == ["ax = (__lift_indirect_0(7));"]
 
 
-def test_adc_sbb_use_width_limited_explicit_carry_state():
+def test_symbolic_rep_copy_and_fill_use_resolved_far_objects(monkeypatch):
+    name = "lift_test_far_array"
+    monkeypatch.setitem(lift.DECLS.variables, name, f"extern unsigned char far {name}[];")
+    lifter = lift.Lifter("_LoadTiles")
+    lifter.es_object = name
+    lifter._trees.update({"di": lift.sx("dest"), "si": lift.sx("source"),
+                          "cx": lift.sx("words"), "ax": lift.sx("fill")})
+    lifter._rep_byte_count = lift.sx("byte_count")
+    copy_rows = lifter._emit_rep("movsw", _ins("rep movsw"))
+    assert copy_rows[0].startswith("_fmemcpy(")
+    assert "byte_count" in copy_rows[0] and "lift_test_far_array" in copy_rows[0]
+    fill_rows = lifter._emit_rep("stosw", _ins("rep stosw"))
+    assert fill_rows[0].startswith("memset(")
+    assert "(words * 2)" in fill_rows[0] and "lift_test_far_array" in fill_rows[0]
+
+
+def test_symbolic_lifter_keeps_register_arithmetic_in_expression_trees():
     lifter = lift.Lifter("_DeleteIndex")
     source = lifter.lift()
     assert lifter.carry_needed
-    assert "unsigned int __lift_cf = 0;" in source
-    assert "__carry_w_" in source
-    assert "lifter residue: adc" not in source
-    assert "lifter residue: sbb" not in source
+    assert "__carry_w_" not in source
+    assert "unsigned int ax;" not in source
+    assert "reg_ax =" in source
+    assert "reg_bx =" not in source or "bx =" not in source
 
 
 def test_output_names_disambiguate_case_only_symbols():
     names = lift.output_filenames(["_mem_free", "_mem_Free", "_CountUpdate"])
     assert names["_CountUpdate"] == "CountUpdate.c"
     assert names["_mem_free"].casefold() != names["_mem_Free"].casefold()
+
+
+def test_measurement_output_names_use_the_full_population():
+    import lift_measure
+    pairs = [("_mem_free", "_mem_Free"),
+             ("_font_FontHeight", "__font_FontHeight")]
+    for left, right in pairs:
+        assert lift_measure._output_filename(left).casefold() != \
+            lift_measure._output_filename(right).casefold()
 
 
 def test_fixed_controls_lift_compile_and_match_strictly(tmp_path: Path):

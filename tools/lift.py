@@ -30,6 +30,7 @@ sys.path.insert(0, str(ROOT / "toolchain" / "analysis"))
 
 import analysis  # noqa: E402
 import frame_map  # noqa: E402
+import lift_frame  # noqa: E402
 from common import FormatError, fixture, recipes, read_json  # noqa: E402
 from context import cards, packet  # noqa: E402
 import mapsym  # noqa: E402
@@ -48,7 +49,7 @@ JCC = {"je", "jz", "jne", "jnz", "jl", "jnge", "jle", "jng", "jg", "jnle",
        "jge", "jnl", "jb", "jc", "jnae", "jbe", "jna", "ja", "jnbe", "jae",
        "jnb", "jnc", "js", "jns", "jo", "jno", "jp", "jpe", "jnp", "jpo"}
 COMMUTATIVE = {"+", "*", "&", "|", "^", "==", "!="}
-BINOP = {"add": "+", "sub": "-", "and": "&", "or": "|", "xor": "^",
+BINOP = {"add": "+", "adc": "+", "sub": "-", "sbb": "-", "and": "&", "or": "|", "xor": "^",
          "imul": "*", "mul": "*", "shl": "<<", "sal": "<<", "shr": ">>", "sar": ">>"}
 COND = {
     "je": "==", "jz": "==", "jne": "!=", "jnz": "!=",
@@ -243,14 +244,14 @@ def recognize_far_return(instructions: list[Ins]) -> tuple[bool, bool, int]:
 
 def recognize_long_helper(name: str) -> str | None:
     """Classify MSC's 32-bit arithmetic helper family by its packet name."""
-    n = name.lower()
-    if "flmul" in n or "flmul" in n.replace("_", ""):
+    n = name.lower().replace("_", "")
+    if "flmul" in n or "fulmul" in n:
         return "mul"
-    if "fldiv" in n or "flmod" in n:
+    if "fldiv" in n or "flmod" in n or "fuldiv" in n or "fulmod" in n:
         return "div"
-    if "flshl" in n:
+    if "flshl" in n or "fulshl" in n:
         return "shl"
-    if "flshr" in n or "flsar" in n:
+    if "flshr" in n or "flsar" in n or "fulshr" in n or "fulsar" in n:
         return "shr"
     return None
 
@@ -292,6 +293,12 @@ class Structurer:
     COND = re.compile(r"^if \((.*)\) goto (L_[0-9a-fA-F]+);$")
     GOTO = re.compile(r"^goto (L_[0-9a-fA-F]+);$")
 
+    def __init__(self, condition_flip: bool = False, loop_style: str = "canonical"):
+        if loop_style not in {"canonical", "while", "for", "forever"}:
+            raise ValueError(f"unknown loop style: {loop_style}")
+        self.condition_flip = condition_flip
+        self.loop_style = loop_style
+
     @classmethod
     def _refs(cls, lines: list[str]) -> Counter:
         refs = Counter()
@@ -319,6 +326,38 @@ class Structurer:
             changed = False
             refs = self._refs(lines)
             labels = {name: i for i, line in enumerate(lines) if (name := self._is_label(line))}
+            # Forward branch to an else arm followed by an unconditional jump
+            # to the join. Fold only single-entry, label-free arm bodies.
+            for i, line in enumerate(lines):
+                branch = self.COND.match(line)
+                if not branch:
+                    continue
+                else_label = branch.group(2)
+                else_i = labels.get(else_label)
+                if else_i is None or else_i <= i + 2 or lines[else_i - 1] == f"goto {else_label};":
+                    continue
+                if else_i < 1 or not self.GOTO.match(lines[else_i - 1]):
+                    continue
+                end_label = self.GOTO.match(lines[else_i - 1]).group(1)
+                end_i = labels.get(end_label)
+                if end_i is None or end_i <= else_i or refs[else_label] != 1 or refs[end_label] != 1:
+                    continue
+                then_body = lines[i + 1:else_i - 1]
+                else_body = lines[else_i + 1:end_i]
+                if not self._safe_body(then_body) or not self._safe_body(else_body):
+                    continue
+                if self.condition_flip:
+                    lines[i:end_i + 1] = [f"if ({branch.group(1)}) {{",
+                                          *["    " + x for x in else_body], "} else {",
+                                          *["    " + x for x in then_body], "}"]
+                else:
+                    lines[i:end_i + 1] = [f"if (!({branch.group(1)})) {{",
+                                          *["    " + x for x in then_body], "} else {",
+                                          *["    " + x for x in else_body], "}"]
+                changed = True
+                break
+            if changed:
+                continue
             for top, top_i in sorted(labels.items(), key=lambda row: row[1]):
                 if top_i + 2 >= len(lines):
                     continue
@@ -332,7 +371,28 @@ class Structurer:
                 body = lines[top_i + 2:exit_i - 1]
                 if not self._safe_body(body) or refs[top] != 1:
                     continue
-                lines[top_i:exit_i + 1] = [f"while (!({branch.group(1)})) {{", *["    " + x for x in body], "}"]
+                step = None
+                if body:
+                    candidate_step = body[-1].strip()
+                    if re.fullmatch(r"[A-Za-z_]\w*\s*(?:\+\+|--)", candidate_step.rstrip(";")) or re.fullmatch(
+                            r"[A-Za-z_]\w*\s*=.*", candidate_step.rstrip(";")):
+                        step = candidate_step.rstrip(";")
+                if self.loop_style == "forever":
+                    lines[top_i:exit_i + 1] = ["for (;;) {", f"    if ({branch.group(1)}) break;",
+                                               *["    " + x for x in body], "}"]
+                elif step is not None and self.loop_style in ("canonical", "for"):
+                    loop_body = body[:-1]
+                    lines[top_i:exit_i + 1] = [f"for (; !({branch.group(1)}); {step}) {{",
+                                               *["    " + x for x in loop_body], "}"]
+                elif step is not None:
+                    loop_body = body[:-1]
+                    lines[top_i:exit_i + 1] = [f"while (!({branch.group(1)})) {{",
+                                               *["    " + x for x in loop_body], "    " + step + ";", "}"]
+                elif self.loop_style == "for":
+                    lines[top_i:exit_i + 1] = [f"for (; !({branch.group(1)}); ) {{",
+                                               *["    " + x for x in body], "}"]
+                else:
+                    lines[top_i:exit_i + 1] = [f"while (!({branch.group(1)})) {{", *["    " + x for x in body], "}"]
                 changed = True
                 break
             if changed:
@@ -350,7 +410,14 @@ class Structurer:
                 body = lines[target_i + 1:i]
                 if not self._safe_body(body):
                     continue
-                lines[target_i:i + 1] = ["do {", *["    " + x for x in body], f"}} while ({branch.group(1)});"]
+                if self.loop_style == "forever":
+                    lines[target_i:i + 1] = ["for (;;) {", *["    " + x for x in body],
+                                             f"    if (!({branch.group(1)})) break;", "}"]
+                elif self.loop_style == "while":
+                    lines[target_i:i + 1] = ["while (1) {", *["    " + x for x in body],
+                                             f"    if (!({branch.group(1)})) break;", "}"]
+                else:
+                    lines[target_i:i + 1] = ["do {", *["    " + x for x in body], f"}} while ({branch.group(1)});"]
                 changed = True
                 break
             if changed:
@@ -368,7 +435,11 @@ class Structurer:
                 body = lines[i + 1:target_i]
                 if not self._safe_body(body):
                     continue
-                lines[i:target_i + 1] = [f"if (!({branch.group(1)})) {{", *["    " + x for x in body], "}"]
+                if self.condition_flip:
+                    lines[i:target_i + 1] = [f"if ({branch.group(1)}) {{", "} else {",
+                                             *["    " + x for x in body], "}"]
+                else:
+                    lines[i:target_i + 1] = [f"if (!({branch.group(1)})) {{", *["    " + x for x in body], "}"]
                 changed = True
                 break
         return lines
@@ -643,7 +714,16 @@ class Lifter:
                 if not got:
                     got = next((entry for n, entry in byname.items() if n.upper() == cname.upper()), None)
                 if got:
-                    self.calls[cname] = got[0]
+                    declaration, info = got
+                    # The declaration-only index does not yet import typedefs.
+                    # Do not emit a prototype whose return/parameter type name
+                    # is absent from the packet's struct and scalar vocabulary.
+                    type_words = {"void", "char", "short", "int", "long", "unsigned", "signed",
+                                  "far", "near", "pascal", "const", "volatile", "struct"}
+                    names = set(re.findall(r"\b[A-Za-z_]\w*\b", declaration)) - type_words
+                    known = set(DECLS.structs) | {info["name"]}
+                    unknown_type = any(n[:1].isupper() and n not in known and n != cname for n in names)
+                    self.calls[cname] = self._generic_prototype(cname, ins) if unknown_type else declaration
                 elif cname not in self.calls:
                     self.calls[cname] = self._generic_prototype(cname, ins)
 
@@ -651,6 +731,14 @@ class Lifter:
         # The packet's push stream is the reliable argument-count evidence only
         # when it is local to the call; an unprototyped C declaration avoids
         # inventing parameter semantics and remains accepted by MSC 7.00.
+        helper = recognize_long_helper(name)
+        if helper:
+            unsigned = "u" in name.lower().replace("_", "")
+            word = "unsigned int" if unsigned else "int"
+            long = "unsigned long" if unsigned else "long"
+            if helper in ("mul", "div"):
+                return f"extern {long} far {name}({long}, {long});"
+            return f"extern {long} far {name}({long}, {word});"
         return f"extern unsigned int far {name}();"
 
     def _slot_for(self, displacement: int) -> FrameSlot | None:
@@ -1391,6 +1479,694 @@ class Lifter:
         return self.source()
 
 
+@dataclass
+class SExpr:
+    """A value held symbolically while the 8086 instruction stream runs.
+
+    The old lifter rendered every register write as a C assignment.  That made
+    MSC allocate a C home for each machine register.  SExpr keeps expression
+    shape and width until a store, call, branch, or ABI boundary needs a C
+    statement.  `flip` is used by the bounded refinement pass.
+    """
+    op: str
+    args: tuple["SExpr", ...] = ()
+    text: str = ""
+    width: int = 2
+    signed: bool = False
+    flip: bool = False
+    side_effect: bool = False
+
+    def render(self) -> str:
+        if self.op == "leaf":
+            return self.text
+        if self.op == "cast":
+            return f"(({self.text})({self.args[0].render()}))"
+        if self.op == "call":
+            return f"{self.text}({', '.join(x.render() for x in self.args)})"
+        if self.op == "unary":
+            return f"({self.text}{self.args[0].render()})"
+        if self.op == "binary":
+            a, b = self.args
+            if self.flip:
+                a, b = b, a
+            return f"({a.render()} {self.text} {b.render()})"
+        if self.op == "select":
+            return f"({self.args[0].render()} ? {self.args[1].render()} : {self.args[2].render()})"
+        if self.op == "join32":
+            return f"(((unsigned long)({self.args[1].render()}) << 16) | (unsigned int)({self.args[0].render()}))"
+        return self.text or "0"
+
+    def walk(self):
+        yield self
+        for child in self.args:
+            yield from child.walk()
+
+
+def sx(text: str, width: int = 2, signed: bool = False) -> SExpr:
+    return SExpr("leaf", text=text, width=width, signed=signed)
+
+
+class SymbolicLifter(Lifter):
+    """MSC 7 lifter whose registers carry expression trees instead of C names."""
+
+    CALLEE_CLOBBERED = {"ax", "cx", "dx"}
+
+    def __init__(self, symbol: str, pkt: dict[str, Any] | None = None):
+        super().__init__(symbol, pkt)
+        self._structure_options: dict[str, Any] = {}
+        self._trees: dict[str, SExpr] = {}
+        self._flags: tuple[str, SExpr, SExpr, int, bool] | None = None
+        self._carry: SExpr = sx("0")
+        self._symbolic_lines: list[str] = []
+        self._tree_locals: dict[str, int] = {}
+        self._root_uses: set[str] = set()
+        self._swap_counter = 0
+        self._rep_byte_count: SExpr | None = None
+        self._rep_sequence = False
+        self._active_merges: tuple[tuple[str, ...], ...] = ()
+        self._declaration_mode = "locals-first"
+        self._frame_merge_map: dict[int, tuple[str, int, str]] = {}
+        self._frame_merge_decls: list[str] = []
+        self._flow_live = self._compute_liveness()
+        self.frame_solver = lift_frame.FrameSolver(self.f.locals, self.packet.get("disassembly", []))
+
+    @staticmethod
+    def _root(name: str) -> str:
+        return ROOT_REG.get(name.lower(), name.lower())
+
+    def _reg_tree(self, name: str) -> SExpr:
+        name = name.lower()
+        if name in ("es", "ds", "cs", "ss"):
+            return sx("0", 2)
+        root = self._root(name)
+        if root in ("bp", "sp"):
+            return sx(root, 2)
+        self._root_uses.add(root)
+        value = self._trees.get(root)
+        if value is None:
+            value = sx(f"reg_{root}", 2)
+            self._trees[root] = value
+            self._tree_locals.setdefault(f"reg_{root}", 2)
+        if name in REG8:
+            if name.endswith("h"):
+                return SExpr("cast", (SExpr("binary", (value, sx("8")), " >> ", 2),), "unsigned char", 1)
+            return SExpr("cast", (SExpr("binary", (value, sx("0xff")), "&", 2),), "unsigned char", 1)
+        if name in REG16:
+            return value
+        return sx(name, 2)
+
+    def _write_tree(self, name: str, value: SExpr) -> None:
+        name = name.lower()
+        root = self._root(name)
+        if root in ("bp", "sp", "es", "ds", "cs", "ss"):
+            return
+        if name in REG8:
+            old = self._reg_tree(root)
+            low = name.endswith("l")
+            mask = sx("0xff00U" if low else "0x00ffU")
+            part = SExpr("binary", (value, sx("0xffU")), "&", 2)
+            if not low:
+                part = SExpr("binary", (part, sx("8")), "<<", 2)
+            highpart = SExpr("binary", (old, mask), "&", 2)
+            value = SExpr("binary", (highpart, part), "|", 2)
+        self._trees[root] = value
+
+    def _symbolic_name_for_mem(self, ins: Ins, mem, width: int) -> tuple[str, str | None]:
+        base = ins.raw.reg_name(mem.base) if mem.base else ""
+        index = ins.raw.reg_name(mem.index) if mem.index else ""
+        seg = ins.raw.reg_name(mem.segment) if mem.segment else ""
+        disp = int(mem.disp)
+        # BP parameters and locals, and absolute MAPSYM operands, use the
+        # established declaration resolver unchanged.
+        if base == "bp" and disp in self._frame_merge_map:
+            name, offset, ctype = self._frame_merge_map[disp]
+            return f"(*(({ctype} near *)((unsigned char near *){name} + {offset})))", None
+        if base == "bp" or (not base and not index):
+            return super()._name_for_mem(ins, mem, width)
+        base_expr = self._reg_tree(base).render() if base else ""
+        index_expr = self._reg_tree(index).render() if index else ""
+        if seg == "es" and self.es_object:
+            return self._based_lvalue(self.es_object, self.es_offset, base_expr, index_expr, disp, width, True), None
+        address = self._address_expr(base_expr, index_expr, disp)
+        pty = "far" if seg == "es" else "near"
+        return f"(*(({unsigned_c_type(width)} {pty}*)({address})))", None
+
+    def _tree_operand(self, ins: Ins, op, address: bool = False) -> SExpr:
+        cs = analysis.cs
+        if op.type == cs.x86.X86_OP_REG:
+            return self._reg_tree(ins.raw.reg_name(op.reg))
+        if op.type == cs.x86.X86_OP_IMM:
+            if ins.mnemonic in JCC or ins.mnemonic in ("jmp", "call", "lcall", "callf"):
+                return sx(str(int(op.imm) - int(self.packet.get("offset", 0))), max(1, int(op.size)))
+            info = self._immediate_info(ins, op)
+            return sx(info["text"], max(1, int(op.size)), False)
+        if op.type == cs.x86.X86_OP_MEM:
+            lvalue, _ = self._symbolic_name_for_mem(ins, op.mem, max(1, int(op.size)))
+            return sx(f"&({lvalue})" if address else lvalue, max(1, int(op.size)))
+        return sx("0", 2)
+
+    def _compute_liveness(self) -> dict[int, set[str]]:
+        """Backward register liveness over the packet CFG, used at merge points."""
+        insns = [x for x in self.f.instructions if x.raw is not None]
+        if not insns:
+            return {}
+        byoff = {x.offset: n for n, x in enumerate(insns)}
+        uses: list[set[str]] = []
+        defs: list[set[str]] = []
+        succ: list[set[int]] = []
+        for n, ins in enumerate(insns):
+            u: set[str] = set()
+            d: set[str] = set()
+            for j, op in enumerate(ins.operands):
+                if op.type != analysis.cs.x86.X86_OP_REG:
+                    continue
+                r = ins.raw.reg_name(op.reg).lower()
+                if r not in REG16 | REG8:
+                    continue
+                root = self._root(r)
+                if ins.mnemonic in ("mov", "movzx", "movsx", "lea", "pop") and j == 0:
+                    d.add(root)
+                else:
+                    u.add(root)
+                    if j == 0 and ins.mnemonic not in ("cmp", "test", "push", "call", "jmp", *JCC):
+                        d.add(root)
+            if ins.mnemonic in ("mul", "imul", "div", "idiv"):
+                u.update(("ax", "dx")); d.update(("ax", "dx"))
+            if ins.mnemonic in ("call", "lcall", "callf"):
+                d.update(self.CALLEE_CLOBBERED)
+            nexts: set[int] = set()
+            if ins.mnemonic in JCC and ins.operands and ins.operands[0].type == analysis.cs.x86.X86_OP_IMM:
+                dest = int(ins.operands[0].imm)
+                if dest in byoff: nexts.add(byoff[dest])
+            elif ins.mnemonic == "jmp":
+                if ins.operands and ins.operands[0].type == analysis.cs.x86.X86_OP_IMM:
+                    dest = int(ins.operands[0].imm)
+                    if dest in byoff: nexts.add(byoff[dest])
+                else:
+                    found = next((t for t in self.f.tables if int(t.get("source", -1)) ==
+                                  int(self.packet.get("offset", 0)) + ins.offset), None)
+                    if found:
+                        nexts.update(byoff[t - int(self.packet.get("offset", 0))]
+                                     for t in found["targets"] if t - int(self.packet.get("offset", 0)) in byoff)
+            if ins.mnemonic not in ("jmp", "ret", "retf", "retn", "iret") and n + 1 < len(insns):
+                nexts.add(n + 1)
+            uses.append(u); defs.append(d); succ.append(nexts)
+        live_in = [set() for _ in insns]
+        live_out = [set() for _ in insns]
+        changed = True
+        while changed:
+            changed = False
+            for n in range(len(insns) - 1, -1, -1):
+                out = set().union(*(live_in[k] for k in succ[n])) if succ[n] else set()
+                incoming = uses[n] | (out - defs[n])
+                if out != live_out[n] or incoming != live_in[n]:
+                    live_out[n], live_in[n], changed = out, incoming, True
+        return {ins.offset: live_out[n] for n, ins in enumerate(insns)}
+
+    def _materialize(self, ins: Ins, clobbered: set[str] | None = None) -> None:
+        roots = self._flow_live.get(ins.offset, set())
+        if clobbered is not None:
+            roots &= clobbered
+        for root in sorted(roots):
+            if root not in self._trees:
+                continue
+            # C names (parameters, globals, homes, and earlier call results)
+            # already have stable storage semantics. Assigning them to an
+            # artificial register local needlessly changes CodeView homes and
+            # can alter MSC's SI/DI choice. Freeze only computed expressions.
+            if self._trees[root].op == "leaf":
+                continue
+            name = f"reg_{root}"
+            width = max(self._trees[root].width, 2)
+            self._tree_locals[name] = width
+            self._symbolic_lines.append(f"{name} = {self._trees[root].render()};")
+            self._trees[root] = sx(name, width)
+
+    def _condition_tree(self, mnemonic: str) -> SExpr:
+        if mnemonic in ("jcxz", "jecxz"):
+            return SExpr("binary", (self._reg_tree("cx"), sx("0")), "==", 2)
+        if self._flags:
+            kind, left, right, width, signed = self._flags
+            op = COND.get(mnemonic)
+            if op:
+                if mnemonic in ("jb", "jc", "jnae"):
+                    op = "<"
+                elif mnemonic in ("jae", "jnb", "jnc"):
+                    op = ">="
+                elif mnemonic in ("ja", "jnbe"):
+                    op = ">"
+                elif mnemonic in ("jbe", "jna"):
+                    op = "<="
+                if signed and mnemonic in {"jb", "jc", "jnae", "jae", "jnb", "jnc", "ja", "jnbe", "jbe", "jna"}:
+                    pass
+                ctype = signed_c_type(width) if signed else unsigned_c_type(width)
+                left = SExpr("cast", (left,), ctype, width, signed)
+                right = SExpr("cast", (right,), ctype, width, signed)
+                return SExpr("binary", (left, right), op, width, signed)
+            if mnemonic in ("js", "jns"):
+                pred = SExpr("binary", (left, sx("0")), "<", width, True)
+                return SExpr("unary", (pred,), "!" if mnemonic == "jns" else "")
+        return sx("0")
+
+    @staticmethod
+    def _constant(expr: SExpr) -> int | None:
+        if expr.op != "leaf":
+            return None
+        try:
+            return int(expr.text.rstrip("uUlL"), 0)
+        except ValueError:
+            return None
+
+    def _simplify_integer_tree(self, op: str, left: SExpr, right: SExpr, width: int) -> SExpr:
+        """Fold the branch-free CMP/SBB/NEG and constant-select idioms."""
+        if left.op == "select" and right.op == "leaf":
+            c = self._constant(right)
+            if c is not None:
+                yes, no = left.args[1], left.args[2]
+                y, n = self._constant(yes), self._constant(no)
+                if y is not None and n is not None:
+                    if op == "and": return SExpr("select", (left.args[0], sx(str(y & c), width), sx(str(n & c), width)), width=width)
+                    if op == "or": return SExpr("select", (left.args[0], sx(str(y | c), width), sx(str(n | c), width)), width=width)
+                    if op == "+": return SExpr("select", (left.args[0], sx(str(y + c), width), sx(str(n + c), width)), width=width)
+                    if op == "-": return SExpr("select", (left.args[0], sx(str(y - c), width), sx(str(n - c), width)), width=width)
+        if op == "neg" and left.op == "select":
+            yes, no = (self._constant(x) for x in left.args[1:])
+            if yes == 0xffff and no == 0:
+                return SExpr("select", (left.args[0], sx("1", width), sx("0", width)), width=width)
+        if op == "neg":
+            return SExpr("unary", (left,), "-", width)
+        return SExpr("binary", (left, right), op, width, left.signed or right.signed)
+
+    @staticmethod
+    def _branch_text(expr: SExpr) -> str:
+        return expr.render()
+
+    def _mark_swap(self, expr: SExpr) -> None:
+        if expr.op == "binary" and expr.text in COMMUTATIVE:
+            if self._swap_at == self._swap_counter:
+                expr.flip = True
+            self._swap_counter += 1
+            self.f.commutative_nodes.append(expr)  # type: ignore[arg-type]
+        for child in expr.args:
+            self._mark_swap(child)
+
+    def _symbolic_call(self, ins: Ins) -> list[str]:
+        name = self._call_name(ins)
+        pushed = list(self.pushes)
+        self.pushes.clear()
+        if name:
+            args = self._call_args(name, pushed)
+            proto = _parse_decl_signature(self.calls.get(name, ""))
+            if proto and proto.get("params") and proto["params"] != ["..."] and len(args) != len(proto["params"]):
+                # A control-flow join can make the linear push tracker see a
+                # different arm's arguments. Preserve each actual pushed word
+                # and use MSC's old-style declaration so the draft compiles;
+                # the ABI count remains visible in the diff.
+                args = [x["text"] for x in reversed(pushed)]
+                ret = " ".join(x for x in (proto.get("ret", ""),) if x)
+                self.calls[name] = f"extern {ret} {name}();"
+                proto = _parse_decl_signature(self.calls[name])
+        else:
+            name = f"__lift_indirect_{ins.offset:x}"
+            args = [x["text"] for x in reversed(pushed)]
+            self.calls[name] = f"extern unsigned int far {name}();"
+            proto = None
+        self._materialize(ins, self.CALLEE_CLOBBERED)
+        preserved = {r: self._trees[r] for r in self.CALLEE_CLOBBERED
+                     if r != "ax" and r in self._trees and self._trees[r].op == "leaf"
+                     and self._trees[r].text == f"reg_{r}"}
+        for root in self.CALLEE_CLOBBERED:
+            self._trees.pop(root, None)
+        call = SExpr("call", tuple(sx(x) for x in args), name, 2, False, side_effect=True)
+        rows: list[str] = []
+        result_live = "ax" in self._flow_live.get(ins.offset, set())
+        if (proto and proto.get("void")) or not result_live:
+            rows.append(call.render() + ";")
+        else:
+            cname = f"call_result_{ins.offset:x}"
+            ret = proto.get("ret", "") if proto else ""
+            wide = bool(re.search(r"\blong\b", ret))
+            self._tree_locals[cname] = 4 if wide else 2
+            rows.append(f"{cname} = {call.render()};")
+            result = sx(cname, 4 if wide else 2, "unsigned" not in ret)
+            if wide:
+                self._trees["ax"] = SExpr("cast", (result,), "unsigned int", 2)
+                self._trees["dx"] = SExpr("cast", (SExpr("binary", (result, sx("16")), ">>", 4),), "unsigned int", 2)
+            else:
+                self._trees["ax"] = result
+        for root, value in preserved.items():
+            self._trees[root] = value
+        return rows
+
+    def _rep_pointer(self, segment: str, register: str) -> str | None:
+        offset = self._reg_tree(register).render()
+        if segment == "es":
+            if not self.es_object:
+                return None
+            name = self.es_object
+            baseoff = self.es_offset or 0
+            decl = DECLS.variables.get(name, self._global_decls.get(name, ""))
+            if "[" in decl or "[]" in decl:
+                return f"((void far *)(&{name}[({offset}) + {baseoff}]))"
+            return f"((void far *)((unsigned char far *)&{name} + ({offset}) + {baseoff}))"
+        # DS is the compiler's near data frame in the observed game context;
+        # this is a run-time pointer conversion, never a numeric address.
+        return f"((void far *)((void near *)({offset})))"
+
+    def _emit_rep(self, kind: str, ins: Ins) -> list[str]:
+        if kind.startswith("movs"):
+            destination = self._rep_pointer("es", "di")
+            source = self._rep_pointer("ds", "si")
+            if not destination or not source:
+                self.f.unsupported[f"unbound_rep:{kind}"] += 1
+                return [f"/* lifter residue: {ins.mnemonic} {ins.op_str} */"]
+            count = self._rep_byte_count
+            if count is None:
+                count = SExpr("binary", (self._reg_tree("cx"), sx("2")), "*", 2) if kind == "movsw" else self._reg_tree("cx")
+            self.calls.setdefault("_fmemcpy", "extern void far *_fmemcpy(void far *destination, const void far *source, unsigned int count);")
+            return [f"_fmemcpy({destination}, {source}, {count.render()});"]
+        if kind.startswith("stos"):
+            destination = self._rep_pointer("es", "di")
+            if not destination:
+                self.f.unsupported[f"unbound_rep:{kind}"] += 1
+                return [f"/* lifter residue: {ins.mnemonic} {ins.op_str} */"]
+            factor = "2" if kind == "stosw" else "1"
+            count = self._reg_tree("cx")
+            value = self._reg_tree("ax")
+            fill = f"(unsigned char)({value.render()})"
+            self.calls.setdefault("memset", "extern void far *memset(void far *destination, int value, unsigned int count);")
+            return [f"memset({destination}, {fill}, ({count.render()} * {factor}));"]
+        self.f.unsupported[f"string:{kind}"] += 1
+        return [f"/* lifter residue: {ins.mnemonic} {ins.op_str} */"]
+
+    def _translate_symbolic(self, ins: Ins) -> list[str]:
+        m, ops = ins.mnemonic, ins.operands
+        if ins.raw is None:
+            return []
+        if m.startswith("rep "):
+            kind = m.split(None, 1)[1].strip()
+            if kind == "movsw":
+                self._rep_sequence = True
+                return []
+            if kind == "movsb" and self._rep_sequence:
+                self._rep_sequence = False
+                result = self._emit_rep("movsb", ins)
+                self._rep_byte_count = None
+                return result
+            result = self._emit_rep(kind, ins)
+            self._rep_byte_count = None
+            return result
+        if self._rep_sequence and m == "adc" and len(ops) == 2 and ins.op_str.replace(" ", "").lower() == "cx,cx":
+            # The compiler's word-copy + carry-byte tail: rep movsw; adc cx,cx;
+            # rep movsb.  The original byte count was saved before SHR CX,1.
+            return []
+        if m == "push":
+            if ops and ops[0].type == analysis.cs.x86.X86_OP_REG and ins.raw.reg_name(ops[0].reg) in ("bp", "ds", "es", "cs", "ss"):
+                return []
+            info = self._immediate_info(ins, ops[0]) if ops and ops[0].type == analysis.cs.x86.X86_OP_IMM else None
+            value = sx(info["text"], int(info.get("width", 2))) if info else (self._tree_operand(ins, ops[0]) if ops else sx("0"))
+            row = {"text": value.render(), "width": value.width, "tree": value}
+            if info and info.get("address_name"):
+                row["address_name"] = info["address_name"]
+            self.pushes.append(row)
+            return []
+        if m == "pop":
+            if self.pushes and ops and ops[0].type == analysis.cs.x86.X86_OP_REG:
+                row = self.pushes.pop()
+                self._write_tree(ins.raw.reg_name(ops[0].reg), row.get("tree", sx(row["text"])))
+            return []
+        if m in ("enter", "leave", "nop", "cld", "std", "wait", "fwait", "pushf", "popf", "cli", "sti", "add_sp"):
+            return []
+        if m in ("ret", "retf", "retn"):
+            if self.f.return_type == "void":
+                return ["return;"]
+            ret = self._reg_tree("ax")
+            if "long" in self.f.return_type:
+                ret = SExpr("join32", (ret, self._reg_tree("dx")), width=4)
+            return [f"return {ret.render()};"]
+        if m in JCC:
+            if not ops or ops[0].type != analysis.cs.x86.X86_OP_IMM:
+                self.f.unsupported[f"branch:{m}"] += 1
+                return []
+            cond = self._condition_tree(m)
+            self._materialize(ins)
+            self._mark_swap(cond)
+            return [f"if ({self._branch_text(cond)}) goto L_{int(ops[0].imm):04x};"]
+        if m == "jmp":
+            if ops and ops[0].type == analysis.cs.x86.X86_OP_IMM:
+                self._materialize(ins)
+                return [f"goto L_{int(ops[0].imm):04x};"]
+            # Use the verified CFG jump-table recognition already attached to
+            # the packet.  The target index remains an expression, not BX.
+            if self._switch_stmt(ins, []):
+                # Rebuild because the legacy helper's output is register-level.
+                table = next((t for t in self.f.tables if int(t.get("source", -1)) ==
+                              int(self.packet.get("offset", 0)) + ins.offset), None)
+                if table:
+                    index = self._reg_tree("bx")
+                    return ["switch (" + index.render() + ") {" + " ".join(
+                        f"case {n}: goto L_{int(t)-int(self.packet.get('offset',0)):04x};"
+                        for n, t in enumerate(table["targets"])) + " default: break; }"]
+            self.f.unsupported["indirect_jump"] += 1
+            return []
+        if m in ("call", "lcall", "callf"):
+            return self._symbolic_call(ins)
+        if m in ("mov", "movzx", "movsx") and len(ops) == 2:
+            dst, src = ops
+            if dst.type == analysis.cs.x86.X86_OP_REG and ins.raw.reg_name(dst.reg) == "es":
+                self.es_object, self.es_offset = self._pool_symbol_for_selector(ins)
+                if not self.es_object:
+                    absolute = int(src.mem.disp) & 0xffff if src.type == analysis.cs.x86.X86_OP_MEM else 0
+                    self.es_object = self._unknown_globals.setdefault(("es", absolute), f"__lift_far_{absolute:04x}")
+                    self._global_decls[self.es_object] = f"extern unsigned char far {self.es_object}[];"
+                    self.es_offset = None
+                return []
+            value = self._tree_operand(ins, src)
+            if m in ("movsx", "movzx"):
+                ctype = signed_c_type(value.width) if m == "movsx" else unsigned_c_type(value.width)
+                value = SExpr("cast", (value,), ctype, max(2, int(dst.size)), m == "movsx")
+            if dst.type == analysis.cs.x86.X86_OP_REG:
+                self._write_tree(ins.raw.reg_name(dst.reg), value)
+                return []
+            lhs = self._tree_operand(ins, dst)
+            return [f"{lhs.render()} = {value.render()};"]
+        if m in ("les", "lds") and len(ops) == 2:
+            value = self._tree_operand(ins, ops[1])
+            self._write_tree(ins.raw.reg_name(ops[0].reg), SExpr("cast", (value,), "unsigned int", 2))
+            if m == "les":
+                self.es_object = self._resolved_memory_name(ins, "es", int(ops[1].mem.disp) & 0xffff) if ops[1].type == analysis.cs.x86.X86_OP_MEM else self.es_object
+            return []
+        if m == "lea" and len(ops) == 2:
+            address = self._tree_operand(ins, ops[1], address=True)
+            value = SExpr("cast", (address,), "unsigned int", 2)
+            self._write_tree(ins.raw.reg_name(ops[0].reg), value)
+            return []
+        if m in ("cmp", "test") and len(ops) == 2:
+            left, right = self._tree_operand(ins, ops[0]), self._tree_operand(ins, ops[1])
+            if m == "test":
+                left = SExpr("binary", (left, right), "&", max(left.width, right.width))
+                right = sx("0")
+                signed = False
+                self._carry = sx("0")
+            else:
+                signed = self._signed_compare(ins)
+                self._carry = SExpr("binary", (SExpr("cast", (left,), "unsigned long", 4),
+                                                SExpr("cast", (right,), "unsigned long", 4)), "<", 4)
+            self._flags = ("cmp", left, right, max(left.width, right.width), signed)
+            return []
+        if m in ("clc", "stc", "cmc"):
+            self._carry = SExpr("unary", (self._carry,), "!", 2) if m == "cmc" else sx("1" if m == "stc" else "0")
+            self._flags = ("carry", sx("0"), self._carry, 2, False)
+            return []
+        if m in BINOP and len(ops) >= 2:
+            lhs = self._tree_operand(ins, ops[0])
+            rhs = self._tree_operand(ins, ops[-1])
+            op = BINOP[m]
+            if m in ("imul", "mul") and len(ops) == 3:
+                lhs, rhs = self._tree_operand(ins, ops[1]), self._tree_operand(ins, ops[2])
+            width = max(lhs.width, rhs.width)
+            if m in ("shr", "sar") and ops[0].type == analysis.cs.x86.X86_OP_REG and ins.raw.reg_name(ops[0].reg) == "cx" and self._constant(rhs) == 1:
+                self._rep_byte_count = lhs
+            carry_in = self._carry
+            if m == "sbb" and lhs.render() == rhs.render() and self._flags and self._flags[0] == "cmp":
+                _, a, b, cmp_width, _ = self._flags
+                predicate = SExpr("binary", (SExpr("cast", (a,), "unsigned long", 4),
+                                              SExpr("cast", (b,), "unsigned long", 4)), "<", cmp_width, False)
+                expr = SExpr("select", (predicate, sx("0xffff", width), sx("0", width)), width=width)
+            elif m in ("adc", "sbb"):
+                expr = self._simplify_integer_tree("+" if m == "adc" else "-",
+                                                   SExpr("binary", (lhs, rhs), op, width), carry_in, width)
+            else:
+                expr = self._simplify_integer_tree(op, lhs, rhs, width)
+            self._mark_swap(expr)
+            if m in ("add", "adc"):
+                left_wide = SExpr("cast", (lhs,), "unsigned long", 4)
+                right_wide = SExpr("cast", (rhs,), "unsigned long", 4)
+                wide = SExpr("binary", (SExpr("binary", (left_wide, right_wide), "+", 4), carry_in), "+", 4) if m == "adc" else SExpr("binary", (left_wide, right_wide), "+", 4)
+                mask = sx("0xffUL" if width == 1 else "0xffffUL", 4)
+                self._carry = SExpr("binary", (wide, mask), ">", 4)
+            elif m in ("sub", "sbb"):
+                left_wide = SExpr("cast", (lhs,), "unsigned long", 4)
+                right_wide = SExpr("cast", (rhs,), "unsigned long", 4)
+                rhs_carry = SExpr("binary", (right_wide, carry_in), "+", 4) if m == "sbb" else right_wide
+                self._carry = SExpr("binary", (left_wide, rhs_carry), "<", 4)
+            elif m in ("and", "or", "xor"):
+                self._carry = sx("0")
+            if ops[0].type == analysis.cs.x86.X86_OP_REG:
+                self._write_tree(ins.raw.reg_name(ops[0].reg), expr)
+            else:
+                return [f"{lhs.render()} = {expr.render()};"]
+            if m in ("add", "sub", "adc", "sbb", "and", "or", "xor", "imul", "shl", "shr", "sar"):
+                dest = self._tree_operand(ins, ops[0])
+                self._flags = ("arith", dest, sx("0"), dest.width, dest.signed)
+            return []
+        if m in ("inc", "dec", "neg", "not") and ops:
+            old = self._tree_operand(ins, ops[0])
+            expr = self._simplify_integer_tree("neg", old, sx("0"), old.width) if m == "neg" else SExpr("unary", (old,), "~" if m == "not" else "", old.width)
+            if m in ("inc", "dec"):
+                expr = SExpr("binary", (old, sx("1")), "+" if m == "inc" else "-", old.width)
+            if ops[0].type == analysis.cs.x86.X86_OP_REG:
+                self._write_tree(ins.raw.reg_name(ops[0].reg), expr)
+            else:
+                return [f"{old.render()} = {expr.render()};"]
+            self._flags = ("arith", expr, sx("0"), expr.width, expr.signed)
+            return []
+        if m in ("cbw", "cwde"):
+            self._write_tree("ax", SExpr("cast", (self._reg_tree("al"),), "int", 2, True))
+            return []
+        if m in ("cwd", "cdq"):
+            ax = self._reg_tree("ax")
+            self._write_tree("dx", SExpr("cast", (SExpr("binary", (ax, sx("15")), ">>", 2, True),), "unsigned int", 2))
+            return []
+        if m in ("xchg",) and len(ops) == 2:
+            a, b = self._tree_operand(ins, ops[0]), self._tree_operand(ins, ops[1])
+            if ops[0].type == analysis.cs.x86.X86_OP_REG and ops[1].type == analysis.cs.x86.X86_OP_REG:
+                self._write_tree(ins.raw.reg_name(ops[0].reg), b)
+                self._write_tree(ins.raw.reg_name(ops[1].reg), a)
+            else:
+                return [f"{a.render()} = {b.render()};", f"{b.render()} = {a.render()};"]
+            return []
+        if m in ("mul", "imul", "div", "idiv") and ops:
+            width = max(1, int(ops[-1].size))
+            rhs = self._tree_operand(ins, ops[-1])
+            pair = SExpr("join32", (self._reg_tree("ax"), self._reg_tree("dx")), width=4)
+            if m in ("mul", "imul"):
+                result = SExpr("binary", (self._reg_tree("ax"), rhs), "*", 4, m == "imul")
+            else:
+                op = "/" if m in ("div", "idiv") else "%"
+                result = SExpr("binary", (pair, rhs), op, 4, m == "idiv")
+                rem = SExpr("binary", (pair, rhs), "%", 4, m == "idiv")
+                self._write_tree("dx", SExpr("cast", (rem,), "unsigned int", 2))
+            self._write_tree("ax", SExpr("cast", (result,), "unsigned int", 2))
+            self._write_tree("dx", SExpr("cast", (SExpr("binary", (result, sx("16")), ">>", 4),), "unsigned int", 2))
+            return []
+        if m in ("rep", "repe", "repne", "movsb", "movsw", "stosb", "stosw", "scasb", "scasw", "cmpsb", "cmpsw"):
+            if m in ("rep", "repe", "repne"):
+                return []
+            self.f.unsupported[f"string:{m}"] += 1
+            return []
+        if m in ("int", "int3", "iret", "hlt"):
+            self.f.unsupported[f"terminator:{m}"] += 1
+            return []
+        # Ignore recognized frame shell instructions. Retain unknown semantics
+        # as comments so the diagnostic identifies the first unsupported idiom.
+        self.f.unsupported[m] += 1
+        return [f"/* lifter residue: {m} {ins.op_str} */"]
+
+    def _labelled_lines(self) -> list[str]:
+        self.f.commutative_nodes = []
+        self._swap_counter = 0
+        self._trees.clear(); self._flags = None; self._carry = sx("0"); self._symbolic_lines = []; self._tree_locals = {}; self._root_uses = set()
+        self._rep_byte_count = None; self._rep_sequence = False
+        insns = self.f.instructions
+        targets = set()
+        for ins in insns:
+            if ins.raw is not None and ins.mnemonic in (*JCC, "jmp") and ins.operands and ins.operands[0].type == analysis.cs.x86.X86_OP_IMM:
+                targets.add(int(ins.operands[0].imm))
+        for table in self.f.tables:
+            targets.update(int(x) - int(self.packet.get("offset", 0)) for x in table.get("targets", []))
+        body_start = self.prologue["body_start"]
+        startoff = insns[body_start].offset if body_start < len(insns) else 0
+        end_ret = max((x.offset for x in insns if x.mnemonic in ("ret", "retf", "retn")), default=-1)
+        skip = {x.offset for x in insns if x.mnemonic == "leave"}
+        if self.prologue["kind"] == "bp":
+            skip.update(x.offset for x in insns if x.mnemonic == "pop" and x.op_str in ("bp", "si", "di") and x.offset > end_ret - 10)
+        for ins in insns:
+            if ins.offset < startoff or ins.offset in skip or ins.mnemonic == "dw":
+                continue
+            if ins.offset in targets:
+                self._symbolic_lines.append(f"L_{ins.offset:04x}: ;")
+            # Flush on CFG edges so expressions from distinct paths share the
+            # same source-level local; straight-line arithmetic stays fused.
+            self._symbolic_lines.extend(self._translate_symbolic(ins))
+        return Structurer(**self._structure_options).run(self._symbolic_lines)
+
+    def source(self) -> str:
+        self._temp_decls = set()
+        self._configure_frame_merges()
+        body = self._labelled_lines()
+        signature, name = self._signature()
+        decls = []
+        for cname, decl in sorted(self.calls.items()):
+            if cname != name and decl not in decls:
+                decls.append(decl)
+        for gname, decl in sorted(self._global_decls.items()):
+            if gname != name and decl not in decls:
+                decls.append(decl)
+        local_names = {x.name for x in self.f.locals}
+        param_names = {x["name"] for x in self.f.params}
+        merged_names = {n for group in self._active_merges for n in group}
+        home_decl_lines = [f"{s.type_name} {s.name};" for s in self.f.locals if s.name not in param_names | merged_names]
+        home_decl_lines.extend(self._frame_merge_decls)
+        tree_decl_lines = [f"{unsigned_c_type(width)} {n};" for n, width in sorted(self._tree_locals.items())
+                           if n not in local_names and n not in param_names]
+        if self._declaration_mode == "temps-first":
+            decl_lines = tree_decl_lines + home_decl_lines
+        elif self._declaration_mode == "temps-reverse":
+            decl_lines = home_decl_lines + list(reversed(tree_decl_lines))
+        else:
+            decl_lines = home_decl_lines + tree_decl_lines
+        needed_structs = sorted(set(re.findall(r"\bstruct\s+([A-Za-z_]\w*)\b", "\n".join([signature, *decls, *self._global_decls.values()]))))
+        out = [DECLS.structs[tag] for tag in needed_structs if tag in DECLS.structs]
+        if out: out.append("")
+        if decls: out.extend(decls); out.append("")
+        out.extend([signature, "{"])
+        out.extend("    " + row for row in decl_lines)
+        if decl_lines and body: out.append("")
+        out.extend("    " + row for row in body)
+        if not any(re.match(r"\s*return\b", row) for row in body):
+            out.append("    return;" if self.f.return_type == "void" else "    return reg_ax;")
+        out.append("}")
+        return "\n".join(out) + "\n"
+
+    def _configure_frame_merges(self) -> None:
+        self._frame_merge_map = {}
+        self._frame_merge_decls = []
+        by_name = {x.name: x for x in self.f.locals}
+        for group_index, names in enumerate(self._active_merges):
+            slots = [by_name[n] for n in names if n in by_name]
+            if len(slots) < 2:
+                continue
+            low = min(x.displacement for x in slots)
+            high = max(x.displacement + x.width for x in slots)
+            span = high - low
+            array = f"__frame_merge_{abs(low):x}_{group_index}"
+            self._frame_merge_decls.append(f"unsigned char {array}[{span}];")
+            for slot in slots:
+                offset = slot.displacement - low
+                self._frame_merge_map[slot.displacement] = (array, offset, slot.type_name)
+
+    def lift(self) -> str:
+        self._prepare_globals()
+        return self.source()
+
+
+# Keep the original generator available for comparisons, while making the
+# symbolic-expression implementation the default for the CLI and measurement.
+RegisterTransliterationLifter = Lifter
+Lifter = SymbolicLifter
+
+
 def lift_symbol(symbol: str) -> tuple[str, Function]:
     lifter = Lifter(symbol)
     source = lifter.lift()
@@ -1436,11 +2212,11 @@ def _search(source_path: Path, symbol: str) -> dict[str, Any]:
     return payload
 
 
-def _score(report: dict[str, Any]) -> tuple[int, int, int]:
+def _score(report: dict[str, Any]) -> tuple[int, int, int, int]:
     rows = report.get("results", report.get("ranking", report.get("rows", [])))
     if isinstance(rows, dict):
         rows = rows.get("rows", [])
-    best = (0, 0, 0)
+    best = (0, 0, 0, 0)
     for row in rows:
         c = row.get("comparison", row)
         d = c.get("diagnostic") or {}
@@ -1450,16 +2226,38 @@ def _score(report: dict[str, Any]) -> tuple[int, int, int]:
         bytes_text = row.get("bytes", "")
         op = int(d.get("opcode_matches") or (opcode_text.split("/", 1)[0] if "/" in opcode_text else 0))
         size = int(d.get("candidate_bytes") or (bytes_text.split("/", 1)[0] if "/" in bytes_text else 0))
-        best = max(best, (exact, op, size))
+        prefix = 0
+        for step in d.get("aligned_asm", []):
+            if step.get("differences"):
+                break
+            if step.get("target_offset") is None or step.get("candidate_offset") is None:
+                break
+            prefix += 1
+        best = max(best, (exact, prefix, op, size))
     return best
 
 
+def _search_frame(symbol: str, source_path: Path) -> dict[str, Any]:
+    command = [sys.executable, str(ROOT / "tools" / "search.py"), symbol,
+               str(source_path), "--frame", "--full"]
+    run = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
+    try:
+        payload = json.loads(run.stdout)
+    except Exception:
+        return {"returncode": run.returncode, "error": run.stderr[-3000:], "stdout": run.stdout[-1000:]}
+    payload["returncode"] = run.returncode
+    return payload
+
+
 def refine_one(symbol: str, path: Path, lifter: Lifter, max_variants: int = 24) -> dict[str, Any]:
-    """Search the source and bounded one-at-a-time commutative/declaration swaps."""
+    """Search source variants, preferring exact opcode prefixes at first divergence."""
     candidates = [path]
     original = path.read_text(encoding="ascii", errors="replace")
     seen = {original}
-    for i in range(min(max_variants, len(lifter.f.commutative_nodes))):
+    # Reserve room for frame, temporary, condition-polarity, and loop-form
+    # experiments so a long arithmetic expression cannot crowd them all out.
+    swap_limit = min(max(0, max_variants - 13), 8, len(lifter.f.commutative_nodes))
+    for i in range(swap_limit):
         lifter._swap_at = i
         trial = lifter.source()
         lifter._swap_at = None
@@ -1468,9 +2266,62 @@ def refine_one(symbol: str, path: Path, lifter: Lifter, max_variants: int = 24) 
             p = path.with_name(path.stem + f"_swap{i:02d}.c")
             p.write_text(trial, encoding="ascii", newline="\n")
             candidates.append(p)
-    # One declaration-order contrast reverses independent frame locals.
-    if len(lifter.f.locals) >= 2:
-        old = list(lifter.f.locals)
+    # FrameSolver uses the target's BP accesses and observed use order to
+    # generate declaration-order hypotheses. Search scores every source with
+    # MSC and the aligned instruction prefix is the first-divergence guide.
+    old = list(lifter.f.locals)
+    budget = min(8, max(0, max_variants - len(candidates) - 6))
+    all_frame_variants = lifter.frame_solver.variants(32)
+    frame_variants = all_frame_variants[:min(4, budget)]
+    merge_variants = [x for x in all_frame_variants if x.merges]
+    frame_variants += merge_variants[:max(0, budget - len(frame_variants))]
+    for variant in frame_variants:
+        by_name = {row.name: row for row in old}
+        lifter.f.locals[:] = [by_name[n] for n in variant.order]
+        lifter._active_merges = variant.merges
+        trial = lifter.source()
+        if trial not in seen:
+            seen.add(trial)
+            p = path.with_name(path.stem + f"_frame_{variant.name}.c")
+            p.write_text(trial, encoding="ascii", newline="\n")
+            candidates.append(p)
+    lifter.f.locals[:] = old
+    lifter._active_merges = ()
+    lifter._declaration_mode = "locals-first"
+    temp_variants = []
+    for mode in ("temps-first", "temps-reverse"):
+        if len(candidates) >= max_variants:
+            break
+        lifter._declaration_mode = mode
+        trial = lifter.source()
+        if trial not in seen:
+            seen.add(trial)
+            p = path.with_name(path.stem + f"_{mode.replace('-', '_')}.c")
+            p.write_text(trial, encoding="ascii", newline="\n")
+            candidates.append(p)
+            temp_variants.append(mode)
+    lifter._declaration_mode = "locals-first"
+    structure_variants = []
+    for name, options in (
+        ("condition_flip", {"condition_flip": True}),
+        ("loops_while", {"loop_style": "while"}),
+        ("loops_for", {"loop_style": "for"}),
+        ("loops_forever", {"loop_style": "forever"}),
+    ):
+        if len(candidates) >= max_variants:
+            break
+        lifter._structure_options = options
+        trial = lifter.source()
+        lifter._structure_options = {}
+        if trial not in seen:
+            seen.add(trial)
+            p = path.with_name(path.stem + f"_{name}.c")
+            p.write_text(trial, encoding="ascii", newline="\n")
+            candidates.append(p)
+            structure_variants.append(name)
+    # Keep one direct local-order contrast when the model had no useful
+    # alternative and spare budget remains.
+    if len(candidates) < max_variants and len(old) >= 2 and len(frame_variants) <= 1:
         lifter.f.locals.reverse()
         trial = lifter.source()
         lifter.f.locals[:] = old
@@ -1478,24 +2329,64 @@ def refine_one(symbol: str, path: Path, lifter: Lifter, max_variants: int = 24) 
             p = path.with_name(path.stem + "_locals.c")
             p.write_text(trial, encoding="ascii", newline="\n")
             candidates.append(p)
-    command = [sys.executable, str(ROOT / "tools" / "search.py"), symbol] + [str(x) for x in candidates]
+    command = [sys.executable, str(ROOT / "tools" / "search.py"), symbol, *[str(x) for x in candidates], "--full"]
     run = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
     try:
         result = json.loads(run.stdout)
     except Exception:
         return {"returncode": run.returncode, "error": run.stderr[-4000:], "stdout": run.stdout[-4000:]}
     rows = result.get("results", result.get("ranking", []))
+    report_path = result.get("report")
+    if report_path:
+        try:
+            detail = read_json(ROOT / report_path)
+            rows = detail.get("results", rows)
+        except (OSError, FormatError, ValueError):
+            pass
+    base_row = next((row for row in rows if str(row.get("candidate", "")) == "0"), rows[0] if rows else {})
+    baseline_score = _score({"results": [base_row]}) if base_row else (0, 0, 0, 0)
+    opcode_prefix_floor = baseline_score[1]
     best_path = path
-    best_score = (0, 0, 0)
+    best_score = baseline_score
     for row in rows:
         score = _score({"results": [row]})
-        label = row.get("input", "")
-        candidate = next((x for x in candidates if str(x) == label or x.name == Path(label).name), None)
-        if candidate and score > best_score:
+        candidate = candidates[int(row.get("candidate", -1))] if str(row.get("candidate", "")).isdigit() and int(row["candidate"]) < len(candidates) else None
+        if candidate is None:
+            label = row.get("input", "")
+            candidate = next((x for x in candidates if str(x) == label or x.name == Path(label).name), None)
+        if candidate and score[1] >= opcode_prefix_floor and score > best_score:
             best_path, best_score = candidate, score
+
+    # Compile selected frame alternatives with CodeView enabled. Exact ENTER
+    # size plus matching target BP access homes takes precedence over opcode
+    # count; among frame-exact variants the compiler diff's first divergence
+    # and opcode prefix select the best source.
+    frame_candidates = [path] + [x for x in candidates if "_frame_" in x.stem]
+    if best_path not in frame_candidates:
+        frame_candidates.append(best_path)
+    frame_choices = []
+    for candidate in frame_candidates:
+        framed = _search_frame(symbol, candidate)
+        fbest = framed.get("best", {})
+        frame = fbest.get("frame") or {}
+        access_exact = lift_frame.target_access_exact(frame)
+        score = _score(framed)
+        if score[1] < opcode_prefix_floor:
+            continue
+        rank = (int(fbest.get("result") in ("CONFIRMED_MEMBER", "STRONGLY_SUPPORTED_MEMBER")),
+                int(access_exact), *score[1:])
+        frame_choices.append((rank, candidate, access_exact, frame.get("candidate_enter"), frame.get("target_enter")))
+    if frame_choices:
+        _rank, best_path, _frame_exact, _cand_enter, _target_enter = max(frame_choices, key=lambda x: x[0])
+        best_score = max(best_score, max((x[0] for x in frame_choices), default=best_score))
     if best_path != path and best_path.exists():
         path.write_text(best_path.read_text(encoding="ascii", errors="replace"), encoding="ascii", newline="\n")
     return {"returncode": run.returncode, "candidate_count": len(candidates), "best": str(best_path), "score": best_score,
+            "frame_variants": [x.name for x in frame_variants], "temporary_variants": temp_variants,
+            "structure_variants": structure_variants, "opcode_prefix_floor": opcode_prefix_floor,
+            "frame_searches": [{"source": str(p), "rank": r, "frame_exact": exact,
+                                "candidate_enter": cand_enter, "target_enter": target_enter}
+                               for r, p, exact, cand_enter, target_enter in frame_choices],
             "result": result, "stderr": run.stderr[-2000:]}
 
 
@@ -1517,7 +2408,8 @@ def main(argv: list[str] | None = None):
     ap.add_argument("--controls", action="store_true", help="lift admitted C functions as a regression set")
     ap.add_argument("--limit", type=int, help="maximum symbols for --open/--controls")
     ap.add_argument("--out", required=True, help="output directory (created if needed)")
-    ap.add_argument("--refine", action="store_true", help="search the draft and bounded source-order variants")
+    ap.add_argument("--refine", action="store_true",
+                    help="search operand, frame, temporary, condition, and loop-form variants")
     args = ap.parse_args(argv)
     if bool(args.open) + bool(args.controls) + bool(args.symbols) != 1:
         ap.error("choose SYMBOLS, --open, or --controls")

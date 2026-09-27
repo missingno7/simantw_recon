@@ -1,59 +1,86 @@
-# MSC 7 Win16 first-draft lifter
+# MSC 7 Win16 symbolic lifter
 
-`python tools/lift.py SYMBOL --out DIR` writes a readable C hypothesis from the
-inspection packet. `--open` visits open GAME functions, `--controls` selects
-admitted C functions, `--limit N` bounds either set, and `--refine` lets
-`search.py` compare bounded commutative-expression and local-declaration-order
-variants. The output is a draft only: recovery credit still requires the normal
-whole-member proof through `search.py` and `promote.py`.
+`python tools/lift.py SYMBOL --out DIR` writes a readable C hypothesis from
+the inspection packet. `--open` visits open GAME functions, `--controls`
+selects admitted C functions, `--limit N` bounds either set, and `--refine`
+searches compiler-visible variants. Lifted code is an authoring hypothesis:
+only the normal complete-member proof through `search.py` and `promote.py`
+earns recovery credit.
 
-## Rules verified so far
+## Symbolic translation
 
-- The packet provides the target extent, code bytes, decoded operands, loader
-  bindings, MAPSYM names, references, profile, and unit context. Branch and
-  memory offsets are interpreted relative to the function or segment as the
-  packet records them. Relocation-chain words are never emitted as source
-  constants.
-- The four fixed controls `_CountUpdate`, `_IsItWall`, `_ClosePalette`, and
-  `_ProcMenuHelp` produce strict members. Across them, far calls, a signed
-  conditional, a named DGROUP object, and an imported far Pascal call with a
-  far string and long argument each have an exact observed example. These
-  examples do not establish a universal register-allocation or call-argument
-  rule.
-- The frame reader recognizes `push bp; mov bp,sp`, `enter N,0`, saved SI/DI,
-  and the `inc bp; push ds` exported far shell. BP-relative observations use
-  `frame_map.target_frame`; control measurements show that this frame prior is
-  not enough to predict MSC 7's complete local layout or SI/DI allocation.
-- Standalone declarations can be assembled from packet references and
-  declaration-only material in admitted sources. Struct tags are indexed
-  separately from function bodies so pointer prototypes and aggregate-backed
-  global accesses can compile in a standalone draft. Conflicting same-name
-  layouts across source files are not yet reconciled by unit identity.
-- An exact MAPSYM scalar address is emitted as `&name`; array declarations use
-  `&name[0]`. A struct-backed global is read through a width-appropriate
-  pointer at the observed byte offset. These rules fix compile failures in the
-  stratified sample but do not prove all selector or private-data bindings.
-- Only reviewed HIGH/MEDIUM selector-pool rows are used to name far data.
-  Unresolved selectors and private contributions remain explicit residues for
-  the search proof to expose.
-- Conditional signedness follows the nearby signed or unsigned condition
-  branch where available. The structurer folds single-entry if-skips and simple
-  back-edge loops; shared tails and uncertain regions retain labels and gotos.
-- `adc` and `sbb` now use explicit masked carry/borrow temporaries, with nearby
-  `cmp`, `test`, `add`, and `sub` updating the carry state when the function has
-  a carry-chain instruction. This compiles on `_DeleteIndex`, but opcode
-  agreement fell from 43/97 to 40/97 there, so this statement form is not a
-  proven MSC source idiom yet.
+The lifter symbolically executes the decoded function. General and segment
+registers hold expression trees, while flags track the expression that sets
+them. It emits C at observable boundaries: stores, calls, branches, returns,
+and read-modify-write operations. This lets MSC 7.00 see the original arithmetic
+and memory expressions and choose registers itself. Values kept in SI/DI across
+boundaries are represented as C locals so the compiler can allocate the same
+registers or homes.
 
-## Current measured limit
+Recognized source idioms include long-word `add/adc` and `sub/sbb`, compare to
+boolean sequences, sign extension, far-pointer loads, selector-pool references
+to named far objects, compiler runtime arithmetic helpers, `rep movsw` and
+`rep stosw`, switch tables, and dense compare chains. Calls use observed stack
+arguments and known declaration metadata where available. Unsupported or
+ambiguous operations remain visible in the generated source and diagnostics;
+the lifter does not patch object bytes or use byte directives.
 
-On the first 52-function stratified control sample, the declaration/address
-iteration compiles 40/52 drafts (76.9%), matches 8/52 strictly (15.4%), and has
-72.9% median opcode agreement among compilable drafts. Expression shape, memory
-operands, immediate/fixup binding, branch targets, alignment, register choice,
-far-call stack binding, and frame layout remain common mismatch classes. See
-`build/workers/f-infra-lift/REPORT.md` for iterations and the open-function
-measurement. The complete 405-function open pass compiled 281 drafts; 260
-reached 90% of target bytes, none were strict, and none beat the existing best.
-Across all 678 admitted C controls, 527 drafts compiled, 101 were strict, and
-median opcode agreement among compilable controls was 64.1%.
+Control flow is emitted as structured `if`/`else`, simple loops and `switch`
+where the CFG has a safe recognizable shape. Shared tails and uncertain regions
+keep labels and `goto` edges. The structured form is a source hypothesis, not
+a claim that the compiler must choose the target's branches.
+
+## Frame model and refinement
+
+`tools/lift_frame.py` records target BP-relative homes, access widths, address
+taking, use order, and loop membership. It proposes local orders and merged or
+split homes, and compares `/Zi` compiler output against either an admitted
+CodeView frame or the target's observed BP slots. For control measurements, the
+admitted source is compiled only as a frame oracle; it is never used to produce
+the lifted body.
+
+`--refine` generates bounded alternatives for commutative operand order,
+declaration order, merged homes, temporary order, and a few loop forms. It
+compiles candidates with `search.py`, uses the aligned instruction prefix to
+rank the first divergence, and gives exact frame coverage priority when
+selecting among frame alternatives. Example:
+
+```powershell
+python tools/lift.py _SomeFunction --out build/lift2/refined --refine
+```
+
+Use `python tools/search.py SYMBOL CANDIDATE.c --frame` to inspect a candidate's
+`ENTER` size and CodeView local homes. Open functions have no CodeView oracle;
+their frame score checks the target's observed `ENTER` size and BP accesses.
+Exact frame evidence is independent of strict body membership.
+
+## Measured results
+
+The v1 report records 678 admitted C controls and 405 open functions. The
+current inspection cards expose 681 controls and 402 open functions (the total
+remains 1,083); v2 measurements use that current split, and the worker report
+records the three-symbol population shift. The report includes compile rate,
+frame agreement, strict matches, opcode agreement, open-function size coverage,
+and per-symbol results:
+
+`build/workers/f-infra-lift2/REPORT.md`
+
+Numbers are compile-loop measurements, not recovery credit. Strict matching
+still checks the complete target extent, ordinary bytes, semantic fixups, and
+private contributions. Most remaining mismatches come from compiler frame and
+register choices, source-level declaration shape, unresolved data/call
+bindings, and control-flow form. See the report for the largest observed
+residue groups.
+
+## Useful diagnostics
+
+`tools/codegen_diff.py` aligns instructions and reports opcode counts,
+register-only changes, immediates, memory operands, local displacements,
+branch targets, instruction ordering, and the first structural difference.
+Unknown indirect CFGs remain unknown. The diagnostic view accounts for LINK
+transformations only when the strict matcher independently validates them. It
+does not modify an object and does not participate in admission.
+
+`codegen_grinder.py --evidence PATH` and `search.py` group candidates by raw
+OMF identity. Reproducing an earlier object means the next experiment needs a
+different source-shape or analysis hypothesis.
