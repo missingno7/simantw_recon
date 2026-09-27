@@ -767,6 +767,42 @@ def far_sites(card_list=None):
     return result
 
 
+def scaffold_pool_reference(word, segment, used, sites, symbols, preferred_name=None,
+                            declared=(), shared=None, located=None):
+    """Choose a distinct reference for one selector word using scaffold rules."""
+    shared = shared or {}
+    declared = set(declared)
+    located = located or {}
+    if word in shared:
+        based = [n for n in shared[word] if n.startswith('__segname:')]
+        if based:
+            name, basis = based[0], 'CLAIMED_MEMBER_SEGMENT'
+        else:
+            name = min(shared[word], key=lambda n: (located.get(n, (0, 1 << 16))[1], n)).lstrip('_')
+            basis = 'CLAIMED_MEMBER_NAME'
+    else:
+        name = None
+        if preferred_name and preferred_name.startswith('_'):
+            candidate = preferred_name.lstrip('_')
+            located_segment = next((s['number'] for s in symbols['segments']
+                                    if any(p['name'] == preferred_name for p in s['symbols'])), None)
+            if candidate not in used and located_segment == segment:
+                name, basis = candidate, 'POOL_MAP_SYMBOL'
+        if name is None:
+            site_names = sorted(n.lstrip('_') for n in sites.get(word, {}).get('names', ()) if n.startswith('_'))
+            site_names = [n for n in site_names if n not in used and sites[word]['segment'] == segment]
+            if site_names:
+                name, basis = site_names[0], 'MAPSYM_SITE_NAME'
+            else:
+                pool = [x['name'].lstrip('_') for x in sorted(symbols['segments'][segment - 1]['symbols'], key=lambda x: x['offset']) if x['name'].startswith('_')]
+                pool = [n for n in pool if n not in used and re.fullmatch(r'[A-Za-z_]\w*', n)]
+                if not pool:
+                    raise FormatError('no representative symbol for segment %d' % segment)
+                name, basis = pool[0], 'SEGMENT_REPRESENTATIVE'
+        used.add(name)
+    return dict(word=word, segment=segment, name=name, basis=basis)
+
+
 def member_slot_symbols(member, source, flags, target_bytes, folder=None):
     """Original pool word -> far symbol the preserved source uses for it.
 
@@ -1384,28 +1420,8 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
         seg = segments.get(w)
         if seg is None:
             raise FormatError('pool word %04X of %s has no selector relocation' % (w, f))
-        if w in shared:
-            based = [n for n in shared[w] if n.startswith('__segname:')]
-            if based:
-                # The claimed member addresses this word as a based segment:
-                # the stand-in reads through the same based segment.
-                name, basis = based[0], 'CLAIMED_MEMBER_SEGMENT'
-            else:
-                name = min(shared[w], key=lambda n: (located.get(n, (0, 1 << 16))[1], n)).lstrip('_')
-                basis = 'CLAIMED_MEMBER_NAME'
-        else:
-            site_names = sorted(n.lstrip('_') for n in sites.get(w, {}).get('names', ()) if n.startswith('_'))
-            site_names = [n for n in site_names if n not in used and sites[w]['segment'] == seg]
-            if site_names:
-                name, basis = site_names[0], 'MAPSYM_SITE_NAME'
-            else:
-                pool = [x['name'].lstrip('_') for x in sorted(symbols['segments'][seg - 1]['symbols'], key=lambda x: x['offset']) if x['name'].startswith('_')]
-                pool = [n for n in pool if n not in used and re.fullmatch(r'[A-Za-z_]\w*', n)]
-                if not pool:
-                    raise FormatError('no representative symbol for segment %d' % seg)
-                name, basis = pool[0], 'SEGMENT_REPRESENTATIVE'
-            used.add(name)
-        return dict(word=w, segment=seg, name=name, basis=basis)
+        return scaffold_pool_reference(w, seg, used, sites, symbols, declared=declared,
+                                       shared=shared, located=located)
 
     # Walk the object's pool block in order. A word introduced by an unclaimed
     # public goes into that public's stand-in; a word no public's ES sites

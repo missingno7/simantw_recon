@@ -1,0 +1,41 @@
+/* Selector identity probe: use the BlistX base for the shared B-list fields. */
+struct BListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct BListPlanes far BlistX;
+
+/*
+ * RaidOutB: a B-colony ant at map cell (x, y) tries to leave on a raid.
+ * GetExitDirB(x, y, 8) returns a 1-based exit direction or 0 for none; a
+ * zero result is replaced by a random SRand8() direction, otherwise the
+ * direction is converted to 0-based.  TryMoveDirB (far, same code group, LINK-translated)
+ * is attempted with that direction and, if it fails, once more with a fresh
+ * SRand8() direction.  If both moves fail the ant stays: the LifeB cell at
+ * x*64 + y (verified near array) is rewritten from the current list
+ * record's attribute byte BlistX.t[Tindex] (both far DGROUP objects via
+ * segment-9/segment-8 selector slots, as in DoAntSimB / ClearLifeB).
+ */
+extern int far GetExitDirB(int x, int y, int limit);
+extern int far SRand8(void);
+extern int far TryMoveDirB(int x, int y, int dir);
+extern int far Tindex;
+extern unsigned char near LifeB[];
+
+void far RaidOutB(int x, int y)
+{
+    int dir;
+
+    dir = GetExitDirB(x, y, 8);
+    if (dir == 0)
+        dir = SRand8();
+    else
+        dir--;
+    if (TryMoveDirB(x, y, dir) == 0) {
+        if (TryMoveDirB(x, y, SRand8()) == 0)
+            LifeB[x * 64 + y] = BlistX.t[Tindex];
+    }
+}

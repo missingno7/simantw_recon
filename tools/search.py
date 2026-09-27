@@ -189,7 +189,7 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
     return report
 
 
-def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None, frame=False):
+def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None, frame=False, pool=False):
     from promote import check_source, function_flags
     if not files and not template and note:
         # A finding without a new candidate: record it durably, compile nothing.
@@ -198,12 +198,18 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
     if files and any(Path(name).suffix.lower() == '.asm' for name in files):
         if template:
             raise FormatError('ASM candidates do not use C template batches')
+        if pool:
+            raise FormatError('--pool is available for C candidates only')
         return search_asm(symbol, files, meta, note, full, assembler_version, asm_flags)
+    if pool and template:
+        raise FormatError('--pool requires explicit C candidate files')
     began = time.perf_counter()
     profile, flags = function_flags(symbol)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S') + '-%d' % os.getpid()
     out = ROOT / 'build/search' / symbol.lstrip('_') / stamp
-    labels, warnings = [], {}
+    labels, warnings, source_snapshots = [], {}, []
+    pool_info = None
+    pool_infos = []
     if template:
         spec = dict(read_json(template), symbol=symbol, compiler='msc700', flags=flags, publics=[symbol])
         spec.setdefault('max_candidates', 10000)
@@ -211,18 +217,36 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
         if not files:
             raise FormatError('give at least one candidate file or --template')
         sources = []
-        for name in files:
+        if pool:
+            from pool_search import apply_pool_prefix
+            out.mkdir(parents=True, exist_ok=True)
+        for index, name in enumerate(files):
             path = Path(name).resolve()
             if not path.is_file():
                 raise FormatError('candidate does not exist: ' + name)
             text = path.read_text()
-            sources.append(text)
+            if pool:
+                derived, current_pool_info = apply_pool_prefix(symbol, text)
+                if pool_info is None:
+                    pool_info = current_pool_info
+                pool_infos.append(current_pool_info)
+                snapshot = out / ('input%04d.c' % index)
+                snapshot.write_text(text, encoding='latin1')
+                source_snapshots.append(snapshot)
+                sources.append(derived)
+            else:
+                source_snapshots.append(path)
+                sources.append(text)
             labels.append(name)
             try:
                 check_source(text, flags)
             except FormatError as exc:
                 warnings[name] = 'promotion would reject this source: ' + str(exc)
         spec = dict(symbol=symbol, compiler='msc700', flags=flags, publics=[symbol], sources=sources, max_candidates=len(sources))
+        if pool:
+            spec['pool_prefix'] = pool_info
+            spec['pool_prefixes'] = [dict(input=labels[i], **info)
+                                     for i, info in enumerate(pool_infos)]
     seen, bests = output_history(symbol)
     report = run(spec, relative(out), cache=True)
     rows = []
@@ -231,7 +255,7 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
         rows.append((row, summary_row(row, label, out)))
     admitted = symbol in recipes()
     improved = False
-    if not admitted:
+    if not admitted and not pool:
         for row, _ in rows:
             if row['comparison'].get('diagnostic'):
                 improved = drafts.store(symbol, out / ('candidate%04d.c' % row['candidate']), row['comparison'], relative(out / 'results.json'), flags) or improved
@@ -248,6 +272,12 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
                             aligned_asm=diagnostic.get('aligned_asm', []) if full else focused_alignment(diagnostic.get('aligned_asm', []))),
                   exact=exact, effective_output=effective_output(rows, seen, bests), draft_ledger='improved' if improved else 'unchanged',
                   report=relative(out / 'results.json'), seconds=round(time.perf_counter() - began, 2))
+    if pool:
+        result['pool_prefix'] = pool_info
+        result['pool_prefixes'] = [dict(input=labels[i], **info)
+                                   for i, info in enumerate(pool_infos)]
+        result['pool_prefix_applied'] = sum(bool(info.get('applied')) for info in pool_infos)
+        result['draft_ledger'] = 'unchanged (pool-aware diagnostic context)'
     if frame and best['comparison'].get('result') != 'COMPILE_FAILED' and best['receipt'].get('object'):
         # Diagnostic only: named-local homes from a /Zi recompile (code must be identical).
         from common import cards
@@ -281,10 +311,11 @@ def main():
     ap.add_argument('--assembler', default='masm600', help='authentic MASM version for .asm candidates')
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
     ap.add_argument('--frame', action='store_true', help='diagnostic frame map of the best candidate: named-local BP homes/registers (CodeView via /Zi) versus the target frame')
+    ap.add_argument('--pool', action='store_true', help='prepend component selector-pool stand-ins in POOLSTUB_TEXT before compiling C candidates')
     args = ap.parse_args()
     from contextlib import redirect_stdout
     with redirect_stdout(sys.stderr):
-        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag, args.frame)
+        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag, args.frame, args.pool)
     print(json.dumps(result, indent=2))
 
 
