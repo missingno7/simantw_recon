@@ -140,3 +140,13 @@ When many workers run under `cx`, start the service from the supervisor's own se
 `tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. The diagnostic view accounts for LINK transformations only when the strict matcher has independently validated them. It never modifies an object, and it never participates in admission.
 
 `codegen_grinder.py --evidence PATH` includes a compact `compiler_response` in its archived report that groups candidates by raw OMF identity. `search.py` reports each candidate's object hash for the same purpose: identical objects mean the next experiment needs a different analysis level.
+
+## First-draft lifting
+
+`python tools/lift.py SYMBOL --out DIR` converts the inspection packet to a
+readable C hypothesis; `--open` and `--controls` cover the open and admitted
+GAME sets, and `--refine` searches bounded operand and declaration-order
+variants. Lifted code is only an authoring aid. Compile it with `search.py` and
+use the normal complete-member proof before treating any function as recovered.
+Current implementation limits and measured control/open coverage are recorded
+in [lifter.md](lifter.md) and `build/workers/f-infra-lift/REPORT.md`.
