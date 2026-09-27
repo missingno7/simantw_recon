@@ -60,6 +60,14 @@ struct WinBucket_2 {
     struct WinRect far *rects[256];
 };
 extern struct WinBucket_2 far * near win_handles[];
+extern struct WinRect far win_offsets[];
+extern int far win_numOfWindows;
+extern int far win_numOfColors;
+extern int far win_numOfGroups;
+extern char far win_colors[][6];
+extern int far activeAppFlag;
+struct StrPos { int x; int y; };
+extern struct StrPos far lastStrPos;
 extern int near ribbonBarHeight;
 extern int near clipDC;
 extern void far win_SetColorFromObjNum(int objectNumber);
@@ -89,6 +97,8 @@ extern void far pascal EndDialog(unsigned hwnd, int result);
 
 void far pool_stub_win_LoadAllWindows(void);
 void far pool_stub_window_private_data(void);
+void far pool_stub_activeAppFlag(void);
+void far pool_stub_lastStrPos(void);
 void far pool_data_fill_BE05(void);
 void far *win_WinAddr(int id);
 int far win_Events(void);
@@ -105,7 +115,7 @@ void win_ObjInv(int objectNumber);
 unsigned int win_GetProxEvent(void);
 long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wParam, long lParam);
 
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_win_LoadAllWindows, pool_stub_window_private_data)
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_win_LoadAllWindows, pool_stub_window_private_data, pool_stub_activeAppFlag, pool_stub_lastStrPos)
 #pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_BE05)
 #pragma alloc_text(RUN2_TEXT, win_WinAddr)
 #pragma alloc_text(RUN3_TEXT, win_Events)
@@ -156,6 +166,23 @@ void far pool_stub_win_LoadAllWindows(void)
     volatile int t;
 
     t = win_drawHooks[0];
+    t = win_offsets[0].left;
+    t = win_numOfWindows;
+    t = win_numOfColors;
+    t = win_numOfGroups;
+    t = win_colors[0][0];
+}
+
+void far pool_stub_activeAppFlag(void)
+{
+    volatile int value;
+    value = activeAppFlag;
+}
+
+void far pool_stub_lastStrPos(void)
+{
+    volatile int value;
+    value = lastStrPos.x;
 }
 
 int far win_Events(void)
