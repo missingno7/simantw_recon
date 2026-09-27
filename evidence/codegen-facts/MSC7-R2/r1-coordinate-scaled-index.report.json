@@ -1,0 +1,208 @@
+{
+  "name": "r1-coordinate-scaled-index",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMONE_MODULE"
+  ],
+  "function": "PlaceEggR",
+  "symbol": "_PlaceEggR",
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "INDEX": "row_major"
+      },
+      "size": 100,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "bx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "8d6648dee060aa4eb528e0af708d9f74599d028e2e52891af136aa8568083c4f",
+      "fixups": [
+        {
+          "offset": 94,
+          "width": 2,
+          "target": "_LifeR",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 77,
+          "width": 4,
+          "target": "_AddAntToRList",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 60,
+          "width": 4,
+          "target": "_DigTileR",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 12,
+          "width": 2,
+          "target": "_ListIndexR",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push di",
+        "0004 push si",
+        "0005 mov es, word ptr [0]",
+        "0009 cmp word ptr es:[0], 0x1f4",
+        "0010 jge 0x60",
+        "0012 mov si, word ptr [bp + 6]",
+        "0015 or si, si",
+        "0017 jl 0x30",
+        "0019 mov di, word ptr [bp + 8]",
+        "001c cmp si, 0x3f",
+        "001f jg 0x33",
+        "0021 cmp di, 1",
+        "0024 jl 0x33",
+        "0026 cmp di, 0x3f",
+        "0029 jg 0x33",
+        "002b mov dx, 1",
+        "002e jmp 0x35",
+        "0030 mov di, word ptr [bp + 8]",
+        "0033 xor dx, dx",
+        "0035 or dx, dx",
+        "0037 je 0x60",
+        "0039 push di",
+        "003a push si",
+        "003b lcall 0, 0",
+        "0040 add sp, 4",
+        "0043 push 0",
+        "0045 push 8",
+        "0047 push word ptr [bp + 0xa]",
+        "004a push di",
+        "004b push si",
+        "004c lcall 0, 0",
+        "0051 add sp, 0xa",
+        "0054 mov al, byte ptr [bp + 0xa]",
+        "0057 mov bx, si",
+        "0059 shl bx, 6",
+        "005c mov byte ptr [bx + di], al",
+        "0060 pop si",
+        "0061 pop di",
+        "0062 leave ",
+        "0063 retf "
+      ],
+      "target": {
+        "result": "STRONGLY_SUPPORTED_MEMBER",
+        "opcodes": "46/46",
+        "bytes": "86/86"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "INDEX": "transposed"
+      },
+      "size": 100,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "bx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "54bcd5eaeb07bb29eb0947cc6976145ccb911184d4841bc55d5f5f20c4c6bf44",
+      "fixups": [
+        {
+          "offset": 94,
+          "width": 2,
+          "target": "_LifeR",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 77,
+          "width": 4,
+          "target": "_AddAntToRList",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 60,
+          "width": 4,
+          "target": "_DigTileR",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 12,
+          "width": 2,
+          "target": "_ListIndexR",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -35,5 +35,5 @@",
+          " mov al, byte ptr [bp + 0xa]",
+          "-mov bx, si",
+          "+mov bx, di",
+          " shl bx, 6",
+          "-mov byte ptr [bx + di], al",
+          "+mov byte ptr [bx + si], al",
+          " pop si"
+        ]
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "46/46",
+        "bytes": "84/86"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

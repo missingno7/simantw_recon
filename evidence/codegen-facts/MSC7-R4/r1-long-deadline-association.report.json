@@ -1,0 +1,233 @@
+{
+  "name": "r1-long-deadline-association",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTGR_MODULE"
+  ],
+  "function": "ms_Delay",
+  "symbol": "_ms_Delay",
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v001",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "DEADLINE": "split_update"
+      },
+      "size": 44,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "b3468aa45586585bb1db97d5ee3a04885a139cffafc42d5630c352f9fe8a6835",
+      "fixups": [
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 lcall 0, 0",
+        "0009 mov word ptr [bp - 4], ax",
+        "000c mov word ptr [bp - 2], dx",
+        "000f mov ax, word ptr [bp + 6]",
+        "0012 cdq ",
+        "0013 add word ptr [bp - 4], ax",
+        "0016 adc word ptr [bp - 2], dx",
+        "0019 lcall 0, 0",
+        "001e cmp dx, word ptr [bp - 2]",
+        "0021 jb 0x19",
+        "0023 ja 0x2a",
+        "0025 cmp ax, word ptr [bp - 4]",
+        "0028 jb 0x19",
+        "002a leave ",
+        "002b retf "
+      ],
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "12/18",
+        "bytes": "5/40"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "DEADLINE": "combined_left"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "f85a7f1d127e60aa4697e4350b25b29d5daaaa4e0df55a552faa4c1ac7295882",
+      "fixups": [
+        {
+          "offset": 28,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,14 +2,16 @@",
+          " lcall 0, 0",
+          "-mov word ptr [bp - 4], ax",
+          "-mov word ptr [bp - 2], dx",
+          "+mov cx, ax",
+          " mov ax, word ptr [bp + 6]",
+          "+mov bx, dx",
+          " cdq ",
+          "-add word ptr [bp - 4], ax",
+          "-adc word ptr [bp - 2], dx",
+          "+add cx, ax",
+          "+adc bx, dx",
+          "+mov word ptr [bp - 4], cx",
+          "+mov word ptr [bp - 2], bx",
+          " lcall 0, 0",
+          " cmp dx, word ptr [bp - 2]",
+          "-jb 0x19",
+          "-ja 0x2a",
+          "+jb 0x1b",
+          "+ja 0x2c",
+          " cmp ax, word ptr [bp - 4]",
+          "-jb 0x19",
+          "+jb 0x1b",
+          " leave "
+        ]
+      },
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "18/18",
+        "bytes": "38/38"
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "DEADLINE": "combined_right"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "f85a7f1d127e60aa4697e4350b25b29d5daaaa4e0df55a552faa4c1ac7295882",
+      "fixups": [
+        {
+          "offset": 28,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 4,
+          "target": "GETTICKCOUNT",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -2,14 +2,16 @@",
+          " lcall 0, 0",
+          "-mov word ptr [bp - 4], ax",
+          "-mov word ptr [bp - 2], dx",
+          "+mov cx, ax",
+          " mov ax, word ptr [bp + 6]",
+          "+mov bx, dx",
+          " cdq ",
+          "-add word ptr [bp - 4], ax",
+          "-adc word ptr [bp - 2], dx",
+          "+add cx, ax",
+          "+adc bx, dx",
+          "+mov word ptr [bp - 4], cx",
+          "+mov word ptr [bp - 2], bx",
+          " lcall 0, 0",
+          " cmp dx, word ptr [bp - 2]",
+          "-jb 0x19",
+          "-ja 0x2a",
+          "+jb 0x1b",
+          "+ja 0x2c",
+          " cmp ax, word ptr [bp - 4]",
+          "-jb 0x19",
+          "+jb 0x1b",
+          " leave "
+        ]
+      },
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "18/18",
+        "bytes": "38/38"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

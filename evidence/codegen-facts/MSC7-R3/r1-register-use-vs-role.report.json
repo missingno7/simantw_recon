@@ -1,0 +1,404 @@
+{
+  "name": "r1-register-use-vs-role",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "R1Pair",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 5,
+  "distinct_outputs": 5,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "INDEX": "row_major",
+        "EXTRA": "none",
+        "CALLS": "x_then_y"
+      },
+      "size": 58,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "ch",
+        "cl",
+        "cx",
+        "di",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "c0bb4f22a8891490e6e3db71208012c12572736a523aef9dd4b13400437d358f",
+      "fixups": [
+        {
+          "offset": 44,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 21,
+          "width": 2,
+          "target": "_r1Map",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 2, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov di, word ptr [bp + 8]",
+        "0009 mov si, word ptr [bp + 6]",
+        "000c mov bx, si",
+        "000e mov ax, si",
+        "0010 shl bx, 6",
+        "0013 mov cl, byte ptr [bx + di]",
+        "0017 sub ch, ch",
+        "0019 mov dx, di",
+        "001b add di, cx",
+        "001d add di, ax",
+        "001f push ax",
+        "0020 mov si, dx",
+        "0022 lcall 0, 0",
+        "0027 add sp, 2",
+        "002a push si",
+        "002b lcall 0, 0",
+        "0030 add sp, 2",
+        "0033 mov ax, di",
+        "0035 pop si",
+        "0036 pop di",
+        "0037 leave ",
+        "0038 retf ",
+        "0039 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "INDEX": "transposed",
+        "EXTRA": "none",
+        "CALLS": "x_then_y"
+      },
+      "size": 56,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "ch",
+        "cl",
+        "cx",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "1a15ba500bcb80277733c44380371b9cd6ec6d1ad780bea2b762d6a6e107b42c",
+      "fixups": [
+        {
+          "offset": 42,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 33,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 21,
+          "width": 2,
+          "target": "_r1Map",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -3,4 +3,4 @@",
+          " push si",
+          "-mov di, word ptr [bp + 8]",
+          "-mov si, word ptr [bp + 6]",
+          "+mov di, word ptr [bp + 6]",
+          "+mov si, word ptr [bp + 8]",
+          " mov bx, si",
+          "@@ -10,7 +10,6 @@",
+          " sub ch, ch",
+          "-mov dx, di",
+          "-add di, cx",
+          "+add ax, cx",
+          "+mov cx, di",
+          " add di, ax",
+          "-push ax",
+          "-mov si, dx",
+          "+push cx",
+          " lcall 0, 0"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "INDEX": "row_major",
+        "EXTRA": "extra_x",
+        "CALLS": "x_then_y"
+      },
+      "size": 64,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dh",
+        "di",
+        "dl",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "13b8721616db3cb8690ec444d9d85ac3402ff7d6175232e9339b023e02481d0d",
+      "fixups": [
+        {
+          "offset": 50,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 41,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 27,
+          "width": 2,
+          "target": "_r1Map",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -7,8 +7,11 @@",
+          " mov ax, si",
+          "+shl bx, 1",
+          "+mov cx, bx",
+          "+mov bx, si",
+          " shl bx, 6",
+          "-mov cl, byte ptr [bx + di]",
+          "-sub ch, ch",
+          "+mov dl, byte ptr [bx + di]",
+          "+sub dh, dh",
+          "+add cx, dx",
+          " mov dx, di",
+          " add di, cx",
+          "-add di, ax",
+          " push ax"
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "INDEX": "row_major",
+        "EXTRA": "extra_y",
+        "CALLS": "x_then_y"
+      },
+      "size": 66,
+      "frame": 2,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "ch",
+        "cl",
+        "cx",
+        "di",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "c000c87fbb019db6b91fd6831f202aa573815f38dcbe0338d493af2d4b100963",
+      "fixups": [
+        {
+          "offset": 51,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 42,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 21,
+          "width": 2,
+          "target": "_r1Map",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "homes"
+        ],
+        "diff": [
+          "@@ -3,13 +3,16 @@",
+          " push si",
+          "-mov di, word ptr [bp + 8]",
+          "-mov si, word ptr [bp + 6]",
+          "-mov bx, si",
+          "-mov ax, si",
+          "+mov di, word ptr [bp + 6]",
+          "+mov si, word ptr [bp + 8]",
+          "+mov bx, di",
+          "+mov ax, di",
+          " shl bx, 6",
+          "-mov cl, byte ptr [bx + di]",
+          "+mov cl, byte ptr [bx + si]",
+          " sub ch, ch",
+          "-mov dx, di",
+          "-add di, cx",
+          "-add di, ax",
+          "-push ax",
+          "+mov dx, si",
+          "+shl si, 1",
+          "+add cx, si",
+          "+mov bx, di",
+          "+add ax, cx",
+          "+mov word ptr [bp - 2], ax",
+          "+push bx",
+          " mov si, dx",
+          "@@ -20,3 +23,3 @@",
+          " add sp, 2",
+          "-mov ax, di",
+          "+mov ax, word ptr [bp - 2]",
+          " pop si"
+        ]
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "INDEX": "row_major",
+        "EXTRA": "none",
+        "CALLS": "y_then_x"
+      },
+      "size": 56,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "ch",
+        "cl",
+        "cx",
+        "di",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "c0738ed17a67de6b6f2af5c6e94d757dfc39abc91153ae010be14fb4795f320c",
+      "fixups": [
+        {
+          "offset": 42,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 33,
+          "width": 4,
+          "target": "_r1Touch",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 21,
+          "width": 2,
+          "target": "_r1Map",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -13,4 +13,3 @@",
+          " add di, ax",
+          "-push ax",
+          "-mov si, dx",
+          "+push dx",
+          " lcall 0, 0"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

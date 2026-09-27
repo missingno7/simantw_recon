@@ -158,9 +158,36 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Observed: no current residue depends on it. The WRONG_REGISTER cluster diverges at entry or before any join (R1 territory). `_MowerFall` (AL clear vs BH reuse) and `_DoNestFightR` (CL kept vs reload) are not join effects; they are E16 and assignment-scheduling cases.
 - Validated 2026-09-27 (f-study-c12).
 
-**MSC7-C13: loop-test placement follows the code after the loop (stunts C13). OPEN.**
-- Candidate residues: `_MakeOutletH/V` (the post-tested fill loop improved alignment).
-- Study launched 2026-09-27 (worker f-study-c13).
+**MSC7-C13: the code physically after a loop decides its test placement (stunts C13). FALSIFIED.**
+- Admitted control `_ClearBookmarks` (`oi-ga`, `/Oeilw /GA /NTSIMANT_MODULE`, 45/45): appending a call, or a two-armed conditional, after the loop leaves the loop bytes unchanged through `cmp si,0x46; jb`. The exit just falls through to the new tail.
+- Reproducers: `evidence/codegen-facts/MSC7-C13/`, `MSC7-C21/`.
+- The earlier `_MakeOutletH/V` loop observation is frame-confounded (ENTER 8 vs 6) and is not evidence.
+- Validated 2026-09-27 (f-study-c13).
+
+**MSC7-C15: a guarded `do` (`if (c) do ... while (c)`) and the equivalent `while` compile identically when an observable call keeps the loop. SUPPORTED, narrow.**
+- Admitted control `_UpdateAllWindows` (`oi-ga`, 25/25).
+- `evidence/codegen-facts/MSC7-C15/`, `MSC7-C17/`.
+- An unguarded `do` has no preheader test.
+
+**MSC7-C16: guarded `do` always equals `while`. FALSIFIED.**
+- A scalar induction loop that the optimiser reduces to closed form differs: 18 vs 28 bytes.
+- `evidence/codegen-facts/MSC7-C16/` (`oi-ga`).
+
+**Control-flow spellings that compile identically. Do not search among these (SUPPORTED on admitted controls):**
+- **MSC7-C18:** lexical order of switch arms. `_DoMenuEntry` (`oi-ga`) with case orders 4,5,6,8 / 8,6,5,4 / 4,6,5,8 gives one object. An if-chain form differs: 145/183.
+- **MSC7-C19:** `break` to post-loop cleanup equals `goto` a label at the same point. `_ShowIntro` (`baseline`, 111/111).
+- **MSC7-C20:** `continue` equals `goto` an empty label just before the `do` test. `_DrownBList` (`og`, 35/35).
+- **MSC7-C23:** an early `return` carrying a duplicate of the cleanup tail merges into the shared tail. `_ShowIntro`.
+- Evidence: `evidence/codegen-facts/MSC7-C18/`, `C19/`, `C20/`, `C23/`.
+
+**MSC7-C22: in a `for` loop, `continue` reaches the increment and test while `break` leaves; a target branch into `inc si` is a `continue`. SUPPORTED.**
+- `_FillHolesRN` (`baseline`): `continue` removes one of the two branch-destination mismatches.
+- `evidence/codegen-facts/MSC7-C22/`.
+
+**MSC7-C24: a dead `sizeof(action) != 16` guard before `_DoMenuEntry`'s switch steers its shared `SaveGame` tail. FALSIFIED.**
+- The object is identical.
+- `evidence/codegen-facts/MSC7-C24/`.
+- `_DoMenuEntry` (181/183: branch-specific pushes before one shared call) stays open.
 
 ## 5. Far pointers
 
