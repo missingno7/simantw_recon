@@ -253,6 +253,7 @@ def build(debt=False, manifest=None, write=True):
                   debt_total=size - totals['C'] - totals['RUNTIME'], code_segment_bytes=code_bytes,
                   objects=len(seen), problems=problems[:50], problem_count=len(problems), mismatched_bytes=len(mismatches),
                   claim_conflicts=dict(bytes=sum(conflicts.values()), pairs=len(conflicts),
+                                       top=[dict(objects=list(k), bytes=v) for k, v in sorted(conflicts.items(), key=lambda kv: -kv[1])[:5]],
                                        note='bytes proved by two admitted objects; merge them into one unit (lane MERGE) before a real LINK'),
                   scope='HYBRID_EXACT means the image rebuilt from admitted objects plus explicit raw debt equals the oracle; raw debt is not recovery')
     if write:
