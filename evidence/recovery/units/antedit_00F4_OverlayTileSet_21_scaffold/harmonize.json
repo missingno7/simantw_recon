@@ -2,7 +2,6 @@
   "component": "antedit:00F4",
   "members": [
     "_OverlayTileSet",
-    "_ClearEditDeltaTables",
     "_ProcEditEvent",
     "_win_EditChanged",
     "_OpenEditWindow",
@@ -11,6 +10,7 @@
     "_DoEditUpdateDraw",
     "_UpdateEditWindow",
     "_DrawEdit",
+    "_CenterEdit",
     "_InvalidUpdateEdit",
     "_PreDrawSpider",
     "_ed_MoveTo",
@@ -26,31 +26,16 @@
   "overrides": {
     "mem_Free": "extern void far mem_Free(int handle);"
   },
-  "unresolved": [
-    {
-      "name": "tileDsp",
-      "spellings": {
-        "extern char far *tileDsp;": [
-          "_ClearEditDeltaTables"
-        ],
-        "static char far *tileDsp = 0;": [
-          "_win_EditChanged"
-        ]
-      }
-    },
-    {
-      "name": "tileMask",
-      "spellings": {
-        "extern char far *tileMask;": [
-          "_ClearEditDeltaTables"
-        ],
-        "static char far *tileMask = 0;": [
-          "_win_EditChanged"
-        ]
-      }
-    }
-  ],
+  "unresolved": [],
   "trials": [
+    {
+      "name": "mem_Free",
+      "spelling": "extern void far mem_Free(unsigned int);",
+      "member": "_win_EditChanged",
+      "source": "evidence/recovery/units/antedit_00F4_OverlayTileSet_21_scaffold/harmonize/win_EditChanged_mem_Free_d05d7d52.c",
+      "exact": false,
+      "result": "NO_COMPLETE_MATCH"
+    },
     {
       "name": "mem_Free",
       "spelling": "extern void far mem_Free(int);",
@@ -58,38 +43,6 @@
       "source": "evidence/recovery/units/antedit_00F4_OverlayTileSet_21_scaffold/harmonize/OverlayTileSet_mem_Free_b40ae598.c",
       "exact": true,
       "result": "STRONGLY_SUPPORTED_MEMBER"
-    },
-    {
-      "name": "tileDsp",
-      "spelling": "extern char far *tileDsp;",
-      "member": "_win_EditChanged",
-      "source": "evidence/recovery/units/antedit_00F4_OverlayTileSet_21_scaffold/harmonize/win_EditChanged_tileDsp_a718603a.c",
-      "exact": false,
-      "result": "NO_COMPLETE_MATCH"
-    },
-    {
-      "name": "tileDsp",
-      "spelling": "static char far *tileDsp = 0;",
-      "member": "_ClearEditDeltaTables",
-      "source": "evidence/recovery/units/antedit_00F4_OverlayTileSet_21_scaffold/harmonize/ClearEditDeltaTables_tileDsp_d8f75476.c",
-      "exact": false,
-      "result": "NO_COMPLETE_MATCH"
-    },
-    {
-      "name": "tileMask",
-      "spelling": "extern char far *tileMask;",
-      "member": "_win_EditChanged",
-      "source": "evidence/recovery/units/antedit_00F4_OverlayTileSet_21_scaffold/harmonize/win_EditChanged_tileMask_b87c1ea8.c",
-      "exact": false,
-      "result": "NO_COMPLETE_MATCH"
-    },
-    {
-      "name": "tileMask",
-      "spelling": "static char far *tileMask = 0;",
-      "member": "_ClearEditDeltaTables",
-      "source": "evidence/recovery/units/antedit_00F4_OverlayTileSet_21_scaffold/harmonize/ClearEditDeltaTables_tileMask_3cabaa83.c",
-      "exact": false,
-      "result": "NO_COMPLETE_MATCH"
     }
   ],
   "scope": "Declaration spellings chosen only when every user keeps its exact body in isolation; trial sources and reports are kept"
