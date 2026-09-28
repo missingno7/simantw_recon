@@ -1,0 +1,14 @@
+{
+  "name": "alloc-lab-static-use-weight-control",
+  "profile": "baseline",
+  "function": "f",
+  "mode": "one-at-a-time",
+  "text": "extern volatile int alloc_sink;\nint f(int seed) {\n int a=seed+1, b=seed+2, c=seed+3;\n alloc_sink=a; alloc_sink=b; alloc_sink=c;\n {{USES}}\n return a+b+c;\n}\n",
+  "axes": {
+    "USES": {
+      "equal": "if (seed == 11) a++; if (seed == 22) b++;",
+      "heavy-a": "if (seed == 11) a++; if (seed == 12) a++; if (seed == 13) a++; if (seed == 22) b++;",
+      "heavy-b": "if (seed == 11) a++; if (seed == 22) b++; if (seed == 23) b++; if (seed == 24) b++;"
+    }
+  }
+}

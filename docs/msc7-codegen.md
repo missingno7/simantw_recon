@@ -150,6 +150,12 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - It is not the complete allocator: the target uses row DI and cell BX in row-outer order.
 - Steering lever: loop structure and value roles, not declarations.
 
+**MSC7-X2: rank word locals by lexical read count, tie-break by later last reference then name; SI, then DI, then homes. SUPPORTED for simple shapes; FALSIFIED as a general rule.**
+- Lab: `tools/alloc_lab.py`, docs/msc7-allocator-lab.md. 555 controlled cases under baseline, og, oi and ogi gave 2,220 observations.
+- The rule fits 5,872 of 5,928 placements (99.06%). Every miss is in the loop-depth family, and a loop-read multiplier did not help.
+- On 30 admitted functions it gets only 45 of 90 named placements right (build/workers/sup-allocx/). Real code adds generated temporaries, pointer and addressing roles, 32-bit arithmetic, and call and branch lifetimes that source counts cannot see.
+- Use the rule as a local clue for simple shapes only. The real allocator must be read from C23216 (f-study-c2).
+
 ## 3. Expressions and CSE
 
 **MSC7-E15: symbol-table pressure changes codegen (stunts E15/E17). FALSIFIED for the tested scope.**

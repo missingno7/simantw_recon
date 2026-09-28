@@ -1,0 +1,271 @@
+{
+  "name": "alloc-lab-static-use-weight-control",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 3,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "USES": "equal"
+      },
+      "size": 68,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "d57a5a1783aa9df134d872e4bf99a31193a11a73dc48da7d156126e36c18d162",
+      "fixups": [
+        {
+          "offset": 43,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 38,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 33,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 2,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 2, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov ax, 0",
+        "0009 mov es, ax",
+        "000b mov cx, word ptr [bp + 6]",
+        "000e mov ax, cx",
+        "0010 inc ax",
+        "0011 mov bx, ax",
+        "0013 mov dx, cx",
+        "0015 add dx, 2",
+        "0018 mov di, dx",
+        "001a mov si, cx",
+        "001c add si, 3",
+        "001f mov word ptr es:[0], ax",
+        "0023 mov word ptr es:[0], dx",
+        "0028 mov word ptr es:[0], si",
+        "002d cmp cx, 0xb",
+        "0030 jne 0x33",
+        "0032 inc bx",
+        "0033 cmp cx, 0x16",
+        "0036 jne 0x39",
+        "0038 inc di",
+        "0039 mov ax, di",
+        "003b add ax, bx",
+        "003d add ax, si",
+        "003f pop si",
+        "0040 pop di",
+        "0041 leave ",
+        "0042 retf ",
+        "0043 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "USES": "heavy-a"
+      },
+      "size": 80,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "7222ae1573b12b4cc6099be950f5f2b37ae14c256f16a3f613665800128e7ce8",
+      "fixups": [
+        {
+          "offset": 43,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 38,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 33,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 2,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -20,4 +20,10 @@",
+          " inc bx",
+          "+cmp cx, 0xc",
+          "+jne 0x39",
+          "+inc bx",
+          "+cmp cx, 0xd",
+          "+jne 0x3f",
+          "+inc bx",
+          " cmp cx, 0x16",
+          "-jne 0x39",
+          "+jne 0x45",
+          " inc di"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "USES": "heavy-b"
+      },
+      "size": 80,
+      "frame": 2,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "4731e092b2e5b4f34d90ab8985c2c3b4ac368d50bb2e5b63a0197982bcf85b93",
+      "fixups": [
+        {
+          "offset": 43,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 38,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 33,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "_alloc_sink",
+          "kind": 2,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -8,6 +8,6 @@",
+          " inc ax",
+          "-mov bx, ax",
+          "+mov di, ax",
+          " mov dx, cx",
+          " add dx, 2",
+          "-mov di, dx",
+          "+mov bx, dx",
+          " mov si, cx",
+          "@@ -19,8 +19,14 @@",
+          " jne 0x33",
+          "-inc bx",
+          "+inc di",
+          " cmp cx, 0x16",
+          " jne 0x39",
+          "-inc di",
+          "-mov ax, di",
+          "-add ax, bx",
+          "+inc bx",
+          "+cmp cx, 0x17",
+          "+jne 0x3f",
+          "+inc bx",
+          "+cmp cx, 0x18",
+          "+jne 0x45",
+          "+inc bx",
+          "+mov ax, bx",
+          "+add ax, di",
+          " add ax, si"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}
