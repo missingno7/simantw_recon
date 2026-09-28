@@ -289,6 +289,17 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Contrast E18: in straight-line code a temporary disappears. Here it sits in one arm of a branch whose other arm computes the same subexpression inline.
 - Consequence: allocation residues respond to the placement of temporaries and subexpressions, which the permuter's introduce/inline-temporary mutations explore.
 
+## 6c. Toolchain and profile
+
+**MSC7-T1: untested optimisation letters, or a different profile, explain the single-choice residues. FALSIFIED.**
+- Sweep: the frontier drafts of 24 single-choice residues (register, home order, reload, expression, far pointer) were compiled with each function's assigned profile plus `/Oa`, `/Os`, `/Ot`, `/Oc`, `/Oo` or `/Oz`, and with `/Ow` removed.
+- Result: none became exact or moved its earliest divergence later.
+  - `/Os` changed 21 of 24 and made 20 worse; dropping `/Ow` changed 8 and made 5 worse.
+  - `/Oa`, `/Ot`, `/Oc`, `/Oo` and `/Oz` changed nothing.
+- Together with the MSC 6.00A generation sweep (evidence/experiments/compiler-generation: 0 of 186) and residues spread across profiles in proportion to the admitted functions (baseline 68/411, og 37/208, ogi 21/112), the locked toolchain and catalogued profiles are not the cause.
+- Evidence: `evidence/codegen-facts/MSC7-T1/` (sweep script and per-variant results); the diagnostic compiles never entered the draft ledger.
+- Validated 2026-09-28.
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.
