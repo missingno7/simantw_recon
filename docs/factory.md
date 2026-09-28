@@ -75,6 +75,8 @@ rounds, best opcodes/bytes, and the decisive idiom or remaining residue.
 
 ## Build model: units, profiles and lanes
 
+`python tools/typedb.py build|check|resync` builds a program-wide database of declarations actually used by admitted member bodies, with source variants, majority consensus and NE/MAPSYM machine evidence. Scaffold references and `POOLSTUB_TEXT` stand-ins are excluded. Use `check` to spot draft declaration conflicts and `resync` to produce a declaration-corrected source while preserving function bodies; strict `search.py` remains the compiler proof.
+
 The factory models the original build instead of one universal isolated-function experiment:
 
 ```
