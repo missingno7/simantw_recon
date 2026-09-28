@@ -128,18 +128,23 @@ Lighter-host screening is recorded under `evidence/experiments/runner/`. Direct 
 
 `tools/compiler_service.py` implements the filesystem protocol under ignored `build/compiler-service/`: immutable source snapshots, pending/running/completed requests, request-batch records and receipts. Each worker has a separate Windows copy, scratch directory, temp files and DOSBox process. Only compiler/tool and construction directories are mounted; original game assets are never mounted.
 
-One persistent worker first reproduced all 18 canonical probes twice with identical raw OMF bytes and identical strict results. Only then were four workers enabled and checked against the same oracle. A complete client/server stress run compiled **400 canonical candidates in 50.53 seconds**, with all objects byte-identical and eight environment launches across four workers. Sessions recycle after 96 jobs.
+Each accepted worker count has a separate `evidence/experiments/runner/worker-N.json` proof for exactly N hosts. The configured proof slots are 1, 4, 8, 12 and 16; the service accepts a count only when its exact proof passes and the recorded compiler, matcher, fixture, oracle, probe-source and OMF identities still match. Missing, wrong-count or stale proofs refuse startup. `compile_jobs()` and `start()` keep their four-worker default; a supervisor can select another proved count with `serve --workers N`. Sessions recycle after 96 jobs.
+
+The inherited baseline first reproduced all 18 canonical probes twice with one worker and then four workers. Its previous 400-job service stress took 48.81 seconds (about 8.20 compiles/second); the earlier factory note recorded 50.53 seconds. Those measurements predate the current worker-count proof gate. Re-run the canonical validation after changing the service or worker. `worker_validate.py` reports per-job latency and per-host DOSBox CPU, peak working set and Windows process I/O transfer counters (logical bytes, not physical-device traffic). Oracle receipts pin each expected OMF by size and SHA-256; when a preserved expected OBJ is absent from an isolated worktree, validation checks the freshly compiled OMF against that complete recorded identity. Use `python tools/worker_validate.py --workers N` for the exact-count oracle and `python tools/worker_validate.py --workers N --service-stress --jobs 400` for the service path.
 
 Idle DOSBox processes are suspended by the host. The service stops after two idle minutes and starts automatically on demand. Compiler caching keys on source, flags/code group, tool lock, worker implementation and profile, and matching always runs again.
+
+At service start, completed response JSON files and terminal `jobs/` folders older than one day are pruned. Pending and running requests and job folders without a terminal marker are retained. The prune does not touch `build/compiler-jobs/`, `build/codegen-cache/`, compiler proofs or request-batch records.
 
 ```powershell
 python tools/compiler_service.py status
 python tools/compiler_service.py start --workers 4
 python tools/compiler_service.py stop
 python tools/worker_validate.py --workers 4
+python tools/worker_validate.py --workers 8 --service-stress --jobs 400
 ```
 
-When many workers run under `cx`, start the service from the supervisor's own session (`python tools/compiler_service.py serve --workers 4 --idle-seconds 86400`). Otherwise the first worker's compile request starts it as that worker's descendant, and `cx` stops it, and with it everyone's compiles, when that worker exits. `layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. After changing the worker or wait helper, rerun single-worker validation before parallel validation, then `validate.py`. Do not edit recorded fingerprints to bypass them.
+When many workers run under `cx`, start the service from the supervisor's own session (`python tools/compiler_service.py serve --workers 4 --idle-seconds 86400`). Otherwise the first worker's compile request starts it as that worker's descendant, and `cx` stops it, and with it everyone's compiles, when that worker exits. `layout/compiler-service.json` records the production choice. `SIMANT_COMPILER_REFERENCE=1` retains the old reference path for controlled comparisons. After changing the service, worker, validator or wait helper, rerun one-worker validation before parallel validation, then `validate.py`. Do not edit recorded fingerprints to bypass them.
 
 ## Source provenance: EXACT_NATURAL and EXACT_STEERED
 

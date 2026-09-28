@@ -56,6 +56,10 @@ extern volatile void far NbFinalStatus(
     volatile struct NetbiosControlBlock far *ncb);
 extern int far NbHangUp(char session);
 extern int far NbSend(unsigned char far *buffer, int length, char session);
+extern unsigned int far NbReceive(unsigned char session,
+                                  unsigned char far *buffer,
+                                  unsigned int far *length);
+
 extern unsigned int far NbPostListen(char far *name, char far *callName,
                                      unsigned char session,
                                      unsigned char number,
@@ -1469,7 +1473,9 @@ void far pool_data_WINMAIN(void)
 
 
 extern int far NbCall(char far *name2, char far *name1, int len2, int len1);
-extern int far NbReceive(char session, int far *result, int far *cmd);
+extern unsigned int far NbReceive(unsigned char session,
+                                  unsigned char far *buffer,
+                                  unsigned int far *length);
 extern int far NbSend(unsigned char far *buffer, int length, char session);
 extern int far NbHangUp(char session);
 
