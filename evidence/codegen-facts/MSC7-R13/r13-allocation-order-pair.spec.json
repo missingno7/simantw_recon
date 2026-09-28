@@ -1,0 +1,28 @@
+{
+  "name": "r13-allocation-order-pair",
+  "profile": "baseline",
+  "segment": "_TEXT",
+  "function": "AllocPair",
+  "source": "build/probes/alloc_pair_toy.c",
+  "axes": {
+    "DECLS": {
+      "a_then_b_plain": "int a; int b;",
+      "b_then_a_plain": "int b; int a;",
+      "a_register": "register int a; int b;",
+      "b_register": "int a; register int b;"
+    },
+    "ASSIGNS": {
+      "a_then_b": "a = inputA; b = inputB;",
+      "b_then_a": "b = inputB; a = inputA;"
+    },
+    "CALLS": {
+      "a_then_b": "allocSink(a); allocSink(b);",
+      "b_then_a": "allocSink(b); allocSink(a);"
+    },
+    "INDEX": {
+      "a_then_b": "a][b",
+      "b_then_a": "b][a"
+    }
+  },
+  "mode": "one-at-a-time"
+}

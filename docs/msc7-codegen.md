@@ -271,7 +271,15 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 
 **MSC7-D1: string literals are packed back to back in `_DATA`, while named `char` arrays of odd length are word-aligned. SUPPORTED.**
 - `_SetPause`/`_PauseGame`: the target's two menu strings sit 17 bytes apart (0x900/0x911). Named arrays gave offsets 0/18; struct and single-array forms keep the spacing but change the code (build/workers/f-pauseunit/REPORT.md).
-- Open question: how three functions share one copy.
+- Open question: how three functions share one copy. Answered for `_SetPause`/`_PauseGame` by a steered label split (admitted EXACT_STEERED, 2026-09-28).
+
+**LINK-D1: private far data in a packed data segment is file-backed zeros; communals are not. VERIFIED.**
+- Setup: MSC 7.00 `/AL /G2 /Gs /Oelw` with LINK 5.30 `/PACKDATA` and the original SIMANTW.DEF segment order.
+- Private `PACK FAR_DATA` contributions sit in the NE file as zero bytes inside the segment's file length. This holds for `__based(__segname("PACK"))` statics and commons, whether uninitialised or `= {0}`, placed in link input order with word alignment.
+- COMDEF `FAR_BSS`, and default `static far`/`huge` data (`INPUT5_DATA`, paragraph-aligned), come after the file range. They add only to the minimum allocation.
+- Reproducer: `evidence/experiments/commdata-layout/reproduce.py`, 8 variants with controls.
+- Applied: the LZSS encoder state `lson[N+1]`, `rson[N+257]` and `dad[N+1]` (N=4096). These are private `PACK` arrays following `pack_buf` at `1016`/`3018`/`521A`, where the admitted `DeleteNode` indexes them. That data module owns 25,094 zero bytes.
+- Zero content alone never establishes an owner: the offsets must come from code that indexes them.
 
 ## 6b. Steering
 

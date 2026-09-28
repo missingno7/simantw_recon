@@ -32,19 +32,6 @@ extern void far DoWarnSetB(struct EditEvent far *event, int mode);
 extern void far win_Open(int flags);
 extern int far win_IsWinOpen(int window);
 extern void far UpdateEdit(void);
-
-extern int near editBuf;
-extern void far EditScrollUpColor(char far *, char far *, char far *, int, int, int, int);
-extern void far EditScrollDownColor(char far *, char far *, char far *, int, int, int, int);
-extern void far EditScrollLeftColor(char far *, char far *, char far *, int, int, int, int);
-extern void far EditScrollRightColor(char far *, char far *, char far *, int, int, int, int);
-extern void far pascal UpdateWindow(int window);
-extern void far MSClipStart(int window);
-extern void far MSClipEnd(void);
-extern void far EraseMapCursor(void);
-extern void far DrawMapCursor(void);
-static int near UpdateEditBuffers(void);
-
 extern int near scrollBarFlag;
 extern int near editForce;
 extern void far pascal InvalidateRect(int window, void far *rect,
@@ -244,6 +231,7 @@ extern char far * far strcpy(char far *dest, char far *source);
 extern char far * far * far ScenarioNameStrs;
 extern int far CurGameType;
 void far win_EditChanged(void);
+void far ClearEditDeltaTables(void);
 void far SetEditWinTitle(char far *text);
 
 void far pool_stub_LoadTiles(void);
@@ -275,7 +263,6 @@ void far QueenBalloons(int x, int y, int plane);
 void far RestBalloons(int x, int y, int plane);
 void far EditMsgBalloon(int x, int y, int plane, int style, char far *msg);
 void PreDrawBalloons(void);
-void far DoEditScrollLine(char c);
 void far ResetEditScrollRange(void);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_LoadTiles)
@@ -287,6 +274,7 @@ void far ResetEditScrollRange(void);
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DrawCurBalloons)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoEditScroll)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_KeepScrollEditBy)
+#pragma alloc_text(RUN2_TEXT, ClearEditDeltaTables)
 #pragma alloc_text(RUN2_TEXT, ProcEditEvent)
 #pragma alloc_text(RUN3_TEXT, OpenEditWindow, MakeEditOpen, ForceUpdateEdit, DoEditUpdateDraw)
 #pragma alloc_text(RUN4_TEXT, UpdateEditWindow)
@@ -297,9 +285,7 @@ void far ResetEditScrollRange(void);
 #pragma alloc_text(RUN8_TEXT, BalloonIsVisible, EggBalloons, FightBalloons, QueenBalloons)
 #pragma alloc_text(RUN8_TEXT, RestBalloons)
 #pragma alloc_text(RUN9_TEXT, EditMsgBalloon, PreDrawBalloons)
-#pragma alloc_text(RUN12_TEXT, DoEditScrollLine)
 #pragma alloc_text(RUN10_TEXT, ResetEditScrollRange)
-#pragma alloc_text(POOLSTUB_TEXT, UpdateEditBuffers)
 #pragma alloc_text(RUN10_TEXT, ScrollEditBy)
 
 struct EditorAllocationNames {
@@ -356,6 +342,26 @@ void far pool_stub_LoadTiles(void)
     t = match_length;
     t = editBufInvalidFlag[0];
     t = pack_buf;
+}
+
+void far ClearEditDeltaTables(void)
+{
+  if (tileDspHandle)
+  {
+    mem_Unlock(tileDspHandle);
+    mem_Free(tileDspHandle);
+    tileDspHandle = 0;
+  }
+  if (tileMaskHandle)
+  {
+    mem_Unlock(tileMaskHandle);
+    mem_Free(tileMaskHandle);
+    tileMaskHandle = 0;
+  }
+  tileDsp = mem_Lock(tileDspHandle = mem_Alloc(((long)editHeight) * editWidth, 1, tileDspAllocationName));
+  tileMask = mem_Lock(tileMaskHandle = mem_Alloc(((long)editHeight) * editWidth * 2, 1, tileMaskAllocationName));
+  memset(tileMask, -1, editHeight * editWidth * 2);
+  editBufInvalidFlag[0] = 0;
 }
 
 void far ProcEditEvent(struct EditEvent far *event)
@@ -883,49 +889,6 @@ void far pool_stub_DoEditScroll(void)
 static int near lastMode = -1;
 static int near lastEditHeight = -1;
 static int near lastEditWidth = -1;
-
-void far DoEditScrollLine(char c)
-{
-    char far *buf;
-
-    if (!(displayType & 1)) {
-        buf = mem_Lock(editBuf);
-        switch (c) {
-        case 'u':
-            EditScrollUpColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        case 'd':
-            EditScrollDownColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        case 'l':
-            EditScrollLeftColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        case 'r':
-            EditScrollRightColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        }
-        mem_Unlock(editBuf);
-        UpdateEditBuffers();
-        InvalidateRect(win_hwnd[0], (void far *)0, 0);
-        UpdateWindow(win_hwnd[0]);
-    } else {
-        UpdateEdit();
-    }
-
-    if (win_IsWinOpen(0x100)) {
-        MSClipStart(win_hwnd[1]);
-        EraseMapCursor();
-        DrawMapCursor();
-        MSClipEnd();
-    }
-}
-
-/* SCAFFOLD, not recovered source: near stand-in for the unclaimed helper at 3:16D4. */
-static int near UpdateEditBuffers(void)
-{
-    return 0;
-}
-
 void far ResetEditScrollRange(void)
 {
     if (win_hwnd[0] == 0)

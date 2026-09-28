@@ -52,6 +52,62 @@ class BinderRuleTests(unittest.TestCase):
                 image.regenerate(module_with('00'), b'', {}, {}, {})
 
 
+class FarBssOwnershipTests(unittest.TestCase):
+    def fixture(self):
+        module = dict(
+            segments=[dict(index=1, name='PACK', **{'class': 'FAR_DATA'}, length=4,
+                          initialized_ranges=[], data_hex='00000000')],
+            publics=[],
+        )
+        comparison = dict(
+            result='CONFIRMED_MEMBER',
+            contributions=[dict(segment='PACK', segment_index=1, original_segment=1,
+                                original_offset=4, length=4, initialized_ranges=[])],
+            anchors={1: [(1, 0, '_body')]},
+            private_constraint_placements=[], link_order_placements=[],
+        )
+        raw = bytes([0xAA] * 16 + [0] * 32)
+        image_data = dict(segments=[dict(kind='DATA', file_offset=16, logical_size=32,
+                                         allocation_size=32)])
+        symbols = dict(segments=[dict(symbols=[])])
+        return module, comparison, raw, image_data, symbols
+
+    def test_proven_file_backed_far_bss_is_owned(self):
+        args = self.fixture()
+        claims = image.far_bss_claims(*args)
+        self.assertEqual(claims, {(1, 4): 0, (1, 5): 0, (1, 6): 0, (1, 7): 0})
+
+    def test_wrong_size_is_rejected(self):
+        args = list(self.fixture())
+        args[1]['contributions'][0]['length'] = 5
+        with self.assertRaisesRegex(FormatError, 'size or shape'):
+            image.far_bss_claims(*args)
+
+    def test_overlap_with_admitted_bytes_is_rejected(self):
+        args = self.fixture()
+        with self.assertRaisesRegex(FormatError, 'overlaps admitted'):
+            image.far_bss_claims(*args, occupied={(1, 6)})
+
+    def test_ambiguous_order_is_rejected(self):
+        args = list(self.fixture())
+        args[1]['anchors'] = {}
+        with self.assertRaisesRegex(FormatError, 'order or placement'):
+            image.far_bss_claims(*args)
+
+    def test_original_public_inside_span_is_rejected(self):
+        args = list(self.fixture())
+        args[4]['segments'][0]['symbols'] = [dict(name='_inside', offset=5)]
+        with self.assertRaisesRegex(FormatError, 'contains original public'):
+            image.far_bss_claims(*args)
+
+    def test_allocation_only_bytes_are_not_file_claims(self):
+        args = list(self.fixture())
+        args[3]['segments'][0]['logical_size'] = 6
+        args[3]['segments'][0]['allocation_size'] = 32
+        with self.assertRaisesRegex(FormatError, 'outside file-backed'):
+            image.far_bss_claims(*args)
+
+
 class WholeImageTests(unittest.TestCase):
     def test_current_image_is_exact(self):
         result = image.build(write=False)

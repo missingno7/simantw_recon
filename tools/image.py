@@ -15,10 +15,10 @@ Scaffold stand-ins in admitted unit sources (`SCAFFOLD, not recovered source:
 ... (DGROUP LO-HI)`) keep a unit's data layout for unclaimed members; their
 bytes are strictly compared by the unit gate but stay RAW debt here.
 
-Object bytes are produced by a small binder: the object's initialized data, the
-LINK far-call translation, and every fixup resolved to its independently
-grounded target (the same rules the strict matcher validates). Chain words come
-from the NE relocation metadata, never from an object. The hybrid image is
+Object bytes are produced by a small binder: initialized data, independently
+placed file-backed private FAR_DATA zero-fill, LINK far-call translations, and
+fixups resolved to their grounded targets (the same rules the strict matcher
+validates). Chain words come from NE relocation metadata, never from an object. The hybrid image is
 HYBRID_EXACT only when it equals the oracle byte for byte; raw debt is explicit
 and is never recovery credit.
 """
@@ -40,7 +40,7 @@ LANES = {
     'GAME_CODE': 'unrecovered game function (search/promote)',
     'CODE_GAP': 'code bytes outside every known function extent (alignment, tails, unknown entries)',
     'RUNTIME_CODE': 'library/runtime code not yet matched to a complete historical member',
-    'DATA': 'initialized data not yet owned by an admitted object',
+    'DATA': 'file-backed data not yet owned by an admitted object',
     'LINK': 'NE header, tables, relocation tables and file padding (authentic LINK + DEF)',
     'RESOURCES': 'resource table and resource bytes not proved by the RC payload admission',
     'MERGE': 'bytes claimed by two admitted objects; combine them in one unit (not raw, but blocks a real link)',
@@ -87,6 +87,94 @@ def regenerate(module, raw, image, symbols, imports):
             for i in range(a, b):
                 placed[(segment, base + i)] = (data[i], i in chain_sites or (i - 1) in chain_sites)
     return comparison, placed
+
+
+def far_bss_claims(module, comparison, raw, image, symbols, occupied=()):
+    """Return file-backed zero bytes from independently placed private FAR_DATA.
+
+    LINK stores private FAR_DATA zero-fill contributions inside the logical file
+    length when they follow initialized contributions in the same packed far
+    data segment. This does not apply to COMDEF/FAR_BSS, which only increases
+    minimum allocation. A contribution is eligible only when the member proof
+    carries an independent placement basis and there is no public in its span.
+    """
+    if comparison.get('result') not in ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'):
+        raise FormatError('far-BSS claim requires a complete admitted member')
+    segments = {s['index']: s for s in module.get('segments', [])}
+    public_symbols = symbols.get('segments', [])
+    occupied = set(occupied)
+    claims = {}
+    anchors = comparison.get('anchors', {})
+    private = set(comparison.get('private_constraint_placements', []))
+    link_evidence = {row.get('segment_index') for row in comparison.get('link_order_placements', [])}
+    for contribution in comparison.get('contributions', []):
+        si = contribution.get('segment_index')
+        source = segments.get(si)
+        if source is None:
+            raise FormatError('far-BSS contribution has unknown OMF segment index')
+        if source.get('class') != 'FAR_DATA' or source.get('name') not in ('PACK', 'SIMANT_DATA_GROUP'):
+            continue
+        length = source.get('length')
+        initialized = source.get('initialized_ranges')
+        if (contribution.get('segment') != source.get('name') or
+                contribution.get('length') != length or
+                contribution.get('initialized_ranges') != initialized):
+            raise FormatError('far-BSS contribution size or shape differs from its OMF segment')
+        if not isinstance(length, int) or length <= 0:
+            raise FormatError('far-BSS contribution has invalid size')
+        if not isinstance(initialized, list):
+            raise FormatError('far-BSS initialized-range metadata is missing')
+        gaps = []
+        cursor = 0
+        for bounds in sorted(initialized):
+            if (not isinstance(bounds, (list, tuple)) or len(bounds) != 2 or
+                    not all(isinstance(v, int) for v in bounds)):
+                raise FormatError('far-BSS initialized-range metadata is malformed')
+            start, end = bounds
+            if start < cursor or end < start or end > length:
+                raise FormatError('far-BSS initialized ranges overlap or exceed contribution size')
+            if cursor < start:
+                gaps.append((cursor, start))
+            cursor = end
+        if cursor < length:
+            gaps.append((cursor, length))
+        if not gaps:
+            continue
+        if any(p.get('segment') == si for p in module.get('publics', [])):
+            raise FormatError('private FAR_DATA contribution has an OMF public')
+        anchor_key = si if si in anchors else str(si)
+        has_anchor = bool(anchors.get(anchor_key))
+        if not (has_anchor or si in private or si in link_evidence):
+            raise FormatError('FAR_DATA contribution order or placement is not independently proven')
+        original_segment = contribution.get('original_segment')
+        original_offset = contribution.get('original_offset')
+        if not isinstance(original_segment, int) or not isinstance(original_offset, int):
+            raise FormatError('FAR_DATA contribution has unknown original placement')
+        if original_segment < 1 or original_segment > len(image['segments']):
+            raise FormatError('FAR_DATA contribution names an unknown original segment')
+        target = image['segments'][original_segment - 1]
+        if target.get('kind') != 'DATA':
+            raise FormatError('FAR_DATA contribution does not target an original data segment')
+        end = original_offset + length
+        if original_offset < 0 or end > target.get('allocation_size', target.get('logical_size', 0)):
+            raise FormatError('FAR_DATA contribution exceeds original allocation')
+        if end > target.get('logical_size', 0):
+            raise FormatError('FAR_DATA contribution is outside file-backed segment length')
+        if original_segment > len(public_symbols):
+            raise FormatError('MAPSYM metadata is missing for FAR_DATA segment')
+        for public in public_symbols[original_segment - 1].get('symbols', []):
+            if original_offset <= public['offset'] < end:
+                raise FormatError('private FAR_DATA contribution span contains original public ' + public['name'])
+        file_start = target['file_offset'] + original_offset
+        for start, stop in gaps:
+            for delta in range(start, stop):
+                key = (original_segment, original_offset + delta)
+                if key in occupied or key in claims:
+                    raise FormatError('private FAR_DATA zero-fill overlaps admitted bytes')
+                if raw[file_start + delta] != 0:
+                    raise FormatError('private FAR_DATA zero-fill disagrees with original file byte')
+                claims[key] = 0
+    return claims
 
 
 SCAFFOLD_MARK = re.compile(r'/\*\s*SCAFFOLD, not recovered source:(.*?)\*/', re.S)
@@ -259,6 +347,8 @@ def build(debt=False, manifest=None, write=True, recovery=None):
     objects = [(row['object'], 'C', row['symbol']) for row in manifest['game_objects']] + \
               [(row['object'], 'RUNTIME', row['member']) for row in manifest['runtime_objects']]
     conflicts = Counter()
+    far_bss_candidates = []
+    far_bss_rejections = []
     for path, kind, label in objects:
         digest = identity(ROOT / path)['sha256']
         if digest in seen:
@@ -267,9 +357,15 @@ def build(debt=False, manifest=None, write=True, recovery=None):
         o = add_owner(kind, ', '.join(sorted(symbols_of[path])) if kind == 'C' else label)
         seen[digest] = o
         try:
-            _, placed = regenerate(module, raw, image, symbols, imports)
+            comparison, placed = regenerate(module, raw, image, symbols, imports)
         except FormatError as exc:
             problems.append('%s %s: %s' % (kind, owners[o]['label'], exc)); continue
+        try:
+            claims = far_bss_claims(module, comparison, raw, image, symbols)
+            if claims:
+                far_bss_candidates.append((o, owners[o]['label'], claims))
+        except FormatError as exc:
+            far_bss_rejections.append(dict(owner=owners[o]['label'], object=path, reason=str(exc)))
         stand_in = scaffold_data.get(path, ())
         for (segment, offset), (byte, is_chain) in placed.items():
             if segment == 10 and any(lo <= offset < hi for lo, hi in stand_in):
@@ -293,6 +389,24 @@ def build(debt=False, manifest=None, write=True, recovery=None):
                 problems.append('object byte at loader chain site seg %d:%04X (%s)' % (segment, offset, owners[o]['label']))
                 continue
             owner[at] = o; hybrid[at] = byte
+
+    # File-backed FAR_DATA zero-fill is a distinct contribution from the
+    # initialized bytes emitted by regenerate(). Resolve these only after all
+    # initialized owners are known so an overlap cannot be hidden by link order.
+    far_bss_claimed = {}
+    for o, label, claims in far_bss_candidates:
+        collision = next((key for key in claims if
+                          owner[image['segments'][key[0] - 1]['file_offset'] + key[1]] != -1 or
+                          key in far_bss_claimed), None)
+        if collision is not None:
+            at = image['segments'][collision[0] - 1]['file_offset'] + collision[1]
+            prior = owners[owner[at]]['label'] if owner[at] != -1 else owners[far_bss_claimed[collision]]['label']
+            far_bss_rejections.append(dict(owner=label, reason='private FAR_DATA zero-fill overlaps admitted bytes at seg %d:%04X (%s)' % (collision[0], collision[1], prior)))
+            continue
+        for (segment, offset), byte in claims.items():
+            at = image['segments'][segment - 1]['file_offset'] + offset
+            owner[at] = o; hybrid[at] = byte
+            far_bss_claimed[(segment, offset)] = o
 
     # Classify the remaining raw debt.
     code_symbol = {}
@@ -354,7 +468,8 @@ def build(debt=False, manifest=None, write=True, recovery=None):
     report = dict(status='HYBRID_EXACT' if not mismatches and not problems else 'NOT_EXACT', image_sha256=sha256(bytes(hybrid)), oracle_sha256=sha256(raw),
                   file_bytes=size, owned=dict(C=totals['C'], RUNTIME=totals['RUNTIME'], RESOURCES=totals['RESOURCES'], LINK=totals['LINK']), debt=dict(sorted(lanes.items())),
                   debt_total=size - totals['C'] - totals['RUNTIME'] - totals['RESOURCES'] - totals['LINK'], code_segment_bytes=code_bytes,
-                  objects=len(seen), problems=problems[:50], problem_count=len(problems), mismatched_bytes=len(mismatches),
+                   objects=len(seen), problems=problems[:50], problem_count=len(problems), mismatched_bytes=len(mismatches),
+                   far_bss_owned_bytes=len(far_bss_claimed), far_bss_claim_rejections=far_bss_rejections[:50],
                   claim_conflicts=dict(bytes=sum(conflicts.values()), pairs=len(conflicts),
                                        top=[dict(objects=list(k), bytes=v) for k, v in sorted(conflicts.items(), key=lambda kv: -kv[1])[:5]],
                                        note='bytes proved by two admitted objects; merge them into one unit (lane MERGE) before a real LINK'),

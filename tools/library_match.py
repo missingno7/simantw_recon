@@ -523,7 +523,7 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
   positions=[i for a,b in ss['initialized_ranges'] for i in range(a,b) if i not in mask]
   diffs=[i for i in positions if candidate[i]!=ref[i]];total+=len(positions);equal+=len(positions)-len(diffs)
   if diffs:issues.append(ss['name']+' literal bytes differ')
-  details.append({'segment':ss['name'],'original_segment':sg,'original_offset':off,'length':ss['length'],'initialized_ranges':ss['initialized_ranges'],
+  details.append({'segment':ss['name'],'segment_index':si,'original_segment':sg,'original_offset':off,'length':ss['length'],'initialized_ranges':ss['initialized_ranges'],
     'literal_compared':len(positions),'literal_equal':len(positions)-len(diffs),'divergences':diffs[:512],'fixups':fixrows,'transformations':transforms})
  # A LOC 5 offset cannot establish which segment it addresses: equal offsets in
  # different segments are indistinguishable. Require a validated LOC 2 selector
