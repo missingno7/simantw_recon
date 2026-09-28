@@ -1,0 +1,73 @@
+{
+  "name": "cfg2-call-binding-toy",
+  "profile": "og",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NTANTEDIT_MODULE"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "HELPER_BINDING": "local_static"
+      },
+      "size": 4,
+      "frame": 0,
+      "homes": {},
+      "registers": [],
+      "saves": [],
+      "sha256": "317c0a87d1e75caef3e4f6df3c9c8ed32f651bd63a2fbac29a3d4ed422c3ea31",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 call 0xfffffff6",
+        "0003 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "HELPER_BINDING": "external_far"
+      },
+      "size": 6,
+      "frame": 0,
+      "homes": {},
+      "registers": [],
+      "saves": [],
+      "sha256": "48e28d077b55ed1ba815af170bfaf24a9d1e7f3130391cd11ca004a5be0a4190",
+      "fixups": [
+        {
+          "offset": 1,
+          "width": 4,
+          "target": "_helper",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,2 +1,2 @@",
+          "-call 0xfffffff6",
+          "+lcall 0, 0",
+          " retf "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}
