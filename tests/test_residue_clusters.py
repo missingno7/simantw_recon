@@ -46,3 +46,11 @@ class Frontier(unittest.TestCase):
             row(0, 'enter 2, 0', 0, 'enter 4, 0', ['immediate_or_binding'])]}}
         with mock.patch('tu_assembly.body_exact', return_value=False):
             self.assertGreater(drafts.frontier_rank(frame_fixed), drafts.frontier_rank(more_opcodes))
+
+
+class DownstreamBranch(unittest.TestCase):
+    def test_displacement_only_jump_is_skipped(self):
+        rows = [row(0, 'jmp 0x6', 0, 'jmp 0x7', ['branch_target']),
+                row(2, 'mov ax, 1', 2, 'mov bx, 1', ['register_allocation']),
+                row(6, 'retf', 7, 'retf')]
+        self.assertEqual(classify(rows)[0], 'WRONG_REGISTER')

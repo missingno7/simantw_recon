@@ -67,8 +67,10 @@ def classify(rows):
                 return 'WRONG_REGISTER', i, r
             if diffs <= {'stack_local_layout', 'memory_operand'} and '[bp' in (t or '') and '[bp' in (c or ''):
                 return 'WRONG_STACK_SLOT', i, r
-            if diffs == {'branch_target'}:
-                return 'BLOCK_ORDER', i, r
+            if diffs <= {'branch_target', 'alignment_uncertain'}:
+                # Same jump to the same aligned instruction: only the displacement differs, because
+                # code between here and the destination differs. That is a downstream effect.
+                continue
             if tm in ('push', 'call', 'lcall'):
                 return 'CALL_SEQUENCE', i, r
             return 'EXPRESSION_SHAPE', i, r
