@@ -23,7 +23,8 @@ from common import ROOT, FormatError, read_json, write_json, identity, cards
 
 RECOVERY = ROOT / "src/recovery.json"
 UNITS = ROOT / "evidence/recovery/units"
-OUT_ROOT = ROOT / "build/workers/f-infra-composer"
+WORKERS_ROOT = ROOT / "build/workers"
+OUT_ROOT = WORKERS_ROOT / "f-infra-composer"
 READY = OUT_ROOT / "ready"
 GOOD = {"CONFIRMED_MEMBER", "STRONGLY_SUPPORTED_MEMBER"}
 ALLOWED_EXTERNAL_READ = Path(r"D:\Prog\simantw_recon\build\workers")
@@ -881,9 +882,10 @@ def compose_object(component: str, additions: list[tuple[str, str]], *, max_arra
                        ["Initialized static declarations begin in lexical name order; the search must recover any target order."])
     session = Path(out_dir) if out_dir else READY / (re.sub(r"[^A-Za-z0-9_-]+", "_", component) + "_compose")
     if not session.is_absolute():
-        session = ROOT / session
-    if not session.resolve().is_relative_to(OUT_ROOT.resolve()):
-        raise FormatError("output must stay below build/workers/f-infra-composer")
+        # "build/workers/NAME/..." is taken from the repository root; a bare name lands in the composer's own directory.
+        session = ROOT / session if session.parts[:2] == ("build", "workers") else OUT_ROOT / session
+    if not session.resolve().is_relative_to(WORKERS_ROOT.resolve()):
+        raise FormatError("output must stay below build/workers")
     session.mkdir(parents=True, exist_ok=True)
     body_preflight = []
     for symbol, _ in add_defs:
@@ -995,7 +997,7 @@ def main(argv=None):
     parser.add_argument("component", help="build-topology object component, e.g. simant:4C24")
     parser.add_argument("--add", action="append", type=parse_add, default=[], metavar="SYMBOL=FILE.c")
     parser.add_argument("--max-arrangements", type=int, default=12)
-    parser.add_argument("--out", help="output directory below build/workers/f-infra-composer")
+    parser.add_argument("--out", help="output directory below build/workers (a bare name goes to build/workers/f-infra-composer/NAME)")
     parser.add_argument("--naive", action="store_true", help="start with added declarations in deterministic name order")
     args = parser.parse_args(argv)
     print(json.dumps(compose_object(args.component, args.add, max_arrangements=args.max_arrangements,

@@ -8,8 +8,11 @@ distinct from far-pointer markers.
 from __future__ import annotations
 
 import copy
+import json
 import random
 import re
+from functools import lru_cache
+from pathlib import Path
 
 from pycparser import c_ast, c_generator, CParser
 
@@ -142,6 +145,8 @@ class FarGenerator(c_generator.CGenerator):
 
 
 TYPE_ENV = None
+ROOT = Path(__file__).resolve().parents[1]
+_DECL_AXIS_CHECKED = {}
 
 
 def _based_phrase(text, start):
@@ -1668,6 +1673,924 @@ def m_continue_else(body, rng):
     return f'continue_else: if ({expr_text(s.cond)}) A else B at loop tail -> if {{A; continue;}} B'
 
 
+# ------------------------------------------------------------------ structural allocation axes
+
+def _counted_for(loop):
+    """Return a simple `for (i = start; i OP bound; i++)` induction description."""
+    if not isinstance(loop, c_ast.For) or not isinstance(loop.init, c_ast.Assignment) or \
+            loop.init.op != '=' or not isinstance(loop.init.lvalue, c_ast.ID) or \
+            not isinstance(loop.cond, c_ast.BinaryOp) or loop.cond.op not in ('<', '<=', '>', '>='):
+        return None
+    name = loop.init.lvalue.name
+    if not isinstance(loop.cond.left, c_ast.ID) or loop.cond.left.name != name:
+        return None
+    if not _pure_scalar_expr(loop.init.rvalue) or not _pure_scalar_expr(loop.cond.right):
+        return None
+    step_value = _for_step_value(loop.next, name)
+    if step_value is None or step_value == 0:
+        return None
+    if loop.cond.op in ('<', '<=') and step_value < 0 or \
+            loop.cond.op in ('>', '>=') and step_value > 0:
+        return None
+    return {'name': name, 'init_value': loop.init.rvalue, 'bound': loop.cond.right,
+            'step': step_value, 'header_ids': ids_in(loop.init.rvalue) | ids_in(loop.cond.right)}
+
+
+def _constant_int(node):
+    if not isinstance(node, c_ast.Constant) or node.type not in ('int', 'char'):
+        return None
+    value = node.value.strip().rstrip('uUlL')
+    try:
+        return int(value, 0)
+    except ValueError:
+        try:
+            return int(value, 10)
+        except ValueError:
+            return None
+
+
+def _for_step_value(step, name):
+    if isinstance(step, c_ast.UnaryOp) and step.op in ('p++', '++', 'p--', '--') and \
+            isinstance(step.expr, c_ast.ID) and step.expr.name == name:
+        return -1 if '--' in step.op else 1
+    if isinstance(step, c_ast.Assignment) and isinstance(step.lvalue, c_ast.ID) and step.lvalue.name == name:
+        if step.op == '=' and isinstance(step.rvalue, c_ast.BinaryOp) and \
+                isinstance(step.rvalue.left, c_ast.ID) and step.rvalue.left.name == name:
+            amount = _constant_int(step.rvalue.right)
+            if amount is None:
+                return None
+            if step.rvalue.op == '+':
+                return amount
+            if step.rvalue.op == '-':
+                return -amount
+        amount = _constant_int(step.rvalue)
+        if amount is None:
+            return None
+        if step.op == '+=':
+            return amount
+        if step.op == '-=':
+            return -amount
+    return None
+
+
+def _constant_for_range(loop, info):
+    start, bound = _constant_int(info['init_value']), _constant_int(info['bound'])
+    if start is None or bound is None:
+        return None
+    op, step = loop.cond.op, info['step']
+    if op in ('<', '<=') and step > 0:
+        last_bound = bound if op == '<=' else bound - 1
+        count = 0 if start > last_bound else (last_bound - start) // step + 1
+    elif op in ('>', '>=') and step < 0:
+        last_bound = bound if op == '>=' else bound + 1
+        count = 0 if start < last_bound else (start - last_bound) // (-step) + 1
+    else:
+        return None
+    if count > 65536:
+        return None
+    last = start + (count - 1) * step if count else start
+    return start, last, count
+
+
+def _local_counted_index(body, name):
+    if TYPE_ENV is None:
+        return False
+    decls = [d for d in body.block_items or [] if isinstance(d, c_ast.Decl) and d.name == name]
+    if len(decls) != 1 or set(decls[0].storage or []) & {'static', 'extern'} or \
+            _volatile_type(decls[0].type) or address_taken(body, name):
+        return False
+    if name in TYPE_ENV.params or name in TYPE_ENV.globals:
+        return False
+    return True
+
+
+def _counted_range_no_overflow(loop, info, body):
+    if TYPE_ENV is None:
+        return False
+    value_range = _constant_for_range(loop, info)
+    typ = TYPE_ENV.type_of(c_ast.ID(info['name']), body)
+    if value_range is None or not isinstance(typ, c_ast.TypeDecl) or \
+            not isinstance(typ.type, c_ast.IdentifierType):
+        return False
+    names = set(typ.type.names)
+    if names - {'unsigned', 'signed', 'char', 'short', 'int', 'long'}:
+        return False
+    if 'long' in names:
+        bits = 32
+    elif 'char' in names:
+        bits = 8
+    else:
+        bits = 16
+    unsigned = 'unsigned' in names
+    low, high = (0, (1 << bits) - 1) if unsigned else (-(1 << (bits - 1)), (1 << (bits - 1)) - 1)
+    start, last, count = value_range
+    following = last + info['step'] if count else start
+    return low <= start <= high and low <= last <= high and low <= following <= high
+
+
+def _pure_scalar_expr(expr):
+    """Conservative side-effect-free expression with no memory or function access."""
+    if expr is None:
+        return False
+    for n, *_ in walk(expr):
+        if not isinstance(n, (c_ast.ID, c_ast.Constant, c_ast.BinaryOp, c_ast.UnaryOp, c_ast.Cast)):
+            return False
+        if isinstance(n, c_ast.BinaryOp) and n.op not in (
+                '+', '-', '*', '&', '|', '^', '<<', '>>', '<', '<=', '>', '>=', '==', '!=', '&&', '||'):
+            return False
+        if isinstance(n, c_ast.UnaryOp) and n.op not in ('+', '-', '~', '!'):
+            return False
+    return not has_side_effects(expr)
+
+
+def _array_write_axes(target, first, second):
+    """Recognize exactly M[first][second] or M[second][first]."""
+    if not isinstance(target, c_ast.ArrayRef) or not isinstance(target.name, c_ast.ArrayRef):
+        return None
+    inner = target.name
+    if not isinstance(inner.name, c_ast.ID) or not isinstance(inner.subscript, c_ast.ID) or \
+            not isinstance(target.subscript, c_ast.ID):
+        return None
+    indices = (inner.subscript.name, target.subscript.name)
+    if set(indices) != {first, second}:
+        return None
+    return (inner.name.name, indices,
+            {id(target), id(inner), id(inner.name), id(inner.subscript), id(target.subscript)})
+
+
+def _interchange_body_safe(body, outer_name, inner_name):
+    """Prove disjoint, independent 2-D array writes with no escaping control effects."""
+    if contains(body, (c_ast.Return, c_ast.Break, c_ast.Continue, c_ast.Goto,
+                       c_ast.Label, c_ast.Switch, c_ast.For, c_ast.While, c_ast.DoWhile)):
+        return False
+    if has_call(body):
+        return False
+    writes = []
+    allowed_array_nodes = set()
+    roots = set()
+    orientations = set()
+    for n, *_ in walk(body):
+        if isinstance(n, c_ast.Assignment):
+            if n.op != '=' or has_side_effects(n.rvalue) or reads_memory(n.rvalue):
+                return False
+            found = _array_write_axes(n.lvalue, outer_name, inner_name)
+            if found is None:
+                return False
+            root, orientation, nodes = found
+            roots.add(root)
+            orientations.add(orientation)
+            allowed_array_nodes.update(nodes)
+            writes.append(n)
+        elif isinstance(n, c_ast.UnaryOp) and n.op in ('p++', 'p--', '++', '--'):
+            return False
+        elif isinstance(n, (c_ast.If, c_ast.While, c_ast.DoWhile, c_ast.For)):
+            cond = getattr(n, 'cond', None)
+            if cond is not None and (not _pure_scalar_expr(cond) or reads_memory(cond)):
+                return False
+        elif isinstance(n, (c_ast.ArrayRef, c_ast.StructRef)) and id(n) not in allowed_array_nodes:
+            # ArrayRef children may be encountered before the containing Assignment's
+            # lvalue in preorder, so validate these again after collecting all writes.
+            continue
+    if not writes or len(roots) != 1 or len(orientations) != 1:
+        return False
+    # No memory read is permitted anywhere.  ArrayRef nodes in store lvalues are the only
+    # memory-shaped nodes accepted; all of them must belong to those exact stores.
+    for n, *_ in walk(body):
+        if isinstance(n, (c_ast.ArrayRef, c_ast.StructRef)) and id(n) not in allowed_array_nodes:
+            return False
+        if isinstance(n, c_ast.UnaryOp) and n.op == '*':
+            return False
+    return True
+
+
+def _flat_add_terms(expr):
+    if isinstance(expr, c_ast.BinaryOp) and expr.op == '+':
+        return _flat_add_terms(expr.left) + _flat_add_terms(expr.right)
+    return [expr]
+
+
+def _pure_pointer_condition(expr, pointer):
+    for node, *_ in walk(expr):
+        if isinstance(node, c_ast.UnaryOp) and node.op == '*':
+            if not isinstance(node.expr, c_ast.ID) or node.expr.name != pointer:
+                return False
+        elif not isinstance(node, (c_ast.ID, c_ast.Constant, c_ast.BinaryOp, c_ast.UnaryOp, c_ast.Cast)):
+            return False
+        if isinstance(node, c_ast.BinaryOp) and node.op not in (
+                '+', '-', '*', '&', '|', '^', '<', '<=', '>', '>=', '==', '!=', '&&', '||'):
+            return False
+        if isinstance(node, c_ast.UnaryOp) and node.op not in ('*', '+', '-', '~', '!'):
+            return False
+    return not has_side_effects(expr)
+
+
+def _interchange_flat_pointer_safe(body, outer, inner, outer_info, inner_info, function_body):
+    """Prove a flat-array nest through one per-iteration pointer and disjoint row ranges."""
+    if TYPE_ENV is None or not isinstance(body, c_ast.Compound):
+        return False
+    if contains(body, (c_ast.Return, c_ast.Break, c_ast.Continue, c_ast.Goto,
+                       c_ast.Label, c_ast.Switch, c_ast.For, c_ast.While, c_ast.DoWhile)) or has_call(body):
+        return False
+    outer_range = _constant_for_range(outer, outer_info)
+    inner_range = _constant_for_range(inner, inner_info)
+    if outer_range is None or inner_range is None:
+        return False
+    outer_step = outer_info['step']
+    if outer_step <= 0 or inner_info['step'] != 1 or inner_range[2] > outer_step:
+        return False
+    items = body.block_items or []
+    if len(items) < 2 or not isinstance(items[0], c_ast.Assignment) or items[0].op != '=' or \
+            not isinstance(items[0].lvalue, c_ast.ID):
+        return False
+    pointer = items[0].lvalue.name
+    ptype = TYPE_ENV.type_of(c_ast.ID(pointer), function_body)
+    if not isinstance(ptype, c_ast.PtrDecl) or _volatile_type(ptype):
+        return False
+    pdecls = [n for n, *_ in walk(function_body) if isinstance(n, c_ast.Decl) and n.name == pointer]
+    if len(pdecls) != 1 or 'static' in (pdecls[0].storage or []) or _volatile_type(pdecls[0].type):
+        return False
+    terms = _flat_add_terms(items[0].rvalue)
+    outer_terms = [n for n in terms if isinstance(n, c_ast.ID) and n.name == outer_info['name']]
+    inner_terms = [n for n in terms if isinstance(n, c_ast.ID) and n.name == inner_info['name']]
+    other_ids = [n for n in terms if isinstance(n, c_ast.ID) and n.name not in
+                 (outer_info['name'], inner_info['name'])]
+    constants = [_constant_int(n) for n in terms if isinstance(n, c_ast.Constant)]
+    if len(outer_terms) != 1 or len(inner_terms) != 1 or len(other_ids) != 1 or \
+            any(value is None for value in constants) or len(other_ids) != 1:
+        return False
+    base = other_ids[0]
+    basetype = TYPE_ENV.type_of(base, function_body)
+    if not isinstance(basetype, c_ast.ArrayDecl) or _type_spelling(ptype.type) != _type_spelling(basetype.type):
+        return False
+    # Every pointer use is either this iteration's defining assignment or a direct `*p`.
+    memory_nodes = set()
+    for node, parent, attr, _ in walk(body):
+        if isinstance(node, (c_ast.ArrayRef, c_ast.StructRef)):
+            return False
+        if isinstance(node, c_ast.UnaryOp) and node.op == '*':
+            if not isinstance(node.expr, c_ast.ID) or node.expr.name != pointer:
+                return False
+            memory_nodes.add(id(node))
+        if isinstance(node, c_ast.ID) and node.name == pointer:
+            if parent is items[0] and attr == 'lvalue':
+                continue
+            if isinstance(parent, c_ast.UnaryOp) and parent.op == '*' and attr == 'expr':
+                continue
+            return False
+        if isinstance(node, c_ast.FuncCall):
+            return False
+        if isinstance(node, c_ast.UnaryOp) and node.op in ('p++', 'p--', '++', '--'):
+            return False
+    if not memory_nodes:
+        return False
+    # One unconditional load into a private scalar may feed the branch conditions.
+    value_loads = [s for s in items[1:] if isinstance(s, c_ast.Assignment) and s.op == '=' and
+                   isinstance(s.lvalue, c_ast.ID) and isinstance(s.rvalue, c_ast.UnaryOp) and
+                   s.rvalue.op == '*' and isinstance(s.rvalue.expr, c_ast.ID) and
+                   s.rvalue.expr.name == pointer]
+    for stmt in walk(body):
+        node = stmt[0]
+        if isinstance(node, c_ast.Assignment):
+            if node is items[0] or any(node is s for s in value_loads):
+                continue
+            if isinstance(node.lvalue, c_ast.UnaryOp) and node.lvalue.op == '*' and \
+                    isinstance(node.lvalue.expr, c_ast.ID) and node.lvalue.expr.name == pointer and \
+                    node.op in ('=', '+=', '-=') and not has_call(node.rvalue):
+                continue
+            return False
+        if isinstance(node, c_ast.If) and not _pure_pointer_condition(node.cond, pointer):
+            return False
+        if isinstance(node, c_ast.Decl) and node.init is not None:
+            return False
+    if len(value_loads) != 1:
+        return False
+    load = value_loads[0]
+    if items.index(load) >= items.index(next((s for s in items if isinstance(s, c_ast.If)), load)):
+        return False
+    value_name = load.lvalue.name
+    value_decls = [n for n, *_ in walk(function_body) if isinstance(n, c_ast.Decl) and n.name == value_name]
+    if len(value_decls) != 1 or 'static' in (value_decls[0].storage or []) or \
+            _volatile_type(value_decls[0].type) or address_taken(function_body, value_name):
+        return False
+    for name in (pointer, value_name):
+        if count_uses(function_body, name) != sum(isinstance(n, c_ast.ID) and n.name == name
+                                                  for n, *_ in walk(outer)):
+            return False
+    # Pointer expression arithmetic must stay in the same no-wrap 16-bit signed range.
+    offset = sum(constants)
+    total_values = [outer_range[0] + inner_range[0] + offset,
+                    outer_range[0] + inner_range[1] + offset,
+                    outer_range[1] + inner_range[0] + offset,
+                    outer_range[1] + inner_range[1] + offset]
+    if min(total_values) < -32768 or max(total_values) > 32767:
+        return False
+    return True
+
+
+def m_loop_interchange(body, rng):
+    """Swap two perfectly nested counted loops after a conservative dependence proof."""
+    if TYPE_ENV is None:
+        return None
+    sites = []
+    for outer, *_ in walk(body):
+        if not isinstance(outer, c_ast.For):
+            continue
+        outer_info = _counted_for(outer)
+        if outer_info is None:
+            continue
+        inner = None
+        if isinstance(outer.stmt, c_ast.For):
+            inner = outer.stmt
+        elif isinstance(outer.stmt, c_ast.Compound) and len(outer.stmt.block_items or []) == 1 and \
+                isinstance(outer.stmt.block_items[0], c_ast.For):
+            inner = outer.stmt.block_items[0]
+        if inner is None:
+            continue
+        inner_info = _counted_for(inner)
+        if inner_info is None or inner_info['name'] == outer_info['name']:
+            continue
+        oi, ii = outer_info['name'], inner_info['name']
+        if not (_local_counted_index(body, oi) and _local_counted_index(body, ii) and
+                _counted_range_no_overflow(outer, outer_info, body) and
+                _counted_range_no_overflow(inner, inner_info, body)):
+            continue
+        if ii in outer_info['header_ids'] or oi in inner_info['header_ids']:
+            continue
+        if not isinstance(inner.stmt, c_ast.Compound):
+            continue
+        array_safe = _interchange_body_safe(inner.stmt, oi, ii)
+        pointer_safe = not array_safe and _interchange_flat_pointer_safe(
+            inner.stmt, outer, inner, outer_info, inner_info, body)
+        if not array_safe and not pointer_safe:
+            continue
+        # The induction variables must not be observed after the nest: changing which
+        # loop exits last would otherwise change their final values.
+        nest_ids = ids_in(outer)
+        if count_uses(body, oi) != sum(isinstance(n, c_ast.ID) and n.name == oi
+                                       for n, *_ in walk(outer)) or \
+                count_uses(body, ii) != sum(isinstance(n, c_ast.ID) and n.name == ii
+                                            for n, *_ in walk(outer)):
+            continue
+        sites.append((outer, inner, oi, ii))
+    if not sites:
+        return None
+    outer, inner, oi, ii = rng.choice(sites)
+    outer.init, inner.init = inner.init, outer.init
+    outer.cond, inner.cond = inner.cond, outer.cond
+    outer.next, inner.next = inner.next, outer.next
+    return f'loop_interchange: swap counted nest {oi} <-> {ii}'
+
+
+def _local_flat_accesses(body, name):
+    """Return ordered (statement index, is_def, reads_old_value) accesses, or None."""
+    if any(isinstance(n, (c_ast.If, c_ast.Switch, c_ast.For, c_ast.While, c_ast.DoWhile,
+                         c_ast.Goto, c_ast.Label, c_ast.Return)) for n, *_ in walk(body)):
+        return None
+    items = body.block_items or []
+    out = []
+    for pos, stmt in enumerate(items):
+        if isinstance(stmt, c_ast.Decl):
+            if stmt.name == name:
+                continue
+        ids = [n for n, p, a, _ in walk(stmt)
+               if isinstance(n, c_ast.ID) and n.name == name and
+               not (isinstance(p, c_ast.StructRef) and a == 'field')]
+        if not ids:
+            continue
+        if isinstance(stmt, c_ast.Assignment) and stmt.op == '=' and \
+                isinstance(stmt.lvalue, c_ast.ID) and stmt.lvalue.name == name:
+            old_read = any(n is not stmt.lvalue for n in ids)
+            out.append((pos, True, old_read))
+            continue
+        # Any hidden write, address use, pointer target or compound assignment makes the
+        # segment boundary ambiguous.
+        for n, p, a, _ in walk(stmt):
+            if isinstance(n, c_ast.UnaryOp) and n.op in ('&', 'p++', 'p--', '++', '--') and \
+                    isinstance(n.expr, c_ast.ID) and n.expr.name == name:
+                return None
+            if isinstance(n, c_ast.Assignment) and isinstance(n.lvalue, c_ast.ID) and \
+                    n.lvalue.name == name:
+                return None
+            if isinstance(n, c_ast.ID) and n.name == name and isinstance(p, c_ast.StructRef) and a == 'field':
+                continue
+        out.append((pos, False, True))
+    return out
+
+
+def _simple_local_decls(body):
+    return [(k, d) for k, d in enumerate(body.block_items or [])
+            if isinstance(d, c_ast.Decl) and d.name and d.init is None and _is_scalar_decl(d) and
+            'extern' not in (d.storage or []) and 'static' not in (d.storage or []) and
+            not _volatile_type(d.type) and not address_taken(body, d.name)]
+
+
+def _fresh_name(body, base):
+    used = {n.name for n, *_ in walk(body) if isinstance(n, c_ast.ID)} | \
+           {n.name for n, *_ in walk(body) if isinstance(n, c_ast.Decl) and n.name}
+    stem = re.sub(r'\W', '_', base)[:16] or 'value'
+    for i in range(2, 1000):
+        name = f'perm_{stem}_{i}'
+        if name not in used:
+            return name
+    return None
+
+
+def _rename_ids(root, old, new):
+    count = 0
+    for node, parent, attr, idx in list(walk(root)):
+        if isinstance(node, c_ast.ID) and node.name == old and not \
+                (isinstance(parent, c_ast.StructRef) and attr == 'field'):
+            node.name = new
+            count += 1
+    return count
+
+
+def _type_spelling(t):
+    clone = copy.deepcopy(t)
+    inner = clone
+    while isinstance(inner, c_ast.PtrDecl):
+        inner = inner.type
+    if isinstance(inner, c_ast.TypeDecl):
+        inner.declname = '__permuter_type__'
+    return FarGenerator.finish(FarGenerator().visit(clone)).strip()
+
+
+def m_split_var(body, rng):
+    """Split one later straight-line lifetime after a dead old value is overwritten."""
+    sites = []
+    decls = _simple_local_decls(body)
+    for _, decl in decls:
+        name = decl.name
+        accesses = _local_flat_accesses(body, name)
+        if not accesses:
+            continue
+        defs = [(i, item) for i, item in enumerate(accesses) if item[1]]
+        for di, (pos, _is_def, reads_old) in defs:
+            if reads_old:
+                continue
+            prev = accesses[:di]
+            if not any(read for _p, _d, read in prev):
+                continue
+            next_def = next((j for j, item in defs if j > di), len(accesses))
+            later = accesses[di:next_def]
+            next_reads_old = next_def < len(accesses) and accesses[next_def][2]
+            if not any(read for _p, _d, read in later) and not next_reads_old:
+                continue
+            end_pos = accesses[next_def][0] if next_def < len(accesses) else len(body.block_items or [])
+            if any(p >= pos and p < end_pos for p, _d, read in accesses[di:next_def] if not read and p != pos):
+                continue
+            sites.append((decl, pos, end_pos, name))
+    if not sites:
+        return None
+    decl, start, end, name = rng.choice(sites)
+    fresh = _fresh_name(body, name)
+    if not fresh:
+        return None
+    new_decl = copy.deepcopy(decl)
+    new_decl.name = fresh
+    # Update the declarator name at the innermost TypeDecl as well.
+    inner = new_decl.type
+    while isinstance(inner, c_ast.PtrDecl):
+        inner = inner.type
+    if isinstance(inner, c_ast.TypeDecl):
+        inner.declname = fresh
+    for stmt in (body.block_items or [])[start:end]:
+        _rename_ids(stmt, name, fresh)
+    # A compound self-update at the following definition reads the just-split value
+    # before writing the original variable. Rename that read while keeping its lvalue.
+    if end < len(body.block_items or []):
+        following = body.block_items[end]
+        if isinstance(following, c_ast.Assignment) and following.op == '=' and \
+                isinstance(following.lvalue, c_ast.ID) and following.lvalue.name == name and \
+                any(isinstance(n, c_ast.ID) and n.name == name for n, *_ in walk(following.rvalue)):
+            _rename_ids(following.rvalue, name, fresh)
+    insert = 0
+    while insert < len(body.block_items or []) and isinstance(body.block_items[insert], c_ast.Decl):
+        insert += 1
+    body.block_items.insert(insert, new_decl)
+    if insert <= start:
+        start += 1
+    return f'split_var: {name} later range -> {fresh} at statement {start}'
+
+
+def m_merge_vars(body, rng):
+    """Merge equal scalar locals whose single straight-line live ranges do not overlap."""
+    decls = _simple_local_decls(body)
+    sites = []
+    for ai, (ka, a) in enumerate(decls):
+        aa = _local_flat_accesses(body, a.name)
+        if not aa or not aa[0][1] or aa[0][2]:
+            continue
+        for _kb, b in decls[ai + 1:]:
+            if _type_spelling(a.type) != _type_spelling(b.type):
+                continue
+            bb = _local_flat_accesses(body, b.name)
+            if not bb or not bb[0][1] or bb[0][2]:
+                continue
+            if max(x[0] for x in aa) < min(x[0] for x in bb):
+                first, second = a, b
+            elif max(x[0] for x in bb) < min(x[0] for x in aa):
+                first, second = b, a
+            else:
+                continue
+            # Prove every reference to the second name starts with its first defining
+            # statement and that the first name is dead before that statement.
+            sites.append((first, second))
+    if not sites:
+        return None
+    first, second = rng.choice(sites)
+    count = _rename_ids(body, second.name, first.name)
+    body.block_items = [s for s in (body.block_items or [])
+                        if not (isinstance(s, c_ast.Decl) and s is second)]
+    if not count:
+        return None
+    return f'merge_vars: {second.name} disjoint range into {first.name}'
+
+
+def _pure_admitted_function(body, params, globals_):
+    """Prove a leaf function writes only its own by-value locals/parameters."""
+    locals_ = {n.name for n, *_ in walk(body) if isinstance(n, c_ast.Decl) and n.name}
+    locals_ |= set(params)
+    if any(isinstance(n, c_ast.Decl) and set(n.storage or []) & {'static', 'extern'}
+           for n, *_ in walk(body)):
+        return False
+    for n, parent, attr, _ in walk(body):
+        if isinstance(n, c_ast.FuncCall) or isinstance(n, (c_ast.ArrayRef, c_ast.StructRef)):
+            return False
+        if isinstance(n, c_ast.UnaryOp) and n.op == '*':
+            return False
+        if isinstance(n, c_ast.UnaryOp) and n.op == '&':
+            return False
+        if isinstance(n, c_ast.Assignment):
+            if not isinstance(n.lvalue, c_ast.ID) or n.lvalue.name not in locals_:
+                return False
+        if isinstance(n, c_ast.UnaryOp) and n.op in ('p++', 'p--', '++', '--'):
+            if not isinstance(n.expr, c_ast.ID) or n.expr.name not in locals_:
+                return False
+    if globals_:
+        for name in globals_:
+            typ = globals_[name]
+            if _volatile_type(typ) and count_uses(body, name):
+                return False
+    return True
+
+
+@lru_cache(maxsize=1)
+def admitted_pure_callees():
+    """Names of admitted byte-matched leaf functions with no shared-state writes."""
+    global TYPE_ENV
+    path = ROOT / 'src' / 'recovery.json'
+    try:
+        records = json.loads(path.read_text(encoding='utf-8')).get('targets', {})
+    except Exception:
+        return frozenset()
+    candidates = {}
+    for symbol, record in records.items():
+        if record.get('proof') != 'BYTE_MATCHED_RECONSTRUCTION' or not record.get('source'):
+            continue
+        candidates.setdefault(record['source'], []).append(symbol)
+    result = set()
+    target_types = TYPE_ENV
+    try:
+        for rel, symbols in candidates.items():
+            source_path = (ROOT / rel).resolve()
+            try:
+                source = source_path.read_text(encoding='ascii')
+                funcs = csrc.top_level_functions(source)
+                for symbol in symbols:
+                    wanted = symbol.lstrip('_')
+                    f = next((x for x in funcs if x['name'] in (wanted, symbol)), None)
+                    if f is None:
+                        continue
+                    codec = BodyCodec(source, f['name'])
+                    params = set(codec.types.params) if codec.types else set()
+                    globals_ = codec.types.globals if codec.types else {}
+                    if codec.types and _pure_admitted_function(codec.body, params, globals_):
+                        result.add(f['name'])
+            except Exception:
+                continue
+    finally:
+        # BodyCodec installs a process-global type environment.  The purity proof scans many
+        # admitted sources, but must leave the active target's environment in place.
+        TYPE_ENV = target_types
+    return frozenset(result)
+
+
+def _call_name(stmt):
+    if isinstance(stmt, c_ast.FuncCall) and isinstance(stmt.name, c_ast.ID):
+        return stmt.name.name
+    return None
+
+
+def _independent_call_args(stmt):
+    args = stmt.args.exprs if isinstance(stmt.args, c_ast.ExprList) else ([] if stmt.args is None else [stmt.args])
+    return all(_pure_scalar_expr(arg) and not reads_memory(arg) for arg in args)
+
+
+def m_reorder_independent_calls(body, rng, *, allow_risky=False):
+    """Swap adjacent direct calls only with admitted purity proof or explicit risky mode."""
+    proven = admitted_pure_callees()
+    sites = []
+    for comp in blocks(body):
+        items = comp.block_items or []
+        for k in range(len(items) - 1):
+            left, right = items[k:k + 2]
+            a, b = _call_name(left), _call_name(right)
+            if not a or not b or not _independent_call_args(left) or not _independent_call_args(right):
+                continue
+            if (a in proven and b in proven) or allow_risky:
+                sites.append((comp, k, a, b, a in proven and b in proven))
+    if not sites:
+        return None
+    comp, k, a, b, safe = rng.choice(sites)
+    comp.block_items[k], comp.block_items[k + 1] = comp.block_items[k + 1], comp.block_items[k]
+    tag = 'SAFE' if safe else 'RISKY'
+    return f'reorder_independent_calls({tag}): {a} <-> {b}'
+
+
+def _safe_loop_scalar_expr(expr, body, loop_info, *, require_unsigned=True):
+    if not _pure_scalar_expr(expr) or not isinstance(expr, (c_ast.BinaryOp, c_ast.UnaryOp)):
+        return False
+    if loop_info['name'] in ids_in(expr):
+        return False
+    if TYPE_ENV is None:
+        return False
+    t = TYPE_ENV.type_of(expr, body)
+    if t is None or not isinstance(t, c_ast.TypeDecl) or not isinstance(t.type, c_ast.IdentifierType):
+        return False
+    if require_unsigned and 'unsigned' not in t.type.names:
+        return False
+    if any(_volatile_type(TYPE_ENV.type_of(c_ast.ID(name), body) or c_ast.TypeDecl(None, [], None,
+            c_ast.IdentifierType(['volatile']))) for name in ids_in(expr)):
+        return False
+    return True
+
+
+def _deps_unchanged_in_loop(expr, loop):
+    deps = ids_in(expr)
+    writes = written_ids(loop.stmt)
+    return not ('*mem*' in writes or deps & writes) and not has_call(loop.stmt)
+
+
+def _new_temp_decl(body, expr, base):
+    if TYPE_ENV is None:
+        return None, None
+    typ = TYPE_ENV.type_of(expr, body)
+    name = _fresh_name(body, base)
+    if typ is None or name is None:
+        return None, None
+    decl = decl_for(name, typ)
+    return name, decl
+
+
+def _insert_top_decl(body, decl):
+    pos = 0
+    while pos < len(body.block_items or []) and isinstance(body.block_items[pos], c_ast.Decl):
+        pos += 1
+    body.block_items.insert(pos, decl)
+
+
+def _local_inputs_initialized_before(body, loop_index, expr):
+    if TYPE_ENV is None:
+        return False
+    deps = ids_in(expr)
+    items = body.block_items or []
+    assigned = set(TYPE_ENV.params) | set(TYPE_ENV.globals)
+    for stmt in items[:loop_index]:
+        if isinstance(stmt, c_ast.If) or isinstance(stmt, (c_ast.For, c_ast.While, c_ast.DoWhile, c_ast.Switch)):
+            return False
+        if isinstance(stmt, c_ast.Decl) and stmt.name and stmt.init is not None:
+            assigned.add(stmt.name)
+        if isinstance(stmt, c_ast.Assignment) and isinstance(stmt.lvalue, c_ast.ID) and stmt.op == '=':
+            assigned.add(stmt.lvalue.name)
+    for name in deps:
+        typ = TYPE_ENV.lookup(name, body)
+        local = any(isinstance(n, c_ast.Decl) and n.name == name for n, *_ in walk(body))
+        if local and name not in assigned:
+            return False
+        if typ is None:
+            return False
+    return True
+
+
+def _replace_matching_expr(root, text, name):
+    count = 0
+    for node, parent, attr, idx in list(walk(root)):
+        if parent is not None and expr_text(node) == text and isinstance(node, (c_ast.BinaryOp, c_ast.UnaryOp)):
+            replace(parent, attr, idx, c_ast.ID(name))
+            count += 1
+    return count
+
+
+def m_hoist_invariant(body, rng):
+    """Cache an unsigned scalar expression invariant across a top-level counted loop."""
+    sites = []
+    for k, loop in enumerate(body.block_items or []):
+        info = _counted_for(loop)
+        if info is None or not isinstance(loop.stmt, c_ast.Compound) or has_call(loop.stmt) or \
+                '*mem*' in written_ids(loop.stmt):
+            continue
+        # No writes through memory: the expression may read any scalar object, including one
+        # reached indirectly by an alias, so array stores cannot be crossed conservatively.
+        if '*mem*' in written_ids(loop.stmt):
+            continue
+        candidates = []
+        for node, *_ in walk(loop.stmt):
+            if not isinstance(node, (c_ast.BinaryOp, c_ast.UnaryOp)) or not _safe_loop_scalar_expr(node, body, info):
+                continue
+            if not _deps_unchanged_in_loop(node, loop) or not _local_inputs_initialized_before(body, k, node):
+                continue
+            candidates.append(node)
+        for node in candidates:
+            sites.append((k, loop, node))
+    if not sites:
+        return None
+    k, loop, expr = rng.choice(sites)
+    name, decl = _new_temp_decl(body, expr, 'invariant')
+    if decl is None:
+        return None
+    text = expr_text(expr)
+    n = _replace_matching_expr(loop.stmt, text, name)
+    if not n:
+        return None
+    _insert_top_decl(body, decl)
+    # Insertion of the declaration may shift this position when all declarations precede it.
+    pos = body.block_items.index(loop)
+    body.block_items.insert(pos, c_ast.Assignment('=', c_ast.ID(name), expr))
+    return f'hoist_invariant: {text[:40]} -> {name} before counted loop ({n} uses)'
+
+
+def m_sink_invariant(body, rng):
+    """Inline a pure unsigned invariant temporary from immediately before a counted loop."""
+    sites = []
+    items = body.block_items or []
+    decls = {d.name: d for _, d in _simple_local_decls(body)}
+    for k in range(1, len(items)):
+        assign, loop = items[k - 1], items[k]
+        if not isinstance(assign, c_ast.Assignment) or assign.op != '=' or \
+                not isinstance(assign.lvalue, c_ast.ID) or not isinstance(loop, c_ast.For):
+            continue
+        name = assign.lvalue.name
+        decl = decls.get(name)
+        info = _counted_for(loop)
+        if decl is None or info is None or not isinstance(loop.stmt, c_ast.Compound):
+            continue
+        expr = assign.rvalue
+        if not _safe_loop_scalar_expr(expr, body, info) or not _deps_unchanged_in_loop(expr, loop):
+            continue
+        if any(isinstance(n, c_ast.ID) and n.name == name for n, *_ in walk(assign.rvalue)):
+            continue
+        if written_ids(loop.stmt) & {name}:
+            continue
+        outside = False
+        for pos, stmt in enumerate(items):
+            if pos in (k - 1, k):
+                continue
+            if count_uses(stmt, name):
+                outside = True
+                break
+        if outside or count_uses(loop.stmt, name) == 0:
+            continue
+        # The temp must not be written or addressed inside the loop; all of its uses are reads.
+        if address_taken(loop.stmt, name) or any(isinstance(n, c_ast.Assignment) and
+                isinstance(n.lvalue, c_ast.ID) and n.lvalue.name == name for n, *_ in walk(loop.stmt)):
+            continue
+        sites.append((k - 1, loop, assign, decl, name, expr))
+    if not sites:
+        return None
+    pos, loop, assign, decl, name, expr = rng.choice(sites)
+    text = expr_text(expr)
+    n = 0
+    for node, parent, attr, idx in list(walk(loop.stmt)):
+        if isinstance(node, c_ast.ID) and node.name == name and parent is not None and \
+                not (isinstance(parent, c_ast.StructRef) and attr == 'field'):
+            replace(parent, attr, idx, copy.deepcopy(expr))
+            n += 1
+    del body.block_items[pos]
+    body.block_items = [s for s in (body.block_items or []) if s is not decl]
+    return f'sink_invariant: {name} -> {text[:40]} inside counted loop ({n} uses)'
+
+
+def m_param_copy(body, rng):
+    """Copy a scalar by-value parameter to a local, or undo such an entry copy."""
+    if TYPE_ENV is None:
+        return None
+    items = body.block_items or []
+    # Reverse form first: `local = parameter;` as the first executable statement.
+    first_exec = next((i for i, s in enumerate(items) if not isinstance(s, c_ast.Decl)), len(items))
+    if first_exec < len(items):
+        stmt = items[first_exec]
+        if isinstance(stmt, c_ast.Assignment) and stmt.op == '=' and isinstance(stmt.lvalue, c_ast.ID) and \
+                isinstance(stmt.rvalue, c_ast.ID) and stmt.rvalue.name in TYPE_ENV.params:
+            local, param = stmt.lvalue.name, stmt.rvalue.name
+            decls = [d for _, d in local_decls(body) if d.name == local]
+            if len(decls) == 1 and decls[0].init is None and _is_scalar_decl(decls[0]) and \
+                    not _volatile_type(decls[0].type) and \
+                    _type_spelling(decls[0].type) == _type_spelling(TYPE_ENV.params[param]) and \
+                    not address_taken(body, local) and not address_taken(body, param):
+                # The copy itself must define local before any other use.
+                if count_uses(body, local) >= 2:
+                    for s in items[first_exec + 1:]:
+                        _rename_ids(s, local, param)
+                    del body.block_items[first_exec]
+                    body.block_items = [s for s in body.block_items if not
+                                         (isinstance(s, c_ast.Decl) and s is decls[0])]
+                    return f'param_copy: inline {local} back to parameter {param}'
+    sites = []
+    for name, typ in TYPE_ENV.params.items():
+        resolved = TYPE_ENV.resolve(typ)
+        if not isinstance(resolved, c_ast.TypeDecl) or not isinstance(resolved.type, c_ast.IdentifierType) or \
+                _volatile_type(typ) or set(resolved.type.names) - {
+                    'signed', 'unsigned', 'char', 'short', 'int', 'long'}:
+            continue
+        if address_taken(body, name):
+            continue
+        # Do not rewrite declaration initializers, since the copy is placed after them.
+        if any(isinstance(n, c_ast.Decl) and n.init is not None and count_uses(n.init, name)
+               for n, *_ in walk(body)):
+            continue
+        if count_uses(body, name) == 0:
+            continue
+        sites.append((name, typ))
+    if not sites:
+        return None
+    name, typ = rng.choice(sites)
+    fresh = _fresh_name(body, name)
+    if not fresh:
+        return None
+    decl = decl_for(fresh, typ)
+    if decl is None:
+        return None
+    _insert_top_decl(body, decl)
+    pos = 0
+    while pos < len(body.block_items) and isinstance(body.block_items[pos], c_ast.Decl):
+        pos += 1
+    body.block_items.insert(pos, c_ast.Assignment('=', c_ast.ID(fresh), c_ast.ID(name)))
+    for stmt in body.block_items[pos + 1:]:
+        _rename_ids(stmt, name, fresh)
+    return f'param_copy: copy parameter {name} -> {fresh} at entry'
+
+
+def m_decl_axis(source, rng, function):
+    """Replace one file-scope extern with a different admitted typedb variant."""
+    db_path = ROOT / 'build' / 'typedb' / 'typedb.json'
+    if not db_path.is_file():
+        return None, None
+    try:
+        import typedb
+        database = json.loads(db_path.read_text(encoding='utf-8'))
+        spans = typedb.scan_externals(source)
+        variants = []
+        for name, entry in database.get('names', {}).items():
+            for span in spans:
+                if span['function'] or not typedb._declared_name_in_span(source, span, name):
+                    continue
+                raw = source[span['start']:span['end']]
+                if not re.search(r'\bextern\b', raw):
+                    continue
+                current = raw.strip()
+                for variant in entry.get('variants', []):
+                    declaration = variant.get('declaration', '').strip()
+                    if not declaration or declaration == current or name not in declaration:
+                        continue
+                    if not re.match(r'extern\b', declaration):
+                        continue
+                    variants.append((span, raw, name, current, declaration))
+        if not variants:
+            return None, None
+        rng.shuffle(variants)
+        for span, raw, name, before, after in variants[:8]:
+            key = (function, name, before, after)
+            valid = _DECL_AXIS_CHECKED.get(key)
+            replacement = after + ('\n' if raw.endswith('\n') else '')
+            candidate = source[:span['start']] + replacement + source[span['end']:]
+            if valid is None:
+                parsed = typedb._parse_unit(candidate, '<decl-axis>')
+                valid = parsed.get('ast') is not None
+                if valid:
+                    try:
+                        BodyCodec(candidate, function)
+                    except Exception:
+                        valid = False
+                _DECL_AXIS_CHECKED[key] = valid
+            if valid:
+                return candidate, f'decl_axis: {name}: {before[:36]} -> {after[:36]}'
+        return None, None
+    except Exception:
+        return None, None
+
+
+def mutate_source_axis(source, rng, *, only=None, function=None):
+    """Apply one full-translation-unit mutation, separate from body AST mutations."""
+    names = [name for name in SOURCE_MUTATIONS if only is None or name in only]
+    for name in names:
+        if name == 'decl_axis':
+            candidate, desc = m_decl_axis(source, rng, function)
+            if candidate is not None:
+                return candidate, desc
+    return source, None
+
+
 HEADER_REG = re.compile(r'\bregister\s+')
 
 
@@ -1746,6 +2669,18 @@ MUTATIONS = {
     'type_change': (m_type_risky, 2, False),
     'const_bound': (m_const_bound, 1, False),
     'chain_assign': (m_chain_assign, 1, True),
+    'loop_interchange': (m_loop_interchange, 2, True),
+    'split_var': (m_split_var, 2, True),
+    'merge_vars': (m_merge_vars, 2, True),
+    'reorder_independent_calls': (m_reorder_independent_calls, 2, True),
+    'hoist_invariant': (m_hoist_invariant, 2, True),
+    'sink_invariant': (m_sink_invariant, 2, True),
+    'param_copy': (m_param_copy, 2, True),
+}
+
+
+SOURCE_MUTATIONS = {
+    'decl_axis': (m_decl_axis, 1, True),
 }
 
 
@@ -1759,7 +2694,11 @@ def mutate(body, rng, *, allow_risky=False, only=None, tries=12):
     for _ in range(tries):
         name = rng.choices(names, weights)[0]
         try:
-            desc = MUTATIONS[name][0](body, rng)
+            mutation = MUTATIONS[name][0]
+            if name == 'reorder_independent_calls':
+                desc = mutation(body, rng, allow_risky=allow_risky)
+            else:
+                desc = mutation(body, rng)
         except Exception as error:  # a bug in one mutation must not stop the search
             desc = None
         if desc:

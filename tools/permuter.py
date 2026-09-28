@@ -447,15 +447,14 @@ class Permuter:
         body = copy.deepcopy(parent.body)
         chain = list(parent.chain)
         descriptions = []
-        count = self.rng.choices([1, 2, 3], [0.62, 0.28, 0.10])[0]
+        body_only = None if self.allowed_mutations is None else self.allowed_mutations & set(M.MUTATIONS)
+        count = (self.rng.choices([1, 2, 3], [0.62, 0.28, 0.10])[0]
+                 if body_only is None or body_only else 0)
         for _ in range(count):
             description = M.mutate(body, self.rng, allow_risky=self.args.allow_risky,
-                                   only=self.allowed_mutations, tries=20)
+                                   only=body_only, tries=20)
             if description:
                 descriptions.append(description)
-        if not descriptions:
-            self.counts['no_mutation'] += 1
-            return None
         problems = set(M.local_hygiene(body)) - self.base_problems
         if problems:
             self.counts['hygiene_rejected'] += 1
@@ -463,6 +462,23 @@ class Permuter:
         try:
             body_text = self.codec.render(body)
             text = self.codec.splice(body_text)
+        except Exception:
+            return None
+        source_axis = (self.allowed_mutations is None or 'decl_axis' in self.allowed_mutations)
+        source_only = None if self.allowed_mutations is None else self.allowed_mutations & set(M.SOURCE_MUTATIONS)
+        try_source = source_axis and (body_only == set() or self.rng.random() < 0.10)
+        if try_source:
+            text, source_description = M.mutate_source_axis(
+                text, self.rng, only=source_only, function=self.function)
+            if source_description:
+                descriptions.append(source_description)
+        if not descriptions:
+            self.counts['no_mutation'] += 1
+            return None
+        try:
+            # File-scope axes are validated independently; also make every final child pass
+            # the same MSC-dialect body parser before it reaches the compiler batch.
+            M.BodyCodec(text, self.function)
         except Exception:
             return None
         if qualifier_drift(self.regenerated, text):

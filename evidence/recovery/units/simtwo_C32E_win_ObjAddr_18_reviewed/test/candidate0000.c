@@ -1,8 +1,8 @@
 /* MAPSYM INDIRECTDLGPROC() maps to the Pascal source function IndirectDlgProc. */
-/* Candidate translation unit simtwo_C32E_win_ObjAddr_15_scaffold: composed from preserved exact-body sources
+/* Candidate translation unit extended from the latest admitted simtwo:C32E source
  * in MAPSYM order. Internal evidence id, not a historical filename.
  * Members: _win_ObjAddr, _win_WinAddr, _win_Events, _UpdateAllWindows, _win_ToTop, _win_SetWinDrawHook, _win_SetObjBitmap, _win_CenterStrAtObj, _win_PrintfAtObj, _win_DrawHBar, _win_DrawVBar, _win_GetObjSize, _win_ObjInv, _win_GetProxEvent, INDIRECTDLGPROC
- * SCAFFOLDED: unclaimed members _win_LoadAllWindows are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
+ * SCAFFOLDED: remaining unclaimed members use POOLSTUB_TEXT stand-ins (pool order only, never compared). */
 
 struct WinObjectBucket {
     unsigned char reserved[0x0c];
@@ -60,19 +60,14 @@ struct WinBucket_2 {
     struct WinRect far *rects[256];
 };
 extern struct WinBucket_2 far * near win_handles[];
-struct StrPos {
-    int x;
-    int y;
-};
 extern struct WinRect far win_offsets[];
 extern int far win_numOfWindows;
 extern int far win_numOfColors;
 extern int far win_numOfGroups;
 extern char far win_colors[][6];
 extern int far activeAppFlag;
+struct StrPos { int x; int y; };
 extern struct StrPos far lastStrPos;
-extern unsigned char near displayType;
-extern void far GBoxFill(int left, int top, int right, int bottom, int color);
 extern int near ribbonBarHeight;
 extern int near clipDC;
 extern void far win_SetColorFromObjNum(int objectNumber);
@@ -100,7 +95,6 @@ extern void far pascal ReleaseCapture(void);
 extern void far pascal EndDialog(unsigned hwnd, int result);
 
 
-void far pool_stub_win_LoadAllWindows(void);
 void far pool_stub_window_private_data(void);
 void far pool_stub_activeAppFlag(void);
 void far pool_stub_lastStrPos(void);
@@ -113,7 +107,6 @@ void win_SetWinDrawHook(int id,Hook f);
 void far win_SetObjBitmap(int objectNumber, int bitmap);
 void far win_CenterStrAtObj(int objectNumber, char far *text);
 void far win_PrintfAtObj(int objectNumber, char far *format, ...);
-void far win_ClearObjToEOL(int objectNumber);
 void far win_DrawHBar(int objectNumber, long fraction);
 void far win_DrawVBar(int objectNumber, long fraction);
 void far win_GetObjSize(int objectNumber, struct WinSize far *size);
@@ -121,13 +114,32 @@ void win_ObjInv(int objectNumber);
 unsigned int win_GetProxEvent(void);
 long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wParam, long lParam);
 
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_win_LoadAllWindows, pool_stub_window_private_data, pool_stub_activeAppFlag, pool_stub_lastStrPos)
+
+extern char far displayType;
+extern unsigned far pascal GetDesktopWindow(void);
+extern void far pascal GetWindowRect(unsigned hwnd, struct WinRect far *rect);
+extern void far font_InitFonts(void);
+extern void far win_LockInit(void);
+extern unsigned int far db_LoadObject(int object, int kind, int lock);
+extern void far db_PurgeObject(int object, int kind);
+extern void far db_UnhookObject(int object, int kind);
+extern void far *mem_Lock(unsigned int handle);
+extern int far mem_Unlock(unsigned int handle);
+extern void far win_LoadWindow(int window);
+extern void *memset(void *, int, unsigned);
+extern void far *_fmemcpy(void far *, const void far *, unsigned int);
+static struct WinRect sentinel = { 0x8000, 0x8000, 0x8000, 0x8000 };
+
+int far win_LoadAllWindows(void);
+
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_window_private_data, pool_stub_activeAppFlag, pool_stub_lastStrPos)
 #pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_BE05)
 #pragma alloc_text(RUN2_TEXT, win_WinAddr)
+#pragma alloc_text(RUN3A_TEXT, win_LoadAllWindows)
 #pragma alloc_text(RUN3_TEXT, win_Events)
 #pragma alloc_text(RUN4_TEXT, UpdateAllWindows)
 #pragma alloc_text(RUN5_TEXT, win_ToTop)
-#pragma alloc_text(RUN6_TEXT, win_SetWinDrawHook, win_SetObjBitmap, win_CenterStrAtObj, win_PrintfAtObj, win_ClearObjToEOL)
+#pragma alloc_text(RUN6_TEXT, win_SetWinDrawHook, win_SetObjBitmap, win_CenterStrAtObj, win_PrintfAtObj)
 #pragma alloc_text(RUN7_TEXT, win_DrawHBar, win_DrawVBar, win_GetObjSize, win_ObjInv)
 #pragma alloc_text(RUN7_TEXT, win_GetProxEvent)
 void far _win_SetProxItem(int obj);
@@ -163,21 +175,109 @@ void far *win_WinObjAddr(int windowPart, int objectPart)
 void far *win_WinAddr(int id) { return win_handles[id>>8]; }
 #undef win_handles
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _win_LoadAllWindows.
- * It only reproduces the object's selector-pool allocation order for the
- * words C6CC; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_win_LoadAllWindows(void)
+int far win_LoadAllWindows(void)
 {
-    volatile int t;
+    struct WinRect rect;
+    unsigned handle;
+    void far *p;
+    int far *src;
+    int far *dst;
+    unsigned n;
+    char far *bsrc;
+    char far *bdst;
+    int window;
+    int i;
+    int near *slot;
 
-    t = win_drawHooks[0];
-    t = win_offsets[0].left;
-    t = win_numOfWindows;
-    t = win_numOfColors;
-    t = win_numOfGroups;
-    t = win_colors[0][0];
+    GetWindowRect(GetDesktopWindow(), &rect);
+    font_InitFonts();
+    win_LockInit();
+
+    memset((void far *)win_drawHooks, 0, 0xb4);
+
+    for (i = 0; i < 45; i++)
+        win_offsets[i] = sentinel;
+
+    switch (displayType - 9) {
+    case 0:
+        if (rect.bottom > 0x1e0)
+            handle = db_LoadObject(7, 9, 0);
+        else
+            handle = db_LoadObject(5, 9, 0);
+        break;
+    case 1:
+        if (rect.bottom > 0x1e0)
+            handle = db_LoadObject(8, 9, 0);
+        else
+            handle = db_LoadObject(0, 9, 0);
+        break;
+    default:
+        handle = db_LoadObject(displayType, 9, 0);
+        break;
+    }
+    if (handle != 0) {
+        _fmemcpy((void far *)win_offsets, mem_Lock(handle), 0x140);
+        mem_Unlock(handle);
+
+        switch (displayType - 9) {
+        case 0:
+            if (rect.bottom > 0x1e0)
+                db_PurgeObject(7, 9);
+            else
+                db_PurgeObject(5, 9);
+            break;
+        case 1:
+            if (rect.bottom > 0x1e0)
+                db_PurgeObject(8, 9);
+            else
+                db_PurgeObject(0, 9);
+            break;
+        default:
+            db_PurgeObject(displayType, 9);
+            break;
+        }
+    }
+
+    handle = db_LoadObject(0x80, 0, 0);
+    if (handle == 0) {
+        Punt("Cannot load resource\nplease try another");
+    } else {
+        p = mem_Lock(handle);
+        src = (int far *)p;
+        win_numOfWindows = src[0];
+        win_numOfColors = src[1];
+        win_numOfGroups = src[2];
+        mem_Unlock(handle);
+        db_PurgeObject(0, 0x80);
+    }
+
+    handle = db_LoadObject(0x81, 0, 0);
+    p = mem_Lock(handle);
+    bsrc = (char far *)p;
+    bdst = (char far *)win_colors;
+    n = win_numOfColors * 6;
+    _fmemcpy(bdst, bsrc, n);
+    mem_Unlock(handle);
+    db_PurgeObject(0, 0x81);
+
+    i = 0;
+    if (win_numOfWindows > 0) {
+        slot = &win_hwnd[0];
+        window = 0;
+        do {
+            win_LoadWindow(window);
+            db_UnhookObject(i, 0);
+            *slot = 0;
+            ++slot;
+            window += 0x100;
+            ++i;
+        } while (i < win_numOfWindows);
+    }
+
+    return 1;
 }
+
+
 
 void far pool_stub_activeAppFlag(void)
 {
@@ -337,59 +437,6 @@ void far win_PrintfAtObj(int objectNumber, char far *format, ...)
     IntersectClipRect(clipDC, rect.left, rect.top, rect.right, rect.bottom);
     gr_CenterStrInRectClear(&rect, buffer);
     RestoreDC(clipDC, -1);
-}
-
-struct WinColorObject {
-    unsigned char reserved[0x24];
-    unsigned int flags;
-    char color;
-    char altColor;
-};
-void far win_ClearObjToEOL(int objectNumber)
-{
-    struct WinBucket_2 far *bucket;
-    struct WinObjectBucket far *objBucket;
-    struct WinColorObject far *object;
-    struct WinRect rect;
-    struct WinBucket_2 far * near *slot;
-    unsigned int itemIndex;
-    int index;
-    int color;
-    int x, y;
-
-    win_LockWin(objectNumber);
-    win_LockWin(objectNumber);
-    itemIndex = (unsigned char)objectNumber;
-    slot = &win_handles[objectNumber >> 8];
-    bucket = *slot;
-    rect = *bucket->rects[itemIndex];
-    if (ribbonBarHeight) {
-        ++rect.right;
-        ++rect.bottom;
-    }
-    win_UnlockWin(objectNumber);
-
-    objBucket = (struct WinObjectBucket far *)*slot;
-    if (objBucket->objectCount <= (unsigned char)objectNumber)
-        Punt(win_shared_private_message);
-    object = (struct WinColorObject far *)objBucket->objects[itemIndex];
-
-    index = object->color;
-    if ((displayType & 1) == 0)
-        color = win_colors[index][2] * 0x101;
-    else
-        color = win_colors[index][3] * 0x101;
-
-    y = lastStrPos.y;
-    if (y < rect.top)
-        y = rect.top;
-    if (rect.bottom > y) {
-        x = lastStrPos.x;
-        if (x >= rect.left && x < rect.right)
-            GBoxFill(x, y, rect.right, rect.bottom, color);
-    }
-
-    win_UnlockWin(objectNumber);
 }
 
 void far win_DrawHBar(int objectNumber, long fraction)
@@ -572,4 +619,7 @@ long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wP
     }
     return 0L;
 }
+
+
+
 

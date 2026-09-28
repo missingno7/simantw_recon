@@ -1841,7 +1841,7 @@ def main():
     p.add_argument('--add', action='append', default=[], metavar='SYMBOL=FILE.c',
                    help='add or replace one complete member definition; may be repeated')
     p.add_argument('--max-arrangements', type=int, default=12, help='bounded placement variants to compile (1..64)')
-    p.add_argument('--out', help='output directory below build/workers/f-infra-composer')
+    p.add_argument('--out', help='output directory below build/workers (a bare name goes to build/workers/f-infra-composer/NAME)')
     p.add_argument('--naive', action='store_true', help='seed missing declarations in deterministic symbol order')
     args = ap.parse_args()
     if args.action == 'propose':

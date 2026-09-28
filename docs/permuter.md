@@ -2,7 +2,8 @@
 
 `python tools/permuter.py SOURCE.c --function _Symbol` explores semantics-preserving
 variants of one function body. The whole source file remains the compiler input; the
-function signature, declarations, pragmas and every other function stay as supplied.
+function signature, pragmas and every other function stay as supplied. The optional
+`decl_axis` mutation changes only a file-scope `extern` to another typedb-admitted form.
 The compiler flags come from `promote.function_flags`, so each run uses the symbol's
 assigned profile.
 
@@ -15,7 +16,7 @@ python tools/permuter.py build/workers/me/helper.c --helper 3:63FE `
 ```
 
 `--function` names the non-static probe definition in the supplied translation unit;
-only its body is mutated. `--like` selects the caller's assigned translation-unit
+its body is mutated, with `decl_axis` as the file-scope exception described below. `--like` selects the caller's assigned translation-unit
 profile. Every candidate is compiled through the compiler cache and compared with
 `static_probe`'s relocation-bound diagnostic after its LINK far-call translation.
 Helper costs use the same ordering as symbol mode: exact body first, then frame,
@@ -44,8 +45,38 @@ statement swaps, single- and multiple-use temporary introduction/inlining, chain
 assignment, assignment in a condition, `continue`/`else` layout, declaration sinking and
 hoisting, switch-group order, and local `register` toggles. The swap guard refuses read/write
 dependencies, calls, and unknown memory aliases. Width/signedness and constant-bound
-rewrites require `--allow-risky`. Declaration-order and type-spelling variants are excluded
-because the fact register shows they waste compiles.
+rewrites require `--allow-risky`. Declaration-order and local type-spelling variants are
+excluded because the fact register shows they waste compiles.
+
+The structural allocation mutations add guarded source-shape axes:
+
+- `loop_interchange` swaps a perfect pair of simple counted loops only when their bounds do
+  not depend on the other induction variable, the indices are unused after the nest, and the
+  body contains no calls, early exits, or scalar writes. Direct stores must address the same
+  two-dimensional array with a consistent `(outer, inner)` index order. A narrow flat-array
+  form is also accepted when one local pointer is reset each iteration from `array + outer +
+  inner + constant`, the inner range fits within the positive outer stride, and the pointer and
+  loaded byte are not observed after the nest. These proofs ensure that iterations touch distinct
+  cells. Loop bounds, ranges and induction-variable types must be statically provable.
+- `split_var` gives a later straight-line live range a new scalar after an overwrite that does
+  not read the old value. `merge_vars` combines same-type scalar locals when the first local is
+  dead before the second begins. Both refuse control flow, address-taking, volatile objects,
+  and ambiguous writes.
+- `reorder_independent_calls` swaps adjacent direct calls when both callees are byte-matched
+  admitted leaf functions whose sources prove they do not write shared state and their
+  arguments are side-effect-free. Unproved calls are available only with `--allow-risky`.
+- `hoist_invariant` and `sink_invariant` cache or inline a stable unsigned scalar expression
+  around a counted loop. They require no calls, memory writes, input updates, volatile reads, or
+  dependence on the loop index; hoisting also requires local inputs to be initialized before
+  the loop.
+- `param_copy` adds or removes a function-entry copy of an unaddressed scalar by-value parameter.
+- `decl_axis` replaces a file-scope `extern` with a different declaration recorded for the same
+  name by `typedb.py build`. It accepts only variants that parse with the current translation
+  unit and target body; it never synthesizes a type.
+
+These guards decline when the source cannot establish the required facts. New names work with
+`--only`; for example, `--only loop_interchange,split_var,merge_vars` limits a run to those
+body mutations, while `--only decl_axis` selects the translation-unit declaration axis.
 
 The parser adapter maps MSC words such as `far`, `near`, `__far`, `huge`, `__based(...)`,
 `_based(...)`, `__segment`, `__segname(...)`, `pascal` and `cdecl` for parsing and restores

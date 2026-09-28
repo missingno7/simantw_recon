@@ -93,9 +93,9 @@ extern int far gGameNeedsSaving;  /* MAPSYM public at the first C30A ES offset *
 extern int far ListIndexA;  /* scaffold reference for pool word C314 (segment 9, MAPSYM_SITE_NAME) */
 extern long far BAntsExpired;  /* MAPSYM public at the first C31A ES offset */
 extern int far MeWantFood;  /* MAPSYM public at the first C330 ES offset */
-extern int __based(__segname("PACK")) DdPtr;
-extern unsigned char far DeadY[];
+extern int far DdPtr;
 extern unsigned char far DeadX[];
+extern unsigned char far DeadY[];
 extern int far IsCarryCaste;
 extern int far UnCarryCaste;
 
