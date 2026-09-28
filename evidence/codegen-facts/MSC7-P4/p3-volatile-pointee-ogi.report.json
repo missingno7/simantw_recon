@@ -1,0 +1,276 @@
+{
+  "name": "p3-volatile-pointee-ogi",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 3,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "FORM": "pointer_field_ordinary"
+      },
+      "size": 44,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "3f9fc7d32d92fd9184a8c98d19a5d7a5b4f2696dd6b38f2610479e7a9b648d68",
+      "fixups": [
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 9,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 mov bx, 0",
+        "0007 mov es, word ptr [0]",
+        "000b mov word ptr [bp - 4], bx",
+        "000e mov word ptr [bp - 2], es",
+        "0011 cmp word ptr es:[bx], 0",
+        "0015 je 0x29",
+        "0017 push word ptr es:[0]",
+        "001c lcall 0, 0",
+        "0021 les bx, ptr [bp - 4]",
+        "0024 mov word ptr es:[bx], 0",
+        "0029 leave ",
+        "002a retf ",
+        "002b nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "FORM": "pointer_field_volatile_pointee"
+      },
+      "size": 50,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "806fa01ce8c592a23f426071015f92f683bb189e6feaf4f091051b76dab53141",
+      "fixups": [
+        {
+          "offset": 36,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 33,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 28,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 8,
+          "width": 2,
+          "target": "_handle",
+          "kind": 2,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,8 +1,11 @@",
+          " enter 4, 0",
+          "-mov bx, 0",
+          "+mov ax, 0",
+          "+mov cx, 0",
+          "+mov word ptr [bp - 4], ax",
+          "+mov word ptr [bp - 2], cx",
+          "+mov es, cx",
+          "+mov bx, ax",
+          "+cmp word ptr es:[bx], 0",
+          "+je 0x30",
+          " mov es, word ptr [0]",
+          "-mov word ptr [bp - 4], bx",
+          "-mov word ptr [bp - 2], es",
+          "-cmp word ptr es:[bx], 0",
+          "-je 0x29",
+          " push word ptr es:[0]",
+          "@@ -13,2 +16 @@",
+          " retf ",
+          "-nop "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "FORM": "local_volatile_pointee"
+      },
+      "size": 46,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "6e2eff1d42e402539e660b2348d658f6e56776af319067d519b6a54fe914d3fb",
+      "fixups": [
+        {
+          "offset": 40,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 35,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 18,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 6,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 1,
+          "width": 2,
+          "target": "_handle",
+          "kind": 2,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,13 +1,13 @@",
+          "-enter 4, 0",
+          "-mov bx, 0",
+          "+mov ax, 0",
+          "+mov es, ax",
+          "+mov ax, 0",
+          "+mov bx, ax",
+          "+cmp word ptr es:[bx], 0",
+          "+je 0x2c",
+          " mov es, word ptr [0]",
+          "-mov word ptr [bp - 4], bx",
+          "-mov word ptr [bp - 2], es",
+          "-cmp word ptr es:[bx], 0",
+          "-je 0x29",
+          " push word ptr es:[0]",
+          " lcall 0, 0",
+          "-les bx, ptr [bp - 4]",
+          "-mov word ptr es:[bx], 0",
+          "-leave ",
+          "+add sp, 2",
+          "+mov es, word ptr [0]",
+          "+mov word ptr es:[0], 0",
+          " retf "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

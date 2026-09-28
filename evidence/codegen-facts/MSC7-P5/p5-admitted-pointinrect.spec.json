@@ -1,0 +1,13 @@
+{
+  "name": "p5-admitted-pointinrect",
+  "symbol": "_PointInRect",
+  "function": "PointInRect",
+  "text": "{{FORM}}",
+  "axes": {
+    "FORM": {
+      "direct_two_parameters": "/* PointInRect: read the point and rectangle as far structures. With a ribbon, the right and bottom bounds are exclusive; otherwise both are inclusive. The named far ribbonBarHeight is the policy switch. */\nstruct Point { int x; int y; };\nstruct PointRect { int left; int top; int right; int bottom; };\nextern int far ribbonBarHeight;\nint far PointInRect(struct Point far *point, struct PointRect far *rect)\n{\n    if (ribbonBarHeight)\n        return point->x < rect->right && point->x >= rect->left &&\n               point->y >= rect->top && point->y < rect->bottom;\n    return point->x <= rect->right && point->x >= rect->left &&\n           point->y >= rect->top && point->y <= rect->bottom;\n}\n",
+      "point_local_alias": "/* PointInRect: read the point and rectangle as far structures. With a ribbon, the right and bottom bounds are exclusive; otherwise both are inclusive. The named far ribbonBarHeight is the policy switch. */\nstruct Point { int x; int y; };\nstruct PointRect { int left; int top; int right; int bottom; };\nextern int far ribbonBarHeight;\nint far PointInRect(struct Point far *point, struct PointRect far *rect)\n{\n    struct Point far *p;\n    p = point;\n    if (ribbonBarHeight)\n        return p->x < rect->right && p->x >= rect->left &&\n               p->y >= rect->top && p->y < rect->bottom;\n    return p->x <= rect->right && p->x >= rect->left &&\n           p->y >= rect->top && p->y <= rect->bottom;\n}\n"
+    }
+  },
+  "mode": "one-at-a-time"
+}

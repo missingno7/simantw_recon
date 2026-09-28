@@ -1,0 +1,20 @@
+{
+  "name": "p3-pointer-address-forms-ogi",
+  "profile": "ogi",
+  "function": "f",
+  "text": "struct State { int prefix; int handle; }; extern struct State far state; extern struct State far otherState; extern int near choose; extern int far * far GetHandle(void); extern void far consume(int); extern void far KeepPointer(int far *);\n{{FORM}}",
+  "axes": {
+    "FORM": {
+      "local_far_scalar": "void far f(void) { int far *p; p = &state.handle; if (*p != 0) { consume(*p); *p = 0; } }",
+      "local_far_struct": "void far f(void) { struct State far *p; p = &state; if (p->handle != 0) { consume(p->handle); p->handle = 0; } }",
+      "local_far_index": "void far f(void) { int far *p; p = &state.handle; if (p[0] != 0) { consume(p[0]); p[0] = 0; } }",
+      "macro_scalar": "#define PTR p\nvoid far f(void) { int far *p; p = &state.handle; if (*PTR != 0) { consume(*PTR); *PTR = 0; } }",
+      "pointer_returned": "void far f(void) { int far *p; p = GetHandle(); if (*p != 0) { consume(*p); *p = 0; } }",
+      "pointer_arithmetic": "void far f(void) { int far *p; p = &state.prefix + 1; if (*p != 0) { consume(*p); *p = 0; } }",
+      "conditional_assignment": "void far f(void) { int far *p; p = (choose != 0) ? &state.handle : &otherState.handle; if (*p != 0) { consume(*p); *p = 0; } }",
+      "passed_pointer": "void far f(void) { int far *p; p = &state.handle; if (*p != 0) { KeepPointer(p); consume(*p); *p = 0; } }",
+      "based_pointer": "void far f(void) { int __based(__segname(\"PACK\")) *p; p = &state.handle; if (*p != 0) { consume(*p); *p = 0; } }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

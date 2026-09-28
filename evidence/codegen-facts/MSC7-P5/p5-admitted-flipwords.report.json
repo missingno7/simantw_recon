@@ -1,0 +1,186 @@
+{
+  "name": "p5-admitted-flipwords",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "FlipWords",
+  "symbol": "_FlipWords",
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "FORM": "direct_parameter"
+      },
+      "size": 96,
+      "frame": 12,
+      "homes": {
+        "-4": 2,
+        "-5": 1,
+        "-12": 2
+      },
+      "registers": [
+        "al",
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "04e69e810002e6009c9c7e47c88ec16ca778e9b5ffcc79975070a0bcc9602d9b",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 0xc, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 sub ax, ax",
+        "0008 mov word ptr [bp - 4], ax",
+        "000b cmp word ptr [bp + 0xc], ax",
+        "000e jl 0x5c",
+        "0010 jg 0x17",
+        "0012 cmp word ptr [bp + 0xa], ax",
+        "0015 je 0x5c",
+        "0017 mov ax, word ptr [bp + 0xa]",
+        "001a mov dx, word ptr [bp + 0xc]",
+        "001d add ax, 1",
+        "0020 adc dx, 0",
+        "0023 shr dx, 1",
+        "0025 rcr ax, 1",
+        "0027 mov si, ax",
+        "0029 mov di, dx",
+        "002b neg si",
+        "002d neg si",
+        "002f adc di, -1",
+        "0032 mov word ptr [bp - 0xc], si",
+        "0035 lds si, ptr [bp + 6]",
+        "0038 mov cx, word ptr [bp - 0xc]",
+        "003b mov bx, word ptr [bp - 4]",
+        "003e add bx, si",
+        "0040 mov al, byte ptr [bx]",
+        "0042 mov byte ptr [bp - 5], al",
+        "0045 mov al, byte ptr [bx + 1]",
+        "0048 mov byte ptr [bx], al",
+        "004a mov al, byte ptr [bp - 5]",
+        "004d mov byte ptr [bx + 1], al",
+        "0050 add word ptr [bp - 4], 2",
+        "0054 dec cx",
+        "0055 jne 0x3b",
+        "0057 dec di",
+        "0058 jns 0x3b",
+        "005a push ss",
+        "005b pop ds",
+        "005c pop si",
+        "005d pop di",
+        "005e leave ",
+        "005f retf "
+      ],
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "43/43",
+        "bytes": "96/96"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "FORM": "local_alias"
+      },
+      "size": 108,
+      "frame": 16,
+      "homes": {
+        "-4": 2,
+        "-5": 1,
+        "-10": 2,
+        "-16": 2
+      },
+      "registers": [
+        "al",
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "c956045ac23200c4aa52d0d9e021344e8f574ae1a6db5511da42766f5cf24f61",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes"
+        ],
+        "diff": [
+          "@@ -1,4 +1,8 @@",
+          "-enter 0xc, 0",
+          "+enter 0x10, 0",
+          " push di",
+          " push si",
+          "+mov ax, word ptr [bp + 6]",
+          "+mov dx, word ptr [bp + 8]",
+          "+mov word ptr [bp - 0xa], ax",
+          "+mov ds, dx",
+          " sub ax, ax",
+          "@@ -6,6 +10,6 @@",
+          " cmp word ptr [bp + 0xc], ax",
+          "-jl 0x5c",
+          "-jg 0x17",
+          "+jl 0x65",
+          "+jg 0x22",
+          " cmp word ptr [bp + 0xa], ax",
+          "-je 0x5c",
+          "+je 0x65",
+          " mov ax, word ptr [bp + 0xa]",
+          "@@ -21,5 +25,5 @@",
+          " adc di, -1",
+          "-mov word ptr [bp - 0xc], si",
+          "-lds si, ptr [bp + 6]",
+          "-mov cx, word ptr [bp - 0xc]",
+          "+mov word ptr [bp - 0x10], si",
+          "+mov si, word ptr [bp - 0xa]",
+          "+mov cx, word ptr [bp - 0x10]",
+          " mov bx, word ptr [bp - 4]",
+          "@@ -34,5 +38,5 @@",
+          " dec cx",
+          "-jne 0x3b",
+          "+jne 0x46",
+          " dec di",
+          "-jns 0x3b",
+          "+jns 0x46",
+          " push ss",
+          "@@ -43 +47,2 @@",
+          " retf ",
+          "+nop "
+        ]
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "42/47",
+        "bytes": "6/108"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

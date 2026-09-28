@@ -1,0 +1,196 @@
+{
+  "name": "p3-source_walk-baseline",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "FORM": "direct_parameter"
+      },
+      "size": 72,
+      "frame": 10,
+      "homes": {
+        "-8": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "ds",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "55101282c3fd9c08c6ee9e92ee7de2ee90d841586f0609f40c3073b62060b3ef",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 0xa, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov cx, word ptr [bp + 6]",
+        "0009 mov word ptr [bp - 8], 0",
+        "000e mov ax, word ptr [bp + 8]",
+        "0011 or ax, cx",
+        "0013 jne 0x1e",
+        "0015 xor ax, ax",
+        "0017 push ss",
+        "0018 pop ds",
+        "0019 pop si",
+        "001a pop di",
+        "001b leave ",
+        "001c retf ",
+        "001d nop ",
+        "001e mov bx, word ptr [bp + 0xa]",
+        "0021 or bx, bx",
+        "0023 jg 0x2a",
+        "0025 mov bx, word ptr [bp - 8]",
+        "0028 jmp 0x40",
+        "002a mov ax, word ptr [bp + 8]",
+        "002d mov ds, ax",
+        "002f mov si, cx",
+        "0031 mov cx, bx",
+        "0033 mov bx, word ptr [bp - 8]",
+        "0036 mov di, si",
+        "0038 add si, 2",
+        "003b add bx, word ptr [di]",
+        "003d dec cx",
+        "003e jne 0x36",
+        "0040 push ss",
+        "0041 pop ds",
+        "0042 mov ax, bx",
+        "0044 pop si",
+        "0045 pop di",
+        "0046 leave ",
+        "0047 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "FORM": "local_alias"
+      },
+      "size": 76,
+      "frame": 14,
+      "homes": {
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "b0808bb919ba9e41fe51fe790a2a4959b06190c21089b77f892b1bc7bd100ea0",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers"
+        ],
+        "diff": [
+          "@@ -1,9 +1,11 @@",
+          "-enter 0xa, 0",
+          "+enter 0xe, 0",
+          " push di",
+          " push si",
+          "-mov cx, word ptr [bp + 6]",
+          " mov word ptr [bp - 8], 0",
+          "-mov ax, word ptr [bp + 8]",
+          "-or ax, cx",
+          "-jne 0x1e",
+          "+mov ax, word ptr [bp + 6]",
+          "+mov dx, word ptr [bp + 8]",
+          "+mov cx, ax",
+          "+mov word ptr [bp - 0xa], dx",
+          "+or dx, ax",
+          "+jne 0x22",
+          " xor ax, ax",
+          "@@ -15,9 +17,8 @@",
+          " retf ",
+          "-nop ",
+          " mov bx, word ptr [bp + 0xa]",
+          " or bx, bx",
+          "-jg 0x2a",
+          "+jg 0x2e",
+          " mov bx, word ptr [bp - 8]",
+          "-jmp 0x40",
+          "-mov ax, word ptr [bp + 8]",
+          "+jmp 0x44",
+          "+mov ax, word ptr [bp - 0xa]",
+          " mov ds, ax",
+          "@@ -30,3 +31,3 @@",
+          " dec cx",
+          "-jne 0x36",
+          "+jne 0x3a",
+          " push ss"
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "FORM": "macro_alias"
+      },
+      "size": 72,
+      "frame": 10,
+      "homes": {
+        "-8": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "ds",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "55101282c3fd9c08c6ee9e92ee7de2ee90d841586f0609f40c3073b62060b3ef",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

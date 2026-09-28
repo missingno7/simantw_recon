@@ -1,0 +1,127 @@
+{
+  "name": "p3-param_scalar-baseline",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "FORM": "direct"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "fa58198e832f3a5b1fba82b029a960a2124df866fc95255ff4249db65a31c59c",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 mov bx, word ptr [bp + 6]",
+        "0006 mov ax, word ptr [bp + 8]",
+        "0009 or ax, bx",
+        "000b jne 0x12",
+        "000d xor ax, ax",
+        "000f leave ",
+        "0010 retf ",
+        "0011 nop ",
+        "0012 mov es, word ptr [bp + 8]",
+        "0015 mov ax, word ptr es:[bx + 2]",
+        "0019 add ax, word ptr es:[bx]",
+        "001c leave ",
+        "001d retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "FORM": "local_alias"
+      },
+      "size": 26,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "92d460689608682a5c9423539b23d24a31182cc6ec6dd6896bf55abec5a07a33",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -2,6 +2,6 @@",
+          " mov bp, sp",
+          "-mov bx, word ptr [bp + 6]",
+          "-mov ax, word ptr [bp + 8]",
+          "+les bx, ptr [bp + 6]",
+          "+mov ax, es",
+          " or ax, bx",
+          "-jne 0x12",
+          "+jne 0x10",
+          " xor ax, ax",
+          "@@ -9,4 +9,2 @@",
+          " retf ",
+          "-nop ",
+          "-mov es, word ptr [bp + 8]",
+          " mov ax, word ptr es:[bx + 2]",
+          "@@ -15 +13,2 @@",
+          " retf ",
+          "+nop "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "FORM": "macro_alias"
+      },
+      "size": 30,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "fa58198e832f3a5b1fba82b029a960a2124df866fc95255ff4249db65a31c59c",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

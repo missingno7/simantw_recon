@@ -1,0 +1,19 @@
+{
+  "name": "p3-constant_address-ogi",
+  "profile": "ogi",
+  "function": "f",
+  "text": "struct State { unsigned char pad[2]; int handle; }; extern struct State far state; extern int far handle; extern int far otherHandle; extern int near choose; extern int far * far GetHandle(void); extern void far consume(int);\n{{FORM}}",
+  "axes": {
+    "FORM": {
+      "direct_global": "void far f(void) { if (handle != 0) { consume(handle); handle = 0; } }",
+      "local_pointer_address": "void far f(void) { int far *p; p = &handle; if (*p != 0) { consume(*p); *p = 0; } }",
+      "local_pointer_member": "void far f(void) { int far *p; p = &state.handle; if (*p != 0) { consume(*p); *p = 0; } }",
+      "pointer_field_address": "void far f(void) { struct { int far *p; } h; h.p = &handle; if (*h.p != 0) { consume(*h.p); *h.p = 0; } }",
+      "pointer_field_member": "void far f(void) { struct { int far *p; } h; h.p = &state.handle; if (*h.p != 0) { consume(*h.p); *h.p = 0; } }",
+      "pointer_returned": "void far f(void) { int far *p; p = GetHandle(); if (*p != 0) { consume(*p); *p = 0; } }",
+      "address_plus_one": "void far f(void) { int far *p; p = &state.handle; if (*p != 0) { consume(*p); *p = 0; } }",
+      "conditional_address": "void far f(void) { int far *p; p = (choose != 0) ? &handle : &otherHandle; if (*p != 0) { consume(*p); *p = 0; } }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

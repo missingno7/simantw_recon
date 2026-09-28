@@ -1,0 +1,17 @@
+{
+  "name": "p3-constant_address_baseline",
+  "profile": "baseline",
+  "function": "f",
+  "text": "extern int far handle; extern int far otherHandle; extern int near choose; extern int far * far GetHandle(void); extern void far consume(int); {{FORM}}",
+  "axes": {
+    "FORM": {
+      "direct_global": "void far f(void) { if (handle != 0) { consume(handle); handle = 0; } }",
+      "local_pointer_address": "void far f(void) { int far *p; p = &handle; if (*p != 0) { consume(*p); *p = 0; } }",
+      "pointer_field_address": "void far f(void) { struct { int far *p; } h; h.p = &handle; if (*h.p != 0) { consume(*h.p); *h.p = 0; } }",
+      "pointer_returned": "void far f(void) { int far *p; p = GetHandle(); if (*p != 0) { consume(*p); *p = 0; } }",
+      "address_plus_zero": "void far f(void) { int far *p; p = (int far *)((char far *)&handle + 0); if (*p != 0) { consume(*p); *p = 0; } }",
+      "conditional_address": "void far f(void) { int far *p; p = (choose != 0) ? &handle : &otherHandle; if (*p != 0) { consume(*p); *p = 0; } }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

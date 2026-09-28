@@ -240,6 +240,20 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Probes as P1.
 - Unexplained: `_win_ModeControlClosed`/`_win_CasteControlClosed` push `es:[bx]` with no intervening call (U3).
 
+**MSC7-P3: a LOCAL far-pointer alias of a far parameter, used for the null check and later dereferences, collapses the offset/selector pair into one `LES [BP+N]`. A macro alias that expands to the parameter behaves like direct use (separate MOVs). SUPPORTED on all four profiles (`baseline`, `og`, `ogi`, `oi-ga`).**
+- Admitted control `_GRectOutline`: exact with the alias; direct parameter use gives 67/81 with split loads.
+- Toys: struct and scalar pointee give direct/macro = 30 bytes, alias = 26 bytes with LES.
+- Evidence: `evidence/codegen-facts/MSC7-P3*/`, build/workers/f-study-p3/REPORT.md.
+- Tension observed in `_gr_BitMapSize` and `_SetDevicePalette`: the alias restores LES/LDS but adds a home (F2), so the target needs the alias AND one fewer other home-holding local.
+- Validated 2026-09-28.
+
+**MSC7-P4: a far-pointer field set to `&named_far_global` and tested before a far call gets a pointer home, an `ES:BX` compare and a post-call `LES`, but MSC 7.00 folds the call ARGUMENT to a direct `push ES:[global]`. SUPPORTED as a boundary.**
+- Scalar, struct-member, `*p`/`p[0]`, macro, pointer-arithmetic, based and volatile-pointee forms did not produce the target's `push ES:[BX]` (_win_ModeControlClosed/_win_CasteControlClosed, U3).
+
+**MSC7-P5: what triggers an early `LDS`. OPEN.**
+- The admitted `_PointInRect` and `_FlipWords` use DIRECT far parameters and get `LDS`; adding an alias breaks them.
+- A minimal far-source walk produced no `LDS` under any profile.
+
 ## 6. Data and literals
 
 **MSC7-D1: string literals are packed back to back in `_DATA`, while named `char` arrays of odd length are word-aligned. SUPPORTED.**

@@ -1,0 +1,14 @@
+{
+  "name": "p3-volatile-pointee-ogi",
+  "profile": "ogi",
+  "function": "f",
+  "text": "extern int far handle; extern void far consume(int);\n{{FORM}}",
+  "axes": {
+    "FORM": {
+      "pointer_field_ordinary": "void far f(void) { struct { int far *p; } h; h.p = &handle; if (*h.p != 0) { consume(*h.p); *h.p = 0; } }",
+      "pointer_field_volatile_pointee": "void far f(void) { struct { volatile int far *p; } h; h.p = &handle; if (*h.p != 0) { consume(*h.p); *h.p = 0; } }",
+      "local_volatile_pointee": "void far f(void) { volatile int far *p; p = &handle; if (*p != 0) { consume(*p); *p = 0; } }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

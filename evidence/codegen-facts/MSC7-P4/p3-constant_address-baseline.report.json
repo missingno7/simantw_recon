@@ -1,0 +1,720 @@
+{
+  "name": "p3-constant_address-baseline",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 8,
+  "distinct_outputs": 5,
+  "same_output": [
+    [
+      "v001",
+      "v002",
+      "v006"
+    ],
+    [
+      "v003",
+      "v004"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "FORM": "direct_global"
+      },
+      "size": 38,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "es"
+      ],
+      "saves": [],
+      "sha256": "e07d0eda6200939c0ef5a8f47563e9ec1cfcd0df406b34046b6ff1162e1d10bf",
+      "fixups": [
+        {
+          "offset": 32,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 27,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 18,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 15,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 2,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 mov es, word ptr [0]",
+        "0004 cmp word ptr es:[0], 0",
+        "000a je 0x24",
+        "000c push word ptr es:[0]",
+        "0011 lcall 0, 0",
+        "0016 add sp, 2",
+        "0019 mov es, word ptr [0]",
+        "001d mov word ptr es:[0], 0",
+        "0024 retf ",
+        "0025 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "FORM": "local_pointer_address"
+      },
+      "size": 42,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "bx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "46c83784f29712e61852f7523aa57f8bc188aea928fbb490b7d46f96faf57967",
+      "fixups": [
+        {
+          "offset": 36,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 31,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 22,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 19,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 6,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 2,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,4 +1,7 @@",
+          "+push si",
+          "+mov si, 0",
+          " mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "+mov bx, si",
+          "+cmp word ptr es:[si], 0",
+          "+je 0x28",
+          " push word ptr es:[0]",
+          "@@ -8,3 +11,3 @@",
+          " mov word ptr es:[0], 0",
+          "+pop si",
+          " retf ",
+          "-nop "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "FORM": "local_pointer_member"
+      },
+      "size": 42,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "bx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "90cde3b18039bff5d0c6ee515032331590a6ef5f3aab7188392abdfa561c7c75",
+      "fixups": [
+        {
+          "offset": 36,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 31,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 22,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 19,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 6,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 2,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,5 +1,8 @@",
+          "+push si",
+          "+mov si, 2",
+          " mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "-push word ptr es:[0]",
+          "+mov bx, si",
+          "+cmp word ptr es:[si], 0",
+          "+je 0x28",
+          "+push word ptr es:[2]",
+          " lcall 0, 0",
+          "@@ -7,4 +10,4 @@",
+          " mov es, word ptr [0]",
+          "-mov word ptr es:[0], 0",
+          "+mov word ptr es:[2], 0",
+          "+pop si",
+          " retf ",
+          "-nop "
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "FORM": "pointer_field_address"
+      },
+      "size": 44,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "3f9fc7d32d92fd9184a8c98d19a5d7a5b4f2696dd6b38f2610479e7a9b648d68",
+      "fixups": [
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 9,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,9 +1,13 @@",
+          "+enter 4, 0",
+          "+mov bx, 0",
+          " mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "+mov word ptr [bp - 4], bx",
+          "+mov word ptr [bp - 2], es",
+          "+cmp word ptr es:[bx], 0",
+          "+je 0x29",
+          " push word ptr es:[0]",
+          " lcall 0, 0",
+          "-add sp, 2",
+          "-mov es, word ptr [0]",
+          "-mov word ptr es:[0], 0",
+          "+les bx, ptr [bp - 4]",
+          "+mov word ptr es:[bx], 0",
+          "+leave ",
+          " retf "
+        ]
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "FORM": "pointer_field_member"
+      },
+      "size": 44,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "bx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "8398e82ce10f90663911d5dd21acfaf242c95cb049968fd16121060a3cdb2eca",
+      "fixups": [
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 26,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 9,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 5,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,9 +1,13 @@",
+          "+enter 4, 0",
+          "+mov bx, 2",
+          " mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "-push word ptr es:[0]",
+          "+mov word ptr [bp - 4], bx",
+          "+mov word ptr [bp - 2], es",
+          "+cmp word ptr es:[bx], 0",
+          "+je 0x29",
+          "+push word ptr es:[2]",
+          " lcall 0, 0",
+          "-add sp, 2",
+          "-mov es, word ptr [0]",
+          "-mov word ptr es:[0], 0",
+          "+les bx, ptr [bp - 4]",
+          "+mov word ptr es:[bx], 0",
+          "+leave ",
+          " retf "
+        ]
+      }
+    },
+    {
+      "variant": "v005",
+      "label": {
+        "FORM": "pointer_returned"
+      },
+      "size": 48,
+      "frame": 4,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "8db0deb97dca9fd93f62a74c4e5c73e03aa8b9a0488cc791b740fa38c570231e",
+      "fixups": [
+        {
+          "offset": 29,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 6,
+          "width": 4,
+          "target": "_GetHandle",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,9 +1,17 @@",
+          "-mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "-push word ptr es:[0]",
+          "+enter 4, 0",
+          "+push si",
+          "+lcall 0, 0",
+          "+mov es, dx",
+          "+mov bx, ax",
+          "+mov si, bx",
+          "+mov word ptr [bp - 2], es",
+          "+cmp word ptr es:[bx], 0",
+          "+je 0x2c",
+          "+push word ptr es:[si]",
+          " lcall 0, 0",
+          " add sp, 2",
+          "-mov es, word ptr [0]",
+          "-mov word ptr es:[0], 0",
+          "+mov es, word ptr [bp - 2]",
+          "+mov word ptr es:[si], 0",
+          "+pop si",
+          "+leave ",
+          " retf "
+        ]
+      }
+    },
+    {
+      "variant": "v006",
+      "label": {
+        "FORM": "address_plus_one"
+      },
+      "size": 42,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "bx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "90cde3b18039bff5d0c6ee515032331590a6ef5f3aab7188392abdfa561c7c75",
+      "fixups": [
+        {
+          "offset": 36,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 31,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 22,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 19,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 6,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 2,
+          "width": 2,
+          "target": "_state",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,5 +1,8 @@",
+          "+push si",
+          "+mov si, 2",
+          " mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "-push word ptr es:[0]",
+          "+mov bx, si",
+          "+cmp word ptr es:[si], 0",
+          "+je 0x28",
+          "+push word ptr es:[2]",
+          " lcall 0, 0",
+          "@@ -7,4 +10,4 @@",
+          " mov es, word ptr [0]",
+          "-mov word ptr es:[0], 0",
+          "+mov word ptr es:[2], 0",
+          "+pop si",
+          " retf ",
+          "-nop "
+        ]
+      }
+    },
+    {
+      "variant": "v007",
+      "label": {
+        "FORM": "conditional_address"
+      },
+      "size": 62,
+      "frame": 4,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "bx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "6837397e254c0e996fc9599ccf04cbe74bca67c6105a248e97e2fd8d91cad8d7",
+      "fixups": [
+        {
+          "offset": 44,
+          "width": 4,
+          "target": "_consume",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 27,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 2,
+          "target": "_otherHandle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 17,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 13,
+          "width": 2,
+          "target": "_handle",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "_choose",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,10 +1,22 @@",
+          "+enter 4, 0",
+          "+push si",
+          "+cmp word ptr [0], 0",
+          "+je 0x16",
+          "+mov bx, 0",
+          " mov es, word ptr [0]",
+          "-cmp word ptr es:[0], 0",
+          "-je 0x24",
+          "-push word ptr es:[0]",
+          "+jmp 0x1d",
+          "+nop ",
+          "+mov bx, 0",
+          "+mov es, word ptr [2]",
+          "+mov si, bx",
+          "+mov word ptr [bp - 2], es",
+          "+cmp word ptr es:[bx], 0",
+          "+je 0x3b",
+          "+push word ptr es:[si]",
+          " lcall 0, 0",
+          " add sp, 2",
+          "-mov es, word ptr [0]",
+          "-mov word ptr es:[0], 0",
+          "+mov es, word ptr [bp - 2]",
+          "+mov word ptr es:[si], 0",
+          "+pop si",
+          "+leave ",
+          " retf ",
+          "-nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}
