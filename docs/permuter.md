@@ -6,6 +6,24 @@ function signature, declarations, pragmas and every other function stay as suppl
 The compiler flags come from `promote.function_flags`, so each run uses the symbol's
 assigned profile.
 
+For an unnamed static helper, add its executable address and a same-object caller:
+
+```powershell
+python tools/permuter.py build/workers/me/helper.c --helper 3:63FE `
+    --function DrawEditTileLeaf --like _UpdateEditIfBufInvalid `
+    --time-limit 900 --iterations 100000 --batch-size 48 --beam 8 --seed 7001
+```
+
+`--function` names the non-static probe definition in the supplied translation unit;
+only its body is mutated. `--like` selects the caller's assigned translation-unit
+profile. Every candidate is compiled through the compiler cache and compared with
+`static_probe`'s relocation-bound diagnostic after its LINK far-call translation.
+Helper costs use the same ordering as symbol mode: exact body first, then frame,
+earliest meaningful divergence, and aligned cost. Differences at rendered fixup
+operands are excluded by the same rule as symbol mode. Exact body also requires equal
+length and equal raw bytes outside bound relocation fields. A zero-cost helper result
+is diagnostic evidence; the helper still has to be admitted as a `static` in its unit.
+
 ```powershell
 python tools/permuter.py build/workers/me/candidate.c --function _Symbol `
     --time-limit 900 --iterations 100000 --batch-size 48 --beam 8 --seed 7001

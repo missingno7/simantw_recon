@@ -1,6 +1,7 @@
 """Randomized, source-preserving MSC 7.00 function search.
 
     python tools/permuter.py SOURCE.c --function _Symbol [--time-limit 900]
+    python tools/permuter.py SOURCE.c --helper SEG:OFF --function Helper --like _Caller
         [--iterations 100000] [--beam 8] [--seed N] [--allow-risky]
         [--only mutation,...] [--out build/permuter/SYMBOL_TIMESTAMP]
 
@@ -29,7 +30,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 
 import c_source
 import permuter_mutations as M
-from common import relative
+from common import FormatError, relative
 
 GOOD = {'CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER'}
 STEERING_MUTATIONS = {'register_toggle', 'introduce_temp', 'assign_in_cond', 'type_change'}
@@ -254,19 +255,35 @@ class DedupeIndex:
 
 
 class Permuter:
-    def __init__(self, source_path, symbol, args):
-        from promote import function_flags
+    def __init__(self, source_path, symbol, args, helper=None, like=None):
         self.symbol = symbol
         self.args = args
         self.source_path = Path(source_path).resolve()
         self.original = self.source_path.read_text(encoding='ascii')
         self.function = source_function(self.original, symbol)
         self.codec = M.BodyCodec(self.original, self.function)
-        self.flags_profile, self.flags = function_flags(symbol)
+        self.helper_address = helper
+        self.like = like
+        if helper:
+            import compiler_profiles
+            from common import cards
+            segment, _offset = (int(x, 16) if i else int(x)
+                                for i, x in enumerate(helper.split(':')))
+            self.symbol = f'{segment}_{_offset:04X}'
+            caller = next((c for c in cards() if c['symbol'] == like), None)
+            if caller is None:
+                raise ValueError('unknown caller ' + str(like))
+            if caller['segment'] != segment:
+                raise ValueError('%s is in segment %d, not %d' % (like, caller['segment'], segment))
+            self.flags_profile = compiler_profiles.resolve(like)
+            self.flags = compiler_profiles.flags_for(like, caller['segment_name'])
+        else:
+            from promote import function_flags
+            self.flags_profile, self.flags = function_flags(symbol)
         self.rng = random.Random(args.seed)
         self.started = time.perf_counter()
         stamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        out = Path(args.out).resolve() if args.out else ROOT / 'build' / 'permuter' / f'{symbol}_{stamp}'
+        out = Path(args.out).resolve() if args.out else ROOT / 'build' / 'permuter' / f'{self.symbol}_{stamp}'
         if not out.is_relative_to(ROOT / 'build' / 'permuter'):
             raise ValueError('output must stay under build/permuter/')
         self.out = out
@@ -278,6 +295,8 @@ class Permuter:
         self.counts = {'evaluations': 0, 'compiler_misses': 0, 'compile_errors': 0,
                        'duplicate_source': 0, 'duplicate_output': 0, 'no_mutation': 0,
                        'hygiene_rejected': 0}
+        if helper:
+            self.counts['compiler_batch_retries'] = 0
         self.dedupe = DedupeIndex()
         self.variant_log = (self.out / 'variants.jsonl').open('w', encoding='utf-8')
         self.batch_no = 0
@@ -292,6 +311,8 @@ class Permuter:
     def _run_batch(self, rows, phase='search'):
         if not rows:
             return []
+        if self.helper_address:
+            return self._run_helper_batch(rows, phase)
         import codegen_grinder
         self.batch_no += 1
         directory = self.out / 'batches' / f'{phase}_{self.batch_no:05d}'
@@ -311,6 +332,67 @@ class Permuter:
             signature = masked_member_signature(record.get('receipt') or {}, self.symbol)
             result.append((original, record, value, signature))
         return result
+
+    def _run_helper_batch(self, rows, phase):
+        """Compile candidates with the caller profile and use static_probe's bound diff."""
+        import static_probe
+
+        self.batch_no += 1
+        directory = self.out / 'batches' / f'{phase}_{self.batch_no:05d}'
+        directory.mkdir(parents=True, exist_ok=True)
+        jobs = []
+        for index, row in enumerate(rows):
+            source_path = directory / f'candidate_{index:04d}.c'
+            source_path.write_text(row['source'], encoding='ascii')
+            jobs.append({'source': source_path.relative_to(ROOT).as_posix(), 'flags': self.flags})
+        compiled, cache = self._compile_helper_jobs(jobs)
+        self.counts['evaluations'] += len(rows)
+        self.counts['compiler_misses'] += cache.get('misses', 0)
+        result = []
+        for index, (original, (obj, receipt)) in enumerate(zip(rows, compiled)):
+            if obj is None or receipt.get('exit_code'):
+                comparison = {'result': 'COMPILE_FAILED', 'diagnostic': {}}
+            else:
+                try:
+                    detail = static_probe.compare_object(
+                        self.helper_address, obj, self.function, self.like)
+                    diagnostic = detail['diagnostic']
+                    comparison = {
+                        'result': 'CONFIRMED_MEMBER' if diagnostic.get('exact_match') else 'NO_COMPLETE_MATCH',
+                        'diagnostic': diagnostic,
+                        'helper_comparison': detail,
+                    }
+                except Exception as exc:
+                    comparison = {'result': 'COMPILE_FAILED', 'diagnostic': {},
+                                  'error': f'{type(exc).__name__}: {exc}'}
+            record = {'comparison': comparison, 'receipt': receipt,
+                      'candidate': index}
+            value = score(comparison)
+            result.append((original, record, value, None))
+        return result
+
+    def _compile_helper_jobs(self, jobs):
+        """Split a helper batch after a service timeout; isolate a bad single job."""
+        from codegen_cache import compile_cached
+
+        def compile_rows(batch):
+            try:
+                compiled, cache = compile_cached(batch, 'msc700')
+                return compiled, cache
+            except FormatError as exc:
+                if len(batch) == 1:
+                    return [(None, {'exit_code': 1, 'stdout': str(exc),
+                                    'stderr': '', 'unsupported_option': False})], \
+                        {'hits': 0, 'misses': 1, 'environment_launches': 0}
+                self.counts['compiler_batch_retries'] += 1
+                middle = len(batch) // 2
+                left, left_cache = compile_rows(batch[:middle])
+                right, right_cache = compile_rows(batch[middle:])
+                cache = {key: left_cache.get(key, 0) + right_cache.get(key, 0)
+                         for key in ('hits', 'misses', 'environment_launches')}
+                return left + right, cache
+
+        return compile_rows(jobs)
 
     def _record(self, entry, record, value, signature, phase='search'):
         receipt = record.get('receipt') or {}
@@ -578,6 +660,10 @@ class Permuter:
             'diagnostic_categories': best_diag.get('categories'),
             'promotion': 'NONE: strict comparison is diagnostic; no source was promoted.',
         }
+        if self.helper_address:
+            summary['helper_address'] = self.helper_address
+            summary['like'] = self.like
+            summary['comparison_scope'] = 'static_probe fixup-bound helper body after LINK far-call translation'
         (self.out / 'summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
         print(f"[permuter] done {self.symbol}: {self.counts['evaluations']} evaluations in {elapsed:.1f}s, "
               f"{self.counts['compiler_misses']} compiler misses, best={self.best.score}, "
@@ -593,7 +679,9 @@ class Permuter:
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('source', help='whole TU or candidate source containing the target function')
-    parser.add_argument('--function', required=True, help='MAPSYM symbol, including leading underscore')
+    parser.add_argument('--function', required=True, help='MAPSYM symbol or candidate helper function name')
+    parser.add_argument('--helper', help='unnamed helper target as decimal-SEG:hex-OFFSET (requires --like)')
+    parser.add_argument('--like', help='MAPSYM caller in the same object; supplies helper compiler profile')
     parser.add_argument('--time-limit', type=float, default=600.0)
     parser.add_argument('--iterations', type=int, default=100000)
     parser.add_argument('--batch-size', type=int, default=48)
@@ -610,7 +698,19 @@ def main(argv=None):
         parser.error('--batch-size must be between 1 and 256')
     if args.beam < 1:
         parser.error('--beam must be positive')
-    worker = Permuter(args.source, args.function, args)
+    if args.helper and not args.like:
+        parser.error('--helper requires --like CALLER')
+    if args.like and not args.helper:
+        parser.error('--like is only valid with --helper')
+    if args.helper:
+        try:
+            seg, off = args.helper.split(':')
+            if int(seg, 10) < 1 or int(off, 16) < 0 or int(off, 16) > 0xffff:
+                raise ValueError
+        except ValueError:
+            parser.error('--helper must be SEG:OFFSET (decimal segment, hexadecimal offset)')
+    worker = Permuter(args.source, args.function, args, helper=args.helper,
+                      like=args.like) if args.helper else Permuter(args.source, args.function, args)
     try:
         worker.search()
         minimized = None if args.no_minimize else worker.minimize()

@@ -78,28 +78,101 @@ def candidate_bytes(obj, function, segment=None, offset=None, names=None):
     return bytes(view), bindings
 
 
-def probe(address, source, function, like, full=False):
+def compare_object(address, obj, function, like):
+    """Compare an already compiled helper with its unnamed target."""
     segment, offset = (int(x, 16) if i else int(x) for i, x in enumerate(address.split(':')))
     caller = next((c for c in cards() if c['symbol'] == like), None)
     if caller is None:
         raise FormatError('unknown caller ' + like)
     if caller['segment'] != segment:
         raise FormatError('%s is in segment %d, not %d' % (like, caller['segment'], segment))
-    flags = compiler_profiles.flags_for(like, caller['segment_name'])
     target, target_bindings, names, extent = original_bytes(segment, offset)
-    obj, receipt = compile_cached([dict(source=source, flags=flags)], 'msc700')[0][0]
-    if obj is None or receipt.get('exit_code'):
-        return dict(result='COMPILE_FAILED', log=receipt['stdout'][-1200:])
     candidate, candidate_bindings = candidate_bytes(obj, function, segment, offset, names)
     diff = compare_code(target, candidate, target_bindings, candidate_bindings)
-    rows = diff['aligned_asm'] if full else focused_alignment(diff['aligned_asm'])
-    return dict(address=address, function=function, flags=flags, target_extent=extent,
+    ordinary_bytes_equal = _ordinary_bytes_equal(
+        segment, offset, target, candidate, obj, function, names)
+    diff['ordinary_bytes_equal'] = ordinary_bytes_equal
+    diff['exact_match'] = ordinary_bytes_equal and len(candidate) == len(target) and all(
+        not row.get('differences') or _fixup_only_difference(row)
+        for row in diff.get('aligned_asm', []))
+    return dict(address=address, function=function, target_extent=extent,
                 opcodes='%s/%s' % (diff['opcode_matches'], diff['opcode_total']),
                 bytes='%d/%d' % (len(candidate), len(target)), identical_bytes=candidate == target,
                 register_differences=diff['register_only_differences'], stack_differences=diff['stack_local_differences'],
                 immediate_differences=diff['immediate_differences'], memory_differences=diff['memory_operand_differences'],
                 branch_differences=diff['branch_target_differences'], first_structural_difference=diff['first_structural_difference'],
-                aligned_asm=rows, scope='DIAGNOSTIC ONLY: bytes without fixups; admit the helper as a static inside its unit')
+                aligned_asm=diff['aligned_asm'], diagnostic=diff,
+                scope='DIAGNOSTIC ONLY: fixup-bound helper body; admit it as a static inside its unit')
+
+
+def _fixup_only_difference(row):
+    differences = set(row.get('differences') or [])
+    allowed = {'memory_operand', 'immediate_or_binding', 'alignment_uncertain'}
+    target = (row.get('target') or '').lower()
+    candidate = (row.get('candidate') or '').lower()
+    rendered = 'resolved fixup' in target or 'resolved fixup' in candidate
+    selector = 'es:[' in target or 'es:[' in candidate
+    return differences <= allowed and (rendered or selector)
+
+
+def _ordinary_bytes_equal(segment, offset, target, candidate, obj, function, names):
+    """Require identical body bytes after masking only bound relocation fields."""
+    if len(target) != len(candidate):
+        return False
+    image = ne.parse(fixture('SIMANTW.EXE'))
+    ns = image['segments'][segment - 1]
+    ignored = set()
+    for relocation in ns['relocations']:
+        width = ne.RELOC_WIDTH[relocation['source_type']]
+        for site in relocation['sites']:
+            if offset <= site < offset + len(target):
+                begin = site - offset
+                ignored.update(range(begin, min(begin + width, len(target))))
+
+    module = omf.parse(obj.read_bytes())
+    pubs = [p for p in module['publics']
+            if p['name'].lstrip('_') == function.lstrip('_') and p['segment']]
+    if len(pubs) != 1:
+        return False
+    pub = pubs[0]
+    code = bytes.fromhex(module['segments'][pub['segment'] - 1]['data_hex'])
+    following = [p['offset'] for p in module['publics']
+                 if p['segment'] == pub['segment'] and p['offset'] > pub['offset']]
+    stop = min(following + [len(code)])
+    closed = solve(code, pub['offset'], stop)
+    if closed.get('end') and closed.get('status') == 'PROBABLE':
+        stop = closed['end']
+    begin = pub['offset']
+    for fixup in module['fixups']:
+        if fixup['segment'] != pub['segment'] or not begin <= fixup['offset'] < stop:
+            continue
+        pos = fixup['offset'] - begin
+        name = (fixup['target'] or {}).get('name')
+        translated = (fixup['location_type'] == 3 and pos >= 1 and
+                      code[fixup['offset'] - 1] == 0x9A and name in names and
+                      names[name][0] == segment)
+        if not translated:
+            ignored.update(range(pos, min(pos + fixup['width'], len(candidate))))
+    return all(target[index] == candidate[index]
+               for index in range(len(target)) if index not in ignored)
+
+
+def probe(address, source, function, like, full=False):
+    caller = next((c for c in cards() if c['symbol'] == like), None)
+    if caller is None:
+        raise FormatError('unknown caller ' + like)
+    flags = compiler_profiles.flags_for(like, caller['segment_name'])
+    obj, receipt = compile_cached([dict(source=source, flags=flags)], 'msc700')[0][0]
+    if obj is None or receipt.get('exit_code'):
+        return dict(result='COMPILE_FAILED', log=receipt['stdout'][-1200:])
+    compared = compare_object(address, obj, function, like)
+    rows = compared['aligned_asm'] if full else focused_alignment(compared['aligned_asm'])
+    return dict(address=address, function=function, flags=flags, target_extent=compared['target_extent'],
+                opcodes=compared['opcodes'], bytes=compared['bytes'], identical_bytes=compared['identical_bytes'],
+                register_differences=compared['register_differences'], stack_differences=compared['stack_differences'],
+                immediate_differences=compared['immediate_differences'], memory_differences=compared['memory_differences'],
+                branch_differences=compared['branch_differences'], first_structural_difference=compared['first_structural_difference'],
+                aligned_asm=rows, scope=compared['scope'])
 
 
 def main():
