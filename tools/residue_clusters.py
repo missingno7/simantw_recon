@@ -90,12 +90,16 @@ def classify(rows):
 
 
 def best_rows(entry):
-    best = entry.get('best') or {}
+    """Aligned rows of the frontier draft (latest earliest divergence) when recorded, else the best draft."""
+    best = entry.get('frontier') or entry.get('best') or {}
     try:
         results = json.load(open(ROOT / best['origin'], encoding='utf-8'))['results']
     except (OSError, ValueError, KeyError, TypeError):
         return None, best
-    row = next((r for r in results if (r['comparison'].get('diagnostic') or {}).get('opcode_matches') == best.get('opcode_matches')), None)
+    row = None
+    if best.get('candidate') is not None:
+        row = next((r for r in results if r.get('candidate') == best['candidate']), None)
+    row = row or next((r for r in results if (r['comparison'].get('diagnostic') or {}).get('opcode_matches') == best.get('opcode_matches')), None)
     return ((row or {}).get('comparison', {}).get('diagnostic') or {}).get('aligned_asm'), best
 
 

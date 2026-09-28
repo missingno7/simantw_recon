@@ -264,7 +264,7 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
     if not admitted and not pool:
         for row, _ in rows:
             if row['comparison'].get('diagnostic'):
-                improved = drafts.store(symbol, out / ('candidate%04d.c' % row['candidate']), row['comparison'], relative(out / 'results.json'), flags) or improved
+                improved = drafts.store(symbol, out / ('candidate%04d.c' % row['candidate']), row['comparison'], relative(out / 'results.json'), flags, candidate=row['candidate']) or improved
     if note:
         drafts.note(symbol, note, origin=relative(out))
     best, best_summary = rows[0]

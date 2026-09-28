@@ -34,3 +34,15 @@ class Classify(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class Frontier(unittest.TestCase):
+    def test_earlier_decision_outranks_more_opcodes(self):
+        import drafts
+        from unittest import mock
+        frame_fixed = {'result': 'NO_COMPLETE_MATCH', 'diagnostic': {'opcode_matches': 40, 'aligned_asm': [
+            row(0, 'enter 2, 0', 0, 'enter 2, 0'), row(4, 'mov ax, 1', 4, 'mov bx, 1', ['register_allocation'])]}}
+        more_opcodes = {'result': 'NO_COMPLETE_MATCH', 'diagnostic': {'opcode_matches': 45, 'aligned_asm': [
+            row(0, 'enter 2, 0', 0, 'enter 4, 0', ['immediate_or_binding'])]}}
+        with mock.patch('tu_assembly.body_exact', return_value=False):
+            self.assertGreater(drafts.frontier_rank(frame_fixed), drafts.frontier_rank(more_opcodes))

@@ -35,8 +35,42 @@ def lock():
     return file_lock(LOCK, 120, 'draft ledger is busy')
 
 
-def store(symbol, source_path, comparison, origin, flags, basis=None):
-    """Keep source_path as the symbol's best draft when it outranks the stored one."""
+def frontier_rank(comparison):
+    """(strict, exact body, earliest meaningful divergence row, aligned opcodes).
+
+    The row comes from residue_clusters.classify (fixup-only placement rows skipped). A draft
+    that fixes an EARLIER compiler decision (e.g. the frame) ranks higher than one that only
+    matches more opcodes further down, even if its opcode count is lower."""
+    from tu_assembly import body_exact
+    from residue_clusters import classify
+    d = comparison.get('diagnostic') or {}
+    rows = d.get('aligned_asm') or []
+    if d.get('opcode_matches') is None or not rows:
+        return None
+    _, index, _ = classify(rows)
+    return [comparison.get('result') in GOOD, body_exact(comparison), len(rows) + 1 if index is None else index, d['opcode_matches']]
+
+
+def _store_frontier(row, symbol, source_path, digest, comparison, origin, flags, candidate):
+    key = frontier_rank(comparison)
+    front = row.get('frontier')
+    if key is None or (front and (front.get('sha256') == digest or key <= front.get('key', []))):
+        return False
+    d = comparison.get('diagnostic') or {}
+    destination = DRAFTS / symbol.lstrip('_') / (digest[:12] + '.c')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if not destination.exists():
+        shutil.copyfile(source_path, destination)
+    row['frontier'] = dict(source=destination.relative_to(ROOT).as_posix(), sha256=digest, key=key, first_divergence_row=key[2],
+                           opcode_matches=d.get('opcode_matches'), opcode_total=d.get('opcode_total'),
+                           candidate_bytes=d.get('candidate_bytes'), target_bytes=d.get('target_bytes'),
+                           flags=flags, origin=origin, candidate=candidate, recorded=timestamp())
+    return True
+
+
+def store(symbol, source_path, comparison, origin, flags, basis=None, candidate=None):
+    """Keep source_path as the symbol's best draft when it outranks the stored one, and as its
+    frontier draft when its earliest meaningful divergence is later than the stored frontier's."""
     key = rank(comparison)
     if key is None:
         return False
@@ -45,6 +79,8 @@ def store(symbol, source_path, comparison, origin, flags, basis=None):
     with lock():
         ledger = load()
         row = ledger.setdefault(symbol, {})
+        if _store_frontier(row, symbol, source_path, digest, comparison, origin, flags, candidate):
+            write_json(INDEX, dict(sorted(ledger.items())))
         best = row.get('best')
         if best and best['sha256'] == digest:
             return False
