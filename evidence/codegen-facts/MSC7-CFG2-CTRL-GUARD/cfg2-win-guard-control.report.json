@@ -1,0 +1,168 @@
+{
+  "name": "cfg2-win-guard-control",
+  "profile": "og",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NTSIMTWO_MODULE"
+  ],
+  "function": "win_DrawBitMapAtObj",
+  "symbol": "_win_DrawBitMapAtObj",
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 1,
+  "same_output": [
+    [
+      "v000",
+      "v001"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "GUARD_BODY": "early-return"
+      },
+      "size": 64,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "ax",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "920d842215aeb5e3d2d6d13d01f79c5441e86dc7c18da7e2e4426127cb2fee25",
+      "fixups": [
+        {
+          "offset": 54,
+          "width": 4,
+          "target": "_GRectFill",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 45,
+          "width": 2,
+          "target": "__foreColor",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 40,
+          "width": 2,
+          "target": "_monoPat",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 28,
+          "width": 4,
+          "target": "_win_DrawBitMap",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push si",
+        "0004 mov si, word ptr [bp + 6]",
+        "0007 mov es, word ptr [bp + 8]",
+        "000a test byte ptr es:[si + 0x24], 1",
+        "000f je 0x3d",
+        "0011 push word ptr [bp + 0xa]",
+        "0014 push word ptr es:[si + 2]",
+        "0018 push word ptr es:[si]",
+        "001b lcall 0, 0",
+        "0020 add sp, 6",
+        "0023 or ax, ax",
+        "0025 jne 0x3d",
+        "0027 mov al, byte ptr [0]",
+        "002a cwde ",
+        "002b or ax, word ptr [0]",
+        "002f push ax",
+        "0030 mov ax, word ptr [bp + 8]",
+        "0033 push ax",
+        "0034 push si",
+        "0035 lcall 0, 0",
+        "003a add sp, 6",
+        "003d pop si",
+        "003e leave ",
+        "003f retf "
+      ],
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "28/28",
+        "bytes": "52/52"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "GUARD_BODY": "positive-guard"
+      },
+      "size": 64,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "ax",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "920d842215aeb5e3d2d6d13d01f79c5441e86dc7c18da7e2e4426127cb2fee25",
+      "fixups": [
+        {
+          "offset": 54,
+          "width": 4,
+          "target": "_GRectFill",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 45,
+          "width": 2,
+          "target": "__foreColor",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 40,
+          "width": 2,
+          "target": "_monoPat",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 28,
+          "width": 4,
+          "target": "_win_DrawBitMap",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      },
+      "target": {
+        "result": "CONFIRMED_MEMBER",
+        "opcodes": "28/28",
+        "bytes": "52/52"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

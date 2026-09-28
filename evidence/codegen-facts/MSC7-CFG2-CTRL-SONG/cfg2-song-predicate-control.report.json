@@ -1,0 +1,165 @@
+{
+  "name": "cfg2-song-predicate-control",
+  "profile": "ogi",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oegilw",
+    "/NTGR_MODULE"
+  ],
+  "function": "snd_IsSongDone",
+  "symbol": "_snd_IsSongDone",
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "PREDICATE": "eq-zero"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "185169e0a23ae83485dd106bee1ae8e454d3a17b36fea868b60bc8be6491ff1a",
+      "fixups": [
+        {
+          "offset": 31,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 15,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 2,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 mov es, word ptr [0]",
+        "0004 cmp word ptr es:[0], 0",
+        "000a je 0x28",
+        "000c cmp word ptr es:[4], 0",
+        "0012 jne 0x28",
+        "0014 cmp word ptr es:[2], 0",
+        "001a jne 0x28",
+        "001c cmp word ptr es:[0x14], 1",
+        "0022 sbb ax, ax",
+        "0024 neg ax",
+        "0026 retf ",
+        "0027 nop ",
+        "0028 mov ax, 1",
+        "002b retf "
+      ],
+      "target": {
+        "result": "STRONGLY_SUPPORTED_MEMBER",
+        "opcodes": "14/14",
+        "bytes": "1176/1176"
+      }
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "PREDICATE": "lt-one"
+      },
+      "size": 44,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "9f7a25c04911b2b0d81d005442666414352f3ead9f8a36a2edbbb7fb211de28c",
+      "fixups": [
+        {
+          "offset": 31,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 23,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 15,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 7,
+          "width": 2,
+          "target": "SIMANT_DATA_GROUP",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 2,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [],
+        "diff": [
+          "@@ -8,4 +8,4 @@",
+          " cmp word ptr es:[0x14], 1",
+          "-sbb ax, ax",
+          "-neg ax",
+          "+jb 0x28",
+          "+xor ax, ax",
+          " retf "
+        ]
+      },
+      "target": {
+        "result": "NO_COMPLETE_MATCH",
+        "opcodes": "12/14",
+        "bytes": "1172/1176"
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

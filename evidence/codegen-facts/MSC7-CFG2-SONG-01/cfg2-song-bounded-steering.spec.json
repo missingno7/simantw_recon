@@ -1,0 +1,21 @@
+{
+  "name": "cfg2-song-bounded-steering",
+  "symbol": "_mySongIsDone",
+  "function": "mySongIsDone",
+  "source": "build/workers/f-cfg2-01/mySong_steering_template.c",
+  "mode": "product",
+  "axes": {
+    "DEAD_STEER": {
+      "none": "",
+      "dead_size_guard": "if (sizeof(int) != 2) return 0;"
+    },
+    "STATE_STEER": {
+      "direct": "result = stateViaSelector.songState < 1;",
+      "harmless_state_alias": "{ unsigned int stateCopy; stateCopy = stateViaSelector.songState; result = stateCopy < 1; }"
+    },
+    "TAIL_STEER": {
+      "none": "",
+      "unused_temporary": "{ int temporary = 0; (void)temporary; }"
+    }
+  }
+}

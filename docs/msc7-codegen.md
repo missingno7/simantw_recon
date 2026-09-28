@@ -219,6 +219,13 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - **MSC7-C23:** an early `return` carrying a duplicate of the cleanup tail merges into the shared tail. `_ShowIntro`.
 - Evidence: `evidence/codegen-facts/MSC7-C18/`, `C19/`, `C20/`, `C23/`.
 
+**MSC7-CFG2: for a two-arm conditional that assigns DIFFERENT values, inverting the predicate and swapping the arms changes the emitted branch and fall-through arm. Equal assignments collapse and polarity does not matter. SUPPORTED.**
+- Admitted control `_MakeKitchenWall` (`ogi`): exact at 81/81; the inverted and swapped form gives 80/81.
+- Toy (`ogi`): `if (c) a else b` and `if (!c) b else a` give different 26-byte objects.
+- `evidence/codegen-facts/MSC7-CFG2/`.
+- Unlike switch-arm order (C18), if/else polarity IS a search axis.
+- Validated 2026-09-28 (f-cfg2-00).
+
 **MSC7-C22: in a `for` loop, `continue` reaches the increment and test while `break` leaves; a target branch into `inc si` is a `continue`. SUPPORTED.**
 - `_FillHolesRN` (`baseline`): `continue` removes one of the two branch-destination mismatches.
 - `evidence/codegen-facts/MSC7-C22/`.

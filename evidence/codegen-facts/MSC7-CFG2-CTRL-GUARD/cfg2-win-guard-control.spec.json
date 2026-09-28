@@ -1,0 +1,13 @@
+{
+  "name": "cfg2-win-guard-control",
+  "symbol": "_win_DrawBitMapAtObj",
+  "function": "win_DrawBitMapAtObj",
+  "source": "build/workers/f-cfg2-01/control_win_DrawBitMapAtObj.c",
+  "axes": {
+    "GUARD_BODY": {
+      "early-return": "if ((object->flags & 1) == 0)\n        return;\n\n    if (win_DrawBitMap(object->bitmapOffset, object->bitmapArgument, value) == 0) {\n        color = (int)monoPat | _foreColor;\n        GRectFill(object, color);\n    }",
+      "positive-guard": "if ((object->flags & 1) != 0) {\n        if (win_DrawBitMap(object->bitmapOffset, object->bitmapArgument, value) == 0) {\n            color = (int)monoPat | _foreColor;\n            GRectFill(object, color);\n        }\n    }"
+    }
+  },
+  "mode": "one-at-a-time"
+}

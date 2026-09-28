@@ -1,0 +1,103 @@
+{
+  "name": "cfg2-branch-polarity-toy",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v001"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "BODY": "zero-test-return-one"
+      },
+      "size": 14,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "f3207998892265793b1bfb16067a222cddd5dbebef47f8c4cfb19d61501605c3",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 cmp word ptr [bp + 6], 1",
+        "0007 sbb ax, ax",
+        "0009 neg ax",
+        "000b leave ",
+        "000c retf ",
+        "000d nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "BODY": "equivalent-inverted-test"
+      },
+      "size": 14,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "f3207998892265793b1bfb16067a222cddd5dbebef47f8c4cfb19d61501605c3",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "BODY": "negative-outcome-inverted"
+      },
+      "size": 12,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax"
+      ],
+      "saves": [],
+      "sha256": "29df271071c14dc9dbc0af07b664da4e38f5985b89358028cdb0e575ebcc2124",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -4,5 +4,4 @@",
+          " sbb ax, ax",
+          "-neg ax",
+          "+inc ax",
+          " leave ",
+          " retf ",
+          "-nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "cfg2-spider-bounded-steering",
+  "symbol": "_SpiderDialog",
+  "function": "SpiderDialog",
+  "source": "build/workers/f-cfg2-01/SpiderDialog_steering_template.c",
+  "mode": "product",
+  "axes": {
+    "ENTRY_STEER": {
+      "direct": "if (DialogAbortOrCont() == 0 && win_Events() == 0) { goto animation_work; }",
+      "harmless_call_alias": "abortCopy = DialogAbortOrCont(); if (abortCopy == 0 && win_Events() == 0) { goto animation_work; }"
+    },
+    "FRAME_STEER": {
+      "direct": "",
+      "redundant_frame_alias": "{ int frameCopy; frameCopy = frame; frame = frameCopy; }"
+    },
+    "DEAD_STEER": {
+      "none": "",
+      "dead_size_guard": "if (sizeof(int) != 2) goto animation_exit;"
+    }
+  }
+}

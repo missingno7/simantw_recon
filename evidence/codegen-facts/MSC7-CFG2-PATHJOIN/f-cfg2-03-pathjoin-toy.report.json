@@ -1,0 +1,93 @@
+{
+  "name": "f-cfg2-03-pathjoin-toy",
+  "profile": "og",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "RETRY_BODY": "success_only"
+      },
+      "size": 22,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "7a0a2016245f558d53791f72e33742f52bd44cabe3835371b00276bd0e932da0",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 mov dx, 2",
+        "0006 mov bx, word ptr [bp + 6]",
+        "0009 or bx, bx",
+        "000b je 0xe",
+        "000d dec dx",
+        "000e or dx, dx",
+        "0010 jne 9",
+        "0012 mov ax, dx",
+        "0014 leave ",
+        "0015 retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "RETRY_BODY": "unconditional"
+      },
+      "size": 6,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "cc65c3f444ed71d340fd899ea25b0fcc797b7ce53a1e140078f92d6fee752883",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -1,12 +1,4 @@",
+          "-push bp",
+          "-mov bp, sp",
+          "-mov dx, 2",
+          "-mov bx, word ptr [bp + 6]",
+          "-or bx, bx",
+          "-je 0xe",
+          "-dec dx",
+          "-or dx, dx",
+          "-jne 9",
+          "+xor dx, dx",
+          " mov ax, dx",
+          "-leave ",
+          " retf ",
+          "+nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}
