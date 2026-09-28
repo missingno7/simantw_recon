@@ -818,7 +818,7 @@ def _steering_constructs(items: list[Item], target_offsets: dict[str, dict],
 
 
 def compose_object(component: str, additions: list[tuple[str, str]], *, max_arrangements: int = 12,
-                   out_dir: str | None = None, naive: bool = False) -> dict:
+                   out_dir: str | None = None, naive: bool = False, persist: bool = False) -> dict:
     """Compose and test bounded placement variants for an object component."""
     if max_arrangements < 1 or max_arrangements > 64:
         raise FormatError("max_arrangements must be between 1 and 64")
@@ -977,6 +977,30 @@ def compose_object(component: str, additions: list[tuple[str, str]], *, max_arra
         note += ["", "## Declaration conflicts", ""]
         note.extend("- `%s`: %s" % (", ".join(x.names), " ".join(x.text.split())) for x in declaration_conflicts)
     (session / "provenance.md").write_text("\n".join(note) + "\n", encoding="utf-8")
+    if persist:
+        # Keep a strictly passing arrangement as a real unit record so promote.py --unit can
+        # publish it. The id is derived from the component and the source hash, so it never
+        # collides with another worker's diagnostic unit.
+        if not best_trial["strict"].get("strict_pass"):
+            raise FormatError("--persist needs a strictly passing arrangement; none passed")
+        digest = hashlib.sha256(ready_path.read_bytes()).hexdigest()[:10]
+        unit_id = "%s_compose_%s" % (re.sub(r"[^A-Za-z0-9]+", "_", component), digest)
+        folder = UNITS / unit_id
+        if folder.exists():
+            raise FormatError("unit %s already exists" % unit_id)
+        folder.mkdir(parents=True)
+        (folder / "unit.c").write_bytes(ready_path.read_bytes())
+        persisted = dict(spec)
+        persisted.update(unit=unit_id, members=members, status="COMPOSED", layout="composed",
+                         reason="unit composer arrangement %s extending %s" % (best_trial["name"], base_unit_id),
+                         source=(folder / "unit.c").relative_to(ROOT).as_posix(),
+                         source_identity=identity(folder / "unit.c"),
+                         last_test={"result": best_trial["strict"].get("result"), "issues": best_trial["strict"].get("issues", []),
+                                    "report": best_trial.get("result_file")})
+        write_json(folder / "unit.json", persisted)
+        provenance["persisted_unit"] = unit_id
+        provenance["promote"] = ("python tools/promote.py --unit %s --reason \"...\"%s"
+                                 % (unit_id, ' --steered "..."' if steering else ""))
     provenance["best_source"] = ready_path.relative_to(ROOT).as_posix()
     provenance["note"] = (session / "provenance.md").relative_to(ROOT).as_posix()
     write_json(session / "compose.json", provenance)
@@ -999,9 +1023,10 @@ def main(argv=None):
     parser.add_argument("--max-arrangements", type=int, default=12)
     parser.add_argument("--out", help="output directory below build/workers (a bare name goes to build/workers/f-infra-composer/NAME)")
     parser.add_argument("--naive", action="store_true", help="start with added declarations in deterministic name order")
+    parser.add_argument("--persist", action="store_true", help="keep a strictly passing arrangement as evidence/recovery/units/<component>_compose_<hash> for promote.py --unit")
     args = parser.parse_args(argv)
     print(json.dumps(compose_object(args.component, args.add, max_arrangements=args.max_arrangements,
-                                    out_dir=args.out, naive=args.naive), indent=2))
+                                    out_dir=args.out, naive=args.naive, persist=args.persist), indent=2))
 
 
 if __name__ == "__main__":

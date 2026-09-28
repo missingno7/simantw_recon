@@ -1843,6 +1843,7 @@ def main():
     p.add_argument('--max-arrangements', type=int, default=12, help='bounded placement variants to compile (1..64)')
     p.add_argument('--out', help='output directory below build/workers (a bare name goes to build/workers/f-infra-composer/NAME)')
     p.add_argument('--naive', action='store_true', help='seed missing declarations in deterministic symbol order')
+    p.add_argument('--persist', action='store_true', help='keep a strictly passing arrangement as a unit record for promote.py --unit')
     args = ap.parse_args()
     if args.action == 'propose':
         rows = propose(args.min)
@@ -1863,7 +1864,7 @@ def main():
         from unit_composer import compose_object, parse_add
         additions = [parse_add(x) for x in args.add]
         print(json.dumps(compose_object(args.object, additions, max_arrangements=args.max_arrangements,
-                                        out_dir=args.out, naive=args.naive), indent=2))
+                                        out_dir=args.out, naive=args.naive, persist=args.persist), indent=2))
 
 
 if __name__ == '__main__':

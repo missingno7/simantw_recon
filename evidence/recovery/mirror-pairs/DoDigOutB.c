@@ -1,158 +1,139 @@
-/* Derived mechanically from the mirrored colony function _DoDigOutR (tools/mirror_pairs.py):
- * colony-specific MAPSYM identifiers swapped AddAntToRList->AddAntToBList, CastePopR->CastePopB, DoDigInR->DoDigInB, DoDigOutR->DoDigOutB, EatCountR->EatCountB, ExitMapR->ExitMapB, FindInRList->FindInBList, FixExitMapR->FixExitMapB, FoodR->FoodB, GetExitDirR->GetExitDirB, GetOutR->GetOutB, HealthR->HealthB, LifeR->LifeB, MapR->MapB, RlistM->BlistM, RlistS->BlistS, RlistT->BlistT, RlistX->BlistX, RlistY->BlistY, RpopT->BpopT; constants and structure unchanged.
+/* Derived mechanically from the mirrored colony function _DoDigOutAntA (tools/mirror_pairs.py):
+ * colony-specific MAPSYM identifiers swapped DoDigOutAntA->DoDigOutB, DoDigOutR->DoDigOutB, JamScentRN->JamScentBN; constants and structure unchanged.
  * Verified only by the strict matcher; where the pair is not a pure mirror the
  * diagnostic names the asymmetry. */
 /*
- * DoDigOutR: R twin of DoDigOutB (same simant1:2D4E unit).  Direction
- * via GetExitDirR(x,y,dirArg&7): >0 means dir=result-1, else
- * dir=RandTurn(dirArg&7).  attr=(dirArg&0xf8)|dir stored into the old
- * LifeR cell and RlistT[Tindex].  (nx,ny) from Dx8/Dy8; nx<0, nx>63
- * or ny>63 return with no explicit value, ny<1 returns GetOutR(x).
- * If the destination MapR tile is >=0x30 (obstacle): unlike the B
- * twin, ExitMapR[x][y] is only decremented when it is nonzero (a
- * zero guard B's own ExitMapB-- lacks), then the same cx=(dirArg&
- * 0x78)>>3 dispatch (cx==5/9 decays RlistT[Tindex] by 0x18 and sets
- * RlistM[Tindex]=4; cx==2/6 additionally sets RlistM[Tindex]=4 and
- * returns; otherwise plain return).  A still-solid destination
- * (IsItDirt!=0) fails (bare return).  Otherwise: LifeR[old] cleared,
- * and if the destination is occupied (bit 0x80) it fights an ant in
- * 8..0x67 via FindInRList/GetWinner(cell,attr) (RlistS/RlistT/LifeR/
- * RlistM updated) or a yellow ant with MeColor==0 via YellowFight
- * (3,Tindex) -- same range/condition shape as DoDigInR, not the B
- * twin's IsYellowAnt double-check/0x88..0xe7 range.  If no fight,
- * RlistT/LifeR/RlistX/RlistY are stamped and SRand64() vs HealthR
- * wears the destination tile (0x10..0x13) with FoodR/EatCountR/
- * HealthR bookkeeping (RpopT+CastePopR[2]) -- no trailing SRand4/
- * FixExitMapR/AddAntToBList tail, matching DoDigOutB's shape.
+ * DoDigOutAntA: per-tick behavior for an A-list ant (index) that is
+ * digging. attribute's bits split into flags (0xf8), a dig sub-mode
+ * digmode ((attribute&0x78)>>3, 0-15) and a direction (attribute&7).
+ * TurnTab[(attribute&7)*8 + SRand8()] gives a candidate new direction
+ * index; if the ant is on the map edge, Bounce(x,y) overrides it with a
+ * bounced direction instead. Dx8/Dy8 step that direction to (nx,ny).
+ *
+ * digmode outside {5,9}: the ant just changes AlistM (GetNewMode) and
+ * resets AlistS, without moving. digmode 5 or 9, when SRand8()==0,
+ * additionally finishes at the current cell: AlistT loses 0x18 (a
+ * progress counter step) and LifeA at the current cell is refreshed
+ * with the new AlistT. Otherwise the ant tries to move: if the stepped
+ * cell's MapA value exceeds Barrier, or the stepped cell's LifeA is
+ * already occupied, the ant instead turns in place (a fresh
+ * TurnTab[dirbase+SRand8()]|flags attribute, LifeA refreshed at the
+ * current cell). Otherwise the move commits: LifeA is marked at the new
+ * cell and cleared at the old one, AlistX/AlistY/AlistT are updated,
+ * and if AlistS is still positive it is decremented and a scent is
+ * jammed at the new cell: JamScentRN when the team bit (attribute &
+ * 0x80) is set, JamScentBN otherwise. AlistX/AlistY/AlistT/AlistM/
+ * AlistS, Dx8/Dy8, TurnTab and Barrier are the exact MAPSYM names from
+ * direct_data_bindings and reuse the field layout established by
+ * src/recovered/wf_GetAntIndex-a8eba5e594.c and the A-list state used in
+ * build/grind/agentU/_DoReturnFoodAnt.c (blocked, same unit). Bounce,
+ * SRand8, JamScentRN and JamScentBN reuse src/recovered/wf_Bounce-
+ * 0d87abbf42.c, src/recovered/SRand8.c, src/recovered/wf_JamScentRN-
+ * 18f9c8a2bb.c and src/recovered/wf_JamScentBN-cd34069882.c; GetNewMode
+ * is a unit neighbour (segment 7, far) without an admitted declaration.
  */
-extern unsigned char near LifeB[];
-extern unsigned char near MapB[64][64];
-extern unsigned char far ExitMapB[64][64];
-extern int near MeColor;
-extern int near HealthB;
-extern int near BpopT;
-extern int near CastePopB[6];
-extern int far Tindex;
-extern int far EatCountB;
-extern int far FoodB;
-extern char far Dx8[];
-extern char far Dy8[];
-extern unsigned char far BlistM[];
-extern unsigned char far BlistT[];
-extern unsigned char far BlistS[];
-extern unsigned char far BlistX[];
-extern unsigned char far BlistY[];
-extern int far GetExitDirB(int x, int y, int dir);
-extern int near RandTurn(int dir);
-extern int far GetOutB(int x);
-extern int far IsItDirt(int value);
+extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) AlistX[];
+extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) AlistY[];
+extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) AlistT[];
+extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) AlistM[];
+extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) AlistS[];
+extern unsigned char far Dx8[];
+extern unsigned char far Dy8[];
+extern signed char far TurnTab[];
+extern int far Barrier;
+extern unsigned char near MapA[];
+extern unsigned char near LifeA[];
+
 extern int far SRand8(void);
-extern int far SRand64(void);
-extern int far IsYellowAnt(int ant);
-extern void far YellowFight(int kind, int index);
-extern int far FindInBList(int x, int y, int ant);
-extern int near GetWinner(int defender, int attacker);
+extern int far Bounce(int x, int y);
+extern int far GetNewMode(int mode, int attribute);
+extern void near JamScentBN(int x, int y, int scent);
+extern void near JamScentBN(int x, int y, int scent);
 
-int far DoDigOutB(int x, int y, int dirArg)
+void near DoDigOutB(int index)
 {
-    int dir;
-    int attr;
-    int nx, ny;
-
-    int tile;
-    int cx;
-    int index;
-    int winner;
-    int fought;
-    int cell;
-
-    dir = GetExitDirB(x, y, dirArg & 7);
-    if (dir > 0)
-        dir = dir - 1;
-    else
-        dir = RandTurn(dirArg & 7);
-
-    attr = (dirArg & 0xf8) | dir;
-    LifeB[(x << 6) + y] = attr;
-    BlistT[Tindex] = attr;
-
-    nx = x + Dx8[dir];
-    ny = y + Dy8[dir];
-
-    if (nx < 0)
-        return;
-    if (nx > 0x3f)
-        return;
-    if (ny > 0x3f)
-        return;
-    if (ny < 1)
-        return GetOutB(x);
-
-    tile = MapB[nx][ny];
-    if (tile >= 0x30) {
-        if (ExitMapB[x][y] != 0)
-            ExitMapB[x][y]--;
-        cx = (dirArg & 0x78) >> 3;
-        if (cx == 5 || cx == 9) {
-            BlistT[Tindex] -= 0x18;
-            BlistM[Tindex] = 4;
-        }
-        if (cx == 2 || cx == 6) {
-            BlistM[Tindex] = 4;
-            return;
-        }
-        return;
-    }
-
-    if (IsItDirt(tile) != 0)
-        return;
-
-    LifeB[(x << 6) + y] = 0;
-
-    cell = LifeB[(nx << 6) + ny];
-    if (cell > 7 && cell < 0x68) {
-        index = FindInBList(nx, ny, cell);
-        if (index >= 0) {
-            winner = GetWinner(cell, attr);
-            BlistS[index] = winner;
-            BlistT[index] = (winner & 0x80) + 0x70;
-            LifeB[(nx << 6) + ny] = (winner & 0x80) + 0x70;
-            BlistM[index] = 0xa;
-            fought = 1;
-        } else {
-            goto move_ant;
-        }
-        return;
-    } else if (IsYellowAnt(cell) != 0 && MeColor == 0) {
-        YellowFight(3, Tindex);
-        return;
-    }
-
-move_ant:
-
-    BlistT[Tindex] = (BlistT[Tindex] & 0xf8) | dir;
-    LifeB[(nx << 6) + ny] = BlistT[Tindex];
-    BlistX[Tindex] = nx;
-    BlistY[Tindex] = ny;
-
-    if (SRand64() > HealthB) {
-        tile = MapB[nx][ny];
-        if (tile >= 0x10 && tile <= 0x13) {
-            if (tile == 0x10)
-                MapB[nx][ny] = SRand8();
-            else
-                MapB[nx][ny]--;
-            if (FoodB > 0) {
-                FoodB--;
-                tile = (BpopT + CastePopB[2]) >> 4;
-                EatCountB += 5;
-                if (tile < EatCountB) {
-                    EatCountB = 0;
-                    if (HealthB < 100)
-                        HealthB++;
-                }
-            }
-        }
-    }
+  int x;
+  int y;
+  int attribute;
+  int flags;
+  int digmode;
+  int dirindex;
+  int bdir;
+  int nx;
+  int ny;
+  int newtile;
+  signed char newattr;
+  x = AlistX[index];
+  y = AlistY[index];
+  attribute = AlistT[index];
+  flags = attribute & 0xf8;
+  digmode = (attribute & 0x78) >> 3;
+  dirindex = TurnTab[SRand8() + (attribute & 7) * 8];
+  bdir = Bounce(x, y);
+  if (bdir != 0)
+    dirindex = bdir - 1 & 7;
+  nx = x + ((signed char) Dx8[dirindex]);
+  ny = y + ((signed char) Dy8[dirindex]);
+  if (digmode != 5 && digmode != 9)
+  {
+    AlistM[index] = (unsigned char) GetNewMode(digmode, attribute);
+    AlistS[index] = 0;
     return;
+  }
+  if (SRand8() == 0)
+  {
+    AlistT[index] -= 0x18;
+    AlistM[index] = (unsigned char) GetNewMode(digmode, attribute);
+    AlistS[index] = 0;
+    LifeA[x * 64 + y] = AlistT[index];
+    return;
+  }
+  newtile = MapA[nx * 64 + ny];
+  if (newtile > Barrier)
+  {
+    newattr = TurnTab[(attribute & 7) * 8 + SRand8()] | flags;
+    AlistT[index] = newattr;
+    LifeA[x * 64 + y] = newattr;
+    return;
+  }
+  if (LifeA[nx * 64 + ny] == 0)
+  {
+    newattr = ((unsigned char) dirindex) | flags;
+    LifeA[nx * 64 + ny] = newattr;
+    AlistT[index] = newattr;
+    LifeA[x * 64 + y] = 0;
+    AlistX[index] = (unsigned char) nx;
+    AlistY[index] = (unsigned char) ny;
+  }
+  else
+  {
+    newattr = TurnTab[(attribute & 7) * 8 + SRand8()] | flags;
+    AlistT[index] = newattr;
+    LifeA[x * 64 + y] = newattr;
+    return;
+  }
+  if (AlistS[index] != 0)
+  {
+    AlistS[index]--;
+    if (attribute & 0x80)
+      JamScentBN(nx, ny, AlistS[index]);
+    else
+      JamScentBN(nx, ny, AlistS[index]);
+  }
+  return;
+  newattr = ((unsigned char) dirindex) | flags;
+  LifeA[nx * 64 + ny] = newattr;
+  AlistT[index] = newattr;
+  LifeA[x * 64 + y] = 0;
+  AlistX[index] = (unsigned char) nx;
+  AlistY[index] = (unsigned char) ny;
+  if (AlistS[index] != 0)
+  {
+    AlistS[index]--;
+    if (attribute & 0x80)
+      JamScentBN(nx, ny, AlistS[index]);
+    else
+      JamScentBN(nx, ny, AlistS[index]);
+  }
 }
+

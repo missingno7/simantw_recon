@@ -64,6 +64,7 @@ extern void far *FindIndex(int recIndex, int p2, int p3);
 extern struct OpenDB far openDBData[];
 
 extern int far lastTop;
+extern struct IndexEntry far * far lastPos;
 
 void far pool_stub_OpenIndex(void);
 
@@ -86,9 +87,7 @@ void far pool_stub_OpenIndex(void);
 
 void far pool_data_fill_B73E(void);
 
-void far CloseIndex(int idx);
-
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_OpenIndex, pool_data_fill_OpenIndex, pool_data_fill_B73E)
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_OpenIndex, pool_data_fill_OpenIndex, pool_data_fill_CloseIndex, pool_data_fill_B73E)
 #pragma alloc_text(RUN2_TEXT, DeleteCurrentIndex)
 #pragma alloc_text(RUN3_TEXT, DeleteIndex)
 
@@ -105,6 +104,34 @@ void far pool_data_fill_OpenIndex(void)
     p = "%s.ndx";
     p = "Index file missing";
     p = "Not enough memory to read index file in.";
+}
+
+void far *FindIndex(int idx, int value, int caste)
+{
+    int high;
+    int maxIndex;
+    int mid;
+
+    lastTop = 0;
+    high = openDBData[idx].header.recordCount - 1;
+    maxIndex = high;
+    if (high >= 0) {
+        do {
+            mid = (lastTop + high) / 2;
+            lastPos = (struct IndexEntry far *)((char far *)openDBData[idx].indexTable + mid * 8);
+            if (lastPos->caste > caste ||
+                (lastPos->caste == caste && lastPos->value >= value))
+                high = mid - 1;
+            else
+                lastTop = mid + 1;
+        } while (lastTop <= high);
+    }
+    if (lastTop > maxIndex)
+        return 0;
+    lastPos = (struct IndexEntry far *)((char far *)openDBData[idx].indexTable + lastTop * 8);
+    if (lastPos->value == value && lastPos->caste == caste)
+        return lastPos;
+    return 0;
 }
 
 void far CreateIndex(char far *name, int idx)
@@ -138,32 +165,11 @@ void far CreateIndex(char far *name, int idx)
     _lclose(handle);
 }
 
-void far CloseIndex(int idx)
+void far pool_data_fill_CloseIndex(void)
 {
-    char name[100];
-    long count;
-    void far *header;
-    void far *buf;
-    int handle;
-
-    sprintf(name, "%s.ndx", openDBData[idx].name);
-    if (openDBData[idx].dirty == 0)
-        goto release;
-    handle = _lcreat(name, 0);
-    openDBData[idx].pad2 = handle;
-    if (handle <= 0)
-        DosPunt("Index file missing");
-    _llseek(handle, 0L, 0);
-    header = &openDBData[idx].header.recordCount;
-    _lwrite(handle, header, 20);
-    count = openDBData[idx].header.recordCount;
-    if (count != 0)
-        _lwrite(handle, openDBData[idx].indexTable, count << 3);
-    _lclose(handle);
-release:
-    buf = openDBData[idx].indexTable;
-    if (buf != 0)
-        mem_free(buf);
+    volatile char far *p;
+    p = "%s.ndx";
+    p = "Index file missing";
 }
 
 void far DeleteCurrentIndex(int recIndex)
