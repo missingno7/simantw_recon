@@ -1,6 +1,6 @@
-/* Candidate translation unit simtwo_1378_InitSimYard_13_scaffold: composed from preserved exact-body sources
+/* Candidate translation unit simtwo_1378_InitSimYard_12_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _InitSimYard, _DoSimYard, _SendBoyMsg, _SimRain, _NotMowed, _IsValidYard, _InitGrassMap, _SimCat, _FollowBoyDir, _FollowCatDir, _MakeBark, _MaintainSwarm, _GetNearbyPatches
+ * Members: _InitSimYard, _DoSimYard, _SendBoyMsg, _SimRain, _IsValidYard, _InitGrassMap, _SimCat, _FollowBoyDir, _FollowCatDir, _MakeBark, _MaintainSwarm, _GetNearbyPatches
  * SCAFFOLDED: unclaimed members _SimKidOutside, _SimKidInside, _SimBird, _SimDog, _SimColonies are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 extern unsigned long far BoyMsgCnt;
@@ -79,35 +79,31 @@ extern int near QueenStorageR;
 extern unsigned char far YMapPopB[];
 extern unsigned char far YMapPopR[];
 
-extern int far match_position;  /* scaffold reference for pool word C534 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far match_length;  /* scaffold reference for pool word C536 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far Dx9;  /* scaffold reference for pool word C53A (segment 8, SEGMENT_REPRESENTATIVE) */
-extern int far Dy9;  /* scaffold reference for pool word C53C (segment 8, SEGMENT_REPRESENTATIVE) */
+extern int far LastMowX;  /* scaffold reference for pool word C534 (segment 9, MAPSYM_SITE_NAME) */
+extern int far LastMowY;  /* scaffold reference for pool word C536 (segment 9, MAPSYM_SITE_NAME) */
+extern int far BxTab;  /* scaffold reference for pool word C53A (segment 8, MAPSYM_SITE_NAME) */
+extern int far ByTab;  /* scaffold reference for pool word C53C (segment 8, MAPSYM_SITE_NAME) */
 extern int far CurGameType;  /* scaffold reference for pool word C53E (segment 9, MAPSYM_SITE_NAME) */
-extern int far pack_buf;  /* scaffold reference for pool word C540 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far Scycle;  /* scaffold reference for pool word C542 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far EditColumns;  /* scaffold reference for pool word C544 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far MiscStrs;  /* scaffold reference for pool word C548 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far TurnTab;  /* scaffold reference for pool word C54A (segment 8, SEGMENT_REPRESENTATIVE) */
-extern int far LastQueenPlane;  /* scaffold reference for pool word C54C (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far EditDragPnt;  /* scaffold reference for pool word C54E (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far SMode;  /* scaffold reference for pool word C550 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far modeButtonState;  /* scaffold reference for pool word C552 (segment 9, SEGMENT_REPRESENTATIVE) */
-extern int far CurRestPlane;  /* scaffold reference for pool word C554 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far ListIndexA;  /* scaffold reference for pool word C540 (segment 9, MAPSYM_SITE_NAME) */
+extern int far SpidOn;  /* scaffold reference for pool word C542 (segment 9, MAPSYM_SITE_NAME) */
+extern int far MeMode;  /* scaffold reference for pool word C544 (segment 9, MAPSYM_SITE_NAME) */
+struct YardPoint { int x; int y; int dx; int dy; };
+extern struct YardPoint far CurYardPnt;  /* MAPSYM object view used by SimBird */
+extern int far AlistT;  /* scaffold reference for pool word C54A (segment 8, MAPSYM_SITE_NAME) */
+extern int far match_position;  /* scaffold reference for pool word C54C (segment 9, MAPSYM_SITE_NAME) */
+extern long far gameCycles;  /* MAPSYM object view used by SimBird */
+extern int far match_length;  /* scaffold reference for pool word C550 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far BirdGoalX;  /* scaffold reference for pool word C552 (segment 9, MAPSYM_SITE_NAME) */
+extern int far BirdGoalY;  /* scaffold reference for pool word C554 (segment 9, MAPSYM_SITE_NAME) */
+extern int near BirdX;
+extern int near BirdY;
+extern int far SRand2(void);
+extern void far InvalQueenStorageDisp(void);
 
 void far pool_stub_SimKidOutside(void);
 void far pool_stub_SimKidInside(void);
-void far pool_stub_SimBird(void);
 void far pool_stub_SimDog(void);
-extern int far BColoniesKilled;
-extern int far BColoniesStarted;
-extern int far RColoniesKilled;
-extern int far RColoniesStarted;
-extern int far LayDownQueenMode;
-extern int far IsGameOver;
-extern int far BlackWon;
 void far pool_stub_SimColonies(void);
-int NotMowed(int position, int bit);
 int IsValidYard(int x,int y);
 void InitGrassMap(void);
 void far SimCat(void);
@@ -119,11 +115,10 @@ int far GetNearbyPatches(int x, int y);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_SimKidOutside)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_SimKidInside)
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_SimBird)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_SimDog)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_SimColonies)
-#pragma alloc_text(RUN2_TEXT, NotMowed, IsValidYard, InitGrassMap)
-#pragma alloc_text(RUN3_TEXT, SimCat)
+#pragma alloc_text(RUN2_TEXT, IsValidYard, InitGrassMap)
+#pragma alloc_text(RUN3_TEXT, SimBird, SimCat)
 #pragma alloc_text(RUN4_TEXT, FollowBoyDir, FollowCatDir, MakeBark)
 #pragma alloc_text(RUN5_TEXT, MaintainSwarm)
 #pragma alloc_text(RUN6_TEXT, GetNearbyPatches)
@@ -253,26 +248,15 @@ void far pool_stub_SimKidOutside(void)
 {
     volatile int t;
 
-    t = match_position;
-    t = match_length;
+    t = LastMowX;
+    t = LastMowY;
     t = GrassMap[0];
-    t = Dx9;
-    t = Dy9;
+    t = BxTab;
+    t = ByTab;
     t = CurGameType;
-    t = pack_buf;
-    t = Scycle;
-    t = EditColumns;
-}
-
-int NotMowed(int position, int bit)
-{
-    int mask = 1 << (unsigned char)bit;
-
-    if (GrassMap[position] & mask) {
-        GrassMap[position] -= mask;
-        return 1;
-    }
-    return 0;
+    t = ListIndexA;
+    t = SpidOn;
+    t = MeMode;
 }
 
 int IsValidYard(int x,int y) { if(x>=0 && y>=0 && x<=11 && y<=15) return 1; return 0; }
@@ -297,23 +281,86 @@ void far pool_stub_SimKidInside(void)
     volatile int t;
 
     t = (int)MapMode;
-    t = MiscStrs;
-    t = TurnTab;
+    t = CurYardPnt.x;
+    t = AlistT;
 }
 
-/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _SimBird.
- * It only reproduces the object's selector-pool allocation order for the
- * words C54C C54E C550 C552 C554; its code is compiled into the reserved
- * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
-void far pool_stub_SimBird(void)
+/* SimBird advances the yard bird, updates its flight target and sound, and consumes storage on arrival. */
+void far SimBird(void)
 {
-    volatile int t;
+    int d;
+    int step;
+    int oldY;
+    int soundValue;
+    long now;
 
-    t = LastQueenPlane;
-    t = EditDragPnt;
-    t = SMode;
-    t = modeButtonState;
-    t = CurRestPlane;
+    if (BirdOn != 0)
+        goto active;
+    goto spawn;
+
+active:
+
+    if (BirdOn == 1)
+        BirdX += 0x10;
+    else
+        BirdX += 8;
+
+    if (BirdOn == 1) {
+        d = BirdGoalY - BirdY;
+        if (d != 0) {
+            if (((d >= 0) ? d : -d) >= 4)
+                BirdY += d > 0 ? 4 : -4;
+            else
+                BirdY += d > 0 ? 1 : -1;
+        }
+    } else {
+        BirdY -= 8;
+    }
+
+    BirdFrame = (BirdFrame + 1) & 1;
+    if (BirdX < 0 || BirdX > 0x1ff || BirdY < 0 || BirdY > 0xff) {
+        BirdOn = 0;
+        BirdDelay = gameCycles + 30L;
+        return;
+    }
+    if (BirdOn != 1)
+        return;
+
+    if (BirdX < BirdGoalX || BirdY < BirdGoalY - 4 ||
+        BirdY > BirdGoalY + 4)
+        return;
+
+    if (SwarmCntB > 0)
+        SwarmCntB -= (SwarmCntB + 7) >> 3;
+    if (QueenStorageB > 0) {
+        QueenStorageB -= (QueenStorageB + 7) >> 3;
+        InvalQueenStorageDisp();
+    }
+    if (SwarmCntR > 0)
+        SwarmCntR -= (SwarmCntR + 7) >> 3;
+    if (QueenStorageR > 0)
+        QueenStorageR -= (QueenStorageR + 7) >> 3;
+
+    if (MapMode == 0 && YardMode < 2) {
+        if (SRand2() == 0)
+            myBeginSound(7, 0, 6);
+    }
+    BirdOn = 2;
+    return;
+
+spawn:
+    if (gameCycles > BirdDelay) {
+        BirdDelay = gameCycles + 20L;
+        if (CurYardPnt.x >= 5 && SRand2() == 0 &&
+            (SwarmCntB > 0 || SwarmCntR > 0)) {
+            BirdGoalX = CurYardPnt.x * 0x1c - CurYardPnt.y * 10 + 0xb2;
+            BirdGoalY = CurYardPnt.y * 10 + 0x2e;
+            BirdOn = 1;
+            BirdX = 0;
+            BirdY = SRand64() + 4;
+            BirdFrame = 0;
+        }
+    }
 }
 
 void far SimCat(void)
@@ -549,13 +596,6 @@ void far pool_stub_SimColonies(void)
 
     t = YMapPopR[0];
     t = YMapPopB[0];
-    t = BColoniesKilled;
-    t = BColoniesStarted;
-    t = RColoniesKilled;
-    t = RColoniesStarted;
-    t = LayDownQueenMode;
-    t = IsGameOver;
-    t = BlackWon;
 }
 
 static unsigned char PatchX[6] = { 0, 1, 0, 0xff, 0, 0 };

@@ -23,8 +23,8 @@
   "completed_candidates": 1,
   "environment_launches": 0,
   "cache": {
-    "hits": 0,
-    "misses": 1,
+    "hits": 1,
+    "misses": 0,
     "environment_launches": 0
   },
   "exact_candidates": [],
@@ -143,6 +143,7 @@
           ]
         },
         "private_constraint_placements": [],
+        "link_order_placements": [],
         "anchors": {
           "1": [
             [
@@ -1421,9 +1422,28 @@
             "LOCAL_FRAME_LAYOUT",
             "MEMORY_OPERAND",
             "IMMEDIATE_OR_BINDING",
-            "BRANCH_TARGET"
+            "BRANCH_TARGET",
+            "BRANCH_DESTINATION"
           ],
           "score": 0.661157,
+          "branch_destinations": [
+            {
+              "target_offset": 232,
+              "candidate_offset": 231,
+              "target": "je 0xf6",
+              "candidate": "je 0xf6",
+              "target_lands_on": {
+                "offset": 246,
+                "instruction": "push ss"
+              },
+              "candidate_lands_on": {
+                "offset": 246,
+                "instruction": "mov ax, bx",
+                "target_equivalent": "pop ds"
+              },
+              "finding": "the branch reaches a different instruction than in the target: the draft's control flow differs here (check which statements this path skips or runs)"
+            }
+          ],
           "aligned_asm": [
             {
               "target_offset": 0,
@@ -3009,9 +3029,9 @@
         }
       },
       "timing": {
-        "omf_parse_seconds": 0.0003284999984316528,
-        "strict_match_seconds": 0.016910700011067092,
-        "diagnostic_diff_seconds": 0.022209700022358447
+        "omf_parse_seconds": 0.00027009996119886637,
+        "strict_match_seconds": 0.06942510005319491,
+        "diagnostic_diff_seconds": 0.02175590000115335
       }
     }
   ]

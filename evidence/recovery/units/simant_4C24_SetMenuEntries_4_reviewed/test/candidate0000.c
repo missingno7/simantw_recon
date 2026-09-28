@@ -1,7 +1,11 @@
-/* Reviewed menu unit. Target SetMenuEntries, PauseGame, and SetPause all
- * address the same DGROUP strings at 0x900 and 0x911. The remaining bodies
- * come from preserved exact-body sources; ProcMenu is not claimed here. */
+/* Candidate translation unit simant_4C24_SetMenuEntries_4: composed from preserved exact-body sources
+ * in MAPSYM order. Internal evidence id, not a historical filename.
+ * Members: _SetMenuEntries, _PauseGame, _SetPause, _ProcMenuHelp */
 
+static char unpauseText[] = "Un&pause\tShift+0";
+/* The pause label is split at its first character so the tail begins on the next aligned byte. */
+static char pauseText = '&';
+static char pauseTail[] = "Pause\tShift+0";
 extern int far GameSpeed;
 extern int far GamePaused;
 extern int far OptionStates[];
@@ -29,11 +33,6 @@ extern int near rootWnd;
 extern char far helpFile[];
 extern int far pascal WinHelp(int window, char far *file,
                               unsigned int command, unsigned long data);
-struct MenuText { char unpause[17]; char pause[15]; };
-static struct MenuText near menuText = { "Un&pause\tShift+0", "&Pause\tShift+0" };
-
-
-
 
 void far SetMenuEntries(void)
 {
@@ -42,7 +41,7 @@ void far SetMenuEntries(void)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? menuText.unpause : menuText.pause);
+    SetMenuOptionText(0x41, GamePaused ? unpauseText : &pauseText);
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
@@ -80,7 +79,7 @@ void far PauseGame(int mode)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? menuText.unpause : menuText.pause);
+    SetMenuOptionText(0x41, GamePaused ? unpauseText : &pauseText);
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
@@ -118,7 +117,7 @@ void far SetPause(int mode)
 
     for (item = 0x43; item <= 0x46; item++)
         SetMenuItemState(item, (item - GameSpeed == 0x43) ? 0x10 : 0x20);
-    SetMenuOptionText(0x41, GamePaused ? menuText.unpause : menuText.pause);
+    SetMenuOptionText(0x41, GamePaused ? unpauseText : &pauseText);
     for (item = 0x31; item <= 0x36; item++)
         SetMenuItemState(item, OptionStates[item - 0x31] ? 0x10 : 0x20);
     UpdateUserButtons();
