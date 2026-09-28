@@ -6,6 +6,7 @@ Everyday work is four commands:
 
 1. `python tools/context.py SYMBOL` (`--brief`, `--history`; `--list --open` for targets): masked disassembly, loader/MAPSYM bindings, compiler profile, unit context, rules, similar admitted sources, best preserved draft and prior notes.
 2. Write readable C in your own `build/workers/NAME/` directory. `python tools/search.py SYMBOL a.c [b.c ...]` compiles every hypothesis with MSC 7.00 under the symbol's profile and returns the strict member result and aligned instruction diff. `--meta round.json` records family/prediction/falsifier; `--note "..."` keeps a durable finding.
+   For sampled behavioral diagnostics, run `python tools/emu_diff.py SYMBOL DRAFT.c [--runs N] [--seed S] [--arg name=value]`; read [docs/emu-diff.md](docs/emu-diff.md) for scope and unsupported cases.
 3. `python tools/promote.py SYMBOL candidate.c` (or `--unit UNIT --reason ...`) freshly compiles and admits an exact candidate. `--verify-only` runs the complete gate without publishing.
 4. `python tools/validate.py` at acceptance or tooling boundaries, not for every hypothesis.
 

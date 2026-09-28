@@ -160,6 +160,8 @@ The TEXT names each construct and the decision it steers, e.g. "`register int up
 
 `tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. The diagnostic view accounts for LINK transformations only when the strict matcher has independently validated them. It never modifies an object, and it never participates in admission.
 
+`python tools/emu_diff.py SYMBOL DRAFT.c` compiles the draft with the symbol's assigned profile and runs the oracle function and candidate in Unicorn against shared synthetic NE data, seeded inputs and scripted call stubs. It reports the first differing write, call or return plus target basic-block coverage; unsupported runtime helpers, unresolved layout, invalid memory, or instruction-limit hits stop the comparison. This is a sampled diagnostic, not a proof or an admission check, and stack-frame write differences can reflect compiler layout rather than a source-level behavior change; see [emu-diff](emu-diff.md).
+
 `codegen_grinder.py --evidence PATH` includes a compact `compiler_response` in its archived report that groups candidates by raw OMF identity. `search.py` reports each candidate's object hash for the same purpose: identical objects mean the next experiment needs a different analysis level.
 
 ## Symbolic lifting
