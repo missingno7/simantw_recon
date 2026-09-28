@@ -61,10 +61,15 @@ def split_items(text):
             j = text.find('\n', i)
             j = n if j < 0 else j
             line = text[i:j].strip()
-            if not line.startswith('#define'):
-                raise FormatError('only #define directives are composable: ' + line[:40])
-            name = re.match(r'#define\s+([A-Za-z_]\w*)', line)
-            items.append(dict(kind='declaration', names=[name.group(1)] if name else [], text=line, normalized=' '.join(line.split())))
+            if line.startswith('#define'):
+                name = re.match(r'#define\s+([A-Za-z_]\w*)', line)
+                items.append(dict(kind='declaration', names=[name.group(1)] if name else [], text=line, normalized=' '.join(line.split())))
+            elif re.fullmatch(r'#pragma\s+alloc_text\s*\(\s*[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)+\s*\)', line):
+                # Reviewed units place stand-ins or public code runs into
+                # reserved logical segments with this compiler pragma.
+                items.append(dict(kind='declaration', names=[], text=line, normalized=' '.join(line.split())))
+            else:
+                raise FormatError('only #define and #pragma alloc_text directives are composable: ' + line[:40])
             i = j
             continue
         start = i
@@ -1329,7 +1334,7 @@ def prior_unknown_pool_owners(publics, claimed, functions, card_list, pool_segme
     return found
 
 
-def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions', chosen_sources=None):
+def scaffold_plan(component_id, members, flags, declared, card_list=None, declared_texts=None, folder=None, data_layout='definitions', chosen_sources=None, source_catalog=None):
     """Stand-in functions that reproduce the selector-pool allocation order of the
     component members the unit does not claim (evidence: original pool words,
     their NE selector relocations, the claimed members' own slot usage).
@@ -1351,7 +1356,11 @@ def scaffold_plan(component_id, members, flags, declared, card_list=None, declar
         raise FormatError('no claimed members')
     card_list = card_list or cards()
     by_symbol = {c['symbol']: c for c in card_list}
-    sources = preserved_sources()
+    # Unit extension can supply its already-frozen source catalog directly.
+    # This avoids making a placement experiment depend on unrelated recovery
+    # records elsewhere in the catalog while preserving the ordinary build
+    # path's full identity checks through preserved_sources().
+    sources = dict(source_catalog) if source_catalog is not None else preserved_sources()
     for m, path in (chosen_sources or {}).items():
         # Reviewed overrides replace the preserved source for slot and data maps too.
         sources[m] = dict(sources.get(m, {}), source=path, basis='REVIEWED_SOURCE_OVERRIDE')
@@ -1827,6 +1836,13 @@ def main():
     p = sub.add_parser('build'); p.add_argument('component'); p.add_argument('--members'); p.add_argument('--layout', default='preambles-first', choices=['preambles-first', 'interleaved']); p.add_argument('--override', action='append', default=[]); p.add_argument('--source', action='append', default=[], help='SYMBOL=path reviewed source override'); p.add_argument('--unit-source', help='reviewed hand-written unit source (publics plus static helpers)'); p.add_argument('--scaffold', action='store_true', help='stand-ins for unclaimed members reproduce the pool order'); p.add_argument('--harmonize', action='store_true', help='resolve declaration conflicts by isolated exact-body verification'); p.add_argument('--data-layout', default='definitions', choices=['definitions', 'preamble', 'split'], help='where a scaffolded unit emits claimed statics: with their definitions or at the top in address order'); p.add_argument('--reason', default='')
     p.add_argument('--private-zero-gap', action='append', default=[], help='reviewed scaffold CONST gap OFFSET:SCALARS:POOLSTUB')
     p = sub.add_parser('test'); p.add_argument('unit')
+    p = sub.add_parser('compose', help='extend and placement-search the latest admitted unit source')
+    p.add_argument('object', help='build-topology component such as simant:4C24')
+    p.add_argument('--add', action='append', default=[], metavar='SYMBOL=FILE.c',
+                   help='add or replace one complete member definition; may be repeated')
+    p.add_argument('--max-arrangements', type=int, default=12, help='bounded placement variants to compile (1..64)')
+    p.add_argument('--out', help='output directory below build/workers/f-infra-composer')
+    p.add_argument('--naive', action='store_true', help='seed missing declarations in deterministic symbol order')
     args = ap.parse_args()
     if args.action == 'propose':
         rows = propose(args.min)
@@ -1841,8 +1857,13 @@ def main():
         source_overrides = dict(item.split('=', 1) for item in args.source)
         result = build_unit(args.component, args.members.split(',') if args.members else None, args.layout, overrides, args.reason, source_overrides, args.unit_source, args.scaffold, args.harmonize, args.data_layout, args.private_zero_gap)
         print(json.dumps({k: v for k, v in result.items() if k not in ('sources',)}, indent=2))
-    else:
+    elif args.action == 'test':
         print(json.dumps(test_unit(args.unit), indent=2))
+    else:
+        from unit_composer import compose_object, parse_add
+        additions = [parse_add(x) for x in args.add]
+        print(json.dumps(compose_object(args.object, additions, max_arrangements=args.max_arrangements,
+                                        out_dir=args.out, naive=args.naive), indent=2))
 
 
 if __name__ == '__main__':

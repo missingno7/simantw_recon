@@ -17,6 +17,15 @@ Three levels are kept apart throughout:
 | B. Translation unit / object member | One `.C` file compiled to one `.OBJ`: a contiguous code contribution, a private CONST selector pool, private `_DATA`/`_BSS` | Partly: same-object membership is provable, most exact boundaries are not |
 | C. Build component / static library | Which objects were linked explicitly and which were pulled from libraries | Only the explicit-versus-library distinction and the pull order |
 
+When a recovered member body still needs its object's private placement, use
+`python tools/tu_assembly.py compose OBJECT --add SYMBOL=FILE.c`. The composer
+starts from the latest frozen admitted unit source, inserts the member at its
+MAPSYM position, and searches a bounded set of declaration/string/member and
+existing POOLSTUB/filler arrangements without editing recovered member bodies.
+Its provenance report identifies the selected arrangement and maps literal,
+static, and selector-slot disagreements; only a full unit verification is an
+admission result.
+
 ## 1. The code-group names are deliberate
 
 MSC C/C++ 7.00 names a code segment `<basename>_TEXT` by default; the compile
