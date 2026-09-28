@@ -18,6 +18,7 @@ import hashlib
 import json
 import math
 import random
+import shutil
 import re
 import sys
 import time
@@ -708,6 +709,8 @@ def main(argv=None):
     parser.add_argument('--keep-going', action='store_true')
     parser.add_argument('--no-minimize', action='store_true')
     parser.add_argument('--out')
+    parser.add_argument('--keep-batches', action='store_true',
+                        help='keep per-candidate compile scratch (batches/); by default it is deleted when the run ends')
     args = parser.parse_args(argv)
     args.seed = args.seed if args.seed is not None else random.SystemRandom().randrange(1 << 30)
     if args.batch_size < 1 or args.batch_size > 256:
@@ -733,6 +736,10 @@ def main(argv=None):
         worker.finish(minimized)
     finally:
         worker.close()
+        if not args.keep_batches:
+            # Results live in summary.json, best*.c, *_exact.c and variants.jsonl; the per-candidate
+            # compile scratch grows to hundreds of MB per run and once filled the disk.
+            shutil.rmtree(worker.out / 'batches', ignore_errors=True)
     return 0
 
 

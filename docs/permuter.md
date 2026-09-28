@@ -89,3 +89,4 @@ member result is exact, the tool also writes `SYMBOL_exact.c` and a JSON mutatio
 its `NATURAL` or `STEERED` classification. This result is diagnostic only. Review the
 source and chain, then use the normal `search.py` and promotion gates; the permuter never
 publishes a source or edits canonical state.
+Per-candidate compile scratch (`batches/`) is deleted when a run ends; pass `--keep-batches` to keep it for debugging.

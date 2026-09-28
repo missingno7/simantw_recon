@@ -1,8 +1,8 @@
 /* MAPSYM INDIRECTDLGPROC() maps to the Pascal source function IndirectDlgProc. */
-/* Candidate translation unit extended from the latest admitted simtwo:C32E source
+/* Candidate translation unit simtwo_C32E_win_ObjAddr_15_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
  * Members: _win_ObjAddr, _win_WinAddr, _win_Events, _UpdateAllWindows, _win_ToTop, _win_SetWinDrawHook, _win_SetObjBitmap, _win_CenterStrAtObj, _win_PrintfAtObj, _win_DrawHBar, _win_DrawVBar, _win_GetObjSize, _win_ObjInv, _win_GetProxEvent, INDIRECTDLGPROC
- * SCAFFOLDED: remaining unclaimed members use POOLSTUB_TEXT stand-ins (pool order only, never compared). */
+ * SCAFFOLDED: unclaimed members _win_LoadAllWindows are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
 struct WinObjectBucket {
     unsigned char reserved[0x0c];
@@ -95,6 +95,7 @@ extern void far pascal ReleaseCapture(void);
 extern void far pascal EndDialog(unsigned hwnd, int result);
 
 
+void far pool_stub_win_LoadAllWindows(void);
 void far pool_stub_window_private_data(void);
 void far pool_stub_activeAppFlag(void);
 void far pool_stub_lastStrPos(void);
@@ -114,28 +115,9 @@ void win_ObjInv(int objectNumber);
 unsigned int win_GetProxEvent(void);
 long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wParam, long lParam);
 
-
-extern char far displayType;
-extern unsigned far pascal GetDesktopWindow(void);
-extern void far pascal GetWindowRect(unsigned hwnd, struct WinRect far *rect);
-extern void far font_InitFonts(void);
-extern void far win_LockInit(void);
-extern unsigned int far db_LoadObject(int object, int kind, int lock);
-extern void far db_PurgeObject(int object, int kind);
-extern void far db_UnhookObject(int object, int kind);
-extern void far *mem_Lock(unsigned int handle);
-extern int far mem_Unlock(unsigned int handle);
-extern void far win_LoadWindow(int window);
-extern void *memset(void *, int, unsigned);
-extern void far *_fmemcpy(void far *, const void far *, unsigned int);
-static struct WinRect sentinel = { 0x8000, 0x8000, 0x8000, 0x8000 };
-
-int far win_LoadAllWindows(void);
-
-#pragma alloc_text(POOLSTUB_TEXT, pool_stub_window_private_data, pool_stub_activeAppFlag, pool_stub_lastStrPos)
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_win_LoadAllWindows, pool_stub_window_private_data, pool_stub_activeAppFlag, pool_stub_lastStrPos)
 #pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_BE05)
 #pragma alloc_text(RUN2_TEXT, win_WinAddr)
-#pragma alloc_text(RUN3A_TEXT, win_LoadAllWindows)
 #pragma alloc_text(RUN3_TEXT, win_Events)
 #pragma alloc_text(RUN4_TEXT, UpdateAllWindows)
 #pragma alloc_text(RUN5_TEXT, win_ToTop)
@@ -175,109 +157,21 @@ void far *win_WinObjAddr(int windowPart, int objectPart)
 void far *win_WinAddr(int id) { return win_handles[id>>8]; }
 #undef win_handles
 
-int far win_LoadAllWindows(void)
+/* SCAFFOLD, not recovered source: stand-in for the unclaimed member _win_LoadAllWindows.
+ * It only reproduces the object's selector-pool allocation order for the
+ * words C6CC; its code is compiled into the reserved
+ * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
+void far pool_stub_win_LoadAllWindows(void)
 {
-    struct WinRect rect;
-    unsigned handle;
-    void far *p;
-    int far *src;
-    int far *dst;
-    unsigned n;
-    char far *bsrc;
-    char far *bdst;
-    int window;
-    int i;
-    int near *slot;
+    volatile int t;
 
-    GetWindowRect(GetDesktopWindow(), &rect);
-    font_InitFonts();
-    win_LockInit();
-
-    memset((void far *)win_drawHooks, 0, 0xb4);
-
-    for (i = 0; i < 45; i++)
-        win_offsets[i] = sentinel;
-
-    switch (displayType - 9) {
-    case 0:
-        if (rect.bottom > 0x1e0)
-            handle = db_LoadObject(7, 9, 0);
-        else
-            handle = db_LoadObject(5, 9, 0);
-        break;
-    case 1:
-        if (rect.bottom > 0x1e0)
-            handle = db_LoadObject(8, 9, 0);
-        else
-            handle = db_LoadObject(0, 9, 0);
-        break;
-    default:
-        handle = db_LoadObject(displayType, 9, 0);
-        break;
-    }
-    if (handle != 0) {
-        _fmemcpy((void far *)win_offsets, mem_Lock(handle), 0x140);
-        mem_Unlock(handle);
-
-        switch (displayType - 9) {
-        case 0:
-            if (rect.bottom > 0x1e0)
-                db_PurgeObject(7, 9);
-            else
-                db_PurgeObject(5, 9);
-            break;
-        case 1:
-            if (rect.bottom > 0x1e0)
-                db_PurgeObject(8, 9);
-            else
-                db_PurgeObject(0, 9);
-            break;
-        default:
-            db_PurgeObject(displayType, 9);
-            break;
-        }
-    }
-
-    handle = db_LoadObject(0x80, 0, 0);
-    if (handle == 0) {
-        Punt("Cannot load resource\nplease try another");
-    } else {
-        p = mem_Lock(handle);
-        src = (int far *)p;
-        win_numOfWindows = src[0];
-        win_numOfColors = src[1];
-        win_numOfGroups = src[2];
-        mem_Unlock(handle);
-        db_PurgeObject(0, 0x80);
-    }
-
-    handle = db_LoadObject(0x81, 0, 0);
-    p = mem_Lock(handle);
-    bsrc = (char far *)p;
-    bdst = (char far *)win_colors;
-    n = win_numOfColors * 6;
-    _fmemcpy(bdst, bsrc, n);
-    mem_Unlock(handle);
-    db_PurgeObject(0, 0x81);
-
-    i = 0;
-    if (win_numOfWindows > 0) {
-        slot = &win_hwnd[0];
-        window = 0;
-        do {
-            win_LoadWindow(window);
-            db_UnhookObject(i, 0);
-            *slot = 0;
-            ++slot;
-            window += 0x100;
-            ++i;
-        } while (i < win_numOfWindows);
-    }
-
-    return 1;
+    t = win_drawHooks[0];
+    t = win_offsets[0].left;
+    t = win_numOfWindows;
+    t = win_numOfColors;
+    t = win_numOfGroups;
+    t = win_colors[0][0];
 }
-
-
 
 void far pool_stub_activeAppFlag(void)
 {
@@ -619,6 +513,126 @@ long far pascal _export IndirectDlgProc(unsigned hwnd, unsigned msg, unsigned wP
     }
     return 0L;
 }
+
+
+int far win_LoadAllWindows(void);
+#pragma alloc_text(RUN1_TEXT, win_LoadAllWindows)
+extern char near displayType;
+extern unsigned far pascal GetDesktopWindow(void);
+extern void far pascal GetWindowRect(unsigned hwnd, struct WinRect far *rect);
+extern void far font_InitFonts(void);
+extern void far win_LockInit(void);
+extern unsigned int far db_LoadObject(int object, int kind, int lock);
+extern void far db_PurgeObject(int object, int kind);
+extern void far db_UnhookObject(int object, int kind);
+extern void far *mem_Lock(unsigned int handle);
+extern int far mem_Unlock(unsigned int handle);
+extern void far win_LoadWindow(int window);
+extern void *memset(void *, int, unsigned);
+extern void far *_fmemcpy(void far *, const void far *, unsigned int);
+int far win_LoadAllWindows(void)
+{
+    struct WinRect rect;
+    unsigned handle;
+    void far *p;
+    int far *src;
+    int far *dst;
+    unsigned n;
+    char far *bsrc;
+    char far *bdst;
+    int window;
+    int i;
+    int near *slot;
+
+    GetWindowRect(GetDesktopWindow(), &rect);
+    font_InitFonts();
+    win_LockInit();
+
+    memset((void far *)win_drawHooks, 0, 0xb4);
+
+    for (i = 0; i < 45; i++)
+        win_offsets[i] = windowPrivate.windowSentinel;
+
+    switch (displayType - 9) {
+    case 0:
+        if (rect.bottom > 0x1e0)
+            handle = db_LoadObject(7, 9, 0);
+        else
+            handle = db_LoadObject(5, 9, 0);
+        break;
+    case 1:
+        if (rect.bottom > 0x1e0)
+            handle = db_LoadObject(8, 9, 0);
+        else
+            handle = db_LoadObject(0, 9, 0);
+        break;
+    default:
+        handle = db_LoadObject(displayType, 9, 0);
+        break;
+    }
+    if (handle != 0) {
+        _fmemcpy((void far *)win_offsets, mem_Lock(handle), 0x140);
+        mem_Unlock(handle);
+
+        switch (displayType - 9) {
+        case 0:
+            if (rect.bottom > 0x1e0)
+                db_PurgeObject(7, 9);
+            else
+                db_PurgeObject(5, 9);
+            break;
+        case 1:
+            if (rect.bottom > 0x1e0)
+                db_PurgeObject(8, 9);
+            else
+                db_PurgeObject(0, 9);
+            break;
+        default:
+            db_PurgeObject(displayType, 9);
+            break;
+        }
+    }
+
+    handle = db_LoadObject(0x80, 0, 0);
+    if (handle == 0) {
+        Punt(windowPrivate.loadAllWindowsMessage);
+    } else {
+        p = mem_Lock(handle);
+        src = (int far *)p;
+        win_numOfWindows = src[0];
+        win_numOfColors = src[1];
+        win_numOfGroups = src[2];
+        mem_Unlock(handle);
+        db_PurgeObject(0x80, 0);
+    }
+
+    handle = db_LoadObject(0x81, 0, 0);
+    p = mem_Lock(handle);
+    bsrc = (char far *)p;
+    bdst = (char far *)win_colors;
+    n = win_numOfColors * 6;
+    _fmemcpy(bdst, bsrc, n);
+    mem_Unlock(handle);
+    db_PurgeObject(0x81, 0);
+
+    i = 0;
+    if (win_numOfWindows > 0) {
+        slot = &win_hwnd[0];
+        window = 0;
+        do {
+            win_LoadWindow(window);
+            db_UnhookObject(i, 0);
+            *slot = 0;
+            ++slot;
+            window += 0x100;
+            ++i;
+        } while (i < win_numOfWindows);
+    }
+
+    return 1;
+}
+
+
 
 
 
