@@ -207,6 +207,19 @@ def masked_member_signature(receipt, symbol):
         return (receipt.get('object_identity') or {}).get('sha256')
 
 
+QUALIFIER = re.compile(r'\b(volatile|far|_far|__far)\b')
+
+
+def qualifier_drift(baseline, variant):
+    """True when a variant has more `volatile` or fewer `far` tokens than the baseline source."""
+    def counts(text):
+        found = QUALIFIER.findall(re.sub(r'/\*.*?\*/|//[^\n]*', ' ', text, flags=re.S))
+        return found.count('volatile'), len(found) - found.count('volatile')
+    bv, bf = counts(baseline)
+    vv, vf = counts(variant)
+    return vv > bv or vf < bf
+
+
 @dataclass
 class Entry:
     identifier: int
@@ -369,6 +382,12 @@ class Permuter:
             body_text = self.codec.render(body)
             text = self.codec.splice(body_text)
         except Exception:
+            return None
+        if qualifier_drift(self.regenerated, text):
+            # The parser maps MSC `far` onto `volatile`; a mutation that creates a declaration
+            # without source-position metadata can emit `volatile` where `far` was meant
+            # (f-perm-07 _DoSow, 2026-09-28). No mutation may add `volatile` or drop `far`.
+            self.counts['qualifier_rejected'] = self.counts.get('qualifier_rejected', 0) + 1
             return None
         if not self.dedupe.add_source(text):
             self.counts['duplicate_source'] += 1

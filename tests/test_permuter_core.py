@@ -115,3 +115,12 @@ def test_resolved_fixup_operand_noise_does_not_add_aligned_cost():
                          'differences': ['immediate_or_binding']}]}})
     assert value['aligned_cost'] == 0
     assert value['first_divergence_row'] == 2
+
+
+def test_far_turned_volatile_is_rejected():
+    import permuter
+    base = 'int far *p; int x;\nvoid f(void) { int far *q = p; *q = 1; }\n'
+    bad = 'int far *p; int x;\nvoid f(void) { int volatile *q = p; *q = 1; }\n'
+    good = 'int far *p; int x;\nvoid f(void) { int far *q; q = p; *q = 1; }\n'
+    assert permuter.qualifier_drift(base, bad)
+    assert not permuter.qualifier_drift(base, good)
