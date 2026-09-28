@@ -1,0 +1,2 @@
+/* volatile/classic */
+extern unsigned char near MapB[64][64];extern int far FoodB;extern int far Tindex;extern unsigned char far Dx8[];int far DropFoodB(int x,int y){int level; int result; unsigned char near * volatile cellSink; unsigned char far *attrPtr;result=0;cellSink=&MapB[x][y];level=MapB[x][y];if(level<16){MapB[x][y]=16;result=1;}else if(level<19){MapB[x][y]++;result=1;}FoodB++;attrPtr=&Dx8[Tindex+0x3d18];if(*attrPtr&8)*attrPtr-=8;return result;}

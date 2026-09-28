@@ -1,3 +1,4 @@
+/* codegen family: corrected MAPSYM element order */
 /*
  * ProcMapRibbonEvent dispatches ribbon command messages 0x2202..0x2227.
  * MAPMODE uses the named far global and its selector-backed ES accesses;
@@ -37,8 +38,7 @@ extern void far DoHealthSetY(struct EditEvent far *event, int mode);
 extern void far DoWarnSetB(struct EditEvent far *event, int mode);
 extern void far DrawCastePopUp(void);
 
-static int near ribbonWindow;
-static int near mapWindow;
+extern int near win_hwnd[];
 
 void far ProcMapRibbonEvent(struct EditEvent far *event)
 {
@@ -50,9 +50,9 @@ void far ProcMapRibbonEvent(struct EditEvent far *event)
         if (!win_IsWinOpen(0x100) && !win_IsWinOpen(0x1900))
             win_Open(0x100);
         if (win_IsWinOpen(0x1900))
-            BringWindowToTop(ribbonWindow);
+            BringWindowToTop(win_hwnd[25]);
         else {
-            BringWindowToTop(mapWindow);
+            BringWindowToTop(win_hwnd[1]);
             MapToYard();
         }
         break;

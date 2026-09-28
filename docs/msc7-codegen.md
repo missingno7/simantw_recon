@@ -330,6 +330,12 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Evidence: `evidence/codegen-facts/MSC7-T1/` (sweep script and per-variant results); the diagnostic compiles never entered the draft ledger.
 - Validated 2026-09-28.
 
+**MSC7-T2: CL passes pass-2 options to C23216 only through `MSC_CMD_FLAGS`, and `/d2...` debug options are not forwarded (D4002). SUPPORTED.**
+- A real captured value: `-ef c23.err -il <tmp> -A lfd -Bm 2048 -Oc -Oe -Ol -On -Ot -Ow -G2 -NT _TEXT -W 1`.
+- C23216's own option table (raw ~0x5863e) also lists `-db# -dt# -pr -nogen -pathgen`. These can only be reached by invoking C23216 directly.
+- Allocator modules named by asserts: `globregs86.c`, `glregs86.c`, `reg86.c`, `regMD.c`.
+- Evidence: f-study-c2 (worktree simantw_wt_c2). Direct invocation is being tested (f-study-c2b).
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.

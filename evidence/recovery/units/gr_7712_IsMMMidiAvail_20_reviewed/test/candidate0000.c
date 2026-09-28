@@ -86,6 +86,7 @@ void ExtractDWord(void far * far *p, unsigned long far *out);
 void ExtractWord(void far * far *p,unsigned short far *out);
 void far Extract24BitVal(void far * far *cursor, unsigned long far *value, long far *remaining);
 int mySoundIsDone(void);
+volatile int mySongIsDone(void);
 void myBeginSoundReverse(unsigned int first, unsigned int second, unsigned int third);
 int MultiMediaSong(void);
 
@@ -109,7 +110,7 @@ void myServiceSong(void);
 #pragma alloc_text(RUN4_TEXT, MusicInit, SysBeep, myBeginSoundList)
 #pragma alloc_text(RUN5_TEXT, ExtractDWord, ExtractWord)
 #pragma alloc_text(RUN6_TEXT, Extract24BitVal)
-#pragma alloc_text(RUN7_TEXT, mySoundIsDone, myBeginSoundReverse)
+#pragma alloc_text(RUN7_TEXT, mySoundIsDone, myBeginSoundReverse, mySongIsDone)
 #pragma alloc_text(RUN8_TEXT, MultiMediaSong)
 #pragma alloc_text(POOLSTUB_TEXT, poolstub_sound_before_voc, poolstub_sound_after_voc)
 
@@ -371,7 +372,7 @@ void myBeginSoundReverse(unsigned int first,
     myBeginSound(first, second, third);
 }
 
-int mySongIsDone(void)
+volatile int mySongIsDone(void)
 {
     int result;
     int __based(mmSelector) *stateWords;
