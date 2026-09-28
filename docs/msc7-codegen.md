@@ -105,6 +105,11 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 **MSC7-F6: a word local copied once from a parameter can be register-held (SI) like the parameter itself. SUPPORTED.**
 - `evidence/codegen-facts/MSC7-F6/`.
 
+**MSC7-F7 / MSC7-F8: local declaration order and a `register` hint do not change home assignment in a crowded frame. FALSIFIED as causes.**
+- Tested on `_AnimYellowFight` (24-byte frame, 185/185 opcodes, 15 home operands differ). Both variants compile to the identical object, and a 1,010-evaluation home-order permuter run found nothing.
+- Home order there comes from something other than declaration order, e.g. the role or lifetime structure.
+- Reproducers: `evidence/codegen-facts/MSC7-F7/`, `MSC7-F8/`.
+
 ## 2. Registers
 
 **MSC7-R1: SI/DI choice among two word register candidates. SUPPORTED, refined by R2/R3.**
@@ -133,6 +138,17 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 **MSC7-R6: loop repetition alone gives a value SI over an equally used value outside the loop. OPEN.**
 - The probes could not separate loop weight from instruction constraints: `evidence/codegen-facts/MSC7-R6/`, `MSC7-R9/`.
 - F3 (loop weight among three competitors for SI/DI) is the related SUPPORTED observation.
+
+**MSC7-R13: declaration order or a `register` hint picks SI/DI for equally used integer values. FALSIFIED (narrow).**
+- Reversing declarations or assignments, or adding `register`, left the object identical.
+- What did move values: call order, which swaps the parameter-to-SI/DI loads, and 2-D index transposition, which swaps the scaled and base operands.
+- Positive control MSC7-R14 (admitted `_PlaceEggR`); negative control MSC7-R15.
+- Reproducer `evidence/codegen-facts/MSC7-R13/`.
+
+**MSC7-R16: in a flat nested induction pair, the inner index gets DI and the outer CX; interchanging the nesting swaps them. SUPPORTED (narrow).**
+- Seen in `_FloodNestB` (evidence/codegen-facts/MSC7-R16/).
+- It is not the complete allocator: the target uses row DI and cell BX in row-outer order.
+- Steering lever: loop structure and value roles, not declarations.
 
 ## 3. Expressions and CSE
 
