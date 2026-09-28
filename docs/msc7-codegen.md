@@ -226,6 +226,12 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Unlike switch-arm order (C18), if/else polarity IS a search axis.
 - Validated 2026-09-28 (f-cfg2-00).
 
+**MSC7-CFG2 refinements (f-cfg2-01, 2026-09-28), all SUPPORTED, narrow:**
+- **Complementary return arms:** a scalar zero test with complementary return arms (`x == 0 ? 1 : 0` vs `x != 0 ? 0 : 1`) compiles identically; only a changed truth table changes the result materialisation. `evidence/codegen-facts/MSC7-CFG2-TOY/` (`baseline`).
+- **Abort/event guard:** `abort == 0 && events == 0` and the equivalent early-exit spellings canonicalise to one layout (_SpiderDialog; `MSC7-CFG2-SPIDER-01/`). An opposite branch orientation in the target is not by itself evidence of different runtime paths.
+- **Guard polarity:** an early return versus a positive guard compiles identically in the admitted `_win_DrawBitMapAtObj` (`og`; `MSC7-CFG2-CTRL-GUARD/`). Guard polarity alone is not a lever; contrast CFG2, where the arms assign different values.
+- **Predicate spelling:** for an unsigned value, `== 0` gives `cmp/sbb/neg` while `< 1` gives a branch plus `xor`. Admitted `_snd_IsSongDone` (`ogi`): `== 0` is exact 14/14, `< 1` is 12/14 (`MSC7-CFG2-CTRL-SONG/`). The spelling of an equivalent predicate can matter.
+
 **MSC7-C22: in a `for` loop, `continue` reaches the increment and test while `break` leaves; a target branch into `inc si` is a `continue`. SUPPORTED.**
 - `_FillHolesRN` (`baseline`): `continue` removes one of the two branch-destination mismatches.
 - `evidence/codegen-facts/MSC7-C22/`.

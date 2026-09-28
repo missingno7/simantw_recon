@@ -2166,6 +2166,11 @@
         "text": "Permuter campaign (1200s): 1059 evaluations, 1058 compiler misses, one compile failure; best chain is the natural while-to-do rewrite while (MacTickCount() <= deadline) S -> if (c) do S while (c). Cost improved 23.4 to 21.4, stack differences 12 to 8, but earliest divergence stayed row 18; 151/158 opcodes and ENTER 20 equal. First opcode residue remains the cursor/interval allocation around +0x3c (target loads X into DI; candidate uses AX), with later home/branch differences. No second run because earliest divergence did not move. Ignore the earlier 0x22f6 literal vs _DATA placement per supervisor guidance; no exact body or unit lane.",
         "origin": "build/search/AnimYellowInsane/20260927T215418-174452",
         "recorded": "2026-09-27T21:54:18.748163+00:00"
+      },
+      {
+        "text": "Pass-2 frontier permuter: 2,594 evaluations / 2,593 compiler misses over 1,217s, natural only; best_chain empty and the best object is the unchanged seed. Best 151/158 opcodes, 460/454 bytes, frame 20/20, aligned cost 21.9, earliest divergence row 18 (candidate +0x3F); the target's DI load versus candidate AX load remains, followed by register/home/branch differences. No strict/body-exact result and no second run because the earliest divergence did not move.",
+        "origin": "build/search/AnimYellowInsane/20260928T034108-138956",
+        "recorded": "2026-09-28T03:41:09.109097+00:00"
       }
     ],
     "frontier": {
@@ -10195,6 +10200,11 @@
         "text": "f-perm-04 permuter 1200s: best unchanged at 101/109 opcodes, equal 4-byte frame, 320/322 bytes, aligned cost 8.8; first divergence row 86 / offset +0x110. Best chain empty (NATURAL baseline), 1154 evaluations, no exact/body-exact result or second run. Remaining evidence-backed dependencies: tileDsp/tileMask argument lowering and private UpdateEditBuffers near helper at ANTEDIT_MODULE:0x16D4 (plus its static callee).",
         "origin": "build/search/DoEditScrollLine/20260927T230757-124012",
         "recorded": "2026-09-27T23:07:57.403215+00:00"
+      },
+      {
+        "text": "2026-09-28 CFG2: frontier first nonmatching instruction at T+0x110 NOP versus no C instruction; the next branch is T+0x10D JMP 0x115 versus C JMP 0x113. The original mono-path sequence is NOP/PUSH CS/CALL, the linked far-call-to-same-segment form; the candidate emits one direct near CALL. Color refresh reaches the private near helper at target 16D4; the current body candidate supplies an incomplete local helper and still lacks exact bindings for private map redraw helpers. Natural paths reached 109/109 opcodes and the tested condition aliases all compile identically; strict proof remains blocked by private helper bodies/call bindings, so no promotion was attempted.",
+        "origin": "build/search/DoEditScrollLine/20260928T034235-47836",
+        "recorded": "2026-09-28T03:42:35.967884+00:00"
       }
     ],
     "frontier": {
@@ -13323,6 +13333,11 @@
         "text": "Best remains 60/66, 166/168 bytes, frame exact. Shared status/goto, common-zero joins, and decrement-before-test variants fell to 55/66, 47/67, and 54/66; they also changed x/y register allocation. History already contains 30+ stagnant rounds over nested/goto, break, and fail-first forms. No useful next experiment within those families; reopen only with a different hypothesis about shared fallback/control-flow structure.",
         "origin": "build/search/DoRestAnt/20260927T140440-175236",
         "recorded": "2026-09-27T14:04:40.657766+00:00"
+      },
+      {
+        "text": "2026-09-28 CFG2 path audit: original invalid IsValidA, standard-terrain mismatch, and custom-range failures all set DX=0 and converge at DEC/JNE; successful nest candidates set DX=1, then DEC reaches GoInNest. The 54/66 shared-status candidate preserves those decisions. T+42 JNE-to-terrain versus C+42 JE-to-zero is opposite branch polarity/block order with matching truth paths; T+72 JMP-to-MOV DX,1 versus C+71 JMP-to-DEC DX reflects assignment placement, not a changed outcome. Shared-label, positive-valid, split-status, and alias forms did not establish a remaining semantic bug; current residue is branch/layout/code shape plus operands/fixups.",
+        "origin": "build/search/DoRestAnt/20260928T034235-114128",
+        "recorded": "2026-09-28T03:42:35.868892+00:00"
       }
     ],
     "frontier": {
@@ -23199,6 +23214,11 @@
         "text": "f-perm-06 natural permuter campaign: 1,298 evaluations/1,297 compiler misses over 1,224.7s; empty best mutation chain and no score movement. Best remains 91/93 opcodes, 227/225 bytes, ENTER 4/4; earliest divergence row 9. No exact/body-exact winner. The first meaningful opcode residue is coordinate addition/register order (target first coordinate in SI and tests SI before DI; best uses reversed CX/CY allocation and an extra add); private _DATA/CONST operand placement is not the opcode gap.",
         "origin": "build/search/GetMowDir/20260927T205802-135176",
         "recorded": "2026-09-27T20:58:02.801818+00:00"
+      },
+      {
+        "text": "2026-09-28 CFG2: first opcode divergence is T+0x27 OR SI,SI versus C+0x27 JS 0x3C. Target normalizes/tests x (SI) with OR/JL before y (DI); candidate reorders the independent lower-bound tests, reuses SF from the preceding ADD DI,[BP+8] to test y with JS, then tests x. Both route a failed bound to the same invalid-neighbor block, and search reports no branch-destination mismatch; this is compare scheduling/flag reuse, not yet evidence of different path semantics. Parameter, signedness, table type, expression-order, grouped-guard, goto, continue and temp-alias variants did not beat 90/92; flag alias probe emitted identical bytes.",
+        "origin": "build/search/GetMowDir/20260928T034235-179948",
+        "recorded": "2026-09-28T03:42:36.088474+00:00"
       }
     ],
     "frontier": {
@@ -44108,6 +44128,11 @@
         "text": "Fresh replay confirms 165/202, target ENTER 0x12 vs candidate 0x16 and first ordinary branch mismatch near +0x98. AnTab private CONST placement and multiple internal far-call bindings remain unproved in the singleton simant:673A object. Next derive the entry local frame and branch shape before a unit test; selector/call resolution then requires exact body controls.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:06:56.563949+00:00"
+      },
+      {
+        "text": "Current body is 159/197 opcodes, 569/537 bytes, ENTER 0x12 exact. Earliest pair at +0x98: target JNE 0x114 -> post-animation cleanup; candidate JE 0x9d -> win_Events. Both skip the event call and exit on nonzero abort, then evaluate events only when abort is zero; the candidate uses an extra jump while the target branches directly to cleanup. Separate exits, nested checks and positive OR spelling canonicalize to the frontier output. The frame map flags byte stringCount at BP-5 versus the target word slot BP-2; widening count alone grows ENTER to 0x16. Signed frame changes the later unsigned JA to a signed JG, but does not change the first divergence. Eight bounded dead-guard/alias probes found one output class. No exact match; frame-home follow-up belongs to F-ORDER.",
+        "origin": "build/search/SpiderDialog/20260928T034229-43384",
+        "recorded": "2026-09-28T03:42:29.862292+00:00"
       }
     ],
     "frontier": {
@@ -53755,6 +53780,11 @@
         "text": "Same-unit idiom evidence from admitted _snd_IsSongDone: its stateViaSelector.songState == 0 source emits the cmp/sbb/neg boolean sequence. Replacing < 1 with == 0 raises this target from 17/21 to 16/21 and reproduces target SBB BX,BX; NEG BX. Context rule multimedia-state-gr-7712 confirms mmState at SIMANT_DATA_GROUP:8D08, songState at +0x14, preceding word at 8D06, and songsOnFlag at DGROUP 0AF6. The remaining first opcode divergence is the soundInstalled branch layout: target JE on zero skips the return-one block at 2B and reaches the state compare at 32; C candidates branch to a return-one block after their compare. Nested if, inverse guard, direct returns, goto labels, assignment/ternary forms all canonicalize to the same 16/21 output or regress. No body exactness; do not run unit admission until the branch/control-flow layout is resolved.",
         "origin": "build/search/mySongIsDone/20260927T112251-99308",
         "recorded": "2026-09-27T11:22:52.246352+00:00"
+      },
+      {
+        "text": "Current best is 17/21 opcodes and 66/66 bytes. Earliest pair at +0x29: target JE 0x32 -> songState comparison; candidate JNE 0x33 -> MOV BX,1. In the original, soundInstalled==0 reaches the final state test; nonzero returns one. Candidate executes the same cases with reversed branch/fallthrough layout. Tested ==0 versus <1, direct returns, split guards, explicit zero arm, ternary, if/else and a goto label. The ==0 form recovers CMP/SBB/NEG per admitted _snd_IsSongDone but leaves this branch orientation open. Eight bounded dead-guard/alias/temporary variants all compile to one output class. No exact match.",
+        "origin": "build/search/mySongIsDone/20260928T034228-147636",
+        "recorded": "2026-09-28T03:42:29.026783+00:00"
       }
     ],
     "frontier": {
@@ -55142,6 +55172,11 @@
         "text": "Best draft is 74/91 opcodes and 209/214 bytes. Remaining mismatch is cleanup/branch shape around the release call, despite matching the core bitmap setup. Catalogued profile probes were invariant; next useful evidence is the target ownership/return convention of the release helper.",
         "origin": "search.py --note",
         "recorded": "2026-09-27T07:32:18.685183+00:00"
+      },
+      {
+        "text": "Fresh baseline replay remains 74/91 opcodes, 209/214 bytes, ENTER 6 exact. Earliest pair at +0x1d: target JMP 0xd0 -> XOR AX,AX; candidate JMP 0xcd -> POP SI. This is the db_LoadObject-zero path: neither side locks/draws/unlocks/releases, and both return 0. The candidate retains AX=0 from the call; target uses a separate zero-return block. Tested packed-case merging/order, header signedness, subtype values, success guard, result join, and a failure label. Eight bounded dead-guard/alias probes found no exact result. The control paths appear equivalent; next useful evidence would be the original return-block/source structure in simtwo:BD5A, not pool or selector placement.",
+        "origin": "build/search/win_DrawBitMap/20260928T034227-72188",
+        "recorded": "2026-09-28T03:42:28.239216+00:00"
       }
     ],
     "frontier": {
