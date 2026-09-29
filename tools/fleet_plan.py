@@ -130,9 +130,10 @@ def target_line(t):
     return line
 
 
-def plan(authoring=4, tail=2, compose=1, per_worker=4, prefix='f3', refresh=True, backlog_path=None):
+def plan(authoring=4, tail=2, compose=1, per_worker=4, prefix='f3', refresh=True, backlog_path=None, exclude=()):
     data = backlog(backlog_path, refresh)
-    rows = data['functions']
+    # Targets already held by running workers (or deliberately skipped) are not assigned twice.
+    rows = [t for t in data['functions'] if t['symbol'] not in set(exclude)]
     workers = []
     # Composition ownership is exclusive per object. Authoring/tail workers may investigate
     # functions of an owned object (they never compose it); they do not share an object
@@ -219,13 +220,15 @@ def main():
     ap.add_argument('--claim', action='store_true')
     ap.add_argument('--followup', metavar='PREVIOUS', help='write a follow-up prompt continuing PREVIOUS worker\'s targets (fresh triage)')
     ap.add_argument('--name', help='with --followup: the new worker name')
+    ap.add_argument('--exclude', default='', help='comma-separated symbols already assigned to running workers')
     args = ap.parse_args()
     if args.followup:
         print(json.dumps(followup(args.followup, args.name), indent=2))
         return
     if not 3 <= args.per_worker <= 6:
         raise FormatError('--per-worker should stay small (3..6 focused targets)')
-    result = plan(args.authoring, args.tail, args.compose, args.per_worker, args.prefix, refresh=not args.backlog, backlog_path=args.backlog)
+    result = plan(args.authoring, args.tail, args.compose, args.per_worker, args.prefix, refresh=not args.backlog, backlog_path=args.backlog,
+                  exclude=[x for x in args.exclude.split(',') if x])
     if args.write:
         for w in result['workers']:
             folder = ROOT / 'build/workers' / w['name']
