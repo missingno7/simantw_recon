@@ -194,6 +194,10 @@ The value heuristic estimates debt bytes per agent-hour as p(exact within the ho
 
 It is a ranking device, not a measurement.
 
+## Model roles
+
+Luna Codex workers (`cx`, gpt-6-luna) do cheap grinding: the authoring, tail and compose lanes and follow-up passes. They tend to stop after 15-60 minutes, so plan follow-ups (`fleet_plan.py --followup`). Opus 5.5 agents do major decisions and unblocking: compiler/allocator mechanism studies, root-cause investigations and process or tool design. They work in an isolated worktree and report a decision with evidence. The supervisor applies any change to `layout/`, profiles or gates.
+
 ## Fleet plan and ownership
 
 `fleet_plan.py` fills the COMPOSE lane first:
