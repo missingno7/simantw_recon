@@ -344,7 +344,9 @@ def classify_blocker(ev, fd, emu_status=None, typedb_better=False, size=0):
         return 'SEMANTICS'
     if m == t and gap == 0 and fd.get('kind') == 'RELOCATION_ONLY':
         return 'BINDING'
-    if ratio < 0.75 or gap > max(24, 0.08 * tb):
+    # Structural work remains while the gap is large in absolute terms too: 1206/1574 is 77% but 368
+    # opcodes are still missing, which no single-mechanism tail experiment will close.
+    if ratio < 0.75 or gap > max(24, 0.08 * tb) or (t - m) >= 80:
         return 'AUTHORING'
     allocation_only = (m == t and gap == 0 and not ev.get('branch_target_differences') and
                        (ev.get('register_only_differences') or ev.get('stack_local_differences')))
@@ -465,7 +467,7 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
                semantics=emu, mac=mac_evidence(symbol), reopen_hint=reopen)
     if cls in ('REGISTER_ALLOCATION', 'HOME_ORDER'):
         out['allocation_guidance'] = ALLOCATION_ADVICE
-    if cls in ('AUTHORING', 'SEMANTICS', 'CFG_STRUCTURE') and (best or {}).get('aligned_asm'):
+    if cls not in ('EXACT_PENDING', 'PLACEMENT') and (best or {}).get('aligned_asm'):
         out['gap_regions'] = gap_regions(best['aligned_asm'])
     if live_typedb and draft:
         out['typedb_check'] = typedb_live(draft)
