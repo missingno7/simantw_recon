@@ -11,9 +11,11 @@ int far DropFoodB(int x, int y)
 {
     int level;
     int result;
+    volatile unsigned char near * volatile cellHome;
     unsigned char far *attrPtr;
 
     result = 0;
+    cellHome = &MapB[x][y];
     level = MapB[x][y];
     if (level < 16) {
         MapB[x][y] = 16;
