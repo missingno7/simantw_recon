@@ -210,6 +210,9 @@ def stale_components(row, current_fp, components=None):
 def summary(symbol, root=None, current_fp=None, rows=None):
     """Per-family aggregate: attempts, variants, outcomes, best gain, last time, stale flag."""
     rows = load(symbol, root) if rows is None else rows
+    # The ledger is append-only: a later record with `corrects: ID` replaces that record.
+    corrected = {r['corrects'] for r in rows if r.get('corrects')}
+    rows = [r for r in rows if r.get('id') not in corrected]
     per = defaultdict(lambda: dict(attempts=0, variants=0, outcomes=Counter(), best_gain=None, last=None,
                                    declared=0, inferred=0, stale=False, stale_components=set(), hypotheses=[]))
     for row in rows:

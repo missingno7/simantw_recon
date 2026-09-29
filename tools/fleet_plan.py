@@ -42,15 +42,21 @@ Workflow per target:
    Always give --family (python tools/attempts.py families). Repeat an exhausted family only with --why-repeat "new fact/tool/evidence".
 4. Exact: python tools/promote.py SYMBOL FILE.c. Exact body blocked by placement: say so in REPORT.md; the unit owner composes it
    ({owner_rule}).
-Stop a target when it is exact, when you hit a concrete missing dependency (search.py --note), or after ~10 stagnant rounds:
-record what you learned with --note and move to your next target.
+Stop a target when it is exact, when you hit a concrete missing dependency (search.py --note), or after ~10 stagnant rounds
+(rounds, not checks: a round is a compiled source change): record what you learned with --note and move to your next target.
 Rules: no asm/pragmas/includes/absolute-address casts to force bytes; never edit src/recovery.json, ledgers, proofs, fixtures, locks or hashes;
 no git, no validate.py. Write build/workers/{name}/REPORT.md. Final answer: at most 15 lines.
 """
 
 LANE_TEXT = {
     'AUTHORING': 'Author missing semantics and structure. These functions have a large opcode/byte gap; a better reconstruction of '
-                 'control flow, loops, structs, calls and data use moves dozens to hundreds of opcodes. Do not tune registers or homes here.',
+                 'control flow, loops, structs, calls and data use moves dozens to hundreds of opcodes. Do not tune registers or homes here.\n'
+                 'Depth is the point of this lane: plan on 2-3 hours, most of it on your largest target. triage.py lists "missing regions" '
+                 '(target code the draft lacks, with offsets and first instructions) and "extra regions" (draft code the target does not have). '
+                 'Each round, pick one region, read those target instructions in the aligned diff (search.py --full), write the C that produces '
+                 'them, compile, and keep the draft if the region aligns. A restructuring round may lose opcodes elsewhere before it wins; keep '
+                 'going. Checking emu_diff/typedb is a diagnostic, not the work. Do not leave a target after one or two trials: leave it only '
+                 'after about 10 rounds without any region gain, or on a concrete missing dependency (record it with --note).',
     'TAIL': 'Near-exact functions. Each has at least one mechanism family that was never tried (or whose earlier negative result went stale '
             'after a shared change). Test exactly those families; do not re-run exhausted ones.',
     'COMPOSE': 'Body-exact or binding-only functions. You own canonical unit composition of the listed objects: '

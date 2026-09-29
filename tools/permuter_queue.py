@@ -194,8 +194,14 @@ def _dir_time(name):
     return '%s-%s-%sT%s:%s:%sZ' % (d[:4], d[4:6], d[6:], t[:2], t[2:4], t[4:])
 
 
-def record_run(symbol, summary, out, fp, worker='permuter-queue', when=None):
+def record_run(symbol, summary, out, fp, worker='permuter-queue', when=None, ledger_opcodes=None):
     before, after = score_snapshot(summary.get('baseline')), score_snapshot(summary.get('best'))
+    if ledger_opcodes is not None and before is not None:
+        # Judge against the stored draft the queue started from, not the permuter's own
+        # (possibly regenerated, lower) baseline: a gain below the ledger is not an improvement.
+        before = dict(before, opcodes=max(before.get('opcodes') or 0, ledger_opcodes), row=None)
+        if after is not None and not after.get('strict') and (after.get('opcodes') or 0) <= ledger_opcodes:
+            after = dict(after, row=None)
     chain = summary.get('best_chain') or []
     fams = sorted({MUTATION_FAMILY.get(str(step).split(':')[0].strip(), 'OTHER') for step in chain})
     outcome = attempts.outcome_of(before, after)
@@ -235,7 +241,11 @@ def run(budget_minutes=120.0, per_target=900, parallel=2):
             summary_path = out / 'summary.json'
             if proc.returncode == 0 and summary_path.exists():
                 summary = read_json(summary_path)
-                rec = record_run(item['symbol'], summary, out, fp)
+                try:
+                    queued = int(str(item.get('opcodes')).split('/')[0])
+                except ValueError:
+                    queued = None
+                rec = record_run(item['symbol'], summary, out, fp, ledger_opcodes=queued)
                 item.update(status='DONE', finished=now(), outcome=rec['outcome'], best=(summary.get('best') or {}).get('opcode_matches'),
                             exact_source=summary.get('exact_source'), provenance=summary.get('best_source_class'))
             else:

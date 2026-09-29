@@ -55,7 +55,7 @@ PLAYBOOK = {
     'SEMANTICS': (['SEMANTICS', 'CFG_STRUCTURE', 'LOOP_STRUCTURE', 'TYPE'], ['REGISTER_HINT', 'LOCAL_ORDER', 'DECLARATION_ORDER'],
                   ['MSC7-C', 'MSC7-S'], 'python tools/emu_diff.py {sym} {draft} --runs 50  # repair behaviour before codegen tuning'),
     'AUTHORING': (['SEMANTICS', 'CFG_STRUCTURE', 'LOOP_STRUCTURE', 'TYPE', 'FRAME_LAYOUT'], ['REGISTER_HINT', 'LOCAL_ORDER', 'DECLARATION_ORDER'],
-                  ['MSC7-C', 'MSC7-L', 'MSC7-S'], 'python tools/context.py {sym} --brief; python tools/emu_diff.py {sym} {draft} --runs 50  # author the missing regions'),
+                  ['MSC7-C', 'MSC7-L', 'MSC7-S'], 'python tools/search.py {sym} {draft} --full  # author gap_regions (target code the draft lacks) one region per round; emu_diff checks behaviour'),
     'FRAME_SIZE': (['FRAME_LAYOUT', 'LOCAL_LIFETIME', 'TYPE', 'CSE_SUBEXPRESSION'], ['REGISTER_HINT', 'LOCAL_ORDER'],
                    ['MSC7-F', 'MSC7-L'], 'python tools/search.py {sym} {draft} --frame  # named-local homes vs target frame'),
     'HOME_ORDER': (['LOCAL_LIFETIME', 'CSE_SUBEXPRESSION', 'EXPRESSION_SHAPE', 'FRAME_LAYOUT', 'TYPE'], ['LOCAL_ORDER', 'REGISTER_HINT', 'DECLARATION_ORDER'],
@@ -167,6 +167,33 @@ def mac_evidence(symbol):
                 use='supporting evidence only: loop/switch/variable-count shape; never Windows source text')
 
 
+def ledger_shas(symbol):
+    entry = drafts.entry(symbol) or drafts.entry(symbol.lstrip('_'))
+    return {rec['sha256'] for rec in (entry.get('best'), entry.get('frontier')) if rec and rec.get('sha256')}
+
+
+def diagnostics_current(symbol, fp):
+    """True when the sweep diagnostics cover every stored best/frontier draft under the current recompile state."""
+    path = SWEEP_DIAG / (symbol.lstrip('_').replace(':', '_') + '.json')
+    if not path.exists():
+        return False
+    diag = read_json(path)
+    if shared_state.changed(diag.get('fingerprint'), fp, shared_state.RECOMPILE):
+        return False
+    return ledger_shas(symbol) <= {d.get('sha256') for d in diag.get('drafts', [])}
+
+
+def refresh_stale(symbols, fp):
+    """Re-sweep functions whose stored drafts changed since their diagnostics (cheap: cached compiles)."""
+    stale = {s for s in symbols if ledger_shas(s) and not diagnostics_current(s, fp)}
+    if stale:
+        import sweep
+        from contextlib import redirect_stdout
+        with redirect_stdout(sys.stderr):
+            sweep.sweep(symbols=stale)
+    return stale
+
+
 def sweep_evaluation(symbol, fp):
     """Current best and frontier evaluations from sweep diagnostics, if still valid for this state."""
     path = SWEEP_DIAG / (symbol.lstrip('_').replace(':', '_') + '.json')
@@ -186,10 +213,39 @@ def sweep_evaluation(symbol, fp):
     return best, front, ('STALE: %s changed since %s' % (','.join(stale), diag.get('evaluated')) if stale else 'CURRENT')
 
 
+LINK_NOISE = ('nop', 'push cs')
+
+
+def gap_regions(rows, limit=5, minimum=4):
+    """Largest runs of target-only rows (code the draft lacks) and candidate-only rows (code it adds).
+
+    LINK's near-call translation (`nop; push cs` before a same-segment far call) is not missing code."""
+    def runs(side):
+        other = 'candidate' if side == 'target' else 'target'
+        out, cur = [], []
+        for r in rows:
+            one_sided = bool(r.get(side)) and not r.get(other)
+            if one_sided and (r.get(side) or '').strip() in LINK_NOISE:
+                continue  # LINK noise neither counts nor breaks a run
+            if one_sided:
+                cur.append(r)
+                continue
+            if len(cur) >= minimum:
+                out.append(cur)
+            cur = []
+        if len(cur) >= minimum:
+            out.append(cur)
+        out.sort(key=len, reverse=True)
+        key = side + '_offset'
+        return [dict(start=hex(run[0].get(key) or 0), end=hex(run[-1].get(key) or 0), instructions=len(run),
+                     first=[(x.get(side) or '').strip() for x in run[:3]]) for run in out[:limit]]
+    return dict(missing_in_draft=runs('target'), extra_in_draft=runs('candidate'))
+
+
 def _both_unsupported(divergence):
     d = divergence or {}
     t, c = d.get('target') or {}, d.get('candidate') or {}
-    return t.get('kind') == 'execution' and c.get('kind') == 'execution' and t.get('status') == c.get('status') == 'UNSUPPORTED'
+    return 'UNSUPPORTED' in (t.get('status'), c.get('status')) and 'execution' in (t.get('kind'), c.get('kind'))
 
 
 def emu_verdict(symbol, draft, run=False):
@@ -308,8 +364,11 @@ def choose_lane(cls, fam, park_status, ev):
     return lane, ordered, exhausted, stale
 
 
-def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None):
+def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refresh=True):
     fp = fp or shared_state.fingerprint()
+    if refresh and symbol not in recipes():
+        # A worker's newer best/frontier draft must be judged, not the sweep's older view of it.
+        refresh_stale([symbol], fp)
     card = _cards().get(symbol)
     if card is None:
         raise FormatError('unknown function symbol ' + symbol)
@@ -378,6 +437,8 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None):
                semantics=emu, mac=mac_evidence(symbol), reopen_hint=reopen)
     if cls in ('REGISTER_ALLOCATION', 'HOME_ORDER'):
         out['allocation_guidance'] = ALLOCATION_ADVICE
+    if cls in ('AUTHORING', 'SEMANTICS', 'CFG_STRUCTURE') and (best or {}).get('aligned_asm'):
+        out['gap_regions'] = gap_regions(best['aligned_asm'])
     if live_typedb and draft:
         out['typedb_check'] = typedb_live(draft)
     out['value'] = value_per_hour(out, ev, size, fam)
@@ -418,11 +479,13 @@ def backlog(lane=None, limit=None):
     admitted = recipes()
     parked = parking.load_parking()
     rows = []
+    open_symbols = [s for s, c in _cards().items() if c.get('ownership') == 'GAME' and s not in admitted]
+    refresh_stale(open_symbols, fp)
     for symbol, card in sorted(_cards().items()):
         if card.get('ownership') != 'GAME' or symbol in admitted:
             continue
         try:
-            t = triage(symbol, fp, parked=parked)
+            t = triage(symbol, fp, parked=parked, refresh=False)
         except FormatError as exc:
             t = dict(symbol=symbol, error=str(exc), lane='ERROR')
         rows.append(t)
@@ -496,6 +559,8 @@ def render(t):
              'unit            : %s (%s/%s members admitted, owner %s)' % (t['unit']['component'], t['unit']['admitted_members'], t['unit']['members'], t['unit']['owner'] or 'none'),
              'last compose    : %s' % t['last_compose'] if t.get('last_compose') else None,
              'typedb variant  : %s' % t['typedb_variant'] if t.get('typedb_variant') else None,
+             'missing regions : %s' % '; '.join('%s..%s (%d instr: %s)' % (g['start'], g['end'], g['instructions'], ' | '.join(g['first'])) for g in t['gap_regions']['missing_in_draft'][:3]) if (t.get('gap_regions') or {}).get('missing_in_draft') else None,
+             'extra regions   : %s' % '; '.join('%s..%s (%d instr)' % (g['start'], g['end'], g['instructions']) for g in t['gap_regions']['extra_in_draft'][:3]) if (t.get('gap_regions') or {}).get('extra_in_draft') else None,
              'mac             : %s' % json.dumps(t['mac'])[:200],
              'already tried   :']
     lines += ['  - ' + x for x in (t.get('tried') or ['nothing recorded'])]

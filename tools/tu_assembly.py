@@ -64,6 +64,9 @@ def split_items(text):
             if line.startswith('#define'):
                 name = re.match(r'#define\s+([A-Za-z_]\w*)', line)
                 items.append(dict(kind='declaration', names=[name.group(1)] if name else [], text=line, normalized=' '.join(line.split())))
+            elif re.fullmatch(r'#undef\s+[A-Za-z_]\w*', line):
+                # Closes a member-local shape view (view_macro); kept in place, names nothing new.
+                items.append(dict(kind='declaration', names=[], text=line, normalized=' '.join(line.split())))
             elif re.fullmatch(r'#pragma\s+alloc_text\s*\(\s*[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)+\s*\)', line):
                 # Reviewed units place stand-ins or public code runs into
                 # reserved logical segments with this compiler pragma.
