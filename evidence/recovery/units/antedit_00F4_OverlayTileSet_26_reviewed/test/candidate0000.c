@@ -758,9 +758,10 @@ extern void far DrawMapCursor(void);
 extern void far DrawCurBalloons(void);
 extern void far DrawSpider(void);
 extern void far DrawBalloons(void);
-extern int far currentEditObject;
 extern void far * near theEditBufPtr;
-extern void near UnnamedEditTileHelper(int, int);
+void far UpdateEditIfBufInvalid(void);
+void far DoEditScrollLine(char c);
+static void near pool_stub_EditTileHelper(int x, int y);
 extern void far myServiceSong(void);
 static int near UpdateEditBuffers(void);
 
@@ -782,19 +783,23 @@ static int near UpdateEditBuffers(void);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_KeepScrollEditBy)
 
+#pragma alloc_text(POOLSTUB_TEXT, pool_stub_EditTileHelper)
+
+#pragma alloc_text(RUN12_TEXT, DoEditScrollLine)
+
 #pragma alloc_text(RUN2_TEXT, ClearEditDeltaTables)
 
 #pragma alloc_text(RUN2_TEXT, ProcEditEvent)
 
 #pragma alloc_text(RUN3_TEXT, OpenEditWindow, MakeEditOpen, ForceUpdateEdit, DoEditUpdateDraw)
 
-#pragma alloc_text(RUN4_TEXT, UpdateEditWindow)
+#pragma alloc_text(RUN4_TEXT, UpdateEditWindow, UpdateEditIfBufInvalid)
 
 void far win_DrawEditWindow(int flags);
 
 #pragma alloc_text(RUN5_TEXT, DrawEdit, win_DrawEditWindow)
 
-#pragma alloc_text(RUN11_TEXT, CenterEdit)
+#pragma alloc_text(RUN11_TEXT, CenterEdit, UpdateEditBuffers)
 
 #pragma alloc_text(RUN6_TEXT, SetEditWinTitle, InvalidUpdateEdit, PreDrawSpider)
 
@@ -828,7 +833,6 @@ static char near pool_data_fill_PutLife[] = "PutLifeAndTile: something went wron
 
 static int near pool_data_fill_words[4] = {-1, -1, -1, -1};
 
-static char near pool_data_fill_names[8] = "editbuf";
 
 struct WinRect {
     int left;
@@ -1049,7 +1053,7 @@ void DoEditUpdateDraw(void)
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _ScrollEditWindow.
  * It only reproduces the object's selector-pool allocation order for the
- * words BF92 BF94; its code is compiled into the reserved
+ * word BF92 (BF94 is introduced by the recovered static UpdateEditBuffers); its code is compiled into the reserved
  * segment POOLSTUB_TEXT, which the matcher never compares or credits. */
 
 void far pool_stub_ScrollEditWindow(void)
@@ -1057,7 +1061,6 @@ void far pool_stub_ScrollEditWindow(void)
     volatile int t;
 
     t = *(int far *)&MapPnt;
-    t = (int)spiderTileLeft;
 }
 
 void UpdateEditWindow(void)
@@ -1084,6 +1087,159 @@ void far UpdateEditIfBufInvalid(void)
 
 
 void DrawEdit(void) {}
+
+void far DoEditScrollLine(char c)
+{
+    char far *buf;
+
+    if (!(displayType & 1)) {
+        buf = mem_Lock(editBuf);
+        switch (c) {
+        case 'u':
+            EditScrollUpColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
+            break;
+        case 'd':
+            EditScrollDownColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
+            break;
+        case 'l':
+            EditScrollLeftColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
+            break;
+        case 'r':
+            EditScrollRightColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
+            break;
+        }
+        mem_Unlock(editBuf);
+        UpdateEditBuffers();
+        InvalidateRect(win_hwnd[0], (void far *)0, 0);
+        UpdateWindow(win_hwnd[0]);
+    } else {
+        UpdateEdit();
+    }
+
+    if (win_IsWinOpen(0x100)) {
+        MSClipStart(win_hwnd[1]);
+        EraseMapCursor();
+        DrawMapCursor();
+        MSClipEnd();
+    }
+}
+
+/* Center the editor view on the requested map point and clamp the origin. */
+
+int far CenterEdit(int x, int y)
+{
+    int width;
+    volatile int height;
+    int result;
+
+    if (ScrollEditBy(x - MapPnt.x - editWidth / 2, y - MapPnt.y - editHeight / 2)) {
+        height = 64;
+        switch (MapPlane) {
+        case 0:
+        case 1:
+            width = 128;
+            break;
+        default:
+            width = 64;
+        }
+        if (MapPnt.x < 0)
+            MapPnt.x = 0;
+        else if (MapPnt.x + editWidth > width)
+            MapPnt.x = width - editWidth;
+        if (MapPnt.y < 0)
+            MapPnt.y = 0;
+        else if (MapPnt.y + editHeight > 64)
+            MapPnt.y = 64 - editHeight;
+        result = 1;
+    } else
+        result = 0;
+    return result;
+}
+
+/* UpdateEditBuffers (unnamed static helper at 3:16D4): (re)allocate the edit
+ * tile/life/bitmap buffers when editBuf is 0 (size from the edit window rect,
+ * clamp the map origin, reset the scroll range), then lock the bitmap, redraw
+ * every edit tile through the unnamed tile helper, the spider and balloons,
+ * and unlock it again. */
+
+static int near UpdateEditBuffers(void)
+{
+    int maxX;
+    int h;
+    int w;
+    register int x;
+    register int y;
+
+    if (editBuf == 0) {
+        win_GetObjRect(4, &editTileRect);
+        h = (editTileRect.bottom - editTileRect.top + tileHeight - 1) / tileHeight;
+        editHeight = h;
+        w = (editTileRect.right - editTileRect.left + tileWidth - 1) / tileWidth;
+        editWidth = w;
+        editTileRect.right = editTileRect.left + w * tileWidth;
+        editTileRect.bottom = editTileRect.top + h * tileHeight;
+
+        if (tileDspHandle != 0) {
+            mem_Unlock(tileDspHandle);
+            mem_Free(tileDspHandle);
+            tileDspHandle = 0;
+        }
+        if (tileMaskHandle != 0) {
+            mem_Unlock(tileMaskHandle);
+            mem_Free(tileMaskHandle);
+            tileMaskHandle = 0;
+        }
+        tileDspHandle = mem_Alloc((unsigned long)editHeight * editWidth, 1, tileDspAllocationName);
+        tileDsp = mem_Lock(tileDspHandle);
+        tileMaskHandle = mem_Alloc((unsigned long)editHeight * editWidth * 2UL, 1, tileMaskAllocationName);
+        tileMask = mem_Lock(tileMaskHandle);
+        
+        memset(tileMask, -1, editHeight * editWidth * 2);
+        editBufInvalidFlag[0] = 0;
+
+        switch (MapPlane) {
+        case 0:
+        case 1:
+            maxX = 0x80;
+            break;
+        default:
+            maxX = 0x40;
+        }
+        if (MapPnt.x < 0)
+            MapPnt.x = 0;
+        else if (MapPnt.x + editWidth > maxX)
+            MapPnt.x = maxX - editWidth;
+        if (MapPnt.y < 0)
+            MapPnt.y = 0;
+        else if (MapPnt.y + editHeight > 0x40)
+            MapPnt.y = 0x40 - editHeight;
+
+        ResetEditScrollRange();
+        editBuf = mem_Alloc((unsigned long)editHeight * tileHeight *
+                            ((((long)tileWidth * editWidth * 4L + 31L) & ~0x18UL) >> 3) + 0x20UL,
+                            1, "editbuf");
+    }
+    theEditBufPtr = mem_Lock(editBuf);
+    PreDrawSpider();
+    DrawCurBalloons();
+    for (y = 0; y < editHeight; ++y) {
+        for (x = 0; x < editWidth; ++x)
+            pool_stub_EditTileHelper(x, y);
+        myServiceSong();
+    }
+    if (editForce != 0)
+        editBufInvalidFlag[0] = 0;
+    if (spiderTileLeft != 500) {
+        DrawSpider();
+        myServiceSong();
+    }
+    DrawBalloons();
+    myServiceSong();
+    mem_Unlock(editBuf);
+    theEditBufPtr = 0;
+    return 0;
+}
+
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _DrawEditGraphs.
  * It only reproduces the object's selector-pool allocation order for the
@@ -1524,151 +1680,6 @@ void far ResetEditScrollRange(void)
         SetScrollPos(win_hwnd[0], 1, MapPnt.y, 1);
 }
 
-void far DoEditScrollLine(char c)
-{
-    char far *buf;
-
-    if (!(displayType & 1)) {
-        buf = mem_Lock(editBuf);
-        switch (c) {
-        case 'u':
-            EditScrollUpColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        case 'd':
-            EditScrollDownColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        case 'l':
-            EditScrollLeftColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        case 'r':
-            EditScrollRightColor(buf, tileDsp, tileMask, editHeight, editWidth, tileHeight, tileWidth);
-            break;
-        }
-        mem_Unlock(editBuf);
-        UpdateEditBuffers();
-        InvalidateRect(win_hwnd[0], (void far *)0, 0);
-        UpdateWindow(win_hwnd[0]);
-    } else {
-        UpdateEdit();
-    }
-
-    if (win_IsWinOpen(0x100)) {
-        MSClipStart(win_hwnd[1]);
-        EraseMapCursor();
-        DrawMapCursor();
-        MSClipEnd();
-    }
-}
-
-
-/* Center the editor view on the requested map point and clamp the origin. */
-
-int far CenterEdit(int x, int y)
-{
-    int width;
-    volatile int height;
-    int result;
-
-    if (ScrollEditBy(x - MapPnt.x - editWidth / 2, y - MapPnt.y - editHeight / 2)) {
-        height = 64;
-        switch (MapPlane) {
-        case 0:
-        case 1:
-            width = 128;
-            break;
-        default:
-            width = 64;
-        }
-        if (MapPnt.x < 0)
-            MapPnt.x = 0;
-        else if (MapPnt.x + editWidth > width)
-            MapPnt.x = width - editWidth;
-        if (MapPnt.y < 0)
-            MapPnt.y = 0;
-        else if (MapPnt.y + editHeight > 64)
-            MapPnt.y = 64 - editHeight;
-        result = 1;
-    } else
-        result = 0;
-    return result;
-}
-
-int near UpdateEditBuffers(void)
-{
-    int maxX;
-    int h;
-    int w;
-    register int x;
-    register int y;
-
-    if (editBuf == 0) {
-        win_GetObjRect(4, &editTileRect);
-        h = (editTileRect.bottom - editTileRect.top + tileHeight - 1) / tileHeight;
-        editHeight = h;
-        w = (editTileRect.right - editTileRect.left + tileWidth - 1) / tileWidth;
-        editWidth = w;
-        editTileRect.right = editTileRect.left + w * tileWidth;
-        editTileRect.bottom = editTileRect.top + h * tileHeight;
-
-        if (tileDspHandle != 0) {
-            mem_Unlock(tileDspHandle);
-            mem_Free(tileDspHandle);
-            tileDspHandle = 0;
-        }
-        if (tileMaskHandle != 0) {
-            mem_Unlock(tileMaskHandle);
-            mem_Free(tileMaskHandle);
-            tileMaskHandle = 0;
-        }
-        tileDspHandle = mem_Alloc((unsigned long)editHeight * editWidth, 1, "editdisptile");
-        tileDsp = mem_Lock(tileDspHandle);
-        tileMaskHandle = mem_Alloc((unsigned long)editHeight * editWidth * 2UL, 1, "editdisplife");
-        tileMask = mem_Lock(tileMaskHandle);
-        
-        memset(tileMask, -1, editHeight * editWidth * 2);
-        editBufInvalidFlag[0] = 0;
-
-        switch (MapPlane) {
-        case 0:
-        case 1:
-            maxX = 0x80;
-            break;
-        default:
-            maxX = 0x40;
-        }
-        if (MapPnt.x < 0)
-            MapPnt.x = 0;
-        else if (MapPnt.x + editWidth > maxX)
-            MapPnt.x = maxX - editWidth;
-        if (MapPnt.y < 0)
-            MapPnt.y = 0;
-        else if (MapPnt.y + editHeight > 0x40)
-            MapPnt.y = 0x40 - editHeight;
-
-        ResetEditScrollRange();
-        editBuf = mem_Alloc((unsigned long)editHeight * tileHeight *
-                            ((((long)tileWidth * editWidth * 4L + 31L) & ~0x18UL) >> 3) + 0x20UL,
-                            1, "editbuf");
-    }
-    theEditBufPtr = mem_Lock(editBuf);
-    PreDrawSpider();
-    DrawCurBalloons();
-    for (y = 0; y < editHeight; ++y) {
-        for (x = 0; x < editWidth; ++x)
-            UnnamedEditTileHelper(x, y);
-        myServiceSong();
-    }
-    if (editForce != 0)
-        editBufInvalidFlag[0] = 0;
-    if (currentEditObject != 0x1f4)
-        DrawSpider();
-    myServiceSong();
-    DrawBalloons();
-    myServiceSong();
-    mem_Unlock(editBuf);
-    theEditBufPtr = 0;
-    return 0;
-}
 
 
 static int near ScrollEditBy(int dx, int dy)
@@ -1737,4 +1748,14 @@ static int near ScrollEditBy(int dx, int dy)
 void far pool_stub_KeepScrollEditBy(void)
 {
     (void)ScrollEditBy(0, 0);
+}
+
+/* SCAFFOLD, not recovered source: stand-in for the unrecovered unnamed static
+ * helper at 3:6250 (after ScrollEditBy) that UpdateEditBuffers calls once per
+ * edit tile. It is compiled into the reserved segment POOLSTUB_TEXT, which the
+ * matcher never compares or credits; the call site is checked against the
+ * original call destination (library_match.unnamed_code_entry). */
+
+static void near pool_stub_EditTileHelper(int x, int y)
+{
 }

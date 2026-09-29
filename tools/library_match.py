@@ -314,6 +314,35 @@ def import_symbols(path):
    if ordinal:out[name]={'kind':'import','module':module,'ordinal':r.u16()}
  return out
 
+HELPER_STAND_IN_REASON='near call to an unnamed static helper through a scaffold stand-in'
+
+def unnamed_code_entry(raw,n,s,segment,address):
+ """Independent evidence that SEGMENT:ADDRESS starts an unnamed function.
+
+ The address must not be a MAPSYM entry, and it must be reached exactly by a
+ chain of closed recursive-CFG extents starting at the preceding MAPSYM entry
+ of the same segment (MSC pads an odd-sized function with one NOP), with a
+ closed extent of its own. A mid-function address or an address in unowned
+ bytes fails. Returns the chain, or None."""
+ from cfg_solver import solve
+ if not 1<=segment<=len(n['segments']) or segment>len(s['segments']):return None
+ ns=n['segments'][segment-1];code=raw[ns['file_offset']:ns['file_offset']+ns['logical_size']]
+ entries=sorted({p['offset'] for p in s['segments'][segment-1]['symbols']})
+ if address in entries or not 0<=address<len(code):return None
+ prior=[e for e in entries if e<address]
+ if not prior:return None
+ chain=[];pos=prior[-1]
+ while True:
+  upper=min([e for e in entries if e>pos]+[len(code)])
+  g=solve(code,pos,upper,entries,ns['relocations'],segment)
+  if g.get('status')!='PROBABLE' or not g.get('end'):return None
+  end=g['end']
+  if end&1 and end<upper and code[end]==0x90:end+=1
+  chain.append((pos,end))
+  if pos==address:return dict(entry=address,preceding_entry=prior[-1],chain=chain)
+  if end>address or end<=pos:return None
+  pos=end
+
 def compare_member(m,raw,n,s,imports,allow_data=False):
  names=defaultdict(set)
  absolute={p['name']:p['offset'] for p in s['absolute_symbols']}
@@ -389,7 +418,7 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
    issues.append(ss['name']+' contribution placed outside the original BSS region')
  # Library scanning only considers members with code; the data lane asks for data-only members explicitly.
  if not allow_data and not any(m['segments'][si-1]['class']=='CODE' for si in placements):return None
- details=[];total=equal=fixequal=0;selectors_ok=set();pending_far_offsets=[];scaffold=[]
+ details=[];total=equal=fixequal=0;selectors_ok=set();pending_far_offsets=[];scaffold=[];helper_calls=[]
  for ss in m['segments']:
   si=ss['index']
   if not ss['length']:continue
@@ -409,7 +438,7 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
   rel={q-off:r for r in n['segments'][sg-1]['relocations'] for q in r['sites'] if any(a<=q-off<b for a,b in ss['initialized_ranges'])}
   covered=set();mask=set();fixrows=[];transforms=[];far_offsets=[]
   for f in [f for f in m['fixups'] if f['segment']==si]:
-   p=f['offset'];w=f['width'];target=None;ok=False;why='unsupported or unresolved target/frame'
+   p=f['offset'];w=f['width'];target=None;ok=False;why='unsupported or unresolved target/frame';stand_in=None
    add=f['displacement']+int.from_bytes(candidate[p:p+min(w,2)],'little')
    if f['target_method']==2:
     name=f['target']['name']
@@ -419,6 +448,9 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
      lp=local_publics[name]
      if lp['segment'] in placements:
       ts,to=placements[lp['segment']];target={'kind':'internal','segment':ts,'offset':to+lp['offset']+add}
+     elif (m['segments'][lp['segment']-1]['name']==SCAFFOLD_SEGMENT and m['segments'][lp['segment']-1]['class']=='CODE'
+           and f['location_type']==1 and f['self_relative'] and add==0 and p>=1):
+      stand_in=name
     elif len(names[name])==1:
      ts,to=next(iter(names[name]));target={'kind':'internal','segment':ts,'offset':to+add}
     elif name in imports and add==0:target=imports[name]
@@ -440,7 +472,21 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
    if (group and group['name']=='DGROUP' and f['location_type']==2 and f['target_method']==0 and f['target_index'] in group['segments']
        and target and target['kind']=='internal' and target['segment']==10):
     frame_ok=True
-   if f['target_method']==2 and f['target'].get('name') in ('FIDRQQ','FIERQQ','FIWRQQ','FICRQQ','FJCRQQ'):
+   if stand_in is not None:
+    # A near call from compared code to a static stand-in in the reserved
+    # scaffold segment stands for a call to an unrecovered, unnamed static
+    # helper of this object. The callee is identified only by the original
+    # call's destination, which must independently start an unnamed function
+    # (unnamed_code_entry), lie outside every placed contribution, and be the
+    # one destination of every call to that stand-in (checked below). The
+    # stand-in's code is never compared or credited.
+    dest=(off+p+2+int.from_bytes(ref[p:p+2],'little'))&65535
+    target={'kind':'internal','segment':sg,'offset':dest};why=HELPER_STAND_IN_REASON
+    inside=any(m['segments'][q-1]['class']=='CODE' and placements[q][0]==sg and placements[q][1]<=dest<placements[q][1]+m['segments'][q-1]['length'] for q in placements)
+    entry=None if inside or candidate[p-1]!=0xE8 or ref[p-1]!=0xE8 else unnamed_code_entry(raw,n,s,sg,dest)
+    ok=frame_ok and entry is not None and not any(p<=q<p+2 for q in rel)
+    if ok:helper_calls.append((dict(stand_in=stand_in,segment=ss['name'],offset=p,original=[sg,dest],evidence=entry),fixrows,len(fixrows)))
+   elif f['target_method']==2 and f['target'].get('name') in ('FIDRQQ','FIERQQ','FIWRQQ','FICRQQ','FJCRQQ'):
     # LINK5.30 calibration covers compiler frame5 and SDK runtime frame4.
     # Paired CS-prefix fixups share one NE obligation; retain both OMF checks.
     # Do not treat the instruction word as an ordinary absolute addend.
@@ -534,13 +580,22 @@ def compare_member(m,raw,n,s,imports,allow_data=False):
    if (symbol,segment) not in selectors_ok:
     row=fixrows[row_index];row['equal']=False;row['reason']='far code symbol offset without a validated selector fixup to the same symbol'
     issues.append(name+' unpaired far code offset fixup at '+hex(row['offset']))
+ # Every call to one helper stand-in must reach one original entry, and two
+ # stand-ins never stand for the same entry.
+ helper_entries=defaultdict(set);helper_names=defaultdict(set)
+ for call,rows,index in helper_calls:
+  helper_entries[call['stand_in']].add(tuple(call['original']));helper_names[tuple(call['original'])].add(call['stand_in'])
+ for call,rows,index in helper_calls:
+  if len(helper_entries[call['stand_in']])!=1 or len(helper_names[tuple(call['original'])])!=1:
+   rows[index]['equal']=False;rows[index]['reason']='helper stand-in calls disagree on the original entry'
+   issues.append(call['segment']+' inconsistent helper stand-in call at '+hex(call['offset']))
  if any(not r['equal'] for name,si,fixrows,far_offsets,mask in pending_far_offsets for r in fixrows):
   # Recount after the pairing pass: unpaired offsets lose their masked bytes.
   fixequal=sum(r['equal'] for name,si,fixrows,far_offsets,mask in pending_far_offsets for r in fixrows)
- return {'result':'STRONGLY_SUPPORTED_MEMBER' if not issues and (derived or link_evidence) else 'CONFIRMED_MEMBER' if not issues else 'NO_COMPLETE_MATCH',
+ return {'result':'STRONGLY_SUPPORTED_MEMBER' if not issues and (derived or link_evidence or helper_calls) else 'CONFIRMED_MEMBER' if not issues else 'NO_COMPLETE_MATCH',
   'issues':issues,'placements':{str(k):list(v) for k,v in placements.items()},'private_constraint_placements':derived,'link_order_placements':link_evidence,'anchors':dict(anchors),'contributions':details,
   'literal_compared':total,'literal_equal':equal,'fixups_equal':fixequal,'fixups_total':len(m['fixups']),
-  'publics':[p['name'] for p in m['publics']],'scaffold_segments':scaffold}
+  'publics':[p['name'] for p in m['publics']],'scaffold_segments':scaffold,'helper_stand_in_calls':[call for call,rows,index in helper_calls]}
 
 def main():
  raw=fixture('SIMANTW.EXE');n=ne.parse(raw);s=mapsym.parse(fixture('SIMANTW.SYM'));imports=import_symbols(ROOT/'toolchain/sdk300/WLIB/LIBW.LIB')

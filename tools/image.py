@@ -29,7 +29,7 @@ import sys
 from array import array
 from collections import Counter, defaultdict
 from common import ROOT, FormatError, cards, fixture, identity, read_json, sha256, write_json
-from library_match import compare_member, import_symbols
+from library_match import HELPER_STAND_IN_REASON, compare_member, import_symbols
 import mapsym
 import ne
 import omf
@@ -64,7 +64,7 @@ def regenerate(module, raw, image, symbols, imports):
             p = row['offset']; target = row['target']; reason = row['reason']
             if reason in ('resolved offset and frame', 'MAPSYM absolute symbol', 'far code symbol offset in its own segment frame; selector half required'):
                 data[p:p + 2] = (target['offset'] & 0xFFFF).to_bytes(2, 'little')
-            elif reason == 'same-segment relative offset':
+            elif reason in ('same-segment relative offset', HELPER_STAND_IN_REASON):
                 data[p:p + 2] = ((target['offset'] - (base + p + 2)) & 0xFFFF).to_bytes(2, 'little')
             elif reason == 'NE selector relocation + offset':
                 data[p:p + 2] = (target['offset'] & 0xFFFF).to_bytes(2, 'little'); chain_sites.add(p + 2)

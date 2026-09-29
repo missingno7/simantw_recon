@@ -384,6 +384,11 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - AddIndex inside its admitted unit, at the normal TMP, gets the target frame (stack differences drop from 27 to 13), and the unit's five admitted functions stay identical.
 - Evidence for M1-M7: `evidence/codegen-facts/MSC7-M/` (REPORT.md, summary.json, scripts, result tables).
 
+**MSC7-C25: a caller in another code segment, compiled AFTER a `static near` helper placed by `#pragma alloc_text`, gets a plain `E8` near call without a fixup. SUPPORTED.**
+- Seen assembling antedit:00F4 with the static helper 3:16D4 (UpdateEditBuffers): `_DoEditScrollLine` must be defined before the helper to reproduce the original fixup-free call. The unit records that order as EXACT_STEERED.
+- Evidence: unit antedit_00F4_OverlayTileSet_26_reviewed.
+- Matcher support for calls into still-unrecovered static helpers (library_match `HELPER_STAND_IN_REASON`) is described in the unit and in tests/test_helper_stand_in.py.
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.

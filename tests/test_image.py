@@ -30,6 +30,10 @@ class BinderRuleTests(unittest.TestCase):
         placed = self.regen('e80000', fixups=[dict(offset=1, equal=True, reason='same-segment relative offset', target=dict(kind='internal', segment=1, offset=0x200))])
         self.assertEqual(placed[(1, 0x101)][0] | placed[(1, 0x102)][0] << 8, 0x200 - 0x103)
 
+    def test_helper_stand_in_call_uses_the_original_entry(self):
+        placed = self.regen('e80000', fixups=[dict(offset=1, equal=True, reason=image.HELPER_STAND_IN_REASON, target=dict(kind='internal', segment=1, offset=0x6250))])
+        self.assertEqual(placed[(1, 0x101)][0] | placed[(1, 0x102)][0] << 8, 0x6250 - 0x103)
+
     def test_far_call_translation_matches_link(self):
         placed = self.regen('9a00000000', transformations=[dict(offset=0, kind='LINK same-segment far call/jump translation', target=dict(kind='internal', segment=1, offset=0x300))])
         got = bytes(placed[(1, 0x100 + i)][0] for i in range(5))

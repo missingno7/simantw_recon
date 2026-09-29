@@ -13623,6 +13623,11 @@
         "text": "Authoring pass on target 0x0504..0x0522: target shift test enters inline uppercase block and sends no-shift via an unconditional far jump to a tail ctype-bit-1 test; target operand is packet-backed __ctype+1. Explicit shift gotos, inverse predicate (best +2 opcodes to 459/514), switch-on-shift, explicit lowerCase label, and switch-on-ctype were compiled. The inverse predicate changed branch placement but kept the lower-case mapper inline at 0x041b..0x0434; switch/label forms normalized or scored neutral. Remaining region is source-equivalent ctype/map control flow laid out differently by MSC7, with no distinct semantics supported by the packet. No further useful authoring variant remains for this one region; don't pursue frame/home tuning in this lane.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T18:49:34.612319+00:00"
+      },
+      {
+        "text": "The 2026-09-29 full alignment confirms the unshifted ctype mapper source semantics are present: MapVirtualKey(key,2), __ctype+1 flag test, optional +0x20 path, otherwise shared raw mapping. Target places shifted mapping at 0x41c then branches to unshifted at 0x504; current compiler puts unshifted instructions at 0x41b. A separate nested shifted/unshifted source form scored 426/514 and did not improve the frontier. This is a block-order/source-layout residue; no homes or register tuning pursued.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T19:32:30.153539+00:00"
       }
     ],
     "frontier": {
@@ -13891,22 +13896,27 @@
         "text": "Ordinary swap list insertion now uses a plane switch with one shared result check and SetLife tail, targeting 0x1dc..0x1fc.",
         "origin": "build/search/DoLifeExchange/20260929T174925-66712",
         "recorded": "2026-09-29T17:49:27.585327+00:00"
+      },
+      {
+        "text": "Target scan-loop disassembly uses LES for coordinate-array accesses but sets DS once for the type-array byte load; tested far pointer lifetime for scanX/scanY.",
+        "origin": "build/search/DoLifeExchange/20260929T193039-128984",
+        "recorded": "2026-09-29T19:30:42.266087+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoLifeExchange/43bc250eab9c.c",
-      "sha256": "43bc250eab9c97cdce1db4b44a016d9007016af1b66b8179a2f98761aa0149c7",
+      "source": "evidence/recovery/drafts/DoLifeExchange/75e44f8408f4.c",
+      "sha256": "75e44f8408f4c32fa587fd42ac66e7af9cd3afa2d3fe58d43b27374e454fc174",
       "key": [
         false,
         false,
         796,
-        -339
+        -335
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
       "opcode_matches": 796,
       "opcode_total": 1258,
-      "candidate_bytes": 3040,
+      "candidate_bytes": 3044,
       "target_bytes": 3379,
       "flags": [
         "/AL",
@@ -13915,8 +13925,8 @@
         "/Oeglw",
         "/NTSIMONE_MODULE"
       ],
-      "origin": "build/search/DoLifeExchange/20260929T191428-134744/results.json",
-      "recorded": "2026-09-29T19:14:31.047059+00:00"
+      "origin": "build/search/DoLifeExchange/20260929T192225-109212/results.json",
+      "recorded": "2026-09-29T19:22:32.076132+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/DoLifeExchange/4be42db082ec.c",
@@ -58310,6 +58320,11 @@
         "text": "AUTHORING results for this pass: explicit near PictStrnDialog scored 498/661 and aligned the target dialog call, but the recovered helper is far, so the remaining push-cs/near-call form depends on same-segment unit lowering. YellowDeath.case9_fallthrough.c aligned target 0x0334..0x035f through the shared killed counter and AnimYellowFight(10) tail; case-8 expired increment was moved after its optional dialog. YellowDeath.dialog_range.c aligned the target 1..2 YellowDialog range guard at 0x037e..0x038a. YellowDeath.tristate.c separates found 0 restart/game-over, found 1 YellowBirth, found 2 SetMyLife and reaches 443/657; target 0x060a..0x060f still uses dec di/je while the candidate compares a stack home, so remaining residue there is register/home layout. Keep the authored regional files under this worker directory; do not promote a lower-scoring regional candidate.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T18:33:19.678779+00:00"
+      },
+      {
+        "text": "Fresh full-diff review of target 0x0302..0x0331: the case 9 SRand1(5) / myBeginSong sequence exists semantically in C, but switch lowering places its output outside the target alignment window. Case 8 unconditional BAntsExpired plus case 9 optional dialog/fallthrough was re-tested with the current near prototype (442/656, no alignment at 0x0304) and with the prior far prototype (437/656, duplicate prior object). No target region gain; current frontier remains 498/661 after 11+ stagnant rounds. Leave this target for a different worker/family meta-analysis.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T19:23:31.114573+00:00"
       }
     ],
     "best": {

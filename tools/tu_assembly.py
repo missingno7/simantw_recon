@@ -1092,7 +1092,23 @@ def reviewed_scaffold(text, members, component_publics):
         if not re.search(r'\b' + re.escape(name) + r'\s*\([^;]*\)\s*\{', text):
             raise FormatError('reviewed scaffold stand-in lacks a definition: ' + name)
     return dict(segment=SCAFFOLD_SEGMENT, stubs=[dict(function=name) for name in names],
-                runs=[members], scope='Reviewed stand-ins occupy reserved code only; their private contributions remain strictly compared')
+                runs=reviewed_runs(text, members), scope='Reviewed stand-ins occupy reserved code only; their private contributions remain strictly compared')
+
+
+def reviewed_runs(text, members):
+    """The code runs a reviewed unit source actually places: members left in
+    the primary code segment form one run, and every `RUNk_TEXT` alloc_text
+    segment forms its own. Each run is anchored separately by the matcher, so
+    members separated by unrecovered code in the original must sit in
+    different runs (a static helper may share its neighbour's run)."""
+    placed = {}
+    for segment, names in re.findall(r'#\s*pragma\s+alloc_text\s*\(\s*(RUN\d+_TEXT)\s*,([^()]*)\)', text):
+        for name in names.split(','):
+            placed[name.strip().upper()] = segment
+    runs = {}
+    for m in members:
+        runs.setdefault(placed.get(m.lstrip('_').upper(), ''), []).append(m)
+    return list(runs.values())
 
 
 def reviewed_zero_gap(text, scaffold, declaration):
