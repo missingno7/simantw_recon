@@ -348,6 +348,11 @@ def park_symbol(symbol, blocker_class, reason, root=ROOT, evidence_root=None, no
     # Shared-state fingerprint at parking time: triage lists the components that changed since
     # as reopen candidates (a hint; reopening still needs an explicit --because).
     record['state'] = shared_state.fingerprint(root)
+    try:
+        import triage
+        record['facts_snapshot'] = triage.facts_snapshot()
+    except Exception:  # the snapshot is a routing hint; parking never depends on it
+        pass
     with _parking_lock(root):
         records = load_parking(root)
         old = records.get(symbol) or {}

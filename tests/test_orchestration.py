@@ -271,5 +271,33 @@ class FleetPlanTests(unittest.TestCase):
         self.assertFalse(any(t['symbol'] == '_P' for p in plans + tails for t in p['targets']))
 
 
+class PilotRegressionTests(unittest.TestCase):
+    def test_emu_verdict_reads_emu_diff_v2_and_flags_both_unsupported_as_inconclusive(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as td:
+            base = Path(td)
+            (base / 'build/emu_diff').mkdir(parents=True)
+            fault = dict(kind='execution', status='UNSUPPORTED', error='Unhandled CPU exception')
+            write_json(base / 'build/emu_diff/Toy.json', dict(schema='emu-diff/2', draft='d/a.c', result='DIVERGED', executed_runs=50,
+                                                              first_divergence=dict(run=4, index=-1, target=fault, candidate=fault)))
+            with mock.patch.object(triage, 'ROOT', base):
+                self.assertEqual(triage.emu_verdict('_Toy', 'd/a.c')['status'], 'INCONCLUSIVE')
+                self.assertEqual(triage.emu_verdict('_Toy', 'd/b.c')['status'], 'OTHER_DRAFT_INCONCLUSIVE')
+                write_json(base / 'build/emu_diff/Toy.json', dict(draft='d/a.c', result='DIVERGED',
+                                                                  first_divergence=dict(target=dict(kind='write'), candidate=dict(kind='write'))))
+                self.assertEqual(triage.emu_verdict('_Toy', 'd/a.c')['status'], 'DIVERGED')
+                self.assertEqual(triage.emu_verdict('_Other', 'd/a.c')['status'], 'NOT_RUN')
+
+    def test_queue_refuses_drafts_the_permuter_cannot_parse(self):
+        import permuter_queue
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as td:
+            path = Path(td) / 'macro.c'
+            path.write_text('#define BODY int f(void) { return 1; }\nBODY\n')
+            rel = path.relative_to(ROOT).as_posix()
+            self.assertIn('not permutable', permuter_queue.permutable('_ConnectAll', rel))
+            path.write_text('int ConnectAll(void) { return 1; }\n')
+            self.assertIsNone(permuter_queue.permutable('_ConnectAll', rel))
+            self.assertEqual(permuter_queue.permutable('_ConnectAll', None), 'no readable draft')
+
+
 if __name__ == '__main__':
     unittest.main()

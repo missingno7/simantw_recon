@@ -808,6 +808,11 @@ def scaffold_pool_reference(word, segment, used, sites, symbols, preferred_name=
     return dict(word=word, segment=segment, name=name, basis=basis)
 
 
+# Isolated member compiles used to derive slot maps are recomputed on every call (compile cache
+# backed); they are scratch, not evidence, so they live under build/ and never churn tracked files.
+SLOT_SCRATCH = ROOT / 'build/unit-slots'
+
+
 def member_slot_symbols(member, source, flags, target_bytes, folder=None):
     """Original pool word -> far symbol the preserved source uses for it.
 
@@ -817,7 +822,7 @@ def member_slot_symbols(member, source, flags, target_bytes, folder=None):
     word it addresses names the symbol through its selector fixup."""
     import omf
     from codegen_grinder import run
-    out = (folder or (UNITS / '_slots')) / ('slots_' + member.lstrip('_'))
+    out = (folder or SLOT_SCRATCH) / ('slots_' + member.lstrip('_'))
     report = run(dict(symbol=member, source=source, compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[member]), out.relative_to(ROOT).as_posix(), cache=True)
     row = report['results'][0]
     # The alignment argument only holds for an exact body: refuse to derive a
@@ -941,7 +946,7 @@ def member_data_pieces(member, source, flags, folder=None):
     if proof.get('comparison'):
         comparison = proof['comparison']
     else:
-        out = (folder or (UNITS / '_slots')) / ('slots_' + member.lstrip('_'))
+        out = (folder or SLOT_SCRATCH) / ('slots_' + member.lstrip('_'))
         report = run(dict(symbol=member, source=source, compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[member]), out.relative_to(ROOT).as_posix(), cache=True)
         comparison = report['results'][0]['comparison']
     return [dict(segment=c['segment'], offset=c['original_offset'], length=c['length'], member=member)
@@ -959,7 +964,7 @@ def member_data_anchors(member, source, flags, target_bytes, folder=None):
     statics and body literals is reproduced."""
     import omf
     from codegen_grinder import run
-    out = (folder or (UNITS / '_slots')) / ('slots_' + member.lstrip('_'))
+    out = (folder or SLOT_SCRATCH) / ('slots_' + member.lstrip('_'))
     report = run(dict(symbol=member, source=source, compiler='msc700', flags=flags, max_candidates=1, axes=[], publics=[member]), out.relative_to(ROOT).as_posix(), cache=True)
     row = report['results'][0]
     if not body_exact(row['comparison']):

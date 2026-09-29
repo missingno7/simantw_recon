@@ -85,7 +85,7 @@ def metrics(select):
     seen_objects = defaultdict(set)
     history = defaultdict(lambda: defaultdict(int))  # symbol -> family -> consecutive gainless sessions
     out = defaultdict(lambda: dict(sessions=0, compiles=0, no_op_sessions=0, repeated_exhausted=0, unlabelled_sessions=0,
-                                   frontier_gains=0, exact=0, stagnant_tail_sessions=0, first=None, last=None, symbols=set()))
+                                   frontier_gains=0, exact=0, stagnant_tail_sessions=0, first=None, last=None, first_gain=None, symbols=set()))
     for s in _sessions():
         sym = s['symbol']
         scores = [_score(r.get('opcodes')) for r in s['rows']]
@@ -103,6 +103,8 @@ def metrics(select):
             m['compiles'] += len(s['rows'])
             m['no_op_sessions'] += int(no_op)
             m['frontier_gains'] += int(gain and prior is not None)
+            if gain and prior is not None and not m['first_gain']:
+                m['first_gain'] = s['time']
             m['exact'] += int(exact)
             if not gain and prior is not None and total and prior / total >= 0.95:
                 m['stagnant_tail_sessions'] += 1
@@ -123,7 +125,9 @@ def metrics(select):
         prompt = ROOT / 'build/workers' / worker / 'PROMPT.md'
         start = datetime.fromtimestamp(prompt.stat().st_mtime, timezone.utc) if prompt.exists() else None
         first, last = _t(m['first']), _t(m['last'])
-        result[worker] = dict({k: v for k, v in m.items() if k not in ('symbols', 'first', 'last')}, targets=len(m['symbols']),
+        fg = _t(m['first_gain'])
+        result[worker] = dict({k: v for k, v in m.items() if k not in ('symbols', 'first', 'last', 'first_gain')}, targets=len(m['symbols']),
+                              first_gain_minutes=round((fg - start).total_seconds() / 60, 1) if start and fg and fg >= start else None,
                               first_action_minutes=round((first - start).total_seconds() / 60, 1) if start and first and first >= start else None,
                               active_hours=round((last - first).total_seconds() / 3600, 2) if first and last else None)
     return result
@@ -134,7 +138,9 @@ def totals(per_worker):
     t = {k: sum(w[k] for w in per_worker.values()) for k in keys}
     firsts = [w['first_action_minutes'] for w in per_worker.values() if w['first_action_minutes'] is not None]
     hours = sum(w['active_hours'] or 0 for w in per_worker.values())
+    gains = sorted(w['first_gain_minutes'] for w in per_worker.values() if w.get('first_gain_minutes') is not None)
     t.update(workers=len(per_worker), active_hours=round(hours, 1),
+             median_first_gain_minutes=gains[len(gains) // 2] if gains else None,
              median_first_action_minutes=sorted(firsts)[len(firsts) // 2] if firsts else None,
              no_op_rate=round(t['no_op_sessions'] / max(t['sessions'], 1), 3),
              repeated_exhausted_rate_of_labelled=round(t['repeated_exhausted'] / max(t['sessions'] - t['unlabelled_sessions'], 1), 3),

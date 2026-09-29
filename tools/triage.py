@@ -89,10 +89,27 @@ ALLOCATION_ADVICE = ('MSC7-R0: /Oe allocates registers to variables OR SUBEXPRES
 @lru_cache(maxsize=1)
 def facts():
     """Fact register entries {id: (status, title)} parsed from the bold headers."""
+    return parse_facts(FACTS_DOC.read_text(encoding='utf-8')) if FACTS_DOC.exists() else {}
+
+
+def facts_snapshot():
+    """{fact id: status} of the current register (stored with parking records)."""
+    return {k: v[0] for k, v in facts().items()}
+
+
+def new_relevant_facts(snapshot, blocker_class):
+    """Facts relevant to BLOCKER_CLASS that are new, or changed status, since SNAPSHOT."""
+    prefixes = PLAYBOOK.get(blocker_class, PLAYBOOK['EXPRESSION_SHAPE'])[2]
+    out = []
+    for fid, (status, text) in sorted(facts().items()):
+        if any(fid == p or fid.startswith(p) for p in prefixes) and (snapshot or {}).get(fid) != status:
+            out.append('%s %s%s' % (fid, status, '' if fid not in (snapshot or {}) else ' (was %s)' % snapshot[fid]))
+    return out
+
+
+def parse_facts(text):
     out = {}
-    if not FACTS_DOC.exists():
-        return out
-    for m in re.finditer(r'\*\*((?:MSC7|LINK)-[A-Z0-9]+(?:\s*/\s*(?:MSC7|LINK)-[A-Z0-9]+)*)[^*]*?:\s*(.*?)\*\*', FACTS_DOC.read_text(encoding='utf-8')):
+    for m in re.finditer(r'\*\*((?:MSC7|LINK)-[A-Z0-9]+(?:\s*/\s*(?:MSC7|LINK)-[A-Z0-9]+)*)[^*]*?:\s*(.*?)\*\*', text):
         ids = [x.strip() for x in m.group(1).split('/')]
         text = m.group(2)
         found = [s for s in ('FALSIFIED', 'VERIFIED', 'SUPPORTED', 'OPEN') if s in text]
@@ -169,6 +186,12 @@ def sweep_evaluation(symbol, fp):
     return best, front, ('STALE: %s changed since %s' % (','.join(stale), diag.get('evaluated')) if stale else 'CURRENT')
 
 
+def _both_unsupported(divergence):
+    d = divergence or {}
+    t, c = d.get('target') or {}, d.get('candidate') or {}
+    return t.get('kind') == 'execution' and c.get('kind') == 'execution' and t.get('status') == c.get('status') == 'UNSUPPORTED'
+
+
 def emu_verdict(symbol, draft, run=False):
     path = ROOT / 'build/emu_diff' / (symbol.lstrip('_') + '.json')
     if run and draft:
@@ -186,9 +209,20 @@ def emu_verdict(symbol, draft, run=False):
         report = read_json(path)
     except ValueError:
         return dict(status='UNREADABLE')
-    verdict = report.get('overall') or report.get('status') or report.get('result')
-    return dict(status=verdict, draft=report.get('draft'), report=relative(path),
-                first=(next((r.get('divergence') for r in report.get('runs', report.get('results', [])) if r.get('divergence')), None)))
+    verdict = report.get('result') or report.get('overall') or report.get('status')
+    if verdict == 'DIVERGED':
+        # Runs where both sides stopped on an emulator exception are inconclusive, not a
+        # semantic difference (the fault address differs whenever the code layout does).
+        # Only the first divergence is reported in detail.
+        if _both_unsupported(report.get('first_divergence')):
+            verdict = 'INCONCLUSIVE'
+    first = report.get('first_divergence') if isinstance(report.get('first_divergence'), dict) else None
+    out = dict(status=verdict, draft=report.get('draft'), runs=report.get('executed_runs'), report=relative(path),
+               first=({k: first.get(k) for k in ('run', 'index', 'target', 'candidate')} if first else None))
+    if draft and report.get('draft') and Path(report['draft']).as_posix() != Path(draft).as_posix():
+        # A verdict about another draft is a hint, not the semantic status of the current one.
+        out['status'] = 'OTHER_DRAFT_%s' % verdict
+    return out
 
 
 def typedb_live(draft):
@@ -323,8 +357,14 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None):
             out['last_compose'] = last[-1].get('hypothesis')
     reopen = None
     if park_status == 'PARKED':
-        stale_park = shared_state.changed((park or {}).get('state') or {}, fp, shared_state.CONCLUSION) if (park or {}).get('state') else None
-        reopen = dict(new_components=stale_park, command='python tools/parking.py reopen %s --because "..."' % symbol) if stale_park else None
+        stale_park = shared_state.changed((park or {}).get('state') or {}, fp, shared_state.CONCLUSION) if (park or {}).get('state') else []
+        # A fact-register edit reopens only through facts relevant to the parked blocker class.
+        fact_hits = new_relevant_facts((park or {}).get('facts_snapshot'), park.get('blocker_class') or cls) if (park or {}).get('facts_snapshot') is not None else []
+        relevant = ('toolchain', 'compiler', 'profiles', 'matcher', 'permuter', 'typedb') + (('composer', 'units') if cls in ('PLACEMENT', 'BINDING') else ())
+        tool_hits = [c for c in stale_park if c in relevant]
+        if fact_hits or tool_hits:
+            reopen = dict(new_facts=fact_hits or None, changed_components=tool_hits or None,
+                          command='python tools/parking.py reopen %s --because "..."' % symbol)
     draft_arg = draft or 'DRAFT.c'
     comp = out['unit']['component'] or 'OBJECT'
     out.update(blocker_class=cls, lane=lane,
@@ -452,7 +492,7 @@ def render(t):
              'next tool       : %s' % t['next_tool'],
              'next families   : %s' % ', '.join(t['next_families'] or []),
              'do not lead with: %s' % ', '.join(t.get('do_not_lead_with') or []) if t.get('do_not_lead_with') else None,
-             'parking         : %s' % t['parking'] + (('  reopen candidate: %s changed' % ','.join(t['reopen_hint']['new_components'])) if t.get('reopen_hint') else ''),
+             'parking         : %s' % t['parking'] + (('  reopen candidate: %s' % json.dumps({k: v for k, v in t['reopen_hint'].items() if k != 'command' and v})) if t.get('reopen_hint') else ''),
              'unit            : %s (%s/%s members admitted, owner %s)' % (t['unit']['component'], t['unit']['admitted_members'], t['unit']['members'], t['unit']['owner'] or 'none'),
              'last compose    : %s' % t['last_compose'] if t.get('last_compose') else None,
              'typedb variant  : %s' % t['typedb_variant'] if t.get('typedb_variant') else None,

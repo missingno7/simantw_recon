@@ -256,7 +256,8 @@ def sweep(symbols=None, force=False, derive=(), verify=False, compose=False, adm
     fp = shared_state.fingerprint()
     OUT.mkdir(parents=True, exist_ok=True)
     DIAGNOSTICS.mkdir(parents=True, exist_ok=True)
-    state = read_json(STATE) if STATE.exists() and not force else {}
+    # --force bypasses the cache for this run's symbols but must never discard other entries.
+    state = read_json(STATE) if STATE.exists() else {}
     found, open_cards = collect(symbols)
     if limit:
         found = dict(list(sorted(found.items()))[:limit])

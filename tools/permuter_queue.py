@@ -123,6 +123,9 @@ def candidates(limit=None, symbols=None):
             no_gain, _ = prior_runs(t['symbol'], fp, changed_at)
             if no_gain >= 2:
                 reason = '%d earlier permuter runs without gain and no shared change since' % no_gain
+        draft = cur.get('frontier_draft') or cur.get('draft')
+        if not reason:
+            reason = permutable(t['symbol'], draft)
         if reason and not symbols:
             skipped.append(dict(symbol=t['symbol'], reason=reason))
             continue
@@ -133,6 +136,18 @@ def candidates(limit=None, symbols=None):
                         priority=round(m / max(total, 1) * (t.get('size') or 0), 1)))
     out.sort(key=lambda r: -r['priority'])
     return (out[:limit] if limit else out), skipped
+
+
+def permutable(symbol, draft):
+    """None when permuter.py can locate the function in the draft, else the reason it cannot."""
+    if not draft or not (ROOT / draft).is_file():
+        return 'no readable draft'
+    try:
+        import permuter
+        permuter.source_function((ROOT / draft).read_text(encoding='latin1'), symbol)
+    except Exception as exc:  # parse failures are routing information, never a crash
+        return 'draft not permutable: %s' % str(exc)[:120]
+    return None
 
 
 def load_queue():
