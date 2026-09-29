@@ -11,11 +11,8 @@ int far DropFoodB(int x, int y)
 {
     int level;
     int result;
-    volatile unsigned char near * volatile cellHome;
-    unsigned char far *attrPtr;
 
     result = 0;
-    cellHome = &MapB[x][y];
     level = MapB[x][y];
     if (level < 16) {
         MapB[x][y] = 16;
@@ -25,8 +22,7 @@ int far DropFoodB(int x, int y)
         result = 1;
     }
     ++FoodB;
-    attrPtr = &Dx8[Tindex + 0x3D18];
-    if (*attrPtr & 8)
-        *attrPtr -= 8;
+    if (Dx8[Tindex + 0x3D18] & 8)
+        Dx8[Tindex + 0x3D18] -= 8;
     return result;
 }

@@ -1,16 +1,18 @@
-/* Candidate translation unit simant1_5344_DoAntSimR_11_scaffold: composed from preserved exact-body sources
+/* Candidate translation unit simant1_5344_DoAntSimR_16_scaffold: composed from preserved exact-body sources
  * in MAPSYM order. Internal evidence id, not a historical filename.
- * Members: _DoAntSimR, _RaidInR, _StayInR, _RaidOutR, _DoRestR, _DoRandR, _CheckNestFightR, _SimEggR, _QueenMoveR, _KillTailR, _LostHeadR, _LostTailR, _TryEatFoodR, _EatFoodR, _StealFoodR, _DecEatR
+ * Members: _DoAntSimR, _RaidInR, _StayInR, _RaidOutR, _DoRestR, _DoRandR, _CheckNestFightR, _SimEggR, _QueenMoveR, _MakeNewTailR, _LostHeadR, _LostTailR, _TryEatFoodR, _EatFoodR, _DecEatR, _GetOutR
  * SCAFFOLDED: unclaimed members _DoNestAntR, _DoNestFightR, _SimQueenR are stand-ins in POOLSTUB_TEXT (pool order only, never compared). */
 
+struct RListPlanes {
+    unsigned char x[502];
+    unsigned char y[502];
+    unsigned char m[502];
+    unsigned char t[502];
+    unsigned char s[502];
+};
+extern struct RListPlanes far RlistX;
 extern int far ListIndexR;
 extern int far Tindex;
-extern unsigned char far Dx8[];
-extern unsigned char far Dy8[];
-extern int far Dx9;  /* scaffold reference for unresolved pool word C398, segment 8 */
-extern int far TileMassYR;
-extern int far TileMassXR;
-extern int far GetBestDir(int kind, int x, int y, int targetX, int targetY);
 extern void far DoNestAntR(int life, int column, int attribute);
 extern unsigned char near MapR[];
 extern unsigned char near LifeR[];
@@ -20,10 +22,6 @@ extern int far SRand1(int range);
 extern int far GetEnterDirR(int x, int y, int dir);
 extern int far TryMoveDirR(int x, int y, int dir);
 extern int far GetExitDirR(int x, int y, int limit);
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistT[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistY[];
-extern unsigned char __based(__segname("SIMANT_DATA_GROUP")) RlistX[];
-#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))  /* pool word C386: one object, MAPSYM _Dx8+18150 */
 extern int near MeColor;
 extern int far OptionStates[];
 extern int far IsYellowAnt(int ant);
@@ -34,23 +32,35 @@ extern int far GetNewMode(int caste, int type);
 extern void far RestBalloons(int x, int y, int plane);
 extern int far SRand32(void);
 extern int far GetNewModeR(int mode);
-#define AT(off) ((&Dx8)[off])
 extern int far Cycle;
 extern int far StrategicModeR;
 extern char far CasteTabC[];
 extern void far EggBalloons(int x, int y, int plane);
+extern int far TileMassXR;
+extern int far TileMassYR;
+extern char far Dy8[];
+extern char far Dx8[];
+extern int far GetBestDir(int kind, int x, int y, int targetX, int targetY);
+extern void far AddAntToRList(int,int,int,int,int);
 extern int far EatCountR;
 extern int near CastePopR[];
 extern int near RpopT;
 extern int near HealthR;
+extern unsigned char far HoleMapR[];
+extern unsigned char far ExitMapR[];
+extern void far MakeNewHoleR(int x);
+extern int far ExitHole(int hole, int x, int val, int mode, int stam);
+extern int far SRand2(void);
+extern int far IsItDirt(int tile);
+extern void far DigTileThemR(int x, int count);
 
-extern int far TemRModePop;  /* scaffold reference for pool word C388 (segment 9, MAPSYM_SITE_NAME) */
-extern int far RAntsExpired;  /* scaffold reference for pool word C38A (segment 9, MAPSYM_SITE_NAME) */
-extern int far FlyAwayR;  /* scaffold reference for pool word C38E (segment 9, MAPSYM_SITE_NAME) */
-extern int far BAntsExpired;  /* scaffold reference for pool word C390 (segment 9, MAPSYM_SITE_NAME) */
-extern int far TemBModePop;  /* scaffold reference for pool word C392 (segment 9, MAPSYM_SITE_NAME) */
-extern int far RedQueens;  /* scaffold reference for pool word C3A0 (segment 9, MAPSYM_SITE_NAME) */
-extern int far LastRedEgg;  /* scaffold reference for pool word C3A2 (segment 8, MAPSYM_SITE_NAME) */
+extern int far match_position;  /* scaffold reference for pool word C388 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far match_length;  /* scaffold reference for pool word C38A (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far pack_buf;  /* scaffold reference for pool word C38E (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far Scycle;  /* scaffold reference for pool word C390 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far EditColumns;  /* scaffold reference for pool word C392 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far MiscStrs;  /* scaffold reference for pool word C3A0 (segment 9, SEGMENT_REPRESENTATIVE) */
+extern int far Dx9;  /* scaffold reference for pool word C3A2 (segment 8, SEGMENT_REPRESENTATIVE) */
 
 void far pool_stub_DoNestAntR(void);
 void far pool_stub_DoNestFightR(void);
@@ -63,13 +73,13 @@ void far DoRandR(int x, int y, int attr, int modeArg);
 int far CheckNestFightR(int x, int y, int attacker);
 void far SimEggR(int x, int y);
 int far QueenMoveR(int x, int y, int dirHint);
-void KillTailR(int tail);
+void far MakeNewTailR(int index);
 int far LostHeadR(int x, int y, int attr);
 int far LostTailR(int x, int y, int attr);
 void far TryEatFoodR(int y, int x);
 void far EatFoodR(int x, int y);
-void far StealFoodR(int x, int y);
 void DecEatR(void);
+int far GetOutR(int x);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoNestAntR)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoNestFightR)
@@ -78,9 +88,11 @@ void DecEatR(void);
 #pragma alloc_text(RUN3_TEXT, DoRandR)
 #pragma alloc_text(RUN4_TEXT, CheckNestFightR)
 #pragma alloc_text(RUN5_TEXT, SimEggR)
-#pragma alloc_text(RUN6_TEXT, QueenMoveR)
-#pragma alloc_text(RUN7_TEXT, KillTailR, LostHeadR, LostTailR)
-#pragma alloc_text(RUN8_TEXT, TryEatFoodR, EatFoodR, StealFoodR, DecEatR)
+#pragma alloc_text(RUN6_TEXT, QueenMoveR, MakeNewTailR)
+#pragma alloc_text(RUN7_TEXT, LostHeadR, LostTailR)
+#pragma alloc_text(RUN8_TEXT, TryEatFoodR, EatFoodR)
+#pragma alloc_text(RUN9_TEXT, DecEatR)
+#pragma alloc_text(RUN10_TEXT, GetOutR)
 
 void far DoAntSimR(void)
 {
@@ -91,9 +103,9 @@ void far DoAntSimR(void)
     Tindex = ListIndexR;
     while (Tindex > 0) {
         --Tindex;
-        life = Dx8[Tindex + 0x4104];
-        column = Dx8[Tindex + 0x42fa] & 0xff;
-        attribute = Dx8[Tindex + 0x46e6];
+        life = RlistX.x[Tindex];
+        column = RlistX.y[Tindex] & 0xff;
+        attribute = RlistX.t[Tindex];
         if (attribute != 0)
             DoNestAntR(life, column, attribute);
     }
@@ -107,13 +119,13 @@ void far pool_stub_DoNestAntR(void)
 {
     volatile int t;
 
-    t = Dx8[0];
-    t = TemRModePop;
-    t = RAntsExpired;
+    t = *(int far *)&RlistX;
+    t = match_position;
+    t = match_length;
     t = OptionStates[0];
-    t = FlyAwayR;
-    t = BAntsExpired;
-    t = TemBModePop;
+    t = pack_buf;
+    t = Scycle;
+    t = EditColumns;
 }
 
 void far RaidInR(int x, int y, int dirHint)
@@ -127,9 +139,9 @@ void far RaidInR(int x, int y, int dirHint)
             MapR[(x << 6) + y]--;
         if (FoodR > 0)
             FoodR--;
-        Dx8[Tindex + 0x44f0] = 3;
-        Dx8[Tindex + 0x46e6] |= 8;
-        LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+        RlistX.m[Tindex] = 3;
+        RlistX.t[Tindex] |= 8;
+        LifeR[(x << 6) + y] = RlistX.t[Tindex];
         return;
     }
 
@@ -143,8 +155,8 @@ void far RaidInR(int x, int y, int dirHint)
     if (TryMoveDirR(x, y, dir) != 0)
         return;
 
-    Dx8[Tindex + 0x44f0] = 1;
-    LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+    RlistX.m[Tindex] = 1;
+    LifeR[(x << 6) + y] = RlistX.t[Tindex];
 }
 
 void far StayInR(int x, int y, int dirHint)
@@ -158,14 +170,14 @@ void far StayInR(int x, int y, int dirHint)
             MapR[(x << 6) + y]--;
         if (FoodR > 0)
             FoodR--;
-        Dx8[Tindex + 0x44f0] = 3;
-        Dx8[Tindex + 0x46e6] |= 8;
-        LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+        RlistX.m[Tindex] = 3;
+        RlistX.t[Tindex] |= 8;
+        LifeR[(x << 6) + y] = RlistX.t[Tindex];
         return;
     }
 
     dir = (SRand1(3) + dirHint - 2) & 7;
-    Dx8[Tindex + 0x46e6] = (Dx8[Tindex + 0x46e6] & 0xf8) | dir;
+    RlistX.t[Tindex] = (RlistX.t[Tindex] & 0xf8) | dir;
     if (TryMoveDirR(x, y, dir) != 0)
         return;
 
@@ -175,7 +187,7 @@ void far StayInR(int x, int y, int dirHint)
     if (TryMoveDirR(x, y, dir) != 0)
         return;
 
-    LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+    LifeR[(x << 6) + y] = RlistX.t[Tindex];
 }
 
 void far RaidOutR(int x, int y)
@@ -189,7 +201,7 @@ void far RaidOutR(int x, int y)
         dir--;
     if (TryMoveDirR(x, y, dir) == 0) {
         if (TryMoveDirR(x, y, SRand8()) == 0)
-            LifeR[x * 64 + y] = RlistT[Tindex];
+            LifeR[x * 64 + y] = RlistX.t[Tindex];
     }
 }
 
@@ -208,10 +220,10 @@ void far DoRestR(int x, int y, int attacker)
             index = FindInRList(x, y, ant);
             if (index >= 0) {
                 winner = GetWinner(ant, attacker);
-                Dx8[index + 0x48dc] = winner;
-                Dx8[index + 0x46e6] = (winner & 0x80) + 0x70;
+                RlistX.s[index] = winner;
+                RlistX.t[index] = (winner & 0x80) + 0x70;
                 LifeR[(x << 6) + y] = (winner & 0x80) + 0x70;
-                Dx8[index + 0x44f0] = 0xa;
+                RlistX.m[index] = 0xa;
                 handled = 1;
                 break;
             }
@@ -225,11 +237,11 @@ void far DoRestR(int x, int y, int attacker)
     if (handled)
         return;
 
-    LifeR[(x << 6) + y] = Dx8[Tindex + 0x46e6];
+    LifeR[(x << 6) + y] = RlistX.t[Tindex];
     if (SRand1(20) == 0) {
-        type = Dx8[Tindex + 0x46e6];
+        type = RlistX.t[Tindex];
         caste = (type & 0x78) >> 3;
-        Dx8[Tindex + 0x44f0] = (unsigned char)GetNewMode(caste, type);
+        RlistX.m[Tindex] = (unsigned char)GetNewMode(caste, type);
         return;
     }
     if (OptionStates[5] != 0)
@@ -244,7 +256,7 @@ void far DoRandR(int x, int y, int attr, int modeArg)
     int winner;
 
     if (SRand32() == 0)
-        Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeR(modeArg);
+        RlistX.m[Tindex] = (unsigned char)GetNewModeR(modeArg);
 
     ant = LifeR[(x << 6) + y];
     do {
@@ -252,10 +264,10 @@ void far DoRandR(int x, int y, int attr, int modeArg)
             index = FindInRList(x, y, ant);
             if (index >= 0) {
                 winner = GetWinner(ant, attr);
-                Dx8[index + 0x48dc] = winner;
-                Dx8[index + 0x46e6] = (winner & 0x80) + 0x70;
+                RlistX.s[index] = winner;
+                RlistX.t[index] = (winner & 0x80) + 0x70;
                 LifeR[(x << 6) + y] = (winner & 0x80) + 0x70;
-                Dx8[index + 0x44f0] = 0xa;
+                RlistX.m[index] = 0xa;
                 handled = 1;
                 break;
             }
@@ -282,10 +294,9 @@ void far pool_stub_DoNestFightR(void)
     volatile int t;
 
     t = Dy8[0];
-    t = Dx9;
+    t = Dx8[0];
 }
 
-#define Dx8 ((Dx8)[0])  /* shape view of the unit declaration for this member only */
 int far CheckNestFightR(int x, int y, int attacker)
 {
     int ant;
@@ -297,10 +308,10 @@ int far CheckNestFightR(int x, int y, int attacker)
         index = FindInRList(x, y, ant);
         if (index >= 0) {
             winner = GetWinner(ant, (int)attacker);
-            AT(index + 0x48dc) = winner;
-            AT(index + 0x46e6) = (winner & 0x80) + 0x70;
+            RlistX.s[index] = winner;
+            RlistX.t[index] = (winner & 0x80) + 0x70;
             LifeR[(x << 6) + y] = (winner & 0x80) + 0x70;
-            AT(index + 0x44f0) = 0xa;
+            RlistX.m[index] = 0xa;
             return 1;
         }
     } else if (IsYellowAnt(ant) && MeColor == 0) {
@@ -309,7 +320,6 @@ int far CheckNestFightR(int x, int y, int attacker)
     }
     return 0;
 }
-#undef Dx8
 
 void far SimEggR(int x, int y)
 {
@@ -317,7 +327,7 @@ void far SimEggR(int x, int y)
     int mode;
     int mask;
 
-    attr = Dx8[Tindex + 0x46e6];
+    attr = RlistX.t[Tindex];
     mode = -1;
 
     if (RpopT == 1)
@@ -329,7 +339,7 @@ void far SimEggR(int x, int y)
         if ((attr & 0xf) == 8) {
             mode = CasteTabC[((StrategicModeR % 7) << 3) + SRand8()];
             attr = (mode << 3) + 0x82;
-            Dx8[Tindex + 0x44f0] = (unsigned char)GetNewModeR(mode);
+            RlistX.m[Tindex] = (unsigned char)GetNewModeR(mode);
         }
     }
 
@@ -337,8 +347,8 @@ void far SimEggR(int x, int y)
         EggBalloons(x, y, 3);
 
     LifeR[(x << 6) + y] = (unsigned char)attr;
-    Dx8[Tindex + 0x46e6] = (unsigned char)attr;
-    Dx8[Tindex + 0x48dc] = 0;
+    RlistX.t[Tindex] = (unsigned char)attr;
+    RlistX.s[Tindex] = 0;
 }
 
 /* SCAFFOLD, not recovered source: stand-in for the unclaimed member _SimQueenR.
@@ -349,14 +359,11 @@ void far pool_stub_SimQueenR(void)
 {
     volatile int t;
 
-    t = RedQueens;
-    t = LastRedEgg;
+    t = MiscStrs;
+    t = Dx9;
     t = (int)EatCountR;
 }
 
-/* Exact-body draft: move the R queen and repair the vacated tail cell. */
-#define Dx8 ((signed char far *)Dx8)
-#define Dy8 ((signed char far *)Dy8)
 int far QueenMoveR(int x, int y, int dirHint)
 {
     int dir;
@@ -381,7 +388,7 @@ int far QueenMoveR(int x, int y, int dirHint)
     if (TryMoveDirR(x, y, dir) != 0) {
                 opp = (dirHint ^ 0xfc) & 7;
                 newCol = x + Dx8[opp];
-                newRow = y + Dy8[opp + 8];
+                newRow = y + Dy8[opp];
                 LifeR[newCol * 64 + newRow] = 0;
 
                 index = FindInRList(newCol, newRow, (dirHint & 7) + 0xe8);
@@ -395,27 +402,21 @@ int far QueenMoveR(int x, int y, int dirHint)
     }
     return 0;
 }
-#undef Dx8
-#undef Dy8
 
-/* Reuse admitted KillTailR body with its original based DGROUP arrays. */
-#undef RlistT
-void KillTailR(int tail)
-{
-    unsigned char direction;
-    unsigned int row;
+void far MakeNewTailR(int index){
+    unsigned char type;
+    int direction;
+    int life;
+    int column;
 
-    RlistT[tail] = 0;
-    direction = RlistY[tail];
-    row = *(unsigned int far *)(RlistX + tail);
-    row &= 0xff;
-    row <<= 6;
-    LifeR[row + direction] = 0;
+    type = RlistX.t[index];
+    direction = type & 7;
+    direction ^= 4;
+    life = RlistX.x[index] + ((signed char far *)Dx8)[direction];
+    column = RlistX.y[index] + ((signed char far *)Dy8)[direction];
+    AddAntToRList(life, column, type + 8, 9, 0);
 }
-#define RlistT ((unsigned char far *)((unsigned char far *)Dx8 + 0x46E6))
 
-/* Admitted LostHeadR body; use its byte-array view for this member. */
-#define LifeR ((unsigned char near *)LifeR)
 int far LostHeadR(int x, int y, int attr)
 {
     int dir;
@@ -428,17 +429,14 @@ int far LostHeadR(int x, int y, int attr)
     newX = x + (signed char)Dx8[dir];
     newY += y;
     headMarker = attr - 8;
-    cell = LifeR[(newX << 6) + newY];
+    cell = ((unsigned char near *)LifeR)[(newX << 6) + newY];
     if (cell == headMarker)
         return 0;
     if (FindInRList(newX, newY, headMarker) >= 0)
         return 0;
     return 1;
 }
-#undef LifeR
 
-/* Admitted LostTailR body; use its byte-array view for this member. */
-#define LifeR ((unsigned char near *)LifeR)
 int far LostTailR(int x, int y, int attr)
 {
     int dir;
@@ -452,14 +450,13 @@ int far LostTailR(int x, int y, int attr)
     newX = x + (signed char)Dx8[dir];
     newY += y;
     tailMarker = attr + 8;
-    cell = LifeR[(newX << 6) + newY];
+    cell = ((unsigned char near *)LifeR)[(newX << 6) + newY];
     if (cell == tailMarker)
         return 0;
     if (FindInRList(newX, newY, tailMarker) >= 0)
         return 0;
     return 1;
 }
-#undef LifeR
 
 void far TryEatFoodR(int y, int x)
 {
@@ -502,17 +499,6 @@ void far EatFoodR(int x, int y)
     }
 }
 
-/* Admitted StealFoodR body. */
-void far StealFoodR(int x, int y)
-{
-    if (MapR[(x << 6) + y] == 0x10)
-        MapR[(x << 6) + y] = (unsigned char)SRand8();
-    else
-        MapR[(x << 6) + y]--;
-
-    if (FoodR > 0)
-        FoodR--;
-}
 void DecEatR(void)
 {
     --EatCountR;
@@ -521,5 +507,40 @@ void DecEatR(void)
         if (HealthR > 0)
             --HealthR;
     }
+}
+
+int far GetOutR(int x)
+{
+    
+    int raw;
+
+    if (MapR[x << 6] == 0x18) {
+        raw = RlistX.t[Tindex];
+        RlistX.t[Tindex] = 0;
+        if (HoleMapR[x] == 0)
+            MakeNewHoleR(x);
+        if (ExitHole(HoleMapR[x], x, SRand8() + (raw & 0xf8),
+                      RlistX.m[Tindex], RlistX.s[Tindex]) != 0) {
+            LifeR[(x << 6) + 1] = 0;
+            return 1;
+        }
+        RlistX.t[Tindex] = raw;
+        RlistX.m[Tindex] = 0;
+        return 0;
+    }
+
+    if (ExitMapR[x << 6] != 0)
+        ExitMapR[x << 6]--;
+
+    if (SRand2() != 0) {
+        if (x > 0 && IsItDirt(MapR[(x << 6) - 0x3f]) != 0)
+            DigTileThemR(x - 1, 1);
+    } else {
+        if (x < 0x3f && IsItDirt(MapR[(x << 6) + 0x41]) != 0)
+            DigTileThemR(x + 1, 1);
+    }
+
+    TryMoveDirR(x, 1, SRand8());
+    return 0;
 }
 

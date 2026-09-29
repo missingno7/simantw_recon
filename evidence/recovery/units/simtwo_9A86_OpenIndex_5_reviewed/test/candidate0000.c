@@ -1,11 +1,37 @@
-/* Reviewed incremental unit source: OpenIndex/CreateIndex/CloseIndex candidates plus admitted delete controls.
- * MAPSYM code order; The AddIndex private-data block remains a POOLSTUB_TEXT scaffold. */
+/* Candidate translation unit simtwo_9A86_OpenIndex_4_scaffold: composed from preserved exact-body sources
+ * in MAPSYM order. Internal evidence id, not a historical filename.
+ * Members: _OpenIndex, _CreateIndex, _DeleteCurrentIndex, _DeleteIndex
+ * SCAFFOLDED: claimed members in 3 code runs; no pool stand-ins were needed. */
 
-struct OpenDB {
+struct OpenIndexRec {
     char name[0x50];
     void far *indexTable;
     int recordCount;
-    unsigned char pad1[0x6c - 0x56];
+    unsigned char pad1[0x20];
+    int handle;
+    unsigned char pad2[4];
+};
+extern int far sprintf(char far *buffer, char far *format, ...);
+extern int far pascal _lopen(char far *path, int mode);
+extern long far pascal _lread(int handle, void far *buffer, unsigned count);
+extern int far pascal _lclose(int handle);
+extern void far Punt(char far *message, ...);
+extern void far DosPunt(char far *message, ...);
+extern void far *mem_malloc(unsigned int size, char far *tag);
+struct IndexHeader {
+    int recordCount;
+    int field2;
+    long stat1;
+    long stat2;
+    long stat3;
+    int field8;
+    int field9;
+};
+struct OpenDB {
+    char name[0x50];
+    void far *indexTable;
+    struct IndexHeader header;
+    unsigned char pad1[4];
     int count;
     long freeBytes;
     long wastedBytes;
@@ -19,114 +45,122 @@ struct IndexEntry {
     unsigned char caste;
     unsigned char kind;
 };
-extern int far sprintf(char far *buffer, char far *format, ...);
-extern int far pascal _lopen(char far *path, int mode);
 extern int far pascal _lcreat(char far *path, int attrib);
-extern long far pascal _lread(int handle, void far *buffer, unsigned count);
 extern long far pascal _lwrite(int handle, void far *buffer, unsigned count);
-extern int far pascal _lclose(int handle);
 extern long far pascal _llseek(int handle, long offset, int origin);
 extern int near errno;
-extern void far DosPunt(char far *message, ...);
-extern void far Punt(char far *message, ...);
-extern void far *mem_malloc(unsigned int size, char far *tag);
 extern void far mem_free(void far *block);
 extern void far *_fmemcpy(void far *destination, const void far *source, unsigned int count);
 extern void far *FindIndex(int recIndex, int p2, int p3);
-extern struct OpenDB far openDBData[];
 extern int far lastTop;
-
-
-void far OpenIndex(char far *path, int idx);
-void far CreateIndex(char far *name, int idx);
-void far CloseIndex(int idx);
+void far pool_stub_OpenIndex(void);
 void far pool_data_fill_B73E(void);
+int far DeleteIndex(int recIndex, int b, int c);
+void far CreateIndex(char far *name, int idx);
+void far DeleteCurrentIndex(int recIndex);
+void far pool_data_fill_OpenIndex(void);
+void far pool_data_fill_CloseIndex(void);
+struct OpenDB_2 {
+    char name[0x50];
+    void far *indexTable;
+    int recordCount;
+    unsigned char pad1[0x6c - 0x56];
+    int count;
+    long freeBytes;
+    long wastedBytes;
+    int pad2;
+    int file;
+    int dirty;
+};
+extern struct OpenDB_2 far openDBData[];
+
+
+void far pool_data_fill_B73E(void);
+void far DeleteCurrentIndex(int recIndex);
 int far DeleteIndex(int recIndex, int b, int c);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_data_fill_B73E)
-#pragma alloc_text(RUN2_TEXT, DeleteIndex)
+#pragma alloc_text(RUN2_TEXT, DeleteCurrentIndex)
+#pragma alloc_text(RUN3_TEXT, DeleteIndex)
 
-/* Candidate source for the member being added. */
+#define openDBData ((struct OpenIndexRec far *)openDBData)  /* shape view of the unit declaration for this member only */
 void far OpenIndex(char far *path, int idx)
 {
     char name[100];
     int handle;
+    int recordIndex = idx;
     unsigned size;
     void far *buf;
 
     sprintf(name, "%s.ndx", path);
-    openDBData[idx].pad2 = handle = _lopen(name, 2);
+    handle = openDBData[recordIndex].handle = _lopen(name, 2);
     if (handle <= 0)
         DosPunt("Index file missing");
     _lread(handle, &openDBData[idx].recordCount, 20);
     size = openDBData[idx].recordCount << 3;
-    buf = mem_malloc(size, name);
-    openDBData[idx].indexTable = buf;
+    buf = (openDBData[idx].indexTable = mem_malloc(size, name));
     if (buf == 0)
         Punt("Not enough memory to read index file in.");
     _lread(handle, buf, size);
     _lclose(handle);
 }
+#undef openDBData
 
-
+#define openDBData ((struct OpenDB far *)openDBData)  /* shape view of the unit declaration for this member only */
 void far CreateIndex(char far *name, int idx)
 {
     char buf[100];
     int handle;
-    int far *hdr;
+    struct IndexHeader far *header;
     unsigned size;
-    void far *data;
 
     sprintf(buf, "%s.ndx", name);
-    handle = _lcreat(buf, 0);
-    openDBData[idx].pad2 = handle;
+    handle = openDBData[idx].pad2 = _lcreat(buf, 0);
     if (handle <= 0)
         DosPunt("Can't create index file", buf, errno);
 
-    hdr = &openDBData[idx].recordCount;
-    hdr[0] = 0; hdr[1] = 0; hdr[2] = 0; hdr[3] = 0; hdr[4] = 0;
-    hdr[5] = 0; hdr[6] = 0; hdr[7] = 0; hdr[8] = 0; hdr[9] = 0;
+    openDBData[idx].header.recordCount = 0;
+    openDBData[idx].header.field2 = 0;
+    openDBData[idx].header.stat1 = 0;
+    openDBData[idx].header.stat2 = 0;
+    openDBData[idx].header.stat3 = 0;
+    openDBData[idx].header.field8 = 0;
+    openDBData[idx].header.field9 = 0;
 
-    _lwrite(handle, hdr, 0x14);
-    size = (unsigned)(hdr[0] * 8);
-    if (hdr[0] != 0) {
-        data = mem_malloc(size, "index");
-        openDBData[idx].indexTable = data;
+    header = &openDBData[idx].header;
+    _lwrite(handle, header, 0x14);
+    size = (unsigned)(openDBData[idx].header.recordCount * 8);
+    if (size != 0) {
+        openDBData[idx].indexTable = mem_malloc(size, "index");
     } else {
         openDBData[idx].indexTable = 0;
     }
     _lclose(handle);
 }
-
+#undef openDBData
 
 void far CloseIndex(int idx)
 {
-    char name[100];
-    long count;
-    void far *header;
-    void far *buf;
-    int handle;
-
-    sprintf(name, "%s.ndx", openDBData[idx].name);
-    if (openDBData[idx].dirty == 0)
-        goto release;
-    handle = _lcreat(name, 0);
-    openDBData[idx].pad2 = handle;
-    if (handle <= 0)
-        DosPunt("Index file missing");
-    _llseek(handle, 0L, 0);
-    header = &openDBData[idx].recordCount;
-    _lwrite(handle, header, 20);
-    count = openDBData[idx].recordCount;
-    if (count != 0)
-        _lwrite(handle, openDBData[idx].indexTable, count << 3);
-    _lclose(handle);
-release:
-    buf = openDBData[idx].indexTable;
-    if (buf != 0)
-        mem_free(buf);
+  char name[100];
+  void far *header;
+  volatile void *buf;
+  int handle;
+  sprintf(name, "%s.ndx", openDBData[idx].name);
+  if (openDBData[idx].dirty == 0)
+    goto release;
+  handle = (openDBData[idx].pad2 = _lcreat(name, 0));
+  if (handle <= 0)
+    DosPunt("Index file missing");
+  _llseek(handle, 0L, 0);
+  header = &openDBData[idx].recordCount;
+  _lwrite(handle, header, 20);
+  if (openDBData[idx].recordCount != 0)
+    _lwrite(handle, openDBData[idx].indexTable, openDBData[idx].recordCount << 3);
+  _lclose(handle);
+  release:
+  if (openDBData[idx].indexTable != 0)
+    mem_free(openDBData[idx].indexTable);
 }
-
 
 void far DeleteCurrentIndex(int recIndex)
 {
