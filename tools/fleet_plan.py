@@ -42,6 +42,9 @@ Workflow per target:
    Always give --family (python tools/attempts.py families). Repeat an exhausted family only with --why-repeat "new fact/tool/evidence".
 4. Exact: python tools/promote.py SYMBOL FILE.c. Exact body blocked by placement: say so in REPORT.md; the unit owner composes it
    ({owner_rule}).
+Selector cells are NOT a blocker for body work: `mov es,[slot]` / pool-word operands are memory-operand differences that never cost
+opcode matches, and the unit composer places them once the body is exact. Keep authoring the opcode gaps; do not stop a target because
+"private selector cells remain".
 Stop a target when it is exact, when you hit a concrete missing dependency (search.py --note), or after ~10 stagnant rounds
 (rounds, not checks: a round is a compiled source change): record what you learned with --note and move to your next target.
 Rules: no asm/pragmas/includes/absolute-address casts to force bytes; never edit src/recovery.json, ledgers, proofs, fixtures, locks or hashes;
@@ -61,7 +64,10 @@ LANE_TEXT = {
             'after a shared change). Test exactly those families; do not re-run exhausted ones.',
     'COMPOSE': 'Body-exact or binding-only functions. You own canonical unit composition of the listed objects: '
                'fix wrong data/selector bindings, then python tools/tu_assembly.py compose OBJECT --add SYMBOL=DRAFT [--persist] and '
-               'python tools/promote.py --unit UNIT --reason "..." once strict.',
+               'python tools/promote.py --unit UNIT --reason "..." once strict. The usual blockers are declaration harmonization '
+               '(the unit declares a name differently from the draft: make the draft use the unit\'s declaration and keep it exact, or '
+               'tu_assembly build --harmonize) and private DATA/CONST layout (tu_assembly build --scaffold --data-layout ...). triage.py '
+               'shows the last compose result for each target; start from that blocker, not from scratch.',
 }
 
 
@@ -76,6 +82,8 @@ def eligible(t, lane):
     if t.get('error') or t.get('state') == 'MATCHED':
         return False
     if lane == 'COMPOSE':
+        if t.get('compose_blocked_by'):
+            return False  # waits on open neighbours; those carry its value in the other lanes
         return t['lane'] in ('COMPOSE', 'PROMOTE') or (BINDING_TO_COMPOSE and t.get('blocker_class') == 'BINDING')
     if lane == 'TAIL':
         return t['lane'] == 'TAIL_INTERACTIVE' and t.get('blocker_class') != 'BINDING' and bool(t.get('next_families'))
@@ -111,9 +119,15 @@ def assign(rows, lane, workers, per_worker, prefix, taken_objects):
 def target_line(t):
     cur = t.get('current') or {}
     fd = t.get('first_divergence') or {}
-    return '- %s (%s bytes, object %s): %s %s; class %s; first divergence %s; next: %s; families: %s' % (
+    line = '- %s (%s bytes, object %s): %s %s; class %s; first divergence %s; next: %s; families: %s' % (
         t['symbol'], t.get('size'), (t.get('unit') or {}).get('component'), cur.get('opcodes', 'no draft'), cur.get('draft') or '',
         t.get('blocker_class'), fd.get('kind'), t.get('next_tool', '').split('  #')[0], ', '.join(t.get('next_families') or []))
+    gaps = (t.get('gap_regions') or {}).get('missing_in_draft') or []
+    if gaps:
+        line += '; largest missing regions: ' + '; '.join('%s..%s (%d instr)' % (g['start'], g['end'], g['instructions']) for g in gaps[:3])
+    if t.get('unblocks'):
+        line += '; exact here also unblocks the placement of ' + ', '.join(t['unblocks'])
+    return line
 
 
 def plan(authoring=4, tail=2, compose=1, per_worker=4, prefix='f3', refresh=True, backlog_path=None):
@@ -143,6 +157,56 @@ def plan(authoring=4, tail=2, compose=1, per_worker=4, prefix='f3', refresh=True
                 rule='ranked by triage value (expected debt bytes per agent-hour); tails only with an untried family; one owner per object')
 
 
+FOLLOWUP = """
+FOLLOW-UP PASS. You continue the work of {prev} on the same targets (its report: build/workers/{prev}/REPORT.md; its drafts are
+in build/workers/{prev}/). Read that report first, then re-run triage per target: the lines above are recomputed from the current
+state and already include {prev}'s best drafts. {prev} worked {minutes} and recorded {sessions} compiled rounds ({gains} frontier gains).
+Continue where it stopped. Do not repeat its experiments (python tools/attempts.py summary SYMBOL lists them); take the next untried
+family or the next missing region. Give your largest remaining target at least 10 compiled rounds before you leave it.
+"""
+
+
+def followup(prev, name=None, refresh=True):
+    """A fresh worker continuing PREV's targets with recomputed triage (resumed sessions lose their shell)."""
+    import triage
+    import fleet_metrics
+    plan_path = ROOT / 'build/fleet/plan.json'
+    workers = read_json(plan_path)['workers'] if plan_path.exists() else []
+    entry = next((w for w in workers if w['name'] == prev), None)
+    if entry is None:
+        raise FormatError('%s is not in build/fleet/plan.json' % prev)
+    base = prev.rsplit('-f', 1)[0] if '-f' in prev.rsplit('-', 1)[-1] else prev
+    name = name or '%s-f%d' % (base, 1 + sum(1 for w in workers if w['name'].startswith(base + '-f')))
+    rows = [triage.triage(t['symbol']) for t in entry['targets']]
+    rows = [t for t in rows if t.get('state') != 'MATCHED']
+    if not rows:
+        raise FormatError('every target of %s is already admitted' % prev)
+    m = fleet_metrics.metrics(lambda w: w == prev).get(prev, {})
+    minutes = '%.0f minutes' % (60 * (m.get('active_hours') or 0))
+    brief = BRIEF.format(name=name, lane=entry['lane'], lane_text=LANE_TEXT[entry['lane']], targets='\n'.join(target_line(t) for t in rows),
+                         owner_rule='you own: ' + ', '.join(entry['objects']) if entry['lane'] == 'COMPOSE' else
+                         'python tools/unit_owner.py list shows the owner')
+    brief += FOLLOWUP.format(prev=prev, minutes=minutes, sessions=m.get('sessions', 0), gains=m.get('frontier_gains', 0))
+    folder = ROOT / 'build/workers' / name
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / 'PROMPT.md').write_text(brief, encoding='utf-8')
+    workers.append(dict(entry, name=name, follows=prev, brief=brief,
+                        targets=[dict(symbol=t['symbol'], value=t.get('value'), blocker_class=t.get('blocker_class'),
+                                      opcodes=(t.get('current') or {}).get('opcodes'), next_families=t.get('next_families')) for t in rows]))
+    data = read_json(plan_path)
+    data['workers'] = workers
+    write_json(plan_path, data)
+    if entry['lane'] == 'COMPOSE':
+        import unit_owner
+        for obj in entry['objects']:
+            if ':' in obj:
+                current = unit_owner.owner_of(obj)
+                if current and current['owner'] == prev:
+                    unit_owner.release(obj, prev, 'handed to follow-up ' + name)
+                unit_owner.claim(obj, name, 'follow-up of ' + prev, hours=24)
+    return dict(name=name, follows=prev, targets=[t['symbol'] for t in rows], prompt=relative(folder / 'PROMPT.md'))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--authoring', type=int, default=4)
@@ -153,7 +217,12 @@ def main():
     ap.add_argument('--backlog', help='reuse a triage backlog JSON instead of recomputing')
     ap.add_argument('--write', action='store_true')
     ap.add_argument('--claim', action='store_true')
+    ap.add_argument('--followup', metavar='PREVIOUS', help='write a follow-up prompt continuing PREVIOUS worker\'s targets (fresh triage)')
+    ap.add_argument('--name', help='with --followup: the new worker name')
     args = ap.parse_args()
+    if args.followup:
+        print(json.dumps(followup(args.followup, args.name), indent=2))
+        return
     if not 3 <= args.per_worker <= 6:
         raise FormatError('--per-worker should stay small (3..6 focused targets)')
     result = plan(args.authoring, args.tail, args.compose, args.per_worker, args.prefix, refresh=not args.backlog, backlog_path=args.backlog)
@@ -162,7 +231,11 @@ def main():
             folder = ROOT / 'build/workers' / w['name']
             folder.mkdir(parents=True, exist_ok=True)
             (folder / 'PROMPT.md').write_text(w['brief'], encoding='utf-8')
-        write_json(ROOT / 'build/fleet/plan.json', result)
+        path = ROOT / 'build/fleet/plan.json'
+        if path.exists():
+            earlier = [w for w in read_json(path).get('workers', []) if w['name'] not in {x['name'] for x in result['workers']}]
+            result = dict(result, workers=earlier + result['workers'])
+        write_json(path, result)
     if args.claim:
         import unit_owner
         for w in result['workers']:

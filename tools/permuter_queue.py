@@ -93,7 +93,7 @@ def prior_runs(symbol, fp, changed_at=None):
     return len(no_gain), any(r.get('outcome') in ('IMPROVED', 'EXACT', 'BODY_EXACT') for r in rows)
 
 
-def candidates(limit=None, symbols=None):
+def candidates(limit=None, symbols=None, families=None):
     import triage
     fp = shared_state.fingerprint()
     if symbols:
@@ -131,6 +131,9 @@ def candidates(limit=None, symbols=None):
             continue
         fam = attempts.summary(t['symbol'], current_fp=fp)
         muts, dead = select_mutations(fam)
+        if families:
+            # A focused hypothesis run (e.g. MSC7-R0: subexpressions and lifetimes only).
+            muts = [m for m in muts if MUTATION_FAMILY.get(m) in families]
         out.append(dict(symbol=t['symbol'], draft=cur.get('frontier_draft') or cur.get('draft'), opcodes=cur.get('opcodes'),
                         blocker_class=t.get('blocker_class'), lane=t['lane'], value=t.get('value'), mutations=muts, excluded_families=dead,
                         priority=round(m / max(total, 1) * (t.get('size') or 0), 1)))
@@ -154,15 +157,15 @@ def load_queue():
     return read_json(QUEUE) if QUEUE.exists() else dict(items=[], history=[])
 
 
-def enqueue(limit=None, symbols=None):
+def enqueue(limit=None, symbols=None, families=None, why=None):
     queue = load_queue()
     present = {i['symbol'] for i in queue['items'] if i['status'] in ('QUEUED', 'RUNNING')}
-    picked, skipped = candidates(limit, symbols)
+    picked, skipped = candidates(limit, symbols, families)
     added = []
     for c in picked:
         if c['symbol'] in present or not c['draft']:
             continue
-        queue['items'].append(dict(c, status='QUEUED', queued=now()))
+        queue['items'].append(dict(c, status='QUEUED', queued=now(), why=why, families=sorted(families) if families else None))
         added.append(c['symbol'])
     write_json(QUEUE, queue)
     return dict(added=added, skipped=len(skipped), queue=relative(QUEUE))
@@ -291,6 +294,9 @@ def main():
     sub = ap.add_subparsers(dest='command', required=True)
     p = sub.add_parser('plan'); p.add_argument('--limit', type=int, default=30); p.add_argument('--symbols')
     p = sub.add_parser('enqueue'); p.add_argument('--limit', type=int, default=12); p.add_argument('--symbols')
+    p.add_argument('--families', help='only mutations of these families (comma-separated controlled vocabulary)')
+    p.add_argument('--why', help='the hypothesis this focused run tests (recorded with the queue item)')
+    p.add_argument('--parked', action='store_true', help='with no --symbols: every parked function whose triage shows a reopen hint')
     p = sub.add_parser('run'); p.add_argument('--budget-minutes', type=float, default=120); p.add_argument('--per-target-seconds', type=int, default=900)
     p.add_argument('--parallel', type=int, default=2)
     sub.add_parser('report')
@@ -305,7 +311,14 @@ def main():
         print(json.dumps(dict(candidates=[{k: c[k] for k in ('symbol', 'opcodes', 'blocker_class', 'lane', 'excluded_families')} | dict(mutations=len(c['mutations']))
                                           for c in picked], skipped_by_reason=reasons), indent=2))
     elif args.command == 'enqueue':
-        print(json.dumps(enqueue(args.limit, args.symbols.split(',') if args.symbols else None), indent=2))
+        symbols = args.symbols.split(',') if args.symbols else None
+        if args.parked and not symbols:
+            import parking
+            symbols = sorted(parking.active_symbols(parking.load_parking()))
+        fams = set(args.families.split(',')) if args.families else None
+        if fams and not fams <= set(attempts.FAMILIES):
+            raise FormatError('unknown families: ' + ', '.join(sorted(fams - set(attempts.FAMILIES))))
+        print(json.dumps(enqueue(args.limit, symbols, fams, args.why), indent=2))
     elif args.command == 'run':
         print(json.dumps(run(args.budget_minutes, args.per_target_seconds, args.parallel), indent=2))
     elif args.command == 'report':

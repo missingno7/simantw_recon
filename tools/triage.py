@@ -293,6 +293,29 @@ def typedb_live(draft):
         return dict(error=str(exc)[:200])
 
 
+def compose_blockers(symbol, admitted=None):
+    """Open functions between SYMBOL and its nearest admitted neighbours in the same object and segment.
+
+    A body-exact member can only be placed once the code around it in its run is known: the
+    composer reports "inconsistent public placements" until these are recovered."""
+    import compiler_profiles
+    admitted = recipes() if admitted is None else admitted
+    comp = compiler_profiles.component_of(symbol) or {}
+    by = _cards()
+    me = by.get(symbol)
+    if not me:
+        return []
+    rows = sorted((by[s]['offset'], s) for s in comp.get('publics', []) if s in by and by[s]['segment'] == me['segment'])
+    index = next(i for i, (_, s) in enumerate(rows) if s == symbol)
+    blockers = []
+    for step in (-1, 1):
+        i = index + step
+        while 0 <= i < len(rows) and rows[i][1] not in admitted:
+            blockers.append(rows[i][1])
+            i += step
+    return blockers
+
+
 def unit_info(symbol):
     import compiler_profiles
     import unit_owner
@@ -414,6 +437,11 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
         last = [r for r in attempts.load(symbol) if 'TU_COMPOSITION' in (r.get('families') or []) and r.get('worker') == 'sweep']
         if last:
             out['last_compose'] = last[-1].get('hypothesis')
+        blockers = compose_blockers(symbol)
+        if blockers:
+            # Placement needs the neighbouring code first: route the work there.
+            out['compose_blocked_by'] = blockers
+            tool = 'recover %s first (open neighbours in this run), then python tools/tu_assembly.py compose {component} --add {sym}={draft}' % ', '.join(blockers)
     reopen = None
     if park_status == 'PARKED':
         stale_park = shared_state.changed((park or {}).get('state') or {}, fp, shared_state.CONCLUSION) if (park or {}).get('state') else []
@@ -489,6 +517,14 @@ def backlog(lane=None, limit=None):
         except FormatError as exc:
             t = dict(symbol=symbol, error=str(exc), lane='ERROR')
         rows.append(t)
+    # A neighbour that blocks the placement of an exact body inherits half of that body's value.
+    by_symbol = {t['symbol']: t for t in rows}
+    for t in rows:
+        for b in t.get('compose_blocked_by') or []:
+            if b in by_symbol and by_symbol[b].get('value') is not None:
+                share = round(0.5 * (t.get('size') or 0) / len(t['compose_blocked_by']), 1)
+                by_symbol[b]['value'] = round(by_symbol[b]['value'] + share, 1)
+                by_symbol[b].setdefault('unblocks', []).append(t['symbol'])
     rows.sort(key=lambda t: -(t.get('value') or 0))
     counts = {}
     for t in rows:
@@ -558,6 +594,8 @@ def render(t):
              'parking         : %s' % t['parking'] + (('  reopen candidate: %s' % json.dumps({k: v for k, v in t['reopen_hint'].items() if k != 'command' and v})) if t.get('reopen_hint') else ''),
              'unit            : %s (%s/%s members admitted, owner %s)' % (t['unit']['component'], t['unit']['admitted_members'], t['unit']['members'], t['unit']['owner'] or 'none'),
              'last compose    : %s' % t['last_compose'] if t.get('last_compose') else None,
+             'compose waits on: %s' % ', '.join(t['compose_blocked_by']) if t.get('compose_blocked_by') else None,
+             'unblocks        : %s' % ', '.join(t['unblocks']) if t.get('unblocks') else None,
              'typedb variant  : %s' % t['typedb_variant'] if t.get('typedb_variant') else None,
              'missing regions : %s' % '; '.join('%s..%s (%d instr: %s)' % (g['start'], g['end'], g['instructions'], ' | '.join(g['first'])) for g in t['gap_regions']['missing_in_draft'][:3]) if (t.get('gap_regions') or {}).get('missing_in_draft') else None,
              'extra regions   : %s' % '; '.join('%s..%s (%d instr)' % (g['start'], g['end'], g['instructions']) for g in t['gap_regions']['extra_in_draft'][:3]) if (t.get('gap_regions') or {}).get('extra_in_draft') else None,
