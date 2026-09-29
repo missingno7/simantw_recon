@@ -1,0 +1,16 @@
+{
+  "name": "pragma-g-positive-control",
+  "profile": "og",
+  "segment": "SIMTWO_MODULE",
+  "function": "win_SetColorFromObj",
+  "text": "/*\n * win_SetColorFromObj: select a colour entry for a window object and apply\n * it through GSetAttrib.  The object's flag word at +0x24 (as in the\n * verified GameObject declarations) chooses between the signed colour index\n * bytes at +0x27 (flag 4 set) and +0x26.  The index selects a six-byte entry\n * of the PACK-segment table win_colors (MAPSYM 0x78ec, segment 9); the far\n * entry pointer is kept in an unnamed private DGROUP far pointer at 0xcc58\n * (fixture bytes zero), reloaded with LES for each use.  If the low bit of\n * displayType is clear, GSetAttrib gets entry byte 0 as fore colour and\n * pattern and entry byte 2 as back colour; otherwise byte 3 is the back\n * colour.  Each byte is sign-extended and multiplied by 0x101 to replicate\n * it into both halves of the attribute word; the compiler shares the byte-0\n * product between the first and third arguments and merges the call tails.\n */\nstruct WinColorObject {\n    unsigned char reserved[0x24];\n    unsigned int flags;\n    char color;\n    char altColor;\n};\n\nextern void far GSetAttrib(int foreColor, int backColor, int pattern);\nextern unsigned char near displayType;\nextern char far win_colors[][6];\n\nstatic char far *colorEntry;\n\n{{PRAGMA}}\nvoid far win_SetColorFromObj(struct WinColorObject far *object)\n{\n    int index;\n\n    index = (object->flags & 4) ? object->altColor : object->color;\n    colorEntry = win_colors[index];\n    if ((displayType & 1) == 0)\n        GSetAttrib(colorEntry[0] * 0x101, colorEntry[2] * 0x101,\n                   colorEntry[0] * 0x101);\n    else\n        GSetAttrib(colorEntry[0] * 0x101, colorEntry[3] * 0x101,\n                   colorEntry[0] * 0x101);\n}\n",
+  "axes": {
+    "PRAGMA": {
+      "control": "",
+      "g_off": "#pragma optimize(\"g\", off)",
+      "g_on": "#pragma optimize(\"g\", on)",
+      "empty_off": "#pragma optimize(\"\", off)",
+      "empty_on": "#pragma optimize(\"\", on)"
+    }
+  }
+}

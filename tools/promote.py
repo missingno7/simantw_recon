@@ -34,7 +34,8 @@ import link_lane
 GOOD = ('CONFIRMED_MEMBER', 'STRONGLY_SUPPORTED_MEMBER')
 PROOF_TOOLS = ['tools/matcher.py', 'tools/library_match.py', 'tools/recovery_gate.py', 'tools/verify_recovery.py', 'tools/compiler.py', 'tools/assembler.py',
                'tools/cfg_solver.py', 'tools/ne.py', 'tools/omf.py', 'tools/mapsym.py', 'tools/promote.py', 'tools/publication.py',
-               'layout/toolchain.json', 'layout/fixtures.json', 'layout/compiler-profiles.json', 'layout/runtime-ownership.json']
+               'layout/toolchain.json', 'layout/fixtures.json', 'layout/compiler-profiles.json', 'layout/runtime-ownership.json',
+               'layout/pragma-review.json']
 
 
 def semantic_summary(text, summary=None):
@@ -85,6 +86,88 @@ def pack_index_bindings(code):
 
 
 INLINE_ASM_REVIEW = ROOT / 'layout/inline-asm-review.json'
+PRAGMA_REVIEW = ROOT / 'layout/pragma-review.json'
+
+
+def reviewed_optimize_pragmas(code, allow=False):
+    """Blank only an evidence-backed, exact per-function optimize/restore pair.
+
+    The source passed to the compiler is never rewritten here.  Blanking is only
+    for the ordinary-C source check below.  A populated review is deliberately
+    fail-closed: it must identify one setting and the empty-on restore text for a
+    particular function, plus repository-local evidence.  The caller still needs
+    the complete strict member proof and an explicit --steered provenance note.
+    """
+    directives = list(re.finditer(r'(?m)^[ \t]*(#\s*pragma\s+optimize\b[^\r\n]*)[ \t]*$', code, re.I))
+    if not directives:
+        return code, False
+    if not allow:
+        raise FormatError('recovered source #pragma optimize requires a reviewed per-function entry')
+    if not PRAGMA_REVIEW.is_file():
+        raise FormatError('recovered source #pragma optimize requires layout/pragma-review.json')
+    document = read_json(PRAGMA_REVIEW)
+    review = document.get('functions') if isinstance(document, dict) else None
+    if not isinstance(review, dict):
+        raise FormatError('pragma review must contain a functions map')
+
+    parsed = []
+    syntax = re.compile(r'#\s*pragma\s+optimize\s*\(\s*"([^"]*)"\s*,\s*(off|on)\s*\)', re.I)
+    for match in directives:
+        text = match.group(1)
+        setting = syntax.fullmatch(text)
+        if not setting:
+            raise FormatError('unsupported #pragma optimize text: ' + text.strip())
+        parsed.append((match, text.strip(), setting.group(1), setting.group(2).lower()))
+
+    claimed = set()
+    out = code
+    for name, start, end in function_spans(code):
+        header = re.search(r'([A-Za-z_]\w*)\s*\([^()]*\)\s*$', code[:start])
+        if not header or header.group(1) != name:
+            continue
+        before = [(i, row) for i, row in enumerate(parsed)
+                  if row[0].end() <= header.start() and
+                  not re.search(r'[;{}#=]', code[row[0].end():header.start()])]
+        after = [(i, row) for i, row in enumerate(parsed)
+                 if row[0].start() > end and not code[end + 1:row[0].start()].strip()]
+        if not before or not after:
+            continue
+        if len(before) != 1 or len(after) != 1:
+            raise FormatError('ambiguous #pragma optimize boundary around ' + name)
+        set_index, (set_match, set_text, letters, state) = before[0]
+        restore_index, (restore_match, restore_text, restore_letters, restore_state) = after[0]
+        if set_index == restore_index:
+            continue
+
+        symbol = name if name.startswith('_') else '_' + name
+        entry = review.get(symbol)
+        if not isinstance(entry, dict):
+            raise FormatError('unreviewed #pragma optimize in ' + symbol)
+        if entry.get('pragma_text') != set_text or entry.get('restore_text') != restore_text:
+            raise FormatError('pragma text for %s differs from layout/pragma-review.json' % symbol)
+        if restore_letters != '' or restore_state != 'on':
+            raise FormatError('pragma restore for %s must be #pragma optimize("", on)' % symbol)
+        evidence = entry.get('evidence')
+        if not isinstance(evidence, list) or not evidence:
+            raise FormatError('pragma review for %s needs repository-local evidence paths' % symbol)
+        for item in evidence:
+            if not isinstance(item, str) or not item.strip():
+                raise FormatError('pragma review evidence for %s must be nonempty paths' % symbol)
+            path = Path(item)
+            resolved = (ROOT / path).resolve() if not path.is_absolute() else path.resolve()
+            if path.is_absolute() or not resolved.is_relative_to(ROOT) or not resolved.is_file():
+                raise FormatError('pragma review evidence for %s is missing or outside the repository: %s' % (symbol, item))
+        if set_index in claimed or restore_index in claimed:
+            raise FormatError('one pragma directive is associated with more than one function')
+        claimed.update((set_index, restore_index))
+        # Only a recognized pair with exact recorded text is blanked.  Preserve
+        # newlines and offsets so any later source checks see the same layout.
+        for match in (set_match, restore_match):
+            out = out[:match.start()] + re.sub(r'[^\r\n]', ' ', out[match.start():match.end()]) + out[match.end():]
+
+    if len(claimed) != len(directives):
+        raise FormatError('every #pragma optimize must immediately bracket one reviewed function')
+    return out, True
 
 
 def function_spans(code):
@@ -148,7 +231,7 @@ def promotion_names(module, stubs, symbols, data=False):
             and not (p.get('local') and p['name'] not in mapsym_names)}
 
 
-def check_source(source, flags, unit=None):
+def check_source(source, flags, unit=None, allow_pragma_optimize=False):
     """Ordinary self-contained C under a catalogued profile; fail closed on anything else."""
     code = re.sub(r'/\*.*?\*/|//[^\n]*', '', source, flags=re.S)
     if 'TODO' in source or not code.strip():
@@ -166,12 +249,14 @@ def check_source(source, flags, unit=None):
     if reviewed_intrinsic_source(unit, source):
         stripped = re.sub(r'(?m)^[ \t]*#\s*pragma\s+intrinsic\s*\(\s*strlen\s*\)[ \t]*$', '', stripped)
     stripped = reviewed_inline_asm(stripped)
+    stripped, has_reviewed_optimize = reviewed_optimize_pragmas(stripped, allow_pragma_optimize)
     if re.search(r'\b(?:__asm|_asm|asm|_emit|__emit|incbin)\b|#\s*(?:include|pragma)', stripped, re.I):
         raise FormatError('recovered source must be self-contained ordinary C, without assembly or compiler pragmas')
     if re.search(r'\([^)]*\*[^)]*\)\s*(?:0x[0-9a-f]+|[1-9][0-9]*)', code, re.I):
         raise FormatError('literal-address pointer cast is not recoverable source')
     # Only catalogued compiler profiles are admissible; no free flag search.
     compiler_profiles.identify_profile(flags)
+    return has_reviewed_optimize
 
 
 def function_flags(symbol):
@@ -375,7 +460,7 @@ def promote_asm_function(symbol, path, summary=None, verify_only=False, assemble
                  asm_semantic_summary(text, summary), verify_only, language='asm', assembler_version=assembler_version, rework=rework)
 
 
-def promote_function(symbol, path, summary=None, verify_only=False, assembler_version='masm600', asm_flags=None):
+def promote_function(symbol, path, summary=None, verify_only=False, assembler_version='masm600', asm_flags=None, steered=None):
     path = path.resolve()
     if not path.is_file():
         raise FormatError('candidate source does not exist')
@@ -384,7 +469,9 @@ def promote_function(symbol, path, summary=None, verify_only=False, assembler_ve
     profile, flags = function_flags(symbol)
     source_bytes = path.read_bytes()
     text = path.read_text()
-    check_source(text, flags)
+    has_pragma_optimize = check_source(text, flags, allow_pragma_optimize=True)
+    if has_pragma_optimize and not (steered and steered.strip()):
+        raise FormatError('reviewed #pragma optimize requires --steered text for EXACT_STEERED provenance')
     # Rework: an isolated recipe whose admitted source fails a later source rule
     # (index-based PACK bindings) may be replaced by a compliant source.
     rework = False
@@ -398,7 +485,7 @@ def promote_function(symbol, path, summary=None, verify_only=False, assembler_ve
     return admit(symbol.lstrip('_'), [symbol], source_bytes, flags, profile, semantic_summary(text, summary), verify_only, rework=rework)
 
 
-def promote_unit(unit_id, reason, verify_only=False):
+def promote_unit(unit_id, reason, verify_only=False, steered=None):
     from tu_assembly import UNITS
     if not re.fullmatch(r'[A-Za-z0-9_]+', unit_id):
         raise FormatError('invalid unit id')
@@ -422,7 +509,9 @@ def promote_unit(unit_id, reason, verify_only=False):
             scaffold['private_zero_gaps'] = spec['scaffold']['private_zero_gaps']
     path = ROOT / spec['source']
     text = path.read_text(encoding='latin1')
-    check_source(path.read_text(), spec['flags'], dict(spec, scaffold=scaffold))
+    has_pragma_optimize = check_source(path.read_text(), spec['flags'], dict(spec, scaffold=scaffold), allow_pragma_optimize=True)
+    if has_pragma_optimize and not (steered and steered.strip()):
+        raise FormatError('reviewed #pragma optimize requires --steered text for EXACT_STEERED provenance')
     profile = compiler_profiles.resolve(members[0])
     return admit('tu_' + unit_id, members, path.read_bytes(), spec['flags'], profile, 'Unit assembly %s: %s' % (unit_id, reason), verify_only, unit=unit_id, scaffold=scaffold)
 
@@ -656,10 +745,10 @@ def main():
         from pathlib import Path
         result = promote_asm_module(Path(args.asm_module), args.summary, args.verify_only, args.assembler, args.asm_flag)
     elif args.unit:
-        result = promote_unit(args.unit, args.reason, args.verify_only)
+        result = promote_unit(args.unit, args.reason, args.verify_only, args.steered)
     elif args.symbol and args.source:
         from pathlib import Path
-        result = promote_function(args.symbol, Path(args.source), args.summary, args.verify_only, args.assembler, args.asm_flag)
+        result = promote_function(args.symbol, Path(args.source), args.summary, args.verify_only, args.assembler, args.asm_flag, args.steered)
     else:
         ap.error('give SYMBOL SOURCE, --unit UNIT or --recover')
     if isinstance(result, dict) and result.get('status') == 'PROMOTED' and result.get('symbols'):

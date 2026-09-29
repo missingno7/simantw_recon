@@ -1376,7 +1376,7 @@ def compare(symbol, draft, runs=100, seed=1, arg_values=(), stub_values=(), inst
     return_words = _c_return_words(source, symbol)
     profile = compiler_profiles.resolve(symbol)
     flags = compiler_profiles.profile_flags(profile['name'], card['segment_name'])
-    out = ROOT / 'build/workers/f-infra-emu2/compile' / (symbol.lstrip('_'))
+    out = ROOT / 'build/emu_diff/compile' / (symbol.lstrip('_'))
     out.mkdir(parents=True, exist_ok=True)
     staged = out / (path.name if path.name.lower().endswith('.c') else 'candidate.c')
     staged.write_text(source, encoding='latin1')
@@ -1504,7 +1504,7 @@ def main(argv=None):
         parser.error('SYMBOL and DRAFT.c are required')
     report = compare(args.symbol, args.draft, args.runs, args.seed, args.arg, args.stub, args.instruction_limit,
                      args.strict, args.memory, args.null_far_pointers == 'seed')
-    destination = Path(args.json_path) if args.json_path else ROOT / 'build/workers/f-infra-emu2' / f'{args.symbol.lstrip("_")}.json'
+    destination = Path(args.json_path) if args.json_path else ROOT / 'build/emu_diff' / f'{args.symbol.lstrip("_")}.json'
     if not destination.is_absolute():
         destination = ROOT / destination
     write_json(destination, report)

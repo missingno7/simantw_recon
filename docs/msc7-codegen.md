@@ -336,6 +336,15 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Allocator modules named by asserts: `globregs86.c`, `glregs86.c`, `reg86.c`, `regMD.c`.
 - Evidence: f-study-c2 (worktree simantw_wt_c2). Direct invocation is being tested (f-study-c2b).
 
+**MSC7-P1: per-function `#pragma optimize` does not explain the allocation-only residues. FALSIFIED for that dataset; one SUPPORTED lead.**
+- Semantics (P1-P4): `#pragma optimize("<letters>", off|on)` affects only the wrapped function, and `("", on)` restores the command-line profile. `e` off removes the SI/DI saves; `l` off equals `loop_opt(off)`.
+  - The manual documents `a,w,b0,b1,b2,c,g,e,l,x,z,n,p,r,s,t`.
+  - Unknown letters (`q`) are silently accepted, so parser acceptance proves nothing.
+- Sweep: 47 settings on 16 open register/home-only frontiers plus antedit helpers 3:6250/3:63FE, each under its assigned profile. No setting closed their register or home differences.
+- Lead: `_DecodeString` (object profile ogi) reaches an exact 172-byte body (70/70 opcodes, 9/9 fixups) with `optimize("z", on)` or `("n", off)`, the loop-optimisation letters. It fails only on private `_BSS` placement.
+- Evidence: evidence/codegen-facts/MSC7-PRAGMA-P1..P4 and build/workers/sup-pragma/REPORT.md.
+- Admission goes through layout/pragma-review.json: supervisor-reviewed, EXACT_STEERED, and only after a strict complete-member proof.
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.

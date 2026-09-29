@@ -1,0 +1,866 @@
+{
+  "name": "pragma-semantics-ga",
+  "profile": "ga",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/GA",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 16,
+  "distinct_outputs": 5,
+  "same_output": [
+    [
+      "v000",
+      "v003",
+      "v005",
+      "v006",
+      "v007",
+      "v008",
+      "v009",
+      "v011",
+      "v012",
+      "v013",
+      "v014",
+      "v015"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "PRAGMA": "control"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 0xa, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov ax, word ptr [bp + 0xc]",
+        "0009 mov word ptr [bp - 0xa], ax",
+        "000c mov bx, 3",
+        "000f mov word ptr [bp - 8], 5",
+        "0014 mov word ptr [bp - 2], 0",
+        "0019 cmp word ptr [bp + 0xa], 0",
+        "001d jg 0x24",
+        "001f mov di, word ptr [bp - 8]",
+        "0022 jmp 0x58",
+        "0024 mov ax, word ptr [bp + 6]",
+        "0027 mov dx, word ptr [bp + 8]",
+        "002a mov word ptr [bp - 6], ax",
+        "002d mov ds, dx",
+        "002f mov di, word ptr [bp - 8]",
+        "0032 mov si, word ptr [bp - 6]",
+        "0035 mov ax, word ptr [si]",
+        "0037 imul bx",
+        "0039 add word ptr [bp - 0xa], ax",
+        "003c add bx, di",
+        "003e mov ax, di",
+        "0040 shl ax, 1",
+        "0042 add ax, di",
+        "0044 xor ax, word ptr [bp - 2]",
+        "0047 mov di, ax",
+        "0049 add word ptr [bp - 6], 2",
+        "004d mov ax, word ptr [bp + 0xa]",
+        "0050 inc word ptr [bp - 2]",
+        "0053 cmp word ptr [bp - 2], ax",
+        "0056 jl 0x32",
+        "0058 push ss",
+        "0059 pop ds",
+        "005a mov ax, di",
+        "005c add ax, bx",
+        "005e add ax, word ptr [bp - 0xa]",
+        "0061 add ax, word ptr [bp + 0xc]",
+        "0064 inc ax",
+        "0065 pop si",
+        "0066 pop di",
+        "0067 leave ",
+        "0068 retf ",
+        "0069 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "PRAGMA": "empty_off"
+      },
+      "size": 105,
+      "frame": 8,
+      "homes": {
+        "-2": 2,
+        "-4": 2,
+        "-6": 2,
+        "-8": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "59a733b40e3ed408a76eb87abf1b0cf0c4943d2d4415745f5005ef28565dbb03",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers"
+        ],
+        "diff": [
+          "@@ -1,2 +1,2 @@",
+          "-enter 0xa, 0",
+          "+enter 8, 0",
+          " push di",
+          "@@ -4,37 +4,33 @@",
+          " mov ax, word ptr [bp + 0xc]",
+          "-mov word ptr [bp - 0xa], ax",
+          "-mov bx, 3",
+          "+mov word ptr [bp - 4], ax",
+          "+mov word ptr [bp - 6], 3",
+          " mov word ptr [bp - 8], 5",
+          " mov word ptr [bp - 2], 0",
+          "-cmp word ptr [bp + 0xa], 0",
+          "-jg 0x24",
+          "-mov di, word ptr [bp - 8]",
+          "-jmp 0x58",
+          "-mov ax, word ptr [bp + 6]",
+          "-mov dx, word ptr [bp + 8]",
+          "-mov word ptr [bp - 6], ax",
+          "-mov ds, dx",
+          "-mov di, word ptr [bp - 8]",
+          "-mov si, word ptr [bp - 6]",
+          "-mov ax, word ptr [si]",
+          "-imul bx",
+          "-add word ptr [bp - 0xa], ax",
+          "-add bx, di",
+          "-mov ax, di",
+          "+jmp 0x21",
+          "+inc word ptr [bp - 2]",
+          "+mov ax, word ptr [bp + 0xa]",
+          "+cmp word ptr [bp - 2], ax",
+          "+jl 0x2c",
+          "+jmp 0x55",
+          "+mov bx, word ptr [bp - 2]",
+          "+shl bx, 1",
+          "+les si, ptr [bp + 6]",
+          "+mov ax, word ptr es:[bx + si]",
+          "+imul word ptr [bp - 6]",
+          "+add word ptr [bp - 4], ax",
+          "+mov ax, word ptr [bp - 8]",
+          "+add word ptr [bp - 6], ax",
+          "+mov ax, word ptr [bp - 8]",
+          "+mov cx, ax",
+          " shl ax, 1",
+          "-add ax, di",
+          "+add ax, cx",
+          " xor ax, word ptr [bp - 2]",
+          "-mov di, ax",
+          "-add word ptr [bp - 6], 2",
+          "-mov ax, word ptr [bp + 0xa]",
+          "-inc word ptr [bp - 2]",
+          "-cmp word ptr [bp - 2], ax",
+          "-jl 0x32",
+          "-push ss",
+          "-pop ds",
+          "-mov ax, di",
+          "-add ax, bx",
+          "-add ax, word ptr [bp - 0xa]",
+          "+mov word ptr [bp - 8], ax",
+          "+jmp 0x1e",
+          "+mov ax, word ptr [bp - 8]",
+          "+add ax, word ptr [bp - 6]",
+          "+add ax, word ptr [bp - 4]",
+          " add ax, word ptr [bp + 0xc]",
+          " inc ax",
+          "+jmp 0x65",
+          " pop si",
+          "@@ -43,2 +39 @@",
+          " retf ",
+          "-nop "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "PRAGMA": "e_off"
+      },
+      "size": 104,
+      "frame": 12,
+      "homes": {
+        "-2": 2,
+        "-4": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2,
+        "-12": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "bd5204140e738275d2f0a0d72a4820bbca7ea6c9c80f128a2800170b548f9507",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves"
+        ],
+        "diff": [
+          "@@ -1,7 +1,5 @@",
+          "-enter 0xa, 0",
+          "-push di",
+          "-push si",
+          "+enter 0xc, 0",
+          " mov ax, word ptr [bp + 0xc]",
+          "-mov word ptr [bp - 0xa], ax",
+          "-mov bx, 3",
+          "+mov word ptr [bp - 4], ax",
+          "+mov word ptr [bp - 6], 3",
+          " mov word ptr [bp - 8], 5",
+          "@@ -9,21 +7,19 @@",
+          " cmp word ptr [bp + 0xa], 0",
+          "-jg 0x24",
+          "-mov di, word ptr [bp - 8]",
+          "-jmp 0x58",
+          "+jle 0x58",
+          " mov ax, word ptr [bp + 6]",
+          " mov dx, word ptr [bp + 8]",
+          "-mov word ptr [bp - 6], ax",
+          "-mov ds, dx",
+          "-mov di, word ptr [bp - 8]",
+          "-mov si, word ptr [bp - 6]",
+          "-mov ax, word ptr [si]",
+          "-imul bx",
+          "-add word ptr [bp - 0xa], ax",
+          "-add bx, di",
+          "-mov ax, di",
+          "+mov word ptr [bp - 0xc], ax",
+          "+mov word ptr [bp - 0xa], dx",
+          "+les bx, ptr [bp - 0xc]",
+          "+mov ax, word ptr es:[bx]",
+          "+imul word ptr [bp - 6]",
+          "+add word ptr [bp - 4], ax",
+          "+mov ax, word ptr [bp - 8]",
+          "+add word ptr [bp - 6], ax",
+          "+mov cx, ax",
+          " shl ax, 1",
+          "-add ax, di",
+          "+add ax, cx",
+          " xor ax, word ptr [bp - 2]",
+          "-mov di, ax",
+          "-add word ptr [bp - 6], 2",
+          "+mov word ptr [bp - 8], ax",
+          "+add word ptr [bp - 0xc], 2",
+          " mov ax, word ptr [bp + 0xa]",
+          "@@ -31,12 +27,8 @@",
+          " cmp word ptr [bp - 2], ax",
+          "-jl 0x32",
+          "-push ss",
+          "-pop ds",
+          "-mov ax, di",
+          "-add ax, bx",
+          "-add ax, word ptr [bp - 0xa]",
+          "+jl 0x2b",
+          "+mov ax, word ptr [bp - 8]",
+          "+add ax, word ptr [bp - 6]",
+          "+add ax, word ptr [bp - 4]",
+          " add ax, word ptr [bp + 0xc]",
+          " inc ax",
+          "-pop si",
+          "-pop di",
+          " leave "
+        ]
+      }
+    },
+    {
+      "variant": "v003",
+      "label": {
+        "PRAGMA": "g_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v004",
+      "label": {
+        "PRAGMA": "l_off"
+      },
+      "size": 80,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "di",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "f43eefa4332e62c9c55dedd994fb24318ba99b403c57f60a8656e553a32d2a9b",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers"
+        ],
+        "diff": [
+          "@@ -1,2 +1,2 @@",
+          "-enter 0xa, 0",
+          "+enter 4, 0",
+          " push di",
+          "@@ -4,35 +4,27 @@",
+          " mov ax, word ptr [bp + 0xc]",
+          "-mov word ptr [bp - 0xa], ax",
+          "-mov bx, 3",
+          "-mov word ptr [bp - 8], 5",
+          "-mov word ptr [bp - 2], 0",
+          "-cmp word ptr [bp + 0xa], 0",
+          "-jg 0x24",
+          "-mov di, word ptr [bp - 8]",
+          "-jmp 0x58",
+          "-mov ax, word ptr [bp + 6]",
+          "-mov dx, word ptr [bp + 8]",
+          "-mov word ptr [bp - 6], ax",
+          "-mov ds, dx",
+          "-mov di, word ptr [bp - 8]",
+          "-mov si, word ptr [bp - 6]",
+          "-mov ax, word ptr [si]",
+          "-imul bx",
+          "-add word ptr [bp - 0xa], ax",
+          "-add bx, di",
+          "+mov word ptr [bp - 4], ax",
+          "+mov di, 3",
+          "+mov word ptr [bp - 2], 5",
+          "+xor bx, bx",
+          "+jmp 0x3b",
+          "+mov si, bx",
+          "+shl si, 1",
+          "+mov es, word ptr [bp + 8]",
+          "+add si, word ptr [bp + 6]",
+          "+mov ax, word ptr es:[si]",
+          "+imul di",
+          "+add word ptr [bp - 4], ax",
+          "+mov ax, word ptr [bp - 2]",
+          "+add di, ax",
+          "+mov cx, ax",
+          "+shl ax, 1",
+          "+add ax, cx",
+          "+xor ax, bx",
+          "+mov word ptr [bp - 2], ax",
+          "+inc bx",
+          "+cmp word ptr [bp + 0xa], bx",
+          "+jg 0x18",
+          " mov ax, di",
+          "-shl ax, 1",
+          "-add ax, di",
+          "-xor ax, word ptr [bp - 2]",
+          "-mov di, ax",
+          "-add word ptr [bp - 6], 2",
+          "-mov ax, word ptr [bp + 0xa]",
+          "-inc word ptr [bp - 2]",
+          "-cmp word ptr [bp - 2], ax",
+          "-jl 0x32",
+          "-push ss",
+          "-pop ds",
+          "-mov ax, di",
+          "-add ax, bx",
+          "-add ax, word ptr [bp - 0xa]",
+          "+add ax, word ptr [bp - 2]",
+          "+add ax, word ptr [bp - 4]",
+          " add ax, word ptr [bp + 0xc]",
+          "@@ -43,2 +35 @@",
+          " retf ",
+          "-nop "
+        ]
+      }
+    },
+    {
+      "variant": "v005",
+      "label": {
+        "PRAGMA": "i_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v006",
+      "label": {
+        "PRAGMA": "a_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v007",
+      "label": {
+        "PRAGMA": "c_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v008",
+      "label": {
+        "PRAGMA": "n_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v009",
+      "label": {
+        "PRAGMA": "p_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v010",
+      "label": {
+        "PRAGMA": "t_off"
+      },
+      "size": 102,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "dx",
+        "es",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "19367bdfc97873cf108061adefc0fbc9b072e1155c7d01ab5885062fbb27f722",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "registers"
+        ],
+        "diff": [
+          "@@ -11,3 +11,3 @@",
+          " mov di, word ptr [bp - 8]",
+          "-jmp 0x58",
+          "+jmp 0x56",
+          " mov ax, word ptr [bp + 6]",
+          "@@ -15,6 +15,6 @@",
+          " mov word ptr [bp - 6], ax",
+          "-mov ds, dx",
+          "+mov es, dx",
+          " mov di, word ptr [bp - 8]",
+          " mov si, word ptr [bp - 6]",
+          "-mov ax, word ptr [si]",
+          "+mov ax, word ptr es:[si]",
+          " imul bx",
+          "@@ -22,5 +22,3 @@",
+          " add bx, di",
+          "-mov ax, di",
+          "-shl ax, 1",
+          "-add ax, di",
+          "+imul ax, di, 3",
+          " xor ax, word ptr [bp - 2]",
+          "@@ -32,4 +30,2 @@",
+          " jl 0x32",
+          "-push ss",
+          "-pop ds",
+          " mov ax, di"
+        ]
+      }
+    },
+    {
+      "variant": "v011",
+      "label": {
+        "PRAGMA": "w_off"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v012",
+      "label": {
+        "PRAGMA": "e_on"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v013",
+      "label": {
+        "PRAGMA": "g_on"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v014",
+      "label": {
+        "PRAGMA": "l_on"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    },
+    {
+      "variant": "v015",
+      "label": {
+        "PRAGMA": "empty_on"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

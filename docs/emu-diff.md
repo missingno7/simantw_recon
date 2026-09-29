@@ -26,7 +26,7 @@ An unmapped read, write, or fetch lazily maps a page filled with bytes derived f
 
 Calls into imports still have scripted or default-zero behavior; their real Windows side effects are outside this emulator. DOS/BIOS service interrupts `10h`, `13h`, `16h`, `1Ah`, `21h`, and `2Fh` are recorded as OS calls and preserve registers unless a matching `--stub DOS!INTvv_AH=AX[:DX]` overrides `AX:DX`. Other interrupts, unresolved indirect calls, instruction-limit hits, self-modifying code, or Unicorn execution faults remain `UNSUPPORTED`. `NO_DIVERGENCE` means the requested samples agreed under the chosen inputs, stubs, and synthesized memory; it does not prove general equivalence.
 
-Reports default to `build/workers/f-infra-emu2/SYMBOL.json`. Focused implementation tests are in `tests/test_emu_diff.py` and run with:
+Reports default to `build/emu_diff/SYMBOL.json` (compiles under `build/emu_diff/compile/`). Focused implementation tests are in `tests/test_emu_diff.py` and run with:
 
 ```powershell
 python -m unittest tests.test_emu_diff -v

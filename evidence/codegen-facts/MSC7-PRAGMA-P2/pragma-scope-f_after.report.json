@@ -1,0 +1,239 @@
+{
+  "name": "pragma-scope-f_after",
+  "profile": "og",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeglw",
+    "/NT_TEXT"
+  ],
+  "function": "f_after",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [
+    [
+      "v000",
+      "v002"
+    ]
+  ],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "OPEN": "control",
+        "CLOSE": "control"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 0xa, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov ax, word ptr [bp + 0xc]",
+        "0009 mov word ptr [bp - 0xa], ax",
+        "000c mov bx, 3",
+        "000f mov word ptr [bp - 8], 5",
+        "0014 mov word ptr [bp - 2], 0",
+        "0019 cmp word ptr [bp + 0xa], 0",
+        "001d jg 0x24",
+        "001f mov di, word ptr [bp - 8]",
+        "0022 jmp 0x58",
+        "0024 mov ax, word ptr [bp + 6]",
+        "0027 mov dx, word ptr [bp + 8]",
+        "002a mov word ptr [bp - 6], ax",
+        "002d mov ds, dx",
+        "002f mov di, word ptr [bp - 8]",
+        "0032 mov si, word ptr [bp - 6]",
+        "0035 mov ax, word ptr [si]",
+        "0037 imul bx",
+        "0039 add word ptr [bp - 0xa], ax",
+        "003c add bx, di",
+        "003e mov ax, di",
+        "0040 shl ax, 1",
+        "0042 add ax, di",
+        "0044 xor ax, word ptr [bp - 2]",
+        "0047 mov di, ax",
+        "0049 add word ptr [bp - 6], 2",
+        "004d mov ax, word ptr [bp + 0xa]",
+        "0050 inc word ptr [bp - 2]",
+        "0053 cmp word ptr [bp - 2], ax",
+        "0056 jl 0x32",
+        "0058 push ss",
+        "0059 pop ds",
+        "005a mov ax, di",
+        "005c add ax, bx",
+        "005e add ax, word ptr [bp - 0xa]",
+        "0061 add ax, word ptr [bp + 0xc]",
+        "0064 inc ax",
+        "0065 pop si",
+        "0066 pop di",
+        "0067 leave ",
+        "0068 retf ",
+        "0069 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "OPEN": "#pragma_e_off",
+        "CLOSE": "control"
+      },
+      "size": 104,
+      "frame": 12,
+      "homes": {
+        "-2": 2,
+        "-4": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2,
+        "-12": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "cx",
+        "dx",
+        "es"
+      ],
+      "saves": [],
+      "sha256": "bd5204140e738275d2f0a0d72a4820bbca7ea6c9c80f128a2800170b548f9507",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves"
+        ],
+        "diff": [
+          "@@ -1,7 +1,5 @@",
+          "-enter 0xa, 0",
+          "-push di",
+          "-push si",
+          "+enter 0xc, 0",
+          " mov ax, word ptr [bp + 0xc]",
+          "-mov word ptr [bp - 0xa], ax",
+          "-mov bx, 3",
+          "+mov word ptr [bp - 4], ax",
+          "+mov word ptr [bp - 6], 3",
+          " mov word ptr [bp - 8], 5",
+          "@@ -9,21 +7,19 @@",
+          " cmp word ptr [bp + 0xa], 0",
+          "-jg 0x24",
+          "-mov di, word ptr [bp - 8]",
+          "-jmp 0x58",
+          "+jle 0x58",
+          " mov ax, word ptr [bp + 6]",
+          " mov dx, word ptr [bp + 8]",
+          "-mov word ptr [bp - 6], ax",
+          "-mov ds, dx",
+          "-mov di, word ptr [bp - 8]",
+          "-mov si, word ptr [bp - 6]",
+          "-mov ax, word ptr [si]",
+          "-imul bx",
+          "-add word ptr [bp - 0xa], ax",
+          "-add bx, di",
+          "-mov ax, di",
+          "+mov word ptr [bp - 0xc], ax",
+          "+mov word ptr [bp - 0xa], dx",
+          "+les bx, ptr [bp - 0xc]",
+          "+mov ax, word ptr es:[bx]",
+          "+imul word ptr [bp - 6]",
+          "+add word ptr [bp - 4], ax",
+          "+mov ax, word ptr [bp - 8]",
+          "+add word ptr [bp - 6], ax",
+          "+mov cx, ax",
+          " shl ax, 1",
+          "-add ax, di",
+          "+add ax, cx",
+          " xor ax, word ptr [bp - 2]",
+          "-mov di, ax",
+          "-add word ptr [bp - 6], 2",
+          "+mov word ptr [bp - 8], ax",
+          "+add word ptr [bp - 0xc], 2",
+          " mov ax, word ptr [bp + 0xa]",
+          "@@ -31,12 +27,8 @@",
+          " cmp word ptr [bp - 2], ax",
+          "-jl 0x32",
+          "-push ss",
+          "-pop ds",
+          "-mov ax, di",
+          "-add ax, bx",
+          "-add ax, word ptr [bp - 0xa]",
+          "+jl 0x2b",
+          "+mov ax, word ptr [bp - 8]",
+          "+add ax, word ptr [bp - 6]",
+          "+add ax, word ptr [bp - 4]",
+          " add ax, word ptr [bp + 0xc]",
+          " inc ax",
+          "-pop si",
+          "-pop di",
+          " leave "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "OPEN": "control",
+        "CLOSE": "#pragma_restore_all"
+      },
+      "size": 106,
+      "frame": 10,
+      "homes": {
+        "-2": 2,
+        "-6": 2,
+        "-8": 2,
+        "-10": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "di",
+        "ds",
+        "dx",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "ae8f6370a88da1396db8be18fc87bb0f53ce8b9dd5f8823297ba4eab0a619441",
+      "fixups": [],
+      "versus_baseline": {
+        "identical": true,
+        "same_code_modulo_fixups": true,
+        "changed": [],
+        "diff": []
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

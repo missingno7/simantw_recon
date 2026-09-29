@@ -157,6 +157,8 @@ Binary proof and source provenance are recorded separately. Every admission pass
 
 The TEXT names each construct and the decision it steers, e.g. "`register int upper` alias keeps `first` in DI across the loop test". Steering is the last step after natural hypotheses from docs/msc7-codegen.md have been tried. It is preferred over any toolchain change: one locked compiler model, never per-function flags. A later natural source replaces the steered record automatically.
 
+Per-function `#pragma optimize("...", off|on)` is normally rejected. The only exception is an exact setting and `#pragma optimize("", on)` restore pair listed for that function in `layout/pragma-review.json`, with repository-local evidence paths. The pair must immediately bracket the function; every other pragma remains banned. The supervisor populates this review only after a strict complete-member proof. A reviewed pragma admission also requires `--steered TEXT`, so its provenance is always `EXACT_STEERED`; the review-map identity is captured in the promotion proof. The map starts empty.
+
 ## Search diagnostics versus proof
 
 `tools/codegen_diff.py` aligns instructions and reports layout/CFG shape, opcode counts, register-only changes, immediates, memory operands, stack-local displacements, branch targets, instruction ordering and the first structural difference. Unknown indirect CFGs return an unknown shape result. The diagnostic view accounts for LINK transformations only when the strict matcher has independently validated them. It never modifies an object, and it never participates in admission.
