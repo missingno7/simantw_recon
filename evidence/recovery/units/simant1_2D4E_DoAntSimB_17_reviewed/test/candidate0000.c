@@ -81,6 +81,7 @@ void far DoRestB(int x, int y, int attacker);
 void far DoRandB(int x, int y, int attr, int modeArg);
 void far DoRecruitN(int x, int y, int attacker);
 int far CheckNestFightB(int x, int y, long attacker);
+int far DropFoodB(int x, int y);
 void far SimEggB(int x, int y);
 int far QueenMoveB(int x, int y, int dirHint);
 void far MakeNewTailB(int index);
@@ -90,8 +91,6 @@ void DecEatB(void);
 int far LeaveNestB(int x, int y);
 int far GetOutB(int x);
 int far TryMoveDirB(int x, int y, int dir);
-
-int far DropFoodB(int x, int y);
 
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoNestAntB)
 #pragma alloc_text(POOLSTUB_TEXT, pool_stub_DoNestFightB)
@@ -357,11 +356,10 @@ int far DropFoodB(int x, int y)
         result = 1;
     }
     ++FoodB;
-    if (Dx8[Tindex + 0x3D18] & 8)
-        Dx8[Tindex + 0x3D18] -= 8;
+    if (BlistX.t[Tindex] & 8)
+        BlistX.t[Tindex] -= 8;
     return result;
 }
-
 
 void far SimEggB(int x, int y)
 {

@@ -18,6 +18,16 @@ import compiler_profiles
 import drafts
 import mapsym
 import ne
+import parking
+
+
+def parking_info(symbol, records=None):
+    """Prominent assignment status for a function, without making it a search gate."""
+    records = parking.load_parking() if records is None else records
+    record = records.get(symbol)
+    if record is None:
+        return dict(status='NOT_PARKED', record=None)
+    return dict(status='PARKED' if parking.is_active(record) else 'REOPENED', record=record)
 
 
 def certify(card, raw, image, symbols):
@@ -66,7 +76,8 @@ def packet(symbol, brief=False, history=False):
     if card is None:
         raise FormatError('unknown function symbol; try context.py --list')
     ledger = drafts.entry(symbol)
-    result = compact_packet(card, all_cards, targets, {})
+    result = dict(parking=parking_info(symbol))
+    result.update(compact_packet(card, all_cards, targets, {}))
     result.pop('prior_draft', None)
     raw = fixture('SIMANTW.EXE'); image = ne.parse(raw); symbols = mapsym.parse(fixture('SIMANTW.SYM'))
     code = bytes.fromhex(''.join(r['bytes'] for r in card['disassembly']))
@@ -112,7 +123,7 @@ def packet(symbol, brief=False, history=False):
     path = ROOT / 'build/context' / (symbol.lstrip('_') + '.json')
     write_json(path, result)
     if brief:
-        result = dict(size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
+        result = dict(parking=result.get('parking'), size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
                                          'direct_data_bindings', 'codegen_shape', 'intrinsic_profile_mismatch', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs') if k in result})
     result['packet'] = relative(path)
     return result

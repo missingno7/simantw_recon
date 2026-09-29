@@ -1,0 +1,179 @@
+{
+  "name": "animyellowinsane-original-x-live-range",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NTSIMANT1_MODULE"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "ORIGINAL": "saved_local",
+        "XARG": "saved_local"
+      },
+      "size": 64,
+      "frame": 2,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "fcbdcc57876e0ed08e78f9e3102f49a4f146311d60c24afe2c4e4720daa94a96",
+      "fixups": [
+        {
+          "offset": 35,
+          "width": 4,
+          "target": "_Distance",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 20,
+          "width": 4,
+          "target": "_Tick",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 2, 0",
+        "0004 push di",
+        "0005 push si",
+        "0006 mov di, word ptr [bp + 0xa]",
+        "0009 mov si, word ptr [bp + 6]",
+        "000c mov word ptr [bp - 2], si",
+        "000f or di, di",
+        "0011 je 0x36",
+        "0013 lcall 0, 0",
+        "0018 push word ptr [bp + 8]",
+        "001b push word ptr [bp - 2]",
+        "001e push word ptr [bp + 8]",
+        "0021 push si",
+        "0022 lcall 0, 0",
+        "0027 add sp, 8",
+        "002a or ax, ax",
+        "002c je 0x32",
+        "002e inc si",
+        "002f jmp 0x33",
+        "0031 nop ",
+        "0032 dec si",
+        "0033 dec di",
+        "0034 jne 0x13",
+        "0036 mov ax, si",
+        "0038 add ax, word ptr [bp - 2]",
+        "003b pop si",
+        "003c pop di",
+        "003d leave ",
+        "003e retf ",
+        "003f nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "ORIGINAL": "direct_parameter",
+        "XARG": "saved_local"
+      },
+      "compile": "FAILED",
+      "log": "Microsoft (R) C/C++ Optimizing Compiler Version 7.00\nCopyright (c) Microsoft Corp 1984-1992. All rights reserved.\n\ninput.c\ninput.c(8) : error C2065: 'originalX' : undeclared identifier\n"
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "ORIGINAL": "saved_local",
+        "XARG": "direct_parameter"
+      },
+      "size": 60,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "9f89f77ad363da83f7c8787b81d174b38d9918857363d6da7630ada88b28e8c1",
+      "fixups": [
+        {
+          "offset": 31,
+          "width": 4,
+          "target": "_Distance",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 16,
+          "width": 4,
+          "target": "_Tick",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes"
+        ],
+        "diff": [
+          "@@ -1,2 +1,3 @@",
+          "-enter 2, 0",
+          "+push bp",
+          "+mov bp, sp",
+          " push di",
+          "@@ -5,8 +6,7 @@",
+          " mov si, word ptr [bp + 6]",
+          "-mov word ptr [bp - 2], si",
+          " or di, di",
+          "-je 0x36",
+          "+je 0x32",
+          " lcall 0, 0",
+          " push word ptr [bp + 8]",
+          "-push word ptr [bp - 2]",
+          "+push word ptr [bp + 6]",
+          " push word ptr [bp + 8]",
+          "@@ -16,5 +16,5 @@",
+          " or ax, ax",
+          "-je 0x32",
+          "+je 0x2e",
+          " inc si",
+          "-jmp 0x33",
+          "+jmp 0x2f",
+          " nop ",
+          "@@ -22,5 +22,5 @@",
+          " dec di",
+          "-jne 0x13",
+          "+jne 0xf",
+          " mov ax, si",
+          "-add ax, word ptr [bp - 2]",
+          "+add ax, word ptr [bp + 6]",
+          " pop si"
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

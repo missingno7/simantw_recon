@@ -5,6 +5,8 @@ struct DialogEvent {
 };
 /* Transfer a patch from the current yard point to a valid map cell. */
 struct YardPoint { int x; int y; };
+struct Point { int x; int y; };
+struct Rect { int left; int top; int right; int bottom; };
 struct WindPromptTable {
     int header[4];
     long yardPrompt;
@@ -20,13 +22,14 @@ struct WindPromptTable {
     long transferPrompt;              /* target reads +0x50 */
 };
 struct XferEvent { unsigned char pad[8]; int y; int x; unsigned char pad2[4]; };
-extern struct YardPoint far CurYardPnt;
+extern struct YardPoint __based(__segname("PACK")) CurYardPnt;
 extern unsigned char far YMapPopB[12][16];
 extern int far ColonyUpdateFlag;
 extern int near win_hwnd[];
 extern struct WindPromptTable far * far WindPromptStrs;
-extern int far patchRgn[];
-extern int far mapTileRect[];
+extern const struct Point far patchRgn[4];
+extern struct Rect far mapTileRect;
+
 extern int far YMapPnt[2];
 extern void far MapToYard(void);
 extern int far win_IsWinInFront(int window);
@@ -57,7 +60,7 @@ void far SpecialXfer(void)
       MapToYard();
     win_ToTop(0x1900);
   }
-  MySetCapture(win_hwnd[1]);
+  MySetCapture(win_hwnd[25]);
   SetYardMode(2);
   ColonyUpdateFlag = 1;
   SetMapPlane(0);
@@ -73,8 +76,8 @@ void far SpecialXfer(void)
         MapToYard();
       win_ToTop(0x1900);
     }
-    x = (event.x - patchRgn[1] - mapTileRect[1]) / 10;
-    y = (x * 10 - patchRgn[0] - mapTileRect[0] + event.y) / 28;
+    x = (event.x - patchRgn[0].y - mapTileRect.top) / 10;
+    y = (x * 10 - patchRgn[0].x - mapTileRect.left + event.y) / 28;
     if (y < 0 || x < 0 || y > 11 || x > 15)
     {
       myBeginSound(1, 0, 0x7e);
@@ -100,5 +103,6 @@ void far SpecialXfer(void)
   MyReleaseCapture();
   EditMessage(0L, -2, -1, 1);
 }
+
 
 
