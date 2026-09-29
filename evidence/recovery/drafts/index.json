@@ -34,6 +34,11 @@
         "text": "From the v191 frontier, justPtr = newMapForce normalizes to the same 75/374, 1109/1149 object. justPtr = (newMapForce = 0) keeps ENTER 0x40 but still diverges structurally at +0x95/+0x94; MSC writes direct just/newMapForce memory operands rather than preserving the target's justPtr home and xor ax,ax zero reuse.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T11:07:18.090769+00:00"
+      },
+      {
+        "text": "OGI remeasurement v195-v199: pointee-volatile justPtr worsens frame/stack; plain/register resetValue zero temporaries compile byte-identically to v191 because MSC folds the value; explicit volatile multiplierPtr before/after declarations moves MapMode home and gives 71/380, 1129/1149, frame 0x40, six stack differences; prior all-alias v11 replays at frame 0x44 and 1160/1149. This zero-reuse and local pointer-home ordering family did not improve v191.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:33:02.854203+00:00"
       }
     ]
   },
@@ -12046,6 +12051,11 @@
         "text": "Test E16/E17 expression identity at the page tail: read MapPnt.y through a one-word-offset far int pointer alias so the final call argument is a distinct tree from prior field comparisons/updates; check whether MSC keeps the read in the shared tail instead of preparing it before the goto.",
         "origin": "build/search/DoEditScroll/20260929T113005-186992",
         "recorded": "2026-09-29T11:30:07.369303+00:00"
+      },
+      {
+        "text": "New E16/E17 test: only the shared page-tail read changed from MapPnt.y to ((int far *)&MapPnt)[1]. typedb check found no new conflict; code output is identical to the earlier packet-Dx8-word variant, 325/353, ENTER6, first structural +747. This alias does not inhibit OGI reuse/hoisting. Together with the existing assigned-profile page-tail probe (plain vs volatile MapPnt, call-before-flag vs flag-before-call), direct struct/array/based forms, outside-switch tail and duplicate-call tests, the first blocker is the same shared API tail schedule: target jumps to a tail that loads the private selector and reads y; the candidate prepares segment/offset arguments on the predecessor and jumps to push-1. No exact candidate; downstream mismatches remain open after this earliest join.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:30:31.848501+00:00"
       }
     ],
     "frontier": {
@@ -12379,6 +12389,11 @@
         "text": "2026-09-29 range guard experiment: explicit nested unsigned bounds for 0x2210..0x2217 replace the case labels, but emit CMP word ptr [bp+0x12],2217/2210 at +0x84/+0x8B, then reload AX and retain pivot 0x220F; score 198/226. Function-long register message is allocated to SI and scores 167/226; short-lived register guard folds to the same memory-CMP body. Keep 207/226 shared-context switch frontier; register alias/standalone guard does not explain target AX partition.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T11:12:42.298977+00:00"
+      },
+      {
+        "text": "2026-09-29 common map-label control: routed switch cases 0x2210..0x2217 via goto to one help_map_button block after nested switch; typedb clean. MSC keeps 0x220F/0x220E pivot and worsens to 196/226 rows, 544 bytes; low 0x2202/2209 block shape also changes. Target initial cmp 0x2217/0x2210 remains unexplained. Restore/keep evidence draft f1bbc5aa7674.c, 207/226.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:35:17.546780+00:00"
       }
     ],
     "frontier": {
@@ -13363,6 +13378,11 @@
         "text": "Assigned oi-ga probe dokeydown-far-selector-live-across-call: auto and register far pointer plus const object all emit identical bytes; return DX:AX moves to ES:SI, stores selector to BP-2, reloads ES after WinPrintf. Volatile pointer adds a 4-byte home and LES reloads. This reproduces candidate, not target's DI save/restore. Target's live ES across WinPrintf at +0x1B5 remains unresolved after full-function type/scope/permutation controls.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T11:28:49.516960+00:00"
+      },
+      {
+        "text": "2026-09-29: \register int index on the 361/514 far-pointer frontier passes typedb but is same-output-as base (1269 bytes); target +0x1B5 mov di,es remains absent, selector reloads from BP-4. Index register hint does not create target DI save.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:31:51.709376+00:00"
       }
     ],
     "frontier": {
@@ -18030,6 +18050,16 @@
         "text": "Testing the based-array selector source under the component pool diagnostic, to separate an isolated segment-binding gap from placement/context and inspect whether private selector-cell semantics are available in the supported pool scaffold.",
         "origin": "build/search/DrawCurBalloons/20260929T110940-144336",
         "recorded": "2026-09-29T11:09:59.489726+00:00"
+      },
+      {
+        "text": "Test CFG2/early-return lowering: route the two initial guards to one terminal label so MSC emits the target's common end-of-function return branch rather than a nearby early epilogue; keep declarations and statement body identical.",
+        "origin": "build/search/DrawCurBalloons/20260929T113526-8220",
+        "recorded": "2026-09-29T11:35:28.028851+00:00"
+      },
+      {
+        "text": "Test distinct CFG2 form: guard the whole body with OptionStates[5] != 0 && ELayerMode == -1, allowing rejected paths to fall through to the final epilogue. This tests whether the target's two branches to the terminal epilogue arise from a positive body guard instead of early returns.",
+        "origin": "build/search/DrawCurBalloons/20260929T113623-78240",
+        "recorded": "2026-09-29T11:36:25.090109+00:00"
       }
     ],
     "best": {
@@ -19710,6 +19740,21 @@
         "text": "2026-09-29: DATA context places _YMapPopR at SIMANT_DATA_GROUP:0x164 and _YMapPopB at 0xA4. The target loads ES through [0xC1DA]/[0xC1DC]. Typedb-clean far-array frontier remains 78/93. A based signed-char view drops to 74/98 and has hard declaration conflicts; the volatile unsigned based follow-up is 75/97 with the same early selector/fixup problem. Keep 78/93 best; next inspect selector-cell provenance and member data context.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T00:25:00.376081+00:00"
+      },
+      {
+        "text": "Transferred the admitted DrawColonyBars dual-counter idiom \for(i=0,x=i; x<0xa0; ++i,x+=0xa) to columnIndex/yOffset in DrawSimColonies. Typedb is clean, but MSC7 canonicalizes this initialization/update form to the existing 78/93, 262-byte frontier (same output); target's first meaningful entry mismatch remains SI vs DI. This closes the natural dual-counter source-spelling hypothesis. Next examine a live population-row pointer so row-base and column remain separate at YMapPop access.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:31:20.970459+00:00"
+      },
+      {
+        "text": "Correction to the dual-counter note: score remains 78/93 and the first SI/DI register split is unchanged, but the compiler object hash differs from the frontier (CC64B081FB3F versus B34A286678C9), so this is a distinct output rather than same_output_as. It is not a score gain or an early-region fix. The transferred control idiom still fails to produce the target's SI register and BP-10 save.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:32:15.719537+00:00"
+      },
+      {
+        "text": "A natural far population-row pointer (populationRow = (unsigned char far *)YMapPopR + indexBase; red = populationRow[columnIndex], then reuse it for YMapPopB) is typedb-clean and makes the second access emit an explicit BX+SI row-base sum, but adds a 4-byte far-pointer local, 3 bytes and extra selector/fixup pressure (78/96, 268/247). The earliest target SI/DI split and direct far-array lvalue discrepancy remain at +15/+45. This rejects a single far row-pointer materialization as the source of the target pair.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:33:26.140626+00:00"
       }
     ],
     "frontier": {
@@ -50188,6 +50233,11 @@
         "text": "Changing the timer alias to direct ++NodeCnt/NodeCnt=0 removes its far-pointer local but falls from 469/645 to 466/645, ENTER 22 vs target 34, and leaves the first divergence at +19. The NodeNum pointer selector/home mismatch is independent of timer alias lifetime.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T08:14:17.707178+00:00"
+      },
+      {
+        "text": "Fresh history confirms best ac32454cc4fd at 469/645. Data context maps NodeNum to SIMANT_DATA_GROUP:0x8A86 and admits extern int far NodeNum. I tested direct NodeNum reads only in the scoped gate: 468/645, ENTER 28 vs target 34; it removes the candidate far-pointer home, while target explicitly loads selector [0xC50E], offset 0x8A86, stores both at bp-0xa/-8, then tests ES:[BX]. A based-byte NodeNum pointer alias scores 469/645 but is typedb-conflicting and emits symbolic offset plus CONST relocation, with homes bp-0x10/-0xe rather than the target homes. Neither replaces the typed frontier. The causal issue remains selector-pool address identity and state-pointer lifetime; test a new mechanism before revisiting spelling.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:31:38.109588+00:00"
       }
     ],
     "frontier": {
@@ -52750,6 +52800,11 @@
         "text": "New local pointer declaration test: replacing the near volatile cell pointer with a DGROUP-based volatile pointer is worse, 31/34 opcodes and 88/77 bytes, ENTER 4; it introduces nine fixups and no longer matches target BX=DI+SI+0x28e8 saved BP-4. TDB still flags the supported nonmajority volatile IsItFood return form. Based local-pointer representation does not explain the target's offset-home schedule.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T10:46:06.434139+00:00"
+      },
+      {
+        "text": "2026-09-29 f2-grind-08b: nested for-loop spelling with the same register row/column and volatile pointer compiles to the identical object as the frontier-shaped nested while version. Named int tile between pointer load and IsItFood worsens 31/32 to 27/33. First causal residue remains target address accumulator/home: target BX=DI+SI+0x28e8 then homes pointer at BP-4; source emits relocated MapA addition via AX, pointer BP-2, extra MOV BX,AX. Loop syntax is not causal; test a different address-source/lifetime mechanism.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:36:08.030148+00:00"
       }
     ],
     "frontier": {
@@ -69145,6 +69200,11 @@
         "text": "2026-09-29: register-qualified bucket compiles to the identical 8db445... object as the frame-correct pair_spare base (327/487, ENTER 0x20, first candidate-only mov ax,[bp+8]). The register hint never reaches output; do not repeat bucket/register variants. Current Open frontier is win_Open_adjustment_pair_spare.c; no exact admission.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T08:24:53.460669+00:00"
+      },
+      {
+        "text": "2026-09-29 typedb resync changed only InvalidateRect to its verified void/unsigned signature; candidate compiled to same_output_as win_Open_adjustment_pair_spare.c (object 8db44517812b), so this declaration change never reaches codegen. In the frame-correct 327/487 base, first causal difference is target computes the packed object bucket at +0x21 while candidate preloads the left parameter from [bp+8]; target then reads the left parameter only after splitting/homing the far win_handles pointer into AX:DX at BP-8/-6, whereas candidate uses LES into ES:DI and retains that pointer. This ties the early argument-load reorder to pointer-home/register shape. Do not repeat the same API declaration resync; next useful cause is a pointer-use/lifetime form that naturally yields the target's far-pointer home and BX addressing.",
+        "origin": "search.py --note",
+        "recorded": "2026-09-29T11:31:31.016428+00:00"
       }
     ],
     "best": {

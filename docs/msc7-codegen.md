@@ -156,6 +156,12 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - On 30 admitted functions it gets only 45 of 90 named placements right (build/workers/sup-allocx/). Real code adds generated temporaries, pointer and addressing roles, 32-bit arithmetic, and call and branch lifetimes that source counts cannot see.
 - Use the rule as a local clue for simple shapes only. The real allocator must be read from C23216 (f-study-c2).
 
+**MSC7-R0 (documentation): /Oe allocates registers to "variables or subexpressions according to frequency of use" and ignores `register`. SUPPORTED (C6 manual, consistent with C7 observations).**
+- Source: C6 *Advanced Programming Techniques* §1.5.8, summarised in docs/research/msc7-online-research-2026-09-29.md.
+- Common subexpressions (address arithmetic, repeated index expressions, far-pointer halves) compete with named locals for SI/DI.
+- That explains why source-level variable counts (X2), declaration order (R13/F7) and `register` (F8) do not predict the choice.
+- Consequence: when a residue is a register choice, look at which EXPRESSIONS the original repeats, and how often, not only at the named variables.
+
 ## 3. Expressions and CSE
 
 **MSC7-E15: symbol-table pressure changes codegen (stunts E15/E17). FALSIFIED for the tested scope.**

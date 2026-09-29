@@ -7,8 +7,11 @@ Mac routine and reports cautious source-shape observations.
 from __future__ import annotations
 
 import argparse
+import ast
+import collections
 import hashlib
 import json
+import math
 import re
 import struct
 import sys
@@ -577,6 +580,163 @@ def build_correspondence(mac_root: Path, win_sym_path: Path = ROOT / "assets" / 
     return correspondence_from_records(sym, recovery, spans_by_id, export_doc)
 
 
+def _global_mapping(matches: list[dict], mac_features: list[dict], win_features: list[dict],
+                    recovery: dict, mac_data_size: int, mac_zero_size: int) -> dict:
+    by_mac = {m["identity"]: m for m in mac_features}
+    by_win = {w["symbol"]: w for w in win_features}
+    votes: dict[int, collections.Counter] = collections.defaultdict(collections.Counter)
+    support: dict[tuple[int, str], list[dict]] = collections.defaultdict(list)
+    cluster_mac: collections.Counter = collections.Counter()
+    cluster_win: collections.Counter = collections.Counter()
+    for pair in matches:
+        if pair["confidence"] < .70:
+            continue
+        mid, wid = pair["mac_id"], pair["win16_symbol"]
+        m, w = by_mac[mid], by_win[wid]
+        mac_patterns = m["global_patterns"]
+        win_patterns = w["global_patterns"]
+        mac_items = []
+        for key, pattern in mac_patterns.items():
+            widths = set(pattern.get("widths_bytes", []))
+            mac_items.append((int(key, 16), widths, pattern.get("reads", 0) + pattern.get("writes", 0)))
+            cluster_mac[tuple(sorted(widths))] += 1
+        win_items = []
+        for name, pattern in win_patterns.items():
+            widths = set(pattern.get("widths_bytes", []))
+            win_items.append((name, widths, pattern.get("uses", 0)))
+            cluster_win[tuple(sorted(widths))] += 1
+        options = []
+        for off, mw, mc in mac_items:
+            for name, ww, wc in win_items:
+                if not mw or not ww:
+                    continue
+                width_score = len(mw & ww) / len(mw | ww)
+                count_score = math.exp(-abs(mc - wc) / max(2, mc, wc))
+                options.append((.72 * width_score + .28 * count_score, off, name, sorted(mw), sorted(ww)))
+        # Greedy one-to-one within this pair prevents a single Mac slot from
+        # voting for every Win global in the routine.
+        used_offsets = set(); used_names = set()
+        for score, off, name, mw, ww in sorted(options, reverse=True):
+            if score < .58 or off in used_offsets or name in used_names:
+                continue
+            used_offsets.add(off); used_names.add(name)
+            votes[off][name] += score
+            support[(off, name)].append({"win16_symbol": wid, "confidence": pair["confidence"],
+                                          "access_pattern_similarity": round(score, 3),
+                                          "mac_widths": mw, "win_widths": ww})
+    mappings = []
+    unresolved = []
+    for off, names in sorted(votes.items()):
+        name, weight = names.most_common(1)[0]
+        total = sum(names.values())
+        ratio = weight / total if total else 0
+        evidence = support[(off, name)]
+        row = {"mac_a5_offset": f"0x{off & 0xffff:04X}", "win16_symbol": name,
+               "confidence": round(min(.95, .35 + .12 * len(evidence) + .35 * ratio), 3),
+               "supporting_matched_functions": len(evidence), "vote_share": round(ratio, 3),
+               "evidence": evidence,
+               "mac_storage_region_candidate": "DATA" if off < mac_data_size else
+                   "ZERO" if off < mac_data_size + mac_zero_size else "outside DATA/ZERO payload range",
+               "mac_region_note": "A5-relative offset; DATA/ZERO assignment is a range hypothesis, not a proven A5 base"}
+        target = recovery.get("targets", {}).get(name, {})
+        row["win16_data_declaration_evidence"] = {k: target.get(k) for k in
+            ("segment", "offset", "size", "source", "proof") if target.get(k) is not None}
+        if len(evidence) >= 2 and ratio >= .70:
+            mappings.append(row)
+        else:
+            unresolved.append(row)
+    return {"method": "matched-function co-access plus per-function width/use-pattern assignment",
+            "mappings": mappings, "tentative": unresolved,
+            "mac_access_width_clusters": [{"widths_bytes": list(k), "observations": v}
+                                           for k, v in cluster_mac.most_common()],
+            "win16_access_width_clusters": [{"widths_bytes": list(k), "observations": v}
+                                            for k, v in cluster_win.most_common()],
+            "layout_note": "Use as declaration evidence for tools/typedb.py review; no Win16 declaration was changed.",
+            "confidence_policy": "Only publish a mapping after at least two independent matched-function votes and >=70% vote share."}
+
+
+def build_structural_correspondence(mac_root: Path) -> dict:
+    """Feature-extract both binaries and construct only supported structural pairs."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import common  # type: ignore
+    import mapsym  # type: ignore
+    import ne  # type: ignore
+    image = common.fixture("SIMANTW.EXE")
+    ne_doc = ne.parse(image)
+    sym = mapsym.parse(common.fixture("SIMANTW.SYM"))
+    recovery = json.loads((ROOT / "src" / "recovery.json").read_text(encoding="utf-8"))
+    cards = [c for c in common.cards() if c.get("ownership") == "GAME" and c.get("extent", {}).get("size")]
+    win_string_resources = _win_string_resources(image, ne_doc)
+    win_features = [_win_features(c, image, ne_doc, win_string_resources) for c in cards]
+    code_resources, named = load_mac_code(mac_root)
+    exports = load_mpw_export_spans(mac_root)
+    if not exports:
+        raise MacRefError("no imported MPW export boundaries; run --import-export-plan first")
+    all_spans = exports + [s for vals in named.values() for s in vals]
+    mac_lists, mac_strings = _load_mac_string_resources(mac_root)
+    rsrc = json.loads((mac_root / "resource-inventory.json").read_text(encoding="utf-8"))
+    mac_res_ids = {int(r["id"]) for r in rsrc.get("resources", []) if r.get("type") in ("STR#", "STR ")}
+    mac_features = [_mac_features(s, code_resources, all_spans, mac_lists, mac_strings, mac_res_ids)
+                    for s in exports]
+    pairs, validation = _match_structural(mac_features, win_features)
+    win_to_pair = {p["win16_symbol"]: p for p in pairs}
+    pair_by_mac = {p["mac_id"]: p for p in pairs}
+    recovery_targets = recovery.get("targets", {})
+    rows = {}
+    counts = collections.Counter()
+    cards_by_name = {c["symbol"]: c for c in cards}
+    for segment in sym["segments"]:
+        for item in segment["symbols"]:
+            name = item["name"]
+            card = cards_by_name.get(name)
+            if card is None:
+                continue
+            status = "admitted" if card.get("proof") == "BYTE_MATCHED_RECONSTRUCTION" else "open"
+            pair = win_to_pair.get(name)
+            rows[name] = {"win16": {"segment": segment["number"], "offset": item["offset"],
+                                    "size": card.get("extent", {}).get("size"), "status": status,
+                                    "ownership": card.get("ownership")},
+                          "mac": ([{"code_id": int(pair["mac_id"].split(":")[0]),
+                                    "offset": int(pair["mac_id"].split(":")[1]),
+                                    "size": next(m["size"] for m in mac_features if m["identity"] == pair["mac_id"]),
+                                    "confidence": pair["confidence"], "confidence_band": pair["confidence_band"],
+                                    "method": pair["method"], "score": pair["score"],
+                                    "evidence": pair["evidence"]}] if pair else [])}
+            counts[status] += 1
+            if pair:
+                counts[status + "_with_mac_counterpart"] += 1
+                counts["with_mac_counterpart"] += 1
+            else:
+                counts["without_mac_counterpart"] += 1
+    counts["win16_game_code_functions"] = len(rows)
+    counts["admitted"] = sum(1 for n in rows if rows[n]["win16"]["status"] == "admitted")
+    counts["open"] = sum(1 for n in rows if rows[n]["win16"]["status"] == "open")
+    confidence_counts = collections.Counter(p["confidence_band"] for p in pairs)
+    global_map = _global_mapping(pairs, mac_features, win_features, recovery,
+                                 len((mac_root / "globals" / "DATA_0.bin").read_bytes()) if (mac_root / "globals" / "DATA_0.bin").exists() else 0,
+                                 len((mac_root / "globals" / "ZERO_0.bin").read_bytes()) if (mac_root / "globals" / "ZERO_0.bin").exists() else 0)
+    return {"format": "Mac/Win16 SimAnt structural correspondence v1",
+            "win16_mapsym_sha256": sym["sha256"],
+            "mac_resource_sha256": rsrc.get("fork_sha256"),
+            "method": {"features": ["function strings (inline MacRoman, STR#/STR resources, recovered C bodies, NE RT_STRING references)",
+                                       "immediate numeric constants", "resource IDs", "OS trap/import families",
+                                       "callers/callees and iterative call-graph propagation", "loop/switch shape and case counts",
+                                       "global access widths, counts, and co-access clusters"],
+                       "matching": "rare shared anchors, reciprocal top score with margin, one-to-one assignment, then call-graph propagation",
+                       "scope_note": "Win16 rows include only GAME code cards. The recovery ledger also has DATA targets; they are not functions."},
+            "coverage": {**dict(counts), "mac_mpw_exports": len(exports), "matched_pairs": len(pairs),
+                         "confidence": dict(confidence_counts),
+                         "unmatched_mac_exports": len(exports) - len(pairs)},
+            "heldout_validation": validation,
+            "global_mappings": global_map,
+            "pairs": pairs,
+            "symbols": dict(sorted(rows.items())),
+            "unmatched_mac_exports": [{"mac_id": m["identity"], "code_id": m["code_id"],
+                                       "offset": m["offset"], "size": m["size"],
+                                       "boundary_caveat": m["boundary_caveat"]}
+                                      for m in mac_features if m["identity"] not in pair_by_mac]}
+
+
 def _capstone():
     if Cs is None:
         raise MacRefError("capstone is required (capstone 5.0.7 supports M68K)")
@@ -614,6 +774,481 @@ def _operand_regs(insn) -> tuple[set[str], list[dict]]:
             if index:
                 regs.add(index)
     return regs, memrefs
+
+
+def _mac_string_at(code: bytes, offset: int) -> str | None:
+    """Read a cautious inline MacRoman C or Pascal string at a code offset."""
+    if not 0 <= offset < len(code):
+        return None
+    candidates = []
+    end = code.find(b"\0", offset, min(len(code), offset + 241))
+    if end >= 0:
+        candidates.append(code[offset:end])
+    n = code[offset]
+    if 3 <= n <= 120 and offset + 1 + n <= len(code):
+        candidates.append(code[offset + 1:offset + 1 + n])
+    for raw in candidates:
+        if len(raw) < 4:
+            continue
+        value = raw.decode("mac_roman", "replace").strip()
+        if len(value) >= 4 and sum(ch.isprintable() for ch in value) >= len(value) * .9:
+            return _normalize_text(value)
+    return None
+
+
+def _normalize_text(value: str) -> str:
+    value = value.casefold().replace("\u00a0", " ")
+    return re.sub(r"\s+", " ", value).strip(" \t\r\n\"'.,:;!?()[]{}")
+
+
+def _load_mac_string_resources(mac_root: Path) -> tuple[dict[int, list[str]], dict[int, list[str]]]:
+    lists: dict[int, list[str]] = {}
+    strings: dict[int, list[str]] = {}
+    for path in (mac_root / "strings").glob("STR#_*.bin"):
+        match = re.fullmatch(r"STR#_(\d+)\.bin", path.name)
+        if match:
+            lists[int(match.group(1))] = [_normalize_text(s) for s in decode_string_list(path.read_bytes())]
+    for path in (mac_root / "strings").glob("STR _*.bin"):
+        match = re.fullmatch(r"STR _(\d+)\.bin", path.name)
+        if not match:
+            continue
+        data = path.read_bytes()
+        n = data[0] if data else 0
+        if 0 < n <= len(data) - 1:
+            text = _normalize_text(data[1:1 + n].decode("mac_roman", "replace"))
+            if text:
+                strings[int(match.group(1))] = [text]
+    return lists, strings
+
+
+def _source_body(source: str, symbol: str) -> str:
+    """Find one function body in a recovered C translation unit, if present."""
+    path = Path(source)
+    if not path.is_absolute():
+        path = ROOT / path
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    bare = symbol.lstrip("_")
+    match = re.search(r"(?<![A-Za-z0-9_])" + re.escape(bare) + r"\s*\(", text)
+    if not match:
+        return ""
+    # Balance the parameter list while respecting literals and comments.
+    start = text.find("(", match.start())
+    depth, pos, quote, escape, line_comment, block_comment = 0, start, None, False, False, False
+    while pos < len(text):
+        ch = text[pos]
+        nxt = text[pos + 1] if pos + 1 < len(text) else ""
+        if line_comment:
+            if ch == "\n": line_comment = False
+        elif block_comment:
+            if ch == "*" and nxt == "/": block_comment = False; pos += 1
+        elif quote:
+            if escape: escape = False
+            elif ch == "\\": escape = True
+            elif ch == quote: quote = None
+        elif ch == "/" and nxt == "/": line_comment = True; pos += 1
+        elif ch == "/" and nxt == "*": block_comment = True; pos += 1
+        elif ch in "\"'": quote = ch
+        elif ch == "(": depth += 1
+        elif ch == ")":
+            depth -= 1
+            if depth == 0:
+                break
+        pos += 1
+    if depth:
+        return ""
+    # K&R declarations may intervene; reject a call expression ending in ';'.
+    brace = text.find("{", pos + 1, min(len(text), pos + 1800))
+    if brace < 0:
+        return ""
+    between = text[pos + 1:brace]
+    if ";" in between and "\n" not in between:
+        return ""
+    depth, pos, quote, escape, line_comment, block_comment = 0, brace, None, False, False, False
+    while pos < len(text):
+        ch = text[pos]
+        nxt = text[pos + 1] if pos + 1 < len(text) else ""
+        if line_comment:
+            if ch == "\n": line_comment = False
+        elif block_comment:
+            if ch == "*" and nxt == "/": block_comment = False; pos += 1
+        elif quote:
+            if escape: escape = False
+            elif ch == "\\": escape = True
+            elif ch == quote: quote = None
+        elif ch == "/" and nxt == "/": line_comment = True; pos += 1
+        elif ch == "/" and nxt == "*": block_comment = True; pos += 1
+        elif ch in "\"'": quote = ch
+        elif ch == "{": depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[brace:pos + 1]
+        pos += 1
+    return ""
+
+
+def _c_strings(body: str) -> set[str]:
+    found = set()
+    for raw in re.findall(r'"(?:\\.|[^"\\])*"', body):
+        try:
+            value = ast.literal_eval(raw)
+        except (SyntaxError, ValueError):
+            continue
+        if isinstance(value, str):
+            value = _normalize_text(value)
+            if len(value) >= 4 and any(ch.isalpha() for ch in value):
+                found.add(value)
+    return found
+
+
+def _win_string_resources(image: bytes, ne_doc: dict) -> dict[int, str]:
+    """Decode NE RT_STRING blocks into their public string ordinals."""
+    result = {}
+    for item in ne_doc.get("resources", []):
+        if item.get("type", {}).get("id") != 6 or item.get("identity", {}).get("id") is None:
+            continue
+        start, end = item.get("offset", -1), item.get("offset", -1) + item.get("size", 0)
+        if start < 0 or end > len(image):
+            continue
+        raw = image[start:end]
+        block_id = item["identity"]["id"]
+        pos = 0
+        for index in range(16):
+            if pos >= len(raw): break
+            n = raw[pos]; pos += 1
+            value = raw[pos:pos + n].decode("cp1252", "replace"); pos += n
+            value = _normalize_text(value)
+            if value:
+                result[(block_id - 1) * 16 + index] = value
+    return result
+
+
+def _mac_os_family(trap: int) -> str:
+    high = trap & 0xFF00
+    return {0xA000: "OS_OR_MEMORY", 0xA100: "MEMORY_OR_OS", 0xA800: "DRAWING",
+            0xA900: "WINDOW_MENU_RESOURCE"}.get(high, "TOOLBOX")
+
+
+def _win_os_families(card: dict) -> set[str]:
+    groups = set()
+    for call in card.get("calls", []):
+        if call.get("kind") != "import":
+            continue
+        module = str(call.get("module", "")).upper()
+        if module == "GDI": groups.add("DRAWING")
+        elif module == "USER": groups.add("WINDOW_MENU_RESOURCE")
+        elif module in ("KERNEL", "KRNL386"): groups.add("OS_OR_MEMORY")
+        elif "MMSYSTEM" in module or "SOUND" in module: groups.add("SOUND")
+        else: groups.add("TOOLBOX")
+    return groups
+
+
+def _mac_features(span: dict, codes: dict[int, bytes], all_spans: list[dict],
+                  string_lists: dict[int, list[str]], string_resources: dict[int, list[str]],
+                  mac_resource_ids: set[int]) -> dict:
+    analysed = analyse_function(span, codes, all_spans)
+    shape = analysed["source_shape"]
+    constants = {int(v, 16) for v in shape["constants_hex"]}
+    constants |= {v & 0xFFFF for v in constants if v < 0 or v > 0xFFFF}
+    resource_ids = constants & mac_resource_ids
+    text = set(shape.get("pc_relative_strings", []))
+    for rid in resource_ids:
+        text.update(string_lists.get(rid, []))
+        text.update(string_resources.get(rid, []))
+    raw = codes[span["code_id"]][span["start"]:span["end"]]
+    traps = set()
+    # A-line words are the original 68K Toolbox/OS trap encoding even when
+    # Capstone renders them as data directives.
+    for off in range(0, len(raw) - 1, 2):
+        word = be16(raw, off)
+        if word & 0xF000 == 0xA000:
+            traps.add(word)
+    callees = {c.get("name") for c in analysed.get("callees", [])
+               if c.get("name") and c.get("kind") != "A5 call slot"}
+    return {"identity": f"{span['code_id']}:{span['start']}", "code_id": span["code_id"],
+            "offset": span["start"], "size": span["size"], "strings": text,
+            "constants": constants, "resource_ids": resource_ids,
+            "loops": shape.get("loop_count", 0),
+            "switch_dispatches": shape.get("switch_dispatch_candidate_count", 0),
+            "switch_case_counts": [], "parameters": shape.get("parameter_slot_count_observed", 0),
+            "globals": {int(x, 16) for x in shape.get("a5_global_offsets_hex", [])},
+            "global_patterns": shape.get("a5_access_patterns", {}),
+            "callees": callees, "os_families": {_mac_os_family(t) for t in traps},
+            "toolbox_traps": sorted(traps), "shape": shape,
+            "boundary_caveat": span.get("boundary_caveat") or
+                "MPW export boundary may include local routines or embedded data"}
+
+
+def _win_features(card: dict, image: bytes, ne_doc: dict,
+                  resource_strings: dict[int, str]) -> dict:
+    seg = ne_doc["segments"][card["segment"] - 1]
+    start, end = card["offset"], card["extent"].get("end")
+    if end is None:
+        end = start + (card["extent"].get("size") or 0)
+    blob = image[seg["file_offset"] + start:seg["file_offset"] + end]
+    constants = set()
+    if Cs is not None:
+        try:
+            from capstone import CS_ARCH_X86, CS_MODE_16, CS_GRP_CALL, CS_GRP_JUMP, CS_OP_IMM
+            decoder = Cs(CS_ARCH_X86, CS_MODE_16)
+            decoder.detail = True
+            for insn in decoder.disasm(blob, start):
+                if insn.group(CS_GRP_CALL) or insn.group(CS_GRP_JUMP):
+                    continue
+                for op in insn.operands:
+                    if op.type == CS_OP_IMM:
+                        value = op.imm
+                        if -0x10000 <= value <= 0xFFFF:
+                            constants.add(value & 0xFFFF)
+                        else:
+                            constants.add(value & 0xFFFFFFFF)
+        except Exception:
+            pass
+    strings = set()
+    source = card.get("source")
+    if source:
+        strings.update(_c_strings(_source_body(source, card["symbol"])))
+    used_resources = constants & set(resource_strings)
+    strings.update(resource_strings[rid] for rid in used_resources)
+    globals_by_name = collections.Counter()
+    global_widths: dict[str, set[int]] = collections.defaultdict(set)
+    for row in card.get("disassembly", []):
+        refs = row.get("references", [])
+        operand = row.get("operands", "")
+        width = 1 if "byte ptr" in operand else 2 if "word ptr" in operand else 4 if "dword ptr" in operand else 0
+        for ref in refs:
+            if ref.get("kind") == "global_ds_assumed":
+                for name in ref.get("names", []):
+                    globals_by_name[name] += 1
+                    if width:
+                        global_widths[name].add(width)
+    calls = set()
+    for call in card.get("calls", []):
+        if call.get("kind") == "internal":
+            calls.update(call.get("names", []))
+    switches = [int(t.get("count", 0)) for t in card.get("extent", {}).get("jump_tables", [])]
+    # Count backedges from the original decoded rows; jump-table payload is not
+    # present in the instruction list, so this remains conservative.
+    loops = 0
+    for row in card.get("disassembly", []):
+        if row.get("mnemonic", "").lower().startswith("j"):
+            m = re.fullmatch(r"(?:0x)?([0-9a-fA-F]+)", row.get("operands", "").strip())
+            if m and int(m.group(1), 16) < row.get("offset", 0):
+                loops += 1
+    resource_ids = {rid for rid in used_resources}
+    return {"symbol": card["symbol"], "segment": card["segment"], "offset": start,
+            "size": card.get("extent", {}).get("size") or end - start,
+            "strings": strings, "constants": constants, "resource_ids": resource_ids,
+            "loops": loops, "switch_dispatches": len(switches), "switch_case_counts": switches,
+            "parameters": sum(1 for row in card.get("disassembly", [])
+                               if "[bp +" in row.get("operands", "") and
+                               (m := re.search(r"\[bp \+ (0x[0-9a-f]+|[0-9]+)\]", row["operands"])) and
+                               int(m.group(1), 0) >= 4),
+            "globals": set(globals_by_name),
+            "global_patterns": {name: {"uses": count, "widths_bytes": sorted(global_widths[name])}
+                                for name, count in globals_by_name.items()},
+            "callees": calls, "os_families": _win_os_families(card),
+            "card": card}
+
+
+def _weighted_jaccard(left: set, right: set, document_frequency: collections.Counter,
+                      population: int) -> float:
+    if not left or not right:
+        return 0.0
+    intersection = left & right
+    if not intersection:
+        return 0.0
+    weight = lambda x: 1.0 + math.log((population + 1) / (document_frequency[x] + 1))
+    numerator = sum(weight(x) for x in intersection)
+    denominator = sum(weight(x) for x in left | right)
+    return numerator / denominator if denominator else 0.0
+
+
+def _feature_frequency(features: list[dict], key: str) -> collections.Counter:
+    return collections.Counter(item for f in features for item in f.get(key, set()))
+
+
+def _feature_similarity(mac: dict, win: dict, freqs: dict, nm: int, nw: int,
+                        graph_support: float = 0.0,
+                        holdout: str | None = None) -> tuple[float, dict]:
+    families = {"strings": (mac["strings"], win["strings"], 0.34),
+                "constants": (mac["constants"], win["constants"], 0.28),
+                "resource_ids": (mac["resource_ids"], win["resource_ids"], 0.12),
+                "callees": (mac["callees"], win["callees"], 0.0),
+                "os_families": (mac["os_families"], win["os_families"], 0.06)}
+    components = {}
+    available_weight = 0.0
+    total = 0.0
+    for key, (left, right, weight) in families.items():
+        if key == holdout or key == "callees":
+            continue
+        if left and right:
+            score = _weighted_jaccard(left, right, freqs[key], max(nm, nw))
+            components[key] = score
+            available_weight += weight
+            total += score * weight
+    shape_parts = []
+    if mac["size"] and win["size"]:
+        shape_parts.append(math.exp(-abs(math.log(max(mac["size"], 1) / max(win["size"], 1))) * .7))
+    shape_parts.append(math.exp(-abs(mac["loops"] - win["loops"])))
+    shape_parts.append(math.exp(-abs(mac["switch_dispatches"] - win["switch_dispatches"])))
+    shape_parts.append(math.exp(-abs(mac["parameters"] - win["parameters"]) / 2.0))
+    shape = sum(shape_parts) / len(shape_parts)
+    components["shape"] = shape
+    available_weight += .20
+    total += shape * .20
+    components["call_graph"] = graph_support
+    if graph_support:
+        available_weight += .15
+        total += graph_support * .15
+    score = total / available_weight if available_weight else 0.0
+    common = {key: sorted(mac[key] & win[key], key=str) for key in ("strings", "constants", "resource_ids")}
+    rare = {}
+    for key, values in common.items():
+        freq = freqs[key]
+        rare[key] = [v for v in values if freq[v] <= 4]
+    return score, {"components": components, "common": common, "rare_common": rare,
+                   "shape_similarity": shape, "graph_support": graph_support}
+
+
+def _match_structural(mac_features: list[dict], win_features: list[dict]) -> tuple[list[dict], dict]:
+    """Conservative one-to-one anchor matches, then caller/callee propagation."""
+    nm, nw = len(mac_features), len(win_features)
+    freqs = {key: _feature_frequency(mac_features, key) + _feature_frequency(win_features, key)
+             for key in ("strings", "constants", "resource_ids", "os_families")}
+    m_by_id = {m["identity"]: m for m in mac_features}
+    w_by_id = {w["symbol"]: w for w in win_features}
+    m_rankings: dict[str, list[tuple[str, float, dict]]] = collections.defaultdict(list)
+    w_rankings: dict[str, list[tuple[str, float, dict]]] = collections.defaultdict(list)
+    candidates = []
+    for m in mac_features:
+        for w in win_features:
+            score, evidence = _feature_similarity(m, w, freqs, nm, nw)
+            if not any(evidence["rare_common"].values()):
+                continue
+            # Exact shared, corpus-rare literals are strongest. Rare constants
+            # are useful corroboration, but a constant alone never admits a pair.
+            string_anchor = len(evidence["rare_common"]["strings"])
+            resource_anchor = len(evidence["rare_common"]["resource_ids"])
+            rare_constants = len(evidence["rare_common"]["constants"])
+            anchor = max(min(.95, .76 + .08 * (string_anchor - 1)) if string_anchor else 0,
+                         min(.78, .63 + .06 * (resource_anchor - 1)) if resource_anchor else 0,
+                         min(.70, .55 + .04 * (rare_constants - 1)) if rare_constants else 0)
+            evidence["anchor_strength"] = anchor
+            confidence = min(.98, .30 + .40 * score + .30 * anchor)
+            evidence["confidence"] = confidence
+            candidates.append((m["identity"], w["symbol"], score, confidence, evidence))
+    # Require the candidate to be each side's top anchor and retain a useful
+    # margin. This avoids assigning common branch constants arbitrarily.
+    for mid, wid, score, confidence, evidence in candidates:
+        m_rankings[mid].append((wid, score, evidence))
+        w_rankings[wid].append((mid, score, evidence))
+    matches: dict[str, dict] = {}
+    used_mac = set(); used_win = set()
+    m_best = {mid: sorted(rows, key=lambda x: -x[1]) for mid, rows in m_rankings.items()}
+    w_best = {wid: sorted(rows, key=lambda x: -x[1]) for wid, rows in w_rankings.items()}
+    for mid, ranked in sorted(m_best.items(), key=lambda x: -x[1][0][1]):
+        wid, score, evidence = ranked[0]
+        win_ranked = w_best[wid]
+        if win_ranked[0][0] != mid or mid in used_mac or wid in used_win:
+            continue
+        m_margin = score - ranked[1][1] if len(ranked) > 1 else score
+        w_margin = score - win_ranked[1][1] if len(win_ranked) > 1 else score
+        if min(m_margin, w_margin) < .035:
+            continue
+        anchor = evidence.get("anchor_strength", 0)
+        if anchor < .63:
+            continue
+        confidence = min(.98, evidence["confidence"] + .08)
+        matches[wid] = {"mac_id": mid, "confidence": round(confidence, 3),
+                        "score": round(score, 3), "confidence_band": "high" if confidence >= .85 else "medium",
+                        "method": "unique shared string/resource anchor" if evidence["rare_common"]["strings"] or evidence["rare_common"]["resource_ids"] else "rare constant anchor",
+                        "mutual_top_margin": round(min(m_margin, w_margin), 3),
+                        "evidence": evidence}
+        used_mac.add(mid); used_win.add(wid)
+    # Iterate call-graph support only for pairs sharing at least one exact
+    # anchor; a call edge cannot create a match from structural similarity alone.
+    changed = True
+    while changed:
+        changed = False
+        win_to_mac = {w: m for w, row in matches.items() for m in [row["mac_id"]]}
+        mac_to_win = {m: w for w, m in win_to_mac.items()}
+        proposals = []
+        for mid, m in m_by_id.items():
+            if mid in used_mac:
+                continue
+            for wid, w in w_by_id.items():
+                if wid in used_win:
+                    continue
+                score, evidence = _feature_similarity(m, w, freqs, nm, nw)
+                if not any(evidence["rare_common"].values()):
+                    continue
+                out_hits = sum(1 for c in m["callees"] if mac_to_win.get(c) in w["callees"])
+                incoming_m = {x["identity"] for x in mac_features if mid in x["callees"]}
+                incoming_w = {x["symbol"] for x in win_features if wid in x["callees"]}
+                in_hits = sum(1 for c in incoming_m if mac_to_win.get(c) in incoming_w)
+                support = min(1.0, (out_hits + in_hits) / 2.0)
+                if support < .5:
+                    continue
+                score2, evidence = _feature_similarity(m, w, freqs, nm, nw, support)
+                # Propagation is admitted only when its independent anchor is
+                # still visible and either two graph edges or one edge each way.
+                anchor = max((.76 if evidence["rare_common"]["strings"] else 0),
+                             (.63 if evidence["rare_common"]["resource_ids"] else 0),
+                             (.55 if len(evidence["rare_common"]["constants"]) >= 1 else 0))
+                if anchor < .55 or (out_hits + in_hits < 2):
+                    continue
+                conf = min(.96, .28 + .34 * score2 + .25 * anchor + .13 * support)
+                proposals.append((conf, mid, wid, score2, evidence, out_hits, in_hits))
+        for conf, mid, wid, score, evidence, out_hits, in_hits in sorted(proposals, reverse=True):
+            if mid in used_mac or wid in used_win:
+                continue
+            evidence.update({"confidence": round(conf, 3), "graph_outgoing_edges": out_hits,
+                             "graph_incoming_edges": in_hits})
+            matches[wid] = {"mac_id": mid, "confidence": round(conf, 3), "score": round(score, 3),
+                            "confidence_band": "high" if conf >= .85 else "medium",
+                            "method": "anchor plus call-graph propagation", "evidence": evidence}
+            used_mac.add(mid); used_win.add(wid); changed = True
+    rows = []
+    for wid, match in sorted(matches.items()):
+        rows.append({"win16_symbol": wid, **match})
+    validation = _heldout_anchor_validation(mac_features, win_features, freqs, candidates)
+    return rows, validation
+
+
+def _heldout_anchor_validation(mac_features: list[dict], win_features: list[dict],
+                               freqs: dict, candidates: list[tuple]) -> dict:
+    """Leave literal anchors out, then check whether other feature families rank them."""
+    by_pair = collections.defaultdict(set)
+    for mid, wid, score, confidence, ev in candidates:
+        if ev["rare_common"]["strings"]:
+            by_pair[(mid, wid)].update(ev["rare_common"]["strings"])
+    if not by_pair:
+        return {"method": "hold out corpus-rare exact string literals; rank by constants, resources, shape, and OS family",
+                "heldout_anchor_pairs": 0, "top1_recovered": 0, "top3_recovered": 0,
+                "status": "NO_SHARED_RARE_STRING_ANCHORS_TO_HOLD_OUT"}
+    m = {x["identity"]: x for x in mac_features}; w = {x["symbol"]: x for x in win_features}
+    top1 = top3 = 0; examples = []
+    for (mid, wid), literals in by_pair.items():
+        ranked = []
+        for candidate in win_features:
+            score, _ = _feature_similarity(m[mid], candidate, freqs, len(mac_features), len(win_features), holdout="strings")
+            ranked.append((score, candidate["symbol"]))
+        ranked.sort(reverse=True)
+        rank = next((i + 1 for i, (_, name) in enumerate(ranked) if name == wid), None)
+        if rank == 1: top1 += 1
+        if rank is not None and rank <= 3: top3 += 1
+        if len(examples) < 20:
+            examples.append({"mac_id": mid, "win16_symbol": wid, "heldout_literals": sorted(literals),
+                             "rank_without_literals": rank})
+    total = len(by_pair)
+    return {"method": "hold out corpus-rare exact string literals; rank by constants, resources, shape, and OS family",
+            "heldout_anchor_pairs": total, "top1_recovered": top1, "top3_recovered": top3,
+            "top1_rate": round(top1 / total, 3), "top3_rate": round(top3 / total, 3),
+            "status": "DESCRIPTIVE_CROSS_VALIDATION_NOT_GROUND_TRUTH", "examples": examples}
 
 
 def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: list[dict],
@@ -699,6 +1334,36 @@ def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: li
                         for off, widths in sorted(params.items())]
     a5 = sorted({ref["displacement"] for ref in memrefs
                  if ref["base"] == "A5" and ref["instruction"] not in a5_call_sites})
+    a5_accesses = {}
+    pc_strings = set()
+    for insn in instructions:
+        _, refs = _operand_regs(insn)
+        for ref in refs:
+            if ref["base"] == "A5" and insn.address not in a5_call_sites:
+                slot = a5_accesses.setdefault(ref["displacement"], {"widths": set(), "modes": set(),
+                                                                        "reads": 0, "writes": 0})
+                if isinstance(ref.get("size"), int):
+                    slot["widths"].add(ref["size"])
+                slot["modes"].add("indexed" if ref.get("index") else "direct")
+                mnemonic = insn.mnemonic.lower().split(".", 1)[0]
+                # 68k destination is usually the last operand. This is an
+                # access-pattern hint only; read/modify/write instructions are
+                # counted as both.
+                if insn.operands and getattr(insn.operands[-1], "type", None) == 3:
+                    slot["writes"] += 1
+                if mnemonic not in ("move", "movea", "clr", "st", "neg", "not") or not slot["writes"]:
+                    slot["reads"] += 1
+        # LEA/PEA/operand loads that use d16(PC) often point at inline constants.
+        try:
+            for operand in insn.operands:
+                mem = getattr(operand, "mem", None)
+                if mem and getattr(mem, "base_reg", 0) and insn.reg_name(mem.base_reg).upper() == "PC":
+                    target = insn.address + 2 + getattr(mem, "disp", 0)
+                    content = _mac_string_at(code_resources[span["code_id"]], target)
+                    if content:
+                        pc_strings.add(content)
+        except Exception:
+            pass
     fields = {}
     for ref in memrefs:
         if ref["base"] in ("A0", "A1", "A2", "A3", "A4"):
@@ -717,8 +1382,13 @@ def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: li
                 "switch_dispatch_candidates": [x.address for x in switchish],
                 "switch_dispatch_candidate_count": len(switchish),
                 "constants_hex": [f"0x{x:X}" for x in sorted(constants)],
-                "a5_global_offsets_hex": [f"0x{x & 0xffff:04X}" for x in a5],
-                "a5_global_name_candidates": {f"0x{x & 0xffff:04X}": [] for x in a5},
+            "a5_global_offsets_hex": [f"0x{x & 0xffff:04X}" for x in a5],
+            "a5_global_name_candidates": {f"0x{x & 0xffff:04X}": [] for x in a5},
+            "a5_access_patterns": {f"0x{off & 0xffff:04X}": {
+                "widths_bytes": sorted(item["widths"]), "modes": sorted(item["modes"]),
+                "reads": item["reads"], "writes": item["writes"]}
+                for off, item in sorted(a5_accesses.items())},
+            "pc_relative_strings": sorted(pc_strings),
                 "struct_field_offsets_by_base_register": {r: sorted(v) for r, v in fields.items()},
                 "struct_field_offset_count": sum(len(v) for v in fields.values()),
                 "notes": ["frame size is a lower bound on stack locals; register candidates are not proven C locals",
