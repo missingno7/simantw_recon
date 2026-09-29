@@ -4282,6 +4282,11 @@
         "text": "Permuter campaign from preserved draft b5f55e841cb6.c (372/436, target/candidate frame 6/4, row 0, cost 109.85). Final best 371/436, frame 6/4, row 0 unchanged, cost 108.45; no strict match. Mutation chain: introduce one-use pos = i + j temporary (permuter classifies it STEERED for home/codegen steering), then invert if (cheatToggleC == 1) A else B to if (cheatToggleC != 1) B else A. Candidate i remains at BP-2 and target BP-6 is still unmatched per frame report. No second run because the earliest divergence did not move.",
         "origin": "build/search/CheatKeys/20260928T014408-164208",
         "recorded": "2026-09-28T01:44:09.110773+00:00"
+      },
+      {
+        "text": "HIGH pair DOS source includes a key-sequence matcher before the switch, but the Win16 target begins at WinPrintf and a dense switch, so the DOS prefix is platform-specific and stays omitted. Case 18 target bytes prove its population counter adds 0x10 once and keep the Win16 loop form. DOS-shaped locals and 2-D map tests scored 372/436 with ENTER4 and handle home BP-4; prior best remains 374/436. Need a natural source lifetime that places the handle at target BP-6 while preserving its selector.",
+        "origin": "build/search/CheatKeys/20260929T231522-158336",
+        "recorded": "2026-09-29T23:15:23.756445+00:00"
       }
     ],
     "best": {
@@ -5030,6 +5035,11 @@
         "text": "Fresh best stays 151/190, 467/465 bytes. Target ENTER4 uses tailX BP-2 and tailY BP-4; its occupancy value is held in SI. Frontier instead mutates x/y parameters. Adding tail locals maps their homes correctly only in the combined word-read form, but val then spills at BP-6, ENTER6; ok goes to DX and body scores 78/190. \register unsigned int val compiles identically. Direct branch-bound form scores 66/191; struct tail pair scores 78/190 with the aggregate at BP-6. Typedb resync has no changes; only supported Dx8 and IsValidLocation forms differ. Word aliases do not resolve body/frame. Keep 151; next explain val SI allocation under tail homes; 1/18 fixups isolated and need the SIMONE unit later.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T18:23:57.537017+00:00"
+      },
+      {
+        "text": "MEDIUM DOS pair is plausible: the DOS wrapper calls the clearing helper for the current cell and again for a queen tail; Win16 target calls IsValidLocation, SetLife, and ZapEuMapAt directly. Controlled probe scored explicit IsValidLocation == TRUE at 151/190; the shorter truth test scored 84/190. Keep the explicit check. Target ENTER4 and two tail-coordinate homes remain unresolved.",
+        "origin": "build/search/ClearMyLife/20260929T231522-58640",
+        "recorded": "2026-09-29T23:15:23.294345+00:00"
       }
     ],
     "frontier_dropped": {
@@ -9475,6 +9485,11 @@
         "text": "2026-09-29 f2-grind-09b: address-cast sink (volatile near pointer expression into cntHomeR, no named pointer home) emits the same 196/196 object as the explicit local pointer, so pointer syntax is canonicalized. Making the saved plain R count supply the guard and both divisors falls to 165/196 at target +0x128: candidate tests [bp-6] instead of target or ax,ax, changes branch destinations, and leaves the +0x125 local store at BP-6; consuming the local creates memory reloads and suppresses the target AX state. Replacing the pointer sink with a direct volatile dead R local retains 196/196 but swaps target B-home BP-4/R-home BP-A for candidate B BP-6/R BP-4; F1D declaration permutations are already a tested negative. No exact improvement; keep the 196/196 explicit R-pointer candidate.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T09:50:19.851046+00:00"
+      },
+      {
+        "text": "DOS pair f_14EE_0519 is HIGH and directly uses fd_3E1D_2180[x][y]. Typedb confirms the Win16 MapB/MapR shape as 64x64; I tested direct 2-D near indexing, default large-model indexing, and repeated flat x*64+y without a named cell. Direct 2-D/repeated forms produce the same output (145/196, ENTER 12, five stack-home differences); default large-model form is 150/196, ENTER 12. None beats the 196/196 best. Alloc trace on that best: candidate homes cell BP-2, B count BP-6, R count BP-4; target interleaves B count BP-4, B division scratch BP-6/-8, R count BP-A. Keep best and revisit only with new C2 home/lifetime evidence.",
+        "origin": "build/search/DigTileB/20260929T231247-163316",
+        "recorded": "2026-09-29T23:12:47.690390+00:00"
       }
     ],
     "frontier": {
@@ -17312,6 +17327,11 @@
         "text": "Scoped buttonOffset within the Ctrl-drag branch and used it directly for the far slot and both parallel table writes. MSC 7.00 emitted the same object as the prior function-scope scalar candidate (295/377); block scope did not alter home allocation. Target BP-2A and its earlier DI/save schedule remain unresolved.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T09:52:30.265198+00:00"
+      },
+      {
+        "text": "LOW pair check fails plausibility: DOS o08_35F5_059B is game startup initialization with random map generation, while Win16 DoUserButton handles ribbon events and calls USER APIs. The only pair evidence is unique constant 0x7bc; calls and strings do not agree. Do not transfer DOS source shape. Continue from Win16 disassembly and current 316/377 best.",
+        "origin": "build/search/DoUserButton/20260929T231522-22336",
+        "recorded": "2026-09-29T23:15:23.869104+00:00"
       }
     ],
     "frontier": {
@@ -25157,6 +25177,11 @@
         "text": "Current best remains 79/86 opcodes, 216/213 bytes, ENTER14. The target's first setup uses selector in DX and three far field regions as separate scalar offsets plus selector words; best uses full far-pointer locals, producing CX as selector, an extra mov dx,cx, a stack i home and lds/les register forms unlike target. Replacing stale match_position indexing with exact ListIndexA/B/R names yields the identical object as the prior named-list candidate (fixing source ownership but not opcodes). Changing Dx8 from far array to scalar &Dx8, following admitted FindLifeIndex, also yields that same object. A based SIMANT_DATA_GROUP array with scalar field offsets fell to 40/85 and introduced CONST placement conflicts. Earlier history already covers loop polarity/counting, direct Dx8 indexing, pointer structs/arrays, widths, and selector/offset representations. No strict candidate or safe unit-only placement case; next useful source evidence would need to reproduce the target's selector-in-DX and split far-pointer local layout without absolute casts or byte forcing.",
         "origin": "build/search/FindAntIndex/20260927T134909-133612",
         "recorded": "2026-09-27T13:49:09.406068+00:00"
+      },
+      {
+        "text": "The DOS medium pair uses count plus three far field pointers and a descending scan, matching the current draft shape. A single Dx8 base and scalar field offsets compiled 34/85 versus the current 79/86. Search source warnings say match_position[K] reaches another PACK object and promotion requires the correct object declaration. Need verified Win16 count-object identity and selector/offset bindings before more expression variants.",
+        "origin": "build/search/FindAntIndex/20260929T231522-46292",
+        "recorded": "2026-09-29T23:15:23.634325+00:00"
       }
     ],
     "frontier": {
@@ -38542,6 +38567,11 @@
         "text": "2026-09-29 f2-grind-09b: switch classifier layered on inline-success control shape regresses to 137/178 opcodes; first split is now the roll home at BP-4 vs candidate register DI with an added BP-A store, and target's common DX zero/nonzero classifier join is not reproduced. Preserve MakeNewHoleB_inline_success.c at 162/176; combined switch+inline shape is rejected.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T10:24:42.861633+00:00"
+      },
+      {
+        "text": "DOS roles are i/v/y/start and the classifier returns through v. A rewrite using those roles with Win16 neighbor stamping kept 162/176 but did not beat the inline-success frontier; merging raw tile and classifier result into v scored 156/176. Target +0x60 still needs the classifier value held in DX through the common OR and committed after the saved ring index. Keep the 162/176 frontier; the current cause is classifier scheduling and merge shape.",
+        "origin": "build/search/MakeNewHoleB/20260929T231522-131448",
+        "recorded": "2026-09-29T23:15:24.083182+00:00"
       }
     ],
     "frontier": {
@@ -42221,19 +42251,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/OpenDB/cef18a6828c5.c",
-      "sha256": "cef18a6828c567903efd403f7d3745cf7a8bef0e80f7d4877cd0b0357f7d1bc3",
+      "source": "evidence/recovery/drafts/OpenDB/02aca12ed07c.c",
+      "sha256": "02aca12ed07c456d28720db2769c7a151b2e8125395a9396621013b70ac826e8",
       "key": [
         false,
         false,
-        141,
-        -16
+        146,
+        -18
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 141,
+      "opcode_matches": 146,
       "opcode_total": 195,
-      "candidate_bytes": 501,
+      "candidate_bytes": 499,
       "target_bytes": 517,
       "flags": [
         "/AL",
@@ -42242,8 +42272,8 @@
         "/Oelw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/OpenDB/20260928T150445-163524/results.json",
-      "recorded": "2026-09-28T15:04:46.537625+00:00"
+      "origin": "build/search/OpenDB/20260929T225835-29956/results.json",
+      "recorded": "2026-09-29T22:58:36.020135+00:00"
     },
     "notes": [
       {
@@ -42283,18 +42313,19 @@
       }
     ],
     "frontier": {
-      "source": "evidence/recovery/drafts/OpenDB/cef18a6828c5.c",
-      "sha256": "cef18a6828c567903efd403f7d3745cf7a8bef0e80f7d4877cd0b0357f7d1bc3",
+      "source": "evidence/recovery/drafts/OpenDB/8d618acc1079.c",
+      "sha256": "8d618acc1079aca20f279be583080f2d7e0a5cdb573049633c47f075320d869c",
       "key": [
         false,
         false,
-        8,
-        141
+        23,
+        143
       ],
-      "first_divergence_row": 8,
-      "opcode_matches": 141,
+      "first_divergence_row": 23,
+      "first_divergence_class": "RELOAD_OR_SPILL",
+      "opcode_matches": 143,
       "opcode_total": 195,
-      "candidate_bytes": 501,
+      "candidate_bytes": 467,
       "target_bytes": 517,
       "flags": [
         "/AL",
@@ -42303,9 +42334,9 @@
         "/Oelw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/OpenDB/20260928T150445-163524/results.json",
+      "origin": "build/search/OpenDB/20260929T225338-70572/results.json",
       "candidate": 0,
-      "recorded": "2026-09-28T15:04:46.496074+00:00"
+      "recorded": "2026-09-29T22:53:40.058588+00:00"
     }
   },
   "_OpenIndex": {
@@ -43232,6 +43263,11 @@
         "text": "2026-09-29: Starting from the 32/44 cached-cell version, leaving the decrement as direct MapA[row][y] lowers to 32/44, 104/109 bytes and introduces register/stack differences; it does not restore the target's BX cell pointer home at BP-4. The stronger frontier remains 37/44, ENTER2. Pointer use through all stores was already tested and scores lower; isolate a single call-path store only if it yields a new lifetime explanation.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T11:01:07.390701+00:00"
+      },
+      {
+        "text": "DOS f_0BE8_0798 reads MapA[x][y] into v, branches on TERRAINset and stores directly back. The DOS-shape rewrite stays 37/44 and compiles to an earlier object; the controlled read probe shows row=x alias and direct parameter forms are byte-identical. Remaining mismatch is the Win16 BP-4 saved cell-address home carried across SRand16; previous pointer forms lost alignment.",
+        "origin": "build/search/PickupFoodA/20260929T231522-151520",
+        "recorded": "2026-09-29T23:15:23.143404+00:00"
       }
     ],
     "frontier": {
@@ -52096,19 +52132,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/SimKidOutside/fcebf454b068.c",
-      "sha256": "fcebf454b068a26d73778434ed27b4cde07951360e68360361ed679466b5a316",
+      "source": "evidence/recovery/drafts/SimKidOutside/91bf4b2b1811.c",
+      "sha256": "91bf4b2b18118894fed23b0c7bde2bf76e4de23a86428c4d93a5400f63cc95cf",
       "key": [
         false,
         false,
-        587,
-        -21
+        597,
+        0
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 587,
-      "opcode_total": 705,
-      "candidate_bytes": 2261,
+      "opcode_matches": 597,
+      "opcode_total": 692,
+      "candidate_bytes": 2240,
       "target_bytes": 2240,
       "flags": [
         "/AL",
@@ -52117,22 +52153,23 @@
         "/Oegilw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/SimKidOutside/20260927T104256-147020/results.json",
-      "recorded": "2026-09-27T10:42:58.204913+00:00"
+      "origin": "build/search/SimKidOutside/20260929T230416-21736/results.json",
+      "recorded": "2026-09-29T23:04:19.138996+00:00"
     },
     "frontier": {
-      "source": "evidence/recovery/drafts/SimKidOutside/210fb9939f62.c",
-      "sha256": "210fb9939f623470eaf22a7052056fe778b9d3cc094949839e100db7fd29b99b",
+      "source": "evidence/recovery/drafts/SimKidOutside/91bf4b2b1811.c",
+      "sha256": "91bf4b2b18118894fed23b0c7bde2bf76e4de23a86428c4d93a5400f63cc95cf",
       "key": [
         false,
         false,
         0,
-        587
+        597
       ],
       "first_divergence_row": 0,
-      "opcode_matches": 587,
-      "opcode_total": 709,
-      "candidate_bytes": 2271,
+      "first_divergence_class": "FRAME_SIZE",
+      "opcode_matches": 597,
+      "opcode_total": 692,
+      "candidate_bytes": 2240,
       "target_bytes": 2240,
       "flags": [
         "/AL",
@@ -52141,9 +52178,9 @@
         "/Oegilw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/SimKidOutside/20260927T103821-80924/results.json",
+      "origin": "build/search/SimKidOutside/20260929T230416-21736/results.json",
       "candidate": 0,
-      "recorded": "2026-09-28T02:51:21.600965+00:00"
+      "recorded": "2026-09-29T23:04:19.080299+00:00"
     }
   },
   "_SimQueenA": {
@@ -53207,6 +53244,11 @@
         "text": "Fresh replay is 115/152 ENTER2. Disassembly showed the y==0 arm condition was reversed: target stores 0x18 when MapR[index] < 0x30; correcting it adds one aligned opcode. Removing the redundant post-return guard around value normalization raises to 124/157, 378/362 B, ENTER4. The highest isolated score is 125/157, 376/362 B, ENTER4 after changing SRand8 to near; this matches the target's near call shape, but typedb flags the near qualifier and the member still has a call fixup. Target home roles are x=SI,y=DI,index BP-6,value BP-2,edges BP-4; C frontier uses CX/DX, index BP-2 and registers for value/edges. A value-volatile probe gives ENTER6 but only 105/156; three-word scratch struct ENTER6 gives 101/152. Based MapR suppresses some symbol fixups but scores 107/152 and typedb flags the form. No exact match; remaining earliest code divergence is register/home and MapR address lowering.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T20:50:34.273452+00:00"
+      },
+      {
+        "text": "The DOS f_14EE_0647 routine updates MapR[x][y] and calls helpers; Win16 target disassembly has only SRand8 and inlines the edge map work. Replacing the named volatile linear index with direct MapR[x][y] forms scored 96/152 versus the current 125/157. Preserve the Win16 linear index; remaining gaps include raw MapR binding and register/home roles.",
+        "origin": "build/search/SmoothEdgesR/20260929T231522-106232",
+        "recorded": "2026-09-29T23:15:23.984570+00:00"
       }
     ],
     "frontier": {
@@ -60020,6 +60062,11 @@
         "text": "From current 91/114 base, moving the zero-wanted 150 choice to the mem_Alloc use as (wanted==0 ? 150 : lastPrime) introduces extra tests/branches, drops to 90/118 and 286 bytes, and still does not emit target +0x0D mov SI,0x96. Adding register to handle is same_output_as the base; it does not move the earliest mismatch or handle from SI to target DI. Keep the 91/114 frontier. Target mechanism is the live chosen-size register SI across the zero branch/common allocator and primeCount live range; register-lastPrime is already tested in history.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T05:08:42.294881+00:00"
+      },
+      {
+        "text": "The DOS routine selects size, obtains a CacheHandle, fills (size+1)*4 bytes with -1, then sets count and used. The Win16 target expands prime selection and byte fill. Using count/used struct member stores instead of word-array stores leaves the same 91/114 score and OMF; target home order still differs at BP-10 versus BP-16. Current frontier remains 91/114.",
+        "origin": "build/search/ch_CreateTable/20260929T231522-140120",
+        "recorded": "2026-09-29T23:15:23.477870+00:00"
       }
     ],
     "frontier": {
