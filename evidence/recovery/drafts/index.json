@@ -320,6 +320,26 @@
         "text": "Target 0x8e8..0x8fc identifies case 0x0024: only rootWnd invokes AdjustWndMinMax, with both words of the far MINMAXINFO lParam (high selector then low offset).",
         "origin": "build/search/MAINWNDPROC/20260929T153855-166412",
         "recorded": "2026-09-29T15:38:58.696960+00:00"
+      },
+      {
+        "text": "Correct argument ordering from the target's stack sequence: lParam low word is [bp+6], high word [bp+8]; Cdecl call arguments are (low, high), emitting high then low.",
+        "origin": "build/search/MAINWNDPROC/20260929T154038-147708",
+        "recorded": "2026-09-29T15:40:41.346643+00:00"
+      },
+      {
+        "text": "Target 0x902..0x91b: mainRootWnd receives MINMAXINFO minTrackSize x/y=100. Target 0x91e..0x941: only wParam>0x4000 queries GetFreeSpace; PopMsg occurs when its unsigned long result is <0xc350.",
+        "origin": "build/search/MAINWNDPROC/20260929T154445-67256",
+        "recorded": "2026-09-29T15:44:48.958116+00:00"
+      },
+      {
+        "text": "The preserved AdjustWndMinMax draft has a single far MINMAXINFO pointer parameter; MAINWNDPROC should pass lParam as that pointer rather than two scalars.",
+        "origin": "build/search/MAINWNDPROC/20260929T154927-25680",
+        "recorded": "2026-09-29T15:49:31.355827+00:00"
+      },
+      {
+        "text": "The target uses JNE-to-next-case after both hwnd comparisons; source now expresses a root early return and a negative mainRoot guard before the two stores.",
+        "origin": "build/search/MAINWNDPROC/20260929T155249-173520",
+        "recorded": "2026-09-29T15:52:52.528965+00:00"
       }
     ],
     "best": {
@@ -17617,22 +17637,42 @@
         "text": "Ten authored source changes this pass raised the best from 176/317 (835 bytes) to 199/317 (877 bytes). Materializing the viewport predicate (+3), clipping the dirty scan (+3), count-based row/column loops (+1), forming bitmap+0x0c directly at each copy call (+13), and reading width/height directly from the header (+3) were productive. Count-pointer alias, alternate bitmap-branch nesting and final-row exit ordering did not improve the frontier; one direct-field compile attempt exposed and then fixed a missed height reference. The remaining complete-member gate reports conflicting private CONST placement and unresolved selector/binding obligations, with substantial local-frame and dirty-scan CFG residue. Current strict/body_exact remain false; no exact candidate to promote.",
         "origin": "build/search/DrawBalloons/20260929T132949-178816",
         "recorded": "2026-09-29T13:29:49.781814+00:00"
+      },
+      {
+        "text": "Follow-up pass: refreshed full diagnostics to author target 0x294..0x2bf.",
+        "origin": "build/search/DrawBalloons/20260929T154614-46384",
+        "recorded": "2026-09-29T15:46:14.580782+00:00"
+      },
+      {
+        "text": "Target-derived type hypothesis: bitmap width/height fields are unsigned; this preserves signed first-bound divisions while producing unsigned endpoint divisions.",
+        "origin": "build/search/DrawBalloons/20260929T154851-20380",
+        "recorded": "2026-09-29T15:48:52.448446+00:00"
+      },
+      {
+        "text": "Corrected R1 after an unchanged-file compile: test unsigned BalloonBitmap width/height to explain target DIV vs candidate IDIV at end-bound calculations.",
+        "origin": "build/search/DrawBalloons/20260929T154913-142120",
+        "recorded": "2026-09-29T15:49:15.123195+00:00"
+      },
+      {
+        "text": "Refreshed after unsigned BalloonBitmap dimensions gained nine opcodes; authoring next target bitmap-flag branch.",
+        "origin": "build/search/DrawBalloons/20260929T155001-124836",
+        "recorded": "2026-09-29T15:50:02.487352+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DrawBalloons/62454721ca07.c",
-      "sha256": "62454721ca07c184647907a4886e89bf2eeaa306e596b373346b2d82daac9e9b",
+      "source": "evidence/recovery/drafts/DrawBalloons/9b57f3fd25f9.c",
+      "sha256": "9b57f3fd25f973e3684dbde12d3b6e1360a25453772f88c98ed30cfa4025a510",
       "key": [
         false,
         false,
-        209,
-        -42
+        218,
+        -40
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 209,
+      "opcode_matches": 218,
       "opcode_total": 317,
-      "candidate_bytes": 855,
+      "candidate_bytes": 857,
       "target_bytes": 897,
       "flags": [
         "/AL",
@@ -17641,8 +17681,8 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/DrawBalloons/20260929T144535-108924/results.json",
-      "recorded": "2026-09-29T14:45:36.236985+00:00"
+      "origin": "build/search/DrawBalloons/20260929T154913-142120/results.json",
+      "recorded": "2026-09-29T15:49:15.036118+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/DrawBalloons/40a37fcec629.c",
@@ -18809,6 +18849,26 @@
         "text": "Testing unsigned phase argument for direct table indexing; the rotated phase still masks its low byte to 0..7.",
         "origin": "build/search/DrawLegs/20260929T153513-108040",
         "recorded": "2026-09-29T15:35:19.223569+00:00"
+      },
+      {
+        "text": "Isolating the initial penX lvalue rewrite to target's first case after the all-arm version scored -5 opcodes.",
+        "origin": "build/search/DrawLegs/20260929T154150-67824",
+        "recorded": "2026-09-29T15:41:56.873375+00:00"
+      },
+      {
+        "text": "Comparing explicit penX assignment followed by indirect first-anchor store against the inline-lvalue expression in the first case.",
+        "origin": "build/search/DrawLegs/20260929T154219-113008",
+        "recorded": "2026-09-29T15:42:25.032988+00:00"
+      },
+      {
+        "text": "Tenth DrawLegs compiled source change: replace pointer-to-argument byte read with an explicit unsigned-char cast matching the target's low-byte phase load.",
+        "origin": "build/search/DrawLegs/20260929T154425-77896",
+        "recorded": "2026-09-29T15:44:31.317202+00:00"
+      },
+      {
+        "text": "Concrete DrawLegs dependency: target has 128 LINK-lowered far calls to _ed_LineTo (seg3:8954). The isolated far-prototype candidate emits lcall and scores 1492/2897; near-prototype candidate scores 1597 but has the wrong call frame. Needs the antedit unit linker context (owner f3-compose-1-f1) to validate call lowering; keep source authoring open for other gaps.",
+        "origin": "build/search/DrawLegs/20260929T154531-78516",
+        "recorded": "2026-09-29T15:45:34.143582+00:00"
       }
     ],
     "best": {
@@ -52893,6 +52953,26 @@
         "text": "Composer preflight still rejects the 490-byte function as not body-exact under the unit profile. Candidate has 175/175 opcodes and 15 memory-operand differences; CONST conflicts and unresolved pool fixups at offsets 0x08, 0x19, 0x51, 0x67, 0x85, 0xec, 0xf1, 0xf5, 0xfa, 0x10f, 0x114, 0x118, 0x11d, 0x140 and 0x15f prevent slot-map derivation. Matching CurYardPnt, YMapPopB and mapTileRect to unit declarations compiled identically and did not resolve them.",
         "origin": "build/search/SpecialXfer/20260929T145139-174028",
         "recorded": "2026-09-29T14:51:40.281973+00:00"
+      },
+      {
+        "text": "Tried canonical typed const struct Point far patchRgn[4] declaration against exact-opcode draft to distinguish whether patchRgn's data binding mismatch is declaration-driven.",
+        "origin": "build/search/SpecialXfer/20260929T154332-106140",
+        "recorded": "2026-09-29T15:43:32.841405+00:00"
+      },
+      {
+        "text": "Round 2 applied the typedb-verified const struct Point[4] patchRgn declaration after round 1 was a no-op caused by a PowerShell write failure; this is a new binding-only experiment.",
+        "origin": "build/search/SpecialXfer/20260929T154351-146088",
+        "recorded": "2026-09-29T15:43:51.701903+00:00"
+      },
+      {
+        "text": "Canonical typed patchRgn coordinate access uses Point[0].y and Point[0].x (the previous two adjacent words) and compiles after correcting generated newline.",
+        "origin": "build/search/SpecialXfer/20260929T154441-186972",
+        "recorded": "2026-09-29T15:44:42.017236+00:00"
+      },
+      {
+        "text": "SpecialXfer remains 175/175 and 490/490 with no changed object after canonical const struct Point patchRgn[4]. compose preflight reports private CONST/unresolved fixups. build --scaffold --data-layout split finds existing cross-member declaration conflicts; adding --harmonize cannot derive the unit slot map because _processEdit draft is not an exact body. This is a concrete dependency outside this member.",
+        "origin": "build/search/SpecialXfer/20260929T155202-18440",
+        "recorded": "2026-09-29T15:52:02.944781+00:00"
       }
     ],
     "frontier": {
@@ -64095,19 +64175,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/myBeginSong/d6796044de26.c",
-      "sha256": "d6796044de26199f882c894f6aafad87af22011f5e5f897d0152c6f674c8c627",
+      "source": "evidence/recovery/drafts/myBeginSong/e727ed4a3aec.c",
+      "sha256": "e727ed4a3aeca72316dee2ac10afad822c8d50fafd754776a58412a7b4c9af71",
       "key": [
         false,
         false,
-        1201,
-        -167
+        1206,
+        -159
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 1201,
+      "opcode_matches": 1206,
       "opcode_total": 1574,
-      "candidate_bytes": 3943,
+      "candidate_bytes": 3951,
       "target_bytes": 4110,
       "flags": [
         "/AL",
@@ -64116,8 +64196,8 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/myBeginSong/20260929T153451-125604/results.json",
-      "recorded": "2026-09-29T15:34:54.070462+00:00"
+      "origin": "build/search/myBeginSong/20260929T155007-85000/results.json",
+      "recorded": "2026-09-29T15:50:09.999341+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/myBeginSong/073b31032467.c",
