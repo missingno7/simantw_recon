@@ -1,4 +1,16 @@
 {
   "description": "No per-function optimize pragmas are approved yet. A supervisor may add a function only after exact compiler evidence, an explicit setting and empty-on restore, and a strict complete-member proof; admitted use must carry EXACT_STEERED provenance.",
-  "functions": {}
+  "functions": {
+    "_DecodeString": {
+      "pragma_text": "#pragma optimize(\"z\", on)",
+      "restore_text": "#pragma optimize(\"\", on)",
+      "evidence": [
+        "evidence/codegen-facts/MSC7-PRAGMA-DECODE/strict-results.json",
+        "evidence/codegen-facts/MSC7-PRAGMA-DECODE/pragma-trial-report.md",
+        "evidence/codegen-facts/MSC7-PRAGMA-P1/pragma-i-intrinsic-baseline.report.json"
+      ],
+      "reason": "Under its object profile ogi the body is exact only with the loop-optimisation letter z on (n off yields the identical object): 70/70 opcodes, 172/172 bytes, 9/9 fixups, STRONGLY_SUPPORTED_MEMBER with no issues. 47-setting sweep: no other setting and no pragma-free source reproduces it. z on is chosen of the two equivalent spellings; the historical spelling is not identified, hence EXACT_STEERED.",
+      "reviewed": "2026-09-29 supervisor, trial approved by the project owner"
+    }
+  }
 }

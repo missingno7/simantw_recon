@@ -40,6 +40,11 @@ EXPECTED_CODE = {
     11: (13048, "2cf5b15841ec848a8ec2dfab047a8b192b7311be674eceb911e97f0cfbd44324"),
     12: (15306, "8ddc8a30684a6a67889eb5f70cb7f699c71a121dc96977f3f2995c890783365a"),
 }
+EXPECTED_GLOBALS = {
+    "DATA": (5630, "e2b59778923fda7521f83b462e71f531e38a4b4d616f179a834f2a874ad3aeeb"),
+    "ZERO": (202, "841a056b3ddcfe5358689c930688356ccee11cd573a111cde73b157b79f2ff5a"),
+    "DREL": (94, "0044a1aef0ed93a96e998e94e60d68743d3b6abac05a7f760d167496b4ef0d06"),
+}
 BLOCK = 512
 
 
@@ -353,6 +358,15 @@ def decode_string_list(content: bytes) -> list[str]:
     return strings
 
 
+def write_iso_markdown(files: list[dict], image_sha: str, image_size: int, out: Path) -> None:
+    lines = ["# ISO 9660 file inventory", "", f"Image: {image_size:,} bytes; SHA-256 `{image_sha}`.", "",
+             "| File | Bytes | SHA-256 |", "|---|---:|---|"]
+    for row in files:
+        path = row["path"].replace("|", "\\|")
+        lines.append(f"| `{path}` | {row['size']:,} | `{row['sha256']}` |")
+    (out / "iso-files.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def _clean_symbol(raw: bytes) -> str | None:
     if not raw or len(raw) > 80:
         return None
@@ -544,6 +558,8 @@ def correspondence_from_records(sym: dict, recovery: dict, spans_by_id: dict[int
     return {"format": "Mac/Win16 SimAnt correspondence", "win16_mapsym_sha256": sym["sha256"],
             "mac_named_symbols_scanned": sum(map(len, spans_by_id.values())),
             "mac_named_symbols_matching_win16": named_candidates,
+            "mac_symbol_scan_candidates": [{"code_id": span["code_id"], "offset": span["start"],
+                "name": span["name"]} for spans in spans_by_id.values() for span in spans],
             "mac_mpw_export_boundaries": export_doc.get("export_count") if export_doc else None,
             "mac_export_boundary_source": export_doc.get("source") if export_doc else None,
             "coverage": counts,
@@ -577,6 +593,8 @@ def _operand_regs(insn) -> tuple[set[str], list[dict]]:
         operands = insn.operands
     except Exception:
         return regs, memrefs
+    suffix = insn.mnemonic.lower().rsplit(".", 1)[-1] if "." in insn.mnemonic else ""
+    operand_width = {"b": 1, "w": 2, "l": 4}.get(suffix)
     for operand in operands:
         typ = getattr(operand, "type", None)
         reg = getattr(operand, "reg", None)
@@ -591,7 +609,7 @@ def _operand_regs(insn) -> tuple[set[str], list[dict]]:
             disp = getattr(mem, "disp", 0)
             index = insn.reg_name(mem.index_reg).upper() if getattr(mem, "index_reg", 0) else None
             memrefs.append({"base": base, "displacement": disp, "index": index,
-                            "size": getattr(operand, "size", None)})
+                            "size": operand_width})
             regs.add(base)
             if index:
                 regs.add(index)
@@ -610,9 +628,11 @@ def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: li
     constants = set()
     memrefs: list[dict] = []
     called = []
+    a5_call_sites: set[int] = set()
     lines = []
     for insn in instructions:
         mnem = insn.mnemonic.upper()
+        base_mnem = mnem.split(".", 1)[0]
         lines.append(f"{insn.address:04X}: {insn.mnemonic:<8} {insn.op_str}".rstrip())
         rset, mset = _operand_regs(insn)
         regs.update(rset)
@@ -643,7 +663,15 @@ def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: li
                     constants.add(int(token, 16))
                 except ValueError:
                     pass
-        if mnem in ("JSR", "JMP", "BSR") and insn.op_str:
+        if base_mnem in ("JSR", "JMP", "BSR") and insn.op_str:
+            a5_ref = next((x for x in mset if x["base"] == "A5"), None)
+            if a5_ref and base_mnem in ("JSR", "JMP", "BSR"):
+                a5_call_sites.add(insn.address)
+                called.append({"address": insn.address, "mnemonic": insn.mnemonic,
+                               "operand": insn.op_str, "kind": "A5 call slot",
+                               "slot_offset_hex": f"0x{a5_ref['displacement'] & 0xffff:04X}",
+                               "name": None})
+                continue
             target = None
             # PC-relative operands are printed as $disp(pc), and take priority
             # over the generic hexadecimal-address match below.
@@ -669,16 +697,18 @@ def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: li
     parameter_report = [{"stack_offset": off, "access_widths_bytes": sorted(x for x in widths if isinstance(x, int)),
                          "width_note": "inferred from instruction operand size; repeated/partial accesses can be ambiguous"}
                         for off, widths in sorted(params.items())]
-    a5 = sorted({ref["displacement"] for ref in memrefs if ref["base"] == "A5"})
+    a5 = sorted({ref["displacement"] for ref in memrefs
+                 if ref["base"] == "A5" and ref["instruction"] not in a5_call_sites})
     fields = {}
     for ref in memrefs:
         if ref["base"] in ("A0", "A1", "A2", "A3", "A4"):
             fields.setdefault(ref["base"], set()).add(ref["displacement"])
-    nonvolatile = sorted(r for r in regs if r in {f"D{i}" for i in range(2, 8)} | {f"A{i}" for i in range(2, 6)})
-    switchish = [x for x in instructions if x.mnemonic.upper() == "JMP" and ",PC" in x.op_str.upper() and "D" in x.op_str.upper()]
+    nonvolatile = sorted(r for r in regs if r in {f"D{i}" for i in range(2, 8)} | {f"A{i}" for i in range(2, 5)})
+    switchish = [x for x in instructions if x.mnemonic.upper().split(".", 1)[0] == "JMP" and ",PC" in x.op_str.upper() and "D" in x.op_str.upper()]
     return {"name": span["name"], "code_id": span["code_id"], "offset": span["start"], "size": span["size"],
             "disassembly": lines, "callees": called, "source_shape": {
                 "parameters": parameter_report,
+                "parameter_slot_count_observed": len(parameter_report),
                 "link_frame_bytes": frame,
                 "register_allocated_local_candidates": nonvolatile,
                 "register_allocated_local_candidate_count": len(nonvolatile),
@@ -688,12 +718,27 @@ def analyse_function(span: dict, code_resources: dict[int, bytes], all_spans: li
                 "switch_dispatch_candidate_count": len(switchish),
                 "constants_hex": [f"0x{x:X}" for x in sorted(constants)],
                 "a5_global_offsets_hex": [f"0x{x & 0xffff:04X}" for x in a5],
+                "a5_global_name_candidates": {f"0x{x & 0xffff:04X}": [] for x in a5},
                 "struct_field_offsets_by_base_register": {r: sorted(v) for r, v in fields.items()},
                 "struct_field_offset_count": sum(len(v) for v in fields.values()),
                 "notes": ["frame size is a lower bound on stack locals; register candidates are not proven C locals",
                           "A5 offsets have no name unless a direct data-layout correspondence is proven",
                           "loop and switch counts are instruction-pattern estimates"]},
             "win16": win_row}
+
+
+def export_shape_catalog(mac_root: Path) -> dict:
+    codes, _ = load_mac_code(mac_root)
+    spans = load_mpw_export_spans(mac_root)
+    rows = []
+    for span in spans:
+        result = analyse_function(span, codes, spans)
+        result.pop("disassembly", None)
+        rows.append(result)
+    return {"source": "build/mac/mpw-export-boundaries.json",
+            "boundary_count": len(spans),
+            "method_note": "instruction-pattern estimates; no source declarations or Mac C names are present",
+            "exports": rows}
 
 
 def extract_disc(iso_path: Path, out: Path) -> dict:
@@ -704,6 +749,7 @@ def extract_disc(iso_path: Path, out: Path) -> dict:
                                                       "expected_iso_sha256": EXPECTED_ISO_SHA256,
                                                       "matches_expected_iso": sha256(image) == EXPECTED_ISO_SHA256,
                                                       "files": files}, indent=2), encoding="utf-8")
+    write_iso_markdown(files, sha256(image), len(image), out)
     iso_execs = []
     oracle = (ROOT / "assets" / "SIMANTW.EXE").read_bytes()
     oracle_sym = (ROOT / "assets" / "SIMANTW.SYM").read_bytes()
@@ -782,8 +828,13 @@ def extract_disc(iso_path: Path, out: Path) -> dict:
                 "sha256_expected": expected_hash, "size_actual": res["size"],
                 "sha256_actual": res["sha256"],
                 "matches": (res["size"], res["sha256"]) == (expected_size, expected_hash)}
-    globals_checks = {res["type"]: {"size": res["size"], "sha256": res["sha256"]}
-                      for res in resources if res["type"] in ("DATA", "ZERO", "DREL")}
+    globals_checks = {}
+    for res in resources:
+        if res["type"] in EXPECTED_GLOBALS:
+            expected_size, expected_hash = EXPECTED_GLOBALS[res["type"]]
+            globals_checks[res["type"]] = {"size_expected": expected_size, "size_actual": res["size"],
+                "sha256_expected": expected_hash, "sha256_actual": res["sha256"],
+                "matches": (res["size"], res["sha256"]) == (expected_size, expected_hash)}
     app_facts = {k: app[k] for k in ("path", "cnid", "finder_type", "creator", "finder_flags",
                                       "data_size", "resource_size")}
     checks = {"iso_sha256": {"expected": EXPECTED_ISO_SHA256, "actual": sha256(image),
@@ -815,6 +866,7 @@ def main(argv=None) -> int:
     parser.add_argument("--rebuild-correspondence", action="store_true")
     parser.add_argument("--import-export-plan", type=Path, help="copy MPW export boundaries from a lift-plan JSON")
     parser.add_argument("--mac-code", help="analyze an unnamed export by CODE_ID:OFFSET")
+    parser.add_argument("--export-shapes", action="store_true", help="write a shape summary for all imported MPW exports")
     args = parser.parse_args(argv)
     try:
         if args.extract_disc:
@@ -827,6 +879,12 @@ def main(argv=None) -> int:
             return 0
         if args.import_export_plan:
             print(json.dumps(import_mpw_export_plan(args.import_export_plan, args.mac_root), indent=2))
+            return 0
+        if args.export_shapes:
+            result = export_shape_catalog(args.mac_root)
+            dest = args.mac_root / "export-shapes.json"
+            dest.write_text(json.dumps(result, indent=2), encoding="utf-8")
+            print(json.dumps({"path": str(dest), "boundary_count": result["boundary_count"]}, indent=2))
             return 0
         if args.mac_code:
             match = re.fullmatch(r"(\d+):(?:0x)?([0-9a-fA-F]+)", args.mac_code)
@@ -847,7 +905,10 @@ def main(argv=None) -> int:
         name = args.symbol if args.symbol.startswith("_") else "_" + args.symbol
         row = corr["symbols"].get(name)
         if not row or not row["mac"]:
-            print(json.dumps({"symbol": name, "win16": row, "mac": None, "message": "no Mac counterpart found"}, indent=2))
+            print(json.dumps({"symbol": name, "win16": row, "mac": None,
+                "mac_mpw_export_boundaries": corr.get("mac_mpw_export_boundaries"),
+                "mac_symbol_scan_candidates": corr.get("mac_symbol_scan_candidates", []),
+                "message": "no validated name-based Mac counterpart found"}, indent=2))
             return 2
         codes, spans = load_mac_code(args.mac_root)
         all_spans = [s for entries in spans.values() for s in entries]
