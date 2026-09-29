@@ -61,7 +61,14 @@ LANE_TEXT = {
                  'going. Checking emu_diff/typedb is a diagnostic, not the work. Do not leave a target after one or two trials: leave it only '
                  'after about 10 rounds without any region gain, or on a concrete missing dependency (record it with --note).',
     'TAIL': 'Near-exact functions. Each has at least one mechanism family that was never tried (or whose earlier negative result went stale '
-            'after a shared change). Test exactly those families; do not re-run exhausted ones.',
+            'after a shared change). Test exactly those families; do not re-run exhausted ones.\n'
+            'For register/home residues the allocator is now known exactly (MSC7-A5..A12, docs/msc7-allocator.md). Do not guess: run '
+            'python tools/alloc_trace.py DRAFT.c FLAGS --symbol SYMBOL (triage prints the exact command) to see the C2 table of every '
+            'candidate range (variables and compiler temporaries) with uses, loop depth, degree, weight and picked register, and '
+            'python tools/regalloc_model.py DRAFT.c --homes for stack homes. Compare with the target registers/homes, identify the tie or '
+            'weight gap, and make the smallest natural source change that flips it (who is referenced first, one more/fewer use, loop '
+            'placement, lifetime, declaration order only through operand order A11). Verify with alloc_trace before compiling with search.py. '
+            'If the only flip is a construct with no runtime effect, admit it as EXACT_STEERED naming the construct.',
     'COMPOSE': 'Body-exact or binding-only functions. You own canonical unit composition of the listed objects: '
                'fix wrong data/selector bindings, then python tools/tu_assembly.py compose OBJECT --add SYMBOL=DRAFT [--persist] and '
                'python tools/promote.py --unit UNIT --reason "..." once strict. The usual blockers are declaration harmonization '
