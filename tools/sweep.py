@@ -186,8 +186,13 @@ def classify_change(before_best, before_front, results):
     old_best = (before_best or {}).get('key')
     if old_best and best_new > old_best:
         return 'IMPROVED'
-    if old_best and best_new < old_best:
+    # REGRESSED only when the SAME stored best draft now scores lower. A worker may store a newer
+    # best while the sweep runs; comparing an older draft against it is a race, not a regression.
+    same = [r for r in usable if r.get('job', {}).get('variant', {}).get('sha') == (before_best or {}).get('sha256')]
+    if old_best and same and max(r['eval']['rank'] for r in same) < old_best:
         return 'REGRESSED'
+    if old_best and best_new < old_best:
+        return 'SUPERSEDED'
     front_new = max((r['eval']['frontier_rank'] for r in usable if r['eval']['frontier_rank']), default=None)
     if front_new and (before_front or {}).get('key') and front_new != before_front['key']:
         return 'RESCORED'

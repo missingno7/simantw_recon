@@ -824,6 +824,16 @@ def compose_object(component: str, additions: list[tuple[str, str]], *, max_arra
         raise FormatError("max_arrangements must be between 1 and 64")
     base_unit_id, spec, base_text, recovery = _latest_admitted_unit(component)
     members = list(spec.get("members", []))
+    # The object's catalogued profile may have been reassigned since its last unit was admitted
+    # (compiler_profiles assign, backed by invariance evidence). Compose under the CURRENT profile:
+    # the strict unit test re-proves every existing member under it, so a non-invariant member fails closed.
+    import compiler_profiles
+    if members:
+        current_profile = compiler_profiles.resolve(members[0])
+        current_flags = compiler_profiles.flags_for(members[0], spec["flags"][-1][len("/NT"):]) if spec["flags"][-1].startswith("/NT") else spec["flags"]
+        if current_flags != spec["flags"]:
+            spec = dict(spec, flags=current_flags, profile=current_profile["name"],
+                        profile_changed_from=dict(profile=spec.get("profile"), flags=spec["flags"]))
     if not additions:
         raise FormatError("compose requires at least one --add SYMBOL=FILE.c")
     base_items = _itemize(base_text)

@@ -1,0 +1,160 @@
+{
+  "name": "msc7-a3-row-major-index-role-axis",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "INDEX": "row_column"
+      },
+      "size": 46,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "ch",
+        "cl",
+        "cx",
+        "di",
+        "dx",
+        "es"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "58086a4aed721436a530d9ad6f26236bb0262d2dc24fe2d525be20177890ca5f",
+      "fixups": [
+        {
+          "offset": 25,
+          "width": 2,
+          "target": "_Map",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 13,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 enter 4, 0",
+        "0004 push di",
+        "0005 mov di, word ptr [bp + 6]",
+        "0008 mov bx, word ptr [bp + 8]",
+        "000b mov es, word ptr [0]",
+        "000f mov ax, di",
+        "0011 shl di, 5",
+        "0014 add di, bx",
+        "0016 mov cl, byte ptr es:[di]",
+        "001b sub ch, ch",
+        "001d mov dx, bx",
+        "001f add bx, cx",
+        "0021 mov cx, ax",
+        "0023 add ax, bx",
+        "0025 mov word ptr [bp - 2], cx",
+        "0028 mov word ptr [bp - 4], dx",
+        "002b pop di",
+        "002c leave ",
+        "002d retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "INDEX": "column_row"
+      },
+      "size": 42,
+      "frame": 2,
+      "homes": {
+        "-2": 2
+      },
+      "registers": [
+        "ax",
+        "bx",
+        "ch",
+        "cl",
+        "cx",
+        "di",
+        "dx",
+        "es"
+      ],
+      "saves": [
+        "di"
+      ],
+      "sha256": "a8d6cd2f451a7e029ccc1b38788e78dfcc17daf78b98d973d627c5c9dee88c5d",
+      "fixups": [
+        {
+          "offset": 25,
+          "width": 2,
+          "target": "_Map",
+          "kind": 1,
+          "self_relative": false
+        },
+        {
+          "offset": 13,
+          "width": 2,
+          "target": "CONST",
+          "kind": 1,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes"
+        ],
+        "diff": [
+          "@@ -1,5 +1,5 @@",
+          "-enter 4, 0",
+          "+enter 2, 0",
+          " push di",
+          "-mov di, word ptr [bp + 6]",
+          "-mov bx, word ptr [bp + 8]",
+          "+mov di, word ptr [bp + 8]",
+          "+mov bx, word ptr [bp + 6]",
+          " mov es, word ptr [0]",
+          "@@ -10,8 +10,6 @@",
+          " sub ch, ch",
+          "-mov dx, bx",
+          "-add bx, cx",
+          "-mov cx, ax",
+          "+mov dx, ax",
+          "+add ax, cx",
+          " add ax, bx",
+          "-mov word ptr [bp - 2], cx",
+          "-mov word ptr [bp - 4], dx",
+          "+mov word ptr [bp - 2], dx",
+          " pop di",
+          "@@ -19 +17,2 @@",
+          " retf ",
+          "+nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

@@ -59,11 +59,11 @@ PLAYBOOK = {
     'FRAME_SIZE': (['FRAME_LAYOUT', 'LOCAL_LIFETIME', 'TYPE', 'CSE_SUBEXPRESSION'], ['REGISTER_HINT', 'LOCAL_ORDER'],
                    ['MSC7-F', 'MSC7-L'], 'python tools/search.py {sym} {draft} --frame  # named-local homes vs target frame'),
     'HOME_ORDER': (['LOCAL_LIFETIME', 'CSE_SUBEXPRESSION', 'EXPRESSION_SHAPE', 'FRAME_LAYOUT', 'TYPE'], ['LOCAL_ORDER', 'REGISTER_HINT', 'DECLARATION_ORDER'],
-                   ['MSC7-F1', 'MSC7-F7', 'MSC7-F8', 'MSC7-X2', 'MSC7-R0'], 'python tools/search.py {sym} {draft} --frame  # static use counts rank homes (F1A/F1F)'),
+                   ['MSC7-A', 'MSC7-F1', 'MSC7-R0'], 'python tools/regalloc_model.py {draft} --homes  # C2 home weights per byte (MSC7-A10): make the target\'s nearest-BP home the heaviest'),
     'REGISTER_ALLOCATION': (['CSE_SUBEXPRESSION', 'LOCAL_LIFETIME', 'EXPRESSION_SHAPE', 'LOOP_STRUCTURE', 'FAR_POINTER_LIFETIME'],
                             ['REGISTER_HINT', 'LOCAL_ORDER', 'DECLARATION_ORDER', 'OPTIMIZATION_PROFILE'],
-                            ['MSC7-R', 'MSC7-F2', 'MSC7-F3', 'MSC7-F6', 'MSC7-X2', 'MSC7-P1'],
-                            'python tools/search.py {sym} {draft} --frame  # count uses of variables AND repeated subexpressions (MSC7-R0)'),
+                            ['MSC7-A', 'MSC7-R0', 'MSC7-F2', 'MSC7-F3'],
+                            'python tools/alloc_trace.py {draft} FLAGS --symbol {sym}  # C2\'s own candidate table: weights, ties, picks (MSC7-A6..A9); change uses/first reference of the competing range'),
     'EXPRESSION_SHAPE': (['EXPRESSION_SHAPE', 'CSE_SUBEXPRESSION', 'TYPE', 'SIGNEDNESS', 'PROTOTYPE'], ['REGISTER_HINT', 'LOCAL_ORDER'],
                          ['MSC7-E', 'MSC7-S', 'MSC7-C1'], 'python tools/probe.py SPEC.json  # controlled expression-shape axes'),
     'CFG_STRUCTURE': (['CFG_STRUCTURE', 'LOOP_STRUCTURE', 'SEMANTICS', 'EXPRESSION_SHAPE'], ['REGISTER_HINT', 'LOCAL_ORDER'],
@@ -87,6 +87,13 @@ PHASE_SENSITIVE = {'_AddIndex', '_FileSelect', '_MakeBalloon', '_Mini_DrawMapI',
 PHASE_NOTE = ('Heap-phase sensitive (MSC7-M5): C2 reserves a dead struct/array copy depending on its heap phase, so '
               'the frame size and BP offsets depend on the functions compiled before it. Judge frame/home residue '
               'in its unit context (tu_assembly compose / unit build), never by source tweaks or a chosen TMP (MSC7-M7).')
+
+ALLOCATION_TOOL = ('The allocator is modelled exactly (MSC7-A5..A12): run tools/alloc_trace.py on the draft with the symbol\'s '
+                   'flags to see every candidate range (variables AND compiler temporaries) with uses, loop depth, degree, weight '
+                   'and the register C2 picked. Compare with the target\'s registers, find the tie or weight gap, and change the '
+                   'source so the target\'s choice wins: equal weights go to the range referenced first (A8); more uses or a '
+                   'deeper last block raise weight (A6/A7); BX needs the variable\'s whole lifetime free (A9); homes are weight per '
+                   'byte, heaviest nearest BP (A10); operand order follows declaration sequence (A11).')
 
 ALLOCATION_ADVICE = ('MSC7-R0: /Oe allocates registers to variables OR SUBEXPRESSIONS by frequency of use. Repeated address '
                      'calculations, index expressions, far-pointer halves and compiler temporaries compete with named locals. '
@@ -474,7 +481,8 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
                relevant_facts=[f for f in relevant_facts(prefixes)][:12],
                semantics=emu, mac=mac_evidence(symbol), reopen_hint=reopen)
     if cls in ('REGISTER_ALLOCATION', 'HOME_ORDER'):
-        out['allocation_guidance'] = ALLOCATION_ADVICE
+        out['allocation_guidance'] = ALLOCATION_TOOL + ' ' + ALLOCATION_ADVICE
+        out['next_tool'] = out['next_tool'].replace('FLAGS', ' '.join(compiler_profiles.flags_for(symbol, card['segment_name'])))
     if symbol in PHASE_SENSITIVE:
         out['heap_phase'] = PHASE_NOTE
     if cls not in ('EXACT_PENDING', 'PLACEMENT') and (best or {}).get('aligned_asm'):

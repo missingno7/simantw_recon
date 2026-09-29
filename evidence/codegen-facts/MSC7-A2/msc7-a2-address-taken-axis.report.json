@@ -1,0 +1,124 @@
+{
+  "name": "msc7-a2-address-taken-axis",
+  "profile": "baseline",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oelw",
+    "/NT_TEXT"
+  ],
+  "function": "f",
+  "symbol": null,
+  "mode": "one-at-a-time",
+  "variants": 2,
+  "distinct_outputs": 2,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "ADDRESS": "none"
+      },
+      "size": 18,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "ax",
+        "bx",
+        "dx"
+      ],
+      "saves": [],
+      "sha256": "b44e698facab036b3f6fdb7907a4d58d3701e567668bdff7be6e8f925e6843e3",
+      "fixups": [],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 mov bx, word ptr [bp + 8]",
+        "0006 mov dx, word ptr [bp + 6]",
+        "0009 mov ax, dx",
+        "000b add ax, bx",
+        "000d shl ax, 1",
+        "000f leave ",
+        "0010 retf ",
+        "0011 nop "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "ADDRESS": "escape_x"
+      },
+      "size": 52,
+      "frame": 4,
+      "homes": {
+        "-2": 2,
+        "-4": 2
+      },
+      "registers": [
+        "ax",
+        "di",
+        "si"
+      ],
+      "saves": [
+        "di",
+        "si"
+      ],
+      "sha256": "28f31acaff2a0bb52fd368859c1763c4756898ae76692f24c87928bc85009cad",
+      "fixups": [
+        {
+          "offset": 30,
+          "width": 4,
+          "target": "_Escape",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size",
+          "frame",
+          "homes",
+          "registers",
+          "saves",
+          "fixups"
+        ],
+        "diff": [
+          "@@ -1,8 +1,21 @@",
+          "-push bp",
+          "-mov bp, sp",
+          "-mov bx, word ptr [bp + 8]",
+          "-mov dx, word ptr [bp + 6]",
+          "-mov ax, dx",
+          "-add ax, bx",
+          "-shl ax, 1",
+          "+enter 4, 0",
+          "+push di",
+          "+push si",
+          "+mov di, word ptr [bp + 8]",
+          "+mov si, word ptr [bp + 6]",
+          "+mov word ptr [bp - 4], si",
+          "+mov word ptr [bp - 2], di",
+          "+cmp word ptr [bp + 0xa], 0",
+          "+je 0x25",
+          "+lea ax, [bp - 4]",
+          "+push ss",
+          "+push ax",
+          "+lcall 0, 0",
+          "+add sp, 4",
+          "+mov ax, di",
+          "+add ax, si",
+          "+add ax, word ptr [bp - 2]",
+          "+add ax, word ptr [bp - 4]",
+          "+pop si",
+          "+pop di",
+          " leave "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}

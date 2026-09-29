@@ -156,6 +156,34 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - On 30 admitted functions it gets only 45 of 90 named placements right (build/workers/sup-allocx/). Real code adds generated temporaries, pointer and addressing roles, 32-bit arithmetic, and call and branch lifetimes that source counts cannot see.
 - Use the rule as a local clue for simple shapes only. The real allocator must be read from C23216 (f-study-c2).
 
+**MSC7-A5..A12: the global register/home allocator read out of C23216 (emulated passes). VERIFIED unless noted. This SUPERSEDES MSC7-X2's read-count rule and refines F1A/F1F, F2/F3, R1-R3 and R13/F7/F8.**
+- Method: `tools/c2_emu.py` runs the unmodified C1/C2/C3 passes under Unicorn. Its objects are byte-identical to the DOSBox compiler service on 406/406 admitted sources, at about 0.2 s per compile (A5).
+  - `tools/alloc_trace.py SOURCE FLAGS --symbol NAME` prints C2's own candidate table and decisions.
+  - `tools/regalloc_model.py` re-implements the allocator; `--homes` covers stack homes.
+  - Full rule: docs/msc7-allocator.md. Evidence: evidence/codegen-facts/MSC7-A-emu/.
+- A6 weight: `uses*16*4**depth(last block)//(degree+1) + 0x8000`, where degree counts the overlapping ranges that have uses.
+- A7 (SUPPORTED) use increments per IL reference:
+  - a read counts 2 (1 for a shared node, 0 for a copy source), a definition 2, a compound or `++` 3;
+  - +1 when nested in an address or assignment;
+  - `&var` as a value makes the variable non-allocatable;
+  - a use inside an address sets the index flag.
+- A8 ties: equal weights go to the range created first (first reference in the block/statement/left-subtree walk). It is coloured first and gets SI. An 80% window lets a range with more uses jump ahead.
+- A9 register order:
+  - index-use ranges take SI, DI, DX, CX; other ranges DX, CX, SI, DI;
+  - a whole variable is re-picked to BX when BX is free in every block of its ranges;
+  - SI/DI are dropped when their boundary moves outweigh the uses.
+- A10 homes are coloured like registers: averaged weight per byte, descending, first fit from BP. Homes that do not interfere share a slot.
+- A11 (SUPPORTED): commutative operands are ordered by a key over the symbols' declaration sequence numbers, so declaration order can swap `a+b` and, with it, the tie walk. Example: `_SubtractFood` under og needs `int column, row;`.
+- A12: `/Oe` reaches C2 through the IL (EX header bit 0x10), not through `MSC_CMD_FLAGS`.
+- Validation (all admitted sources, every profile):
+  - colouring 781/781 function/class instances and 4,177/4,177 ranges;
+  - final registers 933/936 (the 3 misses are an unmodelled range split);
+  - homes 849/849 slots in 482 functions (home selection uses C2's own spill list).
+- Payoff:
+  - Admitted: `_SubtractFood` (parked), `_ColonySmellRT` and `_GrabMap`, exact under og after the evidence-backed og assignments asg-simant-9d04-og, asg-simant1-9344-og and asg-simtwo-6dac-og. `_KillSomeAnts` followed through unit composition.
+  - `_XferPatch` is body-exact under og.
+  - Parked ties with a concrete structural fix: DigTileR, DoDigOutB, DoFoodInR, DoRandAntAA (exact weight ties: reference the other variable first, or give it one more use), FillMap (BX must be free across `row`), AnimYellowFight (mapCell's home weight must fall below tileVariant's).
+
 **MSC7-R0 (documentation): /Oe allocates registers to "variables or subexpressions according to frequency of use" and ignores `register`. SUPPORTED (C6 manual, consistent with C7 observations).**
 - Source: C6 *Advanced Programming Techniques* §1.5.8, summarised in docs/research/msc7-online-research-2026-09-29.md.
 - Common subexpressions (address arithmetic, repeated index expressions, far-pointer halves) compete with named locals for SI/DI.
