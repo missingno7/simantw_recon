@@ -469,6 +469,7 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
         out['gap_regions'] = gap_regions(best['aligned_asm'])
     if live_typedb and draft:
         out['typedb_check'] = typedb_live(draft)
+    out['gainless_streak'] = attempts.gainless_streak(attempts.load(symbol))
     out['value'] = value_per_hour(out, ev, size, fam)
     return out
 
@@ -491,13 +492,15 @@ def value_per_hour(t, ev, size, fam):
     elif lane == 'BACKGROUND_PERMUTER':
         p, partial = 0.03, 0  # background compute, not agent hours
     elif lane == 'AUTHORING':
-        per_hour = min(remaining, 60 + 0.15 * remaining)  # opcodes an agent can author per hour
+        per_hour = min(remaining, 60 + 0.15 * remaining) * 0.5 ** ((t.get('gainless_streak') or 0) / 10.0)  # opcodes per hour, decayed by stagnation
         p, partial = (0.05 if remaining > 40 else 0.2), per_hour * bytes_per_opcode * 0.25
     elif t.get('blocker_class') == 'BINDING':
         p, partial = 0.45, 0  # every opcode already matches; only data/selector bindings differ
     else:
         untried = len(t.get('next_families') or [])
         p = max(0.02, 0.35 / (1 + tried / 15.0)) * (1.0 if untried else 0.3)
+        # Recent evidence dominates: every 10 consecutive gainless sessions halve the expectation.
+        p *= 0.5 ** ((t.get('gainless_streak') or 0) / 10.0)
         partial = min(remaining, 10) * bytes_per_opcode * 0.25
     return round(p * size + partial, 1)
 
@@ -587,7 +590,7 @@ def render(t):
              'first divergence: %s at row %s   T: %s | C: %s' % (fd.get('kind'), fd.get('row'), fd.get('target'), fd.get('candidate')),
              'semantics       : %s' % (t['semantics'].get('status')),
              'blocker class   : %s' % t['blocker_class'],
-             'lane            : %s   (value ~%s debt bytes per agent-hour)' % (t['lane'], t['value']),
+             'lane            : %s   (value ~%s debt bytes per agent-hour; %s recent gainless sessions)' % (t['lane'], t['value'], t.get('gainless_streak')),
              'next tool       : %s' % t['next_tool'],
              'next families   : %s' % ', '.join(t['next_families'] or []),
              'do not lead with: %s' % ', '.join(t.get('do_not_lead_with') or []) if t.get('do_not_lead_with') else None,

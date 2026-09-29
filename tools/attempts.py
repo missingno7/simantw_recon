@@ -198,13 +198,32 @@ def outcome_of(before, after, same_output=False, reevaluation=False):
     return 'NEUTRAL'
 
 
-def stale_components(row, current_fp, components=None):
+# Which shared changes can overturn a negative conclusion about a family. Any change to the compiler
+# itself (toolchain, compiler, profiles) or the declaration tool reopens everything; the rest only
+# reopens the families they can actually affect, so an unrelated admission does not reopen all history.
+BASE_STALE = ('toolchain', 'compiler', 'profiles', 'typedb')
+FAMILY_STALE = {
+    'TU_COMPOSITION': ('admissions', 'units', 'composer', 'pragmas'),
+    'SELECTOR_PLACEMENT': ('admissions', 'units', 'composer'),
+    'DATA_LAYOUT': ('admissions', 'units', 'composer'),
+    'STEERING': ('pragmas',),
+    'OPTIMIZATION_PROFILE': ('pragmas',),
+    'PERMUTER_SEARCH': ('permuter', 'facts'),
+    'REGISTER_ALLOCATION': ('facts',), 'HOME_ORDER': ('facts',), 'LOCAL_ORDER': ('facts',), 'REGISTER_HINT': ('facts',),
+    'CSE_SUBEXPRESSION': ('facts',), 'LOCAL_LIFETIME': ('facts',), 'FRAME_LAYOUT': ('facts',),
+    'FAR_POINTER_LIFETIME': ('facts',),
+}
+
+
+def stale_components(row, current_fp, components=None, family=None):
     """Shared-state components that changed since the attempt (its conclusion may be stale)."""
     import shared_state
     old = row.get('state') or {}
     if not old:
         return []
-    return shared_state.changed(old, current_fp, components or shared_state.CONCLUSION)
+    if components is None:
+        components = BASE_STALE + FAMILY_STALE.get(family, ()) if family else shared_state.CONCLUSION
+    return shared_state.changed(old, current_fp, components)
 
 
 def summary(symbol, root=None, current_fp=None, rows=None):
@@ -213,15 +232,16 @@ def summary(symbol, root=None, current_fp=None, rows=None):
     # The ledger is append-only: a later record with `corrects: ID` replaces that record.
     corrected = {r['corrects'] for r in rows if r.get('corrects')}
     rows = [r for r in rows if r.get('id') not in corrected]
-    per = defaultdict(lambda: dict(attempts=0, variants=0, outcomes=Counter(), best_gain=None, last=None,
+    rows = sorted(rows, key=lambda r: r.get('time') or '')
+    per = defaultdict(lambda: dict(attempts=0, variants=0, outcomes=Counter(), best_gain=None, last=None, since_gain=0.0,
                                    declared=0, inferred=0, stale=False, stale_components=set(), hypotheses=[]))
     for row in rows:
         gain = None
         b, a = row.get('before') or {}, row.get('after') or {}
         if a.get('opcodes') is not None and b.get('opcodes') is not None:
             gain = a['opcodes'] - b['opcodes']
-        stale = stale_components(row, current_fp) if current_fp else []
         for fam in row.get('families') or ['UNSPECIFIED']:
+            stale = stale_components(row, current_fp, family=fam) if current_fp else []
             p = per[fam]
             p['attempts'] += int(row.get('aggregate_sessions') or 1)
             p['variants'] += int(row.get('candidates') or 1)
@@ -231,6 +251,11 @@ def summary(symbol, root=None, current_fp=None, rows=None):
             if not p['last'] or (row.get('time') or '') > p['last']:
                 p['last'] = row.get('time')
             p['declared' if row.get('family_source') == 'declared' else 'inferred'] += 1
+            # Gainless weight since this family's last productive session (declared 1.5, inferred 0.5).
+            if row.get('outcome') in ('EXACT', 'BODY_EXACT', 'IMPROVED'):
+                p['since_gain'] = 0.0
+            elif row.get('kind') != 'note':
+                p['since_gain'] += (1.5 if row.get('family_source') == 'declared' else 0.5) * int(row.get('aggregate_sessions') and 1 or 1)
             if row.get('hypothesis') and len(p['hypotheses']) < 3:
                 p['hypotheses'].append(row['hypothesis'][:120])
             if stale:
@@ -239,15 +264,30 @@ def summary(symbol, root=None, current_fp=None, rows=None):
     for fam, p in per.items():
         out = p['outcomes']
         productive = out['EXACT'] + out['BODY_EXACT'] + out['IMPROVED']
-        # Keyword-inferred rows are weaker evidence than declared families: two count as one.
-        weight = p['declared'] + p['inferred'] / 2.0
-        verdict = ('EXACT' if out['EXACT'] else 'PRODUCTIVE' if productive else
+        # A declared session is a deliberate test of that family (weight 1.5); keyword-inferred history is weak
+        # (0.5). Only the sessions since the family last produced a gain count: an old success does not keep a
+        # family open forever, and a new gain reopens it.
+        weight = p['since_gain']
+        verdict = ('EXACT' if out['EXACT'] else
                    'NO_EFFECT' if out['NO_OP'] and out['NO_OP'] >= p['attempts'] - out['COMPILE_FAILED'] else
-                   'EXHAUSTED' if weight >= 3 else 'TRIED')
+                   'EXHAUSTED' if weight >= 3 else 'PRODUCTIVE' if productive else 'TRIED')
         result[fam] = dict(attempts=p['attempts'], variants=p['variants'], outcomes=dict(out), best_gain=p['best_gain'],
                            last=p['last'], verdict=verdict, declared=p['declared'], inferred=p['inferred'],
                            stale_since=sorted(p['stale_components']) or None, examples=p['hypotheses'])
     return result
+
+
+def gainless_streak(rows):
+    """Consecutive most recent search/permuter sessions (not notes, not sweeps) without a frontier gain."""
+    corrected = {r['corrects'] for r in rows if r.get('corrects')}
+    streak = 0
+    for r in reversed(rows):
+        if r.get('id') in corrected or r.get('kind') == 'note' or r.get('worker') in ('sweep', 'backfill') or r.get('aggregate_sessions'):
+            continue
+        if r.get('outcome') in ('IMPROVED', 'EXACT', 'BODY_EXACT'):
+            break
+        streak += 1
+    return streak
 
 
 def summary_lines(fam_summary, relevant=None):
