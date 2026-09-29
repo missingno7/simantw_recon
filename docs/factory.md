@@ -24,6 +24,16 @@ Commands print JSON on stdout; compiler progress goes to stderr.
 
 Similarity scores, diagnostic ranks, structural certificates and scaffold stubs never grant credit.
 
+## Orchestration: sweep, triage, attempts, lanes
+
+[docs/orchestration.md](orchestration.md) describes the thin supervisor layer over this factory.
+- `tools/sweep.py` re-evaluates all preserved drafts against the current shared state (profiles, matcher, toolchain, admissions/typedb, units) and routes candidates:
+  - strict candidates to `promote.py --verify-only`;
+  - body-exact ones to a scratch `tu_assembly compose`.
+- `tools/triage.py` names each open function's blocker class, lane, next tool and untried families.
+- `tools/attempts.py` keeps the structured per-family experiment history that `search.py` writes every session.
+- `tools/fleet_plan.py`, `tools/permuter_queue.py` and `tools/unit_owner.py` schedule the authoring, tail, compose and background lanes.
+
 ## Whole binary: image ledger and lanes
 
 `python tools/image.py` rebuilds all 516,096 bytes of SIMANTW.EXE, giving every byte exactly one owner:

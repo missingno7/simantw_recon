@@ -51,17 +51,33 @@ def frontier_rank(comparison):
     return [comparison.get('result') in GOOD, body_exact(comparison), len(rows) + 1 if index is None else index, d['opcode_matches']]
 
 
+FRONTIER_MIN_FRACTION = 0.5
+
+
+def plausible_frontier(opcode_matches, best):
+    """A frontier must be a substantially complete draft: at least half the best draft's matched
+    opcodes. An early stub can have a late 'first divergence' only because it stops early."""
+    if not best or best.get('opcode_matches') is None or opcode_matches is None:
+        return True
+    return opcode_matches >= FRONTIER_MIN_FRACTION * best['opcode_matches']
+
+
 def _store_frontier(row, symbol, source_path, digest, comparison, origin, flags, candidate):
     key = frontier_rank(comparison)
     front = row.get('frontier')
     if key is None or (front and (front.get('sha256') == digest or key <= front.get('key', []))):
         return False
     d = comparison.get('diagnostic') or {}
+    if not plausible_frontier(d.get('opcode_matches'), row.get('best')):
+        return False
     destination = DRAFTS / symbol.lstrip('_') / (digest[:12] + '.c')
     destination.parent.mkdir(parents=True, exist_ok=True)
     if not destination.exists():
         shutil.copyfile(source_path, destination)
+    from residue_clusters import classify
+    kind = classify(d.get('aligned_asm') or [])[0] if d.get('aligned_asm') else None
     row['frontier'] = dict(source=destination.relative_to(ROOT).as_posix(), sha256=digest, key=key, first_divergence_row=key[2],
+                           first_divergence_class=kind,
                            opcode_matches=d.get('opcode_matches'), opcode_total=d.get('opcode_total'),
                            candidate_bytes=d.get('candidate_bytes'), target_bytes=d.get('target_bytes'),
                            flags=flags, origin=origin, candidate=candidate, recorded=timestamp())
@@ -96,6 +112,61 @@ def store(symbol, source_path, comparison, origin, flags, basis=None, candidate=
                            candidate_bytes=d.get('candidate_bytes'), target_bytes=d.get('target_bytes'), flags=flags, origin=origin, recorded=timestamp())
         write_json(INDEX, dict(sorted(ledger.items())))
         return True
+
+
+def _metrics(comparison):
+    d = comparison.get('diagnostic') or {}
+    return dict(result=comparison.get('result'), opcode_matches=d.get('opcode_matches'), opcode_total=d.get('opcode_total'),
+                candidate_bytes=d.get('candidate_bytes'), target_bytes=d.get('target_bytes'))
+
+
+def refresh(symbol, digest, comparison, origin, flags, candidate=None, state=None):
+    """Re-score a STORED best/frontier draft (same sha) under the current repository state.
+
+    Used by sweep.py: a draft's rank changes when its profile, the matcher or the toolchain
+    changed. The previous key is kept in a short 'rescored' history. A frontier that is no
+    longer a plausible (substantially complete) draft is dropped so the next store() re-seeds
+    it. Returns the list of changed record kinds."""
+    changed = []
+    with lock():
+        ledger = load()
+        row = ledger.get(symbol)
+        if not row:
+            return changed
+        d = comparison.get('diagnostic') or {}
+        best = row.get('best')
+        if best and best.get('sha256') == digest:
+            key = rank(comparison)
+            if key is not None and (key != best.get('key') or flags != best.get('flags') or comparison.get('result') != best.get('result')):
+                history = (best.get('rescored') or [])[-4:]
+                history.append(dict(key=best.get('key'), flags=best.get('flags'), result=best.get('result'), recorded=best.get('recorded')))
+                best.update(_metrics(comparison), key=key, flags=flags, origin=origin, rescored=history, recorded=timestamp(),
+                            basis='EXACT_BODY_CANDIDATE' if key[1] else 'BEST_CANDIDATE_NOT_EXACT')
+                if state:
+                    best['state'] = state
+                changed.append('best')
+        front = row.get('frontier')
+        if front and front.get('sha256') == digest:
+            key = frontier_rank(comparison)
+            if key is None:
+                pass
+            elif not plausible_frontier(d.get('opcode_matches'), row.get('best')):
+                row['frontier_dropped'] = dict(front, dropped=timestamp(), reason='incomplete draft (below %d%% of the best draft opcodes)' % (FRONTIER_MIN_FRACTION * 100))
+                row.pop('frontier')
+                changed.append('frontier_dropped')
+            elif key != front.get('key') or flags != front.get('flags'):
+                from residue_clusters import classify
+                history = (front.get('rescored') or [])[-4:]
+                history.append(dict(key=front.get('key'), flags=front.get('flags'), recorded=front.get('recorded')))
+                front.update({k: v for k, v in _metrics(comparison).items() if k != 'result'}, key=key, first_divergence_row=key[2],
+                             first_divergence_class=classify(d.get('aligned_asm') or [])[0] if d.get('aligned_asm') else None,
+                             flags=flags, origin=origin, candidate=candidate, rescored=history, recorded=timestamp())
+                if state:
+                    front['state'] = state
+                changed.append('frontier')
+        if changed:
+            write_json(INDEX, dict(sorted(ledger.items())))
+    return changed
 
 
 def note(symbol, text, origin='investigator'):

@@ -499,6 +499,11 @@ def promote_unit(unit_id, reason, verify_only=False, steered=None):
     if not reason.strip():
         raise FormatError('reviewed reason required')
     members = spec['members']
+    import unit_owner
+    component = (compiler_profiles.component_of(members[0]) or {}).get('id')
+    if component and not verify_only:
+        # One owner per historical object admits its canonical unit (tools/unit_owner.py).
+        unit_owner.require(component)
     profiles = {compiler_profiles.resolve(m)['name'] for m in members}
     if profiles != {spec['profile']}:
         raise FormatError('unit profile disagrees with its members: ' + ', '.join(sorted(profiles)))

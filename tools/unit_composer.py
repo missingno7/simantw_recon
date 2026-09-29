@@ -983,6 +983,9 @@ def compose_object(component: str, additions: list[tuple[str, str]], *, max_arra
         # collides with another worker's diagnostic unit.
         if not best_trial["strict"].get("strict_pass"):
             raise FormatError("--persist needs a strictly passing arrangement; none passed")
+        import unit_owner
+        # One owner per historical object grows its canonical unit (tools/unit_owner.py).
+        unit_owner.require(component)
         digest = hashlib.sha256(ready_path.read_bytes()).hexdigest()[:10]
         unit_id = "%s_compose_%s" % (re.sub(r"[^A-Za-z0-9]+", "_", component), digest)
         folder = UNITS / unit_id

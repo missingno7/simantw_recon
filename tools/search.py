@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from common import ROOT, FormatError, fixture, identity, ownership_review, read_json, recipes, relative, write_json
 from codegen_grinder import GOOD, run
+import attempts
 import drafts
 
 
@@ -195,7 +196,37 @@ def search_asm(symbol, files, meta=None, note=None, full=False, assembler_versio
     return report
 
 
-def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None, frame=False, pool=False):
+def record_attempt(symbol, rows, before, result, meta, note, attempt, profile, flags, labels, stamp, pool=False):
+    """Append the structured attempt record for this session (decision support, never a gate)."""
+    import shared_state
+    from residue_clusters import classify
+    scored = [(drafts.frontier_rank(r['comparison']), r) for r, _ in rows]
+    scored = [(k, r) for k, r in scored if k is not None]
+    after = None
+    if scored:
+        key, best = max(scored, key=lambda kr: kr[0])
+        d = best['comparison'].get('diagnostic') or {}
+        after = attempts.snapshot_from_key(key, dict(opcode_total=d.get('opcode_total'),
+                                                     divergence_class=classify(d.get('aligned_asm') or [])[0] if d.get('aligned_asm') else None))
+    eff = result.get('effective_output') or {}
+    same = bool(rows) and len(eff.get('same_output_as') or {}) >= len(rows)
+    fields = attempts.session_entry(read_json(meta) if meta else None, **(attempt or {}), note=note)
+    fp = shared_state.fingerprint()
+    advice = attempts.advice(symbol, fields['families'], fields.get('why_repeat'), current_fp=fp)
+    inputs = []
+    for label in labels[:8]:
+        path = Path(label)
+        if path.is_file():
+            inputs.append(dict(path=relative(path.resolve()) if path.resolve().is_relative_to(ROOT) else str(path), sha256=identity(path)['sha256'][:16]))
+    record = attempts.record(symbol, dict(fields, worker=attempts.current_worker(labels), profile=profile, flags=flags, inputs=inputs,
+                                          candidates=len(rows), distinct_outputs=eff.get('distinct_outputs'), before=before, after=after,
+                                          outcome=attempts.outcome_of(before, after, same), report=result.get('report'), session=stamp,
+                                          pool=bool(pool) or None, state=fp))
+    return dict(families=record['families'], family_source=record['family_source'], outcome=record['outcome'], advice=advice or None,
+                ledger=relative(attempts.path_for(symbol)))
+
+
+def search(symbol, files=(), template=None, meta=None, note=None, full=False, assembler_version='masm600', asm_flags=None, frame=False, pool=False, attempt=None):
     from promote import check_source, function_flags
     if not files and not template and note:
         # A finding without a new candidate: record it durably, compile nothing.
@@ -261,6 +292,7 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
         rows.append((row, summary_row(row, label, out)))
     admitted = symbol in recipes()
     improved = False
+    before = attempts.ledger_snapshot(drafts.entry(symbol))
     if not admitted and not pool:
         for row, _ in rows:
             if row['comparison'].get('diagnostic'):
@@ -298,6 +330,8 @@ def search(symbol, files=(), template=None, meta=None, note=None, full=False, as
         result['note'] = 'already admitted; this run is a regression/diagnostic comparison only'
     elif exact:
         result['next'] = 'python tools/promote.py %s %s' % (symbol, exact[0] if labels else '<file>')
+    if not admitted:
+        result['attempt'] = record_attempt(symbol, rows, before, result, meta, note, attempt, profile['name'], flags, labels or [], stamp, pool)
     history = dict(time=stamp, meta=read_json(meta) if meta else None, note=note, report=result['report'],
                    rows=[{k: s[k] for k in ('input', 'result', 'exact_body', 'opcodes', 'bytes', 'fixups', 'object')} for _, s in rows])
     log = ROOT / 'build/search' / symbol.lstrip('_') / 'history.jsonl'
@@ -314,6 +348,11 @@ def main():
     ap.add_argument('--template', help='codegen_grinder spec with template/axes for controlled equivalence classes')
     ap.add_argument('--meta', help='JSON describing the round: family, prediction, falsifier')
     ap.add_argument('--note', help='durable free-text finding for this function (kept in the draft ledger)')
+    ap.add_argument('--family', action='append', help='hypothesis family (controlled vocabulary: python tools/attempts.py families); may be repeated')
+    ap.add_argument('--hypothesis', help='the specific transformation/hypothesis this round tests')
+    ap.add_argument('--prediction', help='what the compiler output should show if the hypothesis is right')
+    ap.add_argument('--falsifier', help='what result would refute it')
+    ap.add_argument('--why-repeat', help='new fact/tool/evidence that justifies repeating an already tried family')
     ap.add_argument('--full', action='store_true', help='complete ranking and aligned assembly')
     ap.add_argument('--assembler', default='masm600', help='authentic MASM version for .asm candidates')
     ap.add_argument('--asm-flag', action='append', help='assembler option for .asm candidates; may be repeated')
@@ -322,7 +361,8 @@ def main():
     args = ap.parse_args()
     from contextlib import redirect_stdout
     with redirect_stdout(sys.stderr):
-        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag, args.frame, args.pool)
+        attempt = dict(families=args.family, hypothesis=args.hypothesis, prediction=args.prediction, falsifier=args.falsifier, why_repeat=args.why_repeat)
+        result = search(args.symbol, args.files, args.template, args.meta, args.note, args.full, args.assembler, args.asm_flag, args.frame, args.pool, attempt)
     print(json.dumps(result, indent=2))
 
 

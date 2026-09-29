@@ -30,6 +30,22 @@ def parking_info(symbol, records=None):
     return dict(status='PARKED' if parking.is_active(record) else 'REOPENED', record=record)
 
 
+def triage_summary(symbol):
+    """Next-action routing from tools/triage.py (decision support, never a gate)."""
+    import triage
+    try:
+        t = triage.triage(symbol)
+    except FormatError as exc:
+        return dict(error=str(exc))
+    keep = ('blocker_class', 'lane', 'current', 'first_divergence', 'next_tool', 'next_families', 'do_not_lead_with', 'exhausted_families',
+            'stale_conclusions', 'allocation_guidance', 'last_compose', 'typedb_variant', 'semantics', 'mac', 'sweep', 'value', 'tried')
+    out = {k: t[k] for k in keep if t.get(k) is not None}
+    out['facts'] = ['%s %s' % (f['id'], f['status']) for f in t.get('relevant_facts') or []]
+    out['how'] = ('Start with next_tool and an untried family from next_families. Record every round with search.py --family/--hypothesis '
+                  '(controlled vocabulary: python tools/attempts.py families); repeat a tried family only with --why-repeat.')
+    return out
+
+
 def certify(card, raw, image, symbols):
     """Closed structural test extent, checked recursively and linearly (informational)."""
     from cfg_solver import solve
@@ -112,7 +128,14 @@ def packet(symbol, brief=False, history=False):
     known = import_symbols(ROOT / 'toolchain/sdk300/WLIB/LIBW.LIB')
     result['known_imported_symbols'] = [dict(target=r['target'], symbols=[name for name, t in known.items() if t == r['target']]) for r in card['known_fixups'] if r['target']['kind'] == 'import']
     result['best_draft'] = ledger.get('best')
+    if state == 'OPEN':
+        result['triage'] = triage_summary(symbol)
+        result['already_tried'] = result['triage'].pop('tried', None)
     result['notes'] = ledger.get('notes', [])
+    if brief and len(result['notes']) > 8:
+        # The structured history (already_tried, tools/attempts.py) replaces reading every note.
+        result['notes_omitted'] = len(result['notes']) - 8
+        result['notes'] = result['notes'][-8:]
     if history:
         result['legacy_jobs'] = ledger.get('legacy_jobs', [])
         result['legacy_draft'] = ledger.get('legacy_draft')
@@ -123,8 +146,8 @@ def packet(symbol, brief=False, history=False):
     path = ROOT / 'build/context' / (symbol.lstrip('_') + '.json')
     write_json(path, result)
     if brief:
-        result = dict(parking=result.get('parking'), size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
-                                         'direct_data_bindings', 'codegen_shape', 'intrinsic_profile_mismatch', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'legacy_jobs') if k in result})
+        result = dict(parking=result.get('parking'), size=card['extent']['size'], **{k: result[k] for k in ('symbol', 'state', 'triage', 'already_tried', 'code_segment', 'offset', 'structural_extent', 'compiler_profile', 'unit_context', 'calls',
+                                         'direct_data_bindings', 'codegen_shape', 'intrinsic_profile_mismatch', 'reconstruction_rules', 'similar_matched_functions', 'best_draft', 'notes', 'notes_omitted', 'legacy_jobs') if k in result})
     result['packet'] = relative(path)
     return result
 

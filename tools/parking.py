@@ -344,6 +344,10 @@ def park_symbol(symbol, blocker_class, reason, root=ROOT, evidence_root=None, no
                                 rank=frontier.get('key'), first_divergence_row=frontier.get('first_divergence_row')),
                   evidence=dict(notes=notes, probes=probe_notes, stagnation=stagnation), parked=date.today().isoformat(),
                   reopen_on=list(REOPEN_KEYS[blocker_class]), active=True)
+    import shared_state
+    # Shared-state fingerprint at parking time: triage lists the components that changed since
+    # as reopen candidates (a hint; reopening still needs an explicit --because).
+    record['state'] = shared_state.fingerprint(root)
     with _parking_lock(root):
         records = load_parking(root)
         old = records.get(symbol) or {}
