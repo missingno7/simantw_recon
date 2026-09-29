@@ -305,22 +305,37 @@
         "text": "Fresh seed 92903 permuter run wrote 98 variant records then exited on persistent compiler job timeout. Best measured 1192/1742 rows, 4533 bytes, cost 973.0, 61 stack diffs; earliest mismatch remains target mov si,[bp+0xc] vs candidate mov dx,[bp+0xc] at +0x0b. Shared compiler left running.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T10:54:54.259518+00:00"
+      },
+      {
+        "text": "Target case 0x21 filters hwnd against root/ribbon/main-root/private state and requires lParam's mouse-message high word 0x0201, then resolves the top window's INDEX property and checks bit 0x40 before SetFocus and SendMessage(hwnd,0x86,1,0).",
+        "origin": "build/search/MAINWNDPROC/20260929T151506-155972",
+        "recorded": "2026-09-29T15:15:10.407051+00:00"
+      },
+      {
+        "text": "Aligned WM_MOUSEACTIVATE rows show target USER ordinal 45 is BringWindowToTop, not SetFocus, and bit 0x40 set skips success with a JNE; source condition is expressed in that target polarity.",
+        "origin": "build/search/MAINWNDPROC/20260929T151845-122604",
+        "recorded": "2026-09-29T15:18:48.956103+00:00"
+      },
+      {
+        "text": "Target 0x8e8..0x8fc identifies case 0x0024: only rootWnd invokes AdjustWndMinMax, with both words of the far MINMAXINFO lParam (high selector then low offset).",
+        "origin": "build/search/MAINWNDPROC/20260929T153855-166412",
+        "recorded": "2026-09-29T15:38:58.696960+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/MAINWNDPROC/c346121540cf.c",
-      "sha256": "c346121540cf74747cfc4c921fe539c83fbda9ac422789ad008be50ec2fa34ae",
+      "source": "evidence/recovery/drafts/MAINWNDPROC/89d8586ed6b0.c",
+      "sha256": "89d8586ed6b0fbd18cbc419d4fa31681e877d7f5a1bac475322e0820feb60554",
       "key": [
         false,
         false,
-        1194,
-        -412
+        1234,
+        -340
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 1194,
+      "opcode_matches": 1234,
       "opcode_total": 1742,
-      "candidate_bytes": 4541,
+      "candidate_bytes": 4613,
       "target_bytes": 4953,
       "flags": [
         "/AL",
@@ -330,22 +345,23 @@
         "/GA",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/MAINWNDPROC/20260929T062002-157128/results.json",
-      "recorded": "2026-09-29T06:20:09.173826+00:00"
+      "origin": "build/search/MAINWNDPROC/20260929T151940-149912/results.json",
+      "recorded": "2026-09-29T15:19:43.649084+00:00"
     },
     "frontier": {
-      "source": "evidence/recovery/drafts/MAINWNDPROC/c346121540cf.c",
-      "sha256": "c346121540cf74747cfc4c921fe539c83fbda9ac422789ad008be50ec2fa34ae",
+      "source": "evidence/recovery/drafts/MAINWNDPROC/89d8586ed6b0.c",
+      "sha256": "89d8586ed6b0fbd18cbc419d4fa31681e877d7f5a1bac475322e0820feb60554",
       "key": [
         false,
         false,
         6,
-        1194
+        1234
       ],
       "first_divergence_row": 6,
-      "opcode_matches": 1194,
+      "first_divergence_class": "EXPRESSION_SHAPE",
+      "opcode_matches": 1234,
       "opcode_total": 1742,
-      "candidate_bytes": 4541,
+      "candidate_bytes": 4613,
       "target_bytes": 4953,
       "flags": [
         "/AL",
@@ -355,9 +371,9 @@
         "/GA",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/MAINWNDPROC/20260929T062002-157128/results.json",
-      "candidate": 1,
-      "recorded": "2026-09-29T06:20:09.109826+00:00"
+      "origin": "build/search/MAINWNDPROC/20260929T151940-149912/results.json",
+      "candidate": 0,
+      "recorded": "2026-09-29T15:19:43.591227+00:00"
     }
   },
   "MYENUMFUNC": {
@@ -12344,6 +12360,11 @@
         "text": "Fresh compose antedit:00F4 preflight refuses this 109/109, 322-byte contribution as not body-exact under the unit profile. The full static helper adds conflicting CONST/_DATA placements and many unresolved fixups. The required local helper at 3:16d4 remains unrecovered; the candidate UpdateEditBuffers helper failed the target probe at 201/242 opcodes (708/694 bytes).",
         "origin": "build/search/DoEditScrollLine/20260929T145412-118080",
         "recorded": "2026-09-29T14:54:12.605022+00:00"
+      },
+      {
+        "text": "Shared helper 3:16D4: the candidate uses admitted MapPoint/ScentRect declarations, tileDspHandle/tileMaskHandle views over editBufInvalidFlag[-2/-1], the EditorTileHeightStorage overlay, and far DrawSpider/DrawBalloons calls; this improved UpdateEditBuffers to 230/242 opcodes and 678/694 bytes under assigned ogi with target frame 0xA. Remaining meaningful gap is the long buffer-size expression (target shifts DX:AX, candidate reduces the <<2 step to AX), not caller code. Keep this source as the best helper candidate; do not attribute the precedence-invalid 233/242 trial.",
+        "origin": "build/search/DoEditScrollLine/20260929T153919-45184",
+        "recorded": "2026-09-29T15:39:20.599825+00:00"
       }
     ],
     "frontier": {
@@ -15464,19 +15485,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoRandAntAA/dbf3a9038588.c",
-      "sha256": "dbf3a903858868ea8b4146e7391d19469cf5b4d2d2f133b538775ac9f7599d89",
+      "source": "evidence/recovery/drafts/DoRandAntAA/2beb283d7844.c",
+      "sha256": "2beb283d78447ae93d4e1eb110f586915db2eba91e8dba7add57a620af6f0696",
       "key": [
         false,
         false,
-        206,
-        0
+        213,
+        -3
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 206,
-      "opcode_total": 215,
-      "candidate_bytes": 588,
+      "opcode_matches": 213,
+      "opcode_total": 216,
+      "candidate_bytes": 591,
       "target_bytes": 588,
       "flags": [
         "/AL",
@@ -15485,8 +15506,8 @@
         "/Oeglw",
         "/NTSIMANT1_MODULE"
       ],
-      "origin": "build/search/DoRandAntAA/20260928T060533-136140/results.json",
-      "recorded": "2026-09-28T06:05:33.887381+00:00"
+      "origin": "build/search/DoRandAntAA/20260929T153923-171568/results.json",
+      "recorded": "2026-09-29T15:39:23.604568+00:00"
     },
     "notes": [
       {
@@ -18753,6 +18774,41 @@
         "text": "The current exhaustive eight-orientation C covers the geometry and call paths, but the repeatable earliest residues are target private selector-cell loads (BF8A and BFE6-BF??) versus isolated segment fixups. The selector references are noncontiguous, so search.py --pool declines this object; ordinary far/based forms cannot recreate the private unit pool. Further local expression changes cannot resolve this concrete missing antedit unit-context dependency.",
         "origin": "build/search/DrawLegs/20260929T132026-19428",
         "recorded": "2026-09-29T13:20:28.773705+00:00"
+      },
+      {
+        "text": "Authoring inference from target case-3 disassembly: first-pass D endpoints in case 1 have reversed signs; testing all four pairs.",
+        "origin": "build/search/DrawLegs/20260929T150504-39680",
+        "recorded": "2026-09-29T15:05:10.112337+00:00"
+      },
+      {
+        "text": "Context machine evidence identifies _ed_LineTo as a linker-lowered far call at all 128 target call sites; testing far prototype.",
+        "origin": "build/search/DrawLegs/20260929T150650-18368",
+        "recorded": "2026-09-29T15:06:56.743927+00:00"
+      },
+      {
+        "text": "Testing an inline penX lvalue for all eight initial anchor stores to reproduce the target's ES:BX far write sequence.",
+        "origin": "build/search/DrawLegs/20260929T152631-30320",
+        "recorded": "2026-09-29T15:26:36.641898+00:00"
+      },
+      {
+        "text": "Target table bytes feed cwde before coordinate arithmetic; testing explicit signed char for all geometry arrays.",
+        "origin": "build/search/DrawLegs/20260929T152715-175092",
+        "recorded": "2026-09-29T15:27:20.195094+00:00"
+      },
+      {
+        "text": "Target stores the phase rotation to a BP word and loads it into BX; testing unsigned word semantics for the bounded 0..7 index.",
+        "origin": "build/search/DrawLegs/20260929T152753-164912",
+        "recorded": "2026-09-29T15:27:58.298761+00:00"
+      },
+      {
+        "text": "Testing ordinary local lifetime for phaseIndex using target's repeated BP-2 index reloads as the discriminating evidence.",
+        "origin": "build/search/DrawLegs/20260929T153103-67148",
+        "recorded": "2026-09-29T15:31:09.071754+00:00"
+      },
+      {
+        "text": "Testing unsigned phase argument for direct table indexing; the rotated phase still masks its low byte to 0..7.",
+        "origin": "build/search/DrawLegs/20260929T153513-108040",
+        "recorded": "2026-09-29T15:35:19.223569+00:00"
       }
     ],
     "best": {
@@ -51370,6 +51426,11 @@
         "text": "On the 587/705 context frontier, changed only BoyPx from PACK-based scalar to typedb-supported extern int far BoyPx: 571/708, 2,284 bytes, ENTER 38, first alignment loss at candidate +0x3e, private placement conflicts; output identical to earlier BoyPx-far draft. Resync of six unrelated globals gives 515/692, 2,244 bytes, identical to another worker's typedb-resynced draft. Far-scalar declaration is rejected on this base; retain based frontier.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T11:50:09.194782+00:00"
+      },
+      {
+        "text": "Ten compiled source variants over PROTOTYPE (SRand1, MacTickCount, SRand32, FootFall, KillSpider, YellowDeath and combinations) and REGISTER_HINT (x, y, mask, found) all produced the same OMF 06a4eac7c41a, 587/705 opcodes, 2261/2240 bytes, 5/270 fixups, ENTER 0x26 versus target 0x22, and first structural difference at candidate +0x3e. Neither no-prototype declarations nor these local register hints explain the four-byte frame excess; retain fcebf454b068.c as frontier and pivot to a new mechanism or body region.",
+        "origin": "build/search/SimKidOutside/20260929T145907-21192",
+        "recorded": "2026-09-29T14:59:07.616258+00:00"
       }
     ],
     "best": {
@@ -57922,6 +57983,16 @@
         "text": "mac_ref: Structural crosswalk medium confidence: Mac CODE 10:0x54E8 has one 11-entry dispatch for reason values 0..10, matching the Win jump table; eight uncommon numeric constants also overlap. Both frames are 14 bytes. Mac reports 7 backward branches vs 17 in Win16; compiler CFG differences do not identify a missing source loop. The best Win draft covers 333/648 opcodes and 1710/1904 bytes, and already expresses all 11 reason cases (including the 3/4 shared arm). Leaving each of 8 constants and the case-count anchor out retained this pair at rank 1 in all 9 trials. No specific C change follows; no candidate search or promotion.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T12:03:58.003644+00:00"
+      },
+      {
+        "text": "Target tri-state evidence maps found=0 to restart/game-over, found=1 to MeType 0x60 normalization plus five-arg YellowBirth/return, found=2 to list clear and SetMyLife.",
+        "origin": "build/search/YellowDeath/20260929T145830-175736",
+        "recorded": "2026-09-29T14:58:32.444245+00:00"
+      },
+      {
+        "text": "Disassembly confirms case 8 always increments expired count after optional dialog; case 9 always increments killed count after optional dialog, and case 9 does not write mode/step in the target block.",
+        "origin": "build/search/YellowDeath/20260929T150521-172216",
+        "recorded": "2026-09-29T15:05:23.961422+00:00"
       }
     ],
     "best": {
@@ -64024,19 +64095,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/myBeginSong/ef3f7dc9784c.c",
-      "sha256": "ef3f7dc9784c0e43956b524dc03e25396ff52c2e3b80eefcf3dd1fc4650b30a8",
+      "source": "evidence/recovery/drafts/myBeginSong/d6796044de26.c",
+      "sha256": "d6796044de26199f882c894f6aafad87af22011f5e5f897d0152c6f674c8c627",
       "key": [
         false,
         false,
-        1105,
-        -312
+        1201,
+        -167
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 1105,
+      "opcode_matches": 1201,
       "opcode_total": 1574,
-      "candidate_bytes": 3798,
+      "candidate_bytes": 3943,
       "target_bytes": 4110,
       "flags": [
         "/AL",
@@ -64045,23 +64116,23 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/myBeginSong/20260929T144912-108740/results.json",
-      "recorded": "2026-09-29T14:49:14.530459+00:00"
+      "origin": "build/search/myBeginSong/20260929T153451-125604/results.json",
+      "recorded": "2026-09-29T15:34:54.070462+00:00"
     },
     "frontier": {
-      "source": "evidence/recovery/drafts/myBeginSong/ef3f7dc9784c.c",
-      "sha256": "ef3f7dc9784c0e43956b524dc03e25396ff52c2e3b80eefcf3dd1fc4650b30a8",
+      "source": "evidence/recovery/drafts/myBeginSong/073b31032467.c",
+      "sha256": "073b310324679cb8841bf5a7d8f06ce21a5274fa6a6c9d21d16d71c72c748373",
       "key": [
         false,
         false,
         35,
-        1105
+        1153
       ],
       "first_divergence_row": 35,
       "first_divergence_class": "WRONG_STACK_SLOT",
-      "opcode_matches": 1105,
+      "opcode_matches": 1153,
       "opcode_total": 1574,
-      "candidate_bytes": 3798,
+      "candidate_bytes": 3849,
       "target_bytes": 4110,
       "flags": [
         "/AL",
@@ -64070,9 +64141,9 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/myBeginSong/20260929T144912-108740/results.json",
+      "origin": "build/search/myBeginSong/20260929T150531-91116/results.json",
       "candidate": 0,
-      "recorded": "2026-09-29T14:49:14.475646+00:00"
+      "recorded": "2026-09-29T15:05:33.446066+00:00"
     }
   },
   "_myBeginSound": {

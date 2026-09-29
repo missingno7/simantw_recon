@@ -217,6 +217,26 @@ def record_run(symbol, summary, out, fp, worker='permuter-queue', when=None, led
                                         time=when or now()))
 
 
+def register_winner(symbol, out, summary):
+    """Compile the permuter's best source through search.py so the drafts ledger (best/frontier) sees it.
+
+    The permuter scores candidates itself but never writes the ledger; without this a queue gain
+    stays invisible to triage, the sweep and the next worker."""
+    source = Path(summary.get('exact_source') or out / 'best.c')
+    if not source.is_file():
+        return None
+    import os
+    env = dict(os.environ, SIMANTW_WORKER='permuter-queue')
+    chain = ', '.join(map(str, summary.get('best_chain') or []))[:300]
+    proc = subprocess.run([sys.executable, str(ROOT / 'tools/search.py'), symbol, str(source), '--family', 'PERMUTER_SEARCH',
+                           '--hypothesis', 'permuter queue winner: ' + (chain or 'baseline')], cwd=ROOT, capture_output=True, text=True, env=env)
+    try:
+        result = json.loads(proc.stdout)
+        return dict(opcodes=result['best'].get('opcodes'), result=result['best'].get('result'), ledger=result.get('draft_ledger'))
+    except (ValueError, KeyError):
+        return dict(error=(proc.stderr or proc.stdout)[-300:])
+
+
 def run(budget_minutes=120.0, per_target=900, parallel=2):
     queue = load_queue()
     fp = shared_state.fingerprint()
@@ -251,8 +271,17 @@ def run(budget_minutes=120.0, per_target=900, parallel=2):
                 rec = record_run(item['symbol'], summary, out, fp, ledger_opcodes=queued)
                 item.update(status='DONE', finished=now(), outcome=rec['outcome'], best=(summary.get('best') or {}).get('opcode_matches'),
                             exact_source=summary.get('exact_source'), provenance=summary.get('best_source_class'))
+                if rec['outcome'] in ('IMPROVED', 'EXACT', 'BODY_EXACT'):
+                    item['registered'] = register_winner(item['symbol'], out, summary)
             else:
-                item.update(status='FAILED', finished=now(), error=(proc.stderr.read() if proc.stderr else '')[-600:])
+                error = (proc.stderr.read() if proc.stderr else '')[-600:]
+                if 'compiler service' in error and not item.get('retried'):
+                    # A transient service heartbeat lapse under load is not a property of the target: retry once.
+                    item.update(status='QUEUED', retried=True, last_error=error)
+                    pending.append(item)
+                    write_json(QUEUE, queue)
+                    continue
+                item.update(status='FAILED', finished=now(), error=error)
             finished.append(item['symbol'])
             write_json(QUEUE, queue)
     for item in pending:
