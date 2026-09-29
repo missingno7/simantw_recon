@@ -329,7 +329,7 @@ def sweep(symbols=None, force=False, derive=(), verify=False, compose=False, adm
         before_best, before_front = entry.get('best'), entry.get('frontier')
         outcome = classify_change(before_best, before_front, results)
         refreshed = []
-        origin = relative(OUT / 'latest.json')
+        origin = relative(OUT / (run_stamp + '.json'))
         usable = [r for r in results if r['eval'].get('rank') is not None and not r.get('reused')]
         # Re-score stored drafts first, then offer every evaluation to store(): a dropped
         # stub frontier is re-seeded and a now-better frontier/derived draft can replace the best.
@@ -395,7 +395,7 @@ def sweep(symbols=None, force=False, derive=(), verify=False, compose=False, adm
                                                                           divergence_class=(best['eval'].get('first_divergence') or {}).get('kind'))),
                                          outcome={'NEWLY_EXACT': 'EXACT', 'NEWLY_BODY_EXACT': 'BODY_EXACT', 'BODY_EXACT': 'NEUTRAL', 'IMPROVED': 'IMPROVED', 'RESCORED': 'NEUTRAL',
                                                   'REGRESSED': 'REGRESSED', 'COMPILE_FAILED': 'COMPILE_FAILED'}.get(outcome, 'NEUTRAL'),
-                                         report=relative(OUT / 'latest.json'), session=run_stamp, state=fp))
+                                         report=relative(OUT / (run_stamp + '.json')), session=run_stamp, state=fp))
         report_rows.append(row)
     write_json(STATE, state)
     counts = {}
@@ -413,7 +413,8 @@ def sweep(symbols=None, force=False, derive=(), verify=False, compose=False, adm
                   compile_failed=[r['symbol'] for r in report_rows if r['outcome'] == 'COMPILE_FAILED'],
                   rows=report_rows, notes=notes,
                   promotion='NONE by the sweep itself: every admission above ran promote.py fresh gates')
-    write_json(OUT / 'latest.json', report)
+    if not symbols and not limit:
+        write_json(OUT / 'latest.json', report)
     write_json(OUT / (run_stamp + '.json'), report)
     if not symbols and not limit:
         write_json(OUT / 'last.json', dict(stamp=run_stamp, fingerprint=fp))
@@ -424,7 +425,9 @@ def sweep(symbols=None, force=False, derive=(), verify=False, compose=False, adm
                          {k: (v.get('passed') if k == 'verify' else v.get('strict_pass') if isinstance(v, dict) else v)
                           for k, v in r['route'].items() if k in ('verify', 'compose', 'persist', 'admit')}
                          for r in report_rows if r.get('route')}
-    if report['compiled']:
+    meaningful = any(k not in ('UNCHANGED', 'RESCORED') for k in counts)
+    # Durable audit only for full sweeps or real changes; triage's per-function refreshes stay in build/.
+    if report['compiled'] and (not symbols or meaningful):
         write_json(DURABLE / (run_stamp + '.json'), durable)
     return report
 
@@ -459,7 +462,7 @@ def main():
     if info:
         summary['shared_changes'] = {k: info[k] for k in ('last_sweep', 'changed', 'sweep_triggers')}
     summary['routes'] = {r['symbol']: r['route'] for r in report['rows'] if r.get('route')}
-    summary['report'] = relative(OUT / 'latest.json')
+    summary['report'] = relative(OUT / (report['stamp'] + '.json'))
     print(json.dumps(summary, indent=2, default=str))
 
 
