@@ -480,6 +480,13 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
                tried=attempts.summary_lines(fam, families) if fam or families else None,
                relevant_facts=[f for f in relevant_facts(prefixes)][:12],
                semantics=emu, mac=mac_evidence(symbol), reopen_hint=reopen)
+    try:
+        import xver
+        dos = xver.triage_evidence(symbol)
+    except Exception:  # an absent or changed DOS project never breaks triage
+        dos = None
+    if dos:
+        out['dos_reference'] = dos
     if cls in ('REGISTER_ALLOCATION', 'HOME_ORDER'):
         out['allocation_guidance'] = ALLOCATION_TOOL + ' ' + ALLOCATION_ADVICE
         out['next_tool'] = out['next_tool'].replace('FLAGS', ' '.join(compiler_profiles.flags_for(symbol, card['segment_name'])))
@@ -490,6 +497,9 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
     if live_typedb and draft:
         out['typedb_check'] = typedb_live(draft)
     out['gainless_streak'] = attempts.gainless_streak(attempts.load(symbol))
+    if dos and lane in ('PARKED', 'BACKGROUND_PERMUTER'):
+        out['lane'] = lane = 'TAIL_INTERACTIVE'
+        out['lane_reason'] = 'byte-exact DOS reference gives the original source shape (new evidence)'
     out['value'] = value_per_hour(out, ev, size, fam)
     return out
 
@@ -623,6 +633,8 @@ def render(t):
              'missing regions : %s' % '; '.join('%s..%s (%d instr: %s)' % (g['start'], g['end'], g['instructions'], ' | '.join(g['first'])) for g in t['gap_regions']['missing_in_draft'][:3]) if (t.get('gap_regions') or {}).get('missing_in_draft') else None,
              'extra regions   : %s' % '; '.join('%s..%s (%d instr)' % (g['start'], g['end'], g['instructions']) for g in t['gap_regions']['extra_in_draft'][:3]) if (t.get('gap_regions') or {}).get('extra_in_draft') else None,
              'mac             : %s' % json.dumps(t['mac'])[:200],
+             'dos reference   : %s %s (%s) -> %s' % (t['dos_reference']['confidence'], t['dos_reference']['dos_function'],
+                                                   t['dos_reference']['dos_source'], t['dos_reference']['command']) if t.get('dos_reference') else None,
              'already tried   :']
     lines += ['  - ' + x for x in (t.get('tried') or ['nothing recorded'])]
     if t.get('allocation_guidance'):
