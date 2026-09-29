@@ -80,6 +80,14 @@ PLAYBOOK = {
     'NO_DRAFT': (['SEMANTICS', 'CFG_STRUCTURE', 'TYPE'], [], ['MSC7-C'], 'python tools/context.py {sym}  # write the first complete draft'),
 }
 
+# MSC7-M5/M7: functions whose frame size / BP offsets move with C2's heap phase (TMP length and the
+# functions compiled before them). Their frame residue must be judged in unit context, never ground.
+PHASE_SENSITIVE = {'_AddIndex', '_FileSelect', '_MakeBalloon', '_Mini_DrawMapI', '_ProcessPost', '_UpdateListBox',
+                   '_myBeginSong', '_EditToolsMenu', '_GtRegisterClass'}
+PHASE_NOTE = ('Heap-phase sensitive (MSC7-M5): C2 reserves a dead struct/array copy depending on its heap phase, so '
+              'the frame size and BP offsets depend on the functions compiled before it. Judge frame/home residue '
+              'in its unit context (tu_assembly compose / unit build), never by source tweaks or a chosen TMP (MSC7-M7).')
+
 ALLOCATION_ADVICE = ('MSC7-R0: /Oe allocates registers to variables OR SUBEXPRESSIONS by frequency of use. Repeated address '
                      'calculations, index expressions, far-pointer halves and compiler temporaries compete with named locals. '
                      'Count uses of every repeated expression on both sides before touching declaration order or `register` '
@@ -467,6 +475,8 @@ def triage(symbol, fp=None, live_typedb=False, run_emu=False, parked=None, refre
                semantics=emu, mac=mac_evidence(symbol), reopen_hint=reopen)
     if cls in ('REGISTER_ALLOCATION', 'HOME_ORDER'):
         out['allocation_guidance'] = ALLOCATION_ADVICE
+    if symbol in PHASE_SENSITIVE:
+        out['heap_phase'] = PHASE_NOTE
     if cls not in ('EXACT_PENDING', 'PLACEMENT') and (best or {}).get('aligned_asm'):
         out['gap_regions'] = gap_regions(best['aligned_asm'])
     if live_typedb and draft:
@@ -609,6 +619,8 @@ def render(t):
     lines += ['  - ' + x for x in (t.get('tried') or ['nothing recorded'])]
     if t.get('allocation_guidance'):
         lines.append('allocation      : ' + t['allocation_guidance'])
+    if t.get('heap_phase'):
+        lines.append('heap phase      : ' + t['heap_phase'])
     if t.get('relevant_facts'):
         lines.append('facts           : ' + '; '.join('%s %s' % (f['id'], f['status']) for f in t['relevant_facts']))
     return '\n'.join(x for x in lines if x)

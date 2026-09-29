@@ -98,7 +98,9 @@ def _compile_session(jobs, compiler='msc700', timeout=None):
         flags=job['flags']
         if any(any(c in f for c in '\r\n><&|') for f in flags):raise FormatError('unsafe compiler flag')
         jobdir=directory/('B%04d'%(i//64));jobdir.mkdir(exist_ok=True)
-        if i%64==0:lines += ['cd W:\\'+jobdir.name, 'set TMP=W:\\'+jobdir.name, 'set TEMP=W:\\'+jobdir.name]
+        # TMP stays W:\ (length 3): the TMP path length shifts C2's heap phase (MSC7-M5/M6) and
+        # W:\B0000 (length 8) broke two admitted /Oegilw units. Jobs run sequentially, so one TMP is safe.
+        if i%64==0:lines += ['cd W:\\'+jobdir.name]
         shutil.copyfile(ROOT/job['source'],jobdir/(stem+'.C'))
         compile_command='W:\\CAPCL /c /Fo'+stem+'.OBJ '+' '.join(flags)+' '+stem+'.C > '+stem+'.LOG'
         worker=['echo start > '+stem+'.BEG',compile_command,'if errorlevel 1 goto failed','echo finished > '+stem+'.END','goto end',':failed','echo FAILED > '+stem+'.ERR',':end']

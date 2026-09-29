@@ -355,6 +355,35 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Evidence: evidence/codegen-facts/MSC7-PRAGMA-P1..P4 and build/workers/sup-pragma/REPORT.md.
 - Admission goes through layout/pragma-review.json: supervisor-reviewed, EXACT_STEERED, and only after a strict complete-member proof.
 
+**MSC7-M1: `-Bm` is a fixed KB cap on C2's pool heap. VERIFIED.**
+- CL always passes `-Bm 2048` from its option table (CL.EXE VA 0x4205a4); the value does not depend on free memory.
+- An undocumented `/Bm<n>` overrides it. C2 checks the cap in its pool allocator (0x4231d8).
+
+**MSC7-M2: heap exhaustion is binary. VERIFIED.**
+- On the first failure C2 prints warning C4703 and recompiles the function without global optimisation. The code is byte-identical to `/Ow`.
+- A second failure is fatal C1002.
+
+**MSC7-M3: memory limits (`-Bm`, DOSBox/DPMI memory, Windows hosting, C7PATB, TU position) explain the allocation residues. FALSIFIED.**
+- 1,490 end-to-end compiles of all 26 parked frontier/best drafts showed only three regimes: fatal, degraded or normal. No register or home order changed.
+- A unit context raises the threshold by only 0-6 KB.
+
+**MSC7-M4: C7PATB flips one loader flag byte in CL.EXE and MS32KRNL.DLL ("DPMI virtual memory supported"), with no code-generation effect. VERIFIED.**
+
+**MSC7-M5: heap phase. C2 sometimes reserves an unused dead copy of a struct or array local in the frame, depending on its heap's 16-byte alignment phase. VERIFIED.**
+- The phase shifts with the TMP path length (period 16) and with the functions compiled earlier in the same file.
+- Only the ENTER size and BP offsets change, never registers.
+- 9 of 333 open drafts vary with it: AddIndex, FileSelect, MakeBalloon, Mini_DrawMapI, ProcessPost, UpdateListBox, myBeginSong, EditToolsMenu, GtRegisterClass.
+- At some phases, AddIndex (0x18), myBeginSong (0x150) and GtRegisterClass (0x4e) get the target frame.
+
+**MSC7-M6: the admitted sources' phase window is TMP path length mod 16 in {2..5}. SUPPORTED.**
+- The compiler service's `W:\` is inside it, and all 406 admitted sources are exact.
+- The reference batch runner's `W:\B0000` is outside it: tu_gr_7712_IsMMMidiAvail_21 and tu_text_7370_NbFinalStatus_14 stop reproducing.
+- All 23 admitted `/Oi` sources are exact only in the window.
+
+**MSC7-M7: judge the frame residue of a phase-sensitive function in its unit context, never by choosing a phase per function. SUPPORTED.**
+- AddIndex inside its admitted unit, at the normal TMP, gets the target frame (stack differences drop from 27 to 13), and the unit's five admitted functions stay identical.
+- Evidence for M1-M7: `evidence/codegen-facts/MSC7-M/` (REPORT.md, summary.json, scripts, result tables).
+
 ## 7. Unexplained residuals
 
 - **U1 `_WaitHundredths`**: 22/22 opcodes. The long add uses AX:DX where the target uses CX:BX.
