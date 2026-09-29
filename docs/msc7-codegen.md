@@ -161,6 +161,10 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 - Common subexpressions (address arithmetic, repeated index expressions, far-pointer halves) compete with named locals for SI/DI.
 - That explains why source-level variable counts (X2), declaration order (R13/F7) and `register` (F8) do not predict the choice.
 - Consequence: when a residue is a register choice, look at which EXPRESSIONS the original repeats, and how often, not only at the named variables.
+- Automated probe (2026-09-29, `tools/permuter_queue.py --families CSE_SUBEXPRESSION,LOCAL_LIFETIME`): 15-minute permuter runs restricted to temporary/CSE and lifetime mutations on the 15 parked allocation functions and 10 background-lane tails.
+  - One gain: `_DoRandAntAA` 206 → 213/216 via `inline_temp_multi`, which recomputes `attribute & 7` at its 4 uses instead of keeping the named temporary `dirlow`.
+  - 17 runs were neutral; the rest were compiler-timeout aborts, since fixed.
+  - The effect is real but rare as a single random mutation. The remaining residues need a targeted count of the repeated expressions on the target side, not more blind mutation.
 
 ## 3. Expressions and CSE
 

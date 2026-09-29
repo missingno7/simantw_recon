@@ -340,6 +340,21 @@
         "text": "The target uses JNE-to-next-case after both hwnd comparisons; source now expresses a root early return and a negative mainRoot guard before the two stores.",
         "origin": "build/search/MAINWNDPROC/20260929T155249-173520",
         "recorded": "2026-09-29T15:52:52.528965+00:00"
+      },
+      {
+        "text": "Target 0x123b..0x127d is the WM_PALETTECHANGED handler: MakeProcInstance(MYENUMFUNC,hInst), EnumChildWindows(rootWnd,proc,0), FreeProcInstance, then conditional InvalidateRect(ribbonBarWnd). Enumeration runs only when activeAppFlag==0.",
+        "origin": "build/search/MAINWNDPROC/20260929T155749-67976",
+        "recorded": "2026-09-29T15:57:52.167716+00:00"
+      },
+      {
+        "text": "Target 0x8f8 emits push cs; near call; add sp,4 after the far MINMAXINFO argument. An isolated extern far call lacks the helper definition needed to test same-TU far-call shortening; the preserved AdjustWndMinMax draft provides a concrete dependency to investigate.",
+        "origin": "build/search/MAINWNDPROC/20260929T161536-113608",
+        "recorded": "2026-09-29T16:15:40.307885+00:00"
+      },
+      {
+        "text": "For 0x123b..0x127d, generic two-argument far callback, three-argument actual callback, and direct far function all compile to the same pointer-address fixups (target wants a code-segment selector relocation plus immediate 0x1c38). Near-pointer forms change to push cs plus a function relocation but still do not match; stop guessing callback typedefs in the isolated function context.",
+        "origin": "build/search/MAINWNDPROC/20260929T161657-134164",
+        "recorded": "2026-09-29T16:16:58.100925+00:00"
       }
     ],
     "best": {
@@ -13488,19 +13503,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoKeyDown/e0b5b2e28cea.c",
-      "sha256": "e0b5b2e28cea5794efa163fafdd95a72d3ab073c90767a3dc5bbc3554f872427",
+      "source": "evidence/recovery/drafts/DoKeyDown/91886050fb8b.c",
+      "sha256": "91886050fb8b748c2f620bc2a593cfa5beeaa8111625b5a7c2797b0ee90b3d75",
       "key": [
         false,
         false,
-        365,
-        -108
+        431,
+        -12
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 365,
+      "opcode_matches": 431,
       "opcode_total": 514,
-      "candidate_bytes": 1277,
+      "candidate_bytes": 1373,
       "target_bytes": 1385,
       "flags": [
         "/AL",
@@ -13510,8 +13525,8 @@
         "/GA",
         "/NTSIMANT_MODULE"
       ],
-      "origin": "build/search/DoKeyDown/20260929T105845-182728/results.json",
-      "recorded": "2026-09-29T10:58:46.157884+00:00"
+      "origin": "build/search/DoKeyDown/20260929T165143-74732/results.json",
+      "recorded": "2026-09-29T16:51:44.438845+00:00"
     },
     "notes": [
       {
@@ -13794,19 +13809,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DoLifeExchange/14a73ef65e29.c",
-      "sha256": "14a73ef65e2942ed2c1caf1acf9eaa08968e4ae928bee192e1ae2925e7366bde",
+      "source": "evidence/recovery/drafts/DoLifeExchange/35a7316ee2b8.c",
+      "sha256": "35a7316ee2b80f8a61ac674bf2af46e2472de9af136d1613570ca0c855c42462",
       "key": [
         false,
         false,
         778,
-        -360
+        -354
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
       "opcode_matches": 778,
       "opcode_total": 1258,
-      "candidate_bytes": 3019,
+      "candidate_bytes": 3025,
       "target_bytes": 3379,
       "flags": [
         "/AL",
@@ -13815,8 +13830,8 @@
         "/Oeglw",
         "/NTSIMONE_MODULE"
       ],
-      "origin": "build/search/DoLifeExchange/20260927T084716-119280/results.json",
-      "recorded": "2026-09-27T08:47:21.130502+00:00"
+      "origin": "build/search/DoLifeExchange/20260929T165226-130172/results.json",
+      "recorded": "2026-09-29T16:52:28.687829+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/DoLifeExchange/4be42db082ec.c",
@@ -17657,22 +17672,117 @@
         "text": "Refreshed after unsigned BalloonBitmap dimensions gained nine opcodes; authoring next target bitmap-flag branch.",
         "origin": "build/search/DrawBalloons/20260929T155001-124836",
         "recorded": "2026-09-29T15:50:02.487352+00:00"
+      },
+      {
+        "text": "Target block 0x172 onward explicitly multiplies the destination height, subtracts es:[si+0xa], then subtracts the saved top local before pushing the copy Y argument; the algebraically equivalent pixel.y expression in the draft cannot produce this sequence.",
+        "origin": "build/search/DrawBalloons/20260929T155548-88248",
+        "recorded": "2026-09-29T15:55:50.257294+00:00"
+      },
+      {
+        "text": "Reconstruct target CFG from aligned rows: displayType bit set transfers to a later Mono label; clear falls through to flags, whose clear path is Convert and set path is CopyMask. Target call blocks end in jumps to shared post-render flow.",
+        "origin": "build/search/DrawBalloons/20260929T155836-174120",
+        "recorded": "2026-09-29T15:58:38.530282+00:00"
+      },
+      {
+        "text": "Target's three copy call sites each build destination height and width in their own argument setup; the draft cached both dimensions across the branch, preventing alignment in the missing 0x165..0x1f2 call blocks. Direct argument products reproduce the observed right-to-left call evaluation.",
+        "origin": "build/search/DrawBalloons/20260929T160025-81492",
+        "recorded": "2026-09-29T16:00:26.060120+00:00"
+      },
+      {
+        "text": "Typedb evidence distinguishes pointer-to-volatile from volatile pointer object. Target saves the mem_Lock selector at [bp-8], keeps its offset in SI, and accesses fields through es:[si+2/+8/+0xa]; this declaration tests that observed lifetime/type behavior.",
+        "origin": "build/search/DrawBalloons/20260929T160204-131976",
+        "recorded": "2026-09-29T16:02:04.465814+00:00"
+      },
+      {
+        "text": "Typedb evidence distinguishes pointer-to-volatile from volatile pointer object. Target saves the mem_Lock selector at [bp-8], keeps its offset in SI, and accesses fields through es:[si+2/+8/+0xa]; this declaration tests that observed lifetime/type behavior.",
+        "origin": "build/search/DrawBalloons/20260929T160227-118028",
+        "recorded": "2026-09-29T16:02:28.069940+00:00"
+      },
+      {
+        "text": "Prior goto labels optimized to the existing if/else bytes. This round uses switch case layout to test a distinct CFG spelling against target's test/near-jump and three separate call blocks.",
+        "origin": "build/search/DrawBalloons/20260929T160334-146200",
+        "recorded": "2026-09-29T16:03:37.775666+00:00"
+      },
+      {
+        "text": "The prior direct-dimension compile aligned the repeated imul/push sequences at the copy-call blocks despite lower aggregate score. This round changes only their containing branch order to follow target's Convert/CopyMask/Mono layout.",
+        "origin": "build/search/DrawBalloons/20260929T160514-183540",
+        "recorded": "2026-09-29T16:05:15.135049+00:00"
+      },
+      {
+        "text": "The target dispatch reuses SI for the locked bitmap offset and reloads only ES from its saved selector home; test ordinary local pointer lifetime after per-call dimension expansion to explain this reuse.",
+        "origin": "build/search/DrawBalloons/20260929T160549-163164",
+        "recorded": "2026-09-29T16:05:50.952572+00:00"
+      },
+      {
+        "text": "Target-derived correction: after adding four to pixel.x and subtracting balloon height/four from pixel.y, target subtracts MapPnt.x*tileWidth and MapPnt.y*tileHeight from those coordinates before bitmap dispatch.",
+        "origin": "build/search/DrawBalloons/20260929T160726-107404",
+        "recorded": "2026-09-29T16:07:27.937979+00:00"
+      },
+      {
+        "text": "Target uses two coordinate spaces: it saves the original balloon top before map-origin adjustment for tile row division, then uses adjusted top/left for Copy* and dirty rectangle; column index subtracts MapPnt.x after dividing absolute left. Preserve both values in the C reconstruction.",
+        "origin": "build/search/DrawBalloons/20260929T161019-9336",
+        "recorded": "2026-09-29T16:10:20.134942+00:00"
+      },
+      {
+        "text": "Target dirty scan divides the preserved absolute top and left, computes row/column counts as ceil(bitmap dimension/tile dimension)+1, subtracts MapPnt tile origin from the starting index, scans that many columns, and increments the row base by editWidth each row.",
+        "origin": "build/search/DrawBalloons/20260929T161249-127356",
+        "recorded": "2026-09-29T16:12:50.638295+00:00"
+      },
+      {
+        "text": "Target preserves ceil(bitmap width/tileWidth)+1 in its own local and reloads that value into a per-row countdown; use distinct C locals for the invariant count and remaining count.",
+        "origin": "build/search/DrawBalloons/20260929T161326-44552",
+        "recorded": "2026-09-29T16:13:27.163562+00:00"
+      },
+      {
+        "text": "The aligned target orders dirty scan setup as row quotient and row base; first-column quotient; width quotient saved to its own home; editWidth*editHeight limit; width count increment; height count increment; then row base plus first column minus map origin. The prior variant computed the count in the inner loop.",
+        "origin": "build/search/DrawBalloons/20260929T161532-178304",
+        "recorded": "2026-09-29T16:15:33.986909+00:00"
+      },
+      {
+        "text": "The explicit screenLeft/screenTop locals preserved both coordinate spaces but shifted alignment. This source keeps absolute left/top and expresses relative positions only in the copy and invalidation arguments, matching target's separate use of absolute values for dirty-tile division.",
+        "origin": "build/search/DrawBalloons/20260929T161624-68956",
+        "recorded": "2026-09-29T16:16:25.828191+00:00"
+      },
+      {
+        "text": "Target target dataflow saves absolute left before subtracting MapPnt.x*tileWidth and preserves absolute top in DI before subtracting MapPnt.y*tileHeight; adjusted left/top feed rendering, absolute values feed row/column indexing.",
+        "origin": "build/search/DrawBalloons/20260929T161732-126204",
+        "recorded": "2026-09-29T16:17:34.697123+00:00"
+      },
+      {
+        "text": "Target mutates the left stack home by subtracting mapX*tileWidth and computes adjusted top from the saved absolute top and mapY*tileHeight. This tests direct assignment spelling on that single transform region.",
+        "origin": "build/search/DrawBalloons/20260929T161931-143812",
+        "recorded": "2026-09-29T16:19:32.059595+00:00"
+      },
+      {
+        "text": "Target calculations use two related positions: original pixel position scaled for dirty-tile indexing and viewport-relative draw position used by copy and invalidation. This round expresses the latter as a two-word MapPoint value.",
+        "origin": "build/search/DrawBalloons/20260929T162123-183516",
+        "recorded": "2026-09-29T16:21:24.250472+00:00"
+      },
+      {
+        "text": "Target's saved left/top values are 16-bit x/y coordinate pairs in two spaces: absolute values for tile division and adjusted values for Copy*/invalidation. This round encodes both as MapPoint locals.",
+        "origin": "build/search/DrawBalloons/20260929T162329-180056",
+        "recorded": "2026-09-29T16:23:30.227304+00:00"
+      },
+      {
+        "text": "Ten compiled source changes since the latest frontier gain did not improve beyond 240/317. Productive target-derived changes this pass: unsigned BalloonBitmap width/height gained nine opcodes by matching endpoint DIVs; ordinary local bitmap pointer plus per-call dimension expressions gained 19 opcodes over the prior local-lifetime candidate; viewport-origin subtraction added three opcodes. Target keeps absolute balloon pixels for dirty-tile divisions and map-adjusted pixels for copy/invalidation. The count-loop and MapPoint alternatives did not beat the 240/317 frontier; current frame remains 8 bytes smaller than target. No body-exact candidate.",
+        "origin": "build/search/DrawBalloons/20260929T162418-80728",
+        "recorded": "2026-09-29T16:24:19.373506+00:00"
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DrawBalloons/9b57f3fd25f9.c",
-      "sha256": "9b57f3fd25f973e3684dbde12d3b6e1360a25453772f88c98ed30cfa4025a510",
+      "source": "evidence/recovery/drafts/DrawBalloons/639a166b03e8.c",
+      "sha256": "639a166b03e8130547a5599b09c5dee8f179343c4f26732b78592b2ef4458f7f",
       "key": [
         false,
         false,
-        218,
-        -40
+        240,
+        -26
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 218,
+      "opcode_matches": 240,
       "opcode_total": 317,
-      "candidate_bytes": 857,
+      "candidate_bytes": 871,
       "target_bytes": 897,
       "flags": [
         "/AL",
@@ -17681,8 +17791,8 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/DrawBalloons/20260929T154913-142120/results.json",
-      "recorded": "2026-09-29T15:49:15.036118+00:00"
+      "origin": "build/search/DrawBalloons/20260929T160726-107404/results.json",
+      "recorded": "2026-09-29T16:07:27.856721+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/DrawBalloons/40a37fcec629.c",
@@ -20565,19 +20675,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/DrawSpider/fdc901bbef71.c",
-      "sha256": "fdc901bbef715eb0779193342a5f5cdcbcd1b6cd6583b7894bc22ea598aaa176",
+      "source": "evidence/recovery/drafts/DrawSpider/ecb4b55b0b44.c",
+      "sha256": "ecb4b55b0b44a5eb0030adbaadc3de7aae441cd5ad426d644587ce4fb1d33051",
       "key": [
         false,
         false,
-        341,
-        -3
+        356,
+        -7
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 341,
+      "opcode_matches": 356,
       "opcode_total": 477,
-      "candidate_bytes": 1405,
+      "candidate_bytes": 1409,
       "target_bytes": 1402,
       "flags": [
         "/AL",
@@ -20586,8 +20696,8 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/DrawSpider/20260928T130825-86452/results.json",
-      "recorded": "2026-09-28T13:08:35.714623+00:00"
+      "origin": "build/search/DrawSpider/20260929T165103-115288/results.json",
+      "recorded": "2026-09-29T16:51:05.065303+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/DrawSpider/f549ae84db37.c",
@@ -39520,19 +39630,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/MciOutWave/6347ccc2e880.c",
-      "sha256": "6347ccc2e88084193f227fc62bddedcb9e88a29732d39d10aaa14995e37ffd62",
+      "source": "evidence/recovery/drafts/MciOutWave/96bb579da9b4.c",
+      "sha256": "96bb579da9b45b44e3608d779d917ac92a28e897e879fca7fc80342205abfcf7",
       "key": [
         false,
         false,
-        229,
-        -105
+        237,
+        -118
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 229,
-      "opcode_total": 302,
-      "candidate_bytes": 893,
+      "opcode_matches": 237,
+      "opcode_total": 310,
+      "candidate_bytes": 906,
       "target_bytes": 788,
       "flags": [
         "/AL",
@@ -39541,8 +39651,8 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/MciOutWave/20260929T012623-114420/results.json",
-      "recorded": "2026-09-29T01:26:24.677211+00:00"
+      "origin": "build/search/MciOutWave/20260929T164249-57468/results.json",
+      "recorded": "2026-09-29T16:42:50.784330+00:00"
     },
     "notes": [
       {
@@ -39592,18 +39702,19 @@
       }
     ],
     "frontier": {
-      "source": "evidence/recovery/drafts/MciOutWave/6347ccc2e880.c",
-      "sha256": "6347ccc2e88084193f227fc62bddedcb9e88a29732d39d10aaa14995e37ffd62",
+      "source": "evidence/recovery/drafts/MciOutWave/96bb579da9b4.c",
+      "sha256": "96bb579da9b45b44e3608d779d917ac92a28e897e879fca7fc80342205abfcf7",
       "key": [
         false,
         false,
         0,
-        229
+        237
       ],
       "first_divergence_row": 0,
-      "opcode_matches": 229,
-      "opcode_total": 302,
-      "candidate_bytes": 893,
+      "first_divergence_class": "FRAME_SIZE",
+      "opcode_matches": 237,
+      "opcode_total": 310,
+      "candidate_bytes": 906,
       "target_bytes": 788,
       "flags": [
         "/AL",
@@ -39612,9 +39723,9 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/MciOutWave/20260929T012623-114420/results.json",
+      "origin": "build/search/MciOutWave/20260929T164249-57468/results.json",
       "candidate": 0,
-      "recorded": "2026-09-29T01:26:24.633107+00:00"
+      "recorded": "2026-09-29T16:42:50.733552+00:00"
     }
   },
   "_MemRChr": {
@@ -64327,19 +64438,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/myBeginSound/e7a9a7f12209.c",
-      "sha256": "e7a9a7f1220913b9c75c150f4846135c8a267ca2b1cdd1e45301452e46199d04",
+      "source": "evidence/recovery/drafts/myBeginSound/7f262ac3f125.c",
+      "sha256": "7f262ac3f125ab1445ed3d726789e80ca57cf669c62e97f1f93120709ef5b464",
       "key": [
         false,
         false,
-        578,
-        -144
+        642,
+        -174
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 578,
-      "opcode_total": 818,
-      "candidate_bytes": 2407,
+      "opcode_matches": 642,
+      "opcode_total": 829,
+      "candidate_bytes": 2437,
       "target_bytes": 2263,
       "flags": [
         "/AL",
@@ -64348,8 +64459,8 @@
         "/Oegilw",
         "/NTGR_MODULE"
       ],
-      "origin": "build/search/myBeginSound/20260929T091440-133408/results.json",
-      "recorded": "2026-09-29T09:14:42.101476+00:00"
+      "origin": "build/search/myBeginSound/20260929T163239-95920/results.json",
+      "recorded": "2026-09-29T16:32:41.436193+00:00"
     },
     "frontier": {
       "source": "evidence/recovery/drafts/myBeginSound/f287f7aadade.c",

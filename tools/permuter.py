@@ -319,7 +319,20 @@ class Permuter:
         directory = self.out / 'batches' / f'{phase}_{self.batch_no:05d}'
         spec = {'symbol': self.symbol, 'compiler': 'msc700', 'flags': self.flags,
                 'sources': [row['source'] for row in rows], 'max_candidates': len(rows)}
-        report = codegen_grinder.run(spec, relative(directory), cache=True)
+        try:
+            report = codegen_grinder.run(spec, relative(directory), cache=True)
+        except FormatError as exc:
+            # One pathological mutant (e.g. a compile that exceeds the host timeout) must not end the
+            # whole search: bisect the batch and record the isolated job as a failed compile.
+            if 'timeout' not in str(exc) and 'compiler service' not in str(exc):
+                raise
+            self.counts['compiler_batch_retries'] = self.counts.get('compiler_batch_retries', 0) + 1
+            if len(rows) == 1:
+                comparison = {'result': 'COMPILE_FAILED', 'diagnostic': {}, 'error': str(exc)}
+                self.counts['evaluations'] += 1
+                return [(rows[0], {'comparison': comparison, 'receipt': {}, 'candidate': 0}, score(comparison), None)]
+            middle = len(rows) // 2
+            return self._run_batch(rows[:middle], phase) + self._run_batch(rows[middle:], phase)
         self.counts['evaluations'] += len(rows)
         self.counts['compiler_misses'] += report.get('cache', {}).get('misses', 0)
         by_index = {row['candidate']: row for row in report['results']}
