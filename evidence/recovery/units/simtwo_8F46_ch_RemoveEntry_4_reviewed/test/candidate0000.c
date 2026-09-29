@@ -8,7 +8,7 @@
  * private literal contribution in the compiler's DATA layout.
  *
  * Public DATA and shared private state follow the target from _cacheHook at
- * B580 through the final cache-owned literal byte at B7BD.  The separate literal
+ * B580 through the final cache-owned literal byte at B65B.  The separate literal
  * assignments preserve the NUL-terminated strings in contribution order.
  */
 
@@ -156,7 +156,7 @@ int far ch_CleanupTable(unsigned int handle)
 void far pool_stub_ch_DumpOldest(void) { volatile int t; t = 0; }
 void far pool_stub_ch_GetPrime(void) { volatile int t; t = 0; }
 
-/* Scaffold the private strings that follow _ch_CleanupTable's literals. */
+/* Scaffold the later cache strings; the index literals belong to simtwo:9A86. */
 void far cache_private_literal_scaffold_tail(void)
 {
     volatile char far *literal;
@@ -164,23 +164,7 @@ void far cache_private_literal_scaffold_tail(void)
     literal = "no memory over 0 in age!";
     literal = "ch_DumpOldest(%u)(%u)\n";
     literal = "primes";
-    literal = "%s.ndx";
-    literal = "Index file missing";
-    literal = "Not enough memory to read index file in.";
-    literal = "%s.ndx";
-    literal = "Can't create index file";
-    literal = "index";
-    literal = "%s.ndx";
-    literal = "Index file missing";
-    literal = "Error-attempt to delete index with there weren't any";
-    literal = "record";
-    literal = "Not enough memory to delete indices";
-    literal = "ID # already present in file";
-    literal = "record";
-    literal = "Not enough memory for new indices";
-    literal = "ID # not found.";
-    literal = "record";
-    literal = "Not enough memory for new indices\0";
+
 }
 
 /* Remove one found cache entry, clear its age word using a word-sized

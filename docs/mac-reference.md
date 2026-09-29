@@ -32,16 +32,57 @@ python tools/mac_ref.py _AnimYellowFight
 python tools/mac_ref.py --mac-code 5:0x2054 --mac-root build/mac
 ```
 
-The normal `SYMBOL` lookup matches a Win16 MAPSYM function name to a MacsBug
-name, ignoring case and one leading underscore. When a match exists it prints
-the Mac `CODE` resource, entry offset and size, disassembly, known callees,
-A5-relative references, and source-shape estimates. `--mac-code` inspects an
-unnamed MPW export by resource ID and hexadecimal entry offset. The optional
-shape catalog is useful when a worker has a candidate export but no name.
+The normal `SYMBOL` lookup reads `build/mac/correspondence.json`. For a
+structurally matched Win16 function it prints the Mac `CODE` resource, offset,
+confidence and evidence, disassembly, mapped callees/globals where available,
+and a source-shape summary. If the matcher rejected or could not distinguish
+the candidates, it reports that instead of naming a counterpart. `--mac-code`
+inspects an MPW export by resource ID and hexadecimal entry offset.
+
+## Structural correspondence
+
+After importing the MPW export plan, build the feature index and correspondence:
+
+```powershell
+python tools/mac_ref.py --rebuild-correspondence --mac-root build/mac
+python tools/mac_ref.py _YellowDeath --mac-root build/mac
+```
+
+`correspondence.json` stores per-function features on both sides, proposed
+pairs and confidence evidence, unassigned exports, review candidates, held-out
+anchor checks, and global-access summaries. Mac features include PC-relative
+inline strings, referenced `STR#`/`STR ` text and IDs, numeric constants,
+decoded Toolbox trap families, callers/callees, backward branches, computed
+switch case counts, A5 displacements, operand widths, and register-relative
+field offsets. Win16 features include literals from admitted C function bodies,
+referenced NE string-resource text and IDs, constants, imported module/ordinal
+calls, the named call graph and callers, CFG loop estimates, jump-table case
+counts, and symbol-aware DGROUP access widths/counts.
+
+The matcher first uses corpus-rare exact strings, constants, resource IDs, and
+switch case counts. It requires reciprocal top ranking with a margin and a
+one-to-one assignment. It then permits call-graph propagation only from pairs
+with stable anchor evidence and at least two aligned caller/callee edges.
+Boundaries whose case-count distribution conflicts or whose MPW span is at
+least three times the Win16 body with only one anchor family remain review
+candidates. The held-out check removes each accepted pair's individual anchors
+in turn, reranks among all Win16 game functions using the remaining features,
+and reports rank 1/rank 3 rates. This is a consistency check, not external
+ground truth; the displayed confidence is a structural score, not a calibrated
+probability.
+
+The feature extractor uses decoded instruction boundaries for trap families.
+Mac switch case counts are inferred from a bounded compare and an indexed jump;
+they remain estimates if a span contains local routines or embedded data.
+Win16 switch case counts come from the CFG solver's jump-table records. A5
+offsets are signed displacements from a runtime A5 base that is not recovered.
+The global map only promotes a name after two independent matched-function
+votes and 70% vote share. Lower-support access-width/count candidates remain
+tentative and are not declaration proof for `typedb.py`.
 
 Source-shape estimates include observed positive A6 parameter slots and access
 widths, `LINK A6` frame size, nonvolatile D/A register candidates, backward
-branches, switch-dispatch patterns, immediate constants, A5 offsets, and
+branches, switch-dispatch patterns and inferred case counts, immediate constants, A5 offsets, and
 register-relative field offsets. They are instruction-pattern evidence, not
 recovered declarations: frame bytes are not a count of C locals, and saved
 registers may be compiler temporaries. A5 call slots are reported as call
@@ -61,13 +102,16 @@ alone. Treat the MPW identification as the best-supported compiler family,
 not a compiler-version fingerprint.
 
 The code-resource scan implements MacsBug's fixed 8/16-byte and variable
-length name formats. The supplied application yields 359 MPW export boundaries
-from the owner's lift plan but no validated name matching a Win16 MAPSYM C
-function. The few name-shaped byte sequences in code do not match the Win16
-function inventory. Thus `python tools/mac_ref.py SYMBOL` reports no named
-counterpart for this disc. The `correspondence.json` coverage totals are zero
-until a defensible name or other cross-build identity is found; this does not
-mean the game functions are absent from the Mac binary.
+length name formats. The supplied application yields 359 unnamed MPW boundaries
+and no MacsBug names matching the Win16 MAPSYM inventory. Structural matching
+currently finds two medium-confidence open pairs, `_YellowCommand` and
+`_YellowDeath`; both have exact switch case counts and retain rank 1 in all
+accepted-anchor holdout trials. The current run covers 1,132 Win16 GAME
+functions with a usable extent, 608 admitted and 524 open; 357 of the 359 Mac
+exports remain unmatched. The recovery ledger's larger 1,543-target total
+includes DATA targets, which are not function rows. No Mac A5-to-Win16 global
+name has enough independent votes yet. These counts describe this evidence
+set, not the amount of shared game source.
 
 Mac and Windows builds use different compilers, pointer widths, integer widths,
 calling conventions, endianness, and platform APIs. Use a Mac routine to reason

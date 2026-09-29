@@ -1,0 +1,234 @@
+{
+  "name": "f2b-processpost-dispatch-nop-oi-ga",
+  "profile": "oi-ga",
+  "flags": [
+    "/AL",
+    "/G2",
+    "/Gs",
+    "/Oeilw",
+    "/GA",
+    "/NTSIMANT_MODULE"
+  ],
+  "function": "ProcessPost",
+  "symbol": "_ProcessPost",
+  "mode": "one-at-a-time",
+  "variants": 3,
+  "distinct_outputs": 3,
+  "same_output": [],
+  "rows": [
+    {
+      "variant": "v000",
+      "label": {
+        "GAP": "direct_second_case"
+      },
+      "size": 76,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "ax",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "b6b2778b7eca190d1275276a53130250cd691a298fb2a28fe2fe08cc49a3191e",
+      "fixups": [
+        {
+          "offset": 64,
+          "width": 4,
+          "target": "_ProbeCall",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 37,
+          "width": 4,
+          "target": "_ProbeCall",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "baseline": true,
+      "instructions": [
+        "0000 push bp",
+        "0001 mov bp, sp",
+        "0003 push si",
+        "0004 xor si, si",
+        "0006 mov al, byte ptr [bp + 6]",
+        "0009 cwde ",
+        "000a sub ax, 0xff91",
+        "000d je 0x1a",
+        "000f sub ax, 5",
+        "0012 je 0x3a",
+        "0014 mov ax, si",
+        "0016 pop si",
+        "0017 leave ",
+        "0018 retf ",
+        "0019 nop ",
+        "001a mov al, byte ptr [bp + 8]",
+        "001d cwde ",
+        "001e or ax, ax",
+        "0020 je 0x34",
+        "0022 cwde ",
+        "0023 push ax",
+        "0024 lcall 0, 0",
+        "0029 add sp, 2",
+        "002c mov si, 1",
+        "002f mov ax, si",
+        "0031 pop si",
+        "0032 leave ",
+        "0033 retf ",
+        "0034 mov al, byte ptr [bp + 6]",
+        "0037 jmp 0x3d",
+        "0039 nop ",
+        "003a mov al, byte ptr [bp + 8]",
+        "003d cwde ",
+        "003e push ax",
+        "003f lcall 0, 0",
+        "0044 add sp, 2",
+        "0047 mov ax, si",
+        "0049 pop si",
+        "004a leave ",
+        "004b retf "
+      ]
+    },
+    {
+      "variant": "v001",
+      "label": {
+        "GAP": "empty_case_between"
+      },
+      "size": 80,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "ax",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "1fc2b44767bfd56c69398db4949e1fd4b1c4d204cc0ee0756994c0460e55ec0e",
+      "fixups": [
+        {
+          "offset": 68,
+          "width": 4,
+          "target": "_ProbeCall",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 41,
+          "width": 4,
+          "target": "_ProbeCall",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -7,5 +7,8 @@",
+          " sub ax, 0xff91",
+          "-je 0x1a",
+          "+je 0x1e",
+          " sub ax, 5",
+          "-je 0x3a",
+          "+jl 0x4b",
+          "+jo 0x4b",
+          "+dec ax",
+          "+jle 0x3e",
+          " mov ax, si",
+          "@@ -14,3 +17,2 @@",
+          " retf ",
+          "-nop ",
+          " mov al, byte ptr [bp + 8]",
+          "@@ -18,3 +20,3 @@",
+          " or ax, ax",
+          "-je 0x34",
+          "+je 0x38",
+          " cwde ",
+          "@@ -29,3 +31,3 @@",
+          " mov al, byte ptr [bp + 6]",
+          "-jmp 0x3d",
+          "+jmp 0x41",
+          " nop "
+        ]
+      }
+    },
+    {
+      "variant": "v002",
+      "label": {
+        "GAP": "shared_case_body"
+      },
+      "size": 78,
+      "frame": 0,
+      "homes": {},
+      "registers": [
+        "al",
+        "ax",
+        "si"
+      ],
+      "saves": [
+        "si"
+      ],
+      "sha256": "cc155ae7edc03c74a9b017af8d108c359c431581353c89187d7450afd55ac184",
+      "fixups": [
+        {
+          "offset": 66,
+          "width": 4,
+          "target": "_ProbeCall",
+          "kind": 3,
+          "self_relative": false
+        },
+        {
+          "offset": 39,
+          "width": 4,
+          "target": "_ProbeCall",
+          "kind": 3,
+          "self_relative": false
+        }
+      ],
+      "versus_baseline": {
+        "identical": false,
+        "same_code_modulo_fixups": false,
+        "changed": [
+          "size"
+        ],
+        "diff": [
+          "@@ -7,5 +7,7 @@",
+          " sub ax, 0xff91",
+          "-je 0x1a",
+          "-sub ax, 5",
+          "-je 0x3a",
+          "+je 0x1c",
+          "+dec ax",
+          "+je 0x3c",
+          "+sub ax, 4",
+          "+je 0x3c",
+          " mov ax, si",
+          "@@ -14,3 +16,2 @@",
+          " retf ",
+          "-nop ",
+          " mov al, byte ptr [bp + 8]",
+          "@@ -18,3 +19,3 @@",
+          " or ax, ax",
+          "-je 0x34",
+          "+je 0x36",
+          " cwde ",
+          "@@ -29,3 +30,3 @@",
+          " mov al, byte ptr [bp + 6]",
+          "-jmp 0x3d",
+          "+jmp 0x3f",
+          " nop "
+        ]
+      }
+    }
+  ],
+  "note": "distinct outputs and same_output compare code with fixup fields masked"
+}
