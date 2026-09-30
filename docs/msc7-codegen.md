@@ -184,6 +184,22 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
   - `_XferPatch` is body-exact under og.
   - Parked ties with a concrete structural fix: DigTileR, DoDigOutB, DoFoodInR, DoRandAntAA (exact weight ties: reference the other variable first, or give it one more use), FillMap (BX must be free across `row`), AnimYellowFight (mapCell's home weight must fall below tileVariant's).
 
+**MSC7-A13: CSE temporaries get their homes after the colour-allocated homes. SUPPORTED.**
+- A far global read twice, like a far-address temporary, lives in a C2 temporary whose home lies below every weight-ordered home (farthest from BP).
+- A named local holding the same value is a colour candidate placed by weight instead.
+- Consequence: a target home below all weighted homes (`?` in `tools/alloc_search.py --explain`) is an unnamed CSE temporary; delete the named local.
+- Reproducer: `_UpdateEdit` (ogi) reads `TERRAINset` twice instead of `currentTerrain = TERRAINset`, and the temporary lands at [bp-0x14] as in the target. Evidence: build/workers/f-alloc-inverse (Opus agent, 2026-09-30).
+
+**MSC7-A14: almost all local spellings are canonicalised before allocation. VERIFIED by measurement.**
+- 102,237 permuter-catalogue variants on 57 allocation targets gave only 3,348 distinct functions (3.3%).
+- Near-zero yield (0-0.5%): register_toggle, swap_commutative, incdec_style, index_pointer, cond_zero, demorgan, compound_assign, decl_move, mirror_comparison.
+- Productive (30-59%): stmt_swap, invert_if, param_copy, inline_temp(_multi), inline_local, unvolatile_decl, hoist_over_if, sink_into_if, split_aggregate, strip_volatile_cast.
+- So an allocation residue needs a change of statement order, of which statement or block holds a use, or of variable identity (split, merge, inline), not a respelling.
+- Aggregates: a local struct gets one home for all its members; splitting it into scalars gives per-variable homes (`_SimQueenR/B`).
+- Homes merge per variable, so splitting a variable's web lets two values share a slot (`_SimQueenR/B`: split_web targetY -> eggY).
+- The permuter's earlier low yield (MSC7-R0 probe) was partly five tool bugs, fixed on 2026-09-30 in tools/permuter_mutations.py.
+- Tool: `python tools/alloc_search.py SYMBOL --explain` gives the location map and home order, `--whatif` names the one use-count/order change, and a plain run does the allocation-objective search on emulated compiles.
+
 **MSC7-R0 (documentation): /Oe allocates registers to "variables or subexpressions according to frequency of use" and ignores `register`. SUPPORTED (C6 manual, consistent with C7 observations).**
 - Source: C6 *Advanced Programming Techniques* §1.5.8, summarised in docs/research/msc7-online-research-2026-09-29.md.
 - Common subexpressions (address arithmetic, repeated index expressions, far-pointer halves) compete with named locals for SI/DI.

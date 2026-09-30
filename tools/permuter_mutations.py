@@ -35,6 +35,7 @@ class BodyCodec:
             raise ValueError('body uses an unsupported MSC keyword: ' + UNSUPPORTED.search(body).group(0))
         self.original_body = body
         mapped = map_dialect(body)
+        self.mapped_body = mapped
         self.typedefs = sorted(csrc.typedef_names(full_text))
         prelude = ''.join(f'typedef int {t};\n' for t in self.typedefs)
         src = prelude + 'void __permuter_target(void)\n' + mapped
@@ -51,9 +52,16 @@ class BodyCodec:
         global TYPE_ENV
         TYPE_ENV = TypeEnv.build(full_text, function)
         self.types = TYPE_ENV
+        # Lexical fallback facts for _reads_shared_state when TypeEnv is unavailable
+        # (e.g. a file that spells `volatile`): file-scope array names and parameter names.
+        outside = full_text[:self.loc['header_start']] + full_text[self.loc['body_end']:]
+        outside = csrc.mask_comments_and_strings(outside)
+        FILE_FACTS['arrays'] = set(re.findall(r'(\w+)\s*\[[^\]]*\]\s*[;,=]', outside))
+        FILE_FACTS['params'] = set(re.findall(r'(\w+)\s*[,)]', self.header.split('(', 1)[-1]))
 
     def render(self, body) -> str:
-        return FarGenerator.finish(FarGenerator(self.original_body, self.coord_line_offset).visit(body))
+        return FarGenerator.finish(FarGenerator(self.original_body, self.coord_line_offset,
+                                                self.mapped_body).visit(body))
 
     def splice_fn(self, header: str, body_text: str, base_text: str | None = None) -> str:
         """Replace header+body of the function (header may carry register-param edits)."""
@@ -69,10 +77,11 @@ class BodyCodec:
 
 
 class FarGenerator(c_generator.CGenerator):
-    def __init__(self, source='', line_offset=0):
+    def __init__(self, source='', line_offset=0, mapped=None):
         super().__init__(reduce_parentheses=True)
         self.source = source
         self.line_offset = line_offset
+        self.mapped = mapped
         self._visit_depth = 0
 
     def _source_window(self, n):
@@ -85,6 +94,22 @@ class FarGenerator(c_generator.CGenerator):
             return ''
         start = max(0, (coord.column or 1) - 1)
         current = lines[line]
+        mapped_lines = self.mapped.splitlines() if self.mapped is not None else None
+        if mapped_lines is not None and line < len(mapped_lines) and mapped_lines[line] != current:
+            # Parser columns index the dialect-mapped line (`far` -> `volatile` is longer,
+            # `pascal` -> '' shorter).  Locate the statement by counting separators on the
+            # mapped line, then take the same statement from the original line.
+            count = sum(mapped_lines[line][:start].count(ch) for ch in ';{}')
+            statement_start = 0
+            for pos, ch in enumerate(current):
+                if count == 0:
+                    break
+                if ch in ';{}':
+                    count -= 1
+                    statement_start = pos + 1
+            tail = current[statement_start:] + '\n' + '\n'.join(lines[line + 1:line + 3])
+            stops = [p for p in (tail.find(';'), tail.find('}')) if p >= 0]
+            return tail[:min(stops) + 1] if stops else tail
         separators = [current.rfind(ch, 0, start) for ch in ';{}']
         statement_start = max(separators) + 1
         tail = current[statement_start:] + '\n' + '\n'.join(lines[line + 1:line + 3])
@@ -95,12 +120,16 @@ class FarGenerator(c_generator.CGenerator):
         if isinstance(n, c_ast.TypeDecl):
             window = self._source_window(n)
             marker = re.search(r'\b(far|_far|__far|near|_near|huge|__segment|__based|_based)\b', window)
-            if marker and isinstance(n.type, (c_ast.IdentifierType, c_ast.Struct, c_ast.Union, c_ast.Enum)):
+            need = {'far': ['volatile'], '_far': ['volatile'], '__far': ['volatile'],
+                    'near': ['const'], '_near': ['const'], 'huge': ['volatile', 'const'],
+                    '__segment': ['volatile'], '__based': ['volatile'], '_based': ['volatile']}
+            # The window is a whole statement: a cast like `(unsigned long)` beside a
+            # `(void far *)` must not become `unsigned long far`.  Only a TypeDecl that carries
+            # the mapped qualifier(s) can have been spelled with the dialect word.
+            if marker and isinstance(n.type, (c_ast.IdentifierType, c_ast.Struct, c_ast.Union, c_ast.Enum))                     and all(q in (n.quals or []) for q in need[marker.group(1)]):
                 word = marker.group(1)
                 quals = list(n.quals or [])
-                need = {'far': ['volatile'], '_far': ['volatile'], '__far': ['volatile'],
-                        'near': ['const'], '_near': ['const'], 'huge': ['volatile', 'const'],
-                        '__segment': ['volatile'], '__based': ['volatile'], '_based': ['volatile']}[word]
+                need = need[word]
                 for q in need:
                     if q in quals:
                         quals.remove(q)
@@ -126,6 +155,12 @@ class FarGenerator(c_generator.CGenerator):
         if not root:
             return out
         visible = csrc.mask_comments_and_strings(self.source)
+        # Pointer-level qualifiers (`T far * far *p`): with no real `volatile`/`const` in the
+        # body, a qualifier after `*` can only be the parser's stand-in for far/near.
+        if not re.search(r'\bvolatile\b', visible) and re.search(r'\b(far|_far|__far)\b', visible):
+            out = re.sub(r'\*\s*volatile\b', '* far', out)
+        if not re.search(r'\bconst\b', visible) and re.search(r'\b(near|_near)\b', visible):
+            out = re.sub(r'\*\s*const\b', '* near', out)
         conv = re.compile(r'\b(pascal|cdecl)\s*(\*)?\s*([A-Za-z_]\w*)?')
         for match in conv.finditer(visible):
             word, pointer, name = match.groups()
@@ -145,6 +180,7 @@ class FarGenerator(c_generator.CGenerator):
 
 
 TYPE_ENV = None
+FILE_FACTS = {'arrays': set(), 'params': set()}
 ROOT = Path(__file__).resolve().parents[1]
 _DECL_AXIS_CHECKED = {}
 
@@ -612,17 +648,21 @@ def count_uses(root, name):
 
 
 def _volatile_type(t):
+    # ArrayDecl carries `dim_quals`, not `quals`; reading `.quals` on it raised AttributeError,
+    # which made every mutation that consults volatile_names() silently inapplicable in any
+    # translation unit declaring a global array (found by f-alloc-inverse, 2026-09-29).
     return any(isinstance(n, (c_ast.TypeDecl, c_ast.PtrDecl, c_ast.ArrayDecl)) and
-               'volatile' in (n.quals or []) for n, *_ in walk(t))
+               'volatile' in (getattr(n, 'quals', None) or getattr(n, 'dim_quals', None) or [])
+               for n, *_ in walk(t))
 
 
 def volatile_names(body):
     names = {n.name for n, *_ in walk(body)
              if isinstance(n, c_ast.Decl) and n.name and _volatile_type(n.type)}
-    if TYPE_ENV is not None:
-        for name, t in TYPE_ENV.globals.items():
-            if _volatile_type(t):
-                names.add(name)
+    # File scope: TypeEnv.build refuses any file whose (stubbed) text spells `volatile`, so a
+    # volatile qualifier in TYPE_ENV.globals is always the parser's stand-in for `far`
+    # (map_far).  Far globals are ordinary memory; treating them as volatile excluded every
+    # statement touching far data from stmt_swap/swap_commutative/mirror_comparison/...
     return names
 
 
@@ -1249,6 +1289,26 @@ def m_stmt_swap(body, rng):
     return f'stmt_swap: {expr_text(items[k + 1])[:40]!r} <-> {expr_text(items[k])[:40]!r}'
 
 
+def _reads_shared_state(expr, body):
+    """True when `expr` reads memory a call or a store through a pointer could change:
+    a dereference/array/member access, or a global (a name that is neither a local of `body`
+    nor a parameter).  Plain global IDs used to count as private values, so inline_temp and
+    inline_temp_multi could move a global read across a call or `*p = ...` (f-alloc-inverse,
+    2026-09-30)."""
+    if reads_memory(expr):
+        return True
+    private = {n.name for n, *_ in walk(body) if isinstance(n, c_ast.Decl) and n.name}
+    if TYPE_ENV is not None:
+        private |= {name for name in TYPE_ENV.params if not address_taken(body, name)}
+        # an array or function name denotes a constant address, not a stored value
+        private |= {name for name, t in TYPE_ENV.globals.items()
+                    if isinstance(t, (c_ast.ArrayDecl, c_ast.FuncDecl))}
+    else:
+        private |= FILE_FACTS['arrays']
+        private |= {name for name in FILE_FACTS['params'] if not address_taken(body, name)}
+    return bool(ids_in(expr) - private)
+
+
 def m_inline_temp(body, rng):
     sites = []
     for comp in blocks(body):
@@ -1263,6 +1323,8 @@ def m_inline_temp(body, rng):
                     continue
                 if (written_ids(nxt) & ids_in(s.rvalue)) or ('*mem*' in written_ids(nxt) and
                                                              not isinstance(s.rvalue, (c_ast.ID, c_ast.Constant))):
+                    continue
+                if _reads_shared_state(s.rvalue, body) and (has_call(nxt) or '*mem*' in written_ids(nxt)):
                     continue
                 sites.append((comp, k, name))
     if not sites:
@@ -1440,8 +1502,12 @@ def m_inline_temp_multi(body, rng):
             ok = True
             deps = ids_in(s.rvalue) | {name}
             last = max(j for j, x in enumerate(later) if count_uses(x, name))
+            shared = _reads_shared_state(s.rvalue, body)
             for x in later[:last + 1]:
                 w = written_ids(x)
+                if shared and (has_call(x) or '*mem*' in w):
+                    ok = False
+                    break
                 if w & deps or ('*mem*' in w and reads_memory(s.rvalue)) or \
                         isinstance(x, LOOPS) and count_uses(x, name) and has_call(x) and reads_memory(s.rvalue):
                     ok = False
