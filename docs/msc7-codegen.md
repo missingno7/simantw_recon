@@ -220,6 +220,13 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
 
 **Spellings that compile identically. Do not search among these (f-study-e16, 2026-09-27, all SUPPORTED):**
 
+- Extended 2026-09-30, prompted by the DOS reconstruction (simant_recon, MSC 6.00A), where identifier count before a function changes operand order and registers periodically mod 17:
+  - 0-34 prepended unused externs gave identical objects for `_SimQueenR`, `_SimQueenB` and `_HoleBorder`;
+  - 0-34 unused locals at the top of the body did too;
+  - `_DigTileR`'s object changes only at 31 or more locals, with the same score.
+  - The MSC 6 effect does not transfer as a lever. Only RELATIVE declaration sequence matters, through operand order (MSC7-A11).
+  - Evidence: build/workers/sup-symcount (run.py, run_locals.py).
+
 **MSC7-E16: CSE reuses expressions that fold to the same tree. SUPPORTED.**
 - Admitted control `_AddBlackAnts` (`og`, `/Oeglw /NTSIMTWO_MODULE`): writing all three occurrences of `x * 64 + y` as `(x << 6) + y`, `y + x * 64` or `x * (32 + 32) + y` gives one identical object that stays an exact member.
 - Reproducer: `evidence/codegen-facts/MSC7-E16/`.
