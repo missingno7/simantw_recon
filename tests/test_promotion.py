@@ -222,7 +222,8 @@ class SearchHasNoBudgetTests(unittest.TestCase):
             root = Path(directory); source = root / 'a.c'; source.write_text('/* x */ int a;')
             report = dict(cache={}, results=[dict(candidate=0, choices={'input': 0}, receipt=dict(stdout=''), comparison=dict(result='NO_COMPLETE_MATCH'))])
             with patch.object(search, 'ROOT', root), patch.object(search, 'relative', side_effect=lambda p: str(p)), patch.object(search, 'run', return_value=report) as run, \
-                 patch('promote.function_flags', return_value=(dict(name='baseline'), FLAGS)), patch.object(search, 'recipes', return_value={}):
+                 patch('promote.function_flags', return_value=(dict(name='baseline'), FLAGS)), patch.object(search, 'recipes', return_value={}), \
+                 patch.object(search, 'record_attempt', return_value=None):  # never write the real attempt ledger
                 for _ in range(3):
                     result = search.search('_a', [str(source)])
                     self.assertEqual(result['candidates'], 1)
