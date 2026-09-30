@@ -9727,6 +9727,11 @@
         "text": "Changing only the typedb frontier's first map access from MapR[y][x] to MapR[x][y] (target's initial effective address is x*64+y) swapped parameter assignments: target x=DI,y=SI; candidate x=SI,y=DI, and output equals the earlier call-order-transposed object. Both are 96/98 opcodes, with target's later branch destination/frame-home gaps unchanged. The indexed-access use-weight hypothesis moves the register choice but this spelling does not reproduce the target; keep the original 96/98 frontier and seek a target-specific extra x use/index lifetime.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T11:42:44.612751+00:00"
+      },
+      {
+        "text": "alloc_search tested 293 variants and did not improve 96/98 opcodes; --whatif says equal-weight x/y ranges need creation order y before x to swap SI/DI. Direct MapR[x][y] and equivalent row-zero pointer forms normalize to the same C2 candidate table (x SI, y DI). A two-local parameter copy still gives the same order. Splitting cell = &MapR[0][y]; cell += x*64 passed semantic equivalence but retained the same tie; search returned 96/98 opcodes with 12 register differences, one branch difference and 4 stack differences. FAR_POINTER_LIFETIME was untried and is now recorded; CSE_SUBEXPRESSION and EXPRESSION_SHAPE have current attempts. No plausible natural flip found; don't steer with non-semantic arithmetic.",
+        "origin": "build/search/DigTileR/20260930T005805-56660",
+        "recorded": "2026-09-30T00:58:05.857655+00:00"
       }
     ],
     "frontier": {
