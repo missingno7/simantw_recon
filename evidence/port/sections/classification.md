@@ -4,7 +4,7 @@ Section for docs/portable-windows-reference.md (mission revision 2026-09-30).
 
 ## Final counts
 
-[VERIFIED] These totals cover every function in build/port/audit.json after the semantic review.
+[VERIFIED] These totals cover every function in evidence/port/audit.json after the semantic review.
 
 | class | functions |
 |---|---:|
@@ -102,7 +102,7 @@ Section for docs/portable-windows-reference.md (mission revision 2026-09-30).
 
 ## Classification method and spot-check
 
-[VERIFIED] All 1,137 audit functions have a final class in build/workers/p6-classify/classification.json; the 528 non-SHARED proposals were reviewed by behavior and API role. The original 609 SHARED proposals remain SHARED after a deterministic 40-function spot-check (seed 20260930), stratified across all seven segments; the sample and DOS-pair evidence are recorded in classification-summary.json.
+[VERIFIED] All 1,137 audit functions have a final class in evidence/port/classification.json; the 528 non-SHARED proposals were reviewed by behavior and API role. The original 609 SHARED proposals remain SHARED after a deterministic 40-function spot-check (seed 20260930), stratified across all seven segments; the sample and DOS-pair evidence are recorded in classification-summary.json.
 
 [INFERRED CLASSIFICATION] Direct MessageBox, GetAsyncKeyState, file, database, bitmap, and UpdateWindow calls do not make game logic a host reference by themselves. Shared event/game/drawing/database/resource routines stay SHARED when the DOS source owns their behavior; the SDL adapter supplies normalized client coordinates and maps only lifecycle, queue, HWND identity/z-order, capture/focus, damage/paint, geometry, and menu behavior.
 

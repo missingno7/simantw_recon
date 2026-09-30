@@ -2,7 +2,7 @@
 
 ## Result
 
-[VERIFIED] Classified all 1,137 functions from build/port/audit.json; the original 528 non-SHARED proposals received a semantic-role decision and all 609 original SHARED proposals were retained after a 40-function stratified spot-check across every segment.
+[VERIFIED] Classified all 1,137 functions from evidence/port/audit.json; the original 528 non-SHARED proposals received a semantic-role decision and all 609 original SHARED proposals were retained after a 40-function stratified spot-check across every segment.
 
 | final class | count |
 |---|---:|

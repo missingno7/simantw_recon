@@ -1,6 +1,6 @@
 # p5-shell report
 
-[VERIFIED] Scope completed: sections 5 (window geometry), 7 (menus/ribbon/application shell), and 9 (Windows-only services), ready for `docs/portable-windows-reference.md`. Authored files are in `build/workers/p5-shell/`; the DOS project was read only. The Win16 packet was used as a semantic reference, not byte-matching evidence.
+[VERIFIED] Scope completed: sections 5 (window geometry), 7 (menus/ribbon/application shell), and 9 (Windows-only services), ready for `docs/portable-windows-reference.md`. Authored files are in `evidence/port/sections/`; the DOS project was read only. The Win16 packet was used as a semantic reference, not byte-matching evidence.
 
 ## Open questions that matter for SDL3
 

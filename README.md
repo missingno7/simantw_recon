@@ -1,39 +1,37 @@
-# Win16 SimAnt reconstruction research
+# Win16 SimAnt (SIMANTW.EXE) reference reconstruction
 
-Current scope: recover verified matching source and historical runtime objects, while keeping unresolved toolchain questions explicit.
+Mission (since 2026-09-30):
+- This repository is the **Windows-specific reference** for a future portable SDL3 multi-window port of SimAnt.
+- The DOS reconstruction (github missingno7/simant_recon) is the behavioural and visual authority for all shared game code.
+- This project documents only how Maxis hosted its shared SimAnt window/object model on native Windows 3.1: windows, messages, painting, z-order, focus/capture, menus and shell, and the GDI boundary.
 
-Start with [the toolchain fingerprint](docs/toolchain-fingerprint.md). A pinned Microsoft C/C++ 7.00 candidate using `/AL /G2 /Gs /Oelw` reproduces 18 diagnostic game functions/contributions, 761 code bytes. The exact original command line and some tool versions remain unresolved. Complete historical runtime-member matches are tracked separately from game-source reconstruction.
+Start here:
+- [HANDOFF.md](HANDOFF.md): current state and next steps.
+- [docs/portable-windows-reference.md](docs/portable-windows-reference.md): the host-contract specification for the SDL3 port.
+- [AGENTS.md](AGENTS.md): working rules, including the matching policy under the new mission.
 
-For source recovery, read [AGENTS.md](AGENTS.md) and [the recovery workflow](docs/factory.md): `context.py` → `search.py` → `promote.py`, with `validate.py` at acceptance or tooling boundaries. There are no attempt budgets, queues or parking states. The durable best draft of every investigated function lives in `evidence/recovery/drafts/`, and [MIGRATION.md](MIGRATION.md) describes the 2026-09-25 simplification.
+## What exists
 
-Key paths:
+- **Exact reconstruction:** 813 of 1,137 game functions are rebuilt as readable C that authentic Microsoft C/C++ 7.00 compiles to the original bytes, fixups and placement. They are recorded in `src/recovery.json`, with sources in `src/recovered/`.
+  - `python tools/image.py` rebuilds SIMANTW.EXE from the admitted objects plus explicit raw debt; it stays `HYBRID_EXACT`.
+  - Totals are in `docs/progress.json` and `docs/image.json`.
+- **Port reference:**
+  - `evidence/port/` holds the per-function Windows API audit, the mission classification (975 functions shared with DOS / 61 required / 61 optional / 40 obsolete), the research sections, and the original-code answers.
+  - `python tools/port_audit.py` regenerates the audit.
+- **Compiler research:**
+  - `docs/msc7-codegen.md` is the MSC 7.00 code-generation fact register.
+  - `docs/msc7-allocator.md` describes the register allocator read out of C23216 under emulation; `tools/c2_emu.py` and `tools/alloc_trace.py` are its tools.
+  - `docs/orchestration.md` covers the recovery orchestration tools.
+- **Recovery workflow:** [docs/factory.md](docs/factory.md) (`context.py` → `search.py` → `promote.py`, `validate.py`). Under the new mission, use it only where exact code resolves a Windows-specific question.
 
-- `layout/toolchain.json`: tested tool identities and separately qualified historical hypotheses.
-- `evidence/experiments/toolchain/decisions.json`: compact machine-readable findings.
-- `evidence/experiments/toolchain/msc700-baseline-Oelw.json`: canonical diagnostic run.
-- `layout/runtime-ownership.json`: historical object reuse and reconstruction exclusions.
-- `tools/ne.py`, `mapsym.py`, `omf.py`, `matcher.py`: binary parsers and verifier.
-- `tests/`: parser, compiler, relocation and complete-member negative tests.
+## Setup and validation
 
-Original assets and acquired tools remain local in ignored `assets/` and `toolchain/`. Compilation does not use the original executable as an input. There is no reconstructed standalone game EXE at this stage. An explicitly stubbed LINK 5.30 executable is available for structural research only.
-
-Current verified totals are in [docs/progress.json](docs/progress.json): 524 game functions (57,601 code bytes) and 77 complete historical runtime members (12,960 code bytes) at the simplification checkpoint. Recovered sources live in `src/recovered/` (plus a few earlier matches in `src/`); `src/recovery.json` records each compiler profile, flags, original placement, comparison scope and promotion proof. These are byte-matched reconstructions, not claims to the original source text or translation-unit boundaries. Runtime object extraction preserves complete historical OMF members rather than copying executable bytes.
-
-Build and independently verify the recovered objects:
+Original assets and acquired tools stay local in the ignored `assets/` and `toolchain/`; `python tools/setup_toolchain.py` provisions the toolchain.
 
 ```powershell
-python tools/build.py objects
-python tools/verify_recovery.py
+python tools/validate.py          # tests, recovery verification, whole-image check (HYBRID_EXACT)
+python tools/context.py SYMBOL    # original disassembly with resolved imports, calls and evidence
+python tools/port_audit.py        # Windows API use and DOS pairing per function
 ```
 
-Objects and the construction manifest are written to `build/recovered/`. Verification writes `build/recovery/verified-objects.json` and the versioned totals in `docs/progress.json`. Unresolved game code/data, original translation-unit grouping and final link/layout remain work before a standalone executable is possible.
-
-```powershell
-python tools/setup_toolchain.py
-python tools/toolchain_probes.py --compiler msc700 --baseline --optimization /Oelw
-python -m unittest discover -s tests -v
-```
-
-See the fingerprint for limitations, provenance and the discriminating matrix.
-
-The [code-generation infrastructure phase](docs/codegen-infrastructure.md) adds controlled C-expression exploration, batched historical compilation, a frozen 41-draft regression corpus, candidate translation units, conservative CFG extent solving, compiler idiom probes, and a partial authentic linker/resource path. See [its machine-readable report](docs/codegen-progress.json) for results and remaining blockers.
+Generated output goes to the ignored `build/` directory and is recreated on demand.
