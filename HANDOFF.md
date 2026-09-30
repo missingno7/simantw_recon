@@ -14,16 +14,16 @@ SIMANTW.EXE is no longer being reconstructed to completion.
   - Every REQUIRED item has its port question and an answer source.
   - `evidence/port/audit.json` holds per-function Windows API use and DOS pairing (`python tools/port_audit.py` regenerates it).
 
-## In flight at handoff
-- **Opus analysis of the host-contract unknowns.** It reads the ORIGINAL disassembly (MAINWNDPROC dispatch per role, capture, win_Open/Close lifetime, auto-close, timer order, slot purposes, paint and erase). Its output lands in `build/workers/f-host-answers/ANSWERS.md` (ignored build dir; asm dumps are already there).
-  - If it finished, merge it into `docs/portable-windows-reference.md` (§H step 1) and commit.
-  - If not, rerun the same questions (they are listed in §F of the spec).
+## Original-code analysis (done)
+The Opus analysis of the original disassembly is folded into the spec as §0, with the evidence in `evidence/port/sections/ANSWERS.md`.
+- It answers the MAINWNDPROC per-role dispatch, capture, win_Open/Close lifetime (WS_CHILD of rootWnd, create once / hide), auto-close, timer (MYTIMERFUNC, 17/170 ms, catch-up), paint and erase, and coordinates.
+- It records 14 corrections to the drafts.
+- No C reconstruction was needed.
 
 ## Next steps (priority)
-1. Fold ANSWERS.md into the spec and resolve §F items 1–4.
-2. Decode the window-definition database objects (layouts by display type, kind-6 menus, slot purposes) into tables for §B.
-3. Start the SDL3 host prototype against the DOS reconstruction (outside this repository), implementing the §E API.
-4. Byte matching: only when a host-contract question cannot be answered from the disassembly. Candidates, if ever: MAINWNDPROC, win_Open, win_Close, win_GetEvent, DoMouse.
+1. Decode the window records from `win_LoadAllWindows` into tables for spec §B/§F: auto-close and modal flags, unassigned logical IDs, default geometry, kind-6 menus. Estimated about one day. Check first whether the DOS reconstruction already decodes them (read-only).
+2. Start the SDL3 host prototype against the DOS reconstruction (outside this repository), implementing the §E API.
+3. Byte matching: essentially none. Only when a host-contract question cannot be answered from the disassembly; the original-code analysis needed none.
 
 ## Tooling that stays useful
 - `tools/context.py` (disassembly with resolved imports), `tools/port_audit.py`, `tools/xver.py` (DOS pairs, read-only), `tools/triage.py`.

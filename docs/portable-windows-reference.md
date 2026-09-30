@@ -16,9 +16,51 @@ Supporting evidence (durable, in this repository):
 - `evidence/port/audit.json`: per-function Windows API use, DOS pairing, call distance (`python tools/port_audit.py`).
 - `evidence/port/classification.json`: the final per-function mission class, with the port question per REQUIRED item.
 - `evidence/port/sections/*.md`: the full worker sections and their open-question reports, merged below.
-- `build/workers/f-host-answers/ANSWERS.md` (in progress at handoff): an Opus analysis answering the open questions from
-  the ORIGINAL disassembly of MAINWNDPROC, WINMAIN, win_Open/Close, win_GetEvent, DoMouse, the timer and paint paths.
-  Where it contradicts an INFERRED statement below, it wins. Fold it in first (see §H).
+- `evidence/port/sections/ANSWERS.md`: the Opus analysis answering the open questions from the ORIGINAL disassembly
+  (MAINWNDPROC, WINMAIN, win_Open/Close, win_GetEvent, DoMouse, timer, paint), summarised in §0. It supersedes
+  conflicting INFERRED statements.
+
+## 0. Verified host facts from the original code (these SUPERSEDE conflicting INFERRED statements below)
+
+Source: `evidence/port/sections/ANSWERS.md` (Opus analysis of the original SIMANTW.EXE disassembly, with addresses; no drafts used
+as proof). Where the merged worker sections below disagree, this section wins. ANSWERS.md lists 14 draft corrections.
+
+- **Native windows (VERIFIED).**
+  - Each logical window is a `GenericWindow` created ONCE as a **WS_CHILD of rootWnd**, not an owned top-level window.
+  - `win_Close` hides it and activates the top visible remaining window; windows are destroyed only at shutdown.
+  - Every `win_Open` discards all queued mouse and keyboard input.
+  - The style comes from flags in the window's record.
+  - Slots 0x2200 and 0x2300 share the single ribbon HWND and are swapped on activation.
+  - `ribbonBarHeight` is always 0, so the ribbon offset in placement never applies.
+- **MAINWNDPROC (VERIFIED, full per-role table in ANSWERS.md §1).**
+  - WM_ERASEBKGND, WM_ACTIVATE, WM_SETFOCUS/KILLFOCUS, WM_KEYUP and WM_CHAR go to DefWindowProc.
+  - Clicking a background window raises it and swallows the click (WM_MOUSEACTIVATE returns 2), unless the top window is modal (flag 0x40); then the click is ignored.
+  - Mouse movement drives the hover popup menus of window 0x0900.
+- **Capture (VERIFIED).**
+  - MAINWNDPROC never captures on button-down, and no button-up releases capture.
+  - Capture is taken and released only in dialog and menu loops, the hover popups, and around app activation, system commands and exit. Losing app focus releases it; regaining it restores it.
+  - The right button never produces a game event: right-down toggles help mode, and button-ups only update the mouse state.
+- **Auto-close (VERIFIED, different from DOS).**
+  - `DoMouse` closes the top window with record bit 0 on ANY left-button-down it receives, inside or outside, with no rectangle test.
+  - An outside click reaches it only while that window holds capture.
+  - The DOS rule (close on an outside click) remains the authority for the port; this is the Win16 variant.
+- **Timer and loop (VERIFIED).**
+  - One timer: ID 0 on rootWnd, 17 ms, or 170 ms while the app is in the background, always calling MYTIMERFUNC directly.
+  - The simulation step (`DoAntSim`) runs only inside that callback, which loops to catch up. It also runs during custom dialogs, because their message loops dispatch the timer.
+- **Paint (VERIFIED).**
+  - BeginPaint happens only in PaintStuff and the ribbon placeholder; backgrounds are erased by each class's default brush.
+  - The direct GetDC drawing path is used throughout.
+  - Object coordinates are window-local, and `PointInRect` includes the right and bottom edges.
+- **Dead code.** `INDIRECTDLGPROC` is unreachable in the shipped game.
+- **Still unknown (needs data, not C).**
+  - Which windows set the auto-close and modal flags.
+  - The unassigned logical IDs: 0x1600, 0x1B00, 0x2100, 0x2500-0x2C00, the opener of the debug window 0x1C00, and 0x2B00 (probably a tutorial window).
+  - All of these come from decoding the window records loaded by `win_LoadAllWindows` (estimated about one day).
+
+Consequences for the SDL3 design:
+- Win16 hosts all game windows as CHILD windows inside one frame. That is closer to "panels inside one SDL_Window" than to independent top-level windows, so either presentation remains valid (§A.2 item 3).
+- Capture is a dialog/menu/popup concern, not a drag concern.
+- Simulation ticks are driven by the host timer callback, with catch-up.
 
 ## A. Architecture
 
@@ -49,7 +91,7 @@ HWND / USER / GDI / message queue (Windows 3.1)
 Native window structure (VERIFIED for frame/children, INFERRED for game windows):
 - one top-level frame `mainRootWnd` (class AntRoot, sized from screen metrics);
 - inside it two sibling children, `ribbonBarWnd` (bound to logical slot 0x2200) and `rootWnd`;
-- every other logical SimAnt window is a GenericWindow HWND attached to `rootWnd`, created once, then shown/hidden/raised.
+- every other logical SimAnt window is a GenericWindow HWND created once as a WS_CHILD of `rootWnd`, then shown/hidden/raised (VERIFIED, §0).
 
 ### A.2 Proposed SDL3 host
 
@@ -160,17 +202,16 @@ The rest stays in shared code, with the DOS version as the authority: window rec
 
 ## F. Windows-only knowledge gaps that matter to the SDL3 port
 
-Consolidated from the section reports; ordinary unmatched game functions are not gaps. Most are expected to close with
-`build/workers/f-host-answers/ANSWERS.md` (original-disassembly answers):
-1. **Complete MAINWNDPROC dispatch per window role.** Which messages reach SimAnt, WM_ERASEBKGND and background erase, whether right-button messages reach DoMouse, and which button-up releases capture.
-2. **Timer ordering.** The first-tick order between the WINMAIN SetTimer callback, StopSimulation/RestartSimulation and MYTIMERFUNC, and whether the simulation ever runs outside the pump.
-3. **Auto-close.** Whether Win16 keeps DOS's close-front-window-on-outside-click rule (record flag +0x1C bit 0). DOS is the authority either way.
-4. **Logical window slots.** The purpose of every slot, including 0x2300 and the DOS-only IDs 0x1600/0x1F00/0x2100, and which windows are titled, resizable or modal. This decides SDL window flags and native-window versus panel presentation.
-5. **Resize policy.** Win16 re-lays out window 0 (edit) and the root/bar hosts; other windows follow the DOS anchor rules (win_Recalc) or stay fixed.
-6. **Coordinate conventions.** Window-local rects and inclusive versus half-open edges, for the renderer.
-7. **Retained buffers.** Ownership and invalidation of editBuf/mapBuf/lastMapMapBuf; this decides persistent SDL surfaces.
-8. **Assets.** The menu label → ProcMenu command map (db object kind 6), and the 7 cursor bitmaps and hotspots for SDL cursors.
-9. **Product decisions, not reverse-engineering questions.** Native multi-window versus in-app panels, portable help, and DDE (obsolete).
+Items resolved by the original-code analysis (§0) are no longer gaps: MAINWNDPROC dispatch, capture, the win_Open/Close lifetime, auto-close, timer order, the paint and erase path, and coordinate conventions. What remains:
+1. **Window-record data.** Decode the window records loaded by `win_LoadAllWindows` (type-9 layouts per display type), giving:
+   - the auto-close (bit 0) and modal (0x40) flags per window;
+   - the unassigned logical IDs (0x1600, 0x1B00, 0x2100, 0x2500-0x2C00, 0x1C00 opener, 0x2B00);
+   - default geometry.
+   The DOS reconstruction may already decode the same records.
+2. **Resize policy.** Win16 re-lays out window 0 (edit) and the root/bar hosts; other windows follow the DOS anchor rules or stay fixed. This is a design decision informed by §0.
+3. **Retained buffers.** Ownership and invalidation of editBuf/mapBuf/lastMapMapBuf; this decides persistent SDL surfaces.
+4. **Assets.** The menu label -> ProcMenu command map (db object kind 6), and the 7 cursor bitmaps and hotspots.
+5. **Product decisions.** Native multi-window versus in-app panels (Win16 uses child windows in one frame), portable help, and DDE (obsolete).
 
 ## G. Classification of the Win16 function inventory
 
@@ -191,7 +232,7 @@ Scope result:
 
 ## H. Status and next steps (handoff 2026-09-30)
 
-1. **Fold in the answers.** Merge `build/workers/f-host-answers/ANSWERS.md` when the Opus analysis finishes. Update the INFERRED statements it verifies or contradicts, and move answered items out of §F.
+1. **Done 2026-09-30.** The original-code answers are folded in as §0; `evidence/port/sections/ANSWERS.md` holds the evidence.
 2. **Decode the data.** Decode the window-definition database objects (type-9 layouts, kind-6 menus, slot purposes) from the DOS or Win16 resources into tables for §B.
 3. **Leave byte matching.** No further byte matching of shared functions (AGENTS.md mission).
    - Exact reconstruction of a REQUIRED function (candidates: MAINWNDPROC, win_Open, win_Close, win_GetEvent, DoMouse) is justified only if the disassembly analysis leaves a host-contract question open.
