@@ -1591,21 +1591,27 @@
         "text": "In simtwo unit context the current AddIndex source reaches target ENTER 0x18 and stack differences fall from 27 to 13 (135/139 opcodes, 357/351 bytes); isolated compile remains 138/141. Full-unit strict comparison is ruled out by inconsistent public placements, and scaffold construction cannot derive a slot map because _FindIndex is not an exact body. Replacing the old-buffer union with one reused far pointer regressed to 132/143 opcodes with 3 register differences despite 2 stack gaps. Keep the unit frame; remaining work is the call/control and home residue plus exact prefix/placement, not a frame tweak.",
         "origin": "build/search/AddIndex/20260929T193910-180344",
         "recorded": "2026-09-29T19:39:11.303714+00:00"
+      },
+      {
+        "text": "alloc_search explored 264 variants on inverse-pass baseline with no score gain (138/141 opcodes, 15 allocation operand disagreements). alloc_trace showed target homes oldBuffer [bp-8], n [bp-10]. Replacing the volatile union with one far pointer predicts those homes, and regalloc_model confirms them, but authentic compilation expands ENTER from 0x18 to 0x1e, 361 bytes and 135/145 opcodes; target frame and body degrade. Keep the volatile union frontier for now; target homes alone did not imply a byte-exact natural source.",
+        "origin": "build/search/AddIndex/20260930T003055-187568",
+        "recorded": "2026-09-30T00:30:56.403038+00:00"
       }
     ],
     "frontier": {
-      "source": "evidence/recovery/drafts/AddIndex/308178b29d3d.c",
-      "sha256": "308178b29d3d7dfc28e1abd853449588675ad3ef4063fd4719ea8ee59b3e54bd",
+      "source": "evidence/recovery/drafts/AddIndex/05cf1b0a9aba.c",
+      "sha256": "05cf1b0a9aba9523f54f890c8b8f556e12b6df2817e36a00aed6981bf23b6fca",
       "key": [
         false,
         false,
         12,
-        136
+        138
       ],
       "first_divergence_row": 12,
-      "opcode_matches": 136,
-      "opcode_total": 146,
-      "candidate_bytes": 371,
+      "first_divergence_class": "WRONG_STACK_SLOT",
+      "opcode_matches": 138,
+      "opcode_total": 141,
+      "candidate_bytes": 357,
       "target_bytes": 351,
       "flags": [
         "/AL",
@@ -1614,9 +1620,9 @@
         "/Oegilw",
         "/NTSIMTWO_MODULE"
       ],
-      "origin": "build/search/AddIndex/20260926T154922-153828/results.json",
+      "origin": "build/search/AddIndex/20260930T002907-71240/results.json",
       "candidate": 0,
-      "recorded": "2026-09-28T02:50:03.295731+00:00"
+      "recorded": "2026-09-30T00:29:08.800556+00:00"
     }
   },
   "_AddMsgBalloon": {
@@ -3695,6 +3701,21 @@
         "text": "f2-grind-09b: A fresh address-taken local pointer alias (int *home=&rowHome; *home=off) on the 72/74 scan frontier is UNSUPPORTED_COMPARISON: ENTER is unresolved, contribution exceeds the 181-byte target extent, the local pointer gets a 4-byte home, and the emitted MapA base becomes mov bx,0. It does not produce the single BP-2 mirror with DI induction. This is a pointer-alias negative, separate from the prior volatile cast of &off that forces memory-indexed accesses; do not extend this alias spelling family.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T07:16:04.038825+00:00"
+      },
+      {
+        "text": "Removing rowHome drops the frame/home differences, but alloc_search found only 62/74 opcodes (173/181 bytes); declaration order can match the allocation operands but not the body.",
+        "origin": "build/search/CarpetFloorL/20260930T002819-175988",
+        "recorded": "2026-09-30T00:28:19.883596+00:00"
+      },
+      {
+        "text": "The best allocation chain was a natural decl_move of column to position 0; C2 trace confirms the candidate allocation has zero mismatching register/home operands, though it remains 62/74.",
+        "origin": "build/search/CarpetFloorL/20260930T002820-115060",
+        "recorded": "2026-09-30T00:28:21.329989+00:00"
+      },
+      {
+        "text": "This function has no far-pointer local otherwise; aliasing the far scalar DROPdir is the only plausible pointer-lifetime axis. The trial is diagnostic and adds a pointer home.",
+        "origin": "build/search/CarpetFloorL/20260930T003225-109060",
+        "recorded": "2026-09-30T00:32:26.328950+00:00"
       }
     ],
     "frontier": {
@@ -22338,6 +22359,16 @@
         "text": "Follow-up on the 103/108 coordinate-correct base: volatile idx falls to 101/110, 305 bytes; a MapA-element near pointer falls to 94/108, 269 bytes; three branch-scoped idx locals compile to the identical 103/108 object; two-dimensional MapA[128][64]/LifeA[128][64] row-column accesses fall to 93/108; and an ordinary pointer alias to &idx falls to 101/111, 305 bytes. These families do not move the target cached offset from BP-4 across SRand1. The body-first remaining residue is the MSC local-home/lifetime decision, with same-object MapA/LifeA raw-offset and CONST selector placement deferred until body exactness.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T10:01:16.296868+00:00"
+      },
+      {
+        "text": "Allocation score improves from 26 to 8 mismatches by copying parameter x at entry; C2 trace confirms perm_x_2=SI and y=DI, but this mutation is steering and no opcode gain is predicted.",
+        "origin": "build/search/DropWall/20260930T002539-56640",
+        "recorded": "2026-09-30T00:25:40.055041+00:00"
+      },
+      {
+        "text": "Only the existing post-call Dx9/Dy9 reads use the local far alias; no absolute addresses or assembly.",
+        "origin": "build/search/DropWall/20260930T002541-140864",
+        "recorded": "2026-09-30T00:25:42.382188+00:00"
       }
     ],
     "frontier": {
@@ -31092,6 +31123,11 @@
         "text": "Fresh 67/69 frontier plus one new branch-local home test: int planeHome = plane; (void)&planeHome; before the existing SetMapPlaneLocation(plane,...) compiles to the older deep95-3 struct-home object at 65/69 and still lacks target mov [bp-2],si. Making that same branch-only shadow volatile is worse at 63/69, 207/205 bytes. TDB resync of the frontier changes no declarations; EraseMapCursor's volatile-void return remains a supported but nonmajority variant. The target's conditional SI spill is not explained by an unused/address-taken local copy or volatile shadow.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T10:45:35.878330+00:00"
+      },
+      {
+        "text": "alloc_search tested 296 variants in 33s and did not improve 67/69 opcodes (205 bytes; allocation mismatch 5). Trace shows target x/y homes share [bp-6] with target frame 6; candidate homes are x [bp-2], y [bp-4] with frame 4. Triage shows CSE_SUBEXPRESSION, EXPRESSION_SHAPE and FRAME_LAYOUT have current attempts, so no family rerun. No winning mutation or strict body match.",
+        "origin": "build/search/GotoBQueen/20260930T004224-142328",
+        "recorded": "2026-09-30T00:42:25.624676+00:00"
       }
     ],
     "frontier": {
@@ -31315,6 +31351,11 @@
         "text": "2026-09-28: With plane address-taken by an else-arm volatile self-write, reordering locals from plane/ex/ey to ex/ey/plane predicts target homes plane BP-2, coordinates BP-4/BP-6. The output hash is unchanged from the unreordered volatile-lvalue candidate (65/73, 235/224 bytes, ENTER6); declaration-order interaction is falsified. Target's natural direct-local spill remains unproduced; no admission.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T16:53:03.657120+00:00"
+      },
+      {
+        "text": "alloc_search explored 264 variants (twice to confirm deterministic result), best 71/73 opcodes, 224 bytes, allocation mismatch 5. Recovered model says target homes ex and ey at the same [bp-6] slot and has 2 extra frame bytes; target disassembly also stores SI to [bp-2] before pushing [bp-4],[bp-6],SI for SetMapPlaneLocation. A separate switchPlane local assigned MePlane in that else block was optimized out and compiled byte-identically (71/73), so it does not recreate the target home/store. Remaining meaningful expression-shape source mechanism is not distinguished; no selector-only body match.",
+        "origin": "build/search/GotoMyAnt/20260930T004034-58644",
+        "recorded": "2026-09-30T00:40:34.700659+00:00"
       }
     ],
     "frontier": {
@@ -32336,6 +32377,11 @@
         "text": "Row-first bounds changed allocation to row=CX, column=DI, i=SI (35/36; target row=SI, column=CX, i=DI), so term order is falsified. A live-store identity `HoleValues[i] + (row-row)` was removed to the previously known object and left the original register swap (36/36). This confirms trivial zero-use identities are simplified before allocation; the controlled extra-row-use probe still explains the target pair, but no naturally emitted code-free row use has been found.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T12:02:46.590507+00:00"
+      },
+      {
+        "text": "C2 trace kept i SI and row DI for both row splits; inline_tile changed only the tile range to DX. No search variant exceeded the 36/36 frontier.",
+        "origin": "build/search/HoleBorder/20260930T002757-47860",
+        "recorded": "2026-09-30T00:27:58.283470+00:00"
       }
     ],
     "frontier": {
@@ -52459,6 +52505,16 @@
         "text": "Fresh width hypothesis from target raw-byte loads: changed only local raw from int to unsigned char on the raw-before-cell-pointer frontier. This expanded to 140/222 opcodes, 664/666 bytes, ENTER 10 vs target 8; it created raw at BP-1 and extra targetY/blocked homes. The target raw/pointer swap is not fixed by narrowing raw to a byte.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T13:11:37.156379+00:00"
+      },
+      {
+        "text": "Controlled one-at-a-time probe: typed and old-style callee declarations compiled to identical bytes.",
+        "origin": "build/search/SimQueenB/20260930T002002-129512",
+        "recorded": "2026-09-30T00:20:03.262956+00:00"
+      },
+      {
+        "text": "Controlled probe compared commuted and split x_value assignments; all emitted the baseline object.",
+        "origin": "build/search/SimQueenB/20260930T002003-84976",
+        "recorded": "2026-09-30T00:20:10.448525+00:00"
       }
     ],
     "frontier": {
@@ -52641,6 +52697,16 @@
         "text": "Fresh declaration-order hypothesis: swapped only the function-scope declarations of expected_value and x_value in the ENTER-8 scoped-cell-pointer frontier. MSC produced the identical object; homes remain expected BP-6, x BP-2 vs target expected BP-2, x BP-4. Declaration order alone is optimized away.",
         "origin": "search.py --note",
         "recorded": "2026-09-28T13:03:38.157396+00:00"
+      },
+      {
+        "text": "Controlled one-at-a-time probe: typed and old-style callee declarations compiled to identical bytes.",
+        "origin": "build/search/SimQueenR/20260930T001951-113420",
+        "recorded": "2026-09-30T00:19:52.704654+00:00"
+      },
+      {
+        "text": "Controlled probe compared commuted and split x_value assignments; all emitted the baseline object.",
+        "origin": "build/search/SimQueenR/20260930T001953-173664",
+        "recorded": "2026-09-30T00:20:01.639896+00:00"
       }
     ],
     "frontier": {
@@ -56760,15 +56826,15 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/UpdateEdit/15293718aca5.c",
-      "sha256": "15293718aca561cf7f746d1ae1d0c6fab6f28f63b4d26ed4f9948298ffa818dd",
+      "source": "evidence/recovery/drafts/UpdateEdit/962e264a8fa3.c",
+      "sha256": "962e264a8fa35f39bf9702f032d0ba21e49109200e708f379c201aee832ac7ec",
       "key": [
         false,
-        false,
+        true,
         235,
         0
       ],
-      "basis": "BEST_CANDIDATE_NOT_EXACT",
+      "basis": "EXACT_BODY_CANDIDATE",
       "result": "NO_COMPLETE_MATCH",
       "opcode_matches": 235,
       "opcode_total": 235,
@@ -56781,8 +56847,8 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/UpdateEdit/20260927T151638-84212/results.json",
-      "recorded": "2026-09-27T15:16:39.015052+00:00"
+      "origin": "build/search/UpdateEdit/20260930T002427-83924/results.json",
+      "recorded": "2026-09-30T00:24:28.520413+00:00"
     },
     "notes": [
       {
@@ -56927,11 +56993,11 @@
       }
     ],
     "frontier": {
-      "source": "evidence/recovery/drafts/UpdateEdit/27497f22f745.c",
-      "sha256": "27497f22f745842685d236eefc29d796f1720488c9e60a8a754367eb27de6546",
+      "source": "evidence/recovery/drafts/UpdateEdit/962e264a8fa3.c",
+      "sha256": "962e264a8fa35f39bf9702f032d0ba21e49109200e708f379c201aee832ac7ec",
       "key": [
         false,
-        false,
+        true,
         236,
         235
       ],
@@ -56948,9 +57014,9 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/UpdateEdit/20260930T000343-25900/results.json",
+      "origin": "build/search/UpdateEdit/20260930T002427-83924/results.json",
       "candidate": 0,
-      "recorded": "2026-09-30T00:03:44.292752+00:00"
+      "recorded": "2026-09-30T00:24:28.459656+00:00"
     }
   },
   "_UpdateEditIfBufInvalid": {
@@ -57268,19 +57334,19 @@
       }
     ],
     "best": {
-      "source": "evidence/recovery/drafts/UpdateListBox/f72eb75feaf3.c",
-      "sha256": "f72eb75feaf36e972c99dfc379a0abd2619b6d41514bbf70da726895377463a5",
+      "source": "evidence/recovery/drafts/UpdateListBox/c86636abd063.c",
+      "sha256": "c86636abd0639cde17c238be5dfb88705c0abfa8b3e4182bb04d8dcc33b41633",
       "key": [
         false,
         false,
-        175,
-        -1
+        176,
+        -3
       ],
       "basis": "BEST_CANDIDATE_NOT_EXACT",
       "result": "NO_COMPLETE_MATCH",
-      "opcode_matches": 175,
+      "opcode_matches": 176,
       "opcode_total": 177,
-      "candidate_bytes": 462,
+      "candidate_bytes": 458,
       "target_bytes": 461,
       "flags": [
         "/AL",
@@ -57289,8 +57355,8 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/UpdateListBox/20260929T023821-120692/results.json",
-      "recorded": "2026-09-29T02:38:22.625107+00:00"
+      "origin": "build/search/UpdateListBox/20260930T001922-33624/results.json",
+      "recorded": "2026-09-30T00:19:23.122194+00:00"
     },
     "notes": [
       {
@@ -57392,21 +57458,27 @@
         "text": "Needle selector fix: keeping the _strstr second parameter far but declaring the private string-pool view as near makes MSC 7.00 source the selector from DS; sem9 is NO_DIVERGENCE 20/20 with 175/177 opcodes, 462/461 bytes, frame 264, and no branch/stack differences. Controlled probe: near variant has 462-byte body/175 opcodes; based DGROUP variant has 464/174 and emu_diff flags its C000 selector versus target A000. typedb conflicts with public _curFontPtr FarAddress, so this remains an overlapping private pool view hypothesis.",
         "origin": "search.py --note",
         "recorded": "2026-09-29T02:46:43.161753+00:00"
+      },
+      {
+        "text": "New MSC7 allocator plus alloc_search: inverse-pass baseline's two [bp+8] versus [bp-2] differences came from perm_fileType_2; removing the parameter copy and using fileType directly fixed both stack operands. Direct != became CMP and lost code; fileType ^ 0xc010 restores target MOV/XOR/JE, reaching 176/177 opcodes, 458/461 bytes, zero stack differences. The sole missing opcode is the target's extra far-address load after the conditional (target offset 0x54), while selector/fixup operands remain placement-dependent. A local basePath for Dx8+0x94a0 adds a 4-byte home, shifts buffer from bp-258 to bp-260, and falls to 165/177, rejecting that named CSE shape.",
+        "origin": "build/search/UpdateListBox/20260930T002609-43784",
+        "recorded": "2026-09-30T00:26:09.878114+00:00"
       }
     ],
     "frontier": {
-      "source": "evidence/recovery/drafts/UpdateListBox/eceae5edd5cd.c",
-      "sha256": "eceae5edd5cd4276b53945a67379b344e107fef0f5bf977bce536c211dace2e0",
+      "source": "evidence/recovery/drafts/UpdateListBox/c86636abd063.c",
+      "sha256": "c86636abd0639cde17c238be5dfb88705c0abfa8b3e4182bb04d8dcc33b41633",
       "key": [
         false,
         false,
-        12,
-        164
+        37,
+        176
       ],
-      "first_divergence_row": 12,
-      "opcode_matches": 164,
+      "first_divergence_row": 37,
+      "first_divergence_class": "EXPRESSION_SHAPE",
+      "opcode_matches": 176,
       "opcode_total": 177,
-      "candidate_bytes": 450,
+      "candidate_bytes": 458,
       "target_bytes": 461,
       "flags": [
         "/AL",
@@ -57415,9 +57487,9 @@
         "/Oegilw",
         "/NTANTEDIT_MODULE"
       ],
-      "origin": "build/search/UpdateListBox/20260926T182727-55936/results.json",
+      "origin": "build/search/UpdateListBox/20260930T001922-33624/results.json",
       "candidate": 0,
-      "recorded": "2026-09-28T02:51:30.513808+00:00"
+      "recorded": "2026-09-30T00:19:23.064451+00:00"
     }
   },
   "_UpdateModeWindow": {
@@ -58200,6 +58272,11 @@
         "text": "Permuter campaign (1200 s): 1,155 evaluations, 1,154 compiler misses, 1 compile failure during minimization; best is 127/137 opcodes, 381/385 bytes, equal ENTER 2, aligned cost 20.55. Mutation chain: invert the idx <= 0x24 if into idx > 0x24 with swapped branches. Earliest divergence remains row 26 / target +0x78, so no second run. Main opcode residue remains the target BX index construction versus candidate AX construction; no exact candidate or promotion.",
         "origin": "build/search/XferPatch/20260927T222648-126696",
         "recorded": "2026-09-27T22:26:49.195194+00:00"
+      },
+      {
+        "text": "XferPatch stays 137/137 opcodes and 385/385 bytes. A reviewed unit with XferPatch alone in RUN6_TEXT places it at 1:AB90; mapped selector scaffold and trailing C112/C114/C116/C118/C11A stand-ins still leave 11 unresolved Xfer fixups and unplaced CONST. Triage says composition waits on open _PlaceQueenInYard and _MysteryButton; their current bodies remain 247/326 and 230/241, so recover those neighbors before retrying strict composition.",
+        "origin": "build/search/XferPatch/20260930T005119-70084",
+        "recorded": "2026-09-30T00:51:19.773864+00:00"
       }
     ],
     "frontier": {
