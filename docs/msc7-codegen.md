@@ -227,6 +227,18 @@ Profiles: `baseline` = `/AL /G2 /Gs /Oelw`; `og` adds `/Og`; `ogi` = `/Oegilw`; 
   - The MSC 6 effect does not transfer as a lever. Only RELATIVE declaration sequence matters, through operand order (MSC7-A11).
   - Evidence: build/workers/sup-symcount (run.py, run_locals.py).
 
+**MSC7-E27: far-array DS region. SUPPORTED (71 admitted functions show it; 86 open functions show it, many of them large authoring targets).**
+- When a loop test or a straight-line stretch reads a far array or far global of one segment with no call in that path, MSC 7.00 loads DS with that segment once (`mov ax,SEG; mov ds,ax`) and addresses the data through DS.
+- Every edge that leaves the region gets `push ss; pop ds` at its target: into a block that calls a function, out of the loop, or to the epilogue. This yields repeated `push ss; pop ds; jmp ...` / `push ss; pop ds; mov es,[pool]` sequences at the region's exits.
+- Admitted example: `_GotoQueen` (unit simant_9D04_compose_b5dceafc80). `for (si = 0; si < 500; si++) if ((Dx8[si + 0x3d18] & 0xf8) == type) {...}` loads DS=SEG Dx8 for the test; the if-body (calls) and the loop exit each begin with `push ss; pop ds`.
+- Consequence: a missing or extra `push ss; pop ds` exit in a draft means the region is shaped differently. Look for:
+  - a call or a near-data access inside the tested path;
+  - a different far object;
+  - a test split differently across statements;
+  - an exit edge missing from the draft's control flow (e.g. a `return`/`break` path the target has).
+  Compare the target's DS-load sites and their exits with the draft's.
+- Seen as the top residue of `_MoveSpider` (809/1077, f8-dosauth-1-f2).
+
 **MSC7-E16: CSE reuses expressions that fold to the same tree. SUPPORTED.**
 - Admitted control `_AddBlackAnts` (`og`, `/Oeglw /NTSIMTWO_MODULE`): writing all three occurrences of `x * 64 + y` as `(x << 6) + y`, `y + x * 64` or `x * (32 + 32) + y` gives one identical object that stays an exact member.
 - Reproducer: `evidence/codegen-facts/MSC7-E16/`.
