@@ -1,5 +1,21 @@
 # Repository working instructions
 
+## Mission (changed 2026-09-30, overrides the goals below)
+
+This project is no longer aiming for a complete byte-matching SIMANTW.EXE.
+- The DOS reconstruction `D:\Prog\simant_recon` (github missingno7/simant_recon) is the behavioural and visual authority for the future portable SDL3 multi-window port. It is READ-ONLY for agents of this project; another agent works on it.
+- This project recovers only the Windows-specific delta: how Maxis hosted the shared SimAnt window/object model (`win_*`) on native Windows. That covers HWND mapping and lifetimes, message-to-event translation, z-order and activation, invalidate/paint, geometry, focus/capture/cursor, the menus and application shell, the GDI boundary, and Windows-only services.
+- The deliverable is `docs/portable-windows-reference.md`.
+- `python tools/port_audit.py` classifies every function by its Windows API use and DOS pairing.
+
+Byte matching is now a tool, not the goal. Reconstruct exactly only when one of these holds:
+- exact code is needed to disambiguate Windows-specific behaviour;
+- the function is genuinely Windows-only and important to the SDL3 architecture;
+- it exposes a structure/API contract that cannot be established otherwise;
+- it gives a native-window, event or state mapping.
+
+Do not grind MSC 7.00 tails (SI/DI, stack homes, declaration order, selector pools, private DATA, expression shape) on functions that the DOS version already has. Existing drafts, evidence, tools and admissions stay as they are. The machinery described below still works and is still the way to prove anything exactly.
+
 This project reconstructs readable Win16 SimAnt C through authentic Microsoft-era tools and independent relocation-aware proof. Read README.md and [docs/factory.md](docs/factory.md).
 
 Everyday work is four commands:
